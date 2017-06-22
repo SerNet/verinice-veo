@@ -35,7 +35,7 @@
         </dependency>
     </dependencies>
 
-
+    <!-- Remove this when a main class available -->
     <build>
         <plugins>
             <!-- This module does not have a Spring boot main class -->

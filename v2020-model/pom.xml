@@ -31,7 +31,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <layout>NONE</layout>
+                    <layout>MODULE</layout>
                     <excludes>
                         <exclude>
                             <groupId>javax</groupId>
