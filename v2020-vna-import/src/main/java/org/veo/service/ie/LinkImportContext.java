@@ -17,12 +17,14 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
+ *  A context to import one link from a VNA to database.
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public class LinkImportContext implements Comparable<LinkImportContext> {
@@ -92,10 +94,8 @@ public class LinkImportContext implements Comparable<LinkImportContext> {
         if (other == null) {
             return -1;
         }
-        if (startId == null) {
-            if (other.startId != null) {
-                return 1;
-            }
+        if (startId == null && other.startId != null) {
+            return 1;
         }
         result = startId.compareTo(other.startId);
         return result;

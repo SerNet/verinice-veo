@@ -8,14 +8,14 @@
     </appender>
 	
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./v2020-persistence-test.log</file>
+        <file>./v2020-vna-import.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</Pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>./v2020-persistence-test.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>./v2020-vna-import.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>5MB</maxFileSize>
@@ -24,11 +24,10 @@
 
     </appender>
 	
-    <logger name="org.veo" level="debug"/>
+    <logger name="org.veo" level="info"/>
 
     <root level="error">
         <appender-ref ref="FILE" />
-        <appender-ref ref="STDOUT" />
     </root>
 
 </configuration>

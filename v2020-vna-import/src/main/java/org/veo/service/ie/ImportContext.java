@@ -17,12 +17,16 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * A context of for the import of a VNA which holds a map
+ * of ext-ids from a VNA and associated UUID from the elements
+ * in the database.
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public class ImportContext {
@@ -31,7 +35,7 @@ public class ImportContext {
 
     public ImportContext() {
         super();
-        extIdDbIdMap = new HashMap<String, String>();
+        extIdDbIdMap = new HashMap<>();
     }
 
     public void addObject(ObjectImportContext objectContext) {

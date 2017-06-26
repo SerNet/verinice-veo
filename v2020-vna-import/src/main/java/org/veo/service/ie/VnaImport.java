@@ -17,7 +17,7 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,33 +38,43 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.veo.model.Element;
 
 import de.sernet.sync.data.SyncLink;
 import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
-import org.veo.model.Element;
 
 /**
+ * Service class configured by Spring to import a verinice archive (VNA).
+ * 
+ * Wire this service to your class to import a VNA:
+ * 
+ * @Autowired
+ * VnaImport vnaImport;
+ * 
+ * @Override
+ * public void run(String... args) throws Exception {
+ *    byte[] vnaFileData = Files.readAllBytes(Paths.get(filePath));
+ *    vnaImport.setNumberOfThreads(Integer.valueOf(numberOfThreads));
+ *    vnaImport.importVna(vnaFileData);
+ * }
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Service("vnaImport")
-public class VnaImport implements IVnaImport {
+public class VnaImport {
 
     private static final Logger LOG = LoggerFactory.getLogger(VnaImport.class);
 
-    private static final int DEFAULT_NUMBER_OF_THREADS = 8;
+    private static final int DEFAULT_NUMBER_OF_THREADS = 3;
     private static final int SHUTDOWN_TIMEOUT_IN_SECONDS = 60;
 
     private int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
-
-    private ExecutorService taskExecutor;
+    
     private CompletionService<ObjectImportContext> objectImportCompletionService;
     private CompletionService<LinkImportContext> linkImportCompletionService;
     private ImportContext importContext;
     private int number = 0;
-
-    private int numberAdded = 0;
-    private int numberRemoved = 0;
 
     @Autowired
     private ObjectFactory<ObjectImportThread> objectImportThreadFactory;
@@ -73,16 +83,13 @@ public class VnaImport implements IVnaImport {
     private ObjectFactory<LinkImportThread> linkImportThreadFactory;
 
     /**
-     * (non-Javadoc)
-     * 
-     * @see org.v2020.service.ie.IVnaImport#importVna(byte[])
+     * Imports a VNA from a byte array.
      */
-    @Override
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
     public void importVna(byte[] vnaFileData) {
-        taskExecutor = createExecutor();
-        objectImportCompletionService = new ExecutorCompletionService<ObjectImportContext>(taskExecutor);
-        linkImportCompletionService = new ExecutorCompletionService<LinkImportContext>(taskExecutor);
+        ExecutorService taskExecutor = createExecutor();
+        objectImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
+        linkImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         importContext = new ImportContext();
         try {
             Vna vna = new Vna(vnaFileData);
@@ -92,12 +99,12 @@ public class VnaImport implements IVnaImport {
                 LOG.debug("Starting import of objects...");
             }
             importObjectList(null, syncObjectList, mapObjectTypeList);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(number + " objects imported.");
+            if (LOG.isInfoEnabled()) {
+                LOG.info("{} objects imported.", number);
             }
             List<SyncLink> syncLinkList = getSyncLinkList(vna);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Number of links: " + syncLinkList.size() + ", starting import...");
+                LOG.debug("Number of links: {}, starting import...", syncLinkList.size());
             }
             importLinkList(syncLinkList);
         } catch (Exception e) {
@@ -114,7 +121,6 @@ public class VnaImport implements IVnaImport {
                 ObjectImportThread importThread = objectImportThreadFactory.getObject();
                 importThread.setContext(new ObjectImportContext(parent, syncObject, mapObjectTypeList));
                 objectImportCompletionService.submit(importThread);
-                numberAdded++;
             }
             waitForObjectResults(syncObjectList.size());
         }
@@ -122,11 +128,7 @@ public class VnaImport implements IVnaImport {
 
     private void waitForObjectResults(int n) throws InterruptedException, ExecutionException {
         for (int i = 0; i < n; ++i) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Numbers: " + numberAdded + "/" + numberRemoved);
-            }
             ObjectImportContext objectContext = objectImportCompletionService.take().get();
-            numberRemoved++;
             importContext.addObject(objectContext);
             if (objectContext != null) {
                 importObjectList(objectContext.getNode(), objectContext.getSyncObject().getChildren(), objectContext.getMapObjectTypeList());
@@ -230,7 +232,6 @@ public class VnaImport implements IVnaImport {
         return numberOfThreads;
     }
 
-    @Override
     public void setNumberOfThreads(int numberOfThreads) {
         this.numberOfThreads = numberOfThreads;
     }

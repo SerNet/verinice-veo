@@ -1,13 +1,15 @@
-package org.veo.ie;
+package org.veo.service.ie;
 
 import java.util.concurrent.Callable;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /*******************************************************************************
- * Copyright (c) 2015 Daniel Murygin.
+ * Copyright (c) 2017 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public License 
@@ -27,8 +29,12 @@ import org.slf4j.LoggerFactory;
  ******************************************************************************/
 
 /**
+ *  A callable task to import one link from a VNA to database.
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
+@Component
+@Scope("prototype")
 public class LinkImportThread implements Callable<LinkImportContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LinkImportThread.class);
@@ -36,7 +42,7 @@ public class LinkImportThread implements Callable<LinkImportContext> {
     private LinkImportContext context;
 
     @Autowired
-    private ImportElementService nodeService;
+    private ImportElementService importElementService;
 
     public LinkImportThread() {
         super();
@@ -47,9 +53,7 @@ public class LinkImportThread implements Callable<LinkImportContext> {
         this.context = context;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see java.util.concurrent.Callable#call()
      */
     @Override
@@ -57,7 +61,7 @@ public class LinkImportThread implements Callable<LinkImportContext> {
         try {
             importLink();
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Link imported, start id: " + context.getStartId() + ", end id: " + context.getEndIdList());
+                LOG.debug("Link imported, start id: {}, end id: {}", context.getStartId(), context.getEndIdList());
             }
         } catch (Exception e) {
             LOG.error("Error while importing link, start id: " + context.getStartId() + ", end id: " + context.getEndIdList(), e);
@@ -67,9 +71,9 @@ public class LinkImportThread implements Callable<LinkImportContext> {
 
     private void importLink() {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Start importing link, start id: " + context.getStartId() + ", end id: " + context.getEndIdList() + "...");
+            LOG.debug("Start importing link, start id: {}, end id: {}...", context.getStartId(), context.getEndIdList());
         }
-        nodeService.createLink(context.getStartId(), context.getEndIdList(), context.getType());
+        importElementService.createLink(context.getStartId(), context.getEndIdList(), context.getType());
     }
 
     public void setContext(LinkImportContext context) {

@@ -56,11 +56,14 @@ public class Element implements Serializable {
     @Column(nullable = false, length = 255)
     private String title;
     
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @Column(nullable = false, length = 255)
+    private String typeId;
+    
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "scope_uuid")
     private Element scope;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_uuid")
     private Element parent;
     
@@ -69,12 +72,12 @@ public class Element implements Serializable {
     @JoinColumn(name = "parent_uuid") 
     private Set<Element> children = new HashSet<>();
     
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @OrderColumn
     @JoinColumn(name = "source_uuid") 
     private List<Link> linksOutgoing = new LinkedList<>();
     
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "destination_uuid") 
     private List<Link> linksIncoming = new LinkedList<>();
 
@@ -101,7 +104,11 @@ public class Element implements Serializable {
         return title;
     }
 
-    public Element getParent() {
+    public String getTypeId() {
+		return typeId;
+	}
+
+	public Element getParent() {
         return parent;
     }
     
@@ -127,8 +134,6 @@ public class Element implements Serializable {
         return linksOutgoing;
     }
     
-    
-
     public Element getScope() {
         return scope;
     }
@@ -143,6 +148,10 @@ public class Element implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+    
+    public void setTypeId(String typeId) {
+		this.typeId = typeId;
+	}
 
     public void setParent(Element parent) {
         this.parent = parent;
@@ -182,6 +191,36 @@ public class Element implements Serializable {
     
     public void addProperty(ElementProperty property) {
         getProperties().add(property);
+    }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Element other = (Element) obj;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
+		return true;
+	}
+    
+    @Override
+    public String toString() {
+    	return getTitle() + " - " + getUuid();
     }
     
 }

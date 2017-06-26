@@ -8,9 +8,12 @@ package org.veo.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 
 /**
@@ -18,7 +21,8 @@ import javax.persistence.Lob;
  * @author Daniel Murygin
  */
 @Entity
-public class Property implements Serializable {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Property implements Serializable {
     
     @Id
     @Column(length = 36)
@@ -28,7 +32,7 @@ public class Property implements Serializable {
     private int index = 0;
     
     @Column(nullable = false)
-    private String id;
+    private String typeId;
     
     @Column(length = 255)
     private String label;
@@ -36,7 +40,7 @@ public class Property implements Serializable {
     @Lob
     private String text;
     
-    private long number;
+    private Long number;
     
     private Date date;
     
@@ -55,8 +59,8 @@ public class Property implements Serializable {
         return index;
     }
 
-    public String getId() {
-        return id;
+    public String getTypeId() {
+        return typeId;
     }
 
     public String getLabel() {
@@ -67,7 +71,7 @@ public class Property implements Serializable {
         return text;
     }
 
-    public long getNumber() {
+    public Long getNumber() {
         return number;
     }
 
@@ -79,8 +83,8 @@ public class Property implements Serializable {
         this.index = index;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setTypeId(String id) {
+        this.typeId = id;
     }
 
     public void setLabel(String label) {
@@ -91,12 +95,55 @@ public class Property implements Serializable {
         this.text = text;
     }
 
-    public void setNumber(long number) {
+    public void setNumber(Long number) {
         this.number = number;
     }
 
     public void setDate(Date date) {
         this.date = date;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Property other = (Property) obj;
+		if (uuid == null) {
+			if (other.uuid != null)
+				return false;
+		} else if (!uuid.equals(other.uuid))
+			return false;
+		return true;
+	}
     
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder(getTypeId());
+    	sb.append(": ");
+    	if(getDate()!=null) {
+    		sb.append(getDate().toString());
+    	}
+    	if(getLabel()!=null) {
+    		sb.append(getLabel());
+    	}
+    	if(getNumber()!=null) {
+    		sb.append(getNumber());
+    	}
+    	if(getText()!=null) {
+    		sb.append(getText());
+    	}
+    	return sb.toString();
+    }
 }

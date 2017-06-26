@@ -17,14 +17,20 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public interface IVnaImport {
+public class VnaNotValidException extends RuntimeException {
 
-    void importVna(byte[] vnaFileData);
+    private static final long serialVersionUID = 7303221037111060002L;
 
-    void setNumberOfThreads(int numberOfThreads);
+    public VnaNotValidException(Exception e) {
+        super(e);
+    }
+
+    public VnaNotValidException(String message) {
+        super(message);
+    }
 }

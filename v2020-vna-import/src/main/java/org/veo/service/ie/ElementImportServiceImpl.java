@@ -8,13 +8,15 @@ package org.veo.service.ie;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.veo.ie.ImportElementService;
 import org.veo.model.Element;
 import org.veo.service.ElementService;
 import org.veo.service.LinkService;
 
 /**
- *
+ * A service facade providing all methods to import data from a VNA to 
+ * a database. This implementation delegates calls to the services from
+ * the service layer in v2020-service.
+ * 
  * @author Daniel Murygin
  */
 @Service

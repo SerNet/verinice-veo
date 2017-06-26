@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.veo.ie;
+package org.veo.service.ie;
 
 import org.veo.model.Element;
 
 /**
- *
  * @author Daniel Murygin
  */
-public class NodeFactory {
+public class ElementFactory {
 
     public static final String ASSET_GROUP_TYPE = "assetgroup";
     public static final String ASSET_TYPE = "asset";
@@ -50,8 +49,14 @@ public class NodeFactory {
     public static final String VULNERABILITY_GROUP_TYPE = "vulnerability_group";
     public static final String VULNERABILITY_TYPE = "vulnerability";
     
-    static Element newInstance(String uuid) {
-        return new Element(uuid);
+    private ElementFactory() {
+    	// Do not instantiate this class, use final methods
+    }
+    
+    public static Element newInstance(String typeId) {
+    	Element element = new Element();
+    	element.setTypeId(typeId);
+    	return element;
     }
     
 }

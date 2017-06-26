@@ -17,26 +17,33 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.veo.model.Element;
+import org.veo.model.ElementProperty;
 
 import de.sernet.sync.data.SyncAttribute;
 import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType.MapAttributeType;
-import java.util.Date;
-import org.veo.model.Element;
-import org.veo.model.ElementProperty;
 
 /**
+ * A callable task to import one element and its properties from a VNA to database.
+ * 
+ * @see VnaImport
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
+@Component
+@Scope("prototype")
 public class ObjectImportThread implements Callable<ObjectImportContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObjectImportThread.class);
@@ -44,7 +51,7 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
     private ObjectImportContext context;
 
     @Autowired
-    private ImportElementService nodeService;
+    private ImportElementService importElementService;
 
     public ObjectImportThread() {
         super();
@@ -79,33 +86,39 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
         }
         SyncObject syncObject = context.getSyncObject();
         MapObjectType mapObject = getMapObject(context.getMapObjectTypeList(), syncObject.getExtObjectType());
-        Element node = NodeFactory.newInstance(mapObject.getIntId());
-        node.setTitle(TitleAdapter.getTitle(syncObject, mapObject));
-        node.setParent(context.getParent());
-        importProperties(syncObject.getSyncAttribute(), mapObject, node);
-        nodeService.create(node);
-        context.setNode(node);
+        Element element = ElementFactory.newInstance(mapObject.getIntId());
+        element.setTitle(TitleAdapter.getTitle(syncObject, mapObject));
+        element.setParent(context.getParent());
+        if(context.getParent()==null) {
+        	element.setScope(element);
+        } else {
+        	element.setScope(context.getParent().getScope());
+        }
+        importProperties(syncObject.getSyncAttribute(), mapObject, element);
+        importElementService.create(element);
+        context.setNode(element);
     }
 
-    private void importProperties(List<SyncAttribute> syncObjectList, MapObjectType mapObject, Element node) {
+    private void importProperties(List<SyncAttribute> syncObjectList, MapObjectType mapObject, Element element) {
         for (SyncAttribute syncAttribute : syncObjectList) {
             if (isProperty(syncAttribute)) {
                 String name = syncAttribute.getName();
                 MapAttributeType mapAttribute = getMapAttribute(mapObject, name);
+                String propertyId = name;
                 if (mapAttribute != null) {
-                    node.addProperty(createProperty(syncAttribute, mapAttribute));
-                    
+                	propertyId = mapAttribute.getIntId();           
                 } else {
-                    LOG.warn("MapAttributeType not found, name: " + name);
+                    LOG.warn("MapAttributeType not found in VNA, using ext-id: {}", name);               
                 }
+                element.addProperty(createProperty(syncAttribute, propertyId));
             }
         }
     }
 
-    private ElementProperty createProperty(SyncAttribute syncAttribute, MapAttributeType mapAttribute) {
+    private ElementProperty createProperty(SyncAttribute syncAttribute, String propertyTypeId) {
         List<String> valueList = syncAttribute.getValue();
         ElementProperty property = new ElementProperty();
-        property.setId(mapAttribute.getIntId());
+        property.setTypeId(propertyTypeId);
         Object value = convertValue(valueList);
         if(value instanceof Date) {
             property.setDate((Date) value);

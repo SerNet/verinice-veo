@@ -3,9 +3,9 @@ package org.veo.ie;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
@@ -16,17 +16,28 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.veo.service.ie.VnaImport;
+import org.veo.util.time.TimeFormatter;
 
+/**
+ * Spring Boot application class to run the import of a VNA file.
+ * You should start this application with property
+ * spring.main.web-environment=false
+ * in your application.properties file to turn the starting of a web 
+ * environment off.
+ * 
+ * @author Daniel Murygin <dm[at]sernet[dot]de>
+ */
 @SpringBootApplication
 @ComponentScan(basePackages = { "org.veo" })
 @EntityScan("org.veo.model")
-public class Application implements CommandLineRunner {
+public class VnaImportApplication implements CommandLineRunner {
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static Logger log = LoggerFactory.getLogger(VnaImportApplication.class);
 
     private static final String JAR_NAME = "v2020-vna-import-<VERSION>.jar";
 
-    public Application() {
+    public VnaImportApplication() {
     	// Empty constructor
     }
 
@@ -35,7 +46,7 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        CommandLineParser parser = new BasicParser();
+        CommandLineParser parser = new DefaultParser();
         try {
             // parse the command line arguments
             CommandLine line = parser.parse(CommandLineOptions.get(), args);
@@ -75,13 +86,13 @@ public class Application implements CommandLineRunner {
     }
 
     private void logMessage(String message) {
-        if (LOG.isInfoEnabled()) {
-            LOG.info(message);
+        if (log.isInfoEnabled()) {
+            log.info(message);
         }
     }
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(VnaImportApplication.class, args);
     }
 
 }

@@ -20,10 +20,11 @@
 package org.veo.ie;
 
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
 /**
+ * Command line optiosn for running an import of a VNA file.
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public final class CommandLineOptions {
@@ -51,22 +52,21 @@ public final class CommandLineOptions {
         options.addOption(CommandLineOptions.createNumberOfThreadsOption());
     }
 
-    @SuppressWarnings("static-access")
     private static Option createFileOption() {
-        OptionBuilder.withArgName(FILE);
-        OptionBuilder.hasArg();
-        OptionBuilder.isRequired();
-        OptionBuilder.withDescription("use given VNA file (required)");
-        OptionBuilder.withLongOpt(FILE);
-        return OptionBuilder.create("f");
+    	return Option.builder("f")
+        .hasArg()
+        .required()
+        .desc("use given VNA file (required)")
+        .longOpt(FILE)
+        .build();
     }
 
     private static Option createNumberOfThreadsOption() {
-        OptionBuilder.withArgName(THREADS);
-        OptionBuilder.hasArg();
-        OptionBuilder.withDescription("number of threads (default: " + THREADS_DEFAULT + ")");
-        OptionBuilder.withLongOpt(THREADS);
-        return OptionBuilder.create("t");
+    	return Option.builder("t")
+        .hasArg()
+        .desc("number of threads (default: " + THREADS_DEFAULT + ")")
+        .longOpt(THREADS)
+    	.build();
     }
 
     private static Option createHelpOption() {

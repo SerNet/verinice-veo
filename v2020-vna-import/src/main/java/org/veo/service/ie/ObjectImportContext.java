@@ -17,7 +17,7 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
 import java.util.List;
 
@@ -27,6 +27,8 @@ import org.veo.model.Element;
 
 
 /**
+ *  A context to import one element and its properties from a VNA to database.
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public class ObjectImportContext {

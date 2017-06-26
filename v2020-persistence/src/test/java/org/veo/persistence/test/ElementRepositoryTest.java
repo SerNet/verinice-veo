@@ -47,43 +47,44 @@ public class ElementRepositoryTest {
     
     @Before
     public void init() {
-        parent = createElement();
-        Element child = createElement();
+        parent = createElement("org");
+        Element child = createElement("asset_group");
         parent.addChild(child);      
-        Element linkedElement = createElement();
+        Element linkedElement = createElement("person");
         Link link = new Link();
         link.setSource(parent);
         link.setDestination(linkedElement);
         LinkProperty number = new LinkProperty();
-        number.setId(UUID.randomUUID().toString());
-        number.setNumber(23);
+        number.setTypeId(UUID.randomUUID().toString());
+        number.setNumber((long) 23);
         link.addProperty(number);
         parent.addLinkOutgoing(link);
         elementRepository.save(parent);
     }
 
-    private Element createElement() {
+    private Element createElement(String typeId) {
         Element element = new Element();
+        element.setTypeId(typeId);
         element.setTitle("ElementRepositoryTest");
         
         ElementProperty date = new ElementProperty();
-        date.setId("date");
+        date.setTypeId("date");
         date.setDate(Calendar.getInstance().getTime());
         element.addProperty(date);
         
         ElementProperty label = new ElementProperty();
-        label.setId("label");
+        label.setTypeId("label");
         label.setLabel(loremIpsum.words(RandomUtils.nextInt(4)+1));
         element.addProperty(label);
         
         ElementProperty text = new ElementProperty();
-        text.setId("text");
+        text.setTypeId("text");
         text.setText(loremIpsum.paragraphs(RandomUtils.nextInt(4)+1));
         element.addProperty(text);
         
         ElementProperty number = new ElementProperty();
-        number.setId("number");
-        number.setNumber(RandomUtils.nextInt(10000)+1);
+        number.setTypeId("number");
+        number.setNumber((long) (RandomUtils.nextInt(10000)+1));
         element.addProperty(number);
         
         return element;
@@ -129,7 +130,7 @@ public class ElementRepositoryTest {
         int number = RandomUtils.nextInt(10)+1;
         logger.debug("Depth: " + depth + ", creating " + (number + 1) + " childs...");
         for (int i = 0; i < number; i++) {
-            Element child = createElement();
+            Element child = createElement(loremIpsum.randomWord());
             parent.addChild(child);   
         }
         elementRepository.save(parent);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Daniel Murygin.
+ * Copyright (c) 2017 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public License 
@@ -17,7 +17,7 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,10 +28,37 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.veo.util.io.Archive;
+import org.veo.util.io.XmlIO;
 
 import de.sernet.sync.sync.SyncRequest;
 
 /**
+ * Wrapper class to access the content of a verinice archive (VNA) file.
+ * 
+ * A verinice archive is an ordinary ZIP-Archive with file extension '.vna'.
+ * You can open/import a verinice archive with verinice. 
+ * Verinice is an Open Source information security management system (ISMS), 
+ * see http://verinice.org for more information. 
+ * 
+ * Content of a verinice archive:
+ * 
+ * files                 directory containing all attached files
+ *   |
+ *   +-<EXT_ID>_<FILE_NAME>.doc file 1
+ *   |
+ *   +-<EXT_ID>_<FILE_NAME>.pdf file 2
+ *   |
+ *   +- ...
+ *   |
+ * verinice.xml          XML file containing data of all verinice elements
+ *   |
+ * sync.xsd              XML Schema / XML Schema Definition (XSD) for verinice.xml
+ *   |
+ * data.xsd              XSD for verinice.xml
+ *   |
+ * mapping.xsd           XSD for verinice.xml
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public class Vna implements Serializable {
@@ -58,7 +85,7 @@ public class Vna implements Serializable {
     public static final String FILES = "files"; //$NON-NLS-1$
 
     /**
-     * Creates a verinice archive instance out of <code>byte[] data</code>.
+     * Creates a Vna instance out of <code>byte[] data</code>.
      * 
      * @param data
      *            Data of a verinice archive (VNA, zip archive)
@@ -92,8 +119,7 @@ public class Vna implements Serializable {
     private String getPathToTempFile(String fileName) {
         StringBuilder sb = new StringBuilder();
         sb.append(getTempFileName()).append(File.separator).append(fileName);
-        String fullPath = sb.toString();
-        return fullPath;
+        return sb.toString();
     }
 
     /**
@@ -114,11 +140,6 @@ public class Vna implements Serializable {
         return XmlIO.read(getXmlFilePath(), SyncRequest.class);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see sernet.verinice.service.sync.IVeriniceArchive#clear()
-     */
     public void clear() {
         try {
             FileUtils.deleteDirectory(new File(getTempFileName()));

@@ -17,7 +17,7 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.ie;
+package org.veo.service.ie;
 
 import java.util.HashMap;
 import java.util.List;
@@ -78,45 +78,54 @@ public final class TitleAdapter {
     protected static final Map<String, String> TITLE_KEY_MAP;
 
     static {
-        TITLE_KEY_MAP = new HashMap<String, String>();
-        TITLE_KEY_MAP.put(NodeFactory.ASSET_GROUP_TYPE, ASSET_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.ASSET_TYPE, ASSET_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.AUDIT_GROUP_TYPE, AUDIT_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.AUDIT_TYPE, AUDIT_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.CONTROL_GROUP_TYPE, CONTROL_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.CONTROL_TYPE, CONTROL_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.DOCUMENT_GROUP_TYPE, DOCUMENT_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.DOCUMENT_TYPE, DOCUMENT_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.EVIDENCE_GROUP_TYPE, EVIDENCE_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.EVIDENCE_TYPE, EVIDENCE_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.EXCEPTION_GROUP_TYPE, EXCEPTION_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.EXCEPTION_TYPE, EXCEPTION_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.FINDING_GROUP_TYPE, FINDING_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.FINDING_TYPE, FINDING_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.INCIDENT_GROUP_TYPE, INCIDENT_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.INCIDENT_TYPE, INCIDENT_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.INTERVIEW_GROUP_TYPE, INTERVIEW_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.INTERVIEW_TYPE, INTERVIEW_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.ORGANIZATION_TYPE, ORGANIZATION_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.PERSON_GROUP_TYPE, PERSON_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.PERSON_TYPE, PERSON_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.PROCESS_GROUP_TYPE, PROCESS_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.PROCESS_TYPE, PROCESS_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.RECORD_GROUP_TYPE, RECORD_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.RECORD_TYPE, RECORD_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.REQUIREMENT_GROUP_TYPE, REQUIREMENT_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.REQUIREMENT_TYPE, REQUIREMENT_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.RESPONSE_GROUP_TYPE, RESPONSE_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.RESPONSE_TYPE, RESPONSE_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.SAMT_TOPIC_TYPE, SAMT_TOPIC_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.SCENARIO_GROUP_TYPE, SCENARIO_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.SCENARIO_TYPE, SCENARIO_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.THREAT_GROUP_TYPE, THREAT_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.THREAT_TYPE, THREAT_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.VULNERABILITY_GROUP_TYPE, VULNERABILITY_GROUP_TITLE);
-        TITLE_KEY_MAP.put(NodeFactory.VULNERABILITY_TYPE, VULNERABILITY_TITLE);
+        TITLE_KEY_MAP = new HashMap<>();
+        TITLE_KEY_MAP.put(ElementFactory.ASSET_GROUP_TYPE, ASSET_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.ASSET_TYPE, ASSET_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.AUDIT_GROUP_TYPE, AUDIT_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.AUDIT_TYPE, AUDIT_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.CONTROL_GROUP_TYPE, CONTROL_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.CONTROL_TYPE, CONTROL_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.DOCUMENT_GROUP_TYPE, DOCUMENT_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.DOCUMENT_TYPE, DOCUMENT_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.EVIDENCE_GROUP_TYPE, EVIDENCE_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.EVIDENCE_TYPE, EVIDENCE_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.EXCEPTION_GROUP_TYPE, EXCEPTION_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.EXCEPTION_TYPE, EXCEPTION_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.FINDING_GROUP_TYPE, FINDING_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.FINDING_TYPE, FINDING_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.INCIDENT_GROUP_TYPE, INCIDENT_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.INCIDENT_TYPE, INCIDENT_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.INTERVIEW_GROUP_TYPE, INTERVIEW_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.INTERVIEW_TYPE, INTERVIEW_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.ORGANIZATION_TYPE, ORGANIZATION_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.PERSON_GROUP_TYPE, PERSON_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.PERSON_TYPE, PERSON_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.PROCESS_GROUP_TYPE, PROCESS_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.PROCESS_TYPE, PROCESS_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.RECORD_GROUP_TYPE, RECORD_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.RECORD_TYPE, RECORD_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.REQUIREMENT_GROUP_TYPE, REQUIREMENT_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.REQUIREMENT_TYPE, REQUIREMENT_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.RESPONSE_GROUP_TYPE, RESPONSE_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.RESPONSE_TYPE, RESPONSE_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.SAMT_TOPIC_TYPE, SAMT_TOPIC_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.SCENARIO_GROUP_TYPE, SCENARIO_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.SCENARIO_TYPE, SCENARIO_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.THREAT_GROUP_TYPE, THREAT_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.THREAT_TYPE, THREAT_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.VULNERABILITY_GROUP_TYPE, VULNERABILITY_GROUP_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.VULNERABILITY_TYPE, VULNERABILITY_TITLE);
+    }
+    
+    private TitleAdapter() {
+    	// do not instantiate this class, use public final methods
     }
 
+    /**
+     * @param syncObject An object from a VNA
+     * @param mapObject A map object element from a VNA
+     * @return A title from a given SyncObject and a MapObjectType.
+     */
     public static String getTitle(SyncObject syncObject, MapObjectType mapObject) {
         String intKey = getTitleKey(mapObject.getIntId());
         MapAttributeType mapAttribute = getMapAttribute(mapObject, intKey);
@@ -124,21 +133,30 @@ public final class TitleAdapter {
 
     }
 
-    public static String getTitleKey(String extObjectType) {
-        String key = TITLE_KEY_MAP.get(extObjectType);
+    /**
+     * @param typeId An object type id
+     * @return The property type of the title for a given object type.
+     */
+    public static String getTitleKey(String typeId) {
+        String key = TITLE_KEY_MAP.get(typeId);
         if (key == null) {
-            LOG.warn("No title key found for type: " + extObjectType);
+            LOG.warn("No title key found for type: {}", typeId);
         }
         return key;
     }
 
-    public static String getAttribute(List<SyncAttribute> syncAttributeList, String key) {
+    /**
+     * @param syncAttributeList A list of sync attributes from a VNA
+     * @param propertyId
+     * @return The value of the property with the given id in the list of attributes
+     */
+    public static String getAttribute(List<SyncAttribute> syncAttributeList, String propertyId) {
         for (SyncAttribute attribute : syncAttributeList) {
-            if (key.equals(attribute.getName())) {
+            if (propertyId.equals(attribute.getName())) {
                 return attribute.getValue().get(0);
             }
         }
-        LOG.warn("No title found for key: " + key);
+        LOG.warn("No property found for property type id: {}", propertyId);
         return null;
     }
 
