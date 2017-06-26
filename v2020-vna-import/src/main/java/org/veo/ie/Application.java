@@ -27,6 +27,7 @@ public class Application implements CommandLineRunner {
     private static final String JAR_NAME = "v2020-vna-import-<VERSION>.jar";
 
     public Application() {
+    	// Empty constructor
     }
 
     @Autowired
@@ -74,7 +75,6 @@ public class Application implements CommandLineRunner {
     }
 
     private void logMessage(String message) {
-        System.out.println(message);
         if (LOG.isInfoEnabled()) {
             LOG.info(message);
         }
