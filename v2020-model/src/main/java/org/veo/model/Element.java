@@ -6,8 +6,10 @@
 package org.veo.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -65,16 +67,16 @@ public class Element implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @OrderColumn
     @JoinColumn(name = "parent_uuid") 
-    private List<Element> children = new LinkedList<Element>();
+    private Set<Element> children = new HashSet<>();
     
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @OrderColumn
     @JoinColumn(name = "source_uuid") 
-    private List<Link> linksOutgoing = new LinkedList<Link>();
+    private List<Link> linksOutgoing = new LinkedList<>();
     
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "destination_uuid") 
-    private List<Link> linksIncoming = new LinkedList<Link>();
+    private List<Link> linksIncoming = new LinkedList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "element_uuid")
@@ -103,10 +105,7 @@ public class Element implements Serializable {
         return parent;
     }
     
-    public List<Element> getChildren() {
-        if(children==null) {
-            children = new LinkedList<>();
-        }
+    public Set<Element> getChildren() {
         return children;
     }
     
@@ -149,7 +148,7 @@ public class Element implements Serializable {
         this.parent = parent;
     }
     
-    public void setChildren(List<Element> children) {
+    public void setChildren(Set<Element> children) {
         this.children = children;
     }
     

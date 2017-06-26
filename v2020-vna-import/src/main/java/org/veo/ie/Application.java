@@ -1,4 +1,4 @@
-package org.v2020.ie;
+package org.veo.ie;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,12 +16,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
-import org.veo.ie.CommandLineOptions;
-import org.veo.ie.TimeFormatter;
-import org.veo.ie.VnaImport;
 
 @SpringBootApplication
-@ComponentScan("org.veo")
+@ComponentScan(basePackages = { "org.veo" })
 @EntityScan("org.veo.model")
 public class Application implements CommandLineRunner {
 

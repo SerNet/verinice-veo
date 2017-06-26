@@ -61,24 +61,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <!-- This module does not have a Spring boot main class -->
-            <!-- The layout is not JAR it is NONE -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <layout>NONE</layout>
-                    <excludes>
-                        <exclude>
-                            <groupId>javax</groupId>
-                            <artifactId>javaee-api</artifactId>
-                        </exclude>
-                      </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
