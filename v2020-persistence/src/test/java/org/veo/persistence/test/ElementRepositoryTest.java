@@ -1,39 +1,70 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * Copyright (c) 2017 Daniel Murygin.
+ *
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Daniel Murygin dm[at]sernet[dot]de - initial API and implementation
+ ******************************************************************************/
 package org.veo.persistence.test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.UUID;
-import net._01001111.text.LoremIpsum;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.lang.math.RandomUtils;
-import static org.junit.Assert.*;
-
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.veo.model.Element;
-import org.veo.persistence.PersistenceApplication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.model.Link;
 import org.veo.model.LinkProperty;
 import org.veo.persistence.ElementRepository;
+import org.veo.persistence.LinkRepository;
+
+import net._01001111.text.LoremIpsum;
 
 /**
- *
+ * By default this test runs with in memory database h2
+ * without any configuration.
+ * Add this annotation:
+ * @AutoConfigureTestDatabase(replace=Replace.NONE)
+ * to run this test with a database configured in 
+ * src/test/resources/application.properties
+ * 
+ * See: 
+ * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html
+ * 
  * @author Daniel Murygin
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {PersistenceApplication.class})
-//@Transactional
+@RunWith(SpringRunner.class)
+@DataJpaTest(showSql=false)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class ElementRepositoryTest {
     
     private final Logger logger = LoggerFactory.getLogger(ElementRepositoryTest.class.getName());
@@ -41,27 +72,120 @@ public class ElementRepositoryTest {
     @Autowired
     private ElementRepository elementRepository;
     
-    private Element parent;
+    @Autowired
+    private LinkRepository linkRepository;
+   
+    @PersistenceContext
+    protected EntityManager entityManager;
     
     private LoremIpsum loremIpsum = new LoremIpsum();
     
     @Before
     public void init() {
-        parent = createElement("org");
+        // empty         
+    }
+    
+    @Test
+    public void testSaveAndFindOne() { 
+        Element element = createElement("org");
+        elementRepository.save(element);
+        Element elementResult = elementRepository.findOne(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4,elementResult.getProperties().size());
+    }
+    
+    @Test
+    public void testSaveAndFindWithChildren() { 
+        Element element = createElement("org");
         Element child = createElement("asset_group");
-        parent.addChild(child);      
-        Element linkedElement = createElement("person");
+        child.setParent(element);
+        element.addChild(child);
+        elementRepository.save(element);
+        
+        Element elementResult = elementRepository.findOneWithChildren(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(1, elementResult.getChildren().size());
+    }
+    
+    @Test
+    public void testSaveAndFindLinkWithNewElement() {
+        Element element = createElement("org");
+        Element linkedElement = createElement("person"); 
         Link link = new Link();
-        link.setSource(parent);
+        link.setSource(element);
+        link.setDestination(linkedElement);
+        element.addLinkOutgoing(link);
+        elementRepository.save(element);
+        
+        Element elementResult = elementRepository.findOneWithLinks(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(1, elementResult.getLinksOutgoing().size());  
+        
+        assertEquals(1, elementResult.getLinksOutgoing().size());  
+        assertEquals(1, elementResult.getLinkedDestinations().size());
+    }
+    
+    @Test
+    public void testFindOneWithLinks() { 
+        Element element = createElement("org");
+        element = elementRepository.save(element);
+        
+        Element linkedElement = createElement("person");
+        linkedElement = elementRepository.save(linkedElement);
+        
+        Link link = new Link();
+        link.setSource(element);
         link.setDestination(linkedElement);
         LinkProperty number = new LinkProperty();
         number.setTypeId(UUID.randomUUID().toString());
         number.setNumber((long) 23);
         link.addProperty(number);
-        parent.addLinkOutgoing(link);
-        elementRepository.save(parent);
+        link = linkRepository.save(link);
+        
+        simulateNewTransaction();
+        
+        Element elementResult = elementRepository.findOneWithLinks(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(1, elementResult.getLinksOutgoing().size());  
+        
+        assertEquals(1, elementResult.getLinksOutgoing().iterator().next().getProperties().size());  
+        assertEquals(1, elementResult.getLinkedDestinations().size());
     }
-
+    
+    @Test
+    public void testChangeParent() {
+        Element parent = createElement("org");
+        Element child = createElement("asset_group");
+        child.setParent(parent);
+        parent.addChild(child);
+        elementRepository.save(parent);
+        
+        Element elementResult = elementRepository.findOneWithLinks(child.getUuid());
+        assertNotNull(elementResult);
+        assertTrue(parent.getUuid().equals(elementResult.getParent().getUuid()));
+        
+        Element newParent = createElement("org");
+        newParent = elementRepository.save(newParent);
+        elementResult.setParent(newParent);
+        elementRepository.save(elementResult);
+        
+        elementResult = elementRepository.findOneWithLinks(child.getUuid());
+        assertNotNull(elementResult);
+        assertTrue(newParent.getUuid().equals(elementResult.getParent().getUuid()));
+    }
+    
+    @Test
+    public void testBigTree() {
+        Element element = createElement("org");
+        elementRepository.save(element);
+        int maxDepth = RandomUtils.nextInt(2)+1;
+        logger.debug("Creating tree, depth is: " + maxDepth + "...");
+        createChildren(element, maxDepth, 0);
+    }
+    
     private Element createElement(String typeId) {
         Element element = new Element();
         element.setTypeId(typeId);
@@ -90,39 +214,6 @@ public class ElementRepositoryTest {
         return element;
     }
     
-    @Test
-    public void testFindOne() { 
-        Element elementResult = elementRepository.findOne(parent.getUuid());
-        assertNotNull(elementResult);
-        assertEquals(4,elementResult.getProperties().size());
-    }
-    
-    @Test
-    public void testFindOneWithChildren() { 
-        Element elementResult = elementRepository.findOneWithChildren(parent.getUuid());
-        assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
-        assertEquals(1, elementResult.getChildren().size());
-    }
-    
-    @Test
-    public void testFindOneWithLinks() { 
-        Element elementResult = elementRepository.findOneWithLinks(parent.getUuid());
-        assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
-        assertEquals(1, elementResult.getLinksOutgoing().size());  
-        
-        assertEquals(1, elementResult.getLinksOutgoing().iterator().next().getProperties().size());  
-        assertEquals(1, elementResult.getLinkedDestinations().size());
-    }
-    
-    @Test
-    public void testBigTree() {
-        int maxDepth = RandomUtils.nextInt(2)+1;
-        logger.debug("Creating tree, depth is: " + maxDepth + "...");
-        createChildren(parent, maxDepth, 0);
-    }
-    
     private void createChildren(Element parent, int maxDepth, int depth) {
         if(depth>maxDepth) {
             return;
@@ -137,6 +228,16 @@ public class ElementRepositoryTest {
         depth++;
         for (Element child : parent.getChildren()) {
             createChildren(child, maxDepth, depth);
+        }
+    }
+    
+    /**
+     * Simulates new transaction (empties Entity Manager cache).
+     */
+    public void simulateNewTransaction() {
+        if(entityManager.isJoinedToTransaction()) {
+            entityManager.flush();
+            entityManager.clear();
         }
     }
 }

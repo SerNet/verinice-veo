@@ -1,8 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * Copyright (c) 2017 Daniel Murygin.
+ *
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Daniel Murygin dm[at]sernet[dot]de - initial API and implementation
+ ******************************************************************************/
 package org.veo.model;
 
 import java.io.Serializable;
@@ -33,16 +47,19 @@ public class Link implements Serializable {
     @Column(length = 255)
     private String title;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "source_uuid")
     private Element source;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Column(name="links_outgoing_order")
+    private int linksOutgoingOrder = 0;
+    
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "destination_uuid")
     private Element destination;
     
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    @OrderColumn
+    @OrderColumn()
     @JoinColumn(name = "link_uuid")
     private List<LinkProperty> properties;
     
