@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- Do not log Logback status on startup -->
+	<statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+	
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -12,7 +16,6 @@
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</Pattern>
         </encoder>
-
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
             <fileNamePattern>./v2020-persistence-test.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -24,11 +27,11 @@
 
     </appender>
 	
-    <logger name="org.veo" level="debug"/>
-
+    <logger name="org.veo" level="warn"/>
+    
     <root level="error">
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />
     </root>
-
+    
 </configuration>

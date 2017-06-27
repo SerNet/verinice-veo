@@ -63,7 +63,7 @@ import net._01001111.text.LoremIpsum;
  * @author Daniel Murygin
  */
 @RunWith(SpringRunner.class)
-@DataJpaTest
+@DataJpaTest(showSql=false)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class ElementRepositoryTest {
     
