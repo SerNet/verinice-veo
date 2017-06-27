@@ -38,6 +38,7 @@ public final class TitleAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(TitleAdapter.class);
 
+    // Title properties for ISO27000 elements
     public static final String ASSET_GROUP_TITLE = "assetgroup_name";
     public static final String ASSET_TITLE = "asset_name";
     public static final String AUDIT_GROUP_TITLE = "auditgroup_name";
@@ -75,10 +76,27 @@ public final class TitleAdapter {
     public static final String VULNERABILITY_GROUP_TITLE = "vulnerability_group_name";
     public static final String VULNERABILITY_TITLE = "vulnerability_name";
 
+    // Title properties for ITBP elements
+    public static final String RAUM_TITLE = "raum_name";
+    public static final String SERVER_TITLE = "server_name";
+    public static final String TKKOMPONENTE_TITLE = "tkkomponente_name";
+    public static final String NETZKOMPONENTE_TITLE = "netzkomponente_name";
+    public static final String ITVERBUND_TITLE = "itverbund_name";
+    public static final String CLIENT_TITLE = "client_name";
+    public static final String SONSTIT_TITLE = "sonstit_name";
+    public static final String PERSON_ISO_TITLE = "nachname";
+    public static final String GEBAEUDE_TITLE = "gebaeude_name";
+    public static final String BSTUMSETZUNG_TITLE = "bstumsetzung_name";
+    public static final String GEFAEHRDUNGSUMSETZUNG_TITLE = "gefaehrdungsumsetzung_titel";
+    public static final String MNUMS_TITLE = "mnums_id";
+    public static final String ANWENDUNG_TITLE = "anwendung_name";
+    
     protected static final Map<String, String> TITLE_KEY_MAP;
+    protected static final Map<String, String> TITLE_STATIC_MAP;
 
     static {
         TITLE_KEY_MAP = new HashMap<>();
+        // ISO27000 elements
         TITLE_KEY_MAP.put(ElementFactory.ASSET_GROUP_TYPE, ASSET_GROUP_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.ASSET_TYPE, ASSET_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.AUDIT_GROUP_TYPE, AUDIT_GROUP_TITLE);
@@ -99,7 +117,7 @@ public final class TitleAdapter {
         TITLE_KEY_MAP.put(ElementFactory.INTERVIEW_TYPE, INTERVIEW_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.ORGANIZATION_TYPE, ORGANIZATION_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.PERSON_GROUP_TYPE, PERSON_GROUP_TITLE);
-        TITLE_KEY_MAP.put(ElementFactory.PERSON_TYPE, PERSON_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.PERSON_ISO_TYPE, PERSON_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.PROCESS_GROUP_TYPE, PROCESS_GROUP_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.PROCESS_TYPE, PROCESS_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.RECORD_GROUP_TYPE, RECORD_GROUP_TITLE);
@@ -115,6 +133,37 @@ public final class TitleAdapter {
         TITLE_KEY_MAP.put(ElementFactory.THREAT_TYPE, THREAT_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.VULNERABILITY_GROUP_TYPE, VULNERABILITY_GROUP_TITLE);
         TITLE_KEY_MAP.put(ElementFactory.VULNERABILITY_TYPE, VULNERABILITY_TITLE);
+        // ITBP elements
+        TITLE_KEY_MAP.put(ElementFactory.ANWENDUNG_TYPE, ANWENDUNG_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.BSTUMSETZUNG_TYPE, BSTUMSETZUNG_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.CLIENT_TYPE, CLIENT_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.GEBAEUDE_TYPE, GEBAEUDE_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.GEFAEHRDUNGSUMSETZUNG_TYPE, GEFAEHRDUNGSUMSETZUNG_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.ITVERBUND_TYPE, ITVERBUND_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.MNUMS_TYPE, MNUMS_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.NETZKOMPONENTE_TYPE, NETZKOMPONENTE_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.PERSON_ITBP_TYPE, PERSON_ISO_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.RAUM_TYPE, RAUM_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.SERVER_TYPE, SERVER_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.SONSTIT_TYPE, SONSTIT_TITLE);
+        TITLE_KEY_MAP.put(ElementFactory.TKKOMPONENTE_TYPE, TKKOMPONENTE_TITLE);
+        // Titles which are the same for all elements of a specific type
+        TITLE_STATIC_MAP = new HashMap<>();
+        TITLE_STATIC_MAP.put(ElementFactory.GEBAEUDEKATEGORIE_TYPE, "Gebäude");
+        TITLE_STATIC_MAP.put(ElementFactory.SONSTITKATEGORIE_TYPE, "IT-Systeme: Netzkomponenten");
+        TITLE_STATIC_MAP.put(ElementFactory.SERVERKATEGORIE_TYPE, "IT-Systeme: Server");
+        TITLE_STATIC_MAP.put(ElementFactory.NETZKATEGORIE_TYPE, "Netzwerkverbindungen");
+        TITLE_STATIC_MAP.put(ElementFactory.RAEUMEKATEGORIE_TYPE, "Räume");
+        TITLE_STATIC_MAP.put(ElementFactory.TKKATEGORIE_TYPE, "IT-Systeme: TK-Komponenten");
+        TITLE_STATIC_MAP.put(ElementFactory.PERSONKATEGORIE_TYPE, "Mitarbeiter");
+        TITLE_STATIC_MAP.put(ElementFactory.ANWENDUNGENKATEGORIE_TYPE, "Anwendungen");
+        TITLE_STATIC_MAP.put(ElementFactory.CLIENTSKATEGORIE_TYPE, "IT-Systeme: Clients");
+        TITLE_STATIC_MAP.put(ElementFactory.RISKANALYSIS_TYPE, "Risikoanalyse");
+        TITLE_STATIC_MAP.put(ElementFactory.STELLUNGNAHMEDSB_TYPE, "Stelungname DSB");
+        TITLE_STATIC_MAP.put(ElementFactory.VERANTWORTLICHESTELLE_TYPE, "Verantwortlichestelle");
+        TITLE_STATIC_MAP.put(ElementFactory.VERARBEITUNGSANGABEN_TYPE, "Verarbeitungsangaben");
+        TITLE_STATIC_MAP.put(ElementFactory.DATENVERARBEITUNG_TYPE, "Datenverarbeitung");
+        TITLE_STATIC_MAP.put(ElementFactory.PERSONENGRUPPEN_TYPE, "Mitarbeiter");
     }
     
     private TitleAdapter() {
@@ -127,12 +176,25 @@ public final class TitleAdapter {
      * @return A title from a given SyncObject and a MapObjectType.
      */
     public static String getTitle(SyncObject syncObject, MapObjectType mapObject) {
-        String intKey = getTitleKey(mapObject.getIntId());
-        MapAttributeType mapAttribute = getMapAttribute(mapObject, intKey);
+        String id = mapObject.getIntId();
+        String titleKey = getTitleKey(id);
+        if(titleKey==null) {
+            return getStaticTitle(id);
+        }
+        MapAttributeType mapAttribute = getMapAttribute(mapObject, titleKey);
         return (mapAttribute == null) ? null : getAttribute(syncObject.getSyncAttribute(), mapAttribute.getExtId());
 
     }
 
+    private static String getStaticTitle(String id) {
+        String staticTitle = TITLE_STATIC_MAP.get(id);
+        if(staticTitle==null) {        
+            LOG.warn("No title property found for id {}. Using id as title.", id);
+            return id;
+        }
+        return staticTitle;
+    }
+    
     /**
      * @param typeId An object type id
      * @return The property type of the title for a given object type.
@@ -140,7 +202,7 @@ public final class TitleAdapter {
     public static String getTitleKey(String typeId) {
         String key = TITLE_KEY_MAP.get(typeId);
         if (key == null) {
-            LOG.warn("No title key found for type: {}", typeId);
+            LOG.info("No title key found for type: {}", typeId);
         }
         return key;
     }

@@ -12,6 +12,7 @@ import org.veo.model.Element;
  */
 public class ElementFactory {
 
+    // Type ids of ISO27000 elements from SNCA.xml
     public static final String ASSET_GROUP_TYPE = "assetgroup";
     public static final String ASSET_TYPE = "asset";
     public static final String AUDIT_GROUP_TYPE = "auditgroup";
@@ -32,7 +33,7 @@ public class ElementFactory {
     public static final String INTERVIEW_TYPE = "interview";
     public static final String ORGANIZATION_TYPE = "org";
     public static final String PERSON_GROUP_TYPE = "persongroup";
-    public static final String PERSON_TYPE = "person";
+    public static final String PERSON_ISO_TYPE = "person-iso";
     public static final String PROCESS_GROUP_TYPE = "process_group";
     public static final String PROCESS_TYPE = "process";
     public static final String RECORD_GROUP_TYPE = "record_group";
@@ -48,6 +49,37 @@ public class ElementFactory {
     public static final String THREAT_TYPE = "threat";
     public static final String VULNERABILITY_GROUP_TYPE = "vulnerability_group";
     public static final String VULNERABILITY_TYPE = "vulnerability";
+    
+    // Type ids of ITBP elements from SNCA.xml
+    public static final String RAUM_TYPE = "raum";
+    public static final String SERVER_TYPE = "server";
+    public static final String TKKOMPONENTE_TYPE = "tkkomponente";
+    public static final String NETZKOMPONENTE_TYPE = "netzkomponente";
+    public static final String ITVERBUND_TYPE = "itverbund";
+    public static final String CLIENT_TYPE = "client";
+    public static final String SONSTIT_TYPE = "sonstit";
+    public static final String PERSON_ITBP_TYPE = "person";
+    public static final String GEBAEUDE_TYPE = "gebaeude";
+    public static final String BSTUMSETZUNG_TYPE = "bstumsetzung";
+    public static final String GEFAEHRDUNGSUMSETZUNG_TYPE = "gefaehrdungsumsetzung";
+    public static final String MNUMS_TYPE = "mnums";
+    public static final String ANWENDUNG_TYPE = "anwendung";
+    public static final String GEBAEUDEKATEGORIE_TYPE = "gebaeudekategorie";
+    public static final String SONSTITKATEGORIE_TYPE = "sonstitkategorie";
+    public static final String SERVERKATEGORIE_TYPE = "serverkategorie";
+    public static final String NETZKATEGORIE_TYPE = "netzkategorie";
+    public static final String RAEUMEKATEGORIE_TYPE = "raeumekategorie";
+    public static final String TKKATEGORIE_TYPE = "tkkategorie";
+    public static final String PERSONKATEGORIE_TYPE = "personkategorie";
+    public static final String ANWENDUNGENKATEGORIE_TYPE = "anwendungenkategorie";
+    public static final String CLIENTSKATEGORIE_TYPE = "clientskategorie";
+    public static final String RISKANALYSIS_TYPE = "riskanalysis";
+    public static final String STELLUNGNAHMEDSB_TYPE = "stellungnahmedsb";
+    public static final String VERANTWORTLICHESTELLE_TYPE = "verantwortlichestelle";
+    public static final String VERARBEITUNGSANGABEN_TYPE = "verarbeitungsangaben";
+    public static final String DATENVERARBEITUNG_TYPE = "datenverarbeitung";
+    public static final String PERSONENGRUPPEN_TYPE = "personengruppen";
+
     
     private ElementFactory() {
     	// Do not instantiate this class, use final methods
