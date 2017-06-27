@@ -32,7 +32,7 @@ import javax.persistence.Lob;
 
 /**
  *
- * @author Daniel Murygin
+ * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

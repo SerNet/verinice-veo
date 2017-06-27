@@ -50,7 +50,6 @@ import org.veo.persistence.LinkRepository;
 import net._01001111.text.LoremIpsum;
 
 /**
- *
  * By default this test runs with in memory database h2
  * without any configuration.
  * Add this annotation:
@@ -60,6 +59,7 @@ import net._01001111.text.LoremIpsum;
  * 
  * See: 
  * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html
+ * 
  * @author Daniel Murygin
  */
 @RunWith(SpringRunner.class)
@@ -72,27 +72,120 @@ public class ElementRepositoryTest {
     @Autowired
     private ElementRepository elementRepository;
     
-    private Element parent;
+    @Autowired
+    private LinkRepository linkRepository;
+   
+    @PersistenceContext
+    protected EntityManager entityManager;
     
     private LoremIpsum loremIpsum = new LoremIpsum();
     
     @Before
     public void init() {
-        parent = createElement("org");
+        // empty         
+    }
+    
+    @Test
+    public void testSaveAndFindOne() { 
+        Element element = createElement("org");
+        elementRepository.save(element);
+        Element elementResult = elementRepository.findOne(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4,elementResult.getProperties().size());
+    }
+    
+    @Test
+    public void testSaveAndFindWithChildren() { 
+        Element element = createElement("org");
         Element child = createElement("asset_group");
-        parent.addChild(child);      
-        Element linkedElement = createElement("person");
+        child.setParent(element);
+        element.addChild(child);
+        elementRepository.save(element);
+        
+        Element elementResult = elementRepository.findOneWithChildren(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(1, elementResult.getChildren().size());
+    }
+    
+    @Test
+    public void testSaveAndFindLinkWithNewElement() {
+        Element element = createElement("org");
+        Element linkedElement = createElement("person"); 
         Link link = new Link();
-        link.setSource(parent);
+        link.setSource(element);
+        link.setDestination(linkedElement);
+        element.addLinkOutgoing(link);
+        elementRepository.save(element);
+        
+        Element elementResult = elementRepository.findOneWithLinks(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(1, elementResult.getLinksOutgoing().size());  
+        
+        assertEquals(1, elementResult.getLinksOutgoing().size());  
+        assertEquals(1, elementResult.getLinkedDestinations().size());
+    }
+    
+    @Test
+    public void testFindOneWithLinks() { 
+        Element element = createElement("org");
+        element = elementRepository.save(element);
+        
+        Element linkedElement = createElement("person");
+        linkedElement = elementRepository.save(linkedElement);
+        
+        Link link = new Link();
+        link.setSource(element);
         link.setDestination(linkedElement);
         LinkProperty number = new LinkProperty();
         number.setTypeId(UUID.randomUUID().toString());
         number.setNumber((long) 23);
         link.addProperty(number);
-        parent.addLinkOutgoing(link);
-        elementRepository.save(parent);
+        link = linkRepository.save(link);
+        
+        simulateNewTransaction();
+        
+        Element elementResult = elementRepository.findOneWithLinks(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(1, elementResult.getLinksOutgoing().size());  
+        
+        assertEquals(1, elementResult.getLinksOutgoing().iterator().next().getProperties().size());  
+        assertEquals(1, elementResult.getLinkedDestinations().size());
     }
-
+    
+    @Test
+    public void testChangeParent() {
+        Element parent = createElement("org");
+        Element child = createElement("asset_group");
+        child.setParent(parent);
+        parent.addChild(child);
+        elementRepository.save(parent);
+        
+        Element elementResult = elementRepository.findOneWithLinks(child.getUuid());
+        assertNotNull(elementResult);
+        assertTrue(parent.getUuid().equals(elementResult.getParent().getUuid()));
+        
+        Element newParent = createElement("org");
+        newParent = elementRepository.save(newParent);
+        elementResult.setParent(newParent);
+        elementRepository.save(elementResult);
+        
+        elementResult = elementRepository.findOneWithLinks(child.getUuid());
+        assertNotNull(elementResult);
+        assertTrue(newParent.getUuid().equals(elementResult.getParent().getUuid()));
+    }
+    
+    @Test
+    public void testBigTree() {
+        Element element = createElement("org");
+        elementRepository.save(element);
+        int maxDepth = RandomUtils.nextInt(2)+1;
+        logger.debug("Creating tree, depth is: " + maxDepth + "...");
+        createChildren(element, maxDepth, 0);
+    }
+    
     private Element createElement(String typeId) {
         Element element = new Element();
         element.setTypeId(typeId);
@@ -121,39 +214,6 @@ public class ElementRepositoryTest {
         return element;
     }
     
-    @Test
-    public void testFindOne() { 
-        Element elementResult = elementRepository.findOne(parent.getUuid());
-        assertNotNull(elementResult);
-        assertEquals(4,elementResult.getProperties().size());
-    }
-    
-    @Test
-    public void testFindOneWithChildren() { 
-        Element elementResult = elementRepository.findOneWithChildren(parent.getUuid());
-        assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
-        assertEquals(1, elementResult.getChildren().size());
-    }
-    
-    @Test
-    public void testFindOneWithLinks() { 
-        Element elementResult = elementRepository.findOneWithLinks(parent.getUuid());
-        assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
-        assertEquals(1, elementResult.getLinksOutgoing().size());  
-        
-        assertEquals(1, elementResult.getLinksOutgoing().iterator().next().getProperties().size());  
-        assertEquals(1, elementResult.getLinkedDestinations().size());
-    }
-    
-    @Test
-    public void testBigTree() {
-        int maxDepth = RandomUtils.nextInt(2)+1;
-        logger.debug("Creating tree, depth is: " + maxDepth + "...");
-        createChildren(parent, maxDepth, 0);
-    }
-    
     private void createChildren(Element parent, int maxDepth, int depth) {
         if(depth>maxDepth) {
             return;
@@ -168,6 +228,16 @@ public class ElementRepositoryTest {
         depth++;
         for (Element child : parent.getChildren()) {
             createChildren(child, maxDepth, depth);
+        }
+    }
+    
+    /**
+     * Simulates new transaction (empties Entity Manager cache).
+     */
+    public void simulateNewTransaction() {
+        if(entityManager.isJoinedToTransaction()) {
+            entityManager.flush();
+            entityManager.clear();
         }
     }
 }

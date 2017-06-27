@@ -36,7 +36,12 @@ public class LinkServiceImpl implements LinkService {
     @Override
     public Link save(String sourceId, String destinationId) {
         Element source = elementRepository.findOne(sourceId);
-        Element destination = elementRepository.findOne(destinationId);
+        Element destination = null;
+        if(sourceId.equals(destinationId)) {
+            destination = source;
+        } else {
+            destination = elementRepository.findOne(destinationId);
+        }
         return save(source, destination);
     }
 

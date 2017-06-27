@@ -47,16 +47,19 @@ public class Link implements Serializable {
     @Column(length = 255)
     private String title;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "source_uuid")
     private Element source;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Column(name="links_outgoing_order")
+    private int linksOutgoingOrder = 0;
+    
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "destination_uuid")
     private Element destination;
     
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    @OrderColumn
+    @OrderColumn()
     @JoinColumn(name = "link_uuid")
     private List<LinkProperty> properties;
     

@@ -87,7 +87,7 @@ public class Element implements Serializable {
     private Set<Element> children = new HashSet<>();
     
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @OrderColumn
+    @OrderColumn(name="links_outgoing_order", nullable=false)
     @JoinColumn(name = "source_uuid") 
     private List<Link> linksOutgoing = new LinkedList<>();
     
