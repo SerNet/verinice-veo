@@ -1,39 +1,70 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * Copyright (c) 2017 Daniel Murygin.
+ *
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Daniel Murygin dm[at]sernet[dot]de - initial API and implementation
+ ******************************************************************************/
 package org.veo.persistence.test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.UUID;
-import net._01001111.text.LoremIpsum;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apache.commons.lang.math.RandomUtils;
-import static org.junit.Assert.*;
-
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.veo.model.Element;
-import org.veo.persistence.PersistenceApplication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.model.Link;
 import org.veo.model.LinkProperty;
 import org.veo.persistence.ElementRepository;
+import org.veo.persistence.LinkRepository;
+
+import net._01001111.text.LoremIpsum;
 
 /**
  *
+ * By default this test runs with in memory database h2
+ * without any configuration.
+ * Add this annotation:
+ * @AutoConfigureTestDatabase(replace=Replace.NONE)
+ * to run this test with a database configured in 
+ * src/test/resources/application.properties
+ * 
+ * See: 
+ * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html
  * @author Daniel Murygin
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = {PersistenceApplication.class})
-//@Transactional
+@RunWith(SpringRunner.class)
+@DataJpaTest
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class ElementRepositoryTest {
     
     private final Logger logger = LoggerFactory.getLogger(ElementRepositoryTest.class.getName());
