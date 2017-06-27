@@ -1,0 +1,43 @@
+{
+	"elementType": "control",
+	"properties": [
+		{
+			"name": "control_desc",
+			"type": "TEXT"
+		},
+		{
+			"name": "control_implemented_explanation",
+			"type": "TEXT"
+		},
+		{
+			"name": "control_implemented",
+			"type": "SINGLEOPTION",
+			"propertyOptionDefinitions": [
+				{
+					"id": "control_implemented_yes",
+					"name": "Yes"
+				},
+				{
+					"id": "control_implemented_no",
+					"name": "No"
+				},
+				{
+					"id": "control_implemented_partly",
+					"name": "Partly"
+				},
+				{
+					"id": "control_implemented_na",
+					"name": "N.A."
+				}
+			]
+		},
+		{
+			"name": "control_implemented_objective",
+			"type": "TEXT"
+		},
+		{
+			"name": "control_selected",
+			"type": "BOOLEAN"
+		}
+	]
+}

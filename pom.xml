@@ -65,6 +65,12 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>v2020-model-schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
                 <version>4.3.9.RELEASE</version>
@@ -117,6 +123,7 @@
         <module>v2020-rest</module>
         <module>v2020-rest-client</module>
         <module>v2020-vna-import</module>
+        <module>v2020-model-schema</module>
     </modules>
     
     <dependencies>
