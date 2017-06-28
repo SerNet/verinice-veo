@@ -25,9 +25,8 @@ import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import org.veo.model.Element;
 
-
 /**
- *  A context to import one element and its properties from a VNA to database.
+ * A context to import one element and its properties from a VNA to database.
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */

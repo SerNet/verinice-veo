@@ -20,11 +20,10 @@ import org.veo.service.ie.VnaImport;
 import org.veo.util.time.TimeFormatter;
 
 /**
- * Spring Boot application class to run the import of a VNA file.
- * You should start this application with property
- * spring.main.web-environment=false
- * in your application.properties file to turn the starting of a web 
- * environment off.
+ * Spring Boot application class to run the import of a VNA file. You should
+ * start this application with property spring.main.web-environment=false in
+ * your application.properties file to turn the starting of a web environment
+ * off.
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
@@ -38,7 +37,7 @@ public class VnaImportApplication implements CommandLineRunner {
     private static final String JAR_NAME = "v2020-vna-import-<VERSION>.jar";
 
     public VnaImportApplication() {
-    	// Empty constructor
+        // Empty constructor
     }
 
     @Autowired
@@ -51,7 +50,8 @@ public class VnaImportApplication implements CommandLineRunner {
             // parse the command line arguments
             CommandLine line = parser.parse(CommandLineOptions.get(), args);
             String filePath = line.getOptionValue(CommandLineOptions.FILE);
-            String numberOfThreads = line.getOptionValue(CommandLineOptions.THREADS, CommandLineOptions.THREADS_DEFAULT);
+            String numberOfThreads = line.getOptionValue(CommandLineOptions.THREADS,
+                    CommandLineOptions.THREADS_DEFAULT);
             long start = System.currentTimeMillis();
             logFilePath(filePath);
             logNumberOfThreads(numberOfThreads);

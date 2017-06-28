@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  ******************************************************************************/
 
 /**
- *  A callable task to import one link from a VNA to database.
+ * A callable task to import one link from a VNA to database.
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
@@ -53,7 +53,9 @@ public class LinkImportThread implements Callable<LinkImportContext> {
         this.context = context;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.util.concurrent.Callable#call()
      */
     @Override
@@ -64,14 +66,16 @@ public class LinkImportThread implements Callable<LinkImportContext> {
                 LOG.debug("Link imported, start id: {}, end id: {}", context.getStartId(), context.getEndIdList());
             }
         } catch (Exception e) {
-            LOG.error("Error while importing link, start id: " + context.getStartId() + ", end id: " + context.getEndIdList(), e);
+            LOG.error("Error while importing link, start id: " + context.getStartId() + ", end id: "
+                    + context.getEndIdList(), e);
         }
         return context;
     }
 
     private void importLink() {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Start importing link, start id: {}, end id: {}...", context.getStartId(), context.getEndIdList());
+            LOG.debug("Start importing link, start id: {}, end id: {}...", context.getStartId(),
+                    context.getEndIdList());
         }
         importElementService.createLink(context.getStartId(), context.getEndIdList(), context.getType());
     }
