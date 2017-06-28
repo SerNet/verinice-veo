@@ -69,7 +69,11 @@
                 <artifactId>v2020-model-schema</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            
+            <dependency>
+			    <groupId>org.joinfaces</groupId>
+			    <artifactId>jsf-spring-boot-starter</artifactId>
+			    <version>2.4.0</version>
+			</dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
@@ -133,6 +137,22 @@
    			<artifactId>javax.servlet-api</artifactId>
     		<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>22.0</version>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1208-jdbc42-atlassian-hosted</version>
+		</dependency>
+		<dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.42</version>
+            <scope>runtime</scope>
+        </dependency>      
         </dependencies>
     </dependencyManagement>
 
@@ -145,6 +165,7 @@
         <module>v2020-rest-client</module>
         <module>v2020-vna-import</module>
         <module>v2020-model-schema</module>
+        <module>v2020-jsf</module>
     </modules>
     
     <dependencies>
