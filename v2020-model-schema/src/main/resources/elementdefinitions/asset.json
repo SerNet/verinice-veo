@@ -1,9 +1,9 @@
 {
 	"elementType": "asset",
 	"properties": [{"name":"asset_type", "type":"LABEL"},
-					{"name":"asset_bcm_mtpd", "type":"LABEL"},
-					{"name":"asset_bcm_rpo", "type":"LABEL"},
-					{"name":"asset_bcm_rto", "type":"LABEL"},
+					{"name":"asset_bcm_mtpd", "type":"LABEL", "group":"bcm"},
+					{"name":"asset_bcm_rpo", "type":"LABEL", "group":"bcm"},
+					{"name":"asset_bcm_rto", "type":"LABEL", "group":"bcm"},
 					{"name":"asset_value_confidentiality", "type":"NUMBER"}
 	]
 	

@@ -41,6 +41,7 @@ import org.veo.schema.LinkDefinitionResourceLoader;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
 import org.veo.schema.model.LinkDefinitions;
+import org.veo.schema.model.PropertyDefinition;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -70,7 +71,6 @@ public class ElementDefinitionFactory {
         return instance;
     }
     
-
     
     private void initElementMap(){
         try {
@@ -85,11 +85,6 @@ public class ElementDefinitionFactory {
         }
     }
     
-    public Set<LinkDefinition> getLinkDefinitionsByElementType(String elementType){
-        if (linkDefinitionMap != null && linkDefinitionMap.containsKey(elementType)){
-            return linkDefinitionMap.get(elementType);
-        } else return Collections.unmodifiableSet(new HashSet<LinkDefinition>(0));
-    }
     
     private void initLinkMap(){
         String jsonString;
@@ -111,9 +106,13 @@ public class ElementDefinitionFactory {
         } catch (IOException e) {
             logger.error("Error reading link-defintion-json-file from repository", e);
         }
-
     }
     
+    public Set<LinkDefinition> getLinkDefinitionsByElementType(String elementType){
+        if (linkDefinitionMap != null && linkDefinitionMap.containsKey(elementType)){
+            return linkDefinitionMap.get(elementType);
+        } else return Collections.unmodifiableSet(new HashSet<LinkDefinition>(0));
+    }
     
     private LinkDefinitions getLinkDefinitionsFromJson(String json){
         if(isValidJson(json, LinkDefinitions.class)){
@@ -125,7 +124,27 @@ public class ElementDefinitionFactory {
         }
     }
 
-
+    public Set<String> getAllGroupNames(){
+        Set<String> groups = new HashSet<>(128);
+        for(ElementDefinition elementDefinition : getElementDefinitions().values()){
+            groups.addAll(getGroupsForElementDefinition(elementDefinition));
+        }
+        return groups;
+    }
+    
+    public Set<String> getGroupsForElementDefinition(ElementDefinition elementDefinition){
+        return getGroupsForElementType(elementDefinition.getElementType());
+    }
+    
+    public Set<String> getGroupsForElementType(String elementType){
+        Set<String> groups = new HashSet<>(128);
+        if (elementDefinitionMap.containsKey(elementType)){
+            for (PropertyDefinition propertyDefinition : elementDefinitionMap.get(elementType).getProperties()){
+                groups.add(propertyDefinition.getGroup());
+            }
+        }
+        return groups;
+    }
     
     public Map<String, ElementDefinition> getElementDefinitions(){
         return elementDefinitionMap;

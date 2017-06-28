@@ -23,6 +23,8 @@ import java.util.List;
 
 public class PropertyDefinition {
     
+    public static final String DEFAULT_GROUP_NAME = "default_group";
+    
     public enum PropertyType{
         LABEL,  // one row
         TEXT,   // more than one row
@@ -36,7 +38,9 @@ public class PropertyDefinition {
     String name;
     PropertyType type;
     List<PropertyOptionDefinition> propertyOptionDefinitions;
-
+    String group;
+    
+    
     public String getName() {
         return name;
     }
@@ -59,6 +63,17 @@ public class PropertyDefinition {
 
     public void setPropertyOptionDefinitons(List<PropertyOptionDefinition> propertyOptionDefinitons) {
         this.propertyOptionDefinitions = propertyOptionDefinitons;
+    }
+
+    public String getGroup() {
+        if (group == null || group.length() == 0){
+            return DEFAULT_GROUP_NAME;
+        }
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
     
     
