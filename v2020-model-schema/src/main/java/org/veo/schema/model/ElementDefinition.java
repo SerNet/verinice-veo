@@ -17,13 +17,11 @@
  * Contributors:
  *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.schema;
+package org.veo.schema.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import org.veo.service.LinkDefinition;
 
 public class ElementDefinition {
     

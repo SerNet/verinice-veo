@@ -17,30 +17,24 @@
  * Contributors:
  *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.schema;
+package org.veo.schema.rest;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author sh
  *
  */
-public class PropertyOptionDefinition {
-    
-    String name, id;
+@SpringBootApplication
+@ComponentScan("org.veo.schema")
+@EntityScan("org.veo.schema.model")
+public class Application{
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 
 }

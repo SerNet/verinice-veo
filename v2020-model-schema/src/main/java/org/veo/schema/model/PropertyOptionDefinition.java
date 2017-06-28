@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Sebastian Hagedorn.
+ * Copyright (c) 2017 Sebastian Hagedorn
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -17,25 +17,15 @@
  * Contributors:
  *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.schema;
+package org.veo.schema.model;
 
-import java.util.List;
-
-public class PropertyDefinition {
+/**
+ * @author sh
+ *
+ */
+public class PropertyOptionDefinition {
     
-    public enum PropertyType{
-        LABEL,  // one row
-        TEXT,   // more than one row
-        NUMBER,
-        SINGLEOPTION,
-        MULTIOPTION,
-        DATE,
-        BOOLEAN
-    }
-    
-    String name;
-    PropertyType type;
-    List<PropertyOptionDefinition> propertyOptionDefinitions;
+    String name, id;
 
     public String getName() {
         return name;
@@ -45,22 +35,12 @@ public class PropertyDefinition {
         this.name = name;
     }
 
-    public PropertyType getType() {
-        return type;
+    public String getId() {
+        return id;
     }
 
-    public void setType(PropertyType type) {
-        this.type = type;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public List<PropertyOptionDefinition> getPropertyOptionDefinitons() {
-        return propertyOptionDefinitions;
-    }
-
-    public void setPropertyOptionDefinitons(List<PropertyOptionDefinition> propertyOptionDefinitons) {
-        this.propertyOptionDefinitions = propertyOptionDefinitons;
-    }
-    
-    
-    
 }

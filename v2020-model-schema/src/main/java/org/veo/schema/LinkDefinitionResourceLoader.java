@@ -17,26 +17,30 @@
  * Contributors:
  *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.service;
+package org.veo.schema;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * @author sh
  *
  */
-public class LinkDefinitions {
+public class LinkDefinitionResourceLoader {
     
-    private List<LinkDefinition> linkDefinitions;
-
-    public List<LinkDefinition> getLinkDefinitions() {
-        return linkDefinitions;
+    public static File getLinkDefinitionFile(){
+        ClassPathResource resource = new ClassPathResource("linkdefinitions/links.json");
+        try {
+            return resource.getFile();
+        } catch (IOException e) {
+            Logger.getLogger(ElementDefinitionResourceLoader.class).error("Error loading links.json file",e );
+        }
+        return null;
+        
     }
-
-    public void setLinkDefinitions(List<LinkDefinition> linkDefinitions) {
-        this.linkDefinitions = linkDefinitions;
-    }
-    
-    
 
 }
