@@ -22,38 +22,16 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-rest</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
     </dependencies>
 
-    <!-- Remove this when a main class available -->
     <build>
-        <plugins>
-            <!-- This module does not have a Spring boot main class -->
-            <!-- The layout is not JAR it is NONE -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <layout>NONE</layout>
-                    <excludes>
-                        <exclude>
-                            <groupId>javax</groupId>
-                            <artifactId>javaee-api</artifactId>
-                        </exclude>
-                      </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
+        
     </build>
 
     <profiles>

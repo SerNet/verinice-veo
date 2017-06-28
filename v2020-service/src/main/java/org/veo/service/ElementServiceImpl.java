@@ -5,6 +5,8 @@
  */
 package org.veo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.veo.model.Element;
@@ -23,6 +25,16 @@ public class ElementServiceImpl implements ElementService {
     @Override
     public Element save(Element element) {
         return elementRepository.save(element);
+    }
+    
+    @Override
+    public Element load(String uuid) {
+        return elementRepository.findOne(uuid);
+    }
+
+    @Override
+    public List<Element> loadAll(String typeId) {
+        return elementRepository.findByTypeId(typeId);
     }
     
 }

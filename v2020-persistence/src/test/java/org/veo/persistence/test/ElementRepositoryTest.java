@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -153,6 +154,17 @@ public class ElementRepositoryTest {
         
         assertEquals(1, elementResult.getLinksOutgoing().iterator().next().getProperties().size());  
         assertEquals(1, elementResult.getLinkedDestinations().size());
+    }
+    
+    @Test
+    public void testFindByTypeId() {
+        for (int i = 0; i < 10; i++) {
+            Element element = createElement("org");
+            element = elementRepository.save(element);
+        }
+        List<Element> elementList = elementRepository.findByTypeId("org");
+        assertNotNull(elementList);
+        assertEquals(10, elementList.size());
     }
     
     @Test

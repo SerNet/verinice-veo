@@ -5,6 +5,8 @@
  */
 package org.veo.persistence;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +29,6 @@ public interface ElementRepository extends CrudRepository<Element, String> {
             + "where e.uuid = :uuid")
     @EntityGraph(value = "linksWithProperties" , type=EntityGraphType.LOAD)
     public Element findOneWithLinks(@Param("uuid") String uuid);
+    
+    public List<Element> findByTypeId(@Param("typeId") String typeId);
 }

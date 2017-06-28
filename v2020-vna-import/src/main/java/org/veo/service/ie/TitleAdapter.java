@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Daniel Murygin.
+ * Copyright (c) 2017 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU Lesser General Public License 
@@ -32,6 +32,8 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType.MapAttributeType;
 
 /**
+ * Returns a title of a SyncObject from verinice archive VNAs.
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public final class TitleAdapter {
@@ -59,7 +61,7 @@ public final class TitleAdapter {
     public static final String INTERVIEW_TITLE = "interview_name";
     public static final String ORGANIZATION_TITLE = "org_name";
     public static final String PERSON_GROUP_TITLE = "persongroup_name";
-    public static final String PERSON_TITLE = "person_name";
+    public static final String PERSON_TITLE = "person-iso_surname";
     public static final String PROCESS_GROUP_TITLE = "process_group_name";
     public static final String PROCESS_TITLE = "process_name";
     public static final String RECORD_GROUP_TITLE = "record_group_name";

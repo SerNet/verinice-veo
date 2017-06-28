@@ -5,6 +5,8 @@
  */
 package org.veo.service;
 
+import java.util.List;
+
 import org.veo.model.Element;
 
 /**
@@ -14,4 +16,8 @@ import org.veo.model.Element;
 public interface ElementService {
     
     public Element save(Element element);
+
+    public Element load(String uuid);
+    
+    public List<Element> loadAll(String typeId);
 }
