@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.veo.schema.ElementDefinition;
+import org.veo.schema.model.ElementDefinition;
+import org.veo.schema.model.LinkDefinition;
 import org.veo.service.ElementDefinitionFactory;
-import org.veo.service.LinkDefinition;
 
 /**
  * @author sh
@@ -49,7 +49,7 @@ public class ElementFactoryTest {
 
 
 
-        ElementDefinition asset = ElementDefinitionFactory.getInstance().getElementDefiniton(TEST_ELEMENT_TYPE);
+        ElementDefinition asset = ElementDefinitionFactory.getInstance().getElementDefinition(TEST_ELEMENT_TYPE);
         assertTrue(asset instanceof ElementDefinition);
         assertTrue(asset.getElementType().equals(TEST_ELEMENT_TYPE));
         assertTrue(asset.getId() == 0);

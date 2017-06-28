@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *  A context to import one link from a VNA to database.
+ * A context to import one link from a VNA to database.
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */

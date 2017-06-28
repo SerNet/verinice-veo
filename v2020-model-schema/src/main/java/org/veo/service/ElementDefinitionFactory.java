@@ -19,12 +19,10 @@
  ******************************************************************************/
 package org.veo.service;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,22 +33,27 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
-import org.veo.modelschema.test.ElementFactoryTest;
-import org.veo.schema.ElementDefinition;
+import org.veo.schema.ElementDefinitionResourceLoader;
+import org.veo.schema.LinkDefinitionResourceLoader;
+import org.veo.schema.model.ElementDefinition;
+import org.veo.schema.model.LinkDefinition;
+import org.veo.schema.model.LinkDefinitions;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 public class ElementDefinitionFactory {
     
     private static final ElementDefinitionFactory instance = new ElementDefinitionFactory();
     private Gson gson;
     
-    private static final String ELEMENT_DEFINITION_REPOSITORY = "/org/veo/model/elementdefinitions";
-    private static final String LINK_DEFINITIONS = "/org/veo/model/elementlinks/links.json";
+    private static final String ELEMENT_DEFINITION_REPOSITORY = "org/veo/model/elementdefinitions/";
+    private static final String LINK_DEFINITIONS = "org/veo/model/elementlinks/links.json";
     
-    private final Logger logger = LoggerFactory.getLogger(ElementFactoryTest.class);
+    private final Logger logger = LoggerFactory.getLogger(ElementDefinitionFactory.class);
     
     private Map<String, ElementDefinition> elementDefinitionMap;
     private Map<String, Set<LinkDefinition>> linkDefinitionMap;
@@ -67,21 +70,11 @@ public class ElementDefinitionFactory {
         return instance;
     }
     
-    private boolean isValidJson(String json, Class<?> clazz){
-        try{
-            gson.fromJson(json, clazz);
-            return true;
-        } catch (JsonSyntaxException e) {
-            return false;
-        }
-    }
+
     
     private void initElementMap(){
-        File folder;
         try {
-            folder = new ClassPathResource(ELEMENT_DEFINITION_REPOSITORY).getFile();
-            Collection<File> jsonFiles = FileUtils.listFiles(folder,  new String[] { "json"}, true);
-            for(File jsonFile : jsonFiles){
+            for(File jsonFile : ElementDefinitionResourceLoader.getElementDefinitions()){
                 InputStream in = FileUtils.openInputStream(jsonFile);
                 String jsonString = IOUtils.toString(in);
                 ElementDefinition definition = getElementDefinitonFromJson(jsonString);
@@ -101,7 +94,7 @@ public class ElementDefinitionFactory {
     private void initLinkMap(){
         String jsonString;
         try {
-            File linkJson = new ClassPathResource(LINK_DEFINITIONS).getFile();
+            File linkJson = LinkDefinitionResourceLoader.getLinkDefinitionFile();
             InputStream in = FileUtils.openInputStream(linkJson);
             jsonString = IOUtils.toString(in);
             LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
@@ -132,21 +125,32 @@ public class ElementDefinitionFactory {
         }
     }
 
+
+    
+    public Map<String, ElementDefinition> getElementDefinitions(){
+        return elementDefinitionMap;
+    }
+    
+    public ElementDefinition getElementDefinition(String elementType){
+        if (elementDefinitionMap.containsKey(elementType)) {
+            return elementDefinitionMap.get(elementType);
+        }
+        return null;
+    }
+    
     private ElementDefinition getElementDefinitonFromJson(String json){
         if(isValidJson(json, ElementDefinition.class)){
             return gson.fromJson(json, ElementDefinition.class);
         } else return null;
     }
     
-    public Map<String, ElementDefinition> getElementDefinitions(){
-        return elementDefinitionMap;
-    }
-    
-    public ElementDefinition getElementDefiniton(String elementType){
-        if (elementDefinitionMap.containsKey(elementType)) {
-            return elementDefinitionMap.get(elementType);
+    private boolean isValidJson(String json, Class<?> clazz){
+        try{
+            gson.fromJson(json, clazz);
+            return true;
+        } catch (JsonSyntaxException e) {
+            return false;
         }
-        return null;
     }
     
     

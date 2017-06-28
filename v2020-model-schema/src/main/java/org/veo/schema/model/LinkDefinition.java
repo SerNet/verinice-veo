@@ -17,11 +17,9 @@
  * Contributors:
  *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.service;
+package org.veo.schema.model;
 
 import java.util.List;
-
-import org.veo.schema.PropertyDefinition;
 
 /**
  * @author sh
