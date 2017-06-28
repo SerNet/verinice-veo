@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/poseidon/layout.xhtml">
+	<ui:define name="content">
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-6">
+				<h:form>
+				
+					<p:panel header="tree in a panel">
+						<p:tree id="tree" value="#{treeBean.root}" var="node"
+							animate="true" dynamic="true" cache="false" selectionMode="single" 
+							selection="#{treeBean.singleSelectedNode}">
+							<p:treeNode expandedIcon="ui-icon ui-icon-folder-open"
+								collapsedIcon="ui-icon ui-icon-folder-collapsed">
+								<h:outputText value="#{node}" />
+							</p:treeNode>
+							<p:ajax event="expand" listener="#{treeBean.onNodeExpand}" />
+							<p:ajax event="select" listener="#{treeBean.onNodeSelect}" />
+							<p:ajax event="unselect" listener="#{treeBean.onNodeUnSelect}" />
+						</p:tree>
+					</p:panel>
+
+					<p:panel header="treegrid in a panel">
+						<p:treeTable id="treetable" value="#{treeBean.root}" var="node"
+							animate="true" dynamic="true" cache="false" selectionMode="single"
+							selection="#{treeBean.singleSelectedNode}">
+							<p:column>
+								<f:facet name="header">uuid</f:facet>
+								<h:outputText value="#{node.uuid}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">Name</f:facet>
+								<h:outputText value="#{node.title}" />
+							</p:column>
+							
+							<p:ajax event="expand" listener="#{treeBean.onNodeExpand}" />
+							<p:ajax event="select" listener="#{treeBean.onNodeSelect}" />
+							<p:ajax event="unselect" listener="#{treeBean.onNodeUnSelect}" />
+						</p:treeTable>
+					</p:panel>
+
+				</h:form>
+			</div>
+			<div class="ui-g-6">
+				<p:panel header="edit stuff">
+					<h:form>
+
+
+					</h:form>
+				</p:panel>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>
+</html>
