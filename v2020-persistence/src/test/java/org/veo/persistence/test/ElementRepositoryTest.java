@@ -159,10 +159,10 @@ public class ElementRepositoryTest {
     @Test
     public void testFindByTypeId() {
         for (int i = 0; i < 10; i++) {
-            Element element = createElement("org");
+            Element element = createElement("control");
             element = elementRepository.save(element);
         }
-        List<Element> elementList = elementRepository.findByTypeId("org");
+        List<Element> elementList = elementRepository.findByTypeId("control");
         assertNotNull(elementList);
         assertEquals(10, elementList.size());
     }
