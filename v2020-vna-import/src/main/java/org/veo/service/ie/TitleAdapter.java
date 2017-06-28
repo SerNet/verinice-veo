@@ -92,7 +92,7 @@ public final class TitleAdapter {
     public static final String GEFAEHRDUNGSUMSETZUNG_TITLE = "gefaehrdungsumsetzung_titel";
     public static final String MNUMS_TITLE = "mnums_id";
     public static final String ANWENDUNG_TITLE = "anwendung_name";
-    
+
     protected static final Map<String, String> TITLE_KEY_MAP;
     protected static final Map<String, String> TITLE_STATIC_MAP;
 
@@ -167,20 +167,22 @@ public final class TitleAdapter {
         TITLE_STATIC_MAP.put(ElementFactory.DATENVERARBEITUNG_TYPE, "Datenverarbeitung");
         TITLE_STATIC_MAP.put(ElementFactory.PERSONENGRUPPEN_TYPE, "Mitarbeiter");
     }
-    
+
     private TitleAdapter() {
-    	// do not instantiate this class, use public final methods
+        // do not instantiate this class, use public final methods
     }
 
     /**
-     * @param syncObject An object from a VNA
-     * @param mapObject A map object element from a VNA
+     * @param syncObject
+     *            An object from a VNA
+     * @param mapObject
+     *            A map object element from a VNA
      * @return A title from a given SyncObject and a MapObjectType.
      */
     public static String getTitle(SyncObject syncObject, MapObjectType mapObject) {
         String id = mapObject.getIntId();
         String titleKey = getTitleKey(id);
-        if(titleKey==null) {
+        if (titleKey == null) {
             return getStaticTitle(id);
         }
         MapAttributeType mapAttribute = getMapAttribute(mapObject, titleKey);
@@ -190,15 +192,16 @@ public final class TitleAdapter {
 
     private static String getStaticTitle(String id) {
         String staticTitle = TITLE_STATIC_MAP.get(id);
-        if(staticTitle==null) {        
+        if (staticTitle == null) {
             LOG.warn("No title property found for id {}. Using id as title.", id);
             return id;
         }
         return staticTitle;
     }
-    
+
     /**
-     * @param typeId An object type id
+     * @param typeId
+     *            An object type id
      * @return The property type of the title for a given object type.
      */
     public static String getTitleKey(String typeId) {
@@ -210,9 +213,11 @@ public final class TitleAdapter {
     }
 
     /**
-     * @param syncAttributeList A list of sync attributes from a VNA
+     * @param syncAttributeList
+     *            A list of sync attributes from a VNA
      * @param propertyId
-     * @return The value of the property with the given id in the list of attributes
+     * @return The value of the property with the given id in the list of
+     *         attributes
      */
     public static String getAttribute(List<SyncAttribute> syncAttributeList, String propertyId) {
         for (SyncAttribute attribute : syncAttributeList) {

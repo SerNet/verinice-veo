@@ -49,7 +49,7 @@ public class ElementFactory {
     public static final String THREAT_TYPE = "threat";
     public static final String VULNERABILITY_GROUP_TYPE = "vulnerability_group";
     public static final String VULNERABILITY_TYPE = "vulnerability";
-    
+
     // Type ids of ITBP elements from SNCA.xml
     public static final String RAUM_TYPE = "raum";
     public static final String SERVER_TYPE = "server";
@@ -80,15 +80,14 @@ public class ElementFactory {
     public static final String DATENVERARBEITUNG_TYPE = "datenverarbeitung";
     public static final String PERSONENGRUPPEN_TYPE = "personengruppen";
 
-    
     private ElementFactory() {
-    	// Do not instantiate this class, use final methods
+        // Do not instantiate this class, use final methods
     }
-    
+
     public static Element newInstance(String typeId) {
-    	Element element = new Element();
-    	element.setTypeId(typeId);
-    	return element;
+        Element element = new Element();
+        element.setTypeId(typeId);
+        return element;
     }
-    
+
 }

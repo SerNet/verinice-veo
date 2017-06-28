@@ -23,9 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A context of for the import of a VNA which holds a map
- * of ext-ids from a VNA and associated UUID from the elements
- * in the database.
+ * A context of for the import of a VNA which holds a map of ext-ids from a VNA
+ * and associated UUID from the elements in the database.
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */

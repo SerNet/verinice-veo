@@ -37,7 +37,8 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType.MapAttributeType;
 
 /**
- * A callable task to import one element and its properties from a VNA to database.
+ * A callable task to import one element and its properties from a VNA to
+ * database.
  * 
  * @see VnaImport
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -89,10 +90,10 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
         Element element = ElementFactory.newInstance(mapObject.getIntId());
         element.setTitle(TitleAdapter.getTitle(syncObject, mapObject));
         element.setParent(context.getParent());
-        if(context.getParent()==null) {
-        	element.setScope(element);
+        if (context.getParent() == null) {
+            element.setScope(element);
         } else {
-        	element.setScope(context.getParent().getScope());
+            element.setScope(context.getParent().getScope());
         }
         importProperties(syncObject.getSyncAttribute(), mapObject, element);
         importElementService.create(element);
@@ -106,9 +107,9 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
                 MapAttributeType mapAttribute = getMapAttribute(mapObject, name);
                 String propertyId = name;
                 if (mapAttribute != null) {
-                	propertyId = mapAttribute.getIntId();           
+                    propertyId = mapAttribute.getIntId();
                 } else {
-                    LOG.warn("MapAttributeType not found in VNA, using ext-id: {}", name);               
+                    LOG.warn("MapAttributeType not found in VNA, using ext-id: {}", name);
                 }
                 element.addProperty(createProperty(syncAttribute, propertyId));
             }
@@ -120,22 +121,22 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
         ElementProperty property = new ElementProperty();
         property.setTypeId(propertyTypeId);
         Object value = convertValue(valueList);
-        if(value instanceof Date) {
+        if (value instanceof Date) {
             property.setDate((Date) value);
         }
-        if(value instanceof String) {
+        if (value instanceof String) {
             String stringValue = (String) value;
-            if(stringValue.length()>255) {
+            if (stringValue.length() > 255) {
                 property.setText(stringValue);
             } else {
                 property.setLabel(stringValue);
             }
-        }    
-        if(value instanceof Integer) {
+        }
+        if (value instanceof Integer) {
             property.setNumber((long) value);
         }
-           
-        if(value instanceof Long) {
+
+        if (value instanceof Long) {
             property.setNumber((long) value);
         }
         return property;

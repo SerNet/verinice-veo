@@ -53,20 +53,12 @@ public final class CommandLineOptions {
     }
 
     private static Option createFileOption() {
-    	return Option.builder("f")
-        .hasArg()
-        .required()
-        .desc("use given VNA file (required)")
-        .longOpt(FILE)
-        .build();
+        return Option.builder("f").hasArg().required().desc("use given VNA file (required)").longOpt(FILE).build();
     }
 
     private static Option createNumberOfThreadsOption() {
-    	return Option.builder("t")
-        .hasArg()
-        .desc("number of threads (default: " + THREADS_DEFAULT + ")")
-        .longOpt(THREADS)
-    	.build();
+        return Option.builder("t").hasArg().desc("number of threads (default: " + THREADS_DEFAULT + ")")
+                .longOpt(THREADS).build();
     }
 
     private static Option createHelpOption() {

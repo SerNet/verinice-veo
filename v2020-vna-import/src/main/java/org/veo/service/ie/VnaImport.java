@@ -49,15 +49,12 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType;
  * 
  * Wire this service to your class to import a VNA:
  * 
- * @Autowired
- * VnaImport vnaImport;
+ * @Autowired VnaImport vnaImport;
  * 
- * @Override
- * public void run(String... args) throws Exception {
- *    byte[] vnaFileData = Files.readAllBytes(Paths.get(filePath));
- *    vnaImport.setNumberOfThreads(Integer.valueOf(numberOfThreads));
- *    vnaImport.importVna(vnaFileData);
- * }
+ * @Override public void run(String... args) throws Exception { byte[]
+ *           vnaFileData = Files.readAllBytes(Paths.get(filePath));
+ *           vnaImport.setNumberOfThreads(Integer.valueOf(numberOfThreads));
+ *           vnaImport.importVna(vnaFileData); }
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
@@ -70,7 +67,7 @@ public class VnaImport {
     private static final int SHUTDOWN_TIMEOUT_IN_SECONDS = 60;
 
     private int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
-    
+
     private CompletionService<ObjectImportContext> objectImportCompletionService;
     private CompletionService<LinkImportContext> linkImportCompletionService;
     private ImportContext importContext;
@@ -115,7 +112,8 @@ public class VnaImport {
     }
 
     // @Transactional(isolation=Isolation.DEFAULT,propagation=Propagation.REQUIRED)
-    private void importObjectList(Element parent, List<SyncObject> syncObjectList, List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
+    private void importObjectList(Element parent, List<SyncObject> syncObjectList,
+            List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
                 ObjectImportThread importThread = objectImportThreadFactory.getObject();
@@ -131,7 +129,8 @@ public class VnaImport {
             ObjectImportContext objectContext = objectImportCompletionService.take().get();
             importContext.addObject(objectContext);
             if (objectContext != null) {
-                importObjectList(objectContext.getNode(), objectContext.getSyncObject().getChildren(), objectContext.getMapObjectTypeList());
+                importObjectList(objectContext.getNode(), objectContext.getSyncObject().getChildren(),
+                        objectContext.getMapObjectTypeList());
             }
         }
         number += n;
@@ -175,7 +174,8 @@ public class VnaImport {
     }
 
     private List<SyncObject> getSyncObjectList(Vna vna) {
-        if (vna.getXml() != null && vna.getXml().getSyncData() != null && vna.getXml().getSyncData().getSyncObject() != null) {
+        if (vna.getXml() != null && vna.getXml().getSyncData() != null
+                && vna.getXml().getSyncData().getSyncObject() != null) {
             return vna.getXml().getSyncData().getSyncObject();
         } else {
             return Collections.emptyList();
@@ -183,7 +183,8 @@ public class VnaImport {
     }
 
     private List<SyncLink> getSyncLinkList(Vna vna) {
-        if (vna.getXml() != null && vna.getXml().getSyncData() != null && vna.getXml().getSyncData().getSyncLink() != null) {
+        if (vna.getXml() != null && vna.getXml().getSyncData() != null
+                && vna.getXml().getSyncData().getSyncLink() != null) {
             return vna.getXml().getSyncData().getSyncLink();
         } else {
             return Collections.emptyList();
@@ -191,7 +192,8 @@ public class VnaImport {
     }
 
     private List<MapObjectType> getMapObjectTypeList(Vna vna) {
-        if (vna.getXml() != null && vna.getXml().getSyncMapping() != null && vna.getXml().getSyncMapping().getMapObjectType() != null) {
+        if (vna.getXml() != null && vna.getXml().getSyncMapping() != null
+                && vna.getXml().getSyncMapping().getMapObjectType() != null) {
             return vna.getXml().getSyncMapping().getMapObjectType();
         } else {
             return Collections.emptyList();
