@@ -22,7 +22,8 @@ package org.veo.schema;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -31,12 +32,14 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class LinkDefinitionResourceLoader {
     
+    private static final Logger log = LoggerFactory.getLogger(LinkDefinitionResourceLoader.class);
+    
     public static File getLinkDefinitionFile(){
         ClassPathResource resource = new ClassPathResource("linkdefinitions/links.json");
         try {
             return resource.getFile();
         } catch (IOException e) {
-            Logger.getLogger(ElementDefinitionResourceLoader.class).error("Error loading links.json file",e );
+            log.error("Error loading links.json file",e );
         }
         return null;
         
