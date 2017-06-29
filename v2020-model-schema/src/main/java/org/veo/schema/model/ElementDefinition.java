@@ -21,7 +21,6 @@ package org.veo.schema.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -30,11 +29,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ElementDefinition implements Serializable{
 
     private static final long serialVersionUID = 20170629135134L;
-    
-    private int id;
-    private int parentId;
-    
-    private List<String> tags;
     
     private String elementType;
     
@@ -51,8 +45,31 @@ public class ElementDefinition implements Serializable{
             )
             
     {
+        this.properties = new HashSet<>();
+        properties.addAll(getDefaultProperties());
         this.elementType = elementType;
-        this.properties = properties;
+        this.properties.addAll(properties);
+    }
+    
+    /**
+     * every tree element of veo has to provide the three properties
+     * - id (primary key of the element, not null)
+     * - parentId (primary key of the parent element, not null)
+     * - tags (tags of element, nullable)
+     * @return
+     */
+    private Set<PropertyDefinition> getDefaultProperties(){
+        Set<PropertyDefinition> properties = new HashSet<>(3);
+        PropertyDefinition definition = new PropertyDefinition("id", 
+                PropertyDefinition.PropertyType.NUMBER, null, null);
+        properties.add(definition);
+        definition = new PropertyDefinition("parentId",
+                PropertyDefinition.PropertyType.NUMBER, null, null);
+        properties.add(definition);
+        definition = new PropertyDefinition("tags",
+                PropertyDefinition.PropertyType.LABEL, null, null);
+        properties.add(definition);
+        return properties;
     }
     
     public void addProperty(PropertyDefinition property){
@@ -66,30 +83,6 @@ public class ElementDefinition implements Serializable{
             }
         }
         return null;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
     }
 
     public String getElementType() {
