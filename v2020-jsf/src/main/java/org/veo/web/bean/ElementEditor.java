@@ -22,6 +22,9 @@ package org.veo.web.bean;
 import java.util.Collections;
 import java.util.List;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 
@@ -31,9 +34,8 @@ import com.google.common.collect.Lists;
  * @author urszeidler
  *
  */
-//@Component("element-model-editor")
-//@ManagedBean(name="elementEditor-model")
-//@SessionScoped
+@ManagedBean(name="elementEditor-model")
+@SessionScoped
 public class ElementEditor {
 //    @Autowired
     private TreeBean tree;

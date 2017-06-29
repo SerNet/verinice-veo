@@ -42,7 +42,7 @@ import org.veo.web.bean.model.PrimefacesTreeNode;
  *
  */
 // @Component
-@ManagedBean(name = "treeBean")
+@ManagedBean(name = "schemaTreeBean")
 @SessionScoped
 public class SchemaTreeBean {
     private static final Logger logger = LoggerFactory.getLogger(SchemaTreeBean.class.getName());
@@ -61,8 +61,8 @@ public class SchemaTreeBean {
         final Element element = new Element();
         root = new PrimefacesTreeNode<>(element);
 
-        List<ElementDefinition> elementTypes = schemaService.getElementTypes();
         definitionMap = new HashMap<>();
+        List<ElementDefinition> elementTypes = schemaService.getElementTypes();
 
         elementTypes.stream().forEach(e -> {
             definitionMap.put(e.getElementType(), e);

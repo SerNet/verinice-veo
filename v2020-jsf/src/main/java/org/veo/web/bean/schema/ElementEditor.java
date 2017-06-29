@@ -33,7 +33,7 @@ import org.veo.schema.model.PropertyDefinition.PropertyType;
  * @author urszeidler
  *
  */
-@ManagedBean
+@ManagedBean(name = "propertyDefinitionEditor")
 @SessionScoped
 public class ElementEditor {
 
@@ -106,8 +106,7 @@ public class ElementEditor {
         }
     }
 
-    // @Autowired
-    @ManagedProperty("#{treeBean}")
+    @ManagedProperty("#{schemaTreeBean}")
     private SchemaTreeBean tree;
 
     public PropertyEditor buildEditor(PropertyDefinition input) {

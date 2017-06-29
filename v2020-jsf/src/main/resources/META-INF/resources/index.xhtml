@@ -21,7 +21,7 @@
 							selectionMode="single" selection="#{treeBean.singleSelectedNode}">
 							<p:treeNode expandedIcon="ui-icon ui-icon-folder-open"
 								collapsedIcon="ui-icon ui-icon-folder-collapsed">
-								<h:outputText value="#{node.elementType}" />
+								<h:outputText value="#{node.title}" />
 							</p:treeNode>
 							<p:ajax event="select" listener="#{treeBean.onNodeSelect}"
 								update=":editForm" />

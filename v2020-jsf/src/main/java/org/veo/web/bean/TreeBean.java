@@ -35,8 +35,10 @@ import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.model.Element;
 import org.veo.persistence.ElementRepository;
+import org.veo.schema.model.ElementDefinition;
 import org.veo.web.util.NumericStringComparator;
 
 /**
@@ -46,7 +48,7 @@ import org.veo.web.util.NumericStringComparator;
  *
  */
 //@Component("Element-Tree-model")
-@ManagedBean
+@ManagedBean(name = "treeBean")
 @SessionScoped
 public class TreeBean {
 
@@ -57,24 +59,24 @@ public class TreeBean {
     private ElementRepository elementRepository;
     @ManagedProperty("#{applicationBean.cacheService}")
     private CacheService cacheService;
-    
+    @ManagedProperty("#{applicationBean.schemaService}")
+    private ModelSchemaRestClient schemaService;
     
     private PrimefacesTreeNode root;
     private PrimefacesTreeNode singleSelectedTreeNode;
+    private HashMap<String, ElementDefinition> definitionMap;
 
     public void onNodeExpand(NodeExpandEvent event) {
         TreeNode parent = event.getTreeNode();
         if (logger.isDebugEnabled()) {
             logger.debug("onNodeExpand: " + parent.getData());
         }
-
     }
 
     public void onNodeSelect(NodeSelectEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("Node Data ::" + event.getTreeNode().getData() + " :: Selected");
         }
-
     }
 
     public void onNodeUnSelect(NodeUnselectEvent event) {
@@ -145,7 +147,14 @@ public class TreeBean {
         if (logger.isDebugEnabled()) {
             logger.debug("Load Data stop: " + (System.currentTimeMillis() - currentTimeMillis));
         }
+        
+        definitionMap = new HashMap<>();
+        List<ElementDefinition> elementTypes = schemaService.getElementTypes();
 
+        elementTypes.stream().forEach(e -> {
+            definitionMap.put(e.getElementType(), e);
+        });
+        
         HashMap<Element, PrimefacesTreeNode> hashMap = new HashMap<>();
         Set<Element> elements = new HashSet<>(50);
         findAll.forEach(t -> {
@@ -209,5 +218,14 @@ public class TreeBean {
     public void setElementRepository(ElementRepository elementRepository) {
         this.elementRepository = elementRepository;
     }
+
+    public void setSchemaService(ModelSchemaRestClient schemaService) {
+        this.schemaService = schemaService;
+    }
+
+    public void setCacheService(CacheService cacheService) {
+        this.cacheService = cacheService;
+    }
+
 
 }
