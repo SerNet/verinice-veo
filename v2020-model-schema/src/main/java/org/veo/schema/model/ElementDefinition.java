@@ -19,13 +19,17 @@
  ******************************************************************************/
 package org.veo.schema.model;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ElementDefinition {
+public class ElementDefinition implements Serializable{
+
+    private static final long serialVersionUID = 20170629135134L;
     
     private int id;
     private int parentId;
@@ -34,16 +38,16 @@ public class ElementDefinition {
     
     private String elementType;
     
-    private List<PropertyDefinition> properties;   
+    private Set<PropertyDefinition> properties;   
     
-    private List<LinkDefinition> outgoingLinks;
+    private Set<LinkDefinition> outgoingLinks;
     
     @JsonCreator
     public ElementDefinition(
             @JsonProperty(value= "elementType", 
                 required = true) final String elementType,
             @JsonProperty(value= "properties",
-            required = true) final List<PropertyDefinition> properties
+            required = true) final Set<PropertyDefinition> properties
             )
             
     {
@@ -96,27 +100,57 @@ public class ElementDefinition {
         this.elementType = elementType;
     }
 
-    public List<PropertyDefinition> getProperties() {
+    public Set<PropertyDefinition> getProperties() {
         return properties;
     }
 
-    public void setProperties(List<PropertyDefinition> properties) {
+    public void setProperties(Set<PropertyDefinition> properties) {
         this.properties = properties;
     }
 
-    public List<LinkDefinition> getOutgoingLinks() {
+    public Set<LinkDefinition> getOutgoingLinks() {
         return outgoingLinks;
     }
 
-    public void setOutgoingLinks(List<LinkDefinition> outgoingLinks) {
+    public void setOutgoingLinks(Set<LinkDefinition> outgoingLinks) {
         this.outgoingLinks = outgoingLinks;
     }
     
     public void addOutgoingLink(LinkDefinition linkDefinition) {
         if(this.outgoingLinks == null){
-            outgoingLinks = new ArrayList<>(1024);
+            outgoingLinks = new HashSet<>(1024);
         }
         outgoingLinks.add(linkDefinition);
     }
     
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((elementType == null) ? 0 : elementType.hashCode());
+        result = prime * result + ((properties == null) ? 0 : properties.hashCode());
+        return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ElementDefinition other = (ElementDefinition) obj;
+        if (elementType == null) {
+            if (other.elementType != null)
+                return false;
+        } else if (!elementType.equals(other.elementType))
+            return false;
+        if (properties == null) {
+            if (other.properties != null)
+                return false;
+        } else if (!properties.equals(other.properties))
+            return false;
+        return true;
+    }
 }

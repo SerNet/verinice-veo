@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,7 +81,6 @@ public class ElementDefinitionFactory {
         mapper.enable(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
         mapper.enable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
         mapper.enable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE);
-        mapper.enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
         mapper.enable(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
@@ -104,19 +104,21 @@ public class ElementDefinitionFactory {
     private void initLinkMap(){
         String jsonString;
         try {
-            File linkJson = LinkDefinitionResourceLoader.getLinkDefinitionFile();
-            InputStream in = FileUtils.openInputStream(linkJson);
-            jsonString = IOUtils.toString(in);
-            LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
-            for (LinkDefinition definition : definitions.getLinkDefinitions()) {
-                String source = definition.getSourceType();
-                Set<LinkDefinition> linkSet = linkDefinitionMap.get(source);
-                if (linkSet == null){
-                    linkSet = new HashSet<>();
-                } 
-                linkSet.add(definition);
-                linkDefinitionMap.put(source, linkSet);
-                elementDefinitionMap.get(source).addOutgoingLink(definition);
+            List<File> linkJsonList = LinkDefinitionResourceLoader.getLinkDefinitionFile();
+            for(File jsonFile : linkJsonList){
+                InputStream in = FileUtils.openInputStream(jsonFile);
+                jsonString = IOUtils.toString(in);
+                LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
+                for (LinkDefinition definition : definitions.getLinkDefinitions()) {
+                    String source = definition.getSourceType();
+                    Set<LinkDefinition> linkSet = linkDefinitionMap.get(source);
+                    if (linkSet == null){
+                        linkSet = new HashSet<>();
+                    } 
+                    linkSet.add(definition);
+                    linkDefinitionMap.put(source, linkSet);
+                    elementDefinitionMap.get(source).addOutgoingLink(definition);
+                }
             }
         } catch (IOException e) {
             logger.error("Error reading link-defintion-json-file from repository", e);

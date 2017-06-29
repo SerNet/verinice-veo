@@ -19,6 +19,7 @@
  ******************************************************************************/
 package org.veo.schema.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -28,7 +29,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author sh
  *
  */
-public class LinkDefinition {
+public class LinkDefinition implements Serializable{
+    
+    private static final long serialVersionUID = 20170629135211L;
     
     private String sourceType;
     

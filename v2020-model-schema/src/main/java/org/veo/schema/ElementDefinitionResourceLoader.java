@@ -21,38 +21,64 @@ package org.veo.schema;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.veo.schema.model.ElementDefinition;
-
-import com.google.gson.JsonSyntaxException;
 
 /**
+ * loads all json files of the defined location
+ * /src/main/resources/elementdefinitions
+ * 
+ * tries to access the location in a filesystem-based way
+ * and, in addition to that, in a jar-file way
+ * 
+ * results are merged
+ * 
  * @author sh
  *
  */
 public class ElementDefinitionResourceLoader {
 
+    private static final String DEFINITIONS_DIR_NAME = "elementdefinitions";
+    private static final String JSON_FILE_EXTENSION = "json";
+    
+    private ElementDefinitionResourceLoader(){}
     
     public static Set<File> getElementDefinitions(){
         Set<File> definitions = new HashSet<>(100);
-        ClassPathResource resource  = new ClassPathResource("/elementdefinitions/");
+        StringBuilder sb = new StringBuilder();
+        sb.append(File.separatorChar);
+        sb.append(DEFINITIONS_DIR_NAME);
+        sb.append(File.separatorChar);
+        
+        ClassPathResource resource  = 
+                new ClassPathResource(sb.toString());
         File definitionFolder;
         try {
             definitionFolder = resource.getFile();
-            Collection<File> jsonFiles = FileUtils.listFiles(definitionFolder,  new String[] { "json"}, true);
+            Collection<File> jsonFiles = FileUtils.listFiles(
+                    definitionFolder,  new String[]{JSON_FILE_EXTENSION}, true);
             definitions.addAll(jsonFiles);
+
+            final File jarFile = new File(ElementDefinitionResourceLoader.class.
+                    getProtectionDomain().getCodeSource().getLocation().getPath());
+            
+            if (jarFile.isDirectory()){
+                File definitionDir = FileUtils.getFile(jarFile, DEFINITIONS_DIR_NAME);
+                if (definitionDir != null && definitionDir.isDirectory()){
+                    for (File f : FileUtils.listFiles(definitionDir, new String[]{JSON_FILE_EXTENSION}, true)){
+                        definitions.add(f);
+                    };
+                }
+            }
+            
         } catch (IOException e) {
-            Logger.getLogger(ElementDefinitionResourceLoader.class).error("Error loading json files",e );
+            Logger.getLogger(ElementDefinitionResourceLoader.class)
+            .error("Error loading json files",e );
         }
         return definitions;
     }
