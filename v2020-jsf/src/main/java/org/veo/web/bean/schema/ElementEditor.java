@@ -97,9 +97,10 @@ public class ElementEditor {
         public boolean getIsSingleSelect() {
             return false;//elementProperty.getType() == PropertyType.SINGLEOPTION;
         }
-
+        
+        //make this a text field for now
         public boolean getIsText() {
-            return elementProperty.getType() == PropertyType.TEXT;
+            return true;//elementProperty.getType() == PropertyType.TEXT;
         }
 
         public List<?> getOptionList() {
