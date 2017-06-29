@@ -52,10 +52,7 @@ public class ElementFactoryTest {
         ElementDefinition asset = ElementDefinitionFactory.getInstance().getElementDefinition(TEST_ELEMENT_TYPE);
         assertTrue(asset instanceof ElementDefinition);
         assertTrue(asset.getElementType().equals(TEST_ELEMENT_TYPE));
-        assertTrue(asset.getId() == 0);
-        assertTrue(asset.getParentId() == 0);
         assertTrue(asset.getProperties().size() > 0);
-        assertTrue(asset.getTags() == null);
     }
     
     @Test
