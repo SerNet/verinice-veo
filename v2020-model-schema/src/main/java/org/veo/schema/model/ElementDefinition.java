@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
+
 public class ElementDefinition {
     
     private int id;
@@ -30,8 +33,10 @@ public class ElementDefinition {
     
     private List<String> tags;
     
+    @JsonProperty(value= "elementType", required = true)
     private String elementType;
     
+    @JsonProperty(value= "properties", required = true)
     private List<PropertyDefinition> properties;   
     
     private List<LinkDefinition> outgoingLinks;

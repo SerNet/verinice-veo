@@ -43,16 +43,19 @@ import org.veo.schema.model.LinkDefinition;
 import org.veo.schema.model.LinkDefinitions;
 import org.veo.schema.model.PropertyDefinition;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 public class ElementDefinitionFactory {
     
     private static final ElementDefinitionFactory instance = new ElementDefinitionFactory();
-    private Gson gson;
-    
-    private static final String ELEMENT_DEFINITION_REPOSITORY = "org/veo/model/elementdefinitions/";
-    private static final String LINK_DEFINITIONS = "org/veo/model/elementlinks/links.json";
+    private ObjectMapper mapper;
     
     private final Logger logger = LoggerFactory.getLogger(ElementDefinitionFactory.class);
     
@@ -62,7 +65,7 @@ public class ElementDefinitionFactory {
     private ElementDefinitionFactory(){
         elementDefinitionMap = new HashMap<>();
         linkDefinitionMap = new HashMap<>();
-        gson = new Gson();
+        initJsonMapper();
         initElementMap();
         initLinkMap();
     }
@@ -71,14 +74,22 @@ public class ElementDefinitionFactory {
         return instance;
     }
     
+    private void initJsonMapper(){
+        mapper = new ObjectMapper();
+        mapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+    }
     
     private void initElementMap(){
         try {
             for(File jsonFile : ElementDefinitionResourceLoader.getElementDefinitions()){
-                InputStream in = FileUtils.openInputStream(jsonFile);
-                String jsonString = IOUtils.toString(in);
-                ElementDefinition definition = getElementDefinitonFromJson(jsonString);
-                elementDefinitionMap.put(definition.getElementType(), definition);
+                if(isValidJson(IOUtils.toString(jsonFile.toURI()), ElementDefinition.class)){
+                    InputStream in = FileUtils.openInputStream(jsonFile);
+                    String jsonString = IOUtils.toString(in);
+                    ElementDefinition definition = getElementDefinitonFromJson(jsonString);
+                    elementDefinitionMap.put(definition.getElementType(), definition);
+                }
             }
         } catch (IOException e) {
             logger.error("Error reading json-definition-files from repository", e);
@@ -114,9 +125,9 @@ public class ElementDefinitionFactory {
         } else return Collections.unmodifiableSet(new HashSet<LinkDefinition>(0));
     }
     
-    private LinkDefinitions getLinkDefinitionsFromJson(String json){
+    private LinkDefinitions getLinkDefinitionsFromJson(String json) throws JsonParseException, JsonMappingException, IOException{
         if(isValidJson(json, LinkDefinitions.class)){
-            return gson.fromJson(json, LinkDefinitions.class);
+            return mapper.readValue(json, LinkDefinitions.class);
         } else {
             LinkDefinitions emptyLinkDefinitions = new LinkDefinitions();
             emptyLinkDefinitions.setLinkDefinitions(Collections.unmodifiableList(new ArrayList<LinkDefinition>(0)));
@@ -157,17 +168,25 @@ public class ElementDefinitionFactory {
         return null;
     }
     
-    private ElementDefinition getElementDefinitonFromJson(String json){
+    private ElementDefinition getElementDefinitonFromJson(String json) throws JsonParseException, JsonMappingException, IOException{
         if(isValidJson(json, ElementDefinition.class)){
-            return gson.fromJson(json, ElementDefinition.class);
+            return mapper.readValue(json, ElementDefinition.class);
         } else return null;
     }
     
     private boolean isValidJson(String json, Class<?> clazz){
+        final String WARN_MSG = "Failed to parse json:\n";
         try{
-            gson.fromJson(json, clazz);
+            mapper.readValue(json, clazz);
             return true;
-        } catch (JsonSyntaxException e) {
+        } catch (JsonMappingException e) {
+            logger.warn(WARN_MSG, e);
+            return false;
+        } catch (JsonParseException e){
+            logger.warn(WARN_MSG, e);
+            return false;
+        } catch (IOException e){
+            logger.warn(WARN_MSG, e);
             return false;
         }
     }

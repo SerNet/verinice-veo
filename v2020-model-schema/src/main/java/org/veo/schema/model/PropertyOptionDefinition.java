@@ -19,13 +19,19 @@
  ******************************************************************************/
 package org.veo.schema.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author sh
  *
  */
 public class PropertyOptionDefinition {
     
-    String name, id;
+    @JsonProperty(value= "name", required = true)
+    private String name;
+    
+    @JsonProperty(value= "id", required = true)
+    private String id;
 
     public String getName() {
         return name;

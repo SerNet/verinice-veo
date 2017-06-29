@@ -21,6 +21,8 @@ package org.veo.schema.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PropertyDefinition {
     
     public static final String DEFAULT_GROUP_NAME = "default_group";
@@ -35,9 +37,16 @@ public class PropertyDefinition {
         BOOLEAN
     }
     
+    @JsonProperty(value= "name", required = true)
     String name;
+    
+    @JsonProperty(value= "type", required = true)
     PropertyType type;
+    
+    @JsonProperty(value= "propertyOptionDefinitions", required = false)
     List<PropertyOptionDefinition> propertyOptionDefinitions;
+    
+    @JsonProperty(value= "group", required = false)
     String group;
     
     

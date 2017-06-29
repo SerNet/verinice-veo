@@ -73,7 +73,8 @@ public class ElementFactoryTest {
     
     @Test
     public void testInitElementDefinitionMap(){
-        assertTrue(ElementDefinitionFactory.getInstance().getElementDefinitions().size() == 2);
+        Map<String, ElementDefinition> map = ElementDefinitionFactory.getInstance().getElementDefinitions(); 
+        assertTrue(map.size() == 2);
     }
     
     @Test

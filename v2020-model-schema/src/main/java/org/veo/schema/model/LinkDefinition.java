@@ -21,14 +21,21 @@ package org.veo.schema.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author sh
  *
  */
 public class LinkDefinition {
     
-    private String sourceType, destinationType;
+    @JsonProperty(value= "sourceType", required = true)
+    private String sourceType;
     
+    @JsonProperty(value= "destinationType", required = true)
+    private String destinationType;
+    
+    @JsonProperty(value= "properties", required = true)
     private List<PropertyDefinition> properties;
 
     
