@@ -67,8 +67,7 @@ import net._01001111.text.LoremIpsum;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest(showSql=false)
-// @Transactional(propagation = Propagation.NOT_SUPPORTED)
-@AutoConfigureTestDatabase(replace=Replace.NONE)    
+// @Transactional(propagation = Propagation.NOT_SUPPORTED)   
 public class ElementRepositoryTest {
     
     private final Logger logger = LoggerFactory.getLogger(ElementRepositoryTest.class.getName());
