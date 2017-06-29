@@ -17,7 +17,7 @@
  * Contributors:
  *     Urs Zeidler uz<at>sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.web.bean;
+package org.veo.web.bean.model;
 
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -29,27 +29,31 @@ import org.veo.model.Element;
  * @author urszeidler
  *
  */
-public class PrimefacesTreeNode extends DefaultTreeNode {
+public class PrimefacesTreeNode<T> extends DefaultTreeNode {
 
-	private static final long serialVersionUID = 7945057595121825915L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 6230854818386012617L;
 
-	public PrimefacesTreeNode() {
+    public PrimefacesTreeNode() {
 		super();
 	}
 
-	public PrimefacesTreeNode(Element data, TreeNode parent) {
+	public PrimefacesTreeNode(T data, TreeNode parent) {
 		super(data, parent);
 	}
 
-	public PrimefacesTreeNode(Element data) {
+	public PrimefacesTreeNode(T data) {
 		super(data);
 	}
 
-	public PrimefacesTreeNode(String type, Element data, TreeNode parent) {
+	public PrimefacesTreeNode(String type, T data, TreeNode parent) {
 		super(type, data, parent);
 	}
 
-	public Element getModel() {
-		return (Element) getData();
+	@SuppressWarnings("unchecked")
+    public T getModel() {
+		return (T) getData();
 	}
 }

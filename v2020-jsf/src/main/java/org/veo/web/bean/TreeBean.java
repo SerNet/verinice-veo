@@ -19,7 +19,6 @@
  ******************************************************************************/
 package org.veo.web.bean;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 import org.primefaces.event.NodeExpandEvent;
@@ -35,15 +35,9 @@ import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.veo.model.Element;
-import org.veo.model.ElementProperty;
 import org.veo.persistence.ElementRepository;
-import org.veo.web.bean.ElementEditor.PropertyEditor;
 import org.veo.web.util.NumericStringComparator;
-
-import com.google.common.collect.Lists;
 
 /**
  * The management bean for the element tree.
@@ -51,19 +45,21 @@ import com.google.common.collect.Lists;
  * @author urszeidler
  *
  */
-@Component
+//@Component("Element-Tree-model")
 @ManagedBean
 @SessionScoped
 public class TreeBean {
 
     private static final Logger logger = LoggerFactory.getLogger(TreeBean.class.getName());
 
-    @Autowired
+    //injected
+    @ManagedProperty("#{applicationBean.elementRepository}")
     private ElementRepository elementRepository;
-    @Autowired
+    @ManagedProperty("#{applicationBean.cacheService}")
     private CacheService cacheService;
+    
+    
     private PrimefacesTreeNode root;
-
     private PrimefacesTreeNode singleSelectedTreeNode;
 
     public void onNodeExpand(NodeExpandEvent event) {
@@ -87,15 +83,16 @@ public class TreeBean {
         }
     }
 
-    public TreeNode getSingleSelectedNode() {
-        return singleSelectedTreeNode;
-    }
-
     public Element getSelectedElement() {
         if (singleSelectedTreeNode == null)
             return null;
         return singleSelectedTreeNode.getModel();
     }
+ 
+    public TreeNode getSingleSelectedNode() {
+        return singleSelectedTreeNode;
+    }
+    
 
     public void setSingleSelectedNode(TreeNode singleSelectedTreeNode) {
         if (logger.isDebugEnabled()) {
@@ -207,6 +204,10 @@ public class TreeBean {
 
     public void setRoot(PrimefacesTreeNode root) {
         this.root = root;
+    }
+
+    public void setElementRepository(ElementRepository elementRepository) {
+        this.elementRepository = elementRepository;
     }
 
 }

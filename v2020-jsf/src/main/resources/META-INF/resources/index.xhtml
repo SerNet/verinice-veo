@@ -14,50 +14,25 @@
 		<div class="ui-g ui-fluid">
 			<div class="ui-g-6">
 				<h:form>
-				
+
 					<p:panel header="tree in a panel">
 						<p:tree id="tree" value="#{treeBean.root}" var="node"
-							animate="true" dynamic="true" cache="false" selectionMode="single" 
-							 
-							selection="#{treeBean.singleSelectedNode}">
+							animate="true" dynamic="true" cache="false"
+							selectionMode="single" selection="#{treeBean.singleSelectedNode}">
 							<p:treeNode expandedIcon="ui-icon ui-icon-folder-open"
 								collapsedIcon="ui-icon ui-icon-folder-collapsed">
-								<h:outputText value="#{node}" />
+								<h:outputText value="#{node.elementType}" />
 							</p:treeNode>
-							<p:ajax event="expand" listener="#{treeBean.onNodeExpand}" />
-							<p:ajax event="select" listener="#{treeBean.onNodeSelect}" update=":editForm" />
+							<p:ajax event="select" listener="#{treeBean.onNodeSelect}"
+								update=":editForm" />
 							<p:ajax event="unselect" listener="#{treeBean.onNodeUnSelect}" />
 						</p:tree>
 					</p:panel>
-
-					<p:panel header="treegrid in a panel">
-						<p:treeTable id="treetable" value="#{treeBean.root}" var="node"
-							animate="true" dynamic="true" cache="false" selectionMode="single"
-							selection="#{treeBean.singleSelectedNode}">
-							<p:column>
-								<f:facet name="header">uuid</f:facet>
-								<h:outputText value="#{node.uuid}" />
-							</p:column>
-							<p:column>
-								<f:facet name="header">Name</f:facet>
-								<h:outputText value="#{node.title}" />
-							</p:column>
-							
-							<p:ajax event="expand" listener="#{treeBean.onNodeExpand}" />
-							<p:ajax event="select" listener="#{treeBean.onNodeSelect}" />
-							<p:ajax event="unselect" listener="#{treeBean.onNodeUnSelect}" />
-						</p:treeTable>
-					</p:panel>
-
 				</h:form>
 			</div>
 			<div class="ui-g-6">
 				<p:panel header="edit stuff">
-<!-- 						 <ui:include src="templates/propertyEditor.xhtml" /> -->
-	
-	<div id="mytestId">
-				<vn:editor  />
-</div>
+					<vn:editor />
 				</p:panel>
 			</div>
 		</div>

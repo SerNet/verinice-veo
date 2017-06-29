@@ -19,37 +19,43 @@
  ******************************************************************************/
 package org.veo.web.bean;
 
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
-import org.veo.model.Element;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.veo.client.schema.ModelSchemaRestClient;
+import org.veo.persistence.ElementRepository;
 
 /**
- * A gui wrapper around the {@link Element}. 
+ * References the services for the jsf.
  * 
  * @author urszeidler
  *
  */
-public class PrimefacesTreeNode extends DefaultTreeNode {
+@Component()
+@ManagedBean()
+@ApplicationScoped
+public class ApplicationBean {
 
-	private static final long serialVersionUID = 7945057595121825915L;
+    @Autowired
+    private ElementRepository elementRepository;
 
-	public PrimefacesTreeNode() {
-		super();
-	}
+    @Autowired
+    private ModelSchemaRestClient schemaService;
+    @Autowired
+    private CacheService cacheService;
 
-	public PrimefacesTreeNode(Element data, TreeNode parent) {
-		super(data, parent);
-	}
+    public ModelSchemaRestClient getSchemaService() {
+        return schemaService;
+    }
 
-	public PrimefacesTreeNode(Element data) {
-		super(data);
-	}
+    public CacheService getCacheService() {
+        return cacheService;
+    }
 
-	public PrimefacesTreeNode(String type, Element data, TreeNode parent) {
-		super(type, data, parent);
-	}
+    public ElementRepository getElementRepository() {
+        return elementRepository;
+    }
 
-	public Element getModel() {
-		return (Element) getData();
-	}
 }

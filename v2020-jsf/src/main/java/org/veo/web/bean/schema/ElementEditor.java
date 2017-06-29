@@ -17,31 +17,30 @@
  * Contributors:
  *     Urs Zeidler uz<at>sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.web.bean;
+package org.veo.web.bean.schema;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.veo.model.Element;
-import org.veo.model.ElementProperty;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 
-import com.google.common.collect.Lists;
+import org.veo.schema.model.PropertyDefinition;
+import org.veo.schema.model.PropertyDefinition.PropertyType;
 
 /**
  * @author urszeidler
  *
  */
-//@Component("element-model-editor")
-//@ManagedBean(name="elementEditor-model")
-//@SessionScoped
+@ManagedBean
+@SessionScoped
 public class ElementEditor {
-//    @Autowired
-    private TreeBean tree;
 
     public class PropertyEditor {
-        private ElementProperty elementProperty;
+        private PropertyDefinition elementProperty;
 
-        public PropertyEditor(ElementProperty input) {
+        public PropertyEditor(PropertyDefinition input) {
             this.elementProperty = input;
         }
 
@@ -50,20 +49,19 @@ public class ElementEditor {
         }
 
         public String getName() {
-            return elementProperty.getTypeId();
+            return elementProperty.getName();
         }
 
         public String getKey() {
-            return elementProperty.getUuid();
+            return elementProperty.getName();
         }
-        
+
         public Object getValue() {
-            if(getIsText())
-                return elementProperty.getText();
-            else if (getisDate())
-                return elementProperty.getDate();
-                
-            
+            // if(getIsText())
+            // return elementProperty.getText();
+            // else if (getisDate())
+            // return elementProperty.getDate();
+
             return elementProperty.toString();
         }
 
@@ -72,7 +70,7 @@ public class ElementEditor {
         }
 
         public boolean getisDate() {
-            return elementProperty.getDate()!=null;
+            return elementProperty.getType() == PropertyType.DATE;
         }
 
         public boolean getisEditable() {
@@ -90,40 +88,55 @@ public class ElementEditor {
         public boolean isShowLabel() {
             return true;
         }
-        
+
         public boolean getIsSingleSelect() {
-            return false;
+            return false;//elementProperty.getType() == PropertyType.SINGLEOPTION;
         }
 
-
         public boolean getIsText() {
-            return elementProperty.getText()!=null;
+            return elementProperty.getType() == PropertyType.TEXT;
         }
 
         public List<?> getOptionList() {
             return Collections.emptyList();
         }
+        
+        public Integer  getSelectedOption() {
+            return null;
+        }
     }
 
-    public PropertyEditor buildEditor(ElementProperty input) {
+    // @Autowired
+    @ManagedProperty("#{treeBean}")
+    private SchemaTreeBean tree;
+
+    public PropertyEditor buildEditor(PropertyDefinition input) {
         return new ElementEditor.PropertyEditor(input);
     }
 
-    public List<PropertyEditor> getProperties() {
-        Element selectedElement = tree.getSelectedElement();
-        if (selectedElement == null) {
-            return Collections.emptyList();
-        }
-
-        return Lists.transform(selectedElement.getProperties(),
-                i -> new ElementEditor.PropertyEditor(i));
-    }
+//    public List<PropertyEditor> getProperties() {
+//        ElementDefinition selectedElement = tree.getSelectedElement();
+//        if (selectedElement == null) {
+//            return Collections.emptyList();
+//        }
+//
+//        return Lists.transform(selectedElement.getProperties(),
+//                i -> new ElementEditor.PropertyEditor(i));
+//    }
 
     public List<?> getNoLabelPropertyList() {
         return Collections.emptyList();
     }
-    
-    public List<?> getLabelPropertyList() {
-        return getProperties();
+
+//    public List<?> getLabelPropertyList() {
+//        return getProperties();
+//    }
+
+    public SchemaTreeBean getTree() {
+        return tree;
+    }
+
+    public void setTree(SchemaTreeBean tree) {
+        this.tree = tree;
     }
 }
