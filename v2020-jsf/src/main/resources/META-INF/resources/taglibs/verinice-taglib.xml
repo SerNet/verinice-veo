@@ -6,19 +6,19 @@
 	<namespace>http://www.verinice.org/taglib</namespace>
 	<tag>
 		<tag-name>editor</tag-name>
-		<source>../template/editor.xhtml</source>
+		<source>../templates/propertyEditor.xhtml</source>
 	</tag>
 	<tag>
 		<tag-name>properties</tag-name>
-		<source>../template/properties.xhtml</source>
+		<source>../templates/properties.xhtml</source>
 	</tag>
 
 	<tag>
 		<tag-name>pprops</tag-name>
-		<source>../template/poseidon-properties.xhtml</source>
+		<source>../templates/poseidon-properties.xhtml</source>
 	</tag>
 	<tag>
 		<tag-name>login</tag-name>
-		<source>../template/login.xhtml</source>
+		<source>../templates/login.xhtml</source>
 	</tag>
 </facelet-taglib>

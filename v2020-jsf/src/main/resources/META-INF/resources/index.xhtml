@@ -6,7 +6,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:vn="http://www.verinice.org/taglib">
 
 <ui:composition template="/poseidon/layout.xhtml">
 	<ui:define name="content">
@@ -17,13 +18,14 @@
 					<p:panel header="tree in a panel">
 						<p:tree id="tree" value="#{treeBean.root}" var="node"
 							animate="true" dynamic="true" cache="false" selectionMode="single" 
+							 
 							selection="#{treeBean.singleSelectedNode}">
 							<p:treeNode expandedIcon="ui-icon ui-icon-folder-open"
 								collapsedIcon="ui-icon ui-icon-folder-collapsed">
 								<h:outputText value="#{node}" />
 							</p:treeNode>
 							<p:ajax event="expand" listener="#{treeBean.onNodeExpand}" />
-							<p:ajax event="select" listener="#{treeBean.onNodeSelect}" />
+							<p:ajax event="select" listener="#{treeBean.onNodeSelect}" update=":editForm" />
 							<p:ajax event="unselect" listener="#{treeBean.onNodeUnSelect}" />
 						</p:tree>
 					</p:panel>
@@ -51,10 +53,11 @@
 			</div>
 			<div class="ui-g-6">
 				<p:panel header="edit stuff">
-					<h:form>
-
-
-					</h:form>
+<!-- 						 <ui:include src="templates/propertyEditor.xhtml" /> -->
+	
+	<div id="mytestId">
+				<vn:editor  />
+</div>
 				</p:panel>
 			</div>
 		</div>

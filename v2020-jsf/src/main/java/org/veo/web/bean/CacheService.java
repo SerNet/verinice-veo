@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.veo.web.bean;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,38 +40,53 @@ import com.google.common.cache.RemovalNotification;
  */
 @Component
 public class CacheService {
-	private static final Logger logger = LoggerFactory.getLogger(CacheService.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(CacheService.class.getName());
 
-	@Autowired
-	private ElementRepository elementRepository;
+    @Autowired
+    private ElementRepository elementRepository;
 
-	private LoadingCache<String, Element> elementCache;
+    private LoadingCache<String, Element> elementCache;
 
-	public void createCache() {
-		RemovalListener<String, Element> elementRemovalListener = new RemovalListener<String, Element>() {
+    public void createElementCache() {
+        RemovalListener<String, Element> elementRemovalListener = new RemovalListener<String, Element>() {
 
-			@Override
-			public void onRemoval(RemovalNotification<String, Element> arg0) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("removing :"+arg0);
-				}
-			}
-		};
-		elementCache = CacheBuilder.newBuilder().removalListener(elementRemovalListener).maximumSize(25000)
-				.build(new CacheLoader<String, Element>() {
-					public Element load(String uuid) {
-						return elementRepository.findOneWithChildren(uuid);
-					}
-				});
-	}
+            @Override
+            public void onRemoval(RemovalNotification<String, Element> arg0) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("removing :" + arg0);
+                }
+            }
+        };
+        elementCache = CacheBuilder.newBuilder().removalListener(elementRemovalListener)
+                .maximumSize(25000).build(new CacheLoader<String, Element>() {
+                    public Element load(String uuid) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("loadind element with uuid:" + uuid);
+                        }
 
-	
-	public void initCache() {
-		
-	}
-	
-	public LoadingCache<String, Element> getElementCache() {
-		return elementCache;
-	}
+                        long currentTimeMillis = System.currentTimeMillis();
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("loadElement start: " + currentTimeMillis);
+                        }
+                        Element findOneWithChildren = elementRepository.findOneWithChildren(uuid);
+
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("loadElement stop: "
+                                    + (System.currentTimeMillis() - currentTimeMillis));
+                        }
+
+                        return findOneWithChildren;
+                    }
+                });
+    }
+
+    @PostConstruct
+    public void initCache() {
+        createElementCache();
+    }
+
+    public LoadingCache<String, Element> getElementCache() {
+        return elementCache;
+    }
 
 }
