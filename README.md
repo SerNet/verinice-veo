@@ -9,11 +9,14 @@ A prototype of a new verinice version.
 * Install Java 8.
 
 **Clone project:**
+
 ```bash
 git clone ssh://git@git.verinice.org:7999/rd/v2020.git
-cd v2020```
+cd v2020
+```
 
 **Build project:**
+
 ```bash
 export JAVA_HOME=/path/to/jdk-8
 mvn install [-DskipTests]
@@ -30,8 +33,11 @@ mvn install [-DskipTests]
 
 ```bash
 cd v2020-model-schema
-mvn spring-boot:run```
+mvn spring-boot:run
+```
+
 or
+
 ```bash
 java -jar v2020-model-schema/target/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
 ```
@@ -44,8 +50,11 @@ Set your database properties in file _v2020-jsf/src/main/resources/application.p
 
 ```bash
 cd v2020-jsf
-mvn spring-boot:run```
+mvn spring-boot:run
+```
+
 or
+
 ```bash
 java -jar v2020-jsf/target/v2020-jsf-0.1.0-SNAPSHOT.jar
 ```
@@ -56,7 +65,7 @@ Set your database properties in file _v2020-vna-import/src/main/resources/applic
 
 ```bash
 java -jar v2020-vna-import/target/v2020-vna-import-0.1.0-SNAPSHOT.jar \
-  -f /path/to/verinice-archive-file.vna
+-f /path/to/verinice-archive-file.vna
 ```
 
 **Run REST Service**
@@ -65,8 +74,11 @@ Set your database properties in file _v2020-rest/src/main/resources/application.
 
 ```bash
 cd v2020-rest
-mvn spring-boot:run```
+mvn spring-boot:run
+```
+
 or
+
 ```bash
 java -jar v2020-rest/target/v2020-rest-0.1.0-SNAPSHOT.jar
 ```
