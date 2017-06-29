@@ -21,10 +21,9 @@ package org.veo.schema.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 
 public class ElementDefinition {
     
@@ -33,13 +32,24 @@ public class ElementDefinition {
     
     private List<String> tags;
     
-    @JsonProperty(value= "elementType", required = true)
     private String elementType;
     
-    @JsonProperty(value= "properties", required = true)
     private List<PropertyDefinition> properties;   
     
     private List<LinkDefinition> outgoingLinks;
+    
+    @JsonCreator
+    public ElementDefinition(
+            @JsonProperty(value= "elementType", 
+                required = true) final String elementType,
+            @JsonProperty(value= "properties",
+            required = true) final List<PropertyDefinition> properties
+            )
+            
+    {
+        this.elementType = elementType;
+        this.properties = properties;
+    }
     
     public void addProperty(PropertyDefinition property){
         properties.add(property);

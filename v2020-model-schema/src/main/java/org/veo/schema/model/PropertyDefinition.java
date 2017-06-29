@@ -21,6 +21,7 @@ package org.veo.schema.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PropertyDefinition {
@@ -37,18 +38,27 @@ public class PropertyDefinition {
         BOOLEAN
     }
     
-    @JsonProperty(value= "name", required = true)
-    String name;
+    private String name;
     
-    @JsonProperty(value= "type", required = true)
-    PropertyType type;
+    private PropertyType type;
     
-    @JsonProperty(value= "propertyOptionDefinitions", required = false)
-    List<PropertyOptionDefinition> propertyOptionDefinitions;
+    private List<PropertyOptionDefinition> propertyOptionDefinitions;
     
-    @JsonProperty(value= "group", required = false)
-    String group;
+    private String group;
     
+    @JsonCreator
+    public PropertyDefinition(
+            @JsonProperty(value= "name", 
+                required = true) final String name,
+            @JsonProperty(value= "type",
+                required = true) final PropertyType type,
+            @JsonProperty(value= "propertyOptionDefinitions",
+                required = false) final List<PropertyOptionDefinition> propertyOptionDefinition,
+            @JsonProperty(value= "group",
+                required = false) final String group
+            ){
+        
+    }
     
     public String getName() {
         return name;

@@ -27,10 +27,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class PropertyOptionDefinition {
     
-    @JsonProperty(value= "name", required = true)
+    public PropertyOptionDefinition(
+            @JsonProperty(value= "name", 
+                required = true) final String name,
+            @JsonProperty(value= "id",
+                required = true) final String id
+            ){
+        this.name = name;
+        this.id = id;
+    }
+    
     private String name;
     
-    @JsonProperty(value= "id", required = true)
     private String id;
 
     public String getName() {

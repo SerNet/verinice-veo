@@ -22,9 +22,7 @@ package org.veo.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,7 +33,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.veo.schema.ElementDefinitionResourceLoader;
 import org.veo.schema.LinkDefinitionResourceLoader;
 import org.veo.schema.model.ElementDefinition;
@@ -44,13 +41,12 @@ import org.veo.schema.model.LinkDefinitions;
 import org.veo.schema.model.PropertyDefinition;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 public class ElementDefinitionFactory {
     
@@ -78,7 +74,15 @@ public class ElementDefinitionFactory {
         mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        mapper.enable(MapperFeature.USE_ANNOTATIONS);
+        mapper.configure(Feature.ALLOW_MISSING_VALUES, false);
+        mapper.configure(Feature.IGNORE_UNDEFINED, false);
+        mapper.enable(SerializationFeature.FAIL_ON_UNWRAPPED_TYPE_IDENTIFIERS);
+        mapper.enable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES);
+        mapper.enable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE);
+        mapper.enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
+        mapper.enable(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS);
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
     
     private void initElementMap(){
