@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>v2020-jsf</artifactId>
     <packaging>jar</packaging>
-    <name>v2020-persistence</name>
+    <name>v2020-jsf</name>
 
 	<properties>
 		<start-class>org.veo.web.Application</start-class>
