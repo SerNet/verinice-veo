@@ -34,6 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.veo.client.ClientApplication;
 import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.schema.model.ElementDefinition;
+import org.veo.schema.model.LinkDefinition;
 
 /**
  * @author Sebastian Hagedorn <sh[at]sernet[dot]de>
@@ -65,6 +66,16 @@ public class ModelSchemaRestClientTest {
         elementDefinition = schemaRestClient.getElementType("control");
         assertNotNull(elementDefinition);
         
+    }
+    
+    @Test
+    public void testGetLinkDefinitions() {     
+        List<LinkDefinition> linkDefinitions = schemaRestClient.getLinkDefinitions("asset");
+        assertNotNull(linkDefinitions);
+        assertTrue(linkDefinitions.size() > 0);
+        linkDefinitions = schemaRestClient.getLinkDefinitions("control");
+        assertNotNull(linkDefinitions);
+        assertTrue(linkDefinitions.size() > 0);
     }
     
 }

@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.veo.client.AbstractRestClient;
 import org.veo.schema.model.ElementDefinition;
+import org.veo.schema.model.LinkDefinition;
 
 /**
  * Client for the model schema REST web service.
@@ -86,6 +87,21 @@ public class ModelSchemaRestClient extends AbstractRestClient {
             log.info("getElementType, URL: " + url);
         }
         return getRestHandler().getForObject(url, ElementDefinition .class);
+    }
+    
+    public List<LinkDefinition> getLinkDefinitions(String type) {
+        StringBuilder sb = new StringBuilder(getBaseUrl());
+        sb.append("linkDefinitions/");
+        sb.append(type);
+        String url = sb.toString();
+        if (log.isInfoEnabled()) {
+            log.info("getLinkDefinitions, URL: " + url);
+        }
+        ResponseEntity<List<LinkDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<LinkDefinition>>() {
+                });
+        return response.getBody();
+
     }
 
     @Override
