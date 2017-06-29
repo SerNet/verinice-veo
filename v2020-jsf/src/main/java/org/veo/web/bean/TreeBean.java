@@ -47,21 +47,21 @@ import org.veo.web.util.NumericStringComparator;
  * @author urszeidler
  *
  */
-//@Component("Element-Tree-model")
+// @Component("Element-Tree-model")
 @ManagedBean(name = "treeBean")
 @SessionScoped
 public class TreeBean {
 
     private static final Logger logger = LoggerFactory.getLogger(TreeBean.class.getName());
 
-    //injected
+    // injected
     @ManagedProperty("#{applicationBean.elementRepository}")
     private ElementRepository elementRepository;
     @ManagedProperty("#{applicationBean.cacheService}")
     private CacheService cacheService;
     @ManagedProperty("#{applicationBean.schemaService}")
     private ModelSchemaRestClient schemaService;
-    
+
     private PrimefacesTreeNode root;
     private PrimefacesTreeNode singleSelectedTreeNode;
     private HashMap<String, ElementDefinition> definitionMap;
@@ -90,11 +90,10 @@ public class TreeBean {
             return null;
         return singleSelectedTreeNode.getModel();
     }
- 
+
     public TreeNode getSingleSelectedNode() {
         return singleSelectedTreeNode;
     }
-    
 
     public void setSingleSelectedNode(TreeNode singleSelectedTreeNode) {
         if (logger.isDebugEnabled()) {
@@ -120,18 +119,18 @@ public class TreeBean {
         for (String string : allRootElements) {
             try {
                 Element element2 = cacheService.getElementCache().get(string);
-                transformElement(element2,root);
+                transformElement(element2, root);
             } catch (ExecutionException e) {
-                logger.error("Error getting from element cache.",e);
+                logger.error("Error getting from element cache.", e);
             }
         }
-        
+
         return root;
     }
 
     private void transformElement(Element element2, PrimefacesTreeNode root2) {
         // TODO Auto-generated method stub
-        
+
     }
 
     private PrimefacesTreeNode createRoot() {
@@ -147,14 +146,15 @@ public class TreeBean {
         if (logger.isDebugEnabled()) {
             logger.debug("Load Data stop: " + (System.currentTimeMillis() - currentTimeMillis));
         }
-        
+
         definitionMap = new HashMap<>();
         List<ElementDefinition> elementTypes = schemaService.getElementTypes();
+        printElementDefinition(elementTypes);
 
         elementTypes.stream().forEach(e -> {
             definitionMap.put(e.getElementType(), e);
         });
-        
+
         HashMap<Element, PrimefacesTreeNode> hashMap = new HashMap<>();
         Set<Element> elements = new HashSet<>(50);
         findAll.forEach(t -> {
@@ -176,6 +176,15 @@ public class TreeBean {
                     "transform elements stop: " + (System.currentTimeMillis() - currentTimeMillis));
         }
         return root;
+    }
+
+    private void printElementDefinition(List<ElementDefinition> elementTypes) {
+        elementTypes.forEach(et -> {
+            logger.debug("Inspecting element definition: " + et.getElementType());
+            et.getProperties().forEach(p -> logger
+                    .debug("-->" + p.getGroup() + " " + p.getName() + " " + p.getType()));
+        });
+
     }
 
     private void tranformElements(HashMap<Element, PrimefacesTreeNode> hashMap,
@@ -227,5 +236,8 @@ public class TreeBean {
         this.cacheService = cacheService;
     }
 
+    public HashMap<String, ElementDefinition> getDefinitionMap() {
+        return definitionMap;
+    }
 
 }

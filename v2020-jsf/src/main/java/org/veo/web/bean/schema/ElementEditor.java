@@ -21,19 +21,24 @@ package org.veo.web.bean.schema;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
+import org.veo.model.Element;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.schema.model.PropertyDefinition.PropertyType;
+import org.veo.web.bean.TreeBean;
+
+import com.google.common.collect.FluentIterable;
 
 /**
  * @author urszeidler
  *
  */
-@ManagedBean(name = "propertyDefinitionEditor")
+@ManagedBean(name = "elementEditor")
 @SessionScoped
 public class ElementEditor {
 
@@ -106,36 +111,36 @@ public class ElementEditor {
         }
     }
 
-    @ManagedProperty("#{schemaTreeBean}")
-    private SchemaTreeBean tree;
+    @ManagedProperty("#{treeBean}")
+    private TreeBean tree;
 
     public PropertyEditor buildEditor(PropertyDefinition input) {
         return new ElementEditor.PropertyEditor(input);
     }
 
-//    public List<PropertyEditor> getProperties() {
-//        ElementDefinition selectedElement = tree.getSelectedElement();
-//        if (selectedElement == null) {
-//            return Collections.emptyList();
-//        }
-//
-//        return Lists.transform(selectedElement.getProperties(),
-//                i -> new ElementEditor.PropertyEditor(i));
-//    }
+    public List<PropertyEditor> getProperties() {
+        Element selectedElement = tree.getSelectedElement();
+        if (selectedElement==null || !tree.getDefinitionMap().containsKey(selectedElement.getTypeId())) {
+            return Collections.emptyList();
+        }
+        
+        Set<PropertyDefinition> propertyDef = tree.getDefinitionMap().get(selectedElement.getTypeId()).getProperties();
+        return FluentIterable.from(propertyDef).transform(i -> new ElementEditor.PropertyEditor(i)).toList();
+     }
 
     public List<?> getNoLabelPropertyList() {
         return Collections.emptyList();
     }
 
-//    public List<?> getLabelPropertyList() {
-//        return getProperties();
-//    }
+    public List<?> getLabelPropertyList() {
+        return getProperties();
+    }
 
-    public SchemaTreeBean getTree() {
+    public TreeBean getTree() {
         return tree;
     }
 
-    public void setTree(SchemaTreeBean tree) {
+    public void setTree(TreeBean tree) {
         this.tree = tree;
     }
 }
