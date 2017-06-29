@@ -58,6 +58,9 @@ public abstract class Property implements Serializable {
     
     private Date date;
     
+    @Column(name="properties_order")
+    private int propertiesOrder = 0;
+    
     public Property() {
         if (this.uuid == null) {
             UUID randomUUID = java.util.UUID.randomUUID();

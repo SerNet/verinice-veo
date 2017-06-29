@@ -23,7 +23,8 @@ public interface ElementRepository extends CrudRepository<Element, String> {
     @Query(value = "select uuid from element e where e.parent_uuid is null", nativeQuery = true)
     public List<String> allRootElements();
 
-    @Query("SELECT e FROM Element e join fetch e.children where e.uuid = :uuid")
+    @Query("SELECT e FROM Element e left join fetch e.children where e.uuid = :uuid")
+    @EntityGraph(value = "properties", type = EntityGraphType.LOAD)
     public Element findOneWithChildren(@Param("uuid") String uuid);
 
     @Query("SELECT e FROM Element e " + "left join fetch e.linksOutgoing "
@@ -31,5 +32,12 @@ public interface ElementRepository extends CrudRepository<Element, String> {
     @EntityGraph(value = "linksWithProperties", type = EntityGraphType.LOAD)
     public Element findOneWithLinks(@Param("uuid") String uuid);
 
+    @Query("SELECT DISTINCT e FROM Element e left join fetch e.properties where e.typeId = :typeId")
     public List<Element> findByTypeId(@Param("typeId") String typeId);
+    
+    @EntityGraph(value = "properties", type = EntityGraphType.LOAD)
+    public Element findOne(String id);
+    
+    @Query("SELECT DISTINCT e FROM Element e left join fetch e.properties")
+    public Iterable<Element> findAllWithProperties();
 }

@@ -49,20 +49,29 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author Daniel Murygin
  */
 @Entity
-@NamedEntityGraphs({
+@NamedEntityGraphs(
+{
     @NamedEntityGraph(
-            name="linksWithProperties", 
-            attributeNodes = {
-            @NamedAttributeNode(value="linksOutgoing", subgraph = "linksGraph")
-    },
-    subgraphs = {
+        name="linksWithProperties", 
+        attributeNodes = {
+            @NamedAttributeNode(value="linksOutgoing", subgraph = "linksGraph"),
+            @NamedAttributeNode(value="properties")
+        },
+        subgraphs = {
             @NamedSubgraph(
-                    name = "linksGraph",
-                    attributeNodes = {
-                            @NamedAttributeNode(value = "properties")
-                    }
+                name = "linksGraph",
+                attributeNodes = {
+                        @NamedAttributeNode(value = "properties")
+                }
             )        
-    })
+        }
+    ),
+    @NamedEntityGraph(
+            name="properties", 
+            attributeNodes = {
+                @NamedAttributeNode(value="properties")
+            }
+    )
 })
 @JsonInclude(Include.NON_NULL)
 public class Element implements Serializable {
@@ -106,7 +115,8 @@ public class Element implements Serializable {
     @JsonIgnore
     private List<Link> linksIncoming = new LinkedList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderColumn(name="properties_order", nullable=false)
     @JoinColumn(name = "element_uuid")
     private List<ElementProperty> properties;
     

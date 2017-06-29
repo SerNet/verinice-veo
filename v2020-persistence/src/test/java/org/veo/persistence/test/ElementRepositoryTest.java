@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,16 +38,17 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.model.Link;
 import org.veo.model.LinkProperty;
 import org.veo.persistence.ElementRepository;
 import org.veo.persistence.LinkRepository;
+import org.veo.util.time.TimeFormatter;
 
 import net._01001111.text.LoremIpsum;
 
@@ -65,7 +67,8 @@ import net._01001111.text.LoremIpsum;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest(showSql=false)
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
+// @Transactional(propagation = Propagation.NOT_SUPPORTED)
+@AutoConfigureTestDatabase(replace=Replace.NONE)    
 public class ElementRepositoryTest {
     
     private final Logger logger = LoggerFactory.getLogger(ElementRepositoryTest.class.getName());
@@ -101,7 +104,7 @@ public class ElementRepositoryTest {
         Element child = createElement("asset_group");
         child.setParent(element);
         element.addChild(child);
-        elementRepository.save(element);
+        element = elementRepository.save(element);
         
         Element elementResult = elementRepository.findOneWithChildren(element.getUuid());
         assertNotNull(elementResult);
@@ -159,10 +162,10 @@ public class ElementRepositoryTest {
     @Test
     public void testFindByTypeId() {
         for (int i = 0; i < 10; i++) {
-            Element element = createElement("control");
+            Element element = createElement("testFindByTypeId");
             element = elementRepository.save(element);
         }
-        List<Element> elementList = elementRepository.findByTypeId("control");
+        List<Element> elementList = elementRepository.findByTypeId("testFindByTypeId");
         assertNotNull(elementList);
         assertEquals(10, elementList.size());
     }
@@ -196,6 +199,32 @@ public class ElementRepositoryTest {
         int maxDepth = RandomUtils.nextInt(2)+1;
         logger.debug("Creating tree, depth is: " + maxDepth + "...");
         createChildren(element, maxDepth, 0);
+    }
+    
+    @Test
+    public void testFindAll() {
+        long start = System.currentTimeMillis();
+        Iterable<Element> result = elementRepository.findAll();
+        String time = TimeFormatter.getHumanRedableTime(System.currentTimeMillis() - start);
+        logger.debug("FindAll runtime: " + time + " (" + size(result) + ")");
+    }
+    
+    @Test
+    public void testFindAllWithProperties() {
+        long start = System.currentTimeMillis();
+        Iterable<Element> result = elementRepository.findAllWithProperties();
+        String time = TimeFormatter.getHumanRedableTime(System.currentTimeMillis() - start);
+        logger.debug("FindAllWithProperties runtime: " + time + " (" + size(result) + ")");
+    }
+
+    private long size(Iterable<Element> result) {
+        Iterator<Element> it = result.iterator();
+        long n = 0;
+        while (it.hasNext()) {
+          it.next();
+          n++;
+        }
+        return n;
     }
     
     private Element createElement(String typeId) {
