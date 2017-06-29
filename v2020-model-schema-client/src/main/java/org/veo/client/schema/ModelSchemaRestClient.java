@@ -19,25 +19,33 @@
  ******************************************************************************/
 package org.veo.client.schema;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.veo.client.AbstractRestClient;
 import org.veo.schema.model.ElementDefinition;
 
 /**
+ * Client for the model schema REST web service.
+ * 
+ * Set the REST service URL in file: application.properties
+ * 
+ * rest-server.url=http[s]://<HOSTNAME>[:<PORT>]/
+ * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Service
 public class ModelSchemaRestClient extends AbstractRestClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ModelSchemaRestClient.class);
+    private static final Logger log = LoggerFactory.getLogger(ModelSchemaRestClient.class);
 
     public static final String SERVER_URL_DEFAULT = "http://localhost:8090/";
     public static final String PATH_DEFAULT = "/service/model-schema";
-
-    private static final String NOT_IMPLEMENTED_MSG = "Method not implemented by this client. Use trackGameResult(GoalsOfAGameCollection goals) instead";
 
     private String path;
 
@@ -55,37 +63,39 @@ public class ModelSchemaRestClient extends AbstractRestClient {
         setPath(path);
     }
 
-    public ElementDefinition[] getAllElementTypes() {
+    public List<ElementDefinition> getElementTypes() {
         StringBuilder sb = new StringBuilder(getBaseUrl());
         sb.append("allElementTypes");
         String url = sb.toString();
-        if (LOG.isInfoEnabled()) {
-            LOG.info("getAllElementTypes, URL: " + url);
+        if (log.isInfoEnabled()) {
+            log.info("getAllElementTypes, URL: " + url);
         }
-        ResponseEntity<ElementDefinition[]> responseEntity = getRestHandler().getForEntity(url,
-                ElementDefinition[].class);
-        return responseEntity.getBody();
+        ResponseEntity<List<ElementDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<ElementDefinition>>() {
+                });
+        return response.getBody();
 
     }
+    
+    public ElementDefinition getElementType(String type) {
+        StringBuilder sb = new StringBuilder(getBaseUrl());
+        sb.append("elementType/");
+        sb.append(type);
+        String url = sb.toString();
+        if (log.isInfoEnabled()) {
+            log.info("getElementType, URL: " + url);
+        }
+        return getRestHandler().getForObject(url, ElementDefinition .class);
+    }
 
-   
-
-    /* (non-Javadoc)
-     * @see de.sernet.fluke.client.rest.AbstractSecureRestClient#getPath()
-     */
     @Override
     public String getPath() {
         return this.path;
     }
 
-    /* (non-Javadoc)
-     * @see de.sernet.fluke.client.rest.AbstractSecureRestClient#setPath(java.lang.String)
-     */
     @Override
     public void setPath(String path) {
         this.path = path;
     }
-
-   
 
 }
