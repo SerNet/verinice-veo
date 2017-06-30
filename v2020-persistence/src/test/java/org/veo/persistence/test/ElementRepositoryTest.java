@@ -157,6 +157,15 @@ public class ElementRepositoryTest {
     }
     
     @Test
+    public void testSaveAndFindOneWithAll() { 
+        Element element = createElement("org");
+        elementRepository.save(element);
+        Element elementResult = elementRepository.findOneWithAll(element.getUuid());
+        assertNotNull(elementResult);
+        assertEquals(4,elementResult.getProperties().size());
+    }
+    
+    @Test
     public void testFindByTypeId() {
         for (int i = 0; i < 10; i++) {
             Element element = createElement("testFindByTypeId");
