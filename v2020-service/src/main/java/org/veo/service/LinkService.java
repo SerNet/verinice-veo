@@ -19,4 +19,6 @@ public interface LinkService {
     Link save(String sourceId, String destinationId);
     
     Link save(Link link);
+    
+    Iterable<Link> getAll();
 }

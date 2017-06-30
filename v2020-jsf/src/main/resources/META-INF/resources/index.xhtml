@@ -35,6 +35,16 @@
 					<vn:editor />
 				</p:panel>
 			</div>
+			<div class="ui-g-6">
+				<p:panel header="linkmaker 2.0" toggleable="true" collapsed="true">
+					<p:dataTable id="linkmakerTable" var="li" value="#{linkBean.links}" rowKey="#{li.uuid}">
+        				<p:column headerText="uuid">#{li.uuid}</p:column>
+        				<p:column headerText="title">#{li.title}</p:column>
+        				<p:column headerText="source">#{li.source.title}</p:column>
+        				<p:column headerText="target">#{li.destination.title}</p:column>
+					</p:dataTable>
+				</p:panel>
+			</div>
 		</div>
 	</ui:define>
 

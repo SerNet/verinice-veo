@@ -50,4 +50,9 @@ public class LinkServiceImpl implements LinkService {
        return  linkRepository.save(link);
     }
     
+    @Override
+    public Iterable<Link> getAll(){
+        return linkRepository.findAll();
+    }
+    
 }
