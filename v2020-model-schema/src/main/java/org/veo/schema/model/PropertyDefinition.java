@@ -57,6 +57,10 @@ public class PropertyDefinition {
             @JsonProperty(value= "group",
                 required = false) final String group
             ){
+        this.name = name;
+        this.type = type;
+        this.propertyOptionDefinitions = propertyOptionDefinition;
+        this.group = group;
         
     }
     
