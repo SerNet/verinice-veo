@@ -34,7 +34,7 @@ public class ElementServiceImpl implements ElementService {
     
     @Override
     public Element loadWithAllReferences(String uuid) {
-        return elementRepository.findOneWithChildren(uuid);
+        return elementRepository.findOneWithAll(uuid);
     }
 
     @Override

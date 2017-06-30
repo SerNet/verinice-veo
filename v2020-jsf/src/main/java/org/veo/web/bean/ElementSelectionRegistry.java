@@ -29,7 +29,7 @@ import org.veo.model.Element;
  *
  * @author Daniel Murygin dm[at]sernet[dot]de
  */
-@Named( "selectionRegistry")
+@Named( "registry")
 @SessionScoped
 public class ElementSelectionRegistry {
 

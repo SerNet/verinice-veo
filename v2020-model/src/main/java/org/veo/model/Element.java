@@ -88,7 +88,7 @@ public class Element implements Serializable {
     @Column(nullable = false, length = 255)
     private String typeId;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "scope_uuid")
     @JsonIgnore
     private Element scope;
@@ -105,15 +105,14 @@ public class Element implements Serializable {
     private Set<Element> children = new HashSet<>();
     
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @OrderColumn(name="links_outgoing_order", nullable=false)
     @JoinColumn(name = "source_uuid") 
     @JsonIgnore
-    private List<Link> linksOutgoing = new LinkedList<>();
+    private Set<Link> linksOutgoing = new HashSet<>();
     
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "destination_uuid")
     @JsonIgnore
-    private List<Link> linksIncoming = new LinkedList<>();
+    private Set<Link> linksIncoming = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderColumn(name="properties_order", nullable=false)
@@ -151,23 +150,34 @@ public class Element implements Serializable {
         return children;
     }
     
-    public List<Link> getLinksOutgoing() {
+    public Set<Link> getLinksOutgoing() {
         return linksOutgoing;
     }
 
-    public List<Link> getLinksIncoming() {
+    public Set<Link> getLinksIncoming() {
         return linksIncoming;
     }
     
     @JsonIgnore
-    public List<Element> getLinkedDestinations() {
-        List<Element> linksOutgoing = new LinkedList<>();
+    public Set<Element> getLinkedDestinations() {
+        Set<Element> linkedElement = new HashSet<>();
         if(getLinksOutgoing()!=null) {
             for (Link link : getLinksOutgoing()) {
-                linksOutgoing.add(link.getDestination());
+                linkedElement.add(link.getDestination());
             }
         }
-        return linksOutgoing;
+        return linkedElement;
+    }
+    
+    @JsonIgnore
+    public Set<Element> getLinkedSources() {
+        Set<Element> linkedElement = new HashSet<>();
+        if(getLinksIncoming()!=null) {
+            for (Link link : getLinksIncoming()) {
+                linkedElement.add(link.getSource());
+            }
+        }
+        return linkedElement;
     }
     
     public Element getScope() {
@@ -201,7 +211,7 @@ public class Element implements Serializable {
         getChildren().add(children);
     }
 
-    public void setLinksOutgoing(List<Link> linksOutgoing) {
+    public void setLinksOutgoing(Set<Link> linksOutgoing) {
         this.linksOutgoing = linksOutgoing;
     }
     
@@ -209,7 +219,7 @@ public class Element implements Serializable {
         getLinksIncoming().add(link);
     }
 
-    public void setLinksIncoming(List<Link> linksIncoming) {
+    public void setLinksIncoming(Set<Link> linksIncoming) {
         this.linksIncoming = linksIncoming;
     }
     
