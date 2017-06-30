@@ -22,6 +22,7 @@ package org.veo.web.bean;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -40,6 +41,7 @@ import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.model.Element;
 import org.veo.persistence.ElementRepository;
 import org.veo.schema.model.ElementDefinition;
+import org.veo.schema.model.PropertyDefinition;
 import org.veo.web.util.NumericStringComparator;
 
 /**
@@ -66,6 +68,7 @@ public class TreeBean {
     private PrimefacesTreeNode root;
     private PrimefacesTreeNode singleSelectedTreeNode;
     private HashMap<String, ElementDefinition> definitionMap;
+    private Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap;
 
     public void onNodeExpand(NodeExpandEvent event) {
         TreeNode parent = event.getTreeNode();
@@ -104,6 +107,11 @@ public class TreeBean {
         if (singleSelectedTreeNode != null
                 && singleSelectedTreeNode.getClass().isAssignableFrom(PrimefacesTreeNode.class)) {
             this.singleSelectedTreeNode = (PrimefacesTreeNode) singleSelectedTreeNode;
+//            if (this.singleSelectedTreeNode.getModel().getProperties().isEmpty()) {
+                String uuid = this.singleSelectedTreeNode.getModel().getUuid();
+                Element element = elementRepository.findOneWithChildren(uuid);
+                this.singleSelectedTreeNode.setData(element);
+//            }
         } else {
             if (logger.isInfoEnabled())
                 logger.info("Not type of PrimefaceTreenode");
@@ -125,7 +133,6 @@ public class TreeBean {
                 logger.error("Error getting from element cache.", e);
             }
         }
-
         return root;
     }
 
@@ -141,7 +148,7 @@ public class TreeBean {
 
         long currentTimeMillis = System.currentTimeMillis();
         if (logger.isDebugEnabled()) {
-            logger.debug("Load data: start" + currentTimeMillis);
+            logger.debug("Load data start: " + currentTimeMillis);
         }
         Iterable<Element> findAll = elementRepository.findAll();
         if (logger.isDebugEnabled()) {
@@ -149,10 +156,14 @@ public class TreeBean {
         }
 
         definitionMap = new HashMap<>();
+        propertyDefinitionMap = new HashMap<>();
         List<ElementDefinition> elementTypes = schemaService.getElementTypes();
         printElementDefinition(elementTypes);
 
         elementTypes.stream().forEach(e -> {
+            Map<String, PropertyDefinition> m = new HashMap<>();
+            e.getProperties().forEach(pd -> m.put(pd.getName(), pd));
+            propertyDefinitionMap.put(e.getElementType(), m);
             definitionMap.put(e.getElementType(), e);
         });
 
@@ -193,7 +204,6 @@ public class TreeBean {
         if (logger.isDebugEnabled()) {
             logger.debug("transforming elements " + elements.size() + " to go.");
         }
-
         int size = hashMap.size();
 
         HashSet<Element> remainElements = new HashSet<>(elements);
@@ -239,6 +249,10 @@ public class TreeBean {
 
     public HashMap<String, ElementDefinition> getDefinitionMap() {
         return definitionMap;
+    }
+
+    public Map<String, Map<String, PropertyDefinition>> getPropertyDefinitionMap() {
+        return propertyDefinitionMap;
     }
 
 }

@@ -21,6 +21,7 @@ package org.veo.web.bean;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -28,14 +29,15 @@ import javax.inject.Named;
 
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
+import org.veo.schema.model.PropertyDefinition;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.FluentIterable;
 
 /**
  * @author urszeidler
  *
  */
-@Named( "elementEditor-model")
+@Named( "elementEditor")
 @SessionScoped
 public class ElementEditor {
 
@@ -60,14 +62,13 @@ public class ElementEditor {
         public String getKey() {
             return elementProperty.getUuid();
         }
-        
+
         public Object getValue() {
-            if(getIsText())
+            if (getIsText())
                 return elementProperty.getText();
             else if (getisDate())
                 return elementProperty.getDate();
-                
-            
+
             return elementProperty.toString();
         }
 
@@ -76,7 +77,7 @@ public class ElementEditor {
         }
 
         public boolean getisDate() {
-            return elementProperty.getDate()!=null;
+            return elementProperty.getDate() != null;
         }
 
         public boolean getisEditable() {
@@ -94,14 +95,13 @@ public class ElementEditor {
         public boolean isShowLabel() {
             return true;
         }
-        
+
         public boolean getIsSingleSelect() {
             return false;
         }
 
-
         public boolean getIsText() {
-            return elementProperty.getText()!=null;
+            return elementProperty.getText() != null;
         }
 
         public List<?> getOptionList() {
@@ -119,15 +119,26 @@ public class ElementEditor {
             return Collections.emptyList();
         }
 
-        return Lists.transform(selectedElement.getProperties(),
-                i -> new ElementEditor.PropertyEditor(i));
+        Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap = tree
+                .getPropertyDefinitionMap();
+        Map<String, PropertyDefinition> map = propertyDefinitionMap
+                .get(selectedElement.getTypeId());
+        if (map == null)
+            return Collections.emptyList();
+
+        return FluentIterable.from(selectedElement.getProperties())
+                .filter(input -> map.containsKey(input.getTypeId())).transform(i -> new ElementEditor.PropertyEditor(i)).toList();
     }
 
     public List<?> getNoLabelPropertyList() {
         return Collections.emptyList();
     }
-    
+
     public List<?> getLabelPropertyList() {
         return getProperties();
+    }
+
+    public void setTree(TreeBean tree) {
+        this.tree = tree;
     }
 }

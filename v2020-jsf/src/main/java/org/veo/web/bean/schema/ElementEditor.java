@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
 
 import org.veo.model.Element;
 import org.veo.schema.model.PropertyDefinition;
@@ -38,7 +39,7 @@ import com.google.common.collect.FluentIterable;
  * @author urszeidler
  *
  */
-@ManagedBean(name = "elementEditor")
+@ManagedBean(name = "elementEditor-schema")
 @SessionScoped
 public class ElementEditor {
 
@@ -112,7 +113,7 @@ public class ElementEditor {
         }
     }
 
-    @ManagedProperty("#{treeBean}")
+    @Inject
     private TreeBean tree;
 
     public PropertyEditor buildEditor(PropertyDefinition input) {
