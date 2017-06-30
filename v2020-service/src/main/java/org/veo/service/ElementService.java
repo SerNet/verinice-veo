@@ -30,4 +30,8 @@ public interface ElementService {
     public Element loadWithAllReferences(String uuid);
     
     public List<Element> loadAll(String typeId);
+    
+    public Iterable<Element> findAll();
+    
+    public List<String> allRootElements();
 }
