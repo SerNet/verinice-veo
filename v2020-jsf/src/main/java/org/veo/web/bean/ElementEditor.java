@@ -30,14 +30,16 @@ import javax.inject.Named;
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.schema.model.PropertyDefinition;
+import org.veo.schema.model.PropertyDefinition.PropertyType;
 
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 
 /**
  * @author urszeidler
  *
  */
-@Named( "elementEditor")
+@Named("elementEditor")
 @SessionScoped
 public class ElementEditor {
 
@@ -46,13 +48,16 @@ public class ElementEditor {
 
     public class PropertyEditor {
         private ElementProperty elementProperty;
+        private PropertyDefinition propertyDefinition;
 
-        public PropertyEditor(ElementProperty input) {
-            this.elementProperty = input;
+        public PropertyEditor(ElementProperty elementProperty,
+                PropertyDefinition propertyDefinition) {
+            this.elementProperty = elementProperty;
+            this.propertyDefinition = propertyDefinition;
         }
 
         public boolean isBooleanSelect() {
-            return false;
+            return propertyDefinition.getType() == PropertyType.BOOLEAN;
         }
 
         public String getName() {
@@ -64,11 +69,16 @@ public class ElementEditor {
         }
 
         public Object getValue() {
-            if (getIsText())
+            System.out.println(elementProperty.getLabel()+" :"+elementProperty.getText()+ ":"+elementProperty.getNumber()+":"+elementProperty.getDate());
+            if (isStringValue())
                 return elementProperty.getText();
             else if (getisDate())
                 return elementProperty.getDate();
-
+            else if (isBooleanSelect()) {
+                return elementProperty.getText();
+            }else if(isNumber()){
+                return elementProperty.getNumber();
+            }
             return elementProperty.toString();
         }
 
@@ -77,7 +87,11 @@ public class ElementEditor {
         }
 
         public boolean getisDate() {
-            return elementProperty.getDate() != null;
+            return propertyDefinition.getType() == PropertyType.DATE;
+        }
+
+        public boolean isNumber() {
+            return propertyDefinition.getType() == PropertyType.NUMBER;
         }
 
         public boolean getisEditable() {
@@ -89,7 +103,7 @@ public class ElementEditor {
         }
 
         public boolean getisLine() {
-            return false;
+            return propertyDefinition.getType() == PropertyType.LABEL;
         }
 
         public boolean isShowLabel() {
@@ -101,16 +115,23 @@ public class ElementEditor {
         }
 
         public boolean getIsText() {
-            return elementProperty.getText() != null;
+            return propertyDefinition.getType() == PropertyType.TEXT;
         }
 
         public List<?> getOptionList() {
             return Collections.emptyList();
         }
+
+        private boolean isStringValue() {
+            return propertyDefinition.getType() == PropertyType.LABEL
+                    || propertyDefinition.getType() == PropertyType.TEXT
+                    || propertyDefinition.getType() == PropertyType.NUMBER;
+        }
     }
 
-    public PropertyEditor buildEditor(ElementProperty input) {
-        return new ElementEditor.PropertyEditor(input);
+    public PropertyEditor buildEditor(ElementProperty input,
+            PropertyDefinition propertyDefinition) {
+        return new ElementEditor.PropertyEditor(input, propertyDefinition);
     }
 
     public List<PropertyEditor> getProperties() {
@@ -126,8 +147,12 @@ public class ElementEditor {
         if (map == null)
             return Collections.emptyList();
 
-        return FluentIterable.from(selectedElement.getProperties())
-                .filter(input -> map.containsKey(input.getTypeId())).transform(i -> new ElementEditor.PropertyEditor(i)).toList();
+        ImmutableList<PropertyEditor> list = FluentIterable.from(selectedElement.getProperties())
+                .filter(input -> map.containsKey(input.getTypeId()))
+                .transform(i -> new ElementEditor.PropertyEditor(i, map.get(i.getTypeId()))).toList();
+        
+        return list;
+                //.toSortedList(new NumericStringComparator());
     }
 
     public List<?> getNoLabelPropertyList() {

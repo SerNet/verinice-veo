@@ -7,12 +7,13 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:vn="http://www.verinice.org/taglib">
 
-		<h:form id="editForm" aTestTag="test">
+		<h:form id="editForm" title="test">
 			<div class="ui-g ui-fluid">
 				<div class="ui-g-12">
 					<p:accordionPanel id="groupAccordion" dynamic="true">
 
 						<!-- 				<p:ajax event="tabChange" listener="#{link.init}" update="linkPanel" /> -->
+
 
 						<p:tab title="#{msgEdit['general']}">
 							<vn:pprops list="#{elementEditor.labelPropertyList}"

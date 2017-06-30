@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -38,12 +37,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.model.Element;
-import org.veo.persistence.ElementRepository;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.service.ElementService;
 import org.veo.web.bean.model.PrimefacesTreeNode;
 import org.veo.web.util.NumericStringComparator;
+
+import com.google.common.collect.FluentIterable;
 
 /**
  * The management bean for the element tree.
@@ -57,9 +57,9 @@ public class TreeBean {
 
     private static final Logger logger = LoggerFactory.getLogger(TreeBean.class.getName());
 
-    @Inject
-    private ElementRepository elementRepository;
-    
+    // @Inject
+    // private ElementRepository elementRepository;
+    //
     @Inject
     private ElementService elementService;
 
@@ -68,7 +68,7 @@ public class TreeBean {
 
     @Inject
     private ModelSchemaRestClient schemaService;
-    
+
     @Inject
     private ElementSelectionRegistry selectionRegistry;
 
@@ -133,27 +133,26 @@ public class TreeBean {
         return elementService.loadWithAllReferences(uuid);
     }
 
-    private PrimefacesTreeNode<Element> createRoot_FromCache() {
-        final Element element = new Element();
-        element.setTitle("root");
-        root = new PrimefacesTreeNode<>(element);
-
-        List<String> allRootElements = elementRepository.allRootElements();
-        for (String string : allRootElements) {
-            try {
-                Element element2 = cacheService.getElementCache().get(string);
-                transformElement(element2, root);
-            } catch (ExecutionException e) {
-                logger.error("Error getting from element cache.", e);
-            }
-        }
-        return root;
-    }
-
-    private void transformElement(Element element2, PrimefacesTreeNode<Element> root2) {
-        // TODO Auto-generated method stub
-
-    }
+//    private PrimefacesTreeNode<Element> createRoot_FromCache() {
+//        final Element element = new Element();
+//        element.setTitle("root");
+//        root = new PrimefacesTreeNode<>(element);
+//
+//        List<String> allRootElements = elementService.allRootElements();
+//        for (String string : allRootElements) {
+//            try {
+//                Element element2 = cacheService.getElementCache().get(string);
+//                transformElement(element2, root);
+//            } catch (ExecutionException e) {
+//                logger.error("Error getting from element cache.", e);
+//            }
+//        }
+//        return root;
+//    }
+//
+//    private void transformElement(Element element2, PrimefacesTreeNode<Element> root2) {
+//
+//    }
 
     /**
      * Create the whole tree by selection the data from the repository data.
@@ -169,26 +168,18 @@ public class TreeBean {
         if (logger.isDebugEnabled()) {
             logger.debug("Load data start: " + currentTimeMillis);
         }
-        Iterable<Element> findAll = elementRepository.findAll();
+        Iterable<Element> findAll = elementService.findAll();
         if (logger.isDebugEnabled()) {
             logger.debug("Load Data stop: " + (System.currentTimeMillis() - currentTimeMillis));
         }
 
-        definitionMap = new HashMap<>();
-        propertyDefinitionMap = new HashMap<>();
-        List<ElementDefinition> elementTypes = schemaService.getElementTypes();
-        printElementDefinition(elementTypes);
-
-        elementTypes.stream().forEach(e -> {
-            Map<String, PropertyDefinition> m = new HashMap<>();
-            e.getProperties().forEach(pd -> m.put(pd.getName(), pd));
-            propertyDefinitionMap.put(e.getElementType(), m);
-            definitionMap.put(e.getElementType(), e);
-        });
+        if (definitionMap == null)
+            createDefinitionMaps();
 
         HashMap<Element, PrimefacesTreeNode<Element>> hashMap = new HashMap<>();
         Set<Element> elements = new HashSet<>(50);
-        findAll.forEach(t -> {
+
+        FluentIterable.from(findAll).stream().sorted(new NumericStringComparator()).forEach(t -> {
             if (t.getParent() == null) {
                 PrimefacesTreeNode<Element> treeNode = new PrimefacesTreeNode<>(t, root);
                 hashMap.put(t, treeNode);
@@ -209,20 +200,26 @@ public class TreeBean {
         return root;
     }
 
-    private void printElementDefinition(List<ElementDefinition> elementTypes) {
-        elementTypes.forEach(et -> {
-            logger.debug("Inspecting element definition: " + et.getElementType());
-            et.getProperties().forEach(p -> logger
-                    .debug("-->" + p.getGroup() + " " + p.getName() + " " + p.getType()));
-        });
+    private void createDefinitionMaps() {
+        definitionMap = new HashMap<>();
+        propertyDefinitionMap = new HashMap<>();
+        List<ElementDefinition> elementTypes = schemaService.getElementTypes();
 
+        elementTypes.stream().forEach(e -> {
+            Map<String, PropertyDefinition> m = new HashMap<>();
+            e.getProperties().forEach(pd -> m.put(pd.getName(), pd));
+            propertyDefinitionMap.put(e.getElementType(), m);
+            definitionMap.put(e.getElementType(), e);
+        });
     }
 
     /**
      * Transform the sub elements of the tree.
      * 
-     * @param hashMap the already transformed elements
-     * @param elements the element need to transform
+     * @param hashMap
+     *            the already transformed elements
+     * @param elements
+     *            the element need to transform
      */
     private void tranformElements(HashMap<Element, PrimefacesTreeNode<Element>> hashMap,
             Set<Element> elements) {
@@ -259,10 +256,6 @@ public class TreeBean {
 
     public void setRoot(PrimefacesTreeNode<Element> root) {
         this.root = root;
-    }
-
-    public void setElementRepository(ElementRepository elementRepository) {
-        this.elementRepository = elementRepository;
     }
 
     public void setSchemaService(ModelSchemaRestClient schemaService) {
