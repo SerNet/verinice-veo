@@ -20,11 +20,12 @@
 package org.veo.web.bean;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.veo.model.Element;
 import org.veo.persistence.ElementRepository;
 
@@ -38,11 +39,12 @@ import com.google.common.cache.RemovalNotification;
  * @author urszeidler
  *
  */
-@Component
+@Named( "CacheService")
+@ApplicationScoped
 public class CacheService {
     private static final Logger logger = LoggerFactory.getLogger(CacheService.class.getName());
 
-    @Autowired
+    @Inject
     private ElementRepository elementRepository;
 
     private LoadingCache<String, Element> elementCache;

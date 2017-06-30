@@ -25,9 +25,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
@@ -47,19 +48,19 @@ import org.veo.web.util.NumericStringComparator;
  * @author urszeidler
  *
  */
-// @Component("Element-Tree-model")
-@ManagedBean(name = "treeBean")
+@Named( "treeBean")
 @SessionScoped
 public class TreeBean {
 
     private static final Logger logger = LoggerFactory.getLogger(TreeBean.class.getName());
 
-    // injected
-    @ManagedProperty("#{applicationBean.elementRepository}")
+    @Inject
     private ElementRepository elementRepository;
-    @ManagedProperty("#{applicationBean.cacheService}")
+    
+    @Inject
     private CacheService cacheService;
-    @ManagedProperty("#{applicationBean.schemaService}")
+    
+    @Inject
     private ModelSchemaRestClient schemaService;
 
     private PrimefacesTreeNode root;

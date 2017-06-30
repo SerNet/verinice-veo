@@ -22,8 +22,9 @@ package org.veo.web.bean;
 import java.util.Collections;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
@@ -34,10 +35,11 @@ import com.google.common.collect.Lists;
  * @author urszeidler
  *
  */
-@ManagedBean(name="elementEditor-model")
+@Named( "elementEditor-model")
 @SessionScoped
 public class ElementEditor {
-//    @Autowired
+
+    @Inject
     private TreeBean tree;
 
     public class PropertyEditor {
