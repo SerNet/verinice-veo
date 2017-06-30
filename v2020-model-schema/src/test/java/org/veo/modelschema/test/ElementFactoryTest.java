@@ -22,7 +22,6 @@ package org.veo.modelschema.test;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,9 +85,6 @@ public class ElementFactoryTest {
             assertTrue(pDefinition.getName() != null);
             assertTrue(pDefinition.getType() != null);
             assertTrue(pDefinition.getGroup() != null);
-            assertTrue(pDefinition.getPropertyOptionDefinitons() != null);
         }
-        Set<PropertyDefinition> propertyDefinitions = definition.getProperties();
-        
     }
 }
