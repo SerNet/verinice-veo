@@ -31,10 +31,18 @@ public class ElementServiceImpl implements ElementService {
     public Element load(String uuid) {
         return elementRepository.findOne(uuid);
     }
+    
+    @Override
+    public Element loadWithAllReferences(String uuid) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public List<Element> loadAll(String typeId) {
         return elementRepository.findByTypeId(typeId);
     }
+
+    
     
 }

@@ -18,6 +18,16 @@ public interface ElementService {
     public Element save(Element element);
 
     public Element load(String uuid);
+
+    /**
+     * Loads an element with references to other entities.
+     * Properties, parent, childs and links are loaded in an elemwnt
+     * returned by this method.
+     * 
+     * @param uuid The id of an element
+     * @return Element with given id and loaded references to all other entities
+     */
+    public Element loadWithAllReferences(String uuid);
     
     public List<Element> loadAll(String typeId);
 }

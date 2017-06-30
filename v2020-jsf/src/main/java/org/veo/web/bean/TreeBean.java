@@ -41,6 +41,7 @@ import org.veo.model.Element;
 import org.veo.persistence.ElementRepository;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.PropertyDefinition;
+import org.veo.service.ElementService;
 import org.veo.web.bean.model.PrimefacesTreeNode;
 import org.veo.web.util.NumericStringComparator;
 
@@ -58,12 +59,18 @@ public class TreeBean {
 
     @Inject
     private ElementRepository elementRepository;
+    
+    @Inject
+    private ElementService elementService;
 
     @Inject
     private CacheService cacheService;
 
     @Inject
     private ModelSchemaRestClient schemaService;
+    
+    @Inject
+    private ElementSelectionRegistry selectionRegistry;
 
     private PrimefacesTreeNode<Element> root;
     private PrimefacesTreeNode<Element> singleSelectedTreeNode;
@@ -112,13 +119,18 @@ public class TreeBean {
         if (singleSelectedTreeNode instanceof PrimefacesTreeNode<?>) {
             this.singleSelectedTreeNode = (PrimefacesTreeNode<Element>) singleSelectedTreeNode;
             String uuid = this.singleSelectedTreeNode.getModel().getUuid();
-            Element element = elementRepository.findOneWithChildren(uuid);
+            Element element = loadSelectedElement(uuid);
             this.singleSelectedTreeNode.setData(element);
+            selectionRegistry.setSelectedElement(element);
         } else {
             if (logger.isInfoEnabled())
                 logger.info("Not type of PrimefaceTreenode");
         }
 
+    }
+
+    private Element loadSelectedElement(String uuid) {
+        return elementService.loadWithAllReferences(uuid);
     }
 
     private PrimefacesTreeNode<Element> createRoot_FromCache() {
