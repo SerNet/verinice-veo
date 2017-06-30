@@ -32,10 +32,12 @@ import org.veo.model.Element;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.schema.model.PropertyDefinition.PropertyType;
 import org.veo.web.bean.TreeBean;
+import org.veo.web.bean.service.CacheService;
 
 import com.google.common.collect.FluentIterable;
 
 /**
+ * Would be used as editor bean for the schema model.
  * @author urszeidler
  *
  */
@@ -114,6 +116,8 @@ public class ElementEditor {
     }
 
     @Inject
+    private CacheService cacheService;
+    @Inject
     private TreeBean tree;
 
     public PropertyEditor buildEditor(PropertyDefinition input) {
@@ -122,11 +126,11 @@ public class ElementEditor {
 
     public List<PropertyEditor> getProperties() {
         Element selectedElement = tree.getSelectedElement();
-        if (selectedElement==null || !tree.getDefinitionMap().containsKey(selectedElement.getTypeId())) {
+        if (selectedElement==null || !cacheService.getDefinitionMap().containsKey(selectedElement.getTypeId())) {
             return Collections.emptyList();
         }
         
-        Set<PropertyDefinition> propertyDef = tree.getDefinitionMap().get(selectedElement.getTypeId()).getProperties();
+        Set<PropertyDefinition> propertyDef = cacheService.getDefinitionMap().get(selectedElement.getTypeId()).getProperties();
         return FluentIterable.from(propertyDef).transform(i -> new ElementEditor.PropertyEditor(i)).toList();
      }
 

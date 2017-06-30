@@ -21,8 +21,6 @@ package org.veo.web.bean;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.SessionScoped;
@@ -35,12 +33,10 @@ import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.model.Element;
-import org.veo.schema.model.ElementDefinition;
-import org.veo.schema.model.PropertyDefinition;
 import org.veo.service.ElementService;
 import org.veo.web.bean.model.PrimefacesTreeNode;
+import org.veo.web.bean.service.CacheService;
 import org.veo.web.util.NumericStringComparator;
 
 import com.google.common.collect.FluentIterable;
@@ -66,16 +62,16 @@ public class TreeBean {
     @Inject
     private CacheService cacheService;
 
-    @Inject
-    private ModelSchemaRestClient schemaService;
+//    @Inject
+//    private ModelSchemaRestClient schemaService;
 
     @Inject
     private ElementSelectionRegistry selectionRegistry;
 
     private PrimefacesTreeNode<Element> root;
     private PrimefacesTreeNode<Element> singleSelectedTreeNode;
-    private HashMap<String, ElementDefinition> definitionMap;
-    private Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap;
+//    private HashMap<String, ElementDefinition> definitionMap;
+//    private Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap;
 
     public void onNodeExpand(NodeExpandEvent event) {
         TreeNode parent = event.getTreeNode();
@@ -111,6 +107,7 @@ public class TreeBean {
      * 
      * @param singleSelectedTreeNode
      */
+    @SuppressWarnings("unchecked")
     public void setSingleSelectedNode(TreeNode singleSelectedTreeNode) {
         if (logger.isDebugEnabled()) {
             logger.debug("set single selection: " + singleSelectedTreeNode);
@@ -126,36 +123,14 @@ public class TreeBean {
             if (logger.isInfoEnabled())
                 logger.info("Not type of PrimefaceTreenode");
         }
-
     }
 
     private Element loadSelectedElement(String uuid) {
-        return elementService.loadWithAllReferences(uuid);
+        return cacheService.getElementByUuid(uuid); 
     }
 
-//    private PrimefacesTreeNode<Element> createRoot_FromCache() {
-//        final Element element = new Element();
-//        element.setTitle("root");
-//        root = new PrimefacesTreeNode<>(element);
-//
-//        List<String> allRootElements = elementService.allRootElements();
-//        for (String string : allRootElements) {
-//            try {
-//                Element element2 = cacheService.getElementCache().get(string);
-//                transformElement(element2, root);
-//            } catch (ExecutionException e) {
-//                logger.error("Error getting from element cache.", e);
-//            }
-//        }
-//        return root;
-//    }
-//
-//    private void transformElement(Element element2, PrimefacesTreeNode<Element> root2) {
-//
-//    }
-
     /**
-     * Create the whole tree by selection the data from the repository data.
+     * Create the whole tree by selection the data from the {@link ElementService}.
      * 
      * @return
      */
@@ -173,11 +148,8 @@ public class TreeBean {
             logger.debug("Load Data stop: " + (System.currentTimeMillis() - currentTimeMillis));
         }
 
-        if (definitionMap == null)
-            createDefinitionMaps();
-
         HashMap<Element, PrimefacesTreeNode<Element>> hashMap = new HashMap<>();
-        Set<Element> elements = new HashSet<>(50);
+        Set<Element> elements = new HashSet<>(250);
 
         FluentIterable.from(findAll).stream().sorted(new NumericStringComparator()).forEach(t -> {
             if (t.getParent() == null) {
@@ -198,19 +170,6 @@ public class TreeBean {
                     "transform elements stop: " + (System.currentTimeMillis() - currentTimeMillis));
         }
         return root;
-    }
-
-    private void createDefinitionMaps() {
-        definitionMap = new HashMap<>();
-        propertyDefinitionMap = new HashMap<>();
-        List<ElementDefinition> elementTypes = schemaService.getElementTypes();
-
-        elementTypes.stream().forEach(e -> {
-            Map<String, PropertyDefinition> m = new HashMap<>();
-            e.getProperties().forEach(pd -> m.put(pd.getName(), pd));
-            propertyDefinitionMap.put(e.getElementType(), m);
-            definitionMap.put(e.getElementType(), e);
-        });
     }
 
     /**
@@ -257,21 +216,4 @@ public class TreeBean {
     public void setRoot(PrimefacesTreeNode<Element> root) {
         this.root = root;
     }
-
-    public void setSchemaService(ModelSchemaRestClient schemaService) {
-        this.schemaService = schemaService;
-    }
-
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
-    }
-
-    public Map<String, ElementDefinition> getDefinitionMap() {
-        return definitionMap;
-    }
-
-    public Map<String, Map<String, PropertyDefinition>> getPropertyDefinitionMap() {
-        return propertyDefinitionMap;
-    }
-
 }

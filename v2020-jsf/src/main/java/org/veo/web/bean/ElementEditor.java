@@ -27,13 +27,15 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.schema.model.PropertyDefinition.PropertyType;
+import org.veo.web.bean.service.CacheService;
 
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author urszeidler
@@ -42,9 +44,12 @@ import com.google.common.collect.ImmutableList;
 @Named("elementEditor")
 @SessionScoped
 public class ElementEditor {
+    private static final Logger logger = LoggerFactory.getLogger(ElementEditor.class.getName());
 
     @Inject
     private TreeBean tree;
+    @Inject
+    private CacheService cacheService;
 
     public class PropertyEditor {
         private ElementProperty elementProperty;
@@ -69,14 +74,18 @@ public class ElementEditor {
         }
 
         public Object getValue() {
-            System.out.println(elementProperty.getLabel()+" :"+elementProperty.getText()+ ":"+elementProperty.getNumber()+":"+elementProperty.getDate());
+            if (logger.isDebugEnabled()) {
+                logger.debug(elementProperty.getLabel() + " :" + elementProperty.getText() + ":"
+                        + elementProperty.getNumber() + ":" + elementProperty.getDate());
+            }
+
             if (isStringValue())
                 return elementProperty.getText();
             else if (getisDate())
                 return elementProperty.getDate();
             else if (isBooleanSelect()) {
                 return elementProperty.getText();
-            }else if(isNumber()){
+            } else if (isNumber()) {
                 return elementProperty.getNumber();
             }
             return elementProperty.toString();
@@ -140,26 +149,22 @@ public class ElementEditor {
             return Collections.emptyList();
         }
 
-        Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap = tree
-                .getPropertyDefinitionMap();
-        Map<String, PropertyDefinition> map = propertyDefinitionMap
+        Map<String, PropertyDefinition> map = cacheService.getPropertyDefinitionMap()
                 .get(selectedElement.getTypeId());
         if (map == null)
             return Collections.emptyList();
 
-        ImmutableList<PropertyEditor> list = FluentIterable.from(selectedElement.getProperties())
+        return FluentIterable.from(selectedElement.getProperties())
                 .filter(input -> map.containsKey(input.getTypeId()))
-                .transform(i -> new ElementEditor.PropertyEditor(i, map.get(i.getTypeId()))).toList();
-        
-        return list;
-                //.toSortedList(new NumericStringComparator());
+                .transform(i -> new ElementEditor.PropertyEditor(i, map.get(i.getTypeId())))
+                .toList();
     }
 
-    public List<?> getNoLabelPropertyList() {
+    public List<PropertyEditor> getNoLabelPropertyList() {
         return Collections.emptyList();
     }
 
-    public List<?> getLabelPropertyList() {
+    public List<PropertyEditor> getLabelPropertyList() {
         return getProperties();
     }
 
