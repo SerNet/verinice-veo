@@ -22,6 +22,7 @@ package org.veo.modelschema.test;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
+import org.veo.schema.model.PropertyDefinition;
 import org.veo.service.ElementDefinitionFactory;
 
 /**
@@ -78,5 +80,15 @@ public class ElementFactoryTest {
     public void testGetElementDefinition(){
         Map<String, ElementDefinition> map = ElementDefinitionFactory.getInstance().getElementDefinitions();
         assertTrue(map.containsKey(TEST_ELEMENT_TYPE));
+        ElementDefinition definition = map.get(TEST_ELEMENT_TYPE);
+        assertTrue(definition.getProperties().size() > 0);
+        for (PropertyDefinition pDefinition : definition.getProperties()){
+            assertTrue(pDefinition.getName() != null);
+            assertTrue(pDefinition.getType() != null);
+            assertTrue(pDefinition.getGroup() != null);
+            assertTrue(pDefinition.getPropertyOptionDefinitons() != null);
+        }
+        Set<PropertyDefinition> propertyDefinitions = definition.getProperties();
+        
     }
 }
