@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import javax.enterprise.context.SessionScoped;
-import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -42,6 +41,7 @@ import org.veo.model.Element;
 import org.veo.persistence.ElementRepository;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.PropertyDefinition;
+import org.veo.web.bean.model.PrimefacesTreeNode;
 import org.veo.web.util.NumericStringComparator;
 
 /**
@@ -50,7 +50,7 @@ import org.veo.web.util.NumericStringComparator;
  * @author urszeidler
  *
  */
-@Named( "treeBean")
+@Named("treeBean")
 @SessionScoped
 public class TreeBean {
 
@@ -58,15 +58,15 @@ public class TreeBean {
 
     @Inject
     private ElementRepository elementRepository;
-    
+
     @Inject
     private CacheService cacheService;
-    
+
     @Inject
     private ModelSchemaRestClient schemaService;
 
-    private PrimefacesTreeNode root;
-    private PrimefacesTreeNode singleSelectedTreeNode;
+    private PrimefacesTreeNode<Element> root;
+    private PrimefacesTreeNode<Element> singleSelectedTreeNode;
     private HashMap<String, ElementDefinition> definitionMap;
     private Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap;
 
@@ -99,19 +99,21 @@ public class TreeBean {
         return singleSelectedTreeNode;
     }
 
+    /**
+     * Store the selection from the widget element.
+     * 
+     * @param singleSelectedTreeNode
+     */
     public void setSingleSelectedNode(TreeNode singleSelectedTreeNode) {
         if (logger.isDebugEnabled()) {
             logger.debug("set single selection: " + singleSelectedTreeNode);
         }
 
-        if (singleSelectedTreeNode != null
-                && singleSelectedTreeNode.getClass().isAssignableFrom(PrimefacesTreeNode.class)) {
-            this.singleSelectedTreeNode = (PrimefacesTreeNode) singleSelectedTreeNode;
-//            if (this.singleSelectedTreeNode.getModel().getProperties().isEmpty()) {
-                String uuid = this.singleSelectedTreeNode.getModel().getUuid();
-                Element element = elementRepository.findOneWithChildren(uuid);
-                this.singleSelectedTreeNode.setData(element);
-//            }
+        if (singleSelectedTreeNode instanceof PrimefacesTreeNode<?>) {
+            this.singleSelectedTreeNode = (PrimefacesTreeNode<Element>) singleSelectedTreeNode;
+            String uuid = this.singleSelectedTreeNode.getModel().getUuid();
+            Element element = elementRepository.findOneWithChildren(uuid);
+            this.singleSelectedTreeNode.setData(element);
         } else {
             if (logger.isInfoEnabled())
                 logger.info("Not type of PrimefaceTreenode");
@@ -119,10 +121,10 @@ public class TreeBean {
 
     }
 
-    private PrimefacesTreeNode createRoot_FromCache() {
+    private PrimefacesTreeNode<Element> createRoot_FromCache() {
         final Element element = new Element();
         element.setTitle("root");
-        root = new PrimefacesTreeNode(element);
+        root = new PrimefacesTreeNode<>(element);
 
         List<String> allRootElements = elementRepository.allRootElements();
         for (String string : allRootElements) {
@@ -136,15 +138,20 @@ public class TreeBean {
         return root;
     }
 
-    private void transformElement(Element element2, PrimefacesTreeNode root2) {
+    private void transformElement(Element element2, PrimefacesTreeNode<Element> root2) {
         // TODO Auto-generated method stub
 
     }
 
-    private PrimefacesTreeNode createRoot() {
+    /**
+     * Create the whole tree by selection the data from the repository data.
+     * 
+     * @return
+     */
+    private PrimefacesTreeNode<Element> createRoot() {
         final Element element = new Element();
         element.setTitle("root");
-        root = new PrimefacesTreeNode(element);
+        root = new PrimefacesTreeNode<>(element);
 
         long currentTimeMillis = System.currentTimeMillis();
         if (logger.isDebugEnabled()) {
@@ -167,11 +174,11 @@ public class TreeBean {
             definitionMap.put(e.getElementType(), e);
         });
 
-        HashMap<Element, PrimefacesTreeNode> hashMap = new HashMap<>();
+        HashMap<Element, PrimefacesTreeNode<Element>> hashMap = new HashMap<>();
         Set<Element> elements = new HashSet<>(50);
         findAll.forEach(t -> {
             if (t.getParent() == null) {
-                PrimefacesTreeNode treeNode = new PrimefacesTreeNode(t, root);
+                PrimefacesTreeNode<Element> treeNode = new PrimefacesTreeNode<>(t, root);
                 hashMap.put(t, treeNode);
             } else {
                 elements.add(t);
@@ -199,7 +206,13 @@ public class TreeBean {
 
     }
 
-    private void tranformElements(HashMap<Element, PrimefacesTreeNode> hashMap,
+    /**
+     * Transform the sub elements of the tree.
+     * 
+     * @param hashMap the already transformed elements
+     * @param elements the element need to transform
+     */
+    private void tranformElements(HashMap<Element, PrimefacesTreeNode<Element>> hashMap,
             Set<Element> elements) {
         if (logger.isDebugEnabled()) {
             logger.debug("transforming elements " + elements.size() + " to go.");
@@ -208,9 +221,9 @@ public class TreeBean {
 
         HashSet<Element> remainElements = new HashSet<>(elements);
         elements.stream().sorted(new NumericStringComparator()).forEach(e -> {
-            PrimefacesTreeNode treeNode = hashMap.get(e.getParent());
+            PrimefacesTreeNode<Element> treeNode = hashMap.get(e.getParent());
             if (treeNode != null) {
-                PrimefacesTreeNode childNode = new PrimefacesTreeNode(e, treeNode);
+                PrimefacesTreeNode<Element> childNode = new PrimefacesTreeNode<>(e, treeNode);
                 hashMap.put(e, childNode);
                 remainElements.remove(e);
             }
@@ -218,20 +231,21 @@ public class TreeBean {
         if (hashMap.size() > size) {
             tranformElements(hashMap, remainElements);
         } else if (!remainElements.isEmpty()) {
+            // maybe do some thing more than log
             if (logger.isDebugEnabled()) {
                 logger.debug("Not all elemets are transformed");
             }
         }
     }
 
-    public PrimefacesTreeNode getRoot() {
+    public PrimefacesTreeNode<Element> getRoot() {
         if (root == null) {
             root = createRoot();
         }
         return root;
     }
 
-    public void setRoot(PrimefacesTreeNode root) {
+    public void setRoot(PrimefacesTreeNode<Element> root) {
         this.root = root;
     }
 
@@ -247,7 +261,7 @@ public class TreeBean {
         this.cacheService = cacheService;
     }
 
-    public HashMap<String, ElementDefinition> getDefinitionMap() {
+    public Map<String, ElementDefinition> getDefinitionMap() {
         return definitionMap;
     }
 
