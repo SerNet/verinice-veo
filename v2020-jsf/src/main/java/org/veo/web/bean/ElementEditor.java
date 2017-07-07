@@ -47,7 +47,7 @@ public class ElementEditor {
     private static final Logger logger = LoggerFactory.getLogger(ElementEditor.class.getName());
 
     @Inject
-    private TreeBean tree;
+    private ElementSelectionRegistry selectionRegistry;
     @Inject
     private CacheService cacheService;
 
@@ -144,15 +144,12 @@ public class ElementEditor {
     }
 
     public List<PropertyEditor> getProperties() {
-        Element selectedElement = tree.getSelectedElement();
+        Element selectedElement = selectionRegistry.getSelectedElement();
         if (selectedElement == null) {
             return Collections.emptyList();
         }
 
-        Map<String, PropertyDefinition> map = cacheService.getPropertyDefinitionMap()
-                .get(selectedElement.getTypeId());
-        if (map == null)
-            return Collections.emptyList();
+        Map<String, PropertyDefinition> map = cacheService.getElementDefinitionByType(selectedElement.getTypeId());
 
         return FluentIterable.from(selectedElement.getProperties())
                 .filter(input -> map.containsKey(input.getTypeId()))
@@ -168,7 +165,7 @@ public class ElementEditor {
         return getProperties();
     }
 
-    public void setTree(TreeBean tree) {
-        this.tree = tree;
-    }
+//    public void setTree(TreeBean tree) {
+//        this.tree = tree;
+//    }
 }

@@ -19,15 +19,14 @@
  ******************************************************************************/
 package org.veo.web.bean.service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.model.Element;
-import org.veo.persistence.ElementRepository;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.service.ElementService;
@@ -47,6 +45,8 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
 /**
+ * The cache service gives access to the internal caches which manange the
+ * 
  * @author urszeidler
  *
  */
@@ -58,20 +58,18 @@ public class CacheService {
     private ElementService elementService;
     @Autowired
     private ModelSchemaRestClient schemaService;
-    // @Autowired
-    // private ElementRepository elementRepository;
 
     private LoadingCache<String, Element> elementCache;
+    private LoadingCache<String, Map<String, PropertyDefinition>> propertyDefinitionCache;
     private Map<String, ElementDefinition> definitionMap;
-    private Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap;
 
     private void createElementCache() {
         RemovalListener<String, Element> elementRemovalListener = new RemovalListener<String, Element>() {
 
             @Override
-            public void onRemoval(RemovalNotification<String, Element> arg0) {
+            public void onRemoval(RemovalNotification<String, Element> notification) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("removing :" + arg0);
+                    logger.debug("removing :" + notification);
                 }
             }
         };
@@ -84,13 +82,9 @@ public class CacheService {
                         }
 
                         long currentTimeMillis = System.currentTimeMillis();
+                        Element findOneWithChildren = elementService.loadWithAllReferences(uuid);
                         if (logger.isDebugEnabled()) {
-                            logger.debug("loadElement start: " + currentTimeMillis);
-                        }
-                        Element findOneWithChildren = elementService.loadWithAllReferences(uuid);// .findOneWithChildren(uuid);
-
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("loadElement stop: "
+                            logger.debug("loadWithAllReferences stop: "
                                     + (System.currentTimeMillis() - currentTimeMillis));
                         }
 
@@ -99,25 +93,81 @@ public class CacheService {
                 });
     }
 
+    private void createDefinitionCache() {
+        RemovalListener<String, Map<String, PropertyDefinition>> propertyDefinitionRemovalListener = new RemovalListener<String, Map<String, PropertyDefinition>>() {
+
+            @Override
+            public void onRemoval(
+                    RemovalNotification<String, Map<String, PropertyDefinition>> notification) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("removing :" + notification);
+                }
+            }
+        };
+
+        propertyDefinitionCache = CacheBuilder.newBuilder().maximumSize(2000)
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .removalListener(propertyDefinitionRemovalListener)
+                .build(new CacheLoader<String, Map<String, PropertyDefinition>>() {
+
+                    @Override
+                    public Map<String, PropertyDefinition> load(String key) throws Exception {
+                        ElementDefinition elementType = schemaService.getElementType(key);
+                        if (elementType == null)
+                            return Collections.emptyMap();
+
+                        Map<String, PropertyDefinition> elementDefinitionMap = new HashMap<>(30);
+                        elementType.getProperties()
+                                .forEach(pd -> elementDefinitionMap.put(pd.getName(), pd));
+
+                        return elementDefinitionMap;
+                    }
+                });
+    }
+
     private void createDefinitionMaps() {
         definitionMap = new HashMap<>();
-        propertyDefinitionMap = new HashMap<>();
-        List<ElementDefinition> elementTypes = schemaService.getElementTypes();
-
-        elementTypes.stream().forEach(e -> {
-            Map<String, PropertyDefinition> m = new HashMap<>();
-            e.getProperties().forEach(pd -> m.put(pd.getName(), pd));
-            propertyDefinitionMap.put(e.getElementType(), m);
-            definitionMap.put(e.getElementType(), e);
-        });
+        try {
+            List<ElementDefinition> elementTypes = schemaService.getElementTypes();
+            elementTypes.stream().forEach(e -> {
+                definitionMap.put(e.getElementType(), e);
+            });
+        } catch (Exception e) {
+            logger.error("Error while getting the element types.", e);
+        }
     }
 
     @PostConstruct
     public void initCache() {
         createElementCache();
+        createDefinitionCache();
         createDefinitionMaps();
     }
 
+    /**
+     * Get the property description of a type. Will return an empty map when not
+     * found.
+     * 
+     * @param type
+     * @return
+     */
+    public Map<String, PropertyDefinition> getElementDefinitionByType(String type) {
+
+        try {
+            return propertyDefinitionCache.get(type);
+        } catch (ExecutionException e) {
+            logger.error("Error while getting the element description for type: " + type, e);
+        }
+        return Collections.emptyMap();
+    }
+
+    /**
+     * Get an element from the cache. Will return null when the element is not
+     * found.
+     * 
+     * @param uuid
+     * @return
+     */
     public Element getElementByUuid(String uuid) {
         try {
             return elementCache.get(uuid);
@@ -127,16 +177,7 @@ public class CacheService {
         }
     }
 
-    public LoadingCache<String, Element> getElementCache() {
-        return elementCache;
-    }
-
     public Map<String, ElementDefinition> getDefinitionMap() {
         return definitionMap;
     }
-
-    public Map<String, Map<String, PropertyDefinition>> getPropertyDefinitionMap() {
-        return propertyDefinitionMap;
-    }
-
 }

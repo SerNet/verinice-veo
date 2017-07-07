@@ -51,27 +51,19 @@ import com.google.common.collect.FluentIterable;
 @SessionScoped
 public class TreeBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(TreeBean.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(TreeBean.class);
 
-    // @Inject
-    // private ElementRepository elementRepository;
-    //
     @Inject
     private ElementService elementService;
 
     @Inject
     private CacheService cacheService;
 
-//    @Inject
-//    private ModelSchemaRestClient schemaService;
-
     @Inject
     private ElementSelectionRegistry selectionRegistry;
 
     private PrimefacesTreeNode<Element> root;
     private PrimefacesTreeNode<Element> singleSelectedTreeNode;
-//    private HashMap<String, ElementDefinition> definitionMap;
-//    private Map<String, Map<String, PropertyDefinition>> propertyDefinitionMap;
 
     public void onNodeExpand(NodeExpandEvent event) {
         TreeNode parent = event.getTreeNode();
@@ -126,6 +118,9 @@ public class TreeBean {
     }
 
     private Element loadSelectedElement(String uuid) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("load element by uuid: "+uuid);
+        }
         return cacheService.getElementByUuid(uuid); 
     }
 
