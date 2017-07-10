@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +30,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.model.Element;
@@ -59,10 +59,19 @@ public class CacheService {
     @Autowired
     private ModelSchemaRestClient schemaService;
 
+    @Value("${elementCache.maxElements:2500}")
+    private long maxElementCache;
+    @Value("${propertyDefinitionCache.expireTime:60}")
+    private long expireTime;
+
     private LoadingCache<String, Element> elementCache;
     private LoadingCache<String, Map<String, PropertyDefinition>> propertyDefinitionCache;
     private Map<String, ElementDefinition> definitionMap;
 
+    /**
+     * Create a loading cache for elements. The elements are read from the
+     * database with uuid as key.
+     */
     private void createElementCache() {
         RemovalListener<String, Element> elementRemovalListener = new RemovalListener<String, Element>() {
 
@@ -75,16 +84,14 @@ public class CacheService {
         };
 
         elementCache = CacheBuilder.newBuilder().removalListener(elementRemovalListener)
-                .maximumSize(25000).build(new CacheLoader<String, Element>() {
+                .maximumSize(maxElementCache).build(new CacheLoader<String, Element>() {
                     public Element load(String uuid) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("loadind element with uuid:" + uuid);
-                        }
 
                         long currentTimeMillis = System.currentTimeMillis();
                         Element findOneWithChildren = elementService.loadWithAllReferences(uuid);
+
                         if (logger.isDebugEnabled()) {
-                            logger.debug("loadWithAllReferences stop: "
+                            logger.debug("loadWithAllReferences need: "
                                     + (System.currentTimeMillis() - currentTimeMillis));
                         }
 
@@ -93,6 +100,11 @@ public class CacheService {
                 });
     }
 
+    /**
+     * Create a loading cache for Element definitions. The elementDefinitins are
+     * read from an rest service. The cache uses a time dependent removal
+     * strategies. The time is set in seconds.
+     */
     private void createDefinitionCache() {
         RemovalListener<String, Map<String, PropertyDefinition>> propertyDefinitionRemovalListener = new RemovalListener<String, Map<String, PropertyDefinition>>() {
 
@@ -106,7 +118,7 @@ public class CacheService {
         };
 
         propertyDefinitionCache = CacheBuilder.newBuilder().maximumSize(2000)
-                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .expireAfterAccess(expireTime, TimeUnit.SECONDS)
                 .removalListener(propertyDefinitionRemovalListener)
                 .build(new CacheLoader<String, Map<String, PropertyDefinition>>() {
 
@@ -152,10 +164,13 @@ public class CacheService {
      * @return
      */
     public Map<String, PropertyDefinition> getElementDefinitionByType(String type) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Get element definition by id:" + type);
+        }
 
         try {
             return propertyDefinitionCache.get(type);
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             logger.error("Error while getting the element description for type: " + type, e);
         }
         return Collections.emptyMap();
@@ -169,9 +184,13 @@ public class CacheService {
      * @return
      */
     public Element getElementByUuid(String uuid) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("getElement by uuid: " + uuid);
+        }
+
         try {
             return elementCache.get(uuid);
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             logger.error("Error while loadind uuid: " + uuid + " from cache, returning null.", e);
             return null;
         }

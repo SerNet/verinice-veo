@@ -8,6 +8,13 @@
 	xmlns:vn="http://www.verinice.org/taglib">
 
 		<h:form id="editForm" title="test">
+									<p:commandButton onclick="submitEditForm();"
+								icon="fa fa-fw fa-save" value="#{msgEdit['save']}"
+								title="#{msgTree['save']}" />
+							<p:remoteCommand name="submitEditForm" process="@form"
+										update=":editForm" action="#{elementEditor.save}" />						
+		
+		
 			<div class="ui-g ui-fluid">
 				<div class="ui-g-12">
 					<p:accordionPanel id="groupAccordion" dynamic="true">

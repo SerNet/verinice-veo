@@ -104,11 +104,20 @@ public class TreeBean {
         if (logger.isDebugEnabled()) {
             logger.debug("set single selection: " + singleSelectedTreeNode);
         }
-
+        if(singleSelectedTreeNode!=null && singleSelectedTreeNode.equals(this.singleSelectedTreeNode))
+            return;
+        
+        
         if (singleSelectedTreeNode instanceof PrimefacesTreeNode<?>) {
             this.singleSelectedTreeNode = (PrimefacesTreeNode<Element>) singleSelectedTreeNode;
             String uuid = this.singleSelectedTreeNode.getModel().getUuid();
             Element element = loadSelectedElement(uuid);
+            if (element == null) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Error while loading element from cache, element return as null, reset to orignal element.");
+                }
+                element = this.singleSelectedTreeNode.getModel();
+            }
             this.singleSelectedTreeNode.setData(element);
             selectionRegistry.setSelectedElement(element);
         } else {
@@ -119,13 +128,14 @@ public class TreeBean {
 
     private Element loadSelectedElement(String uuid) {
         if (logger.isDebugEnabled()) {
-            logger.debug("load element by uuid: "+uuid);
+            logger.debug("load element by uuid: " + uuid);
         }
-        return cacheService.getElementByUuid(uuid); 
+        return cacheService.getElementByUuid(uuid);
     }
 
     /**
-     * Create the whole tree by selection the data from the {@link ElementService}.
+     * Create the whole tree by selection the data from the
+     * {@link ElementService}.
      * 
      * @return
      */
@@ -135,12 +145,9 @@ public class TreeBean {
         root = new PrimefacesTreeNode<>(element);
 
         long currentTimeMillis = System.currentTimeMillis();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Load data start: " + currentTimeMillis);
-        }
         Iterable<Element> findAll = elementService.findAll();
         if (logger.isDebugEnabled()) {
-            logger.debug("Load Data stop: " + (System.currentTimeMillis() - currentTimeMillis));
+            logger.debug("Load Data need: " + (System.currentTimeMillis() - currentTimeMillis));
         }
 
         HashMap<Element, PrimefacesTreeNode<Element>> hashMap = new HashMap<>();
@@ -156,13 +163,10 @@ public class TreeBean {
         });
 
         currentTimeMillis = System.currentTimeMillis();
-        if (logger.isDebugEnabled()) {
-            logger.debug("transform elements start: " + currentTimeMillis);
-        }
         tranformElements(hashMap, elements);
         if (logger.isDebugEnabled()) {
             logger.debug(
-                    "transform elements stop: " + (System.currentTimeMillis() - currentTimeMillis));
+                    "transform elements need: " + (System.currentTimeMillis() - currentTimeMillis));
         }
         return root;
     }

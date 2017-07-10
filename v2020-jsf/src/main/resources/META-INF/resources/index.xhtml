@@ -3,66 +3,80 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:vn="http://www.verinice.org/taglib">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:vn="http://www.verinice.org/taglib">
+
 
 <ui:composition template="/poseidon/layout.xhtml">
-    <ui:define name="content">
-        <div class="ui-g ui-fluid">
-            <div class="ui-g-6">
-                <h:form>
-                    <p:panel header="tree in a panel">
-                        <p:tree id="tree" value="#{treeBean.root}" var="node"
-                            animate="true" dynamic="true" cache="false"
-                            selectionMode="single"
-                            selection="#{treeBean.singleSelectedNode}">
-                            <p:treeNode
-                                expandedIcon="ui-icon ui-icon-folder-open"
-                                collapsedIcon="ui-icon ui-icon-folder-collapsed">
-                                <h:outputText value="#{node.title}" />
-                            </p:treeNode>
-                            <p:ajax event="select"
-                                listener="#{treeBean.onNodeSelect}"
-                                update=":editForm,:links" />
-                            <p:ajax event="unselect"
-                                listener="#{treeBean.onNodeUnSelect}" />
-                        </p:tree>
-                    </p:panel>
-                </h:form>
-            </div>
-            <div class="ui-g-6">
-                <p:panel header="edit stuff">
-                    <vn:editor />
-                </p:panel>
-                <h:form id="links">
-                    <p:dataList
-                        value="#{registry.selectedElement.linkedDestinations}"
-                        var="destination" type="ordered">
-                        <f:facet name="header">Outgoing Links</f:facet>
+	<ui:define name="content">
+		<div class="ui-g ui-fluid">
+			<div class="ui-g-6">
+				<h:form>
+					<div class="ui-g ui-fluid">
+						<div class="ui-g-4">
+							<p:commandButton id="newButton" onclick="PF('newDialog').show();"
+								icon="fa fa-fw fa-file-o" value="#{msgEdit['new']}"
+								title="#{msgTree['new']}" />
+							<ui:include src="dialogs/newElementDialog.xhtml" />
+						</div>
+						<div class="ui-g-4">
+							<p:commandButton onclick="PF('confirmDialog').show()"
+								icon="fa fa-fw fa-remove" value="#{msgEdit['delete']}"
+								title="#{msgTree['delete']}" />
+							<ui:include src="dialogs/confirmDialog.xhtml" />
+						</div>
+					</div>
+
+					<p:panel header="tree in a panel">
+						<p:tree id="tree" value="#{treeBean.root}" var="node"
+							animate="true" dynamic="true" cache="false"
+							selectionMode="single" selection="#{treeBean.singleSelectedNode}">
+							<p:treeNode expandedIcon="ui-icon ui-icon-folder-open"
+								collapsedIcon="ui-icon ui-icon-folder-collapsed">
+								<h:outputText value="#{node.title}" />
+							</p:treeNode>
+							<p:ajax event="select" listener="#{treeBean.onNodeSelect}"
+								update=":editForm,:links" />
+							<p:ajax event="unselect" listener="#{treeBean.onNodeUnSelect}" />
+						</p:tree>
+					</p:panel>
+				</h:form>
+			</div>
+
+
+			<!-- second half of the screen -->
+			<div class="ui-g-6">
+				<p:panel header="edit stuff">
+					<vn:editor />
+				</p:panel>
+				<h:form id="links">
+					<p:dataList value="#{registry.selectedElement.linkedDestinations}"
+						var="destination" type="ordered">
+						<f:facet name="header">Outgoing Links</f:facet>
                         #{destination.title} <em>[#{destination.typeId}]</em>
-                    </p:dataList>
-                    <p:dataList
-                        value="#{registry.selectedElement.linkedSources}"
-                        var="source" type="ordered">
-                        <f:facet name="header">Incoming Links</f:facet>
+					</p:dataList>
+					<p:dataList value="#{registry.selectedElement.linkedSources}"
+						var="source" type="ordered">
+						<f:facet name="header">Incoming Links</f:facet>
                         #{source.title} <em>[#{source.typeId}]</em>
-                    </p:dataList>
-                </h:form>
-                <p:panel header="linkmaker 2.0" toggleable="true" collapsed="true">
-                    <p:dataTable id="linkmakerTable" var="li"
-                        value="#{linkBean.links}" rowKey="#{li.uuid}">
-                        <p:column headerText="uuid">#{li.uuid}</p:column>
-                        <p:column headerText="title">#{li.title}</p:column>
-                        <p:column headerText="source">#{li.source.title}</p:column>
-                        <p:column headerText="target">#{li.destination.title}</p:column>
-                    </p:dataTable>
-                </p:panel>
-            </div>
-        </div>
-    </ui:define>
+					</p:dataList>
+				</h:form>
+				<p:panel header="linkmaker 2.0" toggleable="true" collapsed="true">
+					<p:dataTable id="linkmakerTable" var="li" value="#{linkBean.links}"
+						rowKey="#{li.uuid}">
+						<p:column headerText="uuid">#{li.uuid}</p:column>
+						<p:column headerText="title">#{li.title}</p:column>
+						<p:column headerText="source">#{li.source.title}</p:column>
+						<p:column headerText="target">#{li.destination.title}</p:column>
+					</p:dataTable>
+				</p:panel>
+			</div>
+		</div>
+
+	</ui:define>
 </ui:composition>
 
 </html>

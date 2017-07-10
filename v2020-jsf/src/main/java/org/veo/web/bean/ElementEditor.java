@@ -20,19 +20,23 @@
 package org.veo.web.bean;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.schema.model.PropertyDefinition.PropertyType;
+import org.veo.service.ElementService;
 import org.veo.web.bean.service.CacheService;
 
 import com.google.common.collect.FluentIterable;
@@ -50,7 +54,16 @@ public class ElementEditor {
     private ElementSelectionRegistry selectionRegistry;
     @Inject
     private CacheService cacheService;
+    @Inject
+    private ElementService elementService;
 
+    /**
+     * Holds and manage the value for a specific property, uses the
+     * PropertyDefinition for the element description.
+     * 
+     * @author urszeidler
+     *
+     */
     public class PropertyEditor {
         private ElementProperty elementProperty;
         private PropertyDefinition propertyDefinition;
@@ -75,20 +88,37 @@ public class ElementEditor {
 
         public Object getValue() {
             if (logger.isDebugEnabled()) {
-                logger.debug(elementProperty.getLabel() + " :" + elementProperty.getText() + ":"
-                        + elementProperty.getNumber() + ":" + elementProperty.getDate());
+                logger.debug("getValue: " + elementProperty.getLabel() + " :"
+                        + elementProperty.getText() + ":" + elementProperty.getNumber() + ":"
+                        + elementProperty.getDate());
             }
 
-            if (isStringValue())
+            if (propertyDefinition.getType() == PropertyType.LABEL) {
+                return elementProperty.getLabel();
+            } else if (isStringValue()) {
                 return elementProperty.getText();
-            else if (getisDate())
+            } else if (getisDate()) {
                 return elementProperty.getDate();
-            else if (isBooleanSelect()) {
-                return elementProperty.getText();
+            } else if (isBooleanSelect()) {
+                return Boolean.valueOf(elementProperty.getLabel());
             } else if (isNumber()) {
                 return elementProperty.getNumber();
             }
             return elementProperty.toString();
+        }
+
+        public void setValue(Object value) {
+            if (propertyDefinition.getType() == PropertyType.LABEL) {
+                elementProperty.setLabel((String) value);
+            } else if (propertyDefinition.getType() == PropertyType.TEXT) {
+                elementProperty.setText((String) value);
+            } else if (propertyDefinition.getType() == PropertyType.NUMBER) {
+                elementProperty.setNumber(Long.parseLong((String) value));
+            } else if (getisDate()) {
+                elementProperty.setDate(toDate(value));
+            } else if (isBooleanSelect()) {
+                elementProperty.setLabel(Boolean.toString((Boolean) value));
+            }
         }
 
         public boolean getisURL() {
@@ -138,23 +168,71 @@ public class ElementEditor {
         }
     }
 
+    /**
+     * Factory method for an elementEditor.
+     * 
+     * @param input
+     * @param propertyDefinition
+     * @return
+     */
     public PropertyEditor buildEditor(ElementProperty input,
             PropertyDefinition propertyDefinition) {
         return new ElementEditor.PropertyEditor(input, propertyDefinition);
     }
 
+    public Date toDate(Object value) {
+        if (value instanceof Date) {
+            return (Date) value;
+        }
+        return null;
+    }
+
+    
+    /**
+     * Save the state of the current selection in the database.
+     */
+    public void save() {
+        Element selectedElement = selectionRegistry.getSelectedElement();
+        if (selectedElement == null)
+            return;
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("Saving element: " + selectedElement);
+        }
+
+        elementService.save(selectedElement);
+    }
+    
+    public void onChange(ValueChangeEvent event) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("valueChanged: "+event.toString());
+        }
+    }
+
+    public void onDateSelect(SelectEvent event) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Date selected: "+event.toString());
+        }
+
+    }
+
+    /**
+     * Transform the properties to the element editors.
+     * 
+     * @return
+     */
     public List<PropertyEditor> getProperties() {
         Element selectedElement = selectionRegistry.getSelectedElement();
         if (selectedElement == null) {
             return Collections.emptyList();
         }
 
-        Map<String, PropertyDefinition> map = cacheService.getElementDefinitionByType(selectedElement.getTypeId());
+        Map<String, PropertyDefinition> map = cacheService
+                .getElementDefinitionByType(selectedElement.getTypeId());
 
         return FluentIterable.from(selectedElement.getProperties())
                 .filter(input -> map.containsKey(input.getTypeId()))
-                .transform(i -> new ElementEditor.PropertyEditor(i, map.get(i.getTypeId())))
-                .toList();
+                .transform(i -> buildEditor(i, map.get(i.getTypeId()))).toList();
     }
 
     public List<PropertyEditor> getNoLabelPropertyList() {
@@ -164,8 +242,4 @@ public class ElementEditor {
     public List<PropertyEditor> getLabelPropertyList() {
         return getProperties();
     }
-
-//    public void setTree(TreeBean tree) {
-//        this.tree = tree;
-//    }
 }

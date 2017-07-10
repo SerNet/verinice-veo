@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 
@@ -37,12 +36,13 @@ import org.veo.web.bean.service.CacheService;
 import com.google.common.collect.FluentIterable;
 
 /**
- * Would be used as editor bean for the schema model.
+ * Would be used as editor bean for the schema model. Currently not used.
  * @author urszeidler
  *
  */
 @ManagedBean(name = "elementEditor-schema")
 @SessionScoped
+@Deprecated
 public class ElementEditor {
 
     public class PropertyEditor {
