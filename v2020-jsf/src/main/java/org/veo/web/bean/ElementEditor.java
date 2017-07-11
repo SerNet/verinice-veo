@@ -57,6 +57,10 @@ public class ElementEditor {
     @Inject
     private ElementService elementService;
 
+    // intern states caches the selection and the created editors
+    private String lastSelectedElement;
+    private List<PropertyEditor> cachedPropertyEditors;
+
     /**
      * Holds and manage the value for a specific property, uses the
      * PropertyDefinition for the element description.
@@ -187,7 +191,6 @@ public class ElementEditor {
         return null;
     }
 
-    
     /**
      * Save the state of the current selection in the database.
      */
@@ -195,23 +198,23 @@ public class ElementEditor {
         Element selectedElement = selectionRegistry.getSelectedElement();
         if (selectedElement == null)
             return;
-        
+
         if (logger.isDebugEnabled()) {
             logger.debug("Saving element: " + selectedElement);
         }
 
         elementService.save(selectedElement);
     }
-    
+
     public void onChange(ValueChangeEvent event) {
         if (logger.isDebugEnabled()) {
-            logger.debug("valueChanged: "+event.toString());
+            logger.debug("valueChanged: " + event.toString());
         }
     }
 
     public void onDateSelect(SelectEvent event) {
         if (logger.isDebugEnabled()) {
-            logger.debug("Date selected: "+event.toString());
+            logger.debug("Date selected: " + event.toString());
         }
 
     }
@@ -227,12 +230,19 @@ public class ElementEditor {
             return Collections.emptyList();
         }
 
+        if (selectedElement.getUuid() != null
+                && selectedElement.getUuid().equals(lastSelectedElement)) {
+            return cachedPropertyEditors;
+        }
+
         Map<String, PropertyDefinition> map = cacheService
                 .getElementDefinitionByType(selectedElement.getTypeId());
 
-        return FluentIterable.from(selectedElement.getProperties())
+        cachedPropertyEditors = FluentIterable.from(selectedElement.getProperties())
                 .filter(input -> map.containsKey(input.getTypeId()))
                 .transform(i -> buildEditor(i, map.get(i.getTypeId()))).toList();
+        lastSelectedElement = selectedElement.getUuid();
+        return cachedPropertyEditors;
     }
 
     public List<PropertyEditor> getNoLabelPropertyList() {

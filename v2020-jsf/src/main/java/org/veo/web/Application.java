@@ -66,13 +66,13 @@ public class Application extends SpringBootServletInitializer {
             servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration",
                     Boolean.TRUE.toString());
             servletContext.setInitParameter("primefaces.THEME", "poseidon-verinice");
-            servletContext.setInitParameter("javax.faces.FACELETS_LIBRARIES",
-                    "/taglibs/verinice-taglib.xml;/taglibs/primefaces-poseidon.taglib.xml");
+//            servletContext.setInitParameter("javax.faces.FACELETS_LIBRARIES",
+//                    "/taglibs/verinice-taglib.xml;/taglibs/primefaces-poseidon.taglib.xml");
             servletContext.setInitParameter("primefaces.CLIENT_SIDE_VALIDATION",
                     Boolean.TRUE.toString());
             servletContext.setInitParameter("javax.faces.FACELETS_SKIP_COMMENTS",
                     Boolean.TRUE.toString());
-            servletContext.setInitParameter("primefaces.FONT_AWESOME", Boolean.TRUE.toString());
+//            servletContext.setInitParameter("primefaces.FONT_AWESOME", Boolean.TRUE.toString());
             // servletContext.setInitParameter("primefaces.UPLOADER",
             // "commons");
         };
