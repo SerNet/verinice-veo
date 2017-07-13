@@ -21,8 +21,11 @@ package org.veo.client.schema;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -45,22 +48,22 @@ public class ModelSchemaRestClient extends AbstractRestClient {
 
     private static final Logger log = LoggerFactory.getLogger(ModelSchemaRestClient.class);
 
-    public static final String SERVER_URL_DEFAULT = "http://localhost:8090/";
-    public static final String PATH_DEFAULT = "/service/model-schema";
-
+    @Value("${model-schema.rest.url:'http://localhost:8090'}")
+    private String modelSchemaServerUrl;
+    
+    @Value("${model-schema.rest.path:/service/model-schema}")
     private String path;
-
+    
     public ModelSchemaRestClient() {
-        path = PATH_DEFAULT;
     }
 
     public ModelSchemaRestClient(String username, String password) {
-        this(username, password, SERVER_URL_DEFAULT, PATH_DEFAULT);
-    }
-
-    public ModelSchemaRestClient(String username, String password, String serverUrl, String path) {
         super(username, password);
-        setServerUrl(serverUrl);
+    }
+    
+    @PostConstruct
+    public void init() {
+        setServerUrl(modelSchemaServerUrl);
         setPath(path);
     }
 
@@ -113,5 +116,6 @@ public class ModelSchemaRestClient extends AbstractRestClient {
     public void setPath(String path) {
         this.path = path;
     }
+
 
 }

@@ -1,4 +1,0 @@
-2017-06-28 17:07:50 [main] INFO  org.veo.web.Application - Starting Application v0.1.0-SNAPSHOT on sirius with PID 31746 (/home/dm/git/v2020/v2020-jsf/target/v2020-jsf-0.1.0-SNAPSHOT.jar started by dm in /home/dm/git/v2020)
-2017-06-28 17:07:50 [main] DEBUG org.veo.web.Application - Running with Spring Boot v1.5.3.RELEASE, Spring v4.3.8.RELEASE
-2017-06-28 17:07:50 [main] INFO  org.veo.web.Application - No active profile set, falling back to default profiles: default
-2017-06-28 17:08:03 [main] INFO  org.veo.web.Application - Started Application in 13.253 seconds (JVM running for 14.174)
