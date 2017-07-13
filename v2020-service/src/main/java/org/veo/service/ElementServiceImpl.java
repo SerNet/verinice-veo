@@ -50,6 +50,11 @@ public class ElementServiceImpl implements ElementService {
         return elementRepository.allRootElements();
     }
 
+    @Override
+    public void delete(Element element) {
+        elementRepository.delete(element);
+    }
+
     
     
 }

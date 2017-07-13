@@ -14,19 +14,19 @@
 	<ui:define name="content">
 		<div class="ui-g ui-fluid">
 			<div class="ui-g-6">
-				<h:form>
+				<h:form id="treeEdit">
 					<div class="ui-g ui-fluid">
 						<div class="ui-g-4">
 							<p:commandButton id="newButton" onclick="PF('newDialog').show();"
-								icon="fa fa-fw fa-file-o" value="#{msgEdit['new']}"
-								title="#{msgTree['new']}" />
+								icon="fa fa-fw fa-file-o" value="#{msgTree['new']}"
+								disabled="#{registry.selectedElement ==null}"  title="#{msgTree['new']}" />
 							<ui:include src="dialogs/newElementDialog.xhtml" />
 						</div>
 						<div class="ui-g-4">
-							<p:commandButton onclick="PF('confirmDialog').show()"
-								icon="fa fa-fw fa-remove" value="#{msgEdit['delete']}"
-								title="#{msgTree['delete']}" />
-							<ui:include src="dialogs/confirmDialog.xhtml" />
+							<p:commandButton id="deleteButton" onclick="PF('confirmDialog').show()"
+								icon="fa fa-fw fa-remove" value="#{msgTree['delete']}"
+								disabled="#{registry.selectedElement ==null}" title="#{msgTree['delete']}" />
+							<ui:include src="dialogs/confirmDeletionDialog.xhtml" />
 						</div>
 					</div>
 
@@ -39,7 +39,7 @@
 								<h:outputText value="#{node.title}" />
 							</p:treeNode>
 							<p:ajax event="select" listener="#{treeBean.onNodeSelect}"
-								update=":editForm,:links" />
+								update=":editForm,:links, treeEdit:newButton, treeEdit:deleteButton" />
 							<p:ajax event="unselect" listener="#{treeBean.onNodeUnSelect}" />
 						</p:tree>
 					</p:panel>

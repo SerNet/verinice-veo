@@ -65,7 +65,7 @@ public class Application extends SpringBootServletInitializer {
         return servletContext -> {
             servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration",
                     Boolean.TRUE.toString());
-            servletContext.setInitParameter("primefaces.THEME", "poseidon-verinice");
+//            servletContext.setInitParameter("primefaces.THEME", "poseidon-verinice");
 //            servletContext.setInitParameter("javax.faces.FACELETS_LIBRARIES",
 //                    "/taglibs/verinice-taglib.xml;/taglibs/primefaces-poseidon.taglib.xml");
             servletContext.setInitParameter("primefaces.CLIENT_SIDE_VALIDATION",

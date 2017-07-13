@@ -16,12 +16,14 @@ import org.veo.model.Element;
 public interface ElementService {
     
     public Element save(Element element);
+    
+    public void delete(Element element);
 
     public Element load(String uuid);
 
     /**
      * Loads an element with references to other entities.
-     * Properties, parent, childs and links are loaded in an elemwnt
+     * Properties, parent, children and links are loaded in an element
      * returned by this method.
      * 
      * @param uuid The id of an element

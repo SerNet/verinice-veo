@@ -6,7 +6,7 @@
 	<namespace>http://www.verinice.org/taglib</namespace>
 	<tag>
 		<tag-name>editor</tag-name>
-		<source>../templates/propertyEditor.xhtml</source>
+		<source>templates/propertyEditor.xhtml</source>
 	</tag>
 	<tag>
 		<tag-name>properties</tag-name>
@@ -15,7 +15,7 @@
 
 	<tag>
 		<tag-name>pprops</tag-name>
-		<source>../templates/poseidon-properties.xhtml</source>
+		<source>templates/poseidon-properties.xhtml</source>
 	</tag>
 	<tag>
 		<tag-name>login</tag-name>

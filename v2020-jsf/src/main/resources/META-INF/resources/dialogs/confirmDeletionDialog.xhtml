@@ -17,9 +17,9 @@
 			</p:row>
 			<p:row>
 				<p:column>
-					<p:commandButton id="confirm" actionListener="#{tree.delete}"
+					<p:commandButton id="confirm" actionListener="#{treeBean.delete}"
 						value="#{msgTree['confirm-deletion.yes']}"
-						
+						update="treeEdit:tree"
 						oncomplete="PF('confirmDialog').hide()" />
 				</p:column>
 				<p:column>

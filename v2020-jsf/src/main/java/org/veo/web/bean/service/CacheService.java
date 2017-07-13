@@ -195,6 +195,10 @@ public class CacheService {
             return null;
         }
     }
+    
+    public void removeElementByUuid(String uuid) {
+        elementCache.invalidate(uuid);        
+    }
 
     public Map<String, ElementDefinition> getDefinitionMap() {
         return definitionMap;

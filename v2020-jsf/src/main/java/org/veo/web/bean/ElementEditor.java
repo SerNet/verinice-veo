@@ -206,6 +206,20 @@ public class ElementEditor {
         elementService.save(selectedElement);
     }
 
+    public void delete() {
+        Element selectedElement = selectionRegistry.getSelectedElement();
+        if (selectedElement == null)
+            return;
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Deleting element: " + selectedElement);
+        }
+       
+        
+        elementService.delete(selectedElement);
+    }
+    
+    
     public void onChange(ValueChangeEvent event) {
         if (logger.isDebugEnabled()) {
             logger.debug("valueChanged: " + event.toString());

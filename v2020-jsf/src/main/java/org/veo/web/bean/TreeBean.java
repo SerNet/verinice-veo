@@ -65,6 +65,21 @@ public class TreeBean {
     private PrimefacesTreeNode<Element> root;
     private PrimefacesTreeNode<Element> singleSelectedTreeNode;
 
+    public void delete() {
+        Element selectedElement = selectionRegistry.getSelectedElement();
+        if (selectedElement == null || singleSelectedTreeNode == null)
+            return;
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Deleting element: " + selectedElement);
+        }
+
+        elementService.delete(selectedElement);
+        cacheService.removeElementByUuid(selectedElement.getUuid());
+        TreeNode parent = singleSelectedTreeNode.getParent();
+        parent.getChildren().remove(singleSelectedTreeNode);
+    }
+
     public void onNodeExpand(NodeExpandEvent event) {
         TreeNode parent = event.getTreeNode();
         if (logger.isDebugEnabled()) {
@@ -104,17 +119,18 @@ public class TreeBean {
         if (logger.isDebugEnabled()) {
             logger.debug("set single selection: " + singleSelectedTreeNode);
         }
-        if(singleSelectedTreeNode!=null && singleSelectedTreeNode.equals(this.singleSelectedTreeNode))
+        if (singleSelectedTreeNode != null
+                && singleSelectedTreeNode.equals(this.singleSelectedTreeNode))
             return;
-        
-        
+
         if (singleSelectedTreeNode instanceof PrimefacesTreeNode<?>) {
             this.singleSelectedTreeNode = (PrimefacesTreeNode<Element>) singleSelectedTreeNode;
             String uuid = this.singleSelectedTreeNode.getModel().getUuid();
             Element element = loadSelectedElement(uuid);
             if (element == null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Error while loading element from cache, element return as null, reset to orignal element.");
+                    logger.debug(
+                            "Error while loading element from cache, element return as null, reset to orignal element.");
                 }
                 element = this.singleSelectedTreeNode.getModel();
             }
