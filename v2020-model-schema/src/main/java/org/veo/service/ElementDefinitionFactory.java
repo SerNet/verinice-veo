@@ -22,6 +22,7 @@ package org.veo.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -88,12 +89,15 @@ public class ElementDefinitionFactory {
     private void initElementMap() {
         try {
             for (File jsonFile : ElementDefinitionResourceLoader.getElementDefinitions()) {
-                if (isValidJson(IOUtils.toString(jsonFile.toURI()), ElementDefinition.class)) {
-                    InputStream in = FileUtils.openInputStream(jsonFile);
-                    String jsonString = IOUtils.toString(in);
-                    ElementDefinition definition = getElementDefinitonFromJson(jsonString);
-                    elementDefinitionMap.put(definition.getElementType(), definition);
+                try (InputStream in = FileUtils.openInputStream(jsonFile)) {
+                    String jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
+                    if (isValidJson(jsonString, ElementDefinition.class)) {
+
+                        ElementDefinition definition = getElementDefinitonFromJson(jsonString);
+                        elementDefinitionMap.put(definition.getElementType(), definition);
+                    }
                 }
+
             }
         } catch (IOException e) {
             logger.error("Error reading json-definition-files from repository", e);
@@ -105,18 +109,19 @@ public class ElementDefinitionFactory {
         try {
             List<File> linkJsonList = LinkDefinitionResourceLoader.getLinkDefinitionFile();
             for (File jsonFile : linkJsonList) {
-                InputStream in = FileUtils.openInputStream(jsonFile);
-                jsonString = IOUtils.toString(in);
-                LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
-                for (LinkDefinition definition : definitions.getLinkDefinitions()) {
-                    String source = definition.getSourceType();
-                    Set<LinkDefinition> linkSet = linkDefinitionMap.get(source);
-                    if (linkSet == null) {
-                        linkSet = new HashSet<>();
+                try (InputStream in = FileUtils.openInputStream(jsonFile)) {
+                    jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
+                    LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
+                    for (LinkDefinition definition : definitions.getLinkDefinitions()) {
+                        String source = definition.getSourceType();
+                        Set<LinkDefinition> linkSet = linkDefinitionMap.get(source);
+                        if (linkSet == null) {
+                            linkSet = new HashSet<>();
+                        }
+                        linkSet.add(definition);
+                        linkDefinitionMap.put(source, linkSet);
+                        elementDefinitionMap.get(source).addOutgoingLink(definition);
                     }
-                    linkSet.add(definition);
-                    linkDefinitionMap.put(source, linkSet);
-                    elementDefinitionMap.get(source).addOutgoingLink(definition);
                 }
             }
         } catch (IOException e) {
