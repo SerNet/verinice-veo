@@ -50,28 +50,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class ElementDefinitionFactory {
-    
+
     private static final ElementDefinitionFactory instance = new ElementDefinitionFactory();
     private ObjectMapper mapper;
-    
+
     private final Logger logger = LoggerFactory.getLogger(ElementDefinitionFactory.class);
-    
+
     private Map<String, ElementDefinition> elementDefinitionMap;
     private Map<String, Set<LinkDefinition>> linkDefinitionMap;
-    
-    private ElementDefinitionFactory(){
+
+    private ElementDefinitionFactory() {
         elementDefinitionMap = new HashMap<>();
         linkDefinitionMap = new HashMap<>();
         initJsonMapper();
         initElementMap();
         initLinkMap();
     }
-    
-    public static ElementDefinitionFactory getInstance(){
+
+    public static ElementDefinitionFactory getInstance() {
         return instance;
     }
-    
-    private void initJsonMapper(){
+
+    private void initJsonMapper() {
         mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES);
@@ -84,11 +84,11 @@ public class ElementDefinitionFactory {
         mapper.enable(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS);
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
-    
-    private void initElementMap(){
+
+    private void initElementMap() {
         try {
-            for(File jsonFile : ElementDefinitionResourceLoader.getElementDefinitions()){
-                if(isValidJson(IOUtils.toString(jsonFile.toURI()), ElementDefinition.class)){
+            for (File jsonFile : ElementDefinitionResourceLoader.getElementDefinitions()) {
+                if (isValidJson(IOUtils.toString(jsonFile.toURI()), ElementDefinition.class)) {
                     InputStream in = FileUtils.openInputStream(jsonFile);
                     String jsonString = IOUtils.toString(in);
                     ElementDefinition definition = getElementDefinitonFromJson(jsonString);
@@ -99,22 +99,21 @@ public class ElementDefinitionFactory {
             logger.error("Error reading json-definition-files from repository", e);
         }
     }
-    
-    
-    private void initLinkMap(){
+
+    private void initLinkMap() {
         String jsonString;
         try {
             List<File> linkJsonList = LinkDefinitionResourceLoader.getLinkDefinitionFile();
-            for(File jsonFile : linkJsonList){
+            for (File jsonFile : linkJsonList) {
                 InputStream in = FileUtils.openInputStream(jsonFile);
                 jsonString = IOUtils.toString(in);
                 LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
                 for (LinkDefinition definition : definitions.getLinkDefinitions()) {
                     String source = definition.getSourceType();
                     Set<LinkDefinition> linkSet = linkDefinitionMap.get(source);
-                    if (linkSet == null){
+                    if (linkSet == null) {
                         linkSet = new HashSet<>();
-                    } 
+                    }
                     linkSet.add(definition);
                     linkDefinitionMap.put(source, linkSet);
                     elementDefinitionMap.get(source).addOutgoingLink(definition);
@@ -124,15 +123,16 @@ public class ElementDefinitionFactory {
             logger.error("Error reading link-defintion-json-file from repository", e);
         }
     }
-    
-    public Set<LinkDefinition> getLinkDefinitionsByElementType(String elementType){
-        if (linkDefinitionMap != null && linkDefinitionMap.containsKey(elementType)){
+
+    public Set<LinkDefinition> getLinkDefinitionsByElementType(String elementType) {
+        if (linkDefinitionMap != null && linkDefinitionMap.containsKey(elementType)) {
             return linkDefinitionMap.get(elementType);
-        } else return Collections.unmodifiableSet(new HashSet<LinkDefinition>(0));
+        } else
+            return Collections.unmodifiableSet(new HashSet<LinkDefinition>(0));
     }
-    
-    private LinkDefinitions getLinkDefinitionsFromJson(String json) throws JsonParseException, JsonMappingException, IOException{
-        if(isValidJson(json, LinkDefinitions.class)){
+
+    private LinkDefinitions getLinkDefinitionsFromJson(String json) throws JsonParseException, JsonMappingException, IOException {
+        if (isValidJson(json, LinkDefinitions.class)) {
             return mapper.readValue(json, LinkDefinitions.class);
         } else {
             LinkDefinitions emptyLinkDefinitions = new LinkDefinitions();
@@ -141,62 +141,61 @@ public class ElementDefinitionFactory {
         }
     }
 
-    public Set<String> getAllGroupNames(){
+    public Set<String> getAllGroupNames() {
         Set<String> groups = new HashSet<>(128);
-        for(ElementDefinition elementDefinition : getElementDefinitions().values()){
+        for (ElementDefinition elementDefinition : getElementDefinitions().values()) {
             groups.addAll(getGroupsForElementDefinition(elementDefinition));
         }
         return groups;
     }
-    
-    public Set<String> getGroupsForElementDefinition(ElementDefinition elementDefinition){
+
+    public Set<String> getGroupsForElementDefinition(ElementDefinition elementDefinition) {
         return getGroupsForElementType(elementDefinition.getElementType());
     }
-    
-    public Set<String> getGroupsForElementType(String elementType){
+
+    public Set<String> getGroupsForElementType(String elementType) {
         Set<String> groups = new HashSet<>(128);
-        if (elementDefinitionMap.containsKey(elementType)){
-            for (PropertyDefinition propertyDefinition : elementDefinitionMap.get(elementType).getProperties()){
+        if (elementDefinitionMap.containsKey(elementType)) {
+            for (PropertyDefinition propertyDefinition : elementDefinitionMap.get(elementType).getProperties()) {
                 groups.add(propertyDefinition.getGroup());
             }
         }
         return groups;
     }
-    
-    public Map<String, ElementDefinition> getElementDefinitions(){
+
+    public Map<String, ElementDefinition> getElementDefinitions() {
         return elementDefinitionMap;
     }
-    
-    public ElementDefinition getElementDefinition(String elementType){
+
+    public ElementDefinition getElementDefinition(String elementType) {
         if (elementDefinitionMap.containsKey(elementType)) {
             return elementDefinitionMap.get(elementType);
         }
         return null;
     }
-    
-    private ElementDefinition getElementDefinitonFromJson(String json) throws JsonParseException, JsonMappingException, IOException{
-        if(isValidJson(json, ElementDefinition.class)){
+
+    private ElementDefinition getElementDefinitonFromJson(String json) throws JsonParseException, JsonMappingException, IOException {
+        if (isValidJson(json, ElementDefinition.class)) {
             return mapper.readValue(json, ElementDefinition.class);
-        } else return null;
+        } else
+            return null;
     }
-    
-    private boolean isValidJson(String json, Class<?> clazz){
+
+    private boolean isValidJson(String json, Class<?> clazz) {
         final String WARN_MSG = "Failed to parse json:\n";
-        try{
+        try {
             mapper.readValue(json, clazz);
             return true;
         } catch (JsonMappingException e) {
             logger.warn(WARN_MSG, e);
             return false;
-        } catch (JsonParseException e){
+        } catch (JsonParseException e) {
             logger.warn(WARN_MSG, e);
             return false;
-        } catch (IOException e){
+        } catch (IOException e) {
             logger.warn(WARN_MSG, e);
             return false;
         }
     }
-    
-    
-    
+
 }
