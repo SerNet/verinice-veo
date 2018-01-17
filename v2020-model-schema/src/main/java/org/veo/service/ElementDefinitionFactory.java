@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -133,7 +132,7 @@ public class ElementDefinitionFactory {
         if (linkDefinitionMap != null && linkDefinitionMap.containsKey(elementType)) {
             return linkDefinitionMap.get(elementType);
         } else
-            return Collections.unmodifiableSet(new HashSet<LinkDefinition>(0));
+            return Collections.emptySet();
     }
 
     private LinkDefinitions getLinkDefinitionsFromJson(String json) throws JsonParseException, JsonMappingException, IOException {
@@ -141,7 +140,7 @@ public class ElementDefinitionFactory {
             return mapper.readValue(json, LinkDefinitions.class);
         } else {
             LinkDefinitions emptyLinkDefinitions = new LinkDefinitions();
-            emptyLinkDefinitions.setLinkDefinitions(Collections.unmodifiableList(new ArrayList<LinkDefinition>(0)));
+            emptyLinkDefinitions.setLinkDefinitions(Collections.emptyList());
             return emptyLinkDefinitions;
         }
     }
