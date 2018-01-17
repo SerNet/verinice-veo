@@ -191,7 +191,7 @@ public class CacheService {
         try {
             return elementCache.get(uuid);
         } catch (Exception e) {
-            logger.error("Error while loadind uuid: " + uuid + " from cache, returning null.", e);
+            logger.error("Error while loading uuid: " + uuid + " from cache, returning null.", e);
             return null;
         }
     }
