@@ -32,7 +32,7 @@ public final class TimeFormatter {
     }
 
     public static String getHumanRedableTime(long ms) {
-        long miliseconds = Math.round(ms % 1000);
+        long miliseconds = ms % 1000;
         double x = ms / 1000.0;
         long seconds = Math.round(x % 60);
         x /= 60;
