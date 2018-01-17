@@ -52,32 +52,32 @@ public final class Archive {
     public static void extractZipArchive(byte[] zipFileData, String directory) throws IOException {
         new File(directory).mkdirs();
         // get the zip file content
-        ZipInputStream inputStream = new ZipInputStream(new ByteArrayInputStream(zipFileData));
-        // get the zipped file list entry
-        ZipEntry zipEntry = inputStream.getNextEntry();
-        byte[] buffer = new byte[BUFFER_SIZE];
-        while (zipEntry != null) {
-            if (!zipEntry.isDirectory()) {
-                String fileName = zipEntry.getName();
-                File newFile = new File(directory + File.separator + fileName);
-                new File(newFile.getParent()).mkdirs();
+        try (ZipInputStream inputStream = new ZipInputStream(new ByteArrayInputStream(zipFileData))) {
+            // get the zipped file list entry
+            ZipEntry zipEntry = inputStream.getNextEntry();
+            byte[] buffer = new byte[BUFFER_SIZE];
+            while (zipEntry != null) {
+                if (!zipEntry.isDirectory()) {
+                    String fileName = zipEntry.getName();
+                    File newFile = new File(directory + File.separator + fileName);
+                    new File(newFile.getParent()).mkdirs();
 
-                FileOutputStream fos = new FileOutputStream(newFile);
+                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
 
-                int len;
-                while ((len = inputStream.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
+                        int len;
+                        while ((len = inputStream.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+
+                    }
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("File unzipped: " + newFile.getAbsoluteFile());
+                    }
                 }
-
-                fos.close();
-
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("File unzipped: " + newFile.getAbsoluteFile());
-                }
+                zipEntry = inputStream.getNextEntry();
             }
-            zipEntry = inputStream.getNextEntry();
+            inputStream.closeEntry();
         }
-        inputStream.closeEntry();
-        inputStream.close();
     }
 }
