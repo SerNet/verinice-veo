@@ -1,0 +1,8 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(':v2020-model')
+    compile project(':v2020-service')
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-data-rest'
+}

@@ -1,0 +1,18 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(':v2020-model')
+    compile project(':v2020-persistence')
+    compile 'org.springframework.security:spring-security-core'
+    compile 'org.springframework.security:spring-security-config'
+
+    testCompile 'org.springframework.security:spring-security-web'
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
+        exclude(module: 'commons-logging')
+    }
+    testCompile 'com.h2database:h2'
+
+    compileOnly 'org.apache.tomcat.embed:tomcat-embed-core'
+}
+
+bootRepackage.enabled = false
