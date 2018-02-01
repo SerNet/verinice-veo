@@ -5,3 +5,7 @@ v2020-jsf/v2020-*.log
 v2020-model-schema/v2020-*.log
 v2020-model-schema-client/v2020-*.log
 v2020-*.log
+
+.project
+.settings/
+.classpath
