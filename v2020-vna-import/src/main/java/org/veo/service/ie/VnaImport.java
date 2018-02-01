@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -40,9 +41,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.veo.model.Element;
 
+import de.sernet.sync.data.SyncData;
 import de.sernet.sync.data.SyncLink;
 import de.sernet.sync.data.SyncObject;
+import de.sernet.sync.mapping.SyncMapping;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
+import de.sernet.sync.sync.SyncRequest;
 
 /**
  * Service class configured by Spring to import a verinice archive (VNA).
@@ -90,8 +94,9 @@ public class VnaImport {
         importContext = new ImportContext();
         try {
             Vna vna = new Vna(vnaFileData);
-            List<SyncObject> syncObjectList = getSyncObjectList(vna);
-            List<MapObjectType> mapObjectTypeList = getMapObjectTypeList(vna);
+            SyncRequest syncRequest = vna.getXml();
+            List<SyncObject> syncObjectList = getSyncObjectList(syncRequest);
+            List<MapObjectType> mapObjectTypeList = getMapObjectTypeList(syncRequest);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Starting import of objects...");
             }
@@ -99,7 +104,7 @@ public class VnaImport {
             if (LOG.isInfoEnabled()) {
                 LOG.info("{} objects imported.", number);
             }
-            List<SyncLink> syncLinkList = getSyncLinkList(vna);
+            List<SyncLink> syncLinkList = getSyncLinkList(syncRequest);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Number of links: {}, starting import...", syncLinkList.size());
             }
@@ -112,8 +117,7 @@ public class VnaImport {
     }
 
     // @Transactional(isolation=Isolation.DEFAULT,propagation=Propagation.REQUIRED)
-    private void importObjectList(Element parent, List<SyncObject> syncObjectList,
-            List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
+    private void importObjectList(Element parent, List<SyncObject> syncObjectList, List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
                 ObjectImportThread importThread = objectImportThreadFactory.getObject();
@@ -129,8 +133,7 @@ public class VnaImport {
             ObjectImportContext objectContext = objectImportCompletionService.take().get();
             importContext.addObject(objectContext);
             if (objectContext != null) {
-                importObjectList(objectContext.getNode(), objectContext.getSyncObject().getChildren(),
-                        objectContext.getMapObjectTypeList());
+                importObjectList(objectContext.getNode(), objectContext.getSyncObject().getChildren(), objectContext.getMapObjectTypeList());
             }
         }
         number += n;
@@ -173,31 +176,25 @@ public class VnaImport {
         return context;
     }
 
-    private List<SyncObject> getSyncObjectList(Vna vna) {
-        if (vna.getXml() != null && vna.getXml().getSyncData() != null
-                && vna.getXml().getSyncData().getSyncObject() != null) {
-            return vna.getXml().getSyncData().getSyncObject();
-        } else {
-            return Collections.emptyList();
-        }
+    private List<SyncObject> getSyncObjectList(SyncRequest syncRequest) {
+        return Optional.ofNullable(syncRequest)
+                .map(SyncRequest::getSyncData)
+                .map(SyncData::getSyncObject)
+                .orElse(Collections.emptyList());
     }
 
-    private List<SyncLink> getSyncLinkList(Vna vna) {
-        if (vna.getXml() != null && vna.getXml().getSyncData() != null
-                && vna.getXml().getSyncData().getSyncLink() != null) {
-            return vna.getXml().getSyncData().getSyncLink();
-        } else {
-            return Collections.emptyList();
-        }
+    private List<SyncLink> getSyncLinkList(SyncRequest syncRequest) {
+        return Optional.ofNullable(syncRequest)
+                .map(SyncRequest::getSyncData)
+                .map(SyncData::getSyncLink)
+                .orElse(Collections.emptyList());
     }
 
-    private List<MapObjectType> getMapObjectTypeList(Vna vna) {
-        if (vna.getXml() != null && vna.getXml().getSyncMapping() != null
-                && vna.getXml().getSyncMapping().getMapObjectType() != null) {
-            return vna.getXml().getSyncMapping().getMapObjectType();
-        } else {
-            return Collections.emptyList();
-        }
+    private List<MapObjectType> getMapObjectTypeList(SyncRequest syncRequest) {
+        return Optional.ofNullable(syncRequest)
+                .map(SyncRequest::getSyncMapping)
+                .map(SyncMapping::getMapObjectType)
+                .orElse(Collections.emptyList());
     }
 
     private ExecutorService createExecutor() {

@@ -50,10 +50,9 @@ public class VnaImportApplication implements CommandLineRunner {
             // parse the command line arguments
             CommandLine line = parser.parse(CommandLineOptions.get(), args);
             String filePath = line.getOptionValue(CommandLineOptions.FILE);
-            String numberOfThreads = line.getOptionValue(CommandLineOptions.THREADS,
-                    CommandLineOptions.THREADS_DEFAULT);
+            String numberOfThreads = line.getOptionValue(CommandLineOptions.THREADS, CommandLineOptions.THREADS_DEFAULT);
             long start = System.currentTimeMillis();
-            logFilePath(filePath);
+            log.info("Importing: {}...", filePath);
             logNumberOfThreads(numberOfThreads);
             byte[] vnaFileData = Files.readAllBytes(Paths.get(filePath));
             vnaImport.setNumberOfThreads(Integer.valueOf(numberOfThreads));
@@ -68,26 +67,15 @@ public class VnaImportApplication implements CommandLineRunner {
         }
     }
 
-    private void logFilePath(String filePath) {
-        String message = "Importing: " + filePath + "...";
-        logMessage(message);
-    }
-
     private void logNumberOfThreads(String numberOfThreads) {
         if (!"1".equals(numberOfThreads)) {
-            String message = "Number of parallel threads: " + numberOfThreads;
-            logMessage(message);
+            log.info("Number of parallel threads: {}", numberOfThreads);
         }
     }
 
     private void logRuntime(long ms) {
-        String message = "Import finished, runtime: " + TimeFormatter.getHumanRedableTime(ms);
-        logMessage(message);
-    }
-
-    private void logMessage(String message) {
         if (log.isInfoEnabled()) {
-            log.info(message);
+            log.info("Import finished, runtime: {}", TimeFormatter.getHumanRedableTime(ms));
         }
     }
 
