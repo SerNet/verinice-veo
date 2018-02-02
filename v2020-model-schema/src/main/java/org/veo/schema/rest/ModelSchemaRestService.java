@@ -15,13 +15,10 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
+ *     Sebastian Hagedorn - initial API and implementation
+ *     Daniel Murygin
  ******************************************************************************/
 package org.veo.schema.rest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,28 +31,33 @@ import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
 import org.veo.service.ElementDefinitionFactory;
 
+import java.util.*;
+
 /**
- * @author sh
+ * REST service to access the schema for the elements.
+ * The schema defines the element, property and link types of elements.
  *
+ * @author Sebastian Hagedorn
+ * @author Daniel Murygin
  */
 @RestController
 @RequestMapping("/service/model-schema")
 @Service
 public class ModelSchemaRestService {
-    
+
     @RequestMapping(path = "/allElementTypes", method = RequestMethod.GET)
     public List<ElementDefinition> getAllElementTypes(){
-        List<ElementDefinition> list = new ArrayList<>(ElementDefinitionFactory.getInstance().getElementDefinitions().size());
-        list.addAll(ElementDefinitionFactory.getInstance().getElementDefinitions().values());
-        HttpStatus status = (list != null && list.size() > 0)
+        List<ElementDefinition> elementDefinitions = new ArrayList<>(getElementDefinitions().size());
+        elementDefinitions.addAll(getElementDefinitions().values());
+        HttpStatus status = isNotEmpty(elementDefinitions)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<List<ElementDefinition>> response = new ResponseEntity<>(list, status);
+        ResponseEntity<List<ElementDefinition>> response = new ResponseEntity<>(elementDefinitions, status);
         return response.getBody();
     }
-    
+
     @RequestMapping(path = "/elementType/{elementType}", method = RequestMethod.GET)
     public ElementDefinition getElementType(@PathVariable String elementType){
-        ElementDefinition definition = ElementDefinitionFactory.getInstance().getElementDefinition(elementType);
+        ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
         HttpStatus status = (definition != null && definition.getElementType().equals(elementType))
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         ResponseEntity<ElementDefinition> response = new ResponseEntity<>(definition, status);
@@ -65,8 +67,8 @@ public class ModelSchemaRestService {
     @RequestMapping(path = "/linkDefinitions/{elementType}", method = RequestMethod.GET)
     public Set<LinkDefinition> getLinkDefinitionsForElementType(@PathVariable String elementType){
         Set<LinkDefinition> definitions = 
-                ElementDefinitionFactory.getInstance().getLinkDefinitionsByElementType(elementType);
-        HttpStatus status = (definitions != null && definitions.size() > 0)
+                getElementDefinitionFactory().getLinkDefinitionsByElementType(elementType);
+        HttpStatus status = isNotEmpty(definitions)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         ResponseEntity<Set<LinkDefinition>> response = new ResponseEntity<>(definitions, status);
         return response.getBody();        
@@ -79,8 +81,8 @@ public class ModelSchemaRestService {
     
     @RequestMapping(path = "/allPropertyGroups", method = RequestMethod.GET)
     public Set<String> getAllPropertyGroups(){
-        Set<String> groups = ElementDefinitionFactory.getInstance().getAllGroupNames();
-        HttpStatus status = (groups != null && groups.size() > 0)
+        Set<String> groups = getElementDefinitionFactory().getAllGroupNames();
+        HttpStatus status = isNotEmpty(groups)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         ResponseEntity<Set<String>> response = new ResponseEntity<>(groups, status);
         return response.getBody();
@@ -88,12 +90,24 @@ public class ModelSchemaRestService {
     
     @RequestMapping(path = "/propertyGroups/{elementType}", method = RequestMethod.GET)
     public Set<String> getPropertyGroupsByElementType(@PathVariable String elementType){
-        Set<String> groups = ElementDefinitionFactory.getInstance().getGroupsForElementType(elementType);
-        HttpStatus status = (groups != null && groups.size() > 0)
+        Set<String> groups = getElementDefinitionFactory().getGroupsForElementType(elementType);
+        HttpStatus status = isNotEmpty(groups)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         ResponseEntity<Set<String>> response = new ResponseEntity<>(groups, status);
         return response.getBody();
     }
-    
+
+
+    private Map<String, ElementDefinition> getElementDefinitions() {
+        return getElementDefinitionFactory().getElementDefinitions();
+    }
+
+    private ElementDefinitionFactory getElementDefinitionFactory() {
+        return ElementDefinitionFactory.getInstance();
+    }
+
+    private boolean isNotEmpty(Collection<?> elementDefinitions) {
+        return elementDefinitions != null && !elementDefinitions.isEmpty();
+    }
 
 }
