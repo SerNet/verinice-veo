@@ -33,14 +33,14 @@ public final class TimeFormatter {
 
     public static String getHumanRedableTime(long ms) {
         long miliseconds = ms % 1000;
-        double x = ms / 1000.0;
-        long seconds = Math.round(x % 60);
+        long x = (ms / 1000l);
+        long seconds = x % 60;
         x /= 60;
-        long minutes = Math.round(x % 60);
+        long minutes = x % 60;
         x /= 60;
-        long hours = Math.round(x % 24);
+        long hours = x % 24;
         x /= 24;
-        long days = Math.round(x);
+        long days = x;
         StringBuilder sb = new StringBuilder();
         if (days > 0) {
             sb.append(days).append(" d");
