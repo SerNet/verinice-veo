@@ -19,10 +19,6 @@
  ******************************************************************************/
 package org.veo.client.schema;
 
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,15 +29,18 @@ import org.springframework.stereotype.Service;
 import org.veo.client.AbstractRestClient;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
+import org.veo.schema.rest.ModelSchemaRestService;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
  * Client for the model schema REST web service.
  * 
  * Set the REST service URL in file: application.properties
- * 
  * rest-server.url=http[s]://<HOSTNAME>[:<PORT>]/
  * 
- * @author Daniel Murygin <dm[at]sernet[dot]de>
+ * @author Daniel Murygin
  */
 @Service
 public class ModelSchemaRestClient extends AbstractRestClient {
@@ -71,24 +70,20 @@ public class ModelSchemaRestClient extends AbstractRestClient {
         StringBuilder sb = new StringBuilder(getBaseUrl());
         sb.append("allElementTypes");
         String url = sb.toString();
-        if (log.isInfoEnabled()) {
-            log.info("getAllElementTypes, URL: " + url);
-        }
+        log.info("getAllElementTypes, URL: {}", url);
         ResponseEntity<List<ElementDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<ElementDefinition>>() {
                 });
         return response.getBody();
 
     }
-    
+
     public ElementDefinition getElementType(String type) {
         StringBuilder sb = new StringBuilder(getBaseUrl());
         sb.append("elementType/");
         sb.append(type);
         String url = sb.toString();
-        if (log.isInfoEnabled()) {
-            log.info("getElementType, URL: " + url);
-        }
+        log.info("getElementType, URL: {}", url);
         return getRestHandler().getForObject(url, ElementDefinition .class);
     }
     
@@ -97,14 +92,11 @@ public class ModelSchemaRestClient extends AbstractRestClient {
         sb.append("linkDefinitions/");
         sb.append(type);
         String url = sb.toString();
-        if (log.isInfoEnabled()) {
-            log.info("getLinkDefinitions, URL: " + url);
-        }
+        log.info("getLinkDefinitions, URL: {}", url);
         ResponseEntity<List<LinkDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<LinkDefinition>>() {
                 });
         return response.getBody();
-
     }
 
     @Override
@@ -116,6 +108,4 @@ public class ModelSchemaRestClient extends AbstractRestClient {
     public void setPath(String path) {
         this.path = path;
     }
-
-
 }
