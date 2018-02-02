@@ -46,13 +46,13 @@ import java.util.*;
 public class ModelSchemaRestService {
 
     public static final String URL_SERVICE = "/service/model-schema";
-    public static final String URL_ELEMENT_TYPES = "/allElementTypes";
-    public static final String URL_ELEMENT_TYPE = "/allElementType";
-    public static final String URL_LINK_DEFINITIONS = "/linkDefinitions";
-    public static final String URL_PROPERTY_GROUPS = "/propertyGroups";
+    public static final String URL_ELEMENT_TYPES = "element-types";
+    public static final String URL_ELEMENT_TYPE = "element-type";
+    public static final String URL_LINK_DEFINITIONS = "/link-definitions";
+    public static final String URL_PROPERTY_GROUPS = "/property-groups";
 
-    @RequestMapping(path = URL_ELEMENT_TYPES, method = RequestMethod.GET)
-    public List<ElementDefinition> getAllElementTypes(){
+    @RequestMapping(path = "/" + URL_ELEMENT_TYPES, method = RequestMethod.GET)
+    public List<ElementDefinition> getElementTypes(){
         List<ElementDefinition> elementDefinitions = new ArrayList<>(getElementDefinitions().size());
         elementDefinitions.addAll(getElementDefinitions().values());
         HttpStatus status = isNotEmpty(elementDefinitions)
@@ -61,7 +61,7 @@ public class ModelSchemaRestService {
         return response.getBody();
     }
 
-    @RequestMapping(path = URL_ELEMENT_TYPE + "/{elementType}", method = RequestMethod.GET)
+    @RequestMapping(path = "/" + URL_ELEMENT_TYPE + "/{elementType}", method = RequestMethod.GET)
     public ElementDefinition getElementType(@PathVariable String elementType){
         ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
         HttpStatus status = (definition != null && definition.getElementType().equals(elementType))
@@ -70,8 +70,8 @@ public class ModelSchemaRestService {
         return response.getBody();
     } 
     
-    @RequestMapping(path = URL_LINK_DEFINITIONS + "/{elementType}", method = RequestMethod.GET)
-    public Set<LinkDefinition> getLinkDefinitionsForElementType(@PathVariable String elementType){
+    @RequestMapping(path = URL_ELEMENT_TYPE + "/{elementType}/" + URL_LINK_DEFINITIONS, method = RequestMethod.GET)
+    public Set<LinkDefinition> getLinkDefinitions(@PathVariable String elementType){
         Set<LinkDefinition> definitions = 
                 getElementDefinitionFactory().getLinkDefinitionsByElementType(elementType);
         HttpStatus status = isNotEmpty(definitions)
@@ -80,13 +80,8 @@ public class ModelSchemaRestService {
         return response.getBody();        
     }
     
-    @RequestMapping(path = URL_PROPERTY_GROUPS + "/{elementDefinition}", method = RequestMethod.GET)
-    public Set<String> getGroupsForElementDefinition(ElementDefinition elementDefinition){
-        return getPropertyGroupsByElementType(elementDefinition.getElementType());
-    }
-    
     @RequestMapping(path = URL_PROPERTY_GROUPS, method = RequestMethod.GET)
-    public Set<String> getAllPropertyGroups(){
+    public Set<String> getPropertyGroups(){
         Set<String> groups = getElementDefinitionFactory().getAllGroupNames();
         HttpStatus status = isNotEmpty(groups)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
@@ -94,8 +89,8 @@ public class ModelSchemaRestService {
         return response.getBody();
     }
     
-    @RequestMapping(path = URL_PROPERTY_GROUPS + "{elementType}", method = RequestMethod.GET)
-    public Set<String> getPropertyGroupsByElementType(@PathVariable String elementType){
+    @RequestMapping(path = URL_ELEMENT_TYPE + "/{elementType}/" + URL_PROPERTY_GROUPS, method = RequestMethod.GET)
+    public Set<String> getPropertyGroups(@PathVariable String elementType){
         Set<String> groups = getElementDefinitionFactory().getGroupsForElementType(elementType);
         HttpStatus status = isNotEmpty(groups)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;

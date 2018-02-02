@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     SDaniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
+ *     Daniel Murygin - initial API and implementation
  ******************************************************************************/
 package org.veo.client.schema;
 
@@ -29,10 +29,11 @@ import org.springframework.stereotype.Service;
 import org.veo.client.AbstractRestClient;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
-import org.veo.schema.rest.ModelSchemaRestService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+
+import static org.veo.schema.rest.ModelSchemaRestService.*;
 
 /**
  * Client for the model schema REST web service.
@@ -54,6 +55,7 @@ public class ModelSchemaRestClient extends AbstractRestClient {
     private String path;
     
     public ModelSchemaRestClient() {
+        super();
     }
 
     public ModelSchemaRestClient(String username, String password) {
@@ -67,36 +69,39 @@ public class ModelSchemaRestClient extends AbstractRestClient {
     }
 
     public List<ElementDefinition> getElementTypes() {
-        StringBuilder sb = new StringBuilder(getBaseUrl());
-        sb.append("allElementTypes");
-        String url = sb.toString();
+        String url = getElementTypesUrl();
         log.info("getAllElementTypes, URL: {}", url);
         ResponseEntity<List<ElementDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<ElementDefinition>>() {
                 });
         return response.getBody();
+    }
 
+    private String getElementTypesUrl() {
+        return getBaseUrl() + URL_ELEMENT_TYPES;
     }
 
     public ElementDefinition getElementType(String type) {
-        StringBuilder sb = new StringBuilder(getBaseUrl());
-        sb.append("elementType/");
-        sb.append(type);
-        String url = sb.toString();
+        String url = getElementTypeUrl(type);
         log.info("getElementType, URL: {}", url);
         return getRestHandler().getForObject(url, ElementDefinition .class);
     }
-    
+
+    private String getElementTypeUrl(String type) {
+        return getBaseUrl() + URL_ELEMENT_TYPE + "/" + type;
+    }
+
     public List<LinkDefinition> getLinkDefinitions(String type) {
-        StringBuilder sb = new StringBuilder(getBaseUrl());
-        sb.append("linkDefinitions/");
-        sb.append(type);
-        String url = sb.toString();
+        String url = getLinkDefinitionsUrl(type);
         log.info("getLinkDefinitions, URL: {}", url);
         ResponseEntity<List<LinkDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<LinkDefinition>>() {
                 });
         return response.getBody();
+    }
+
+    private String getLinkDefinitionsUrl(String type) {
+        return getBaseUrl() + URL_ELEMENT_TYPE + "/" + type + "/" + URL_LINK_DEFINITIONS;
     }
 
     @Override
