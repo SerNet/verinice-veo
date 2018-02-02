@@ -24,6 +24,7 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 /**
+ * Abstract base class for REST clients.
  *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
@@ -45,7 +46,7 @@ public abstract class AbstractRestClient {
     }
 
     /**
-     * Inits the rest client with user credentials.
+     * Init the rest client with user credentials.
      *
      * If the server is secured, this is the only way for clients to talk with
      * the rest backend.

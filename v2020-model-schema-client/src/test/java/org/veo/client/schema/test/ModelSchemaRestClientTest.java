@@ -19,11 +19,6 @@
  ******************************************************************************/
 package org.veo.client.schema.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,6 +30,11 @@ import org.veo.client.ClientApplication;
 import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
+
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Sebastian Hagedorn <sh[at]sernet[dot]de>
@@ -73,7 +73,7 @@ public class ModelSchemaRestClientTest {
         List<LinkDefinition> linkDefinitions = schemaRestClient.getLinkDefinitions("asset");
         assertNotNull(linkDefinitions);
         assertTrue(linkDefinitions.size() > 0);
-        linkDefinitions = schemaRestClient.getLinkDefinitions("control");
+        linkDefinitions = schemaRestClient.getLinkDefinitions("asset");
         assertNotNull(linkDefinitions);
         assertTrue(linkDefinitions.size() > 0);
     }
