@@ -41,11 +41,17 @@ import java.util.*;
  * @author Daniel Murygin
  */
 @RestController
-@RequestMapping("/service/model-schema")
+@RequestMapping(ModelSchemaRestService.URL_SERVICE)
 @Service
 public class ModelSchemaRestService {
 
-    @RequestMapping(path = "/allElementTypes", method = RequestMethod.GET)
+    public static final String URL_SERVICE = "/service/model-schema";
+    public static final String URL_ELEMENT_TYPES = "/allElementTypes";
+    public static final String URL_ELEMENT_TYPE = "/allElementType";
+    public static final String URL_LINK_DEFINITIONS = "/linkDefinitions";
+    public static final String URL_PROPERTY_GROUPS = "/propertyGroups";
+
+    @RequestMapping(path = URL_ELEMENT_TYPES, method = RequestMethod.GET)
     public List<ElementDefinition> getAllElementTypes(){
         List<ElementDefinition> elementDefinitions = new ArrayList<>(getElementDefinitions().size());
         elementDefinitions.addAll(getElementDefinitions().values());
@@ -55,7 +61,7 @@ public class ModelSchemaRestService {
         return response.getBody();
     }
 
-    @RequestMapping(path = "/elementType/{elementType}", method = RequestMethod.GET)
+    @RequestMapping(path = URL_ELEMENT_TYPE + "/{elementType}", method = RequestMethod.GET)
     public ElementDefinition getElementType(@PathVariable String elementType){
         ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
         HttpStatus status = (definition != null && definition.getElementType().equals(elementType))
@@ -64,7 +70,7 @@ public class ModelSchemaRestService {
         return response.getBody();
     } 
     
-    @RequestMapping(path = "/linkDefinitions/{elementType}", method = RequestMethod.GET)
+    @RequestMapping(path = URL_LINK_DEFINITIONS + "/{elementType}", method = RequestMethod.GET)
     public Set<LinkDefinition> getLinkDefinitionsForElementType(@PathVariable String elementType){
         Set<LinkDefinition> definitions = 
                 getElementDefinitionFactory().getLinkDefinitionsByElementType(elementType);
@@ -74,12 +80,12 @@ public class ModelSchemaRestService {
         return response.getBody();        
     }
     
-    @RequestMapping(path = "/propertyGroups/{elementDefinition}", method = RequestMethod.GET)
+    @RequestMapping(path = URL_PROPERTY_GROUPS + "/{elementDefinition}", method = RequestMethod.GET)
     public Set<String> getGroupsForElementDefinition(ElementDefinition elementDefinition){
         return getPropertyGroupsByElementType(elementDefinition.getElementType());
     }
     
-    @RequestMapping(path = "/allPropertyGroups", method = RequestMethod.GET)
+    @RequestMapping(path = URL_PROPERTY_GROUPS, method = RequestMethod.GET)
     public Set<String> getAllPropertyGroups(){
         Set<String> groups = getElementDefinitionFactory().getAllGroupNames();
         HttpStatus status = isNotEmpty(groups)
@@ -88,7 +94,7 @@ public class ModelSchemaRestService {
         return response.getBody();
     }
     
-    @RequestMapping(path = "/propertyGroups/{elementType}", method = RequestMethod.GET)
+    @RequestMapping(path = URL_PROPERTY_GROUPS + "{elementType}", method = RequestMethod.GET)
     public Set<String> getPropertyGroupsByElementType(@PathVariable String elementType){
         Set<String> groups = getElementDefinitionFactory().getGroupsForElementType(elementType);
         HttpStatus status = isNotEmpty(groups)
