@@ -19,21 +19,21 @@
  ******************************************************************************/
 package org.veo.schema.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ElementDefinition implements Serializable{
 
     private static final long serialVersionUID = 20170629135134L;
     
     private String elementType;
-    
-    private Set<PropertyDefinition> properties;   
-    
+
+    private Set<PropertyDefinition> properties;
+
     private Set<LinkDefinition> outgoingLinks;
     
     @JsonCreator
