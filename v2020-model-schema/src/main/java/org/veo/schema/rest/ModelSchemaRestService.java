@@ -15,13 +15,10 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
+ *     Sebastian Hagedorn - initial API and implementation
+ *     Daniel Murygin
  ******************************************************************************/
 package org.veo.schema.rest;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,66 +31,74 @@ import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
 import org.veo.service.ElementDefinitionFactory;
 
+import java.util.*;
+
 /**
- * @author sh
+ * REST service to access the schema for the elements.
+ * The schema defines the element, property and link types of elements.
  *
+ * @author Sebastian Hagedorn
+ * @author Daniel Murygin
  */
 @RestController
-@RequestMapping("/service/model-schema")
+@RequestMapping(ModelSchemaRestService.URL_SERVICE)
 @Service
 public class ModelSchemaRestService {
-    
-    @RequestMapping(path = "/allElementTypes", method = RequestMethod.GET)
-    public List<ElementDefinition> getAllElementTypes(){
-        List<ElementDefinition> list = new ArrayList<>(ElementDefinitionFactory.getInstance().getElementDefinitions().size());
-        list.addAll(ElementDefinitionFactory.getInstance().getElementDefinitions().values());
-        HttpStatus status = (list != null && list.size() > 0)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<List<ElementDefinition>> response = new ResponseEntity<>(list, status);
-        return response.getBody();
+
+    public static final String URL_SERVICE = "/service/model-schema";
+    public static final String URL_ELEMENT_TYPES = "element-types";
+    public static final String URL_LINK_DEFINITIONS = "/link-definitions";
+    public static final String URL_PROPERTY_GROUPS = "/property-groups";
+
+    @RequestMapping(path = "/" + URL_ELEMENT_TYPES, method = RequestMethod.GET)
+    public ResponseEntity<List<ElementDefinition>> getElementTypes(){
+        List<ElementDefinition> elementDefinitions = new ArrayList<>(getElementDefinitions().size());
+        elementDefinitions.addAll(getElementDefinitions().values());
+        return new ResponseEntity<>(elementDefinitions, HttpStatus.OK );
     }
-    
-    @RequestMapping(path = "/elementType/{elementType}", method = RequestMethod.GET)
-    public ElementDefinition getElementType(@PathVariable String elementType){
-        ElementDefinition definition = ElementDefinitionFactory.getInstance().getElementDefinition(elementType);
+
+    @RequestMapping(path = "/" + URL_ELEMENT_TYPES + "/{elementType}", method = RequestMethod.GET)
+    public ResponseEntity<ElementDefinition> getElementType(@PathVariable String elementType){
+        ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
         HttpStatus status = (definition != null && definition.getElementType().equals(elementType))
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<ElementDefinition> response = new ResponseEntity<>(definition, status);
-        return response.getBody();
+        return new ResponseEntity<>(definition, status);
     } 
     
-    @RequestMapping(path = "/linkDefinitions/{elementType}", method = RequestMethod.GET)
-    public Set<LinkDefinition> getLinkDefinitionsForElementType(@PathVariable String elementType){
+    @RequestMapping(path = URL_ELEMENT_TYPES + "/{elementType}/" + URL_LINK_DEFINITIONS, method = RequestMethod.GET)
+    public ResponseEntity<Set<LinkDefinition>> getLinkDefinitions(@PathVariable String elementType){
+        ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
+        if(definition==null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Set<LinkDefinition> definitions = 
-                ElementDefinitionFactory.getInstance().getLinkDefinitionsByElementType(elementType);
-        HttpStatus status = (definitions != null && definitions.size() > 0)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<Set<LinkDefinition>> response = new ResponseEntity<>(definitions, status);
-        return response.getBody();        
+                getElementDefinitionFactory().getLinkDefinitionsByElementType(elementType);
+        return new ResponseEntity<>(definitions, HttpStatus.OK);
     }
     
-    @RequestMapping(path = "/propertyGroups/{elementDefinition}", method = RequestMethod.GET)
-    public Set<String> getGroupsForElementDefinition(ElementDefinition elementDefinition){
-        return getPropertyGroupsByElementType(elementDefinition.getElementType());
+    @RequestMapping(path = URL_PROPERTY_GROUPS, method = RequestMethod.GET)
+    public ResponseEntity<Set<String>> getPropertyGroups(){
+        Set<String> groups = getElementDefinitionFactory().getAllGroupNames();
+        return new ResponseEntity<>(groups, HttpStatus.OK);
     }
     
-    @RequestMapping(path = "/allPropertyGroups", method = RequestMethod.GET)
-    public Set<String> getAllPropertyGroups(){
-        Set<String> groups = ElementDefinitionFactory.getInstance().getAllGroupNames();
-        HttpStatus status = (groups != null && groups.size() > 0)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<Set<String>> response = new ResponseEntity<>(groups, status);
-        return response.getBody();
+    @RequestMapping(path = URL_ELEMENT_TYPES + "/{elementType}/" + URL_PROPERTY_GROUPS, method = RequestMethod.GET)
+    public ResponseEntity<Set<String>> getPropertyGroups(@PathVariable String elementType){
+        ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
+        if(definition==null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Set<String> groups = getElementDefinitionFactory().getGroupsForElementType(elementType);
+        return new ResponseEntity<>(groups, HttpStatus.OK);
     }
-    
-    @RequestMapping(path = "/propertyGroups/{elementType}", method = RequestMethod.GET)
-    public Set<String> getPropertyGroupsByElementType(@PathVariable String elementType){
-        Set<String> groups = ElementDefinitionFactory.getInstance().getGroupsForElementType(elementType);
-        HttpStatus status = (groups != null && groups.size() > 0)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<Set<String>> response = new ResponseEntity<>(groups, status);
-        return response.getBody();
+
+
+    private Map<String, ElementDefinition> getElementDefinitions() {
+        return getElementDefinitionFactory().getElementDefinitions();
     }
-    
+
+    private ElementDefinitionFactory getElementDefinitionFactory() {
+        return ElementDefinitionFactory.getInstance();
+    }
 
 }

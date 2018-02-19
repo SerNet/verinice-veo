@@ -15,9 +15,14 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
+ *     Sebastian Hagedorn - initial API and implementation
+ *     Daniel Murygin
  ******************************************************************************/
 package org.veo.schema;
+
+import org.apache.commons.io.FileUtils;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,23 +30,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-import org.springframework.core.io.ClassPathResource;
-
 /**
- * loads all json files of the defined location
+ * Loads all json files of the defined location
  * /src/main/resources/elementdefinitions
  * 
- * tries to access the location in a filesystem-based way
- * and, in addition to that, in a jar-file way
+ * Tries to access the location in a filesystem-based way
+ * and, in addition to that, in a jar-file way. Both results are merged
+ * ans returned.
  * 
- * results are merged
- * 
- * @author sh
+ * @author Sebastian Hagedorn
+ * @author Daniel Murygin
  *
  */
 public class ElementDefinitionResourceLoader {
+
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(ElementDefinitionResourceLoader.class);
 
     private static final String DEFINITIONS_DIR_NAME = "elementdefinitions";
     private static final String JSON_FILE_EXTENSION = "json";
@@ -50,41 +53,52 @@ public class ElementDefinitionResourceLoader {
     
     public static Set<File> getElementDefinitions(){
         Set<File> definitions = new HashSet<>(100);
+        try {
+            definitions.addAll(loadElementDefinitionsFromFileSystem());
+            definitions.addAll(loadElementDefinitionsFromJar());
+        } catch (Exception e) {
+            LOG.error("Error while loading element definitions.", e);
+        }
+        return definitions;
+    }
+
+    private static Set<File>  loadElementDefinitionsFromFileSystem() throws IOException {
+        Set<File> definitions = new HashSet<>(100);
+        File definitionFolder = getElementDefinitionsDirectory();
+        Collection<File> jsonFiles = FileUtils.listFiles(
+                definitionFolder,  new String[]{JSON_FILE_EXTENSION}, true);
+        definitions.addAll(jsonFiles);
+        return definitions;
+    }
+
+    private static File getElementDefinitionsDirectory() throws IOException {
+        String elementDefinitionsDirectory = getElementDefinitionsDirectoryPath();
+        ClassPathResource resource  =
+                new ClassPathResource(elementDefinitionsDirectory);
+        return resource.getFile();
+    }
+
+    private static String getElementDefinitionsDirectoryPath() {
         StringBuilder sb = new StringBuilder();
         sb.append(File.separatorChar);
         sb.append(DEFINITIONS_DIR_NAME);
         sb.append(File.separatorChar);
-        
-        ClassPathResource resource  = 
-                new ClassPathResource(sb.toString());
-        File definitionFolder;
-        try {
-            definitionFolder = resource.getFile();
-            Collection<File> jsonFiles = FileUtils.listFiles(
-                    definitionFolder,  new String[]{JSON_FILE_EXTENSION}, true);
-            definitions.addAll(jsonFiles);
+        return sb.toString();
+    }
 
-            final File jarFile = new File(ElementDefinitionResourceLoader.class.
-                    getProtectionDomain().getCodeSource().getLocation().getPath());
-            
-            if (jarFile.isDirectory()){
-                File definitionDir = FileUtils.getFile(jarFile, DEFINITIONS_DIR_NAME);
-                if (definitionDir != null && definitionDir.isDirectory()){
-                    for (File f : FileUtils.listFiles(definitionDir, new String[]{JSON_FILE_EXTENSION}, true)){
-                        definitions.add(f);
-                    };
+    private static Set<File> loadElementDefinitionsFromJar() {
+        Set<File> definitions = new HashSet<>(100);
+        final File jarFile = new File(ElementDefinitionResourceLoader.class.
+                getProtectionDomain().getCodeSource().getLocation().getPath());
+        if (jarFile.isDirectory()){
+            File definitionDir = FileUtils.getFile(jarFile, DEFINITIONS_DIR_NAME);
+            if (definitionDir != null && definitionDir.isDirectory()){
+                for (File f : FileUtils.listFiles(definitionDir, new String[]{JSON_FILE_EXTENSION}, true)){
+                    definitions.add(f);
                 }
             }
-            
-        } catch (IOException e) {
-            Logger.getLogger(ElementDefinitionResourceLoader.class)
-            .error("Error loading json files",e );
         }
         return definitions;
     }
-    
 
-    
-
-    
 }

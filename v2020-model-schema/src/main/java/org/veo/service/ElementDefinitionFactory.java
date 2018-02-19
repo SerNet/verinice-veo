@@ -19,17 +19,9 @@
  ******************************************************************************/
 package org.veo.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -41,20 +33,19 @@ import org.veo.schema.model.LinkDefinition;
 import org.veo.schema.model.LinkDefinitions;
 import org.veo.schema.model.PropertyDefinition;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class ElementDefinitionFactory {
+
+    private final Logger LOG = LoggerFactory.getLogger(ElementDefinitionFactory.class);
 
     private static final ElementDefinitionFactory instance = new ElementDefinitionFactory();
     private ObjectMapper mapper;
 
-    private final Logger logger = LoggerFactory.getLogger(ElementDefinitionFactory.class);
 
     private Map<String, ElementDefinition> elementDefinitionMap;
     private Map<String, Set<LinkDefinition>> linkDefinitionMap;
@@ -86,46 +77,54 @@ public class ElementDefinitionFactory {
     }
 
     private void initElementMap() {
-        try {
-            for (File jsonFile : ElementDefinitionResourceLoader.getElementDefinitions()) {
-                try (InputStream in = FileUtils.openInputStream(jsonFile)) {
-                    String jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
-                    if (isValidJson(jsonString, ElementDefinition.class)) {
+        for (File jsonFile : ElementDefinitionResourceLoader.getElementDefinitions()) {
+            handleElementDefinition(jsonFile);
+        }
+    }
 
-                        ElementDefinition definition = getElementDefinitonFromJson(jsonString);
-                        elementDefinitionMap.put(definition.getElementType(), definition);
-                    }
+    private void handleElementDefinition(File jsonFile) {
+        try (InputStream in = FileUtils.openInputStream(jsonFile)) {
+            String jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
+            if (isValidJson(jsonString, ElementDefinition.class)) {
+                ElementDefinition definition = getElementDefinitonFromJson(jsonString);
+                if(definition!=null) {
+                    elementDefinitionMap.put(definition.getElementType(), definition);
                 }
-
             }
         } catch (IOException e) {
-            logger.error("Error reading json-definition-files from repository", e);
+            LOG.error("Error while loading element definition file: {}", jsonFile.getPath(), e);
         }
     }
 
     private void initLinkMap() {
-        String jsonString;
+        List<File> linkJsonList = LinkDefinitionResourceLoader.getLinkDefinitionFile();
+        for (File jsonFile : linkJsonList) {
+            handleLinkDefinitionFile(jsonFile);
+        }
+    }
+
+    private void handleLinkDefinitionFile(File jsonFile) {
         try {
-            List<File> linkJsonList = LinkDefinitionResourceLoader.getLinkDefinitionFile();
-            for (File jsonFile : linkJsonList) {
-                try (InputStream in = FileUtils.openInputStream(jsonFile)) {
-                    jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
-                    LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
-                    for (LinkDefinition definition : definitions.getLinkDefinitions()) {
-                        String source = definition.getSourceType();
-                        Set<LinkDefinition> linkSet = linkDefinitionMap.get(source);
-                        if (linkSet == null) {
-                            linkSet = new HashSet<>();
-                        }
-                        linkSet.add(definition);
-                        linkDefinitionMap.put(source, linkSet);
-                        elementDefinitionMap.get(source).addOutgoingLink(definition);
-                    }
-                }
+            InputStream in = FileUtils.openInputStream(jsonFile);
+            String jsonString = IOUtils.toString(in, StandardCharsets.UTF_8);
+            LinkDefinitions definitions = getLinkDefinitionsFromJson(jsonString);
+            for (LinkDefinition definition : definitions.getLinkDefinitions()) {
+                handleLinkDefinition(definition);
             }
         } catch (IOException e) {
-            logger.error("Error reading link-defintion-json-file from repository", e);
+            LOG.error("Error while loading link definition file: {}", jsonFile.getPath(), e);
         }
+    }
+
+    private void handleLinkDefinition(LinkDefinition definition) {
+        String source = definition.getSourceType();
+        Set<LinkDefinition> linkSet = linkDefinitionMap.get(source);
+        if (linkSet == null) {
+            linkSet = new HashSet<>();
+        }
+        linkSet.add(definition);
+        linkDefinitionMap.put(source, linkSet);
+        elementDefinitionMap.get(source).addOutgoingLink(definition);
     }
 
     public Set<LinkDefinition> getLinkDefinitionsByElementType(String elementType) {
@@ -190,14 +189,8 @@ public class ElementDefinitionFactory {
         try {
             mapper.readValue(json, clazz);
             return true;
-        } catch (JsonMappingException e) {
-            logger.warn(WARN_MSG, e);
-            return false;
-        } catch (JsonParseException e) {
-            logger.warn(WARN_MSG, e);
-            return false;
         } catch (IOException e) {
-            logger.warn(WARN_MSG, e);
+            LOG.warn(WARN_MSG, e);
             return false;
         }
     }
