@@ -54,9 +54,7 @@ public class ModelSchemaRestService {
     public ResponseEntity<List<ElementDefinition>> getElementTypes(){
         List<ElementDefinition> elementDefinitions = new ArrayList<>(getElementDefinitions().size());
         elementDefinitions.addAll(getElementDefinitions().values());
-        HttpStatus status = isNotEmpty(elementDefinitions)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        return new ResponseEntity<>(elementDefinitions, status);
+        return new ResponseEntity<>(elementDefinitions, HttpStatus.OK );
     }
 
     @RequestMapping(path = "/" + URL_ELEMENT_TYPES + "/{elementType}", method = RequestMethod.GET)
@@ -69,27 +67,29 @@ public class ModelSchemaRestService {
     
     @RequestMapping(path = URL_ELEMENT_TYPES + "/{elementType}/" + URL_LINK_DEFINITIONS, method = RequestMethod.GET)
     public ResponseEntity<Set<LinkDefinition>> getLinkDefinitions(@PathVariable String elementType){
+        ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
+        if(definition==null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Set<LinkDefinition> definitions = 
                 getElementDefinitionFactory().getLinkDefinitionsByElementType(elementType);
-        HttpStatus status = isNotEmpty(definitions)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        return new ResponseEntity<>(definitions, status);
+        return new ResponseEntity<>(definitions, HttpStatus.OK);
     }
     
     @RequestMapping(path = URL_PROPERTY_GROUPS, method = RequestMethod.GET)
     public ResponseEntity<Set<String>> getPropertyGroups(){
         Set<String> groups = getElementDefinitionFactory().getAllGroupNames();
-        HttpStatus status = isNotEmpty(groups)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        return new ResponseEntity<>(groups, status);
+        return new ResponseEntity<>(groups, HttpStatus.OK);
     }
     
     @RequestMapping(path = URL_ELEMENT_TYPES + "/{elementType}/" + URL_PROPERTY_GROUPS, method = RequestMethod.GET)
     public ResponseEntity<Set<String>> getPropertyGroups(@PathVariable String elementType){
+        ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
+        if(definition==null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         Set<String> groups = getElementDefinitionFactory().getGroupsForElementType(elementType);
-        HttpStatus status = isNotEmpty(groups)
-                ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        return new ResponseEntity<>(groups, status);
+        return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 
 
@@ -99,10 +99,6 @@ public class ModelSchemaRestService {
 
     private ElementDefinitionFactory getElementDefinitionFactory() {
         return ElementDefinitionFactory.getInstance();
-    }
-
-    private boolean isNotEmpty(Collection<?> elementDefinitions) {
-        return elementDefinitions != null && !elementDefinitions.isEmpty();
     }
 
 }
