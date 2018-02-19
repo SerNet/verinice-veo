@@ -47,55 +47,49 @@ public class ModelSchemaRestService {
 
     public static final String URL_SERVICE = "/service/model-schema";
     public static final String URL_ELEMENT_TYPES = "element-types";
-    public static final String URL_ELEMENT_TYPE = "element-type";
     public static final String URL_LINK_DEFINITIONS = "/link-definitions";
     public static final String URL_PROPERTY_GROUPS = "/property-groups";
 
     @RequestMapping(path = "/" + URL_ELEMENT_TYPES, method = RequestMethod.GET)
-    public List<ElementDefinition> getElementTypes(){
+    public ResponseEntity<List<ElementDefinition>> getElementTypes(){
         List<ElementDefinition> elementDefinitions = new ArrayList<>(getElementDefinitions().size());
         elementDefinitions.addAll(getElementDefinitions().values());
         HttpStatus status = isNotEmpty(elementDefinitions)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<List<ElementDefinition>> response = new ResponseEntity<>(elementDefinitions, status);
-        return response.getBody();
+        return new ResponseEntity<>(elementDefinitions, status);
     }
 
-    @RequestMapping(path = "/" + URL_ELEMENT_TYPE + "/{elementType}", method = RequestMethod.GET)
-    public ElementDefinition getElementType(@PathVariable String elementType){
+    @RequestMapping(path = "/" + URL_ELEMENT_TYPES + "/{elementType}", method = RequestMethod.GET)
+    public ResponseEntity<ElementDefinition> getElementType(@PathVariable String elementType){
         ElementDefinition definition = getElementDefinitionFactory().getElementDefinition(elementType);
         HttpStatus status = (definition != null && definition.getElementType().equals(elementType))
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<ElementDefinition> response = new ResponseEntity<>(definition, status);
-        return response.getBody();
+        return new ResponseEntity<>(definition, status);
     } 
     
-    @RequestMapping(path = URL_ELEMENT_TYPE + "/{elementType}/" + URL_LINK_DEFINITIONS, method = RequestMethod.GET)
-    public Set<LinkDefinition> getLinkDefinitions(@PathVariable String elementType){
+    @RequestMapping(path = URL_ELEMENT_TYPES + "/{elementType}/" + URL_LINK_DEFINITIONS, method = RequestMethod.GET)
+    public ResponseEntity<Set<LinkDefinition>> getLinkDefinitions(@PathVariable String elementType){
         Set<LinkDefinition> definitions = 
                 getElementDefinitionFactory().getLinkDefinitionsByElementType(elementType);
         HttpStatus status = isNotEmpty(definitions)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<Set<LinkDefinition>> response = new ResponseEntity<>(definitions, status);
-        return response.getBody();        
+        return new ResponseEntity<>(definitions, status);
     }
     
     @RequestMapping(path = URL_PROPERTY_GROUPS, method = RequestMethod.GET)
-    public Set<String> getPropertyGroups(){
+    public ResponseEntity<Set<String>> getPropertyGroups(){
         Set<String> groups = getElementDefinitionFactory().getAllGroupNames();
         HttpStatus status = isNotEmpty(groups)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<Set<String>> response = new ResponseEntity<>(groups, status);
-        return response.getBody();
+        return new ResponseEntity<>(groups, status);
     }
     
-    @RequestMapping(path = URL_ELEMENT_TYPE + "/{elementType}/" + URL_PROPERTY_GROUPS, method = RequestMethod.GET)
-    public Set<String> getPropertyGroups(@PathVariable String elementType){
+    @RequestMapping(path = URL_ELEMENT_TYPES + "/{elementType}/" + URL_PROPERTY_GROUPS, method = RequestMethod.GET)
+    public ResponseEntity<Set<String>> getPropertyGroups(@PathVariable String elementType){
         Set<String> groups = getElementDefinitionFactory().getGroupsForElementType(elementType);
         HttpStatus status = isNotEmpty(groups)
                 ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        ResponseEntity<Set<String>> response = new ResponseEntity<>(groups, status);
-        return response.getBody();
+        return new ResponseEntity<>(groups, status);
     }
 
 

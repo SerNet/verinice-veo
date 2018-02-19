@@ -88,7 +88,7 @@ public class ModelSchemaRestClient extends AbstractRestClient {
     }
 
     private String getElementTypeUrl(String type) {
-        return getBaseUrl() + URL_ELEMENT_TYPE + "/" + type;
+        return getBaseUrl() + URL_ELEMENT_TYPES + "/" + type;
     }
 
     public List<LinkDefinition> getLinkDefinitions(String type) {
@@ -101,7 +101,7 @@ public class ModelSchemaRestClient extends AbstractRestClient {
     }
 
     private String getLinkDefinitionsUrl(String type) {
-        return getBaseUrl() + URL_ELEMENT_TYPE + "/" + type + "/" + URL_LINK_DEFINITIONS;
+        return getBaseUrl() + URL_ELEMENT_TYPES + "/" + type + "/" + URL_LINK_DEFINITIONS;
     }
 
     @Override

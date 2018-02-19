@@ -95,7 +95,7 @@ public class ElementDefinitionResourceLoader {
             if (definitionDir != null && definitionDir.isDirectory()){
                 for (File f : FileUtils.listFiles(definitionDir, new String[]{JSON_FILE_EXTENSION}, true)){
                     definitions.add(f);
-                };
+                }
             }
         }
         return definitions;
