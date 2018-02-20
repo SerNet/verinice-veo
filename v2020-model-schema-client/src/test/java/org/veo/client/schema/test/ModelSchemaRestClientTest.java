@@ -28,10 +28,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.veo.client.ClientApplication;
 import org.veo.client.schema.ModelSchemaRestClient;
-import org.veo.schema.model.ElementDefinition;
-import org.veo.schema.model.LinkDefinition;
+import org.veo.schema.rest.ElementDefinitionResource;
+import org.veo.schema.rest.LinkDefinitionResource;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,14 +54,14 @@ public class ModelSchemaRestClientTest {
 
     @Test
     public void testGetElementTypes() {
-        List<ElementDefinition> elementDefinitions = schemaRestClient.getElementTypes();
+        Collection<ElementDefinitionResource> elementDefinitions = schemaRestClient.getElementTypes();
         assertNotNull(elementDefinitions);
         assertTrue(elementDefinitions.size() > 0);
     }
     
     @Test
-    public void testGetElementType() {     
-        ElementDefinition elementDefinition = schemaRestClient.getElementType("asset");
+    public void testGetElementType() {
+        ElementDefinitionResource elementDefinition = schemaRestClient.getElementType("asset");
         assertNotNull(elementDefinition);
         elementDefinition = schemaRestClient.getElementType("control");
         assertNotNull(elementDefinition);
@@ -69,8 +69,8 @@ public class ModelSchemaRestClientTest {
     }
     
     @Test
-    public void testGetLinkDefinitions() {     
-        List<LinkDefinition> linkDefinitions = schemaRestClient.getLinkDefinitions("asset");
+    public void testGetLinkDefinitions() {
+        Collection<LinkDefinitionResource> linkDefinitions = schemaRestClient.getLinkDefinitions("asset");
         assertNotNull(linkDefinitions);
         assertTrue(linkDefinitions.size() > 0);
         linkDefinitions = schemaRestClient.getLinkDefinitions("asset");

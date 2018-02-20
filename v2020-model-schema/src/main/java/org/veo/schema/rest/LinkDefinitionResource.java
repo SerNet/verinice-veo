@@ -22,34 +22,35 @@ package org.veo.schema.rest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.ResourceSupport;
-import org.veo.schema.model.ElementDefinition;
+import org.veo.schema.model.LinkDefinition;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
- * Resource DTO class for returning a element definition in a REST service result.
+ * Resource DTO class for returning a link definition in a REST service result.
  *
  * @author Daniel Murygin
  */
-public class ElementDefinitionResource extends ResourceSupport {
+public class LinkDefinitionResource extends ResourceSupport {
 
-    private ElementDefinition elementDefinition;
+    private LinkDefinition linkDefinition;
 
     @JsonCreator
-    public ElementDefinitionResource(@JsonProperty("content") ElementDefinition elementDefinition) {
-        if (elementDefinition == null) {
+    public LinkDefinitionResource(@JsonProperty("content") LinkDefinition linkDefinition) {
+        if (linkDefinition == null) {
             return;
         }
-        this.elementDefinition = elementDefinition;
-        final String type = elementDefinition.getElementType();
-        add(linkTo(methodOn(ModelSchemaRestService.class).getElementType(type)).withSelfRel());
-        add(linkTo(methodOn(ModelSchemaRestService.class).getLinkDefinitions(type)).withRel(ModelSchemaRestService.URL_LINK_DEFINITIONS));
-        add(linkTo(methodOn(ModelSchemaRestService.class).getPropertyGroups(type)).withRel(ModelSchemaRestService.URL_PROPERTY_GROUPS));
+        this.linkDefinition = linkDefinition;
+        final String sourceType = linkDefinition.getSourceType();
+        final String destinationType = linkDefinition.getDestinationType();
+        add(linkTo(methodOn(ModelSchemaRestService.class).getLinkDefinitions(sourceType)).withSelfRel());
+        add(linkTo(methodOn(ModelSchemaRestService.class).getElementType(sourceType)).withRel(ModelSchemaRestService.URL_SOURCE_TYPE));
+        add(linkTo(methodOn(ModelSchemaRestService.class).getElementType(destinationType)).withRel(ModelSchemaRestService.URL_DESTINATION_TYPE));
     }
 
-    public ElementDefinition getElementDefinition() {
-        return elementDefinition;
+    public LinkDefinition getLinkDefinition() {
+        return linkDefinition;
     }
 
 }

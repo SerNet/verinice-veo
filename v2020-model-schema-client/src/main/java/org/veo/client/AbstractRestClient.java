@@ -21,7 +21,6 @@ package org.veo.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestOperations;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Abstract base class for REST clients.
@@ -37,7 +36,7 @@ public abstract class AbstractRestClient {
 
     public AbstractRestClient() {
         super();
-        restOperations = new RestTemplate();
+        restOperations = new RestClient();
     }
 
     public AbstractRestClient(String username, String password) {

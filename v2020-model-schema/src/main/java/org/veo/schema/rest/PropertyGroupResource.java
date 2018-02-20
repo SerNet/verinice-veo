@@ -28,28 +28,26 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
- * Resource DTO class for returning a element definition in a REST service result.
+ * Resource DTO class for returning a property group in a REST service result.
  *
  * @author Daniel Murygin
  */
-public class ElementDefinitionResource extends ResourceSupport {
+public class PropertyGroupResource extends ResourceSupport {
 
-    private ElementDefinition elementDefinition;
+    private String group;
 
     @JsonCreator
-    public ElementDefinitionResource(@JsonProperty("content") ElementDefinition elementDefinition) {
-        if (elementDefinition == null) {
+    public PropertyGroupResource(ElementDefinition elementDefinition, @JsonProperty("content") String group) {
+        if (group == null) {
             return;
         }
-        this.elementDefinition = elementDefinition;
+        this.group = group;
         final String type = elementDefinition.getElementType();
-        add(linkTo(methodOn(ModelSchemaRestService.class).getElementType(type)).withSelfRel());
-        add(linkTo(methodOn(ModelSchemaRestService.class).getLinkDefinitions(type)).withRel(ModelSchemaRestService.URL_LINK_DEFINITIONS));
-        add(linkTo(methodOn(ModelSchemaRestService.class).getPropertyGroups(type)).withRel(ModelSchemaRestService.URL_PROPERTY_GROUPS));
+        add(linkTo(methodOn(ModelSchemaRestService.class).getElementType(type)).withRel(ModelSchemaRestService.URL_SOURCE_TYPE));
     }
 
-    public ElementDefinition getElementDefinition() {
-        return elementDefinition;
+    public String getGroup() {
+        return group;
     }
 
 }

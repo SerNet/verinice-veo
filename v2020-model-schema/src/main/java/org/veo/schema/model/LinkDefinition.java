@@ -19,66 +19,69 @@
  ******************************************************************************/
 package org.veo.schema.model;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
- * @author sh
+ * The definition of an schema link. A link always
+ * has a source and a destination element type any number of additional
+ * properties.
  *
+ * @author Sebastian Hagedorn
  */
-public class LinkDefinition implements Serializable{
-    
+public class LinkDefinition implements Serializable {
+
     private static final long serialVersionUID = 20170629135211L;
-    
+
     private String sourceType;
-    
+
     private String destinationType;
-    
+
     private List<PropertyDefinition> properties;
 
     @JsonCreator
     public LinkDefinition(
-            @JsonProperty(value= "sourceType", 
-            required = true) final String sourceType,
-            @JsonProperty(value= "destinationType", 
-            required = true) final String destinationType,
-            @JsonProperty(value= "properties", 
-            required = true) final List<PropertyDefinition> properties
-            ){
-        
+            @JsonProperty(value = "sourceType",
+                    required = true) final String sourceType,
+            @JsonProperty(value = "destinationType",
+                    required = true) final String destinationType,
+            @JsonProperty(value = "properties",
+                    required = true) final List<PropertyDefinition> properties
+    ) {
+
         this.sourceType = sourceType;
         this.destinationType = destinationType;
         this.properties = properties;
-        
+
     }
-    
+
     public String getSourceType() {
         return sourceType;
     }
-    
+
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
     }
-    
+
     public String getDestinationType() {
         return destinationType;
     }
-    
+
     public void setDestinationType(String destinationType) {
         this.destinationType = destinationType;
     }
-    
+
     public List<PropertyDefinition> getProperties() {
         return properties;
     }
-    
+
     public void setProperties(List<PropertyDefinition> properties) {
         this.properties = properties;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -115,6 +118,6 @@ public class LinkDefinition implements Serializable{
             return false;
         return true;
     }
-    
+
 
 }

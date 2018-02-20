@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
+ *     Sebastian Hagedorn - initial API and implementation
  ******************************************************************************/
 package org.veo.schema.model;
 
@@ -26,31 +26,36 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The definition of an schema element or rather an entity. An element always
+ * has a type ID, standard and any number of additional properties. Any links to
+ * other elements can be defined for an element.
+ *
+ * @author Sebastian Hagedorn
+ */
 public class ElementDefinition implements Serializable{
 
     private static final long serialVersionUID = 20170629135134L;
-    
+
     private String elementType;
 
     private Set<PropertyDefinition> properties;
 
     private Set<LinkDefinition> outgoingLinks;
-    
+
     @JsonCreator
     public ElementDefinition(
-            @JsonProperty(value= "elementType", 
+            @JsonProperty(value= "elementType",
                 required = true) final String elementType,
             @JsonProperty(value= "properties",
             required = true) final Set<PropertyDefinition> properties
-            )
-            
-    {
+            ){
         this.properties = new HashSet<>();
-        properties.addAll(getDefaultProperties());
+        properties.addAll(createDefaultProperties());
         this.elementType = elementType;
         this.properties.addAll(properties);
     }
-    
+
     /**
      * every tree element of veo has to provide the three properties
      * - id (primary key of the element, not null)
@@ -58,9 +63,9 @@ public class ElementDefinition implements Serializable{
      * - tags (tags of element, nullable)
      * @return
      */
-    private Set<PropertyDefinition> getDefaultProperties(){
+    private Set<PropertyDefinition> createDefaultProperties(){
         Set<PropertyDefinition> properties = new HashSet<>(3);
-        PropertyDefinition definition = new PropertyDefinition("id", 
+        PropertyDefinition definition = new PropertyDefinition("id",
                 PropertyDefinition.PropertyType.NUMBER, null, null);
         properties.add(definition);
         definition = new PropertyDefinition("parentId",
@@ -71,11 +76,11 @@ public class ElementDefinition implements Serializable{
         properties.add(definition);
         return properties;
     }
-    
+
     public void addProperty(PropertyDefinition property){
         properties.add(property);
     }
-    
+
     public PropertyDefinition getProperty(String type){
         for (PropertyDefinition property : properties){
             if (type.equals(property.getType())){
@@ -108,14 +113,14 @@ public class ElementDefinition implements Serializable{
     public void setOutgoingLinks(Set<LinkDefinition> outgoingLinks) {
         this.outgoingLinks = outgoingLinks;
     }
-    
+
     public void addOutgoingLink(LinkDefinition linkDefinition) {
         if(this.outgoingLinks == null){
             outgoingLinks = new HashSet<>(1024);
         }
         outgoingLinks.add(linkDefinition);
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -124,7 +129,7 @@ public class ElementDefinition implements Serializable{
         result = prime * result + ((properties == null) ? 0 : properties.hashCode());
         return result;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

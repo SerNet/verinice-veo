@@ -97,7 +97,7 @@ public class ElementDefinitionFactory {
     }
 
     private void initLinkMap() {
-        List<File> linkJsonList = LinkDefinitionResourceLoader.getLinkDefinitionFile();
+        Set<File> linkJsonList = LinkDefinitionResourceLoader.getLinkDefinitionFile();
         for (File jsonFile : linkJsonList) {
             handleLinkDefinitionFile(jsonFile);
         }
