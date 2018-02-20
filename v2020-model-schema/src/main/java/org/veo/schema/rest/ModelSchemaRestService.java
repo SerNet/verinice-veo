@@ -116,4 +116,13 @@ public class ModelSchemaRestService {
         return elementDefinitions != null && !elementDefinitions.isEmpty();
     }
 
+
+
+    static class ElementDefinitionResource extends ResourceSupport {
+        private ElementDefinition elementDefinition;
+
+        public ElementDefinitionResource(ElementDefinition elementDefinition) {
+            this.elementDefinition = elementDefinition;
+        }
+    }
 }
