@@ -23,17 +23,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.veo.client.AbstractRestClient;
-import org.veo.schema.model.ElementDefinition;
-import org.veo.schema.model.LinkDefinition;
+import org.veo.schema.rest.ElementDefinitionResource;
+import org.veo.schema.rest.LinkDefinitionResource;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
+import java.util.Collection;
 
-import static org.veo.schema.rest.ModelSchemaRestService.*;
+import static org.veo.schema.rest.ModelSchemaRestService.URL_ELEMENT_TYPES;
+import static org.veo.schema.rest.ModelSchemaRestService.URL_LINK_DEFINITIONS;
 
 /**
  * Client for the model schema REST web service.
@@ -68,36 +70,36 @@ public class ModelSchemaRestClient extends AbstractRestClient {
         setPath(path);
     }
 
-    public List<ElementDefinition> getElementTypes() {
+    public Collection<ElementDefinitionResource> getElementTypes() {
         String url = getElementTypesUrl();
         log.info("getAllElementTypes, URL: {}", url);
-        ResponseEntity<List<ElementDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<ElementDefinition>>() {
+        ResponseEntity<Resources<ElementDefinitionResource>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<Resources<ElementDefinitionResource>>() {
                 });
-        return response.getBody();
+        return response.getBody().getContent();
     }
 
     private String getElementTypesUrl() {
         return getBaseUrl() + URL_ELEMENT_TYPES;
     }
 
-    public ElementDefinition getElementType(String type) {
+    public ElementDefinitionResource getElementType(String type) {
         String url = getElementTypeUrl(type);
         log.info("getElementType, URL: {}", url);
-        return getRestHandler().getForObject(url, ElementDefinition .class);
+        return getRestHandler().getForObject(url, ElementDefinitionResource.class);
     }
 
     private String getElementTypeUrl(String type) {
         return getBaseUrl() + URL_ELEMENT_TYPES + "/" + type;
     }
 
-    public List<LinkDefinition> getLinkDefinitions(String type) {
+    public Collection<LinkDefinitionResource> getLinkDefinitions(String type) {
         String url = getLinkDefinitionsUrl(type);
         log.info("getLinkDefinitions, URL: {}", url);
-        ResponseEntity<List<LinkDefinition>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<LinkDefinition>>() {
+        ResponseEntity<Resources<LinkDefinitionResource>> response = getRestHandler().exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<Resources<LinkDefinitionResource>>() {
                 });
-        return response.getBody();
+        return response.getBody().getContent();
     }
 
     private String getLinkDefinitionsUrl(String type) {

@@ -15,7 +15,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
+ *     Sebastian Hagedorn - initial API and implementation
+ *     Daniel Murygin
  ******************************************************************************/
 package org.veo.schema.rest;
 
@@ -23,18 +24,24 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 
 /**
- * @author sh
+ * Spring Boot application to run the model schema REST service
  *
+ * @author Sebastian Hagedorn
+ * @author Daniel Murygin
  */
 @SpringBootApplication
+@Configuration
 @ComponentScan("org.veo.schema")
 @EntityScan("org.veo.schema.model")
-public class Application{
+@EnableHypermediaSupport(type = {EnableHypermediaSupport.HypermediaType.HAL})
+public class Application {
 
-  public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 
 }

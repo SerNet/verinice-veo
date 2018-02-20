@@ -19,14 +19,14 @@
  ******************************************************************************/
 package org.veo.schema.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public class PropertyDefinition {
     
-    public static final String DEFAULT_GROUP_NAME = "default_group";
+    public static final String DEFAULT_GROUP_NAME = "default";
     
     public enum PropertyType{
         LABEL,  // one row

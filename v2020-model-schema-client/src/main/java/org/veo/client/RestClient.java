@@ -19,21 +19,37 @@
  ******************************************************************************/
 package org.veo.client;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.hateoas.hal.Jackson2HalModule;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
 
 /**
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public class RestClient extends RestTemplate {
+
+    public RestClient() {
+        super();
+        setMessageConverters();
+    }
+
     public RestClient(String username, String password) {
+        setMessageConverters();
+
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(
                 new AuthScope(null, -1),
@@ -41,5 +57,19 @@ public class RestClient extends RestTemplate {
         HttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider)
                 .build();
         setRequestFactory(new HttpComponentsClientHttpRequestFactory(httpClient));
+    }
+
+    private void setMessageConverters() {
+        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+        ObjectMapper mapper = builder.build();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        mapper.registerModule(new Jackson2HalModule());
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+
+        messageConverter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
+        messageConverter.setObjectMapper(mapper);
+
+        setMessageConverters(Arrays.asList(messageConverter));
     }
 }

@@ -19,58 +19,77 @@
  ******************************************************************************/
 package org.veo.schema;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
- * @author sh
+ * Loads links.json file from directory
+ * /src/main/resources/linkdefinitions.
  *
+ * Tries to access the location in a filesystem-based way
+ * and, in addition to that, in a jar-file way. Both results are merged
+ * ans returned.
+ *
+ * @author Sebastian Hagedorn
+ * @author Daniel Murygin
  */
 public class LinkDefinitionResourceLoader {
 
     private static final String LINK_DEFINITION_FILENAME = "links.json";
-    private static final String LINK_DEFINITION_SUBDIRNAME = "linkdefinitions"; 
-    
-    private static final Logger log = LoggerFactory.
-            getLogger(LinkDefinitionResourceLoader.class);
-    
-    private LinkDefinitionResourceLoader(){}
+    private static final String LINK_DEFINITION_SUBDIRNAME = "linkdefinitions";
 
-    public static List<File> getLinkDefinitionFile(){
+    private static final Logger LOG = LoggerFactory.
+            getLogger(LinkDefinitionResourceLoader.class);
+
+    private LinkDefinitionResourceLoader() {
+    }
+
+    public static Set<File> getLinkDefinitionFile() {
+        Set<File> definitions = new HashSet<>(100);
+        try {
+            definitions.addAll(loadLinkDefinitionsFromFileSystem());
+            definitions.addAll(loadLinkDefinitionsFromJar());
+        } catch (Exception e) {
+            LOG.error("Error while loading link definitions.", e);
+        }
+        return definitions;
+    }
+
+    public static List<File> loadLinkDefinitionsFromFileSystem() throws IOException {
         List<File> fileList = new ArrayList<>(2);
         StringBuilder sb = new StringBuilder();
         sb.append(LINK_DEFINITION_SUBDIRNAME);
         sb.append(File.separatorChar);
         sb.append(LINK_DEFINITION_FILENAME);
-        ClassPathResource resource = 
+        ClassPathResource resource =
                 new ClassPathResource(sb.toString());
-        try {
-            File filesystemFile = resource.getFile();
-            if ( filesystemFile != null){
-                fileList.add(resource.getFile());
-            }
 
-            // getFile() only works, 
-            // if file is existant in file system 
-            // (not within a jar-file)
-            
-            final File jarFile = new File(ElementDefinitionResourceLoader.class.
-                    getProtectionDomain().getCodeSource().getLocation().getPath());
-            
-            if(jarFile.isDirectory()){
-                for(File f : FileUtils.listFiles(jarFile, new String[]{LINK_DEFINITION_FILENAME}, true)){
-                    fileList.add(f);
-                };
+        File filesystemFile = resource.getFile();
+        if (filesystemFile != null) {
+            fileList.add(resource.getFile());
+        }
+        return fileList;
+    }
+
+    public static List<File> loadLinkDefinitionsFromJar() {
+        List<File> fileList = new ArrayList<>(2);
+        final File jarFile = new File(ElementDefinitionResourceLoader.class.
+                getProtectionDomain().getCodeSource().getLocation().getPath());
+
+        if (jarFile.isDirectory()) {
+            for (File f : FileUtils.listFiles(jarFile, new String[]{LINK_DEFINITION_FILENAME}, true)) {
+                fileList.add(f);
             }
-        } catch (IOException e) {
-            log.error("Error loading links.json file",e );
+            ;
         }
         return fileList;
     }
