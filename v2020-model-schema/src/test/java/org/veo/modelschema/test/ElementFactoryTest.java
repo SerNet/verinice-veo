@@ -19,20 +19,20 @@ package org.veo.modelschema.test;
  *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
  ******************************************************************************/
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.veo.schema.ElementDefinitionFactory;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
 import org.veo.schema.model.PropertyDefinition;
-import org.veo.service.ElementDefinitionFactory;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author sh
