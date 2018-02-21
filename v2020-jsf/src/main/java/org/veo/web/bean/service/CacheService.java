@@ -19,14 +19,7 @@
  ******************************************************************************/
 package org.veo.web.bean.service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-
+import com.google.common.cache.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +29,15 @@ import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.model.Element;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.PropertyDefinition;
+import org.veo.schema.rest.ElementDefinitionResource;
 import org.veo.service.ElementService;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
+import javax.annotation.PostConstruct;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The cache service gives access to the internal caches which manange the
@@ -124,7 +119,7 @@ public class CacheService {
 
                     @Override
                     public Map<String, PropertyDefinition> load(String key) throws Exception {
-                        ElementDefinition elementType = schemaService.getElementType(key);
+                        ElementDefinition elementType = schemaService.getElementType(key).getElementDefinition();
                         if (elementType == null)
                             return Collections.emptyMap();
 
@@ -140,9 +135,9 @@ public class CacheService {
     private void createDefinitionMaps() {
         definitionMap = new HashMap<>();
         try {
-            List<ElementDefinition> elementTypes = schemaService.getElementTypes();
+            Collection<ElementDefinitionResource> elementTypes = schemaService.getElementTypes();
             elementTypes.stream().forEach(e -> {
-                definitionMap.put(e.getElementType(), e);
+                definitionMap.put(e.getElementDefinition().getElementType(), e.getElementDefinition());
             });
         } catch (Exception e) {
             logger.error("Error while getting the element types.", e);
