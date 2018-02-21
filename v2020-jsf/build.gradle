@@ -1,0 +1,16 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(':v2020-persistence')
+    compile project(':v2020-model')
+    compile project(':v2020-service')
+    compile project(':v2020-model-schema-client')
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile "org.joinfaces:jsf-spring-boot-starter"
+    compile "com.google.guava:guava"
+
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
+         exclude(module: 'commons-logging')
+    }
+    testCompile 'junit:junit'
+}

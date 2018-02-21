@@ -1,0 +1,19 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+    compile project(':v2020-model')
+
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.data:spring-data-rest-core'
+
+    runtime 'mysql:mysql-connector-java'
+    runtime 'postgresql:postgresql'
+
+    testCompile 'junit:junit'
+    testCompile 'com.h2database:h2'
+    testCompile('org.springframework.boot:spring-boot-starter-test') {
+        exclude(module: 'commons-logging')
+    }
+    testCompile 'commons-lang:commons-lang'
+    testCompile 'net._01001111:jlorem'
+}
