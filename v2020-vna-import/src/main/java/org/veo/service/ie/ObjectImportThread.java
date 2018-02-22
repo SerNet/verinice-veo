@@ -133,11 +133,11 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
             }
         }
         if (value instanceof Integer) {
-            property.setNumber((long) value);
+            property.setNumber(((Integer) value).longValue());
         }
 
         if (value instanceof Long) {
-            property.setNumber((long) value);
+            property.setNumber((Long) value);
         }
         return property;
     }
