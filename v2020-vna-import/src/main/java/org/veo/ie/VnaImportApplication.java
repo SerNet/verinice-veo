@@ -55,7 +55,7 @@ public class VnaImportApplication implements CommandLineRunner {
             log.info("Importing: {}...", filePath);
             logNumberOfThreads(numberOfThreads);
             byte[] vnaFileData = Files.readAllBytes(Paths.get(filePath));
-            vnaImport.setNumberOfThreads(Integer.valueOf(numberOfThreads));
+            vnaImport.setNumberOfThreads(Integer.parseInt(numberOfThreads));
             vnaImport.importVna(vnaFileData);
             long ms = System.currentTimeMillis() - start;
             logRuntime(ms);
