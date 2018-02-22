@@ -81,15 +81,6 @@ public class ElementDefinition implements Serializable{
         properties.add(property);
     }
 
-    public PropertyDefinition getProperty(String type){
-        for (PropertyDefinition property : properties){
-            if (type.equals(property.getType())){
-                return property;
-            }
-        }
-        return null;
-    }
-
     public String getElementType() {
         return elementType;
     }
