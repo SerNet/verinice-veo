@@ -47,4 +47,19 @@ subprojects {
         maven { url "http://repo.maven.apache.org/maven2" }
     }
   
+    // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
+    if (rootProject.hasProperty('ci')){
+	    task jenkinsTestFix {
+	        inputs.files test.outputs.files
+	        doLast {
+	            if (!sourceSets.test.allSource.empty){
+	                def timestamp = System.currentTimeMillis()
+	                test.reports.junitXml.destination.eachFile {
+	                    it.lastModified = timestamp
+	                }
+	            }
+	        }
+	    }
+	    build.dependsOn(jenkinsTestFix)
+    }
 }
