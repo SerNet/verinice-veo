@@ -68,7 +68,7 @@ public class ElementEditor {
      * @author urszeidler
      *
      */
-    public class PropertyEditor {
+    public static class PropertyEditor {
         private ElementProperty elementProperty;
         private PropertyDefinition propertyDefinition;
 
@@ -179,12 +179,12 @@ public class ElementEditor {
      * @param propertyDefinition
      * @return
      */
-    public PropertyEditor buildEditor(ElementProperty input,
+    public static PropertyEditor buildEditor(ElementProperty input,
             PropertyDefinition propertyDefinition) {
         return new ElementEditor.PropertyEditor(input, propertyDefinition);
     }
 
-    public Date toDate(Object value) {
+    public static Date toDate(Object value) {
         if (value instanceof Date) {
             return (Date) value;
         }

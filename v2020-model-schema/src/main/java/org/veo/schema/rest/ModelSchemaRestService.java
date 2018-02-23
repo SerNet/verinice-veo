@@ -113,12 +113,6 @@ public class ModelSchemaRestService {
         return ElementDefinitionFactory.getInstance();
     }
 
-    private boolean isNotEmpty(Collection<?> elementDefinitions) {
-        return elementDefinitions != null && !elementDefinitions.isEmpty();
-    }
-
-
-
     static class ElementDefinitionResource extends ResourceSupport {
         private ElementDefinition elementDefinition;
 
