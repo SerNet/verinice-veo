@@ -11,10 +11,14 @@ allprojects  {
     version = '0.1.0-SNAPSHOT'
 }
 
+
 subprojects {
     
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'findbugs'
+    apply plugin: 'pmd'
+    apply plugin: 'jacoco'
       
     dependencyManagement {
         dependencies {
@@ -46,6 +50,12 @@ subprojects {
         maven { url "https://repo.spring.io/libs-release" }
         maven { url "http://repo.maven.apache.org/maven2" }
     }
+
+    pmd.ignoreFailures = true
+    findbugs.ignoreFailures = true
+
+    findbugsTest.enabled = false
+    pmdTest.enabled = false
   
     // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
     if (rootProject.hasProperty('ci')){
