@@ -21,11 +21,13 @@ package org.veo.schema.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 /**
  * @author sh
  *
  */
-public class PropertyOptionDefinition {
+public class PropertyOptionDefinition implements Serializable {
     
     public PropertyOptionDefinition(
             @JsonProperty(value= "name", 
