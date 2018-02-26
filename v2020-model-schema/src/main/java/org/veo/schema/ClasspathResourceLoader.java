@@ -24,14 +24,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import java.io.StringWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Loads files from a classpath resource.
- *
- * @author Daniel Murygin
  */
 public class ClasspathResourceLoader {
 
@@ -44,19 +42,15 @@ public class ClasspathResourceLoader {
      * @param extension A file extension
      * @return The content of all files with a extension from a directory .
      */
-    public static Set<String> loadResources(String directory, String extension)  {
-        Set<String> definitions = new HashSet<>(100);
-        try {
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            Resource[] resources = resolver.getResources("classpath:" + directory + "/*." + extension);
-            StringWriter writer;
-            for (Resource r:resources) {
-                writer = new StringWriter();
-                IOUtils.copy(r.getInputStream(), writer, "UTF-8");
-                definitions.add(writer.toString());
+    public static Set<String> loadResources(String directory, String extension) throws IOException {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath:" + directory + "/*." + extension);
+        Set<String> definitions = new HashSet<>(resources.length);
+        for (Resource r:resources) {
+            definitions.add(IOUtils.toString(r.getInputStream(), "UTF-8"));
+            if(LOG.isDebugEnabled()) {
+                LOG.debug("Found resource: " + r.getFilename());
             }
-        } catch (Exception e) {
-            LOG.error("Error while loading definitions.", e);
         }
         return definitions;
     }

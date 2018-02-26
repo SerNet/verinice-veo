@@ -50,4 +50,21 @@ public class PropertyGroupResource extends ResourceSupport {
         return group;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PropertyGroupResource that = (PropertyGroupResource) o;
+
+        return group != null ? group.equals(that.group) : that.group == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (group != null ? group.hashCode() : 0);
+        return result;
+    }
 }

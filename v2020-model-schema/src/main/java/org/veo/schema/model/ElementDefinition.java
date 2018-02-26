@@ -33,7 +33,7 @@ import java.util.Set;
  *
  * @author Sebastian Hagedorn
  */
-public class ElementDefinition implements Serializable{
+public class ElementDefinition implements Serializable {
 
     private static final long serialVersionUID = 20170629135134L;
 
@@ -64,26 +64,26 @@ public class ElementDefinition implements Serializable{
      * @return
      */
     private Set<PropertyDefinition> createDefaultProperties(){
-        Set<PropertyDefinition> properties = new HashSet<>(3);
+        Set<PropertyDefinition> defaultProperties = new HashSet<>(3);
         PropertyDefinition definition = new PropertyDefinition("id",
                 PropertyDefinition.PropertyType.NUMBER, null, null);
-        properties.add(definition);
+        defaultProperties.add(definition);
         definition = new PropertyDefinition("parentId",
                 PropertyDefinition.PropertyType.NUMBER, null, null);
-        properties.add(definition);
+        defaultProperties.add(definition);
         definition = new PropertyDefinition("tags",
                 PropertyDefinition.PropertyType.LABEL, null, null);
-        properties.add(definition);
-        return properties;
+        defaultProperties.add(definition);
+        return defaultProperties;
     }
 
     public void addProperty(PropertyDefinition property){
         properties.add(property);
     }
 
-    public PropertyDefinition getProperty(String type){
+    public PropertyDefinition getProperty(String name){
         for (PropertyDefinition property : properties){
-            if (type.equals(property.getType())){
+            if (name.equals(property.getName())){
                 return property;
             }
         }

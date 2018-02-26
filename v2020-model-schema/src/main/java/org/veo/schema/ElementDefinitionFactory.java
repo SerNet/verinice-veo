@@ -44,7 +44,7 @@ import java.util.*;
  */
 public class ElementDefinitionFactory {
 
-    private final Logger LOG = LoggerFactory.getLogger(ElementDefinitionFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ElementDefinitionFactory.class);
 
     private static final String ELEMENT_DEFINITION_DIR_NAME = "elementdefinitions";
     private static final String LINK_DEFINITION_DIR_NAME = "linkdefinitions";
@@ -65,6 +65,7 @@ public class ElementDefinitionFactory {
             initLinkMap();
         } catch (IOException e) {
             LOG.error("Error while reading element definitions", e);
+            throw new ModelSchemaException("Error while reading element definitions");
         }
     }
 
@@ -179,11 +180,11 @@ public class ElementDefinitionFactory {
         }
     }
 
-    private Set<String> loadElementDefinitions(){
+    private Set<String> loadElementDefinitions() throws IOException {
         return ClasspathResourceLoader.loadResources(ELEMENT_DEFINITION_DIR_NAME, JSON_FILE_EXTENSION);
     }
 
-    private Set<String> loadLinkDefinitions(){
+    private Set<String> loadLinkDefinitions() throws IOException {
         return ClasspathResourceLoader.loadResources(LINK_DEFINITION_DIR_NAME, JSON_FILE_EXTENSION);
     }
 
