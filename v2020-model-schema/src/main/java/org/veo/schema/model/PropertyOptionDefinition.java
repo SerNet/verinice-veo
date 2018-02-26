@@ -28,7 +28,9 @@ import java.io.Serializable;
  *
  */
 public class PropertyOptionDefinition implements Serializable {
-    
+
+    private static final long serialVersionUID = 1L;
+
     public PropertyOptionDefinition(
             @JsonProperty(value= "name", 
                 required = true) final String name,

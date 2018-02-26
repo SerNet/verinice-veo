@@ -25,6 +25,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,9 +48,11 @@ public class ClasspathResourceLoader {
         Resource[] resources = resolver.getResources("classpath:" + directory + "/*." + extension);
         Set<String> definitions = new HashSet<>(resources.length);
         for (Resource r:resources) {
-            definitions.add(IOUtils.toString(r.getInputStream(), "UTF-8"));
-            if(LOG.isDebugEnabled()) {
-                LOG.debug("Found resource: " + r.getFilename());
+            try(InputStream input = r.getInputStream()) {
+                definitions.add(IOUtils.toString(input, "UTF-8"));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Found resource: " + r.getFilename());
+                }
             }
         }
         return definitions;

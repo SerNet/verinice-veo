@@ -26,6 +26,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PropertyDefinition implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     public static final String DEFAULT_GROUP_NAME = "default";
     

@@ -20,9 +20,11 @@
 package org.veo.schema;
 
 /**
- * Generic exception fpr model schema service.
+ * Generic exception for model schema service.
  */
 public class ModelSchemaException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
 
     public ModelSchemaException(String message) {
         super(message);
