@@ -81,7 +81,7 @@ public class SyncObject {
      */
     public List<SyncAttribute> getSyncAttribute() {
         if (syncAttribute == null) {
-            syncAttribute = new ArrayList<SyncAttribute>();
+            syncAttribute = new ArrayList<>();
         }
         return this.syncAttribute;
     }
@@ -174,7 +174,7 @@ public class SyncObject {
      */
     public List<SyncObject> getChildren() {
         if (children == null) {
-            children = new ArrayList<SyncObject>();
+            children = new ArrayList<>();
         }
         return this.children;
     }
@@ -204,7 +204,7 @@ public class SyncObject {
      */
     public List<SyncFile> getFile() {
         if (file == null) {
-            file = new ArrayList<SyncFile>();
+            file = new ArrayList<>();
         }
         return this.file;
     }

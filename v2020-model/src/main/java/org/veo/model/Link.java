@@ -19,20 +19,11 @@
  ******************************************************************************/
 package org.veo.model;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 
 /**
  *
@@ -125,18 +116,23 @@ public class Link implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		Link other = (Link) obj;
 		if (uuid == null) {
-			if (other.uuid != null)
-				return false;
-		} else if (!uuid.equals(other.uuid))
-			return false;
+			if (other.uuid != null) {
+                return false;
+            }
+		} else if (!uuid.equals(other.uuid)) {
+            return false;
+        }
 		return true;
 	}
     

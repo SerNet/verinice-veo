@@ -19,6 +19,8 @@
  ******************************************************************************/
 package org.veo.schema;
 
+import java.io.IOException;
+
 /**
  * Generic exception for model schema service.
  */
@@ -28,5 +30,9 @@ public class ModelSchemaException extends RuntimeException {
 
     public ModelSchemaException(String message) {
         super(message);
+    }
+
+    public ModelSchemaException(String message, IOException e) {
+        super(message, e);
     }
 }

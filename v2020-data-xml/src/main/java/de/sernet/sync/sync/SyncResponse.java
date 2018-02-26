@@ -76,7 +76,7 @@ public class SyncResponse {
      */
     public List<String> getReplyMessage() {
         if (replyMessage == null) {
-            replyMessage = new ArrayList<String>();
+            replyMessage = new ArrayList<>();
         }
         return this.replyMessage;
     }

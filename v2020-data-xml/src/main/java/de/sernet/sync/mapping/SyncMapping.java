@@ -95,7 +95,7 @@ public class SyncMapping {
      */
     public List<SyncMapping.MapObjectType> getMapObjectType() {
         if (mapObjectType == null) {
-            mapObjectType = new ArrayList<SyncMapping.MapObjectType>();
+            mapObjectType = new ArrayList<SyncMapping.>();
         }
         return this.mapObjectType;
     }
@@ -171,7 +171,7 @@ public class SyncMapping {
          */
         public List<SyncMapping.MapObjectType.MapAttributeType> getMapAttributeType() {
             if (mapAttributeType == null) {
-                mapAttributeType = new ArrayList<SyncMapping.MapObjectType.MapAttributeType>();
+                mapAttributeType = new ArrayList<>();
             }
             return this.mapAttributeType;
         }
