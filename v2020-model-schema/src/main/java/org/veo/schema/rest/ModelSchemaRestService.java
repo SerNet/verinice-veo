@@ -21,7 +21,6 @@
 package org.veo.schema.rest;
 
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.veo.schema.model.ElementDefinition;
 import org.veo.schema.model.LinkDefinition;
-import org.veo.service.ElementDefinitionFactory;
+import org.veo.schema.ElementDefinitionFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
