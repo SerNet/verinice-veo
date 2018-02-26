@@ -52,4 +52,21 @@ public class ElementDefinitionResource extends ResourceSupport {
         return elementDefinition;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ElementDefinitionResource that = (ElementDefinitionResource) o;
+
+        return elementDefinition != null ? elementDefinition.equals(that.elementDefinition) : that.elementDefinition == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (elementDefinition != null ? elementDefinition.hashCode() : 0);
+        return result;
+    }
 }

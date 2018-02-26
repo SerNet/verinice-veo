@@ -22,13 +22,16 @@ package org.veo.schema.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PropertyDefinition {
+public class PropertyDefinition implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     public static final String DEFAULT_GROUP_NAME = "default";
     
-    public enum PropertyType{
+    public enum PropertyType {
         LABEL,  // one row
         TEXT,   // more than one row
         NUMBER,

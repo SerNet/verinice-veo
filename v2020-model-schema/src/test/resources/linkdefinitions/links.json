@@ -1,0 +1,22 @@
+{
+	"linkDefinitions": [
+		{
+			"sourceType": "asset",
+			"destinationType": "control",
+			"properties": [
+				{
+					"name": "C",
+					"type": "NUMBER"
+				},
+				{
+					"name": "I",
+					"type": "NUMBER"
+				},
+				{
+					"name": "A",
+					"type": "NUMBER"
+				}
+			]
+		}
+	]
+}

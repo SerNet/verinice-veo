@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Sebastian Hagedorn
+ * Copyright (c) 2018 Daniel Murygin
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,50 +15,18 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Sebastian Hagedorn sh (at) sernet.de - initial API and implementation
+ *     Daniel Murygin - initial API and implementation
  ******************************************************************************/
-package org.veo.schema.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.io.Serializable;
+package org.veo.schema;
 
 /**
- * @author sh
- *
+ * Generic exception for model schema service.
  */
-public class PropertyOptionDefinition implements Serializable {
+public class ModelSchemaException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public PropertyOptionDefinition(
-            @JsonProperty(value= "name", 
-                required = true) final String name,
-            @JsonProperty(value= "id",
-                required = true) final String id
-            ){
-        this.name = name;
-        this.id = id;
+    public ModelSchemaException(String message) {
+        super(message);
     }
-    
-    private String name;
-    
-    private String id;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
 }
