@@ -27,7 +27,7 @@ import java.util.List;
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class LinkImportContext implements Comparable<LinkImportContext> {
+public class LinkImportContext {
 
     private String startId;
     private List<String> endIdList;
@@ -85,21 +85,6 @@ public class LinkImportContext implements Comparable<LinkImportContext> {
         this.comment = comment;
     }
 
-    @Override
-    public int compareTo(LinkImportContext other) {
-        int result = 0;
-        if (this == other) {
-            return 0;
-        }
-        if (other == null) {
-            return -1;
-        }
-        if (startId == null && other.startId != null) {
-            return 1;
-        }
-        result = startId.compareTo(other.startId);
-        return result;
-    }
 
     @Override
     public int hashCode() {
