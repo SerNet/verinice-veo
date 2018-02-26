@@ -16,10 +16,15 @@ class TimeFormatterSpec extends Specification {
         duration                                         | humanReadable
         Duration.ofMillis(1)                             | '1 ms'
         Duration.ofMillis(1024)                          | '1 s'
+        Duration.ofMillis(1624)                          | '2 s'
         Duration.ofHours(3)                              | '3 h'
+        Duration.ofHours(2).plusMinutes(30)              | '2 h, 30 m'
         Duration.ofDays(1).plusHours(2).plusMinutes(3)   | '1 d, 2 h'
+        Duration.ofDays(1).plusHours(2).plusMinutes(45)  | '1 d, 3 h'
         Duration.ofDays(1).plusHours(2)                  | '1 d, 2 h'
         Duration.ofDays(7)                               | '7 d'
+        Duration.ofMinutes(2).minusMillis(1)             | '2 m'
+        Duration.ofMinutes(2).plusSeconds(30)            | '2 m, 30 s'
         
         milliSeconds = duration.toMillis()
 
