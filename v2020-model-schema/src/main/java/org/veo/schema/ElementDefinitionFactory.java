@@ -65,7 +65,7 @@ public class ElementDefinitionFactory {
             initLinkMap();
         } catch (IOException e) {
             LOG.error("Error while reading element definitions", e);
-            throw new ModelSchemaException("Error while reading element definitions");
+            throw new ModelSchemaException("Error while reading element definitions", e);
         }
     }
 
@@ -137,8 +137,9 @@ public class ElementDefinitionFactory {
     public Set<LinkDefinition> getLinkDefinitionsByElementType(String elementType) {
         if (linkDefinitionMap != null && linkDefinitionMap.containsKey(elementType)) {
             return linkDefinitionMap.get(elementType);
-        } else
+        } else {
             return Collections.emptySet();
+        }
     }
 
     public Set<String> getGroupsForElementType(String elementType) {
@@ -165,17 +166,18 @@ public class ElementDefinitionFactory {
     private ElementDefinition getElementDefinitionFromJson(String json) throws IOException {
         if (isValidJson(json, ElementDefinition.class)) {
             return jsonObjectMapper.readValue(json, ElementDefinition.class);
-        } else
+        } else {
             return null;
+        }
     }
 
     private boolean isValidJson(String json, Class<?> clazz) {
-        final String WARN_MSG = "Failed to parse json:\n";
+        final String message = "Failed to parse json:\n";
         try {
             jsonObjectMapper.readValue(json, clazz);
             return true;
         } catch (IOException e) {
-            LOG.warn(WARN_MSG, e);
+            LOG.warn(message, e);
             return false;
         }
     }

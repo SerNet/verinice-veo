@@ -19,8 +19,6 @@
  ******************************************************************************/
 package org.veo.web;
 
-import javax.faces.webapp.FacesServlet;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -30,6 +28,8 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import javax.faces.webapp.FacesServlet;
 
 /**
  * The Spring application.
@@ -65,16 +65,10 @@ public class Application extends SpringBootServletInitializer {
         return servletContext -> {
             servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration",
                     Boolean.TRUE.toString());
-//            servletContext.setInitParameter("primefaces.THEME", "poseidon-verinice");
-//            servletContext.setInitParameter("javax.faces.FACELETS_LIBRARIES",
-//                    "/taglibs/verinice-taglib.xml;/taglibs/primefaces-poseidon.taglib.xml");
             servletContext.setInitParameter("primefaces.CLIENT_SIDE_VALIDATION",
                     Boolean.TRUE.toString());
             servletContext.setInitParameter("javax.faces.FACELETS_SKIP_COMMENTS",
                     Boolean.TRUE.toString());
-//            servletContext.setInitParameter("primefaces.FONT_AWESOME", Boolean.TRUE.toString());
-            // servletContext.setInitParameter("primefaces.UPLOADER",
-            // "commons");
         };
     }
 }

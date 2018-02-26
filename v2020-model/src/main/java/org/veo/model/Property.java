@@ -19,16 +19,10 @@
  ******************************************************************************/
 package org.veo.model;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
 
 /**
  *
@@ -57,7 +51,8 @@ public abstract class Property implements Serializable {
     private Long number;
     
     private Date date;
-    
+
+    @SuppressWarnings("unused")
     @Column(name="properties_order")
     private int propertiesOrder = 0;
     
@@ -130,18 +125,23 @@ public abstract class Property implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		if (this == obj) {
+            return true;
+        }
+		if (obj == null) {
+            return false;
+        }
+		if (getClass() != obj.getClass()) {
+            return false;
+        }
 		Property other = (Property) obj;
 		if (uuid == null) {
-			if (other.uuid != null)
-				return false;
-		} else if (!uuid.equals(other.uuid))
-			return false;
+			if (other.uuid != null) {
+                return false;
+            }
+		} else if (!uuid.equals(other.uuid)) {
+            return false;
+        }
 		return true;
 	}
     

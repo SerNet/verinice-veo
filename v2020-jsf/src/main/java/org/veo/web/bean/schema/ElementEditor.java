@@ -19,26 +19,25 @@
  ******************************************************************************/
 package org.veo.web.bean.schema;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.inject.Inject;
-
+import com.google.common.collect.FluentIterable;
 import org.veo.model.Element;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.schema.model.PropertyDefinition.PropertyType;
 import org.veo.web.bean.TreeBean;
 import org.veo.web.bean.service.CacheService;
 
-import com.google.common.collect.FluentIterable;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Would be used as editor bean for the schema model. Currently not used.
  * @author urszeidler
  *
+ * @deprecated
  */
 @ManagedBean(name = "elementEditor-schema")
 @SessionScoped
@@ -65,11 +64,6 @@ public class ElementEditor {
         }
 
         public Object getValue() {
-            // if(getIsText())
-            // return elementProperty.getText();
-            // else if (getisDate())
-            // return elementProperty.getDate();
-
             return elementProperty.toString();
         }
 
@@ -98,12 +92,12 @@ public class ElementEditor {
         }
 
         public boolean getIsSingleSelect() {
-            return false;//elementProperty.getType() == PropertyType.SINGLEOPTION;
+            return false;
         }
         
         //make this a text field for now
         public boolean getIsText() {
-            return true;//elementProperty.getType() == PropertyType.TEXT;
+            return true;
         }
 
         public List<?> getOptionList() {

@@ -94,28 +94,37 @@ public class LinkDefinition implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         LinkDefinition other = (LinkDefinition) obj;
         if (destinationType == null) {
-            if (other.destinationType != null)
+            if (other.destinationType != null) {
                 return false;
-        } else if (!destinationType.equals(other.destinationType))
+            }
+        } else if (!destinationType.equals(other.destinationType)) {
             return false;
+        }
         if (properties == null) {
-            if (other.properties != null)
+            if (other.properties != null) {
                 return false;
-        } else if (!properties.equals(other.properties))
+            }
+        } else if (!properties.equals(other.properties)) {
             return false;
+        }
         if (sourceType == null) {
-            if (other.sourceType != null)
+            if (other.sourceType != null) {
                 return false;
-        } else if (!sourceType.equals(other.sourceType))
+            }
+        } else if (!sourceType.equals(other.sourceType)) {
             return false;
+        }
         return true;
     }
 
