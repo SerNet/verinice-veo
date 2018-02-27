@@ -72,4 +72,9 @@ subprojects {
 	    }
 	    build.dependsOn(jenkinsTestFix)
     }
+
+    dependencies {
+        compile 'org.slf4j:slf4j-api'
+        runtime 'ch.qos.logback:logback-classic'
+    }
 }

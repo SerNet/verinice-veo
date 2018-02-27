@@ -203,7 +203,7 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
 		return 0;
     }
 
-	public static String getSubstring(String string, int start, int end) {
+	private static String getSubstring(String string, int start, int end) {
 		String sub1;
 		if (end == -1) {
 			sub1 = string.substring(start);

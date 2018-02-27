@@ -7,9 +7,6 @@
 
 package de.sernet.sync.mapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -19,6 +16,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -95,7 +94,7 @@ public class SyncMapping {
      */
     public List<SyncMapping.MapObjectType> getMapObjectType() {
         if (mapObjectType == null) {
-            mapObjectType = new ArrayList<SyncMapping.>();
+            mapObjectType = new ArrayList<>();
         }
         return this.mapObjectType;
     }
