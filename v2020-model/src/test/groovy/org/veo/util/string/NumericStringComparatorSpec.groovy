@@ -1,4 +1,4 @@
-package org.veo.util.string
+package org.veo.util.string;
 
 import spock.lang.Specification
 import spock.lang.Unroll
