@@ -52,14 +52,15 @@
  * <http://www.apache.org/>.
  */
 
-package org.veo.web.util;
+package org.veo.util.string;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
-
-import org.apache.log4j.Logger;
 
 /**
  * A Comparator which deals with alphabet characters 'naturally', but 
@@ -70,8 +71,7 @@ import org.apache.log4j.Logger;
  * The comparison should be very performant as it only ever deals with 
  * issues at a character level and never tries to consider the 
  * numerics as numbers.
- * 
- * @see Test class: sernet.verinice.service.test.NumericStringComparatorTest
+ *
  * @author bayard@generationjava.com
  * @author Daniel Murygin <dm{a}sernet{dot}de>
  */
@@ -79,13 +79,8 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
 
     private static final long serialVersionUID = -9196544676244562514L;
     
-    private transient Logger log = Logger.getLogger(AbstractNumericStringComparator.class);
-    private Logger getLog(){
-        if (log == null)
-            log = Logger.getLogger(NumericStringComparator.class);
-        return log;
-    }
-    
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractNumericStringComparator.class);
+
     // Collator for basic string comparison
     private transient Collator collator = Collator.getInstance(Locale.getDefault()); 
     
@@ -97,8 +92,7 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
      * DIN 5007 Var.1. 
      * See: https://de.wikipedia.org/wiki/Alphabetische_Sortierung#Deutschland
      * for a definition of DIN 5007 Var.1
-     * 
-     * @see Test class: sernet.verinice.service.test.NumericStringComparatorTest
+     *
      * @return A collator
      */
     private Collator getCollator(){
@@ -174,7 +168,7 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
 							ret = comp;
 						}
 					} catch (Exception e) {
-						getLog().error("Error while comparing strings: " + string1 + " : " + string2,e);
+						LOG.error("Error while comparing strings: " + string1 + " : " + string2,e);
 					}
 				} else {
 					ret = 1;
@@ -209,7 +203,7 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
 		return 0;
     }
 
-	private String getSubstring(String string, int start, int end) {
+	public static String getSubstring(String string, int start, int end) {
 		String sub1;
 		if (end == -1) {
 			sub1 = string.substring(start);
