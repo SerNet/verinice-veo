@@ -37,7 +37,7 @@ import org.veo.model.Element;
 import org.veo.service.ElementService;
 import org.veo.web.bean.model.PrimefacesTreeNode;
 import org.veo.web.bean.service.CacheService;
-import org.veo.web.util.NumericStringComparator;
+import org.veo.util.string.NumericStringComparator;
 
 import com.google.common.collect.FluentIterable;
 

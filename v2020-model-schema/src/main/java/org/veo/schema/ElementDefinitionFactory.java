@@ -172,12 +172,11 @@ public class ElementDefinitionFactory {
     }
 
     private boolean isValidJson(String json, Class<?> clazz) {
-        final String message = "Failed to parse json:\n";
         try {
             jsonObjectMapper.readValue(json, clazz);
             return true;
         } catch (IOException e) {
-            LOG.warn(message, e);
+            LOG.warn("Failed to parse json: ", e);
             return false;
         }
     }

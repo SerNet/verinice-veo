@@ -17,7 +17,7 @@
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
-package org.veo.web.util;
+package org.veo.util.string;
 
 import org.veo.model.Element;
 
