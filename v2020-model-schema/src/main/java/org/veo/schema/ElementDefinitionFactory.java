@@ -19,11 +19,13 @@
  ******************************************************************************/
 package org.veo.schema;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.veo.schema.model.ElementDefinition;
@@ -31,8 +33,11 @@ import org.veo.schema.model.LinkDefinition;
 import org.veo.schema.model.LinkDefinitions;
 import org.veo.schema.model.PropertyDefinition;
 
-import java.io.IOException;
-import java.util.*;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Load all element and links definitions from json files
@@ -65,7 +70,7 @@ public class ElementDefinitionFactory {
             initLinkMap();
         } catch (IOException e) {
             LOG.error("Error while reading element definitions", e);
-            throw new ModelSchemaException("Error while reading element definitions");
+            throw new ModelSchemaException("Error while reading element definitions", e);
         }
     }
 
@@ -137,8 +142,9 @@ public class ElementDefinitionFactory {
     public Set<LinkDefinition> getLinkDefinitionsByElementType(String elementType) {
         if (linkDefinitionMap != null && linkDefinitionMap.containsKey(elementType)) {
             return linkDefinitionMap.get(elementType);
-        } else
+        } else {
             return Collections.emptySet();
+        }
     }
 
     public Set<String> getGroupsForElementType(String elementType) {
@@ -165,17 +171,17 @@ public class ElementDefinitionFactory {
     private ElementDefinition getElementDefinitionFromJson(String json) throws IOException {
         if (isValidJson(json, ElementDefinition.class)) {
             return jsonObjectMapper.readValue(json, ElementDefinition.class);
-        } else
+        } else {
             return null;
+        }
     }
 
     private boolean isValidJson(String json, Class<?> clazz) {
-        final String WARN_MSG = "Failed to parse json:\n";
         try {
             jsonObjectMapper.readValue(json, clazz);
             return true;
         } catch (IOException e) {
-            LOG.warn(WARN_MSG, e);
+            LOG.warn("Failed to parse json: ", e);
             return false;
         }
     }

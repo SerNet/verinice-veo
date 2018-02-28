@@ -39,6 +39,7 @@ import com.google.common.collect.FluentIterable;
  * Would be used as editor bean for the schema model. Currently not used.
  * @author urszeidler
  *
+ * @deprecated
  */
 @ManagedBean(name = "elementEditor-schema")
 @SessionScoped
@@ -65,11 +66,6 @@ public class ElementEditor {
         }
 
         public Object getValue() {
-            // if(getIsText())
-            // return elementProperty.getText();
-            // else if (getisDate())
-            // return elementProperty.getDate();
-
             return elementProperty.toString();
         }
 
@@ -98,12 +94,12 @@ public class ElementEditor {
         }
 
         public boolean getIsSingleSelect() {
-            return false;//elementProperty.getType() == PropertyType.SINGLEOPTION;
+            return false;
         }
         
         //make this a text field for now
         public boolean getIsText() {
-            return true;//elementProperty.getType() == PropertyType.TEXT;
+            return true;
         }
 
         public List<?> getOptionList() {

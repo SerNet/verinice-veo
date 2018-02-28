@@ -21,9 +21,10 @@ package org.veo.service.ie;
 
 import java.util.List;
 
+import org.veo.model.Element;
+
 import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
-import org.veo.model.Element;
 
 /**
  * A context to import one element and its properties from a VNA to database.

@@ -1,9 +1,9 @@
-package org.veo.util.time;
-
-import java.time.Duration
+package org.veo.util.time
 
 import spock.lang.Specification
 import spock.lang.Unroll
+
+import java.time.Duration
 
 class TimeFormatterSpec extends Specification {
 
