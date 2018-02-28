@@ -36,6 +36,7 @@ subprojects {
              dependency 'commons-cli:commons-cli:1.4'
              dependency 'javax:javaee-api:7.0'
              dependency 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8'
+             dependency 'ch.qos.logback:logback-classic:1.1.11'
         }
     }
       
