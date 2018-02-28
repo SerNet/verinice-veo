@@ -19,7 +19,14 @@
  ******************************************************************************/
 package org.veo.web.bean.service;
 
-import com.google.common.cache.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +39,11 @@ import org.veo.schema.model.PropertyDefinition;
 import org.veo.schema.rest.ElementDefinitionResource;
 import org.veo.service.ElementService;
 
-import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 
 /**
  * The cache service gives access to the internal caches which manange the

@@ -19,6 +19,11 @@
  ******************************************************************************/
 package org.veo.client.schema.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,11 +35,6 @@ import org.veo.client.ClientApplication;
 import org.veo.client.schema.ModelSchemaRestClient;
 import org.veo.schema.rest.ElementDefinitionResource;
 import org.veo.schema.rest.LinkDefinitionResource;
-
-import java.util.Collection;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Sebastian Hagedorn <sh[at]sernet[dot]de>

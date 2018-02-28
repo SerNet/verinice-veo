@@ -19,11 +19,13 @@
  ******************************************************************************/
 package org.veo.schema;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.veo.schema.model.ElementDefinition;
@@ -31,8 +33,11 @@ import org.veo.schema.model.LinkDefinition;
 import org.veo.schema.model.LinkDefinitions;
 import org.veo.schema.model.PropertyDefinition;
 
-import java.io.IOException;
-import java.util.*;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Load all element and links definitions from json files

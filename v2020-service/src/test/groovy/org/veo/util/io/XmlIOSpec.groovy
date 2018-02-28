@@ -1,12 +1,9 @@
 package org.veo.util.io
 
-import java.nio.file.Files
-
-import javax.xml.bind.JAXB
-import javax.xml.bind.JAXBContext
-
-import groovy.xml.MarkupBuilder
 import spock.lang.Specification
+
+import javax.xml.bind.JAXBContext
+import java.nio.file.Files
 
 class XmlIOSpec extends Specification {
 

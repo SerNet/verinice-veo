@@ -19,11 +19,11 @@
  ******************************************************************************/
 package org.veo.util.string.test;
 
-import org.junit.Test;
-import org.veo.util.string.NumericStringComparator;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.veo.util.string.NumericStringComparator;
 
 
 /**

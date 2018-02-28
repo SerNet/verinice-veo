@@ -19,19 +19,21 @@
  ******************************************************************************/
 package org.veo.web.bean.schema;
 
-import com.google.common.collect.FluentIterable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
+
 import org.veo.model.Element;
 import org.veo.schema.model.PropertyDefinition;
 import org.veo.schema.model.PropertyDefinition.PropertyType;
 import org.veo.web.bean.TreeBean;
 import org.veo.web.bean.service.CacheService;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import com.google.common.collect.FluentIterable;
 
 /**
  * Would be used as editor bean for the schema model. Currently not used.

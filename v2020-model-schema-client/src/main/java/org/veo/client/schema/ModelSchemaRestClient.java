@@ -19,6 +19,13 @@
  ******************************************************************************/
 package org.veo.client.schema;
 
+import static org.veo.schema.rest.ModelSchemaRestService.URL_ELEMENT_TYPES;
+import static org.veo.schema.rest.ModelSchemaRestService.URL_LINK_DEFINITIONS;
+
+import java.util.Collection;
+
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,12 +37,6 @@ import org.springframework.stereotype.Service;
 import org.veo.client.AbstractRestClient;
 import org.veo.schema.rest.ElementDefinitionResource;
 import org.veo.schema.rest.LinkDefinitionResource;
-
-import javax.annotation.PostConstruct;
-import java.util.Collection;
-
-import static org.veo.schema.rest.ModelSchemaRestService.URL_ELEMENT_TYPES;
-import static org.veo.schema.rest.ModelSchemaRestService.URL_LINK_DEFINITIONS;
 
 /**
  * Client for the model schema REST web service.
