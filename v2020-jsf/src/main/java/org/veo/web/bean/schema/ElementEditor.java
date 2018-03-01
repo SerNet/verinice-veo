@@ -46,7 +46,7 @@ import com.google.common.collect.FluentIterable;
 @Deprecated
 public class ElementEditor {
 
-    public class PropertyEditor {
+    public static class PropertyEditor {
         private PropertyDefinition elementProperty;
 
         public PropertyEditor(PropertyDefinition input) {
