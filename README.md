@@ -172,3 +172,18 @@ This module contains an importer for verinice archives (VNAs).
 Entity–relationship model of the database:
 
 ![ERM of the the database](v2020-persistence/src/main/sql/database-erm.png)
+
+## Authentication and Authorization
+v2020-rest uses JWT to authorize users. Tokens can be obtained by a `POST` on `/login`, e.g.
+
+	curl -i -H "Content-Type: application/json" -X POST -d '{
+			"username": "user",
+			"password": "password"
+	}' http://localhost:8070/login
+
+On success the response will contain a header
+
+	Authorization: Bearer <token>
+
+This header has to be part of every further request
+
