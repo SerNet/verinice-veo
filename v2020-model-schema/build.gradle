@@ -7,6 +7,7 @@ dependencies {
     compile 'commons-io:commons-io'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.hateoas:spring-hateoas'
+    compile 'org.springframework.boot:spring-boot-starter-data-rest'
     
     testCompile('org.springframework.boot:spring-boot-starter-test') { 
         exclude(module: 'commons-logging') 
