@@ -8,7 +8,7 @@ PASSWORD=${2:-password}
 shift
 shift
 
-curl -i $@ -H "Content-Type: application/json" -X POST -d "{
+curl -si $@ -H "Content-Type: application/json" -X POST -d "{
     \"username\": \"$USERNAME\",
     \"password\": \"$PASSWORD\"
 }" http://localhost:8070/login
