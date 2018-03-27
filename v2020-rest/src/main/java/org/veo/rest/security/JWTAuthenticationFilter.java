@@ -37,8 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Key;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 import static org.veo.rest.security.SecurityConstants.*;
 
@@ -84,10 +83,16 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) {
 
+        Map<String, Object> customClaim = new HashMap<>();
+        // Add some example claims to play with whats possible.
+        customClaim.put("profiles", new String[] {"export", "import", "tasks"});
         String token = Jwts.builder()
-                // subject == payload?
-                .setSubject(((User) auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setSubject(((User) auth.getPrincipal()).getUsername())
+                .setIssuer("verinice.VEO")
+                .setIssuedAt(new Date())
+                .setAudience("verinice.REST clients")
+                .addClaims(customClaim)
                 .signWith(SignatureAlgorithm.RS512, signingKey)
                 .compact();
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
