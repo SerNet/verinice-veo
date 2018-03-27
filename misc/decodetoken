@@ -1,0 +1,15 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+	FS = "Bearer "
+}
+
+/^Auth/ {
+	split($2, a, ".");
+	system("echo " a[1] "| base64 --decode 2>/dev/null");
+	print ""
+	system("echo " a[2] "| base64 --decode 2>/dev/null");
+	print ""
+	print a[3]
+}
+
