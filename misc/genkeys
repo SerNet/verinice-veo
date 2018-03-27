@@ -1,0 +1,19 @@
+#!/bin/sh
+
+PAIR=private.pem
+PRIVATE=private.der
+PUBLIC=public.der
+
+# Generate a RSA private key
+openssl genrsa -out $PAIR 2048
+# Convert private Key to PKCS#8 format (so Java can read it)
+openssl pkcs8 -topk8 -inform PEM -outform DER -in $PAIR -out $PRIVATE -nocrypt
+# Output public key portion in DER format (so Java can read it)
+openssl rsa -in $PAIR -pubout -outform DER -out $PUBLIC
+
+echo You may want to
+echo cp $PRIVATE $PUBLIC java_resource
+
+# To verify keys
+# openssl pkcs8 -in private.der -inform DER -nocrypt | openssl rsa -text --noout
+# openssl rsa -pubin -inform DER -text -noout -in public.der
