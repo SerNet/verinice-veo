@@ -22,6 +22,8 @@ package org.veo.rest.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,22 +36,28 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.veo.rest.security.SecurityConstants.EXPIRATION_TIME;
-import static org.veo.rest.security.SecurityConstants.HEADER_STRING;
-import static org.veo.rest.security.SecurityConstants.SECRET;
-import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
+import static org.veo.rest.security.SecurityConstants.*;
 
 /**
  * This filter extends authentication by added a JWToken to a successful authentication response.
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
     private AuthenticationManager authenticationManager;
+    private Key signingKey;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
+        try {
+            this.signingKey = JwtKeyLoader.getPrivateJwtKey();
+        } catch (Exception e) {
+            LOG.error("Error loading private key.", e);
+        }
     }
 
     @Override
@@ -74,14 +82,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
+                                            Authentication auth) {
 
         String token = Jwts.builder()
                 // subject == payload?
                 .setSubject(((User) auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                // TODO Use Keypairs
-                .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
+                .signWith(SignatureAlgorithm.RS512, signingKey)
                 .compact();
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }

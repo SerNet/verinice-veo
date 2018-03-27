@@ -20,6 +20,8 @@
 package org.veo.rest.security;
 
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,52 +32,59 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 
 import static org.veo.rest.security.SecurityConstants.HEADER_STRING;
-import static org.veo.rest.security.SecurityConstants.SECRET;
 import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
 
-
+/**
+ * This filters checks incoming request for JWT tokens and their validity.
+ */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-	public JWTAuthorizationFilter(AuthenticationManager authManager) {
-		super(authManager);
-	}
+    private static final Logger LOG = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
+    private Key verificationKey;
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest req,
-									HttpServletResponse res,
-									FilterChain chain) throws IOException, ServletException {
-		String header = req.getHeader(HEADER_STRING);
+    public JWTAuthorizationFilter(AuthenticationManager authManager) {
+        super(authManager);
+        try {
+            this.verificationKey = JwtKeyLoader.getPublicJwtKey();
+        } catch (Exception e) {
+            LOG.error("Error loading public key.", e);
+        }
+    }
 
-		// TODO Does this allow http basic?
-		if (header == null || !header.startsWith(TOKEN_PREFIX)) {
-			chain.doFilter(req, res);
-			return;
-		}
+    @Override
+    protected void doFilterInternal(HttpServletRequest req,
+                                    HttpServletResponse res,
+                                    FilterChain chain) throws IOException, ServletException {
+        String header = req.getHeader(HEADER_STRING);
 
-		UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+        if (header == null || !header.toLowerCase().startsWith(TOKEN_PREFIX.toLowerCase())) {
+            chain.doFilter(req, res);
+            return;
+        }
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		chain.doFilter(req, res);
-	}
+        UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
 
-	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-		String token = request.getHeader(HEADER_STRING);
-		if (token != null) {
-			// parse the token.
-			String user = Jwts.parser()
-					.setSigningKey(SECRET.getBytes())
-					.parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-					.getBody()
-					.getSubject();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        chain.doFilter(req, res);
+    }
 
-			if (user != null) {
-				return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-			}
-			return null;
-		}
-		return null;
-	}
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+        String user = parseUserFromToken(request.getHeader(HEADER_STRING));
+        if (user == null) {
+            return null;
+        }
+        return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
+    }
+
+    private String parseUserFromToken(String token) {
+        return Jwts.parser()
+                    .setSigningKey(verificationKey)
+                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+                    .getBody()
+                    .getSubject();
+    }
 }
