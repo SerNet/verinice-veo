@@ -17,3 +17,5 @@ dependencies {
     }
     testCompile 'com.jayway.jsonpath:json-path'
 }
+
+springBoot.layout = 'module'

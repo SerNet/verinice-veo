@@ -17,3 +17,5 @@ dependencies {
     testCompile 'commons-lang:commons-lang'
     testCompile 'net._01001111:jlorem'
 }
+
+springBoot.layout = 'module'
