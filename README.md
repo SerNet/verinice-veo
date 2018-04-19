@@ -61,36 +61,6 @@ or
 java -jar v2020-model-schema/build/libs/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
 ```
 
-**Run Web Application**
-
-To run the web application you have to start model schema web service first.
-
-Set your database properties in file _v2020-jsf/src/main/resources/application.properties_ and rebuild the application.
-
-*** using Maven:***
-
-```bash
-cd v2020-jsf
-mvn spring-boot:run
-```
-
-or
-
-```bash
-java -jar v2020-jsf/target/v2020-jsf-0.1.0-SNAPSHOT.jar
-```
-
-*** using Gradle:***
-```bash
-./gradlew v2020-jsf:bootRun
-```
-
-or
-
-```bash
-java -jar v2020-jsf/build/libs/v2020-jsf-0.1.0-SNAPSHOT.jar
-```
-
 **Run VNA Import**
 
 Set your database properties in file _v2020-vna-import/src/main/resources/application.properties_ and rebuild the application.
