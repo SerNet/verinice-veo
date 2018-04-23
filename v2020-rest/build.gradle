@@ -6,3 +6,14 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-rest'
 }
+
+bootRun {
+    def activeSpringProfiles = 'psql'
+    findProperty('springProfiles')?.with {
+      activeSpringProfiles = it
+    }
+    System.properties.'spring.profiles.active'?.with {
+      activeSpringProfiles = it
+    }
+    systemProperty 'spring.profiles.active', activeSpringProfiles
+}
