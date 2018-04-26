@@ -18,4 +18,4 @@ dependencies {
     testCompile 'net._01001111:jlorem'
 }
 
-springBoot.layout = 'module'
+bootRepackage.enabled = false
