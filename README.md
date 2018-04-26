@@ -5,7 +5,6 @@ A prototype of a new verinice version.
 ## Build
 
 **Prerequisite:**
-* Install Maven 3.x (if you want to use the Maven build).
 * Install Java 8.
 
 **Clone project:**
@@ -17,16 +16,9 @@ cd v2020
 
 **Build project:**
 
-*** using Maven:***
-```bash
-export JAVA_HOME=/path/to/jdk-8
-mvn install [-DskipTests]
-```
-*** using Gradle:***
 ```bash
 export JAVA_HOME=/path/to/jdk-8
 ./gradlew build [-x test]
-```
 
 ## Run
 
@@ -37,20 +29,6 @@ export JAVA_HOME=/path/to/jdk-8
 
 **Run Model Schema Web Service**
 
-*** using Maven:***
-
-```bash
-cd v2020-model-schema
-mvn spring-boot:run
-```
-
-or
-
-```bash
-java -jar v2020-model-schema/target/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
-```
-
-*** using Gradle:***
 ```bash
 ./gradlew v2020-model-schema:bootRun
 ```
@@ -58,6 +36,7 @@ java -jar v2020-model-schema/target/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
 or
 
 ```bash
+./gradlew v2020-model-schema:bootRepackage
 java -jar v2020-model-schema/build/libs/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
 ```
 
@@ -67,20 +46,7 @@ To run the web application you have to start model schema web service first.
 
 Set your database properties in file _v2020-jsf/src/main/resources/application.properties_ and rebuild the application.
 
-*** using Maven:***
 
-```bash
-cd v2020-jsf
-mvn spring-boot:run
-```
-
-or
-
-```bash
-java -jar v2020-jsf/target/v2020-jsf-0.1.0-SNAPSHOT.jar
-```
-
-*** using Gradle:***
 ```bash
 ./gradlew v2020-jsf:bootRun
 ```
@@ -88,6 +54,7 @@ java -jar v2020-jsf/target/v2020-jsf-0.1.0-SNAPSHOT.jar
 or
 
 ```bash
+./gradlew v2020-jsf:bootRepackage
 java -jar v2020-jsf/build/libs/v2020-jsf-0.1.0-SNAPSHOT.jar
 ```
 
@@ -96,29 +63,16 @@ java -jar v2020-jsf/build/libs/v2020-jsf-0.1.0-SNAPSHOT.jar
 Set your database properties in file _v2020-vna-import/src/main/resources/application.properties_ and rebuild the application.
 
 ```bash
-java -jar v2020-vna-import/target/v2020-vna-import-0.1.0-SNAPSHOT.jar \
+./gradlew v2020-vna-import:bootRepackage
+java -jar v2020-vna-import/build/libs/v2020-vna-import-0.1.0-SNAPSHOT.jar \
 -f /path/to/verinice-archive-file.vna
 ```
-If you built with Gradle, use `v2020-vna-import/build/libs/v2020-vna-import-0.1.0-SNAPSHOT.jar` as the JAR file.
 
 **Run REST Service**
 
 Set your database properties in file _v2020-rest/src/main/resources/application.properties_ and rebuild the application.
 
-*** using Maven:***
 
-```bash
-cd v2020-rest
-mvn spring-boot:run
-```
-
-or
-
-```bash
-java -jar v2020-rest/target/v2020-rest-0.1.0-SNAPSHOT.jar
-```
-
-*** using Gradle:***
 ```bash
 ./gradlew v2020-rest:bootRun
 ```
@@ -126,6 +80,7 @@ java -jar v2020-rest/target/v2020-rest-0.1.0-SNAPSHOT.jar
 or
 
 ```bash
+./gradlew v2020-rest:jar
 java -jar v2020-rest/build/libs/v2020-rest-0.1.0-SNAPSHOT.jar
 ```
 
