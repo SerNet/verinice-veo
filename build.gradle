@@ -49,7 +49,7 @@ subprojects {
     
     repositories {
         maven { url "https://repo.spring.io/libs-release" }
-        maven { url "http://repo.maven.apache.org/maven2" }
+        mavenCentral()
     }
 
     pmd.ignoreFailures = true
