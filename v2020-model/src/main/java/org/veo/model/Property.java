@@ -28,7 +28,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Lob;
 
 /**
  * @author Daniel Murygin <dm[at]sernet[dot]de>
@@ -50,7 +49,7 @@ public abstract class Property implements Serializable {
     @Column(length = 255)
     private String label;
 
-    @Lob
+    @Column(length = 400000)
     private String text;
 
     private Long number;
