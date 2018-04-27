@@ -13,3 +13,14 @@ dependencies {
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
+
+bootRun {
+    def activeSpringProfiles = 'psql'
+    findProperty('springProfiles')?.with {
+      activeSpringProfiles = it
+    }
+    System.properties.'spring.profiles.active'?.with {
+      activeSpringProfiles = it
+    }
+    systemProperty 'spring.profiles.active', activeSpringProfiles
+}
