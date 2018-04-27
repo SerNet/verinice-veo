@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Daniel Murygin.
+ * Copyright (c) 2018 Alexander Ben Nasrallah.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,32 +15,24 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Daniel Murygin dm[at]sernet[dot]de - initial API and implementation
+ *     Alexander Ben Nasrallah <an@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.rest;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
- * @author Daniel Murygin dm[at]sernet[dot]de
+ * This class provides access to veo specific application properties and environment/system variable.
  */
-@SpringBootApplication
-@ComponentScan(basePackages = { "org.veo" })
-@EntityScan("org.veo.model")
-public class RestApplication {
+@Service
+public class VeoConfigurationService {
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    @Value("${veo.schema-basedir:#{null}}")
+    private String schemaDir;
+
+    public String getSchemaDir() {
+        return schemaDir;
     }
-
-    public static void main(String[] args) {
-        SpringApplication.run(RestApplication.class, args);
-    }
-
 }
