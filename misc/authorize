@@ -1,3 +1,10 @@
 #!/bin/sh
+#
+# usgage: ./authorize <api-endpoint> [curl args...]
 
-curl -si -H "Authorization: Bearer eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTUyMzAxNjkwNH0.lv4M2TWqAo3tuljvnvlSCqUg3WfzUoUQDHBxbcKErPf5eGXGz7XlJkCPFSmzOjOiSry3mtqPjTcnDrkNwQkngEsRGdDWAvnS9DoQ2rkr75ERtDyUB33I28JMj4mQZaaDb9qM05dhdNnEaGmk2d3rZ3Jsdol5UTTm6fUNtItdaHIe274n6cdQ1SOAMywmiDZS58vvEnfdPhajh6TZ9fJv0OVyJqpJSeXDy6gKdDVZykB93QPE1Yw7We8IT2CXyT437ntkcBJR_Z00zAwXoxgr6Aj3C-2wlvPFkEC3iyN-RLHPB19bghFAAyWh2RORphkVdjSg-enYsTbq-9w6shE0Pg" http://localhost:8070/elements
+host=http://localhost:8070
+api=${1:-elements}
+
+if [ $# -ge 1 ]; then shift; fi
+
+curl -H "Authorization: Bearer $TOKEN" $@ $host/$api 
