@@ -12,6 +12,7 @@ dependencies {
 
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testRuntime 'com.h2database:h2'
 }
 
 bootRun {

@@ -86,44 +86,38 @@ java -jar v2020-rest/build/libs/v2020-rest-0.1.0-SNAPSHOT.jar
 
 ## Modules
 
-**v2020-model**
-
+### v2020-model
 This module contains the domain model and interfaces of the application. This module be used in any other module of the application.  
 
-**v2020-data-xml**
-
+### v2020-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.
 
-**v2020-persistence**
-
+### v2020-persistence
 This module contains the persistence layer of the application.
 
-**v2020-service**
-
+### v2020-service
 This module contains the service implementation of the application.
 
-**v2020-jsf**
-
+### v2020-jsf
 This module contains the web application based on JSF and PrimeFaces.
 
-**v2020-rest**
-
+### v2020-rest
 This module contains the implementation of the REST services of the application.
 
-**v2020-model-schema**
+The JSON schemas accepted by the API can be found in *schemas/*. *veo.schema-basedir* can be set
+in *application.properties* and is */usr/share/veo/schema* by default. The gradle task `bootRun`
+sets *veo.schema-basedir* to *schemas/*.
 
+### v2020-model-schema
 This module contains a service to load the schema for the elements and an REST service to access the schema.
 
-**v2020-model-schema-client**
-
+### v2020-model-schema-client
 This module contains a client to call the model schema REST service.
 
-**v2020-vna-import**
-
+### v2020-vna-import
 This module contains an importer for verinice archives (VNAs).
 
 ## Database
-
 Entity–relationship model of the database:
 
 ![ERM of the the database](v2020-persistence/src/main/sql/database-erm.png)
