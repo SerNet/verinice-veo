@@ -24,4 +24,7 @@ bootRun {
       activeSpringProfiles = it
     }
     systemProperty 'spring.profiles.active', activeSpringProfiles
+    System.properties.'veo.schema-basedir'?.with {
+        systemProperty 'veo.schema-basedir', it
+    }
 }
