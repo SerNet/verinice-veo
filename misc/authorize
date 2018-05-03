@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# usgage: ./authorize <api-endpoint> [curl args...]
+
+host=http://localhost:8070
+api=${1:-elements}
+
+if [ $# -ge 1 ]; then shift; fi
+
+curl -H "Authorization: Bearer $TOKEN" $@ $host/$api 

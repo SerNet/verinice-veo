@@ -1,0 +1,16 @@
+#!/usr/bin/awk -f
+#
+# Expects a JWT token form stdin and decodes it.
+
+BEGIN {
+	FS = "."
+}
+
+{
+	system("echo " $1 "| base64 --decode 2>/dev/null");
+	print ""
+	system("echo " $2 "| base64 --decode 2>/dev/null");
+	print ""
+	print $3
+}
+

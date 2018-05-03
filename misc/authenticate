@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# usage: ./authenticate [username [password [curl args]]]
+
+USERNAME=${1:-admin}
+PASSWORD=${2:-password}
+
+if [ $# -ge 1 ]; then shift; fi # drop the optional username from args
+if [ $# -ge 1 ]; then shift; fi # drop the optional password from args
+
+TOKEN=`curl -si $@ -H "Content-Type: application/json" -X POST -d "{
+    \"username\": \"$USERNAME\",
+    \"password\": \"$PASSWORD\"
+}" http://localhost:8070/login |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
+
+echo export TOKEN=$TOKEN

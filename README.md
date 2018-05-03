@@ -5,7 +5,6 @@ A prototype of a new verinice version.
 ## Build
 
 **Prerequisite:**
-* Install Maven 3.x (if you want to use the Maven build).
 * Install Java 8.
 
 **Clone project:**
@@ -17,16 +16,9 @@ cd v2020
 
 **Build project:**
 
-*** using Maven:***
-```bash
-export JAVA_HOME=/path/to/jdk-8
-mvn install [-DskipTests]
-```
-*** using Gradle:***
 ```bash
 export JAVA_HOME=/path/to/jdk-8
 ./gradlew build [-x test]
-```
 
 ## Run
 
@@ -37,20 +29,6 @@ export JAVA_HOME=/path/to/jdk-8
 
 **Run Model Schema Web Service**
 
-*** using Maven:***
-
-```bash
-cd v2020-model-schema
-mvn spring-boot:run
-```
-
-or
-
-```bash
-java -jar v2020-model-schema/target/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
-```
-
-*** using Gradle:***
 ```bash
 ./gradlew v2020-model-schema:bootRun
 ```
@@ -58,6 +36,7 @@ java -jar v2020-model-schema/target/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
 or
 
 ```bash
+./gradlew v2020-model-schema:bootRepackage
 java -jar v2020-model-schema/build/libs/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
 ```
 
@@ -66,29 +45,16 @@ java -jar v2020-model-schema/build/libs/v2020-model-schema-0.1.0-SNAPSHOT-exec.j
 Set your database properties in file _v2020-vna-import/src/main/resources/application.properties_ and rebuild the application.
 
 ```bash
-java -jar v2020-vna-import/target/v2020-vna-import-0.1.0-SNAPSHOT.jar \
+./gradlew v2020-vna-import:bootRepackage
+java -jar v2020-vna-import/build/libs/v2020-vna-import-0.1.0-SNAPSHOT.jar \
 -f /path/to/verinice-archive-file.vna
 ```
-If you built with Gradle, use `v2020-vna-import/build/libs/v2020-vna-import-0.1.0-SNAPSHOT.jar` as the JAR file.
 
 **Run REST Service**
 
 Set your database properties in file _v2020-rest/src/main/resources/application.properties_ and rebuild the application.
 
-*** using Maven:***
 
-```bash
-cd v2020-rest
-mvn spring-boot:run
-```
-
-or
-
-```bash
-java -jar v2020-rest/target/v2020-rest-0.1.0-SNAPSHOT.jar
-```
-
-*** using Gradle:***
 ```bash
 ./gradlew v2020-rest:bootRun
 ```
@@ -96,49 +62,59 @@ java -jar v2020-rest/target/v2020-rest-0.1.0-SNAPSHOT.jar
 or
 
 ```bash
+./gradlew v2020-rest:jar
 java -jar v2020-rest/build/libs/v2020-rest-0.1.0-SNAPSHOT.jar
 ```
 
 ## Modules
 
-**v2020-model**
-
+### v2020-model
 This module contains the domain model and interfaces of the application. This module be used in any other module of the application.  
 
-**v2020-data-xml**
-
+### v2020-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.
 
-**v2020-persistence**
-
+### v2020-persistence
 This module contains the persistence layer of the application.
 
-**v2020-service**
-
+### v2020-service
 This module contains the service implementation of the application.
 
-**v2020-jsf**
-
+### v2020-jsf
 This module contains the web application based on JSF and PrimeFaces.
 
-**v2020-rest**
-
+### v2020-rest
 This module contains the implementation of the REST services of the application.
 
-**v2020-model-schema**
+The JSON schemas accepted by the API can be found in *schemas/*. *veo.schema-basedir* can be set
+in *application.properties* and is */usr/share/veo/schema* by default. The gradle task `bootRun`
+sets *veo.schema-basedir* to *schemas/*.
 
+### v2020-model-schema
 This module contains a service to load the schema for the elements and an REST service to access the schema.
 
-**v2020-model-schema-client**
-
+### v2020-model-schema-client
 This module contains a client to call the model schema REST service.
 
-**v2020-vna-import**
-
+### v2020-vna-import
 This module contains an importer for verinice archives (VNAs).
 
 ## Database
-
 Entity–relationship model of the database:
 
 ![ERM of the the database](v2020-persistence/src/main/sql/database-erm.png)
+
+## Authentication and Authorization
+v2020-rest uses JWT to authorize users. Tokens can be obtained by a `POST` on `/login`, e.g.
+
+	curl -i -H "Content-Type: application/json" -X POST -d '{
+			"username": "user",
+			"password": "password"
+	}' http://localhost:8070/login
+
+On success the response will contain a header
+
+	Authorization: Bearer <token>
+
+This header has to be part of every further request
+
