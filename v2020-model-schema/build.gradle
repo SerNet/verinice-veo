@@ -3,7 +3,6 @@ apply plugin: 'org.springframework.boot'
 dependencies {
     compile 'org.springframework.boot:spring-boot'
     compile 'org.springframework:spring-web'
-    compile 'com.google.code.gson:gson'
     compile 'commons-io:commons-io'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.hateoas:spring-hateoas'
