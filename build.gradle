@@ -25,8 +25,6 @@ subprojects {
              dependency 'org.slf4j:slf4j-api:1.7.25'
              dependency 'com.google.guava:guava:22.0'
              dependency 'commons-io:commons-io:2.5'
-             dependency 'com.google.code.gson:gson:2.8.1'
-             dependency 'org.joinfaces:jsf-spring-boot-starter:2.4.0'
              dependency 'org.springframework:spring-web:4.3.9.RELEASE'
              dependency 'com.fasterxml.jackson.core:jackson-databind:2.8.9'
              dependency 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8'
