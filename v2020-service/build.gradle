@@ -13,8 +13,6 @@ dependencies {
     }
     testCompile 'com.h2database:h2'
     testCompile 'org.spockframework:spock-spring'
-
-    compileOnly 'org.apache.tomcat.embed:tomcat-embed-core'
 }
 
 bootRepackage.enabled = false

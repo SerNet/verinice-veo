@@ -17,6 +17,4 @@ dependencies {
     }
     testCompile 'org.spockframework:spock-spring'
     testRuntime 'com.h2database:h2'
-
-    compileOnly 'org.apache.tomcat.embed:tomcat-embed-core'
 }
