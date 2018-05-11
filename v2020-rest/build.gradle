@@ -3,8 +3,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(':v2020-model')
-    compile project(':v2020-service')
+    compile project(":v2020-service")
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-rest'
     compile("org.springframework.boot:spring-boot-starter-security")
@@ -24,7 +23,5 @@ bootRun {
       activeSpringProfiles = it
     }
     systemProperty 'spring.profiles.active', activeSpringProfiles
-    System.properties.'veo.schema-basedir'?.with {
-        systemProperty 'veo.schema-basedir', it
-    }
+    systemProperty 'veo.basedir', "${System.getProperty("user.home")}/.local/share/veo"
 }

@@ -17,22 +17,25 @@
  * Contributors:
  *     Alexander Ben Nasrallah <an@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.rest;
+package org.veo.service;
 
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
- * This class provides access to veo specific application properties and environment/system variable.
+ * Provides methods to persist maps wich needs the following keys:
+ *
+ * - parent
  */
-@Service
-public class VeoConfigurationService {
+public interface ElementMapService {
 
-    @Value("${veo.schema-basedir:#{null}}")
-    private String schemaDir;
+    List<Map<String, Object>> findAll() throws IOException;
+    Map<String, Object> find(String id) throws IOException;
+    List<Map<String, Object>> findChildren(String parentId) throws IOException;
 
-    public String getSchemaDir() {
-        return schemaDir;
-    }
+    void save(String id, Map<String, Object> content) throws IOException;
+    String saveNew(Map<String, Object> content) throws IOException;
+
+    void delete(String id) throws IOException;
 }

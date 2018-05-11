@@ -19,10 +19,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.io.File;
-
-import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +31,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.veo.service.VeoConfigurationService;
+
+import javax.validation.constraints.NotNull;
+import java.io.File;
 
 /**
  * This controller shall provide access to static resource on the file system.
@@ -62,11 +62,14 @@ public class StaticController {
     }
 
     private @NotNull Resource getSchemaResource(String schemaName) {
-        if (configuration.getSchemaDir() != null) {
-            File schemaFile = new File(configuration.getSchemaDir(), schemaName);
+        File schemaDir = new File(configuration.getBaseDir(), "schemas");
+        if (schemaDir.exists() && schemaDir.isDirectory()) {
+            logger.info("Providing schemas from {}.", schemaDir.getAbsolutePath());
+            File schemaFile = new File(schemaDir, schemaName);
             return new FileSystemResource(schemaFile);
 
         } else {
+            logger.info("Providing schemas from class path resources.");
             return new ClassPathResource("/schemas/".concat(schemaName));
         }
     }

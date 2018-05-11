@@ -1,0 +1,23 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "veo.org/element",
+  "properties": {
+    "uuid": {
+      "type": "string"
+    },
+    "source": {
+      "$ref": "/schemas/element.json"
+    },
+    "target": {
+      "$ref": "/schemas/element.json"
+    },
+    "schema": {
+      "$ref": "http://jsonschema.org/schema.json"
+    },
+    "amount": {
+      "type": "number",
+      "description": "An example property"
+    }
+  }
+}
