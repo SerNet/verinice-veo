@@ -1,0 +1,7 @@
+{
+	"id": "1da2a9d0-feeb-4076-88a4-16126312e718",
+	"title": "I am groot",
+	"schema": {
+		"$ref": "/schemas/element.json"
+	}
+}
