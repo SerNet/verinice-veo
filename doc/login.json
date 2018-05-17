@@ -1,0 +1,29 @@
+{
+    "description": "Retreive an authorization JWT token",
+    "post": {
+        "description": "Retreive an authorization JWT token",
+        "security": {},
+        "requestBody": {
+            "description": "Login credentials",
+            "content": {
+                "*/*": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "username": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "example": {
+                        "username": "admin",
+                        "password": "password"
+                    }
+                }
+            }
+        }
+    }
+}

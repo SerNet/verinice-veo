@@ -1,0 +1,61 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "veo REST",
+    "version": "1.0.0",
+    "description": "veo.REST API",
+    "termOfSerive": "Fetch data object for verinice.VEO",
+    "contact": "support@verinice.de",
+    "license": {
+      "name": "tba",
+      "url": "tba"
+    }
+  },
+  "security": {
+    "bearerAuth": []
+  },
+  "paths": {
+    "/": {
+      "$ref": "./index.json"
+    },
+    "/login": {
+      "$ref": "login.json"
+    },
+    "/elements": {
+      "$ref": "element.json#all"
+    },
+    "/elements/{uuid}": {
+      "$ref": "element.json#self"
+    },
+    "/elements/{uuid}/children": {
+      "$ref": "element.json#children"
+    },
+    "/elements/{uuid}/links": {
+      "$ref": "element.json#links"
+    },
+    "/links": {
+      "$ref": "link.json#all"
+    },
+    "/links/{uuid}": {
+      "$ref": "link.json#self"
+    },
+    "/schemas/{name}": {
+      "$ref": "schemas.json"
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8070",
+      "description": "local development server"
+    }
+  ]
+}
