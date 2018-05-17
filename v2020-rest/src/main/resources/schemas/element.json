@@ -1,20 +1,18 @@
 {
   "definitions": {},
-  "$schema": "http://json-schema.org/draft-06/schema#",
   "$id": "veo.org/element",
   "type": "object",
   "properties": {
-    "uuid": {
+    "id": {
       "$id": "/properties/uuid",
       "type": "string",
       "title": "The UUID to identify the element",
-      "description": "An explanation about the purpose of this instance.",
       "examples": [
         "df0c7190-fa58-43af-9cc8-53fb29572e80"
-      ]
+      ],
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
     },
     "parent": {
-      "$id": "/properties/parent",
       "type": "string",
       "title": "The UUID identifying the parent",
       "description": "An explanation about the purpose of this instance.",
@@ -22,22 +20,24 @@
         "df0c7190-fa58-43af-9cc8-53fb29572e80"
       ]
     },
-    "scope": {
-      "$id": "/properties/scope",
-      "type": "string",
-      "title": "The UUID identifying the scope the element belongs to.",
-      "description": "An explanation about the purpose of this instance.",
-      "examples": [
-        "df0c7190-fa58-43af-9cc8-53fb29572e80"
-      ]
-    },
     "title": {
-      "$id": "/properties/parent",
       "type": "string",
       "title": "The title of this element",
       "examples": [
         "Dummy Organisation"
       ]
+    },
+    "schema": {
+      "type": "object",
+      "title": "The schema of this element",
+      "examples": [
+        "Dummy Organisation"
+      ]
     }
-  }
+  },
+  "required": [
+  	"id",
+    "title",
+    "schema"
+  ]
 }

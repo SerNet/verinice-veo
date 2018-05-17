@@ -1,0 +1,21 @@
+{
+	"title": "Person group",
+	"allOf": [
+		{ "$ref": "/schemas/element.json" },
+		{
+			"properties": {
+				"parent": {
+					"anyOf": [
+						{ "$ref": "/schemas/person-group.json" }
+					]
+				},
+				"givenname": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"parent"
+			]
+		}
+	]
+}
