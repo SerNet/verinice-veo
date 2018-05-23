@@ -1,0 +1,26 @@
+{
+    "description": "Response on unauthorized request.",
+    "content": {
+        "*/*": {
+            "schema": {
+                "properties": {
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "number"
+                    },
+                    "error": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,79 @@
+{
+  "schemas": {
+    "element": {
+      "title": "Basic structure of veo elements",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#schemas/id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "schema": {
+          "description": "A JSON Reference of the schema describing the element",
+          "required": true,
+          "type": "object",
+          "properties": {
+            "$ref": {
+              "$ref": "#schemas/reference"
+            }
+          }
+        },
+        "parent": {
+          "type": "object",
+          "properties": {
+            "$ref": {
+              "$ref": "#schemas/reference"
+            }
+          }
+        }
+      }
+    },
+    "link": {
+      "title": "Basic structure of veo links",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#schemas/id"
+        },
+        "schema": {
+          "description": "A JSON Reference of the schema describing the link. The schema shall be used to verify source and target.",
+          "required": true,
+          "type": "object",
+          "properties": {
+            "$ref": {
+              "$ref": "#schemas/reference"
+            }
+          }
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "$ref": {
+              "$ref": "#schemas/reference"
+            }
+          }
+        },
+        "destination": {
+          "type": "object",
+          "properties": {
+            "$ref": {
+              "$ref": "#schemas/reference"
+            }
+          }
+        }
+      }
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "reference": {
+      "type": "string",
+      "format": "uri",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "all": {
+    "get": {
+      "summary": "Retreive all links",
+      "description": "Retreive all links",
+      "responses": {
+        "200": {
+          "description": "List links",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "components.json#schemas/link"
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "$ref": "unauthorized_response.json"
+        }
+      }
+    },
+    "post": {
+      "summary": "Add a new link to the collection",
+      "description": "Add a new link to the collection.\n\nschema, target and source shall be passed as JSON reference.",
+      "requestBody": {
+        "description": "link to create",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "components.json#schemas/link"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "The link has bee created",
+          "headers": {
+            "Location": {
+              "description": "The URI to access the new resource",
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "403": {
+          "$ref": "unauthorized_response.json"
+        }
+      }
+    }
+  },
+  "self": {
+    "parameters": [
+      {
+        "name": "uuid",
+        "in": "path",
+        "required": true,
+        "description": "The UUID of the links to process"
+      }
+    ],
+    "get": {
+      "summary": "Retreive link by UUID",
+      "description": "Return the link with given UUID",
+      "responses": {
+        "200": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "components.json#schemas/link"
+              }
+            }
+          }
+        },
+        "403": {
+          "$ref": "unauthorized_response.json"
+        }
+      }
+    },
+    "put": {
+      "summary": "Update the link with given UUID",
+      "description": "Overwrites the link with given UUID. See POST /links for furthet details.",
+      "requestBody": {
+        "description": "the updated content",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "components.json#schemas/link"
+            }
+          }
+        }
+      },
+      "responses": {
+        "204": {
+          "content": null,
+          "description": "The link has been updated"
+        },
+        "403": {
+          "$ref": "unauthorized_response.json"
+        }
+      }
+    }
+  }
+}

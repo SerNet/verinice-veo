@@ -1,0 +1,22 @@
+{
+  "definitions": {},
+  "$id": "veo.org/element",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "schema": {
+		"description": "The schema describing the link",
+      "type": "object"
+    },
+    "source": {
+      "$ref": "/schemas/element.json"
+    },
+    "target": {
+      "$ref": "/schemas/element.json"
+    }
+  },
+  "required": [
+  	  "id", "source", "target"
+  ]
+}

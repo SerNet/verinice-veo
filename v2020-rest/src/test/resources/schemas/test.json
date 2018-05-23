@@ -5,8 +5,8 @@
   "type": "object",
   "description": "Test JSON with non-ascii chars: äüöÄÜÖ€",
   "properties": {
-    "uuid": {
-      "$id": "/properties/uuid",
+    "id": {
+      "$id": "/properties/id",
       "type": "string",
       "title": "The UUID to identify the element",
       "description": "An explanation about the purpose of this instance.",
@@ -33,7 +33,7 @@
       ]
     },
     "title": {
-      "$id": "/properties/parent",
+      "$id": "/properties/title",
       "type": "string",
       "title": "The title of this element",
       "examples": [

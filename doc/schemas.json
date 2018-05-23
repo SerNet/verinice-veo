@@ -1,0 +1,29 @@
+{
+  "parameters": [
+    {
+      "name": "name",
+      "in": "path",
+      "required": true,
+      "description": "The type of object which schema is required."
+    }
+  ],
+  "get": {
+    "summary": "Find JSON schema by name",
+    "description": "Returns the schema of the requested type",
+    "responses": {
+      "200": {
+        "content": {
+          "application/schema+json": {
+            "description": "A JSON Schema",
+            "schema": {
+              "$ref": "http://json-schema.org/draft-06/schema#"
+            }
+          }
+        }
+      },
+      "403": {
+        "$ref": "unauthorized_response.json"
+      }
+    }
+  }
+}

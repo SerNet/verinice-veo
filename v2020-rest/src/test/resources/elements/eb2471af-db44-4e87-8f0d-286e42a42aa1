@@ -1,0 +1,11 @@
+{
+	"id": "eb2471af-db44-4e87-8f0d-286e42a42aa1",
+	"title": "Luk",
+	"givenname": "Skywalker",
+	"schema": {
+		"$ref": "/schemas/person.json"
+	},
+	"parent": {
+		"$ref": "/elements/c241e047-3857-4939-af3e-1e48d053581a"
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"id": "63c32fc0-243c-4aa6-a21e-24d2b33447b0",
+	"title": "I am child",
+	"schema": {
+		"$ref": "/schemas/element.json"
+	},
+	"parent": {
+		"$ref": "/elements/1da2a9d0-feeb-4076-88a4-16126312e718"
+	}
+}
