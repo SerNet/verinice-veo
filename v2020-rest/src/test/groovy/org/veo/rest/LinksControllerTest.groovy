@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.veo.service.LinkMapService
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest("veo.basedir=/tmp/veo")
 public class LinksControllerTest {
     private LinksController controller
     private MockMvc mockMvc
