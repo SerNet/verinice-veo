@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.veo.service.ElementMapService
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest("veo.basedir=/tmp/veo")
 public class ElementsControllerTest {
     private ElementsController elementsController
     private MockMvc mockMvc
