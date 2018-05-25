@@ -1,5 +1,3 @@
-apply plugin: 'org.springframework.boot'
-
 dependencies {
     compile project(':v2020-model-schema')
     compile('org.springframework.boot:spring-boot-starter') {
@@ -17,5 +15,3 @@ dependencies {
     }
     testCompile 'com.jayway.jsonpath:json-path'
 }
-
-bootRepackage.enabled = false
