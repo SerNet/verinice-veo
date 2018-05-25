@@ -88,7 +88,7 @@ public class ElementRepositoryTest {
     public void testSaveAndFindOne() { 
         Element element = createElement("org");
         elementRepository.save(element);
-        Element elementResult = elementRepository.findOne(element.getUuid());
+        Element elementResult = elementRepository.findByUuid(element.getUuid());
         assertNotNull(elementResult);
         assertEquals(4,elementResult.getProperties().size());
     }

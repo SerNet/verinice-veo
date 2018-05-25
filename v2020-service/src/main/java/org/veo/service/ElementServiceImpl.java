@@ -29,7 +29,7 @@ public class ElementServiceImpl implements ElementService {
     
     @Override
     public Element load(String uuid) {
-        return elementRepository.findOne(uuid);
+        return elementRepository.findByUuid(uuid);
     }
     
     @Override
