@@ -86,9 +86,12 @@ This module contains the web application based on JSF and PrimeFaces.
 ### v2020-rest
 This module contains the implementation of the REST services of the application.
 
-The JSON schemas accepted by the API can be found in *schemas/*. *veo.schema-basedir* can be set
-in *application.properties* and is */usr/share/veo/schema* by default. The gradle task `bootRun`
-sets *veo.schema-basedir* to *schemas/*.
+The JSON schemas accepted by the API can be found in *${veo.basedir}/schemas/*. If this directory
+does not exist, built-in schema files will be served as default.
+
+*veo.basedir* can be set in *application.properties* and is */var/lib/veo* by
+default. The gradle task `bootRun` sets *veo.basedir* to
+*$HOME/.local/share/veo*.
 
 ### v2020-model-schema
 This module contains a service to load the schema for the elements and an REST service to access the schema.
