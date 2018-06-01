@@ -9,30 +9,18 @@ class LinkMapServiceImplTest extends Specification {
     def elements = [
             [
                     id   : 'deadbeef',
-                    source: [
-                            $ref: "/elements/111111"
-                    ],
-                    target: [
-                            $ref: "/elements/222222"
-                    ],
+                    source: "111111",
+                    target: "222222",
             ],
             [
                     id   : 'abad1dea',
-                    source: [
-                            $ref: "/elements/222222"
-                    ],
-                    target: [
-                            $ref: "/elements/333333"
-                    ],
+                    source: "222222",
+                    target: "333333",
             ],
             [
                     id   : '110011',
-                    source: [
-                            $ref: "/elements/333333"
-                    ],
-                    target: [
-                            $ref: "/elements/111111"
-                    ],
+                    source: "333333",
+                    target: "111111",
             ],
     ]
 
@@ -59,8 +47,8 @@ class LinkMapServiceImplTest extends Specification {
         def result = linkMapService.find("abad1dea")
 
         then:
-        result["source"]['$ref'] == "/elements/222222"
-        result["target"]['$ref'] == "/elements/333333"
+        result["source"] == "222222"
+        result["target"] == "333333"
     }
 
     def "find by element"() {
@@ -82,12 +70,8 @@ class LinkMapServiceImplTest extends Specification {
         this.linkMapService = new LinkMapServiceImpl(mockStorage)
 
         def newItem = [
-                source: [
-                        $ref: "/elements/555555"
-                ],
-                target: [
-                        $ref: "/elements/777777"
-                ]
+                source: "555555",
+                target: "777777"
         ]
         mockStorage.setNextId("444444")
 
@@ -98,8 +82,8 @@ class LinkMapServiceImplTest extends Specification {
         generatedId == "444444"
         elements.size() == 4
         elements[3]["id"] == "444444"
-        elements[3]["source"]['$ref'] == "/elements/555555"
-        elements[3]["target"]['$ref'] == "/elements/777777"
+        elements[3]["source"] == "555555"
+        elements[3]["target"] == "777777"
     }
 
     def "save"() {
@@ -109,12 +93,8 @@ class LinkMapServiceImplTest extends Specification {
 
         def newItem = [
                 id   : 'deadbeef',
-                source: [
-                        $ref: "/elements/111111"
-                ],
-                target: [
-                        $ref: "/elements/333333"
-                ],
+                source: "111111",
+                target: "333333",
                 new: "value"
         ]
 
@@ -126,8 +106,8 @@ class LinkMapServiceImplTest extends Specification {
         then:
         elements.size() == 3
         elements[2]["id"] == "deadbeef"
-        elements[2]["source"]['$ref'] == "/elements/111111"
-        elements[2]["target"]['$ref'] == "/elements/333333"
+        elements[2]["source"] == "111111"
+        elements[2]["target"] == "333333"
         elements[2]["new"] == "value"
     }
 

@@ -103,16 +103,12 @@ public class ElementsControllerTest {
                     [
                             id   : '813ad81',
                             title: "I'm a child",
-                            parent: [
-                                    $ref: "/elements/abad1dea"
-                            ]
+                            parent: "abad1dea"
                     ],
                     [
                             id   : '813ad81',
                             title: "I'm a child, too",
-                            parent: [
-                                    $ref: "/elements/abad1dea"
-                            ]
+                            parent: "abad1dea"
                     ],
             ]
         }
@@ -131,16 +127,12 @@ public class ElementsControllerTest {
                     [
                             id   : '813ad81',
                             title: "I'm a child",
-                            parent: [
-                                    $ref: "/elements/abad1dea"
-                            ]
+                            parent: "abad1dea"
                     ],
                     [
                             id   : '813ad81',
                             title: "I'm a child, too",
-                            parent: [
-                                    $ref: "/elements/abad1dea"
-                            ]
+                            parent: "abad1dea"
                     ],
             ]
         }

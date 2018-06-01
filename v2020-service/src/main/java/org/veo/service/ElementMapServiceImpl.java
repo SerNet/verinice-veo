@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -59,13 +60,11 @@ public class ElementMapServiceImpl implements ElementMapService {
 
     @Override
     public List<Map<String, Object>> findChildren(String id) throws IOException {
-        List<Map<String, Object>> elements =  mapRepository.readAll();
-        return elements.stream()
-                .filter(m -> {
-                    Map<String, String> parent = ((Map<String, String>)m.get("parent"));
-                    return parent != null && parent.get("$ref").equals("/elements/" + id);
-                })
-                .collect(Collectors.toList());
+        List<Map<String, Object>> elements = mapRepository.readAll();
+        return elements.stream().filter(m -> {
+            String parent = (String) m.get("parent");
+            return Objects.equals(parent, id);
+        }).collect(Collectors.toList());
     }
 
     @Override
