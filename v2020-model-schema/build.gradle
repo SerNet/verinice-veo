@@ -13,4 +13,5 @@ dependencies {
     }
 }
 
-bootRepackage.classifier = 'exec'
+bootJar.classifier = 'exec'
+jar.enabled = true

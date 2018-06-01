@@ -35,12 +35,12 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     public Link save(String sourceId, String destinationId) {
-        Element source = elementRepository.findOne(sourceId);
+        Element source = elementRepository.findByUuid(sourceId);
         Element destination = null;
         if(sourceId.equals(destinationId)) {
             destination = source;
         } else {
-            destination = elementRepository.findOne(destinationId);
+            destination = elementRepository.findByUuid(destinationId);
         }
         return save(source, destination);
     }
