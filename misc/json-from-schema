@@ -1,0 +1,22 @@
+#!/usr/bin/jq -f
+
+def sampleForType(type):
+	if type == "string" then
+		"Hallo"
+	elif type == "boolean" then
+		true
+	elif type == "number" then
+		123
+	elif type == "array" then
+		[]
+	elif type == "object" then
+		null
+	else
+		1
+	end;
+
+def sample(property): if has("enum") then property.enum[0] else sampleForType(.type) end;
+
+.properties | .[] |= sample(.)
+
+

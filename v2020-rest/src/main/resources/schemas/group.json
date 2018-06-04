@@ -1,6 +1,6 @@
 {
   "definitions": {},
-  "$id": "veo.org/element",
+  "$id": "veo.org/group",
   "type": "object",
   "properties": {
     "id": {
@@ -14,7 +14,11 @@
     },
     "schema": {
       "type": "string",
-      "title": "The schema of this element"
+      "title": "The schema URI to identify the type of the element",
+      "description": "The schema URI to identify the type of the element relative to the base URI",
+      "enum": [
+        "/schemas/group.json"
+      ]
     },
     "parent": {
       "type": "string",

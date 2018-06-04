@@ -1,0 +1,62 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "description": "Schema for assets from ISO 27000",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "schema": {
+      "type": "string",
+      "title": "The schema URI to identify the type of the element",
+      "description": "The schema URI to identify the type of the element relative to the base URI",
+      "enum": [
+        "/schemas/asset.json"
+      ]
+    },
+    "parent": {
+      "type": "string",
+      "title": "The UUID to identify the parent"
+    },
+    "title": {
+      "type": "string",
+      "title": "The title of the asset"
+    },
+    "abbreviation": {
+      "type": "string",
+      "title": "The abbreviation of the asset"
+    },
+    "description": {
+      "type": "string",
+      "title": "The description of the asset"
+    },
+    "assetType": {
+      "type": "string",
+      "title": "The type of the asset",
+      "enum": [ "information","software","physical","service","people" ]
+    },
+    "businessImpactConfidentiality": {
+      "type": "string",
+      "title": "The business impact on confidentiality of the asset",
+      "enum": ["low","normal","high","very-high"]
+    },
+    "businessImpactIntegrity": {
+      "type": "string",
+      "title": "The business impact on integrity of the asset",
+      "enum": ["low","normal","high","very-high"]
+    },
+    "businessImpactAvailability": {
+      "type": "string",
+      "title": "The business impact on availability of the asset",
+      "enum": ["low","normal","high","very-high"]
+    }
+  },
+  "required": [
+    "id",
+    "schema",
+    "parent",
+    "title"
+  ]
+}
