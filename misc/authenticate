@@ -1,25 +1,47 @@
 #!/bin/sh
-#
-# usage: ./authenticate [host [username [password [curl args]]]]
 
-VEOHOST=${1:-http://localhost:8070}
-USERNAME=${2:-admin}
-PASSWORD=${3:-password}
+usage() {
+	cat <<EOF >&2
+$0 [-l url] [-u username] [-p] [--] [curl args...]
 
-if [ $# -ge 1 ]; then shift; fi # drop the optional username from args
-if [ $# -ge 1 ]; then shift; fi # drop the optional password from args
-if [ $# -ge 1 ]; then shift; fi # drop the optional password from args
+-l url		the url (default: http://localhost:8070)
+-u username	the username to login (default: admin)
+-p		prompt for password (default: password)
+EOF
+}
 
-TOKEN=`curl -si $@ -H "Content-Type: application/json" -X POST -d "{
-    \"username\": \"$USERNAME\",
-    \"password\": \"$PASSWORD\"
-}" "$VEOHOST/login" |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
+url=http://localhost:8070
+username=admin
+password=password
+pass_prompt=
 
-if [ -z $TOKEN ]
+while getopts l:u:p option
+do
+	case $option in
+	l) url="$OPTARG";;
+	u) username="$OPTARG";;
+	p) pass_prompt=1;;
+	?) usage; exit 2;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+if [ ! -z "$pass_prompt" ]
+then
+	echo Enter password for $username:
+	read password
+fi
+
+token=`curl -si $@ -H "Content-Type: application/json" -X POST -d "{
+    \"username\": \"$username\",
+    \"password\": \"$password\"
+}" "$url/login" |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
+
+if [ -z $token ]
 then
 	echo "Authentication failed" >&2
 	exit 1
 fi
 
-echo export TOKEN=$TOKEN
-echo export VEOHOST=$VEOHOST
+echo export TOKEN=$token
+echo export VEOURL=$url
