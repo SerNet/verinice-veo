@@ -2,9 +2,15 @@
 #
 # usgage: ./authorize <api-endpoint> [curl args...]
 
-host=http://localhost:8070
 api=${1:-elements}
+
+# check env
+if [ -z $TOKEN ] || [ -z $VEOHOST ]; then
+	authentication_cmd="`dirname $0`/authenticate"
+	printf '$TOKEN or $VEOHOST is unset please run "eval `%s`".\n' $authentication_cmd >&2
+	exit 1
+fi
 
 if [ $# -ge 1 ]; then shift; fi
 
-curl -H "Authorization: Bearer $TOKEN" $@ $host/$api 
+curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" $@ $VEOHOST/$api
