@@ -1,21 +1,37 @@
 {
-	"title": "Person group",
-	"allOf": [
-		{ "$ref": "/schemas/element.json" },
-		{
-			"properties": {
-				"parent": {
-					"anyOf": [
-						{ "$ref": "/schemas/person-group.json" }
-					]
-				},
-				"givenname": {
-					"type": "string"
-				}
-			},
-			"required": [
-				"parent"
-			]
-		}
-	]
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "description": "Schema for human entities",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "schema": {
+      "type": "string",
+      "title": "The schema URI to identify the type of the element",
+      "description": "The schema URI to identify the type of the element relative to the base URI",
+      "enum": [
+        "/schemas/person.json"
+      ]
+    },
+    "parent": {
+      "type": "string",
+      "title": "The UUID to identify the parent"
+    },
+    "title": {
+      "type": "string",
+      "title": "The title of the asset"
+    },
+    "givenName": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "schema",
+    "parent",
+    "title"
+  ]
 }

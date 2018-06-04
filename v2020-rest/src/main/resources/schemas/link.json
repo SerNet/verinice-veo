@@ -6,17 +6,23 @@
       "type": "string"
     },
     "schema": {
-		"description": "The schema describing the link",
-      "type": "object"
+      "type": "string",
+      "title": "The schema URI to identify the type of the element",
+      "description": "The schema URI to identify the type of the element relative to the base URI",
+      "enum": [
+        "/schemas/link.json"
+      ]
     },
     "source": {
-      "$ref": "/schemas/element.json"
+      "type": "string"
     },
     "target": {
-      "$ref": "/schemas/element.json"
+      "type": "string"
     }
   },
   "required": [
-  	  "id", "source", "target"
+    "id",
+    "source",
+    "target"
   ]
 }

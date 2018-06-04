@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# This script iterates over given schemas.
+# Then for each schema it will ITER times
+# - create an instance of the schema as root and
+# - create an instance of the schema for each created element
+#
+# As a result this script will produce $2^{nSCHEMAS*ITER+1} - 2$ data sets.
+#
+# The id of each created elements will be printed.
+
+set -e
+
+ITER=3
+SCRIPTDIR=`dirname $0`
+SCHEMADIR=$SCRIPTDIR/../v2020-rest/src/main/resources/schemas
+SCHEMAS="\
+	person.json \
+	asset.json \
+"
+
+ids=
+
+# Send a POST request, prints the new id and expanse $ids
+postElement() {
+	parent=$1
+	location=`$SCRIPTDIR/json-from-schema "$SCHEMADIR/$schema" \
+		| if [ -z $parent ]; then jq ".parent=null"; else jq ".parent=\"$parent\""; fi \
+		| $SCRIPTDIR/authorize elements -X POST -T - -sI \
+		| awk '/^Location/ {sub(/\r/, "", $2); print $2}'`
+	if [ -z $location ]
+	then
+		echo "fatal error: no location for new element" >&2
+		exit 1
+	fi
+	id=`basename $location`
+	echo $id
+	ids="$ids $id"
+}
+
+for schema in $SCHEMAS; do
+	i=0
+	while [ $i -lt $ITER ]; do
+		# create a new root
+		postElement
+
+		# create a new child to every created element
+		for id in $ids; do
+			postElement $id
+		done
+		i=$((i+1))
+	done
+done
+

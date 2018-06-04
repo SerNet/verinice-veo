@@ -1,16 +1,25 @@
 #!/bin/sh
 #
-# usage: ./authenticate [username [password [curl args]]]
+# usage: ./authenticate [host [username [password [curl args]]]]
 
-USERNAME=${1:-admin}
-PASSWORD=${2:-password}
+VEOHOST=${1:-http://localhost:8070}
+USERNAME=${2:-admin}
+PASSWORD=${3:-password}
 
 if [ $# -ge 1 ]; then shift; fi # drop the optional username from args
+if [ $# -ge 1 ]; then shift; fi # drop the optional password from args
 if [ $# -ge 1 ]; then shift; fi # drop the optional password from args
 
 TOKEN=`curl -si $@ -H "Content-Type: application/json" -X POST -d "{
     \"username\": \"$USERNAME\",
     \"password\": \"$PASSWORD\"
-}" http://localhost:8070/login |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
+}" "$VEOHOST/login" |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
+
+if [ -z $TOKEN ]
+then
+	echo "Authentication failed" >&2
+	exit 1
+fi
 
 echo export TOKEN=$TOKEN
+echo export VEOHOST=$VEOHOST
