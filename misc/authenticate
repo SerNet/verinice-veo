@@ -25,6 +25,7 @@ do
 	esac
 done
 shift $(($OPTIND - 1))
+curlargs=$@
 
 if [ ! -z "$pass_prompt" ]
 then
@@ -32,14 +33,16 @@ then
 	read password
 fi
 
-token=`curl -si $@ -H "Content-Type: application/json" -X POST -d "{
+IFS= curlout=`curl $curlargs -isS -H "Content-Type: application/json" -X POST -d "{
     \"username\": \"$username\",
     \"password\": \"$password\"
-}" "$url/login" |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
+}" "$url/login"`
+token=`echo $curlout |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
 
 if [ -z $token ]
 then
 	echo "Authentication failed" >&2
+	echo $curlout >&2
 	exit 1
 fi
 
