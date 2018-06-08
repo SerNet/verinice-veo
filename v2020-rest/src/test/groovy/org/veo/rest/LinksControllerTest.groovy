@@ -39,7 +39,8 @@ public class LinksControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/links/deadbeef").accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.jsonPath('$.source.$ref').value("/elements/111111"))
+                .andExpect(MockMvcResultMatchers.jsonPath('$.source').value("111111"))
+                .andExpect(MockMvcResultMatchers.jsonPath('$.target').value("222222"))
     }
 
     @Test
@@ -51,12 +52,8 @@ public class LinksControllerTest {
     @Test
     void post() throws Exception {
         def postBody = '''{
-            "source": {
-                "$ref": "/elements/555555"
-            },
-            "target": {
-                "$ref": "/elements/777777"
-            }
+            "source": 555555,
+            "target": 777777
         }'''
 
         mockMvc.perform(MockMvcRequestBuilders.post("/links")
@@ -71,12 +68,8 @@ public class LinksControllerTest {
     void put() throws Exception {
         def postBody = '''{
             "id": "deadbeef",
-            "source": {
-                "$ref": "/elements/111111"
-            },
-            "target": {
-                "$ref": "/elements/333333"
-            },
+            "source": 111111,
+            "target": 333333,
             "new": "value"
         }'''
 
@@ -104,30 +97,18 @@ public class LinksControllerTest {
             return [
                     [
                             id   : 'deadbeef',
-                            source: [
-                                    $ref: "/elements/111111"
-                            ],
-                            target: [
-                                    $ref: "/elements/222222"
-                            ],
+                            source: "111111",
+                            target: "222222",
                     ],
                     [
                             id   : 'abad1dea',
-                            source: [
-                                    $ref: "/elements/222222"
-                            ],
-                            target: [
-                                    $ref: "/elements/333333"
-                            ],
+                            source: "222222",
+                            target: '333333',
                     ],
                     [
                             id   : '110011',
-                            source: [
-                                    $ref: "/elements/333333"
-                            ],
-                            target: [
-                                    $ref: "/elements/111111"
-                            ],
+                            source: '333333',
+                            target: "111111",
                     ]
             ]
         }
@@ -136,12 +117,8 @@ public class LinksControllerTest {
         Map<String, Object> find(String id) throws IOException {
             return [
                     id   : 'deadbeef',
-                    source: [
-                            $ref: "/elements/111111"
-                    ],
-                    target: [
-                            $ref: "/elements/222222"
-                    ],
+                    source: "111111",
+                    target: "222222"
             ]
         }
 
@@ -150,21 +127,13 @@ public class LinksControllerTest {
             return [
                     [
                             id    : 'abad1dea',
-                            source: [
-                                    $ref: "/elements/222222"
-                            ],
-                            target: [
-                                    $ref: "/elements/333333"
-                            ],
+                            source: '222222',
+                            target: '333333',
                     ],
                     [
                             id    : '110011',
-                            source: [
-                                    $ref: "/elements/333333"
-                            ],
-                            target: [
-                                    $ref: "/elements/111111"
-                            ],
+                            source: '333333',
+                            target: '111111'
                     ]
             ]
         }

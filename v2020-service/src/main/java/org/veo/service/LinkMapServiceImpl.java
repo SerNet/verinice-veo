@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -60,15 +61,11 @@ public class LinkMapServiceImpl implements LinkMapService {
     @Override
     public List<Map<String, Object>> findByElement(String elementId) throws IOException {
         List<Map<String, Object>> links = mapRepository.readAll();
-        return links.stream()
-                .filter(m -> {
-                    Map<String, String> source = ((Map<String, String>)m.get("source"));
-                    Map<String, String> target = ((Map<String, String>)m.get("target"));
-                    boolean isSource = source.get("$ref").equals("/elements/" + elementId);
-                    boolean isTarget = target.get("$ref").equals("/elements/" + elementId);
-                    return isSource || isTarget;
-                })
-                .collect(Collectors.toList());
+        return links.stream().filter(m -> {
+            String source = ((String) m.get("source"));
+            String target = ((String) m.get("target"));
+            return Objects.equals(source, elementId) || Objects.equals(target, elementId);
+        }).collect(Collectors.toList());
     }
 
     @Override
