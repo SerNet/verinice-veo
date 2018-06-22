@@ -45,6 +45,9 @@ public interface ElementRepository extends CrudRepository<Element, String> {
 
     @Query("SELECT DISTINCT e FROM Element e left join fetch e.properties where e.typeId = :typeId")
     public List<Element> findByTypeId(@Param("typeId") String typeId);
+
+    @Query("SELECT DISTINCT e FROM Element e left join fetch e.properties where e.parent.uuid = :uuidParent")
+    public List<Element> findByParentId(@Param("uuidParent") String uuidParent);
     
     @EntityGraph(value = "properties", type = EntityGraphType.LOAD)
     public Element findByUuid(String id);

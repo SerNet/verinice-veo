@@ -29,6 +29,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "element_property")
 public class ElementProperty extends Property {
-    
-    
+
+    public ElementProperty() {
+        super();
+    }
+
+    public ElementProperty(Type type) {
+        super(type);
+    }
 }

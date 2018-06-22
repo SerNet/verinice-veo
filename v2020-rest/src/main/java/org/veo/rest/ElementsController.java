@@ -22,6 +22,7 @@ package org.veo.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,9 +49,13 @@ import java.util.Map;
 public class ElementsController {
     private static final Logger logger = LoggerFactory.getLogger(ElementsController.class);
 
+    @Autowired
+    @javax.annotation.Resource(name="${service.element}")
     private ElementMapService mapService;
 
-    @Autowired
+    public ElementsController() {
+    }
+
     public ElementsController(ElementMapService mapService) {
         this.mapService = mapService;
     }

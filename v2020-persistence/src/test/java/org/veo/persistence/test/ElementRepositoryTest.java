@@ -138,8 +138,8 @@ public class ElementRepositoryTest {
         link.setSource(element);
         link.setDestination(linkedElement);
         LinkProperty number = new LinkProperty();
-        number.setTypeId(UUID.randomUUID().toString());
-        number.setNumber((long) 23);
+        number.setKey(UUID.randomUUID().toString());
+        number.setValue(String.valueOf((long) 23));
         link.addProperty(number);
         link = linkRepository.save(link);
         
@@ -237,23 +237,23 @@ public class ElementRepositoryTest {
         element.setTitle("ElementRepositoryTest");
         
         ElementProperty date = new ElementProperty();
-        date.setTypeId("date");
-        date.setDate(Calendar.getInstance().getTime());
+        date.setKey("date");
+        date.setValue(Calendar.getInstance().getTime().toString());
         element.addProperty(date);
         
         ElementProperty label = new ElementProperty();
-        label.setTypeId("label");
-        label.setLabel(loremIpsum.words(RandomUtils.nextInt(4)+1));
+        label.setKey("label");
+        label.setValue(loremIpsum.words(RandomUtils.nextInt(4)+1));
         element.addProperty(label);
         
         ElementProperty text = new ElementProperty();
-        text.setTypeId("text");
-        text.setText(loremIpsum.paragraphs(RandomUtils.nextInt(4)+1));
+        text.setKey("text");
+        text.setValue(loremIpsum.paragraphs(RandomUtils.nextInt(4)+1));
         element.addProperty(text);
         
         ElementProperty number = new ElementProperty();
-        number.setTypeId("number");
-        number.setNumber((long) (RandomUtils.nextInt(10000)+1));
+        number.setKey("number");
+        number.setValue(String.valueOf(RandomUtils.nextInt(10000)+1));
         element.addProperty(number);
         
         return element;
