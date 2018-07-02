@@ -13,4 +13,5 @@ dependencies {
     }
     testCompile 'com.h2database:h2'
     testCompile 'org.spockframework:spock-spring'
+    testCompile 'com.github.java-json-tools:json-schema-validator'
 }

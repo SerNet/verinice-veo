@@ -35,6 +35,8 @@ subprojects {
              dependency 'commons-cli:commons-cli:1.4'
              dependency 'javax:javaee-api:7.0'
              dependency "io.jsonwebtoken:jjwt:0.9.0"
+             dependency 'com.github.java-json-tools:json-schema-validator:2.2.10'
+             dependency 'com.h2databas:h2:1.4.197'
              dependency "org.spockframework:spock-spring:1.1-groovy-2.4"
         }
     }

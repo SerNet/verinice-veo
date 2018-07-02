@@ -20,7 +20,8 @@
 package org.veo.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -29,7 +30,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import org.veo.util.time.TimeFormatter;
+
 /**
+ * Entity base class for element and link properties.
+ *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Entity
@@ -40,21 +45,20 @@ public abstract class Property implements Serializable {
     @Column(length = 36)
     private String uuid;
 
-    @Column(name = "group_index", nullable = false)
-    private int index = 0;
-
-    @Column(nullable = false)
-    private String typeId;
-
-    @Column(length = 255)
-    private String label;
+    @Column(name="property_key", nullable = false)
+    private String key;
 
     @Column(length = 400000)
-    private String text;
+    private String value;
 
-    private Long number;
+    @Column(name="property_type", nullable = false)
+    private Type type = Type.TEXT;
 
-    private Date date;
+    @Column(nullable = false)
+    private Cardinality cardinality = Cardinality.SINGLE;
+
+    @Column(name = "group_index", nullable = false)
+    private int index = 0;
 
     @SuppressWarnings("unused")
     @Column(name = "properties_order")
@@ -65,6 +69,10 @@ public abstract class Property implements Serializable {
             UUID randomUUID = java.util.UUID.randomUUID();
             uuid = randomUUID.toString();
         }
+    }
+
+    protected Property(Type type) {
+        this.type = type;
     }
 
     public String getUuid() {
@@ -79,45 +87,70 @@ public abstract class Property implements Serializable {
         this.index = index;
     }
 
-    public String getTypeId() {
-        return typeId;
+    public String getKey() {
+        return key;
     }
 
-    public void setTypeId(String id) {
-        this.typeId = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getLabel() {
-        return label;
+    public String getValue() {
+        return value;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getText() {
-        return text;
+    public Type getType() { return type; }
+
+    public void setType(Type type) { this.type = type; }
+
+    public Cardinality getCardinality() { return cardinality; }
+
+    public void setCardinality(Cardinality cardinality) { this.cardinality = cardinality; }
+
+    public void setValue(String key, String value) {
+        setKey(key);
+        setValue(value);
     }
 
-    public void setText(String text) {
-        this.text = text;
+    /**
+     * @return The values as int
+     * @exception  NumberFormatException  if the value cannot be parsed
+     *             as an integer.
+     */
+    public int getValueAsInt() {
+        return Integer.valueOf(getValue());
     }
 
-    public Long getNumber() {
-        return number;
+    /**
+     * @return The values as ZonedDateTime
+     * @throws DateTimeParseException if the text cannot be parsed
+     */
+    public ZonedDateTime getValueAsDate() {
+        return TimeFormatter.getDateFromIso8601(getValue());
     }
 
-    public void setNumber(Long number) {
-        this.number = number;
+    public Object parseValue() {
+        switch (getType()) {
+            case NUMBER: return getValueAsInt();
+            case DATE: return getValueAsDate();
+            case TEXT: return getValue();
+            default: return getValue();
+        }
     }
 
-    public Date getDate() {
-        return date;
-    }
+    public boolean isNumber() { return Type.NUMBER.equals(getType()); }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    public boolean isText() { return Type.TEXT.equals(getType()); }
+
+    public boolean isDate() { return Type.DATE.equals(getType()); }
+
+    public boolean isSingle() { return Cardinality.SINGLE.equals(getCardinality()); }
+
+    public boolean isMulti() { return Cardinality.MULTI.equals(getCardinality()); }
 
     @Override
     public int hashCode() {
@@ -151,20 +184,23 @@ public abstract class Property implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getTypeId());
-        sb.append(": ");
-        if (getDate() != null) {
-            sb.append(getDate().toString());
-        }
-        if (getLabel() != null) {
-            sb.append(getLabel());
-        }
-        if (getNumber() != null) {
-            sb.append(getNumber());
-        }
-        if (getText() != null) {
-            sb.append(getText());
-        }
-        return sb.toString();
+        return String.format("%s: %s", getKey(), getValue());
+    }
+
+    /**
+     * The data type of a property.
+     */
+    public enum Type {
+        TEXT,
+        NUMBER,
+        DATE
+    }
+
+    /**
+     * Determines if a property is the only value or if there are others.
+     */
+    public enum Cardinality {
+        SINGLE,
+        MULTI
     }
 }

@@ -8,6 +8,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-rest'
     compile("org.springframework.boot:spring-boot-starter-security")
     compile("io.jsonwebtoken:jjwt")
+    runtime 'com.h2database:h2'
 
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
@@ -15,7 +16,7 @@ dependencies {
 }
 
 bootRun {
-    def activeSpringProfiles = 'psql'
+    def activeSpringProfiles = 'h2'
     findProperty('springProfiles')?.with {
       activeSpringProfiles = it
     }

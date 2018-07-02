@@ -19,7 +19,10 @@
  ******************************************************************************/
 package org.veo.service.ie;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -30,6 +33,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
+import org.veo.model.Property;
+import org.veo.util.time.TimeFormatter;
 
 import de.sernet.sync.data.SyncAttribute;
 import de.sernet.sync.data.SyncObject;
@@ -48,6 +53,9 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType.MapAttributeType;
 public class ObjectImportThread implements Callable<ObjectImportContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObjectImportThread.class);
+
+    private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40).toInstant(ZoneOffset.UTC).toEpochMilli();
+    private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now().plusYears(20).toInstant(ZoneOffset.UTC).toEpochMilli();
 
     private ObjectImportContext context;
 
@@ -111,35 +119,75 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
                 } else {
                     LOG.warn("MapAttributeType not found in VNA, using ext-id: {}", name);
                 }
-                element.addProperty(createProperty(syncAttribute, propertyId));
+                element.getProperties().addAll(createProperties(syncAttribute, propertyId));
             }
         }
     }
 
-    private ElementProperty createProperty(SyncAttribute syncAttribute, String propertyTypeId) {
+    private List<ElementProperty> createProperties(SyncAttribute syncAttribute, String propertyTypeId) {
         List<String> valueList = syncAttribute.getValue();
-        ElementProperty property = new ElementProperty();
-        property.setTypeId(propertyTypeId);
-        Object value = convertValue(valueList);
-        if (value instanceof Date) {
-            property.setDate((Date) value);
-        }
-        if (value instanceof String) {
-            String stringValue = (String) value;
-            if (stringValue.length() > 255) {
-                property.setText(stringValue);
+        List<ElementProperty> propertyList = new ArrayList<>(valueList.size());
+        boolean isMulti = valueList.size()>1;
+        int i = 0;
+        for (String value:valueList) {
+            ElementProperty property = new ElementProperty();
+            property.setKey(propertyTypeId);
+            property.setIndex(i);
+            setPropertyValue(property, value, isMulti);
+            if(property.getValue()!=null) {
+                propertyList.add(property);
             } else {
-                property.setLabel(stringValue);
+                LOG.warn("Not adding property with value null, key: " + propertyTypeId);
             }
+            i++;
         }
-        if (value instanceof Integer) {
-            property.setNumber(((Integer) value).longValue());
+        return propertyList;
+    }
+
+    private void setPropertyValue(ElementProperty property, String value, boolean isMulti) {
+        if(isTimestamp(value)) {
+            property.setValue(TimeFormatter.getIso8601FromEpochMillis(Long.valueOf(value), ZoneId.systemDefault()));
+            property.setType(Property.Type.DATE);
+        } else if(isNumber(value)){
+            property.setValue(value);
+            property.setType(Property.Type.NUMBER);
+        } else {
+            property.setValue(value);
+            property.setType(Property.Type.TEXT);
+        }
+        property.setCardinality((isMulti) ? Property.Cardinality.MULTI : Property.Cardinality.SINGLE);
+    }
+
+    private boolean isNumber(String s) {
+        try {
+            Long.valueOf(s);
+            return true;
+        } catch (NumberFormatException e) {
+            LOG.debug("Not a number string: " + s, e);
+            return false;
         }
 
-        if (value instanceof Long) {
-            property.setNumber((Long) value);
+
+    }
+
+    /**
+     * Returns true if it is sure s is a timestamp for which
+     * NOW+20 years > timestamp > NOW-40 years.
+     *
+     * Timestamp means the difference, measured in milliseconds, between
+     * the current time and midnight, January 1, 1970 UTC.
+     *
+     * @param s A time timestamp / epoch milli string
+     * @return true if NOW+20 years < timestamp s > NOW-40 years.
+     */
+    private boolean isTimestamp(String s) {
+        try {
+            long milliseconds = Long.valueOf(s);
+            return(milliseconds>EPOCH_40_YEARS_AGO && milliseconds<EPOCH_20_YEARS_LATER);
+        } catch (NumberFormatException e) {
+            LOG.debug("Not an epoch milli string: " + s, e);
+            return false;
         }
-        return property;
     }
 
     private MapObjectType getMapObject(List<MapObjectType> mapObjects, String extId) {

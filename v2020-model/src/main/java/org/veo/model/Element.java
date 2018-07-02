@@ -20,9 +20,13 @@
 package org.veo.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -236,6 +240,27 @@ public class Element implements Serializable {
 
     public void addProperty(ElementProperty property) {
         getProperties().add(property);
+    }
+
+    /**
+     * Returns a unmodifiable map with all properties of this element.
+     * Key of the map is the key of the property.
+     *
+     * @return A unmodifiable map with all properties
+     */
+    @JsonIgnore
+    public Map<String,List<ElementProperty>> getPropertyMap() {
+        Map<String,List<ElementProperty>> propertyMap = new HashMap<>(getProperties().size());
+        for (ElementProperty property:getProperties()) {
+            List<ElementProperty> propertyList = propertyMap.get(property.getKey());
+            if(propertyList==null) {
+                // The cardinality of most properties is single
+                propertyList = new ArrayList<>(1);
+                propertyMap.put(property.getKey(),propertyList);
+            }
+            propertyList.add(property);
+        }
+        return Collections.unmodifiableMap(propertyMap);
     }
 
     @Override

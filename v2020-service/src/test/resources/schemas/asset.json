@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Schema of an asset",
+  "definitions": {
+    "role-item": {
+      "type": "string",
+      "enum": ["role-a","role-b"]
+    }
+  },
+  "type": "object",
+  "description": "Schema for assets from ISO 27000",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element",
+      "description": "An explanation about the purpose of this instance."
+    },
+    "schema": {
+      "type": "string",
+      "title": "The schema URI to identify the type of the element",
+      "description": "The schema URI to identify the type of the element relative to the base URI",
+      "enum": [
+        "/schemas/asset.json"
+      ]
+    },
+    "parent": {
+      "type": "string",
+      "title": "The UUID to identify the parent",
+      "description": "An explanation about the purpose of this instance."
+    },
+    "title": {
+      "type": "string",
+      "title": "The title of the asset"
+    },
+    "shortcut": {
+      "type": "string",
+      "title": "The shortcut of the asset"
+    },
+    "description": {
+      "type": "string",
+      "title": "The description of the asset"
+    },
+    "role": {
+      "type": "array",
+      "title": "The role of the asset",
+      "items": {
+        "$ref": "#/definitions/role-item"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "business-value": {
+      "type": "array",
+      "title": "The business-value of the asset",
+      "items": {
+        "type": "integer",
+        "enum": [1,2,3,4,5]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "asset-type": {
+      "type": "string",
+      "title": "The type of the asset",
+      "enum": [
+        "information",
+        "software",
+        "physical",
+        "service",
+        "people"
+      ]
+    },
+    "business-impact-confidentiality": {
+      "type": "string",
+      "title": "The business impact on confidentiality of the asset",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "very-high"
+      ]
+    },
+    "business-impact-integrity": {
+      "type": "string",
+      "title": "The business impact on integrity of the asset",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "very-high"
+      ]
+    },
+    "business-impact-availability": {
+      "type": "string",
+      "title": "The business impact on availability of the asset",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "very-high"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "schema",
+    "parent",
+    "title"
+  ]
+}

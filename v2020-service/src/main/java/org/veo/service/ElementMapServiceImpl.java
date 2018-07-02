@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 /**
  * Implements ElementMapService storing maps as JSON on the file system.
  */
-@Service
+@Service("ElementFileService")
 public class ElementMapServiceImpl implements ElementMapService {
 
     private MapRepository mapRepository;

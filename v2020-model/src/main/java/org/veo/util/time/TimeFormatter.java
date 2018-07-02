@@ -19,12 +19,20 @@
  ******************************************************************************/
 package org.veo.util.time;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
- *
- *
- * @author Daniel Murygin <dm[at]sernet[dot]de>
+ * Provides public static utility functions to format dates and times.
+ * Do not instantiate this class.
+ * 
+ * @author Daniel Murygin
  */
 public final class TimeFormatter {
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     private static final int MILLIS_PER_SECOND = 1000;
 
@@ -47,6 +55,15 @@ public final class TimeFormatter {
     private TimeFormatter() {
         super();
         // do not instantiate this class
+    }
+
+    public static String getIso8601FromEpochMillis(long epochMillis, ZoneId zoneId) {
+        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(epochMillis).atZone(zoneId);
+        return zonedDateTime.format(DATE_TIME_FORMATTER_ISO_8601);
+    }
+
+    public static ZonedDateTime getDateFromIso8601(String dateIso8601) {
+        return ZonedDateTime.parse(dateIso8601, DATE_TIME_FORMATTER_ISO_8601);
     }
 
     public static String getHumanRedableTime(final long ms) {
