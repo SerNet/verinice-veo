@@ -57,8 +57,8 @@ public final class TimeFormatter {
         // do not instantiate this class
     }
 
-    public static String getIso8601FromEpochMillis(long epochMillis) {
-        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(epochMillis).atZone(ZoneId.systemDefault());
+    public static String getIso8601FromEpochMillis(long epochMillis, ZoneId zoneId) {
+        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(epochMillis).atZone(zoneId);
         return zonedDateTime.format(DATE_TIME_FORMATTER_ISO_8601);
     }
 

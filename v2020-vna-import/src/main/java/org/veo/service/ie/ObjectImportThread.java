@@ -20,6 +20,7 @@
 package org.veo.service.ie;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +146,7 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
 
     private void setPropertyValue(ElementProperty property, String value, boolean isMulti) {
         if(isTimestamp(value)) {
-            property.setValue(TimeFormatter.getIso8601FromEpochMillis(Long.valueOf(value)));
+            property.setValue(TimeFormatter.getIso8601FromEpochMillis(Long.valueOf(value), ZoneId.systemDefault()));
             property.setType(Property.Type.DATE);
         } else if(isNumber(value)){
             property.setValue(value);
