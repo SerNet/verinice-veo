@@ -54,8 +54,8 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObjectImportThread.class);
 
-    private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40).toInstant(ZoneOffset.UTC).toEpochMilli();;
-    private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now().plusYears(20).toInstant(ZoneOffset.UTC).toEpochMilli();;
+    private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40).toInstant(ZoneOffset.UTC).toEpochMilli();
+    private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now().plusYears(20).toInstant(ZoneOffset.UTC).toEpochMilli();
 
     private ObjectImportContext context;
 
@@ -171,8 +171,8 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
     }
 
     /**
-     * Returns true if s is a timestamp for which
-     * NOW+20 years < timestamp > NOW-40 years.
+     * Returns true if it is sure s is a timestamp for which
+     * NOW+20 years > timestamp > NOW-40 years.
      *
      * Timestamp means the difference, measured in milliseconds, between
      * the current time and midnight, January 1, 1970 UTC.
