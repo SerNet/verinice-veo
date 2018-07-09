@@ -1,28 +1,55 @@
 {
-  "parameters": [
-    {
-      "name": "name",
-      "in": "path",
-      "required": true,
-      "description": "The type of object which schema is required."
-    }
-  ],
-  "get": {
-    "summary": "Find JSON schema by name",
-    "description": "Returns the schema of the requested type",
-    "responses": {
-      "200": {
-        "content": {
-          "application/schema+json": {
-            "description": "A JSON Schema",
-            "schema": {
-              "$ref": "http://json-schema.org/draft-06/schema#"
+  "self": {
+    "parameters": [
+      {
+        "name": "name",
+        "in": "path",
+        "required": true,
+        "description": "The type of object which schema is required."
+      }
+    ],
+    "get": {
+      "summary": "Find JSON schema by name",
+      "description": "Returns the schema of the requested type",
+      "responses": {
+        "200": {
+          "content": {
+            "application/schema+json": {
+              "description": "A JSON Schema",
+              "schema": {
+                "$ref": "http://json-schema.org/draft-06/schema#"
+              }
             }
           }
+        },
+        "403": {
+          "$ref": "unauthorized_response.json"
         }
-      },
-      "403": {
-        "$ref": "unauthorized_response.json"
+      }
+    }
+  },
+  "all": {
+    "get": {
+      "summary": "List all available JSON schemas",
+      "responses": {
+        "200": {
+          "content": {
+            "application/json": {
+              "description": "The list of JSON schema files",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "examples": {
+            "application/json": [
+              "asset.json"
+            ]
+          }
+        }
       }
     }
   }

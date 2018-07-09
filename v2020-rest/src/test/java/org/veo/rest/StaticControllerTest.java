@@ -1,5 +1,6 @@
 package org.veo.rest;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,5 +35,15 @@ public class StaticControllerTest {
                         .contentType("application/schema+json; charset=utf-8"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description")
                         .value("Test JSON with non-ascii chars: äüöÄÜÖ€"));
+    }
+
+    @Test
+    public void getElementTypes() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/schemas/").accept("application/json"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/json;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$")
+                        .value(CoreMatchers.hasItems("test.json")));
     }
 }
