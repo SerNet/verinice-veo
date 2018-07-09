@@ -26,9 +26,13 @@ public class StaticControllerTest {
 
     @Test
     public void getSchema() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/schemas/test.json").accept("application/schema+json"))
+        this.mockMvc
+                .perform(MockMvcRequestBuilders.get("/schemas/test.json")
+                        .accept("application/schema+json"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType("application/schema+json; charset=utf-8"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("Test JSON with non-ascii chars: äüöÄÜÖ€"));
+                .andExpect(MockMvcResultMatchers.content()
+                        .contentType("application/schema+json; charset=utf-8"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description")
+                        .value("Test JSON with non-ascii chars: äüöÄÜÖ€"));
     }
 }
