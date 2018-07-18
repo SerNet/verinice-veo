@@ -74,17 +74,19 @@ This module contains the domain model and interfaces of the application. This mo
 ### v2020-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.
 
-### v2020-persistence
-This module contains the persistence layer of the application.
+### Rest Layers
+The 3 REST components are split into 3 layers
 
-### v2020-service
-This module contains the service implementation of the application.
+#### v2020-persistence
+This module contains the persistence layer of the REST API.
 
-### v2020-jsf
-This module contains the web application based on JSF and PrimeFaces.
+#### v2020-service
+This module contains the service implementation of the REST API.
 
-### v2020-rest
-This module contains the implementation of the REST services of the application.
+This is no generic module for all kind of "services" or interface implementations.
+
+#### v2020-rest
+This module contains the implementation of the REST services of the REST API.
 
 The JSON schemas accepted by the API can be found in *${veo.basedir}/schemas/*. If this directory
 does not exist, built-in schema files will be served as default.
@@ -92,12 +94,6 @@ does not exist, built-in schema files will be served as default.
 *veo.basedir* can be set in *application.properties* and is */var/lib/veo* by
 default. The gradle task `bootRun` sets *veo.basedir* to
 *$HOME/.local/share/veo*.
-
-### v2020-model-schema
-This module contains a service to load the schema for the elements and an REST service to access the schema.
-
-### v2020-model-schema-client
-This module contains a client to call the model schema REST service.
 
 ### v2020-vna-import
 This module contains an importer for verinice archives (VNAs).
