@@ -19,12 +19,19 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.stream.Stream;
+
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,9 +39,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.veo.service.VeoConfigurationService;
-
-import javax.validation.constraints.NotNull;
-import java.io.File;
 
 /**
  * This controller shall provide access to static resource on the file system.
@@ -61,8 +65,25 @@ public class StaticController {
 
     }
 
+    @RequestMapping(value = "/schemas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String[]> getSchemas() throws IOException {
+
+        File schemaDir = getSchemaDirectory();
+        if (schemaDir.exists() && schemaDir.isDirectory()) {
+            return ResponseEntity.ok().body(schemaDir.list());
+
+        } else {
+            PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+            Resource[] schemaResources = resourcePatternResolver
+                    .getResources("classpath:schemas/*.json");
+            String[] resourceFileNames = Stream.of(schemaResources).map(Resource::getFilename)
+                    .toArray(String[]::new);
+            return ResponseEntity.ok().body(resourceFileNames);
+        }
+    }
+
     private @NotNull Resource getSchemaResource(String schemaName) {
-        File schemaDir = new File(configuration.getBaseDir(), "schemas");
+        File schemaDir = getSchemaDirectory();
         if (schemaDir.exists() && schemaDir.isDirectory()) {
             logger.info("Providing schemas from {}.", schemaDir.getAbsolutePath());
             File schemaFile = new File(schemaDir, schemaName);
@@ -72,5 +93,9 @@ public class StaticController {
             logger.info("Providing schemas from class path resources.");
             return new ClassPathResource("/schemas/".concat(schemaName));
         }
+    }
+
+    private File getSchemaDirectory() {
+        return new File(configuration.getBaseDir(), "schemas");
     }
 }
