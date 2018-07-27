@@ -1,12 +1,15 @@
-*.log
+build/
+target/
+out/
 
+*.iml
+*.log
+.classpath
+.gradle/
+.idea
 .project
 .settings/
-.classpath
-.idea
-*.iml
-/.gradle/
+
 misc/private.der
 misc/private.pem
 misc/public.der
-out/
