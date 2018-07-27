@@ -107,7 +107,7 @@ This module provides functionality to validate JSON used throughout the API.
 
 Each JSON has to be valid against a JSON schema, possibly defined by clients,
 in particular unknown to the developer. To define a common base for all such
-veo JSON schemas a meta schema is defined.
+veo JSON schemas a meta schema is defined, see [META-SCHEMA.md](META-SCHEMA.md)
 
 ## Database
 Entity–relationship model of the database:
