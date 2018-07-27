@@ -38,6 +38,7 @@ subprojects {
             dependency 'com.github.java-json-tools:json-schema-validator:2.2.10'
             dependency 'com.h2databas:h2:1.4.197'
             dependency "org.spockframework:spock-spring:1.1-groovy-2.4"
+            dependency "org.spockframework:spock-core:1.1-groovy-2.4"
         }
     }
       

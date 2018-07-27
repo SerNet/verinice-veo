@@ -1,0 +1,43 @@
+{
+  "definitions": {},
+  "$schema": "http://verinice.com/veo/draft-01/schema#",
+  "type": "object",
+  "title": "Order-Schema",
+  "description": "A sample schema to test that property names are restricted",
+  "properties": {
+    "$veo.id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "$veo.type": {
+      "type": "string",
+      "title": "The schema URI to identify the type of the element",
+      "description": "The schema URI to identify the type of the element relative to the base URI",
+      "enum": [
+        "/schemas/order.json"
+      ]
+    },
+    "$veo.title": {
+      "type": "string",
+      "title": "The title"
+    },
+    "no-DashAllowed": {
+      "type": "string",
+      "title": "The title"
+    },
+    "no_underScoreAllowed": {
+      "type": "string",
+      "title": "The title"
+    },
+    "NoLowerCaseAtStart": {
+      "type": "string",
+      "title": "The title"
+    }
+  },
+  "required": [
+    "id",
+    "schema",
+    "parent",
+    "title"
+  ]
+}
