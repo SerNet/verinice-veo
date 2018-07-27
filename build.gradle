@@ -28,16 +28,16 @@ subprojects {
           
     dependencyManagement {
         dependencies {
-             dependency 'commons-io:commons-io:2.5'
-             dependency 'postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted'
-             dependency 'commons-lang:commons-lang:2.6'
-             dependency 'net._01001111:jlorem:1.3'
-             dependency 'commons-cli:commons-cli:1.4'
-             dependency 'javax:javaee-api:7.0'
-             dependency "io.jsonwebtoken:jjwt:0.9.0"
-             dependency 'com.github.java-json-tools:json-schema-validator:2.2.10'
-             dependency 'com.h2databas:h2:1.4.197'
-             dependency "org.spockframework:spock-spring:1.1-groovy-2.4"
+            dependency 'commons-io:commons-io:2.5'
+            dependency 'postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted'
+            dependency 'commons-lang:commons-lang:2.6'
+            dependency 'net._01001111:jlorem:1.3'
+            dependency 'commons-cli:commons-cli:1.4'
+            dependency 'javax:javaee-api:7.0'
+            dependency "io.jsonwebtoken:jjwt:0.9.0"
+            dependency 'com.github.java-json-tools:json-schema-validator:2.2.10'
+            dependency 'com.h2databas:h2:1.4.197'
+            dependency "org.spockframework:spock-spring:1.1-groovy-2.4"
         }
     }
       
@@ -58,21 +58,21 @@ subprojects {
 
     findbugsTest.enabled = false
     pmdTest.enabled = false
-  
+
     // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
-    if (rootProject.hasProperty('ci')){
-	    task jenkinsTestFix {
-	        inputs.files test.outputs.files
-	        doLast {
-	            if (!sourceSets.test.allSource.empty){
-	                def timestamp = System.currentTimeMillis()
-	                test.reports.junitXml.destination.eachFile {
-	                    it.lastModified = timestamp
-	                }
-	            }
-	        }
-	    }
-	    build.dependsOn(jenkinsTestFix)
+    if (rootProject.hasProperty('ci')) {
+        task jenkinsTestFix {
+            inputs.files test.outputs.files
+            doLast {
+                if (!sourceSets.test.allSource.empty) {
+                    def timestamp = System.currentTimeMillis()
+                    test.reports.junitXml.destination.eachFile {
+                        it.lastModified = timestamp
+                    }
+                }
+            }
+        }
+        build.dependsOn(jenkinsTestFix)
     }
 
     dependencies {
