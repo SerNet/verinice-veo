@@ -4,3 +4,5 @@ include ':v2020-persistence'
 include ':v2020-service'
 include ':v2020-rest'
 include ':v2020-vna-import'
+include ':v2020-json-validation'
+
