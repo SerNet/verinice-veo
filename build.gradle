@@ -50,7 +50,6 @@ subprojects {
     }
     
     repositories {
-        maven { url "https://repo.spring.io/libs-release" }
         mavenCentral()
     }
 
