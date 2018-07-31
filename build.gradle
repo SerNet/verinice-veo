@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.4.RELEASE")
     }
 }
 allprojects  {
@@ -28,13 +28,13 @@ subprojects {
           
     dependencyManagement {
         dependencies {
-            dependency 'commons-io:commons-io:2.5'
+            dependency 'commons-io:commons-io:2.6'
             dependency 'postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted'
             dependency 'commons-lang:commons-lang:2.6'
             dependency 'net._01001111:jlorem:1.3'
             dependency 'commons-cli:commons-cli:1.4'
-            dependency 'javax:javaee-api:7.0'
-            dependency "io.jsonwebtoken:jjwt:0.9.0"
+            dependency 'javax:javaee-api:8.0'
+            dependency "io.jsonwebtoken:jjwt:0.9.1"
             dependency 'com.github.java-json-tools:json-schema-validator:2.2.10'
             dependency 'com.h2databas:h2:1.4.197'
             dependency "org.spockframework:spock-spring:1.1-groovy-2.4"
