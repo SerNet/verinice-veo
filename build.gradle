@@ -74,6 +74,12 @@ subprojects {
             }
         }
         build.dependsOn(jenkinsTestFix)
+
+        test {
+            testLogging {
+                exceptionFormat = 'full'
+            }
+        }
     }
 
     dependencies {
