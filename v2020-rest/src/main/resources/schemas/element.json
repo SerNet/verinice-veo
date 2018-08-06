@@ -1,20 +1,21 @@
 {
   "definitions": {},
-  "$id": "veo.org/element",
+  "title": "schema for basic veo elements",
+  "id": "veo.org/element",
   "type": "object",
   "properties": {
-    "id": {
-      "$id": "/properties/uuid",
+    "$veo.id": {
       "type": "string",
-      "title": "The UUID to identify the element",
-      "examples": [
-        "df0c7190-fa58-43af-9cc8-53fb29572e80"
-      ],
-      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+      "title": "The ID to identify the element"
     },
-    "schema": {
+    "$veo.type": {
+      "enum": [
+        "element"
+      ]
+    },
+    "$veo.title": {
       "type": "string",
-      "title": "The schema of this element"
+      "title": "The title of this element"
     },
     "parent": {
       "type": "string",
@@ -22,10 +23,6 @@
       "examples": [
         "df0c7190-fa58-43af-9cc8-53fb29572e80"
       ]
-    },
-    "title": {
-      "type": "string",
-      "title": "The title of this element"
     }
   },
   "required": [
