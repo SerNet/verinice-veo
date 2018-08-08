@@ -1,23 +1,28 @@
 {
   "definitions": {},
-  "$id": "veo.org/element",
+  "id": "veo.org/element",
+  "title": "A veo link",
+  "type": "object",
   "properties": {
-    "id": {
+    "$veo.id": {
       "type": "string"
     },
-    "schema": {
+    "$veo.title": {
       "type": "string",
-      "title": "The schema URI to identify the type of the element",
-      "description": "The schema URI to identify the type of the element relative to the base URI",
+      "title": "The title of a link"
+    },
+    "$veo.type": {
       "enum": [
         "/schemas/link.json"
       ]
     },
     "source": {
-      "type": "string"
+      "type": "string",
+      "title": "id if the links source"
     },
     "target": {
-      "type": "string"
+      "type": "string",
+      "title": "id if the links target"
     }
   },
   "required": [

@@ -10,6 +10,7 @@ dependencies {
     compile("io.jsonwebtoken:jjwt")
     runtime 'com.h2database:h2'
 
+    testCompile project(":v2020-json-validation")
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testRuntime 'com.h2database:h2'

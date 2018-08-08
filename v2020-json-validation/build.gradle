@@ -1,0 +1,7 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'com.fasterxml.jackson.core:jackson-databind'
+    compile 'com.github.java-json-tools:json-schema-validator'
+    testCompile "org.spockframework:spock-core"
+}

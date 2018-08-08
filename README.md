@@ -102,6 +102,13 @@ This module contains a client to call the model schema REST service.
 ### v2020-vna-import
 This module contains an importer for verinice archives (VNAs).
 
+### v2020-json-validation
+This module provides functionality to validate JSON used throughout the API.
+
+Each JSON has to be valid against a JSON schema, possibly defined by clients,
+in particular unknown to the developer. To define a common base for all such
+veo JSON schemas a meta schema is defined, see [META-SCHEMA.md](META-SCHEMA.md)
+
 ## Database
 Entity–relationship model of the database:
 
