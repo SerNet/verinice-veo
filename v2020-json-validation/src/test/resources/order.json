@@ -59,7 +59,7 @@
     },
     "ingredients": {
       "type": "array",
-      "title": "The title of the asset",
+      "title": "Ingredients",
       "items": {
         "type": "string",
         "enum": [
