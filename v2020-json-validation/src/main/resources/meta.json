@@ -130,6 +130,9 @@
               "$ref": "#/definitions/predefined"
             },
             {
+              "$ref": "#/definitions/set"
+            },
+            {
               "$ref": "#/definitions/subset"
             }
           ]
@@ -288,6 +291,44 @@
       },
       "required": [
         "enum"
+      ]
+    },
+    "set": {
+      "type": "object",
+      "description": "A set is an array but can only contain unique primitive values.",
+      "properties": {
+        "type": {
+          "enum": [
+            "array"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "items": {
+          "enum": [
+            { "type": "string" },
+            { "type": "integer" },
+            { "type": "number" }
+          ]
+        },
+        "uniqueItems": {
+          "enum": [
+            true
+          ]
+        },
+        "examples": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "title",
+        "items",
+        "uniqueItems"
       ]
     },
     "subset": {
