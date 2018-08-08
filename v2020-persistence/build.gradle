@@ -6,7 +6,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind'
 
     runtime 'mysql:mysql-connector-java'
-    runtime 'postgresql:postgresql'
+    runtime 'org.postgresql:postgresql'
 
     testCompile 'junit:junit'
     testCompile 'com.h2database:h2'
