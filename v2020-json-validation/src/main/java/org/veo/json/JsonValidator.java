@@ -63,6 +63,15 @@ public class JsonValidator {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode schemaMap = mapper.readTree(schemaStream);
+            return validate(schemaMap);
+        } catch (ProcessingException e) {
+            throw new ProcessingException("error while validating schema", e);
+        }
+    }
+
+    public ValidationResult validate(JsonNode schemaMap)
+            throws ProcessingException {
+        try {
             return new ValidationResult(schema.validate(schemaMap));
         } catch (ProcessingException e) {
             throw new ProcessingException("error while validating schema", e);
