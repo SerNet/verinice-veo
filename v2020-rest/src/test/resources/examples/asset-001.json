@@ -1,0 +1,17 @@
+{
+  "$veo.id": "bdc6b5f7-ddd0-4423-9e6e-e0152447bb79",
+  "$veo.type": "asset",
+  "$veo.title": "Important Stuff",
+  "parent": "bdc6b5f7-ddd0-4423-9e6e-e0152447bb79",
+  "abbreviation": "A-001",
+  "description": "Very important stuff to do important things.",
+  "assetType": "physical",
+  "businessImpactConfidentiality": "very-high",
+  "businessImpactIntegrity": "very-high",
+  "businessImpactAvailability": "very-high",
+  "privacyControlObjectives": [
+    "Pseudonymization",
+    "Encryption",
+    "Recoverability"
+  ]
+}
