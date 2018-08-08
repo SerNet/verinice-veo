@@ -69,6 +69,15 @@
       },
       "uniqueItems": true,
       "description": "An example property of type subset"
+    },
+    "notificationMails": {
+      "type": "array",
+      "title": "Notification Mails",
+      "description": "List of mail addresses to notify.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
     }
   },
   "required": [
