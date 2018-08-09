@@ -64,4 +64,46 @@ class SchemaValidatorSpec extends Specification {
         errorMessage.get('keyword').textValue() == 'enum'
         errorMessage.get('value').textValue() == 'boolean'
     }
+
+    def "Validate mixed predefined types"() {
+        given:
+        InputStream inputStream = this.class.getClassLoader().getResourceAsStream("mixed-predefined.json")
+        when:
+        ValidationResult result = validator.validate(inputStream)
+        then:
+        !result.isSuccessful()
+        JsonNode errorMessage = result.getMessages().find { message -> message.get('level').textValue() == 'error' }
+        errorMessage.get('instance').get('pointer').textValue() == '/properties/transportation'
+        errorMessage.get('matched').intValue() == 0
+    }
+
+    def "Validate mixed subset types"() {
+        given:
+        InputStream inputStream = this.class.getClassLoader().getResourceAsStream("mixed-subset.json")
+        when:
+        ValidationResult result = validator.validate(inputStream)
+        then:
+        !result.isSuccessful()
+        JsonNode errorMessage = result.getMessages().find { message -> message.get('level').textValue() == 'error' }
+        errorMessage.get('instance').get('pointer').textValue() == '/properties/ingredients'
+        errorMessage.get('matched').intValue() == 0
+    }
+
+    def "Validate predefined integers"() {
+        given:
+        InputStream inputStream = this.class.getClassLoader().getResourceAsStream("predefined-integers.json")
+        when:
+        ValidationResult result = validator.validate(inputStream)
+        then:
+        result.isSuccessful()
+    }
+
+    def "Validate subset of integers"() {
+        given:
+        InputStream inputStream = this.class.getClassLoader().getResourceAsStream("subset-integers.json")
+        when:
+        ValidationResult result = validator.validate(inputStream)
+        then:
+        result.isSuccessful()
+    }
 }
