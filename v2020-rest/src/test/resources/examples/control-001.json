@@ -1,0 +1,13 @@
+{
+  "$veo.id": "91cd6574-7a9b-4b61-9ba1-102e113d7390",
+  "$veo.type": "control",
+  "$veo.title": "Firewall",
+  "description": "Install firewall.",
+  "parent": "2bc3e3d0-ea1c-4a49-a17f-288ac943d97b",
+  "code": "C-001",
+  "tags": [
+    "Software"
+  ],
+  "implementationStatus": "yes",
+  "implementationDate": "2012-04-23T18:25:43.511Z"
+}

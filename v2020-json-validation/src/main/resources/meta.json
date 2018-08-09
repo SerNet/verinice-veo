@@ -127,7 +127,10 @@
               "$ref": "#/definitions/dateTime"
             },
             {
-              "$ref": "#/definitions/predefinedPrimitive"
+              "$ref": "#/definitions/predefined"
+            },
+            {
+              "$ref": "#/definitions/set"
             },
             {
               "$ref": "#/definitions/subset"
@@ -150,30 +153,6 @@
   ],
   "default": true,
   "definitions": {
-    "primitive": {
-      "description": "Describe the structure of primitive properties for internal usage only, e.g. by array item.",
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "string",
-            "integer",
-            "number",
-            "boolean"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "type"
-      ]
-    },
     "string": {
       "type": "object",
       "properties": {
@@ -290,9 +269,33 @@
         "format"
       ]
     },
+    "predefined": {
+      "description": "A predefined property is a property for which only a predefined primitive value set is valid, similar to an enum.",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "integer" },
+              { "type": "number" }
+            ]
+          }
+        },
+        "examples": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "enum"
+      ]
+    },
     "set": {
       "type": "object",
-      "description": "A set is basically an array but can only contain unique primitive values.",
+      "description": "A set is an array but can only contain unique primitive values.",
       "properties": {
         "type": {
           "enum": [
@@ -306,7 +309,11 @@
           "type": "string"
         },
         "items": {
-          "$ref": "#/definitions/primitive"
+          "enum": [
+            { "type": "string" },
+            { "type": "integer" },
+            { "type": "number" }
+          ]
         },
         "uniqueItems": {
           "enum": [
@@ -324,47 +331,38 @@
         "uniqueItems"
       ]
     },
-    "predefined": {
-      "description": "A predefined property is a property for which only a predefined value set is valid, similar to an enum.",
+    "subset": {
+      "type": "object",
+      "description": "A subset is an array but can only contain unique values of a predefined set.",
       "properties": {
-        "enum": {
-          "type": "array"
+        "type": {
+          "enum": [
+            "array"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "items": {
+          "$ref": "#/definitions/predefined"
+        },
+        "uniqueItems": {
+          "enum": [
+            true
+          ]
         },
         "examples": {
           "type": "array"
         }
       },
       "required": [
-        "enum"
-      ]
-    },
-    "predefinedPrimitive": {
-      "description": "A predefined primitive is property for which only a predefined set of primitives are valid values, think of an enum with primitive value",
-      "allOf": [
-        {
-          "$ref": "#/definitions/primitive"
-        },
-        {
-          "$ref": "#/definitions/predefined"
-        }
-      ]
-    },
-    "subset": {
-      "description": "A subset is an array but can only contain unique values of a predefined set.",
-      "allOf": [
-        {
-          "$ref": "#/definitions/set"
-        },
-        {
-          "properties": {
-            "items": {
-              "$ref": "#/definitions/predefined"
-            },
-            "examples": {
-              "type": "array"
-            }
-          }
-        }
+        "type",
+        "title",
+        "items",
+        "uniqueItems"
       ]
     }
   }

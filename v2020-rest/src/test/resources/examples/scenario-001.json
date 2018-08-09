@@ -1,0 +1,12 @@
+{
+  "$veo.id": "b327dde7-c450-4c83-973a-3aebcceb7d76",
+  "$veo.type": "scenario",
+  "$veo.title": "Fire",
+  "parent": "bdc6b5f7-ddd0-4423-9e6e-e0152447bb79",
+  "code": "S-001",
+  "probability": "low",
+  "tags": [
+    "Danger",
+    "Fire"
+  ]
+}
