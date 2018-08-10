@@ -19,26 +19,28 @@
  ******************************************************************************/
 package org.veo.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.github.fge.jackson.JacksonUtils;
 import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * This class bundles information of JSON validation, e.g. success, warnings, errors etc.
  */
 public class ValidationResult {
 
+    private static final JsonNodeFactory FACTORY = JacksonUtils.nodeFactory();
+
     private boolean successful;
-    private Collection<JsonNode> messages;
+    private ArrayNode messages;
 
     ValidationResult(ProcessingReport report) {
         this.successful = report.isSuccess();
-        this.messages = StreamSupport.stream(report.spliterator(), false)
-                .map(ProcessingMessage::asJson).collect(Collectors.toList());
+
+        messages = FACTORY.arrayNode();
+        for (final ProcessingMessage message: report)
+            messages.add(message.asJson());
     }
 
     public boolean isSuccessful() {
@@ -69,16 +71,12 @@ public class ValidationResult {
      *     }
      * }
      */
-    public Collection<JsonNode> getMessages() {
+    public ArrayNode getMessages() {
         return messages;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(successful ? "successful\n" : "unsuccessful\n");
-        sb.append('[');
-        messages.forEach(message -> sb.append(message.toString()).append(','));
-        sb.append(']');
-        return sb.toString();
+        return String.join("\n", successful ? "successful" : "unsuccessful", messages.toString());
     }
 }
