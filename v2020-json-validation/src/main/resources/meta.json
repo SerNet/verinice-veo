@@ -271,18 +271,26 @@
     },
     "predefined": {
       "description": "A predefined property is a property for which only a predefined primitive value set is valid, similar to an enum.",
+      "oneOf": [
+        { "$ref": "#/definitions/predefined-string" },
+        { "$ref": "#/definitions/predefined-integer" },
+        { "$ref": "#/definitions/predefined-number" }
+      ]
+    },
+    "predefined-string": {
       "properties": {
+        "type": {
+          "enum": [
+            "string"
+          ]
+        },
         "title": {
           "type": "string"
         },
         "enum": {
           "type": "array",
           "items": {
-            "oneOf": [
-              { "type": "string" },
-              { "type": "integer" },
-              { "type": "number" }
-            ]
+            "type": "string"
           }
         },
         "examples": {
@@ -291,6 +299,55 @@
       },
       "required": [
         "enum"
+      ]
+    },
+    "predefined-number": {
+      "properties": {
+        "type": {
+          "enum": [
+            "number"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "examples": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "enum"
+      ]
+    },
+    "predefined-integer": {
+      "properties": {
+        "type": {
+          "enum": [
+            "integer"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+               "type": "integer"
+          }
+        },
+        "examples": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "enum",
+        "type"
       ]
     },
     "set": {
