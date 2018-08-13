@@ -24,7 +24,9 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +62,8 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
             .toInstant(ZoneOffset.UTC).toEpochMilli();
 
     private ObjectImportContext context;
+
+    private static final Pattern NUMBER = Pattern.compile("-?\\d+");
 
     @Autowired
     private ImportElementService importElementService;
@@ -150,13 +154,17 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
     }
 
     private void setPropertyValue(ElementProperty property, String value, boolean isMulti) {
-        if (isTimestamp(value)) {
-            property.setValue(TimeFormatter.getIso8601FromEpochMillis(Long.valueOf(value),
-                    ZoneId.systemDefault()));
-            property.setType(Property.Type.DATE);
-        } else if (isNumber(value)) {
-            property.setValue(value);
-            property.setType(Property.Type.NUMBER);
+        Optional<Long> valueAsNumber = tryToParseAsNumber(value);
+        if (valueAsNumber.isPresent()) {
+            Long number = valueAsNumber.get();
+            if (isTimestamp(number)) {
+                property.setValue(
+                        TimeFormatter.getIso8601FromEpochMillis(number, ZoneId.systemDefault()));
+                property.setType(Property.Type.DATE);
+            } else {
+                property.setValue(value);
+                property.setType(Property.Type.NUMBER);
+            }
         } else {
             property.setValue(value);
             property.setType(Property.Type.TEXT);
@@ -165,15 +173,12 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
                 (isMulti) ? Property.Cardinality.MULTI : Property.Cardinality.SINGLE);
     }
 
-    private boolean isNumber(String s) {
-        try {
-            Long.valueOf(s);
-            return true;
-        } catch (NumberFormatException e) {
-            LOG.debug("Not a number string: " + s, e);
-            return false;
+    private static Optional<Long> tryToParseAsNumber(String s) {
+        if (s != null && !s.isEmpty() && NUMBER.matcher(s).matches()) {
+            return Optional.ofNullable(Long.valueOf(s));
+        } else {
+            return Optional.empty();
         }
-
     }
 
     /**
@@ -187,14 +192,8 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
      *            A time timestamp / epoch milli string
      * @return true if NOW+20 years < timestamp s > NOW-40 years.
      */
-    private boolean isTimestamp(String s) {
-        try {
-            long milliseconds = Long.parseLong(s);
-            return (milliseconds > EPOCH_40_YEARS_AGO && milliseconds < EPOCH_20_YEARS_LATER);
-        } catch (NumberFormatException e) {
-            LOG.debug("Not an epoch milli string: " + s, e);
-            return false;
-        }
+    private static boolean isTimestamp(Long s) {
+        return (s > EPOCH_40_YEARS_AGO && s < EPOCH_20_YEARS_LATER);
     }
 
     private MapObjectType getMapObject(List<MapObjectType> mapObjects, String extId) {
