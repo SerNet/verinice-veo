@@ -54,8 +54,6 @@ public class LinkImportTask implements Callable<LinkImportContext> {
     }
 
     /*
-     * (non-Javadoc)
-     * 
      * @see java.util.concurrent.Callable#call()
      */
     @Override

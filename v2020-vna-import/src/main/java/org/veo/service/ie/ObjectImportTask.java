@@ -74,7 +74,6 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
     }
 
     /*
-     * (non-Javadoc)
      * 
      * @see java.util.concurrent.Callable#call()
      */
@@ -83,7 +82,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
         try {
             importObject();
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Import finished " + logObject(context.getSyncObject()));
+                LOG.debug("Import finished {}", logObject(context.getSyncObject()));
             }
         } catch (Exception e) {
             LOG.error("Error while importing type: " + context.getSyncObject().getExtObjectType(),
@@ -94,7 +93,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
 
     private void importObject() {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Importing " + logObject(context.getSyncObject()) + "...");
+            LOG.debug("Importing {}...", logObject(context.getSyncObject()));
         }
         SyncObject syncObject = context.getSyncObject();
         MapObjectType mapObject = getMapObject(context.getMapObjectTypeList(),
@@ -143,7 +142,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
             if (property.getValue() != null) {
                 propertyList.add(property);
             } else {
-                LOG.warn("Not adding property with value null, key: " + propertyTypeId);
+                LOG.warn("Not adding property with value null, key: {}", propertyTypeId);
             }
             i++;
         }
@@ -190,7 +189,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
      */
     private boolean isTimestamp(String s) {
         try {
-            long milliseconds = Long.valueOf(s);
+            long milliseconds = Long.parseLong(s);
             return (milliseconds > EPOCH_40_YEARS_AGO && milliseconds < EPOCH_20_YEARS_LATER);
         } catch (NumberFormatException e) {
             LOG.debug("Not an epoch milli string: " + s, e);
@@ -219,10 +218,6 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
     private boolean isProperty(SyncAttribute syncAttribute) {
         return syncAttribute != null && syncAttribute.getName() != null
                 && syncAttribute.getValue() != null;
-    }
-
-    private Object convertValue(List<String> valueList) {
-        return (valueList.size() > 1) ? valueList : valueList.get(0);
     }
 
     public ObjectImportContext getContext() {

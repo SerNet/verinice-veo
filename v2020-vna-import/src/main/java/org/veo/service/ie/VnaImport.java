@@ -198,7 +198,7 @@ public class VnaImport {
 
     private ExecutorService createExecutor() {
         if (LOG.isInfoEnabled()) {
-            LOG.info("Number of threads: " + getNumberOfThreads());
+            LOG.info("Number of threads: {}", getNumberOfThreads());
         }
         return Executors.newFixedThreadPool(getNumberOfThreads());
     }
@@ -211,7 +211,7 @@ public class VnaImport {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!pool.awaitTermination(getShutdownTimeoutInSeconds(), TimeUnit.SECONDS)) {
-                    LOG.error("Thread pool did not terminate", pool);
+                    LOG.error("Thread pool did not terminate");
                 }
             }
         } catch (InterruptedException ie) {
