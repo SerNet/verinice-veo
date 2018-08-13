@@ -50,9 +50,9 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType.MapAttributeType;
  */
 @Component
 @Scope("prototype")
-public class ObjectImportThread implements Callable<ObjectImportContext> {
+public class ObjectImportTask implements Callable<ObjectImportContext> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ObjectImportThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectImportTask.class);
 
     private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40)
             .toInstant(ZoneOffset.UTC).toEpochMilli();
@@ -64,11 +64,11 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
     @Autowired
     private ImportElementService importElementService;
 
-    public ObjectImportThread() {
+    public ObjectImportTask() {
         super();
     }
 
-    public ObjectImportThread(ObjectImportContext syncObject) {
+    public ObjectImportTask(ObjectImportContext syncObject) {
         super();
         this.context = syncObject;
     }

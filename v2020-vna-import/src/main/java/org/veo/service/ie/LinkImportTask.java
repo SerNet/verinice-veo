@@ -35,20 +35,20 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("prototype")
-public class LinkImportThread implements Callable<LinkImportContext> {
+public class LinkImportTask implements Callable<LinkImportContext> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LinkImportThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LinkImportTask.class);
 
     private LinkImportContext context;
 
     @Autowired
     private ImportElementService importElementService;
 
-    public LinkImportThread() {
+    public LinkImportTask() {
         super();
     }
 
-    public LinkImportThread(LinkImportContext context) {
+    public LinkImportTask(LinkImportContext context) {
         super();
         this.context = context;
     }

@@ -78,10 +78,10 @@ public class VnaImport {
     private int number = 0;
 
     @Autowired
-    private ObjectFactory<ObjectImportThread> objectImportThreadFactory;
+    private ObjectFactory<ObjectImportTask> objectImportTaskFactory;
 
     @Autowired
-    private ObjectFactory<LinkImportThread> linkImportThreadFactory;
+    private ObjectFactory<LinkImportTask> linkImportTaskFactory;
 
     /**
      * Imports a VNA from a byte array.
@@ -121,10 +121,10 @@ public class VnaImport {
             List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
-                ObjectImportThread importThread = objectImportThreadFactory.getObject();
-                importThread
+                ObjectImportTask importTask = objectImportTaskFactory.getObject();
+                importTask
                         .setContext(new ObjectImportContext(parent, syncObject, mapObjectTypeList));
-                objectImportCompletionService.submit(importThread);
+                objectImportCompletionService.submit(importTask);
             }
             waitForObjectResults(syncObjectList.size());
         }
@@ -159,7 +159,7 @@ public class VnaImport {
                 }
             }
             for (LinkImportContext c : contextMap.values()) {
-                LinkImportThread importThread = linkImportThreadFactory.getObject();
+                LinkImportTask importThread = linkImportTaskFactory.getObject();
                 importThread.setContext(c);
                 linkImportCompletionService.submit(importThread);
             }
