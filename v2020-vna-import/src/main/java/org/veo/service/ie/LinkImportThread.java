@@ -63,7 +63,8 @@ public class LinkImportThread implements Callable<LinkImportContext> {
         try {
             importLink();
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Link imported, start id: {}, end id: {}", context.getStartId(), context.getEndIdList());
+                LOG.debug("Link imported, start id: {}, end id: {}", context.getStartId(),
+                        context.getEndIdList());
             }
         } catch (Exception e) {
             LOG.error("Error while importing link, start id: " + context.getStartId() + ", end id: "
@@ -77,7 +78,8 @@ public class LinkImportThread implements Callable<LinkImportContext> {
             LOG.debug("Start importing link, start id: {}, end id: {}...", context.getStartId(),
                     context.getEndIdList());
         }
-        importElementService.createLink(context.getStartId(), context.getEndIdList(), context.getType());
+        importElementService.createLink(context.getStartId(), context.getEndIdList(),
+                context.getType());
     }
 
     public void setContext(LinkImportContext context) {

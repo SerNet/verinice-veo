@@ -117,11 +117,13 @@ public class VnaImport {
     }
 
     // @Transactional(isolation=Isolation.DEFAULT,propagation=Propagation.REQUIRED)
-    private void importObjectList(Element parent, List<SyncObject> syncObjectList, List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
+    private void importObjectList(Element parent, List<SyncObject> syncObjectList,
+            List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
                 ObjectImportThread importThread = objectImportThreadFactory.getObject();
-                importThread.setContext(new ObjectImportContext(parent, syncObject, mapObjectTypeList));
+                importThread
+                        .setContext(new ObjectImportContext(parent, syncObject, mapObjectTypeList));
                 objectImportCompletionService.submit(importThread);
             }
             waitForObjectResults(syncObjectList.size());
@@ -133,14 +135,17 @@ public class VnaImport {
             ObjectImportContext objectContext = objectImportCompletionService.take().get();
             importContext.addObject(objectContext);
             if (objectContext != null) {
-                importObjectList(objectContext.getNode(), objectContext.getSyncObject().getChildren(), objectContext.getMapObjectTypeList());
+                importObjectList(objectContext.getNode(),
+                        objectContext.getSyncObject().getChildren(),
+                        objectContext.getMapObjectTypeList());
             }
         }
         number += n;
     }
 
     // @Transactional(isolation=Isolation.READ_UNCOMMITTED)
-    private void importLinkList(List<SyncLink> syncLinkList) throws InterruptedException, ExecutionException {
+    private void importLinkList(List<SyncLink> syncLinkList)
+            throws InterruptedException, ExecutionException {
         if (syncLinkList != null) {
             Map<String, LinkImportContext> contextMap = new HashMap<>();
             for (SyncLink syncLink : syncLinkList) {
@@ -177,24 +182,18 @@ public class VnaImport {
     }
 
     private List<SyncObject> getSyncObjectList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest)
-                .map(SyncRequest::getSyncData)
-                .map(SyncData::getSyncObject)
-                .orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncData)
+                .map(SyncData::getSyncObject).orElse(Collections.emptyList());
     }
 
     private List<SyncLink> getSyncLinkList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest)
-                .map(SyncRequest::getSyncData)
-                .map(SyncData::getSyncLink)
-                .orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncData)
+                .map(SyncData::getSyncLink).orElse(Collections.emptyList());
     }
 
     private List<MapObjectType> getMapObjectTypeList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest)
-                .map(SyncRequest::getSyncMapping)
-                .map(SyncMapping::getMapObjectType)
-                .orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncMapping)
+                .map(SyncMapping::getMapObjectType).orElse(Collections.emptyList());
     }
 
     private ExecutorService createExecutor() {

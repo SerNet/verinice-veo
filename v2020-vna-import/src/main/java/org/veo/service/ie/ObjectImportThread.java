@@ -54,8 +54,10 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObjectImportThread.class);
 
-    private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40).toInstant(ZoneOffset.UTC).toEpochMilli();
-    private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now().plusYears(20).toInstant(ZoneOffset.UTC).toEpochMilli();
+    private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40)
+            .toInstant(ZoneOffset.UTC).toEpochMilli();
+    private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now().plusYears(20)
+            .toInstant(ZoneOffset.UTC).toEpochMilli();
 
     private ObjectImportContext context;
 
@@ -84,7 +86,8 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
                 LOG.debug("Import finished " + logObject(context.getSyncObject()));
             }
         } catch (Exception e) {
-            LOG.error("Error while importing type: " + context.getSyncObject().getExtObjectType(), e);
+            LOG.error("Error while importing type: " + context.getSyncObject().getExtObjectType(),
+                    e);
         }
         return context;
     }
@@ -94,7 +97,8 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
             LOG.debug("Importing " + logObject(context.getSyncObject()) + "...");
         }
         SyncObject syncObject = context.getSyncObject();
-        MapObjectType mapObject = getMapObject(context.getMapObjectTypeList(), syncObject.getExtObjectType());
+        MapObjectType mapObject = getMapObject(context.getMapObjectTypeList(),
+                syncObject.getExtObjectType());
         Element element = ElementFactory.newInstance(mapObject.getIntId());
         element.setTitle(TitleAdapter.getTitle(syncObject, mapObject));
         element.setParent(context.getParent());
@@ -108,7 +112,8 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
         context.setNode(element);
     }
 
-    private void importProperties(List<SyncAttribute> syncObjectList, MapObjectType mapObject, Element element) {
+    private void importProperties(List<SyncAttribute> syncObjectList, MapObjectType mapObject,
+            Element element) {
         for (SyncAttribute syncAttribute : syncObjectList) {
             if (isProperty(syncAttribute)) {
                 String name = syncAttribute.getName();
@@ -124,17 +129,18 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
         }
     }
 
-    private List<ElementProperty> createProperties(SyncAttribute syncAttribute, String propertyTypeId) {
+    private List<ElementProperty> createProperties(SyncAttribute syncAttribute,
+            String propertyTypeId) {
         List<String> valueList = syncAttribute.getValue();
         List<ElementProperty> propertyList = new ArrayList<>(valueList.size());
-        boolean isMulti = valueList.size()>1;
+        boolean isMulti = valueList.size() > 1;
         int i = 0;
-        for (String value:valueList) {
+        for (String value : valueList) {
             ElementProperty property = new ElementProperty();
             property.setKey(propertyTypeId);
             property.setIndex(i);
             setPropertyValue(property, value, isMulti);
-            if(property.getValue()!=null) {
+            if (property.getValue() != null) {
                 propertyList.add(property);
             } else {
                 LOG.warn("Not adding property with value null, key: " + propertyTypeId);
@@ -145,17 +151,19 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
     }
 
     private void setPropertyValue(ElementProperty property, String value, boolean isMulti) {
-        if(isTimestamp(value)) {
-            property.setValue(TimeFormatter.getIso8601FromEpochMillis(Long.valueOf(value), ZoneId.systemDefault()));
+        if (isTimestamp(value)) {
+            property.setValue(TimeFormatter.getIso8601FromEpochMillis(Long.valueOf(value),
+                    ZoneId.systemDefault()));
             property.setType(Property.Type.DATE);
-        } else if(isNumber(value)){
+        } else if (isNumber(value)) {
             property.setValue(value);
             property.setType(Property.Type.NUMBER);
         } else {
             property.setValue(value);
             property.setType(Property.Type.TEXT);
         }
-        property.setCardinality((isMulti) ? Property.Cardinality.MULTI : Property.Cardinality.SINGLE);
+        property.setCardinality(
+                (isMulti) ? Property.Cardinality.MULTI : Property.Cardinality.SINGLE);
     }
 
     private boolean isNumber(String s) {
@@ -167,23 +175,23 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
             return false;
         }
 
-
     }
 
     /**
-     * Returns true if it is sure s is a timestamp for which
-     * NOW+20 years > timestamp > NOW-40 years.
+     * Returns true if it is sure s is a timestamp for which NOW+20 years >
+     * timestamp > NOW-40 years.
      *
-     * Timestamp means the difference, measured in milliseconds, between
-     * the current time and midnight, January 1, 1970 UTC.
+     * Timestamp means the difference, measured in milliseconds, between the
+     * current time and midnight, January 1, 1970 UTC.
      *
-     * @param s A time timestamp / epoch milli string
+     * @param s
+     *            A time timestamp / epoch milli string
      * @return true if NOW+20 years < timestamp s > NOW-40 years.
      */
     private boolean isTimestamp(String s) {
         try {
             long milliseconds = Long.valueOf(s);
-            return(milliseconds>EPOCH_40_YEARS_AGO && milliseconds<EPOCH_20_YEARS_LATER);
+            return (milliseconds > EPOCH_40_YEARS_AGO && milliseconds < EPOCH_20_YEARS_LATER);
         } catch (NumberFormatException e) {
             LOG.debug("Not an epoch milli string: " + s, e);
             return false;
@@ -209,7 +217,8 @@ public class ObjectImportThread implements Callable<ObjectImportContext> {
     }
 
     private boolean isProperty(SyncAttribute syncAttribute) {
-        return syncAttribute != null && syncAttribute.getName() != null && syncAttribute.getValue() != null;
+        return syncAttribute != null && syncAttribute.getName() != null
+                && syncAttribute.getValue() != null;
     }
 
     private Object convertValue(List<String> valueList) {
