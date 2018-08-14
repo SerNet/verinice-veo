@@ -49,7 +49,7 @@ class SchemaValidatorSpec extends Specification {
         when:
         def unwanted = errorMessage.get('unwanted').collect{ it.textValue() }
         then:
-        unwanted  == ['NoLowerCaseAtStart', 'no-DashAllowed', 'no_underScoreAllowed']
+        unwanted  == ['NoUpperCaseAtStart', 'no-DashAllowed', 'no_underScoreAllowed']
     }
 
     def "Validate invalid standard properties, i.e. id, type and title"() {

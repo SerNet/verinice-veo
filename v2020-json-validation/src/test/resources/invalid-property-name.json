@@ -29,7 +29,7 @@
       "type": "string",
       "title": "The title"
     },
-    "NoLowerCaseAtStart": {
+    "NoUpperCaseAtStart": {
       "type": "string",
       "title": "The title"
     }
