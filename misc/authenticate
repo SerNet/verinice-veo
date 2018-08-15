@@ -37,7 +37,7 @@ IFS= curlout=`curl $curlargs -isS -H "Content-Type: application/json" -X POST -d
     \"username\": \"$username\",
     \"password\": \"$password\"
 }" "$url/login"`
-token=`echo $curlout |  awk -F 'Bearer ' '/^Auth/ { print $2 }'`
+token=`echo $curlout |  awk -F 'Bearer ' '/^[aA]uth/ { print $2 }'`
 
 if [ -z $token ]
 then
