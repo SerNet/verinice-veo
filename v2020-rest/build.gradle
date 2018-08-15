@@ -17,7 +17,7 @@ dependencies {
 }
 
 bootRun {
-    def activeSpringProfiles = 'h2'
+    def activeSpringProfiles = 'psql'
     findProperty('springProfiles')?.with {
       activeSpringProfiles = it
     }
