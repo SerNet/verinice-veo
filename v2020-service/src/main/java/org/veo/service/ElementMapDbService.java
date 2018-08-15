@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.veo.model.Element;
 import org.veo.model.VeoException;
@@ -17,6 +18,7 @@ import org.veo.persistence.ElementRepository;
  * This service uses Spring Data to load, find and persist elements.
  */
 @Service("ElementDatabaseService")
+@Lazy
 public class ElementMapDbService implements ElementMapService {
 
     @Autowired
