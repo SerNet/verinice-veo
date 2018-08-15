@@ -1,28 +1,51 @@
 package org.veo.rest;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.FileCopyUtils;
+import org.veo.service.VeoConfigurationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest("veo.basedir=/tmp/veo")
+@SpringBootTest
+@ActiveProfiles("test")
 public class StaticControllerTest {
     @Autowired
     private StaticController staticController;
 
+    @Autowired
+    private VeoConfigurationService veoConfigurationService;
+
     private MockMvc mockMvc;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
+        // copy the test schemas into the veo basedir
+        File schemaDir = new File(veoConfigurationService.getBaseDir(), "schemas");
+        schemaDir.mkdirs();
+        PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+        Resource[] schemaResources = resourcePatternResolver
+                .getResources("classpath:schemas/*.json");
+        for (Resource resource : schemaResources) {
+            File target = new File(schemaDir, resource.getFilename());
+            FileCopyUtils.copy(resource.getFile(), target);
+        }
         this.mockMvc = MockMvcBuilders.standaloneSetup(staticController).build();
+
     }
 
     @Test
