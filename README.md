@@ -19,6 +19,7 @@ cd v2020
 ```bash
 export JAVA_HOME=/path/to/jdk-8
 ./gradlew build [-x test]
+```
 
 ## Run
 
