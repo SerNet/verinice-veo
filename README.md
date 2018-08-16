@@ -28,19 +28,6 @@ export JAVA_HOME=/path/to/jdk-8
 * Install MySQL, MariaDB or PostgreSQL
 * Create an empty database _v2020_
 
-**Run Model Schema Web Service**
-
-```bash
-./gradlew v2020-model-schema:bootRun
-```
-
-or
-
-```bash
-./gradlew v2020-model-schema:bootRepackage
-java -jar v2020-model-schema/build/libs/v2020-model-schema-0.1.0-SNAPSHOT-exec.jar
-```
-
 **Run VNA Import**
 
 Set your database properties in file _v2020-vna-import/src/main/resources/application.properties_ and rebuild the application.
