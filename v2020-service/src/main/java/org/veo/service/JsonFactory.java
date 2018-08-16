@@ -17,23 +17,19 @@ import org.veo.model.ElementProperty;
 @Service
 public class JsonFactory {
 
-    public static final String ID = "id";
-    public static final String SCHEMA = "schema";
-    public static final String TITLE = "title";
+    public static final String ID = "$veo.id";
     public static final String PARENT = "parent";
+    public static final String TITLE = "$veo.title";
+    public static final String TYPE = "$veo.type";
+
     public static final Set<String> STATIC_PROPERTIES;
-
     static {
-        STATIC_PROPERTIES = new HashSet<>(4);
+        STATIC_PROPERTIES = new HashSet<>(5);
         STATIC_PROPERTIES.add(ID);
-        STATIC_PROPERTIES.add(SCHEMA);
-        STATIC_PROPERTIES.add(TITLE);
         STATIC_PROPERTIES.add(PARENT);
+        STATIC_PROPERTIES.add(TITLE);
+        STATIC_PROPERTIES.add(TYPE);
     }
-
-    public static final String SCHEMA_FOLDER = "/schemas/";
-    public static final String SCHEMA_FILE_SUFFIX = ".json";
-    public static final String SCHEMA_FILE_TEMPLATE = SCHEMA_FOLDER + "%s" + SCHEMA_FILE_SUFFIX;
 
     public Map<String, Object> createJson(Element element) {
         Map<String, Object> json = new HashMap<>();
@@ -45,11 +41,11 @@ public class JsonFactory {
     private Map<String, String> createStaticProperties(Element element) {
         Map<String, String> staticProperties = new HashMap<>(4);
         staticProperties.put(ID, element.getUuid());
-        staticProperties.put(SCHEMA, createSchemaPath(element));
-        staticProperties.put(TITLE, element.getTitle());
         if(element.getParent()!=null) {
             staticProperties.put(PARENT, element.getParent().getUuid());
         }
+        staticProperties.put(TITLE, element.getTitle());
+        staticProperties.put(TYPE, element.getTypeId());
         return staticProperties;
     }
 
@@ -72,10 +68,6 @@ public class JsonFactory {
             isMulti = property.isMulti();
         }
         return (valueArray.length==1 && !isMulti) ? valueArray[0] : valueArray;
-    }
-
-    private String createSchemaPath(Element element) {
-        return String.format(SCHEMA_FILE_TEMPLATE, element.getTypeId());
     }
 
 }

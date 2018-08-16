@@ -47,7 +47,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MjkyNDI5NTQsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTI4Mzc4OTU0LCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.H6zeJy6IR9vlTIVzPTTQST_bebj5JHGMRdbj3Y01CmfnLu9C3_4XruQVfmNMXXg_hl0O9-x_GZvygFIfwaHuGAdwlTrCZdtKy4rukpIbHcJnknhHS6lzPTdqzwQFd5uv3_mK0NzcnLGtvj3OT9xzC1u1-CNSuZGZbv4L1VNuKWUvL-aeI082cNj58Opw_znUGASI7C9kboeEbHBpbn6zldd5vQTdQhGCx1fl-fkMUDbThE_5kY4PQbIeFaURLGxMzRXHhRLldZvXYCwrLIq-gTNDD7VJ3CsdLmFIokFsJdKaDXBEpj-cJkcPT9lUFkVbNM6DPoFHrDs9pHOsCcExsA"
+								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MzUyODIwNjAsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTM0NDE4MDYwLCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.fiKTws89xft8zX4qd4Kq9tJdVQwMKznyRvBNQ2awz3UJ9MlxM9JQRFoQlI7IxSyuGutnFOloBtTc0T585wnvOLwAHDi3PVz7Te-8MHFu_GBVRT_RFYstQgdYlyAuczXf0bZad78f0B0Tj6P3UY50ysDUBDiE6ACojh9B3JQIgp_04MIqN4OaH0qZAKBKT2oJKGFLb5m1XVPQW704BvfA3DzhPY8aBNGuBB1SSFx0tuBjINWj6vzs1eNAOFPSNoWP9StDoSn_ZcR0Hv388lAqr7qFd2BotUHMGQAGemapPo4fYpET0QcEWrWT7CTJfjY0D9yFiizjiGFdMr8LzA9IKw"
 							},
 							{
 								"key": "content-type",
@@ -56,7 +56,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"{{asset_group_id}}\",\n    \"schema\": \"/schemas/assetgroup.json\",\n    \"title\": \"Asset Group\"\n}"
+							"raw": "{\n\t\"$veo.id\": \"{{asset_group_id}}\",\n    \"$veo.type\": \"/schemas/assetgroup.json\",\n    \"$veo.title\": \"Asset Group\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8070/elements",
@@ -93,16 +93,16 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MjkyNDI5NTQsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTI4Mzc4OTU0LCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.H6zeJy6IR9vlTIVzPTTQST_bebj5JHGMRdbj3Y01CmfnLu9C3_4XruQVfmNMXXg_hl0O9-x_GZvygFIfwaHuGAdwlTrCZdtKy4rukpIbHcJnknhHS6lzPTdqzwQFd5uv3_mK0NzcnLGtvj3OT9xzC1u1-CNSuZGZbv4L1VNuKWUvL-aeI082cNj58Opw_znUGASI7C9kboeEbHBpbn6zldd5vQTdQhGCx1fl-fkMUDbThE_5kY4PQbIeFaURLGxMzRXHhRLldZvXYCwrLIq-gTNDD7VJ3CsdLmFIokFsJdKaDXBEpj-cJkcPT9lUFkVbNM6DPoFHrDs9pHOsCcExsA"
+								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MzUyODIwNjAsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTM0NDE4MDYwLCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.fiKTws89xft8zX4qd4Kq9tJdVQwMKznyRvBNQ2awz3UJ9MlxM9JQRFoQlI7IxSyuGutnFOloBtTc0T585wnvOLwAHDi3PVz7Te-8MHFu_GBVRT_RFYstQgdYlyAuczXf0bZad78f0B0Tj6P3UY50ysDUBDiE6ACojh9B3JQIgp_04MIqN4OaH0qZAKBKT2oJKGFLb5m1XVPQW704BvfA3DzhPY8aBNGuBB1SSFx0tuBjINWj6vzs1eNAOFPSNoWP9StDoSn_ZcR0Hv388lAqr7qFd2BotUHMGQAGemapPo4fYpET0QcEWrWT7CTJfjY0D9yFiizjiGFdMr8LzA9IKw"
 							},
 							{
-								"key": "content-type",
-								"value": "application/json;charset=UTF-8"
+								"key": "Content-Type",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"{{asset_id}}\",\n    \"schema\": \"/schemas/asset.json\",\n    \"title\": \"Asset\",\n    \"parent\": \"{{asset_group_id}}\",\n    \"description\": \"This asset was created by Postman during a test of the veo REST service.\",\n    \"role\": [\"role-a\",\"role-b\"],\n    \"business-value\": [1,3,5],\n    \"asset-type\": \"physical\",\n    \"business-impact-confidentiality\": \"low\",\n    \"business-impact-integrity\": \"normal\",\n    \"business-impact-availability\": \"high\"\n}"
+							"raw": "{\n\t\"$veo.id\": \"{{asset_id}}\",\n    \"$veo.type\": \"asset\",\n    \"$veo.title\": \"Asset\",\n    \"parent\": \"{{asset_group_id}}\",\n    \"description\": \"This asset was created by Postman during a test of the veo REST service.\",\n    \"role\": [\"role-a\",\"role-b\"],\n    \"business-value\": [1,3,5],\n    \"asset-type\": \"physical\",\n    \"business-impact-confidentiality\": \"low\",\n    \"business-impact-integrity\": \"normal\",\n    \"business-impact-availability\": \"high\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8070/elements",
@@ -125,7 +125,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "186f7719-c718-497b-a435-3def7833ef61",
+								"id": "d058333f-6ac6-48f0-aae7-58871e414681",
 								"type": "text/javascript",
 								"exec": [
 									"tests[\"Status code is 200\"] = responseCode.code === 200;",
@@ -133,67 +133,39 @@
 									"tests[\"Content-Type header is set\"] = postman.getResponseHeader(\"Content-Type\");",
 									"",
 									"var schema = {",
-									"  \"$schema\": \"http://json-schema.org/draft-06/schema#\",",
-									"  \"title\": \"Schema of an asset\",",
-									"  \"definitions\": {",
-									"    \"role-item\": {",
-									"      \"type\": \"string\",",
-									"      \"enum\": [\"role-a\",\"role-b\"]",
-									"    }",
-									"  },",
+									"  \"definitions\": {},",
+									"  \"$schema\": \"http://verinice.com/veo/draft-01/schema#\",",
 									"  \"type\": \"object\",",
 									"  \"description\": \"Schema for assets from ISO 27000\",",
+									"  \"title\": \"ISO Assets\",",
 									"  \"properties\": {",
-									"    \"id\": {",
+									"    \"$veo.id\": {",
 									"      \"type\": \"string\",",
-									"      \"title\": \"The UUID to identify the element\",",
-									"      \"description\": \"An explanation about the purpose of this instance.\"",
+									"      \"title\": \"The UUID to identify the element\"",
 									"    },",
-									"    \"schema\": {",
-									"      \"type\": \"string\",",
-									"      \"title\": \"The schema URI to identify the type of the element\",",
-									"      \"description\": \"The schema URI to identify the type of the element relative to the base URI\",",
+									"    \"$veo.type\": {",
+									"      \"description\": \"The name of the type described by this schema.\",",
 									"      \"enum\": [",
-									"        \"/schemas/asset.json\"",
+									"        \"asset\"",
 									"      ]",
 									"    },",
-									"    \"parent\": {",
-									"      \"type\": \"string\",",
-									"      \"title\": \"The UUID to identify the parent\",",
-									"      \"description\": \"An explanation about the purpose of this instance.\"",
-									"    },",
-									"    \"title\": {",
+									"    \"$veo.title\": {",
 									"      \"type\": \"string\",",
 									"      \"title\": \"The title of the asset\"",
 									"    },",
-									"    \"shortcut\": {",
+									"    \"parent\": {",
 									"      \"type\": \"string\",",
-									"      \"title\": \"The shortcut of the asset\"",
+									"      \"title\": \"The UUID to identify the parent\"",
+									"    },",
+									"    \"abbreviation\": {",
+									"      \"type\": \"string\",",
+									"      \"title\": \"The abbreviation of the asset\"",
 									"    },",
 									"    \"description\": {",
 									"      \"type\": \"string\",",
-									"      \"title\": \"The description of the asset\"",
+									"      \"title\": \"Description\"",
 									"    },",
-									"    \"role\": {",
-									"      \"type\": \"array\",",
-									"      \"title\": \"The role of the asset\",",
-									"      \"items\": {",
-									"        \"$ref\": \"#/definitions/role-item\"",
-									"      },",
-									"      \"minItems\": 1,",
-									"      \"uniqueItems\": true",
-									"    },",
-									"    \"business-value\": {",
-									"      \"type\": \"array\",",
-									"      \"title\": \"The business-value of the asset\",",
-									"      \"items\": {",
-									"        \"type\": \"integer\",",
-									"        \"enum\": [1,2,3,4,5]",
-									"      },",
-									"      \"minItems\": 1,",
-									"      \"uniqueItems\": true",
-									"    },",
-									"    \"asset-type\": {",
+									"    \"assetType\": {",
 									"      \"type\": \"string\",",
 									"      \"title\": \"The type of the asset\",",
 									"      \"enum\": [",
@@ -204,7 +176,7 @@
 									"        \"people\"",
 									"      ]",
 									"    },",
-									"    \"business-impact-confidentiality\": {",
+									"    \"businessImpactConfidentiality\": {",
 									"      \"type\": \"string\",",
 									"      \"title\": \"The business impact on confidentiality of the asset\",",
 									"      \"enum\": [",
@@ -214,7 +186,7 @@
 									"        \"very-high\"",
 									"      ]",
 									"    },",
-									"    \"business-impact-integrity\": {",
+									"    \"businessImpactIntegrity\": {",
 									"      \"type\": \"string\",",
 									"      \"title\": \"The business impact on integrity of the asset\",",
 									"      \"enum\": [",
@@ -224,7 +196,7 @@
 									"        \"very-high\"",
 									"      ]",
 									"    },",
-									"    \"business-impact-availability\": {",
+									"    \"businessImpactAvailability\": {",
 									"      \"type\": \"string\",",
 									"      \"title\": \"The business impact on availability of the asset\",",
 									"      \"enum\": [",
@@ -233,13 +205,25 @@
 									"        \"high\",",
 									"        \"very-high\"",
 									"      ]",
+									"    },",
+									"    \"privacyControlObjectives\": {",
+									"      \"type\": \"array\",",
+									"      \"title\": \"Data privacy control objectives\",",
+									"      \"items\": {",
+									"        \"enum\": [",
+									"          \"Pseudonymization\",",
+									"          \"Encryption\",",
+									"          \"Recoverability\"",
+									"        ]",
+									"      },",
+									"      \"uniqueItems\": true",
 									"    }",
 									"  },",
 									"  \"required\": [",
-									"    \"id\",",
-									"    \"schema\",",
+									"    \"$veo.id\",",
+									"    \"$veo.type\",",
 									"    \"parent\",",
-									"    \"title\"",
+									"    \"$veo.title\"",
 									"  ]",
 									"};",
 									"",
@@ -257,7 +241,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MjkyNDI5NTQsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTI4Mzc4OTU0LCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.H6zeJy6IR9vlTIVzPTTQST_bebj5JHGMRdbj3Y01CmfnLu9C3_4XruQVfmNMXXg_hl0O9-x_GZvygFIfwaHuGAdwlTrCZdtKy4rukpIbHcJnknhHS6lzPTdqzwQFd5uv3_mK0NzcnLGtvj3OT9xzC1u1-CNSuZGZbv4L1VNuKWUvL-aeI082cNj58Opw_znUGASI7C9kboeEbHBpbn6zldd5vQTdQhGCx1fl-fkMUDbThE_5kY4PQbIeFaURLGxMzRXHhRLldZvXYCwrLIq-gTNDD7VJ3CsdLmFIokFsJdKaDXBEpj-cJkcPT9lUFkVbNM6DPoFHrDs9pHOsCcExsA"
+								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MzUyODIwNjAsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTM0NDE4MDYwLCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.fiKTws89xft8zX4qd4Kq9tJdVQwMKznyRvBNQ2awz3UJ9MlxM9JQRFoQlI7IxSyuGutnFOloBtTc0T585wnvOLwAHDi3PVz7Te-8MHFu_GBVRT_RFYstQgdYlyAuczXf0bZad78f0B0Tj6P3UY50ysDUBDiE6ACojh9B3JQIgp_04MIqN4OaH0qZAKBKT2oJKGFLb5m1XVPQW704BvfA3DzhPY8aBNGuBB1SSFx0tuBjINWj6vzs1eNAOFPSNoWP9StDoSn_ZcR0Hv388lAqr7qFd2BotUHMGQAGemapPo4fYpET0QcEWrWT7CTJfjY0D9yFiizjiGFdMr8LzA9IKw"
 							}
 						],
 						"body": {
@@ -300,7 +284,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MjkyNDI5NTQsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTI4Mzc4OTU0LCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.H6zeJy6IR9vlTIVzPTTQST_bebj5JHGMRdbj3Y01CmfnLu9C3_4XruQVfmNMXXg_hl0O9-x_GZvygFIfwaHuGAdwlTrCZdtKy4rukpIbHcJnknhHS6lzPTdqzwQFd5uv3_mK0NzcnLGtvj3OT9xzC1u1-CNSuZGZbv4L1VNuKWUvL-aeI082cNj58Opw_znUGASI7C9kboeEbHBpbn6zldd5vQTdQhGCx1fl-fkMUDbThE_5kY4PQbIeFaURLGxMzRXHhRLldZvXYCwrLIq-gTNDD7VJ3CsdLmFIokFsJdKaDXBEpj-cJkcPT9lUFkVbNM6DPoFHrDs9pHOsCcExsA"
+								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MzUyODIwNjAsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTM0NDE4MDYwLCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.fiKTws89xft8zX4qd4Kq9tJdVQwMKznyRvBNQ2awz3UJ9MlxM9JQRFoQlI7IxSyuGutnFOloBtTc0T585wnvOLwAHDi3PVz7Te-8MHFu_GBVRT_RFYstQgdYlyAuczXf0bZad78f0B0Tj6P3UY50ysDUBDiE6ACojh9B3JQIgp_04MIqN4OaH0qZAKBKT2oJKGFLb5m1XVPQW704BvfA3DzhPY8aBNGuBB1SSFx0tuBjINWj6vzs1eNAOFPSNoWP9StDoSn_ZcR0Hv388lAqr7qFd2BotUHMGQAGemapPo4fYpET0QcEWrWT7CTJfjY0D9yFiizjiGFdMr8LzA9IKw"
 							},
 							{
 								"key": "Content-Type",
@@ -347,7 +331,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MjkyNDI5NTQsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTI4Mzc4OTU0LCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.H6zeJy6IR9vlTIVzPTTQST_bebj5JHGMRdbj3Y01CmfnLu9C3_4XruQVfmNMXXg_hl0O9-x_GZvygFIfwaHuGAdwlTrCZdtKy4rukpIbHcJnknhHS6lzPTdqzwQFd5uv3_mK0NzcnLGtvj3OT9xzC1u1-CNSuZGZbv4L1VNuKWUvL-aeI082cNj58Opw_znUGASI7C9kboeEbHBpbn6zldd5vQTdQhGCx1fl-fkMUDbThE_5kY4PQbIeFaURLGxMzRXHhRLldZvXYCwrLIq-gTNDD7VJ3CsdLmFIokFsJdKaDXBEpj-cJkcPT9lUFkVbNM6DPoFHrDs9pHOsCcExsA"
+								"value": "Bearer eyJhbGciOiJSUzUxMiJ9.eyJleHAiOjE1MzUyODIwNjAsInN1YiI6ImFkbWluIiwiaXNzIjoidmVyaW5pY2UuVkVPIiwiaWF0IjoxNTM0NDE4MDYwLCJhdWQiOiJ2ZXJpbmljZS5SRVNUIGNsaWVudHMiLCJwcm9maWxlcyI6WyJleHBvcnQiLCJpbXBvcnQiLCJ0YXNrcyJdfQ.fiKTws89xft8zX4qd4Kq9tJdVQwMKznyRvBNQ2awz3UJ9MlxM9JQRFoQlI7IxSyuGutnFOloBtTc0T585wnvOLwAHDi3PVz7Te-8MHFu_GBVRT_RFYstQgdYlyAuczXf0bZad78f0B0Tj6P3UY50ysDUBDiE6ACojh9B3JQIgp_04MIqN4OaH0qZAKBKT2oJKGFLb5m1XVPQW704BvfA3DzhPY8aBNGuBB1SSFx0tuBjINWj6vzs1eNAOFPSNoWP9StDoSn_ZcR0Hv388lAqr7qFd2BotUHMGQAGemapPo4fYpET0QcEWrWT7CTJfjY0D9yFiizjiGFdMr8LzA9IKw"
 							},
 							{
 								"key": "Content-Type",
@@ -359,7 +343,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8070/elements//{{asset_group_id}}",
+							"raw": "http://localhost:8070/elements/{{asset_group_id}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -367,7 +351,6 @@
 							"port": "8070",
 							"path": [
 								"elements",
-								"",
 								"{{asset_group_id}}"
 							]
 						},
@@ -569,7 +552,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8070/elements/2d2570c7-e96e-4f3b-ad38-bd6310ee21ae",
+					"raw": "http://localhost:8070/elements/7da20cbd-88e0-493e-8b21-fb25e85a213d",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -577,7 +560,7 @@
 					"port": "8070",
 					"path": [
 						"elements",
-						"2d2570c7-e96e-4f3b-ad38-bd6310ee21ae"
+						"7da20cbd-88e0-493e-8b21-fb25e85a213d"
 					]
 				},
 				"description": "Load one elment"
