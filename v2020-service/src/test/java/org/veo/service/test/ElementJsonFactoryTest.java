@@ -177,7 +177,7 @@ public class ElementJsonFactoryTest {
         Map<String,Object> assetJsonMap = new HashMap<>(10);
         assetJsonMap.put(JsonFactory.ID, uuid);
         assetJsonMap.put(JsonFactory.TITLE, "Asset");
-        assetJsonMap.put(JsonFactory.SCHEMA, "schemas/asset.json");
+        assetJsonMap.put(JsonFactory.TYPE, "asset");
         assetJsonMap.put(ASSET_TYPE, ASSET_TYPE_PHYSICAL);
         assetJsonMap.put(ROLE, new String[]{ROLE_A,ROLE_B});
         assetJsonMap.put(BUSINESS_VALUE, new Integer[]{1,2});

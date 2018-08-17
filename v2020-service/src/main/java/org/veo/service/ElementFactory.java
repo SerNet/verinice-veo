@@ -37,7 +37,7 @@ public class ElementFactory {
     }
 
     private void setStaticProperties(Map<String, Object> json, Element element) {
-        element.setTypeId(extractTypeId((String) json.get(JsonFactory.SCHEMA)));
+        element.setTypeId((String) json.get(JsonFactory.TYPE));
         element.setTitle((String) json.get(JsonFactory.TITLE));
         setParent(json, element);
     }
@@ -128,12 +128,6 @@ public class ElementFactory {
                 element.addProperty(property);
             }
         }
-    }
-
-    private String extractTypeId(String schemaPath) {
-        int beginIndex = schemaPath.indexOf(JsonFactory.SCHEMA_FOLDER) + JsonFactory.SCHEMA_FOLDER.length();
-        int endIndex = schemaPath.indexOf(JsonFactory.SCHEMA_FILE_SUFFIX);
-        return schemaPath.substring(beginIndex, endIndex);
     }
 
     private boolean isStaticProperty(String name) {
