@@ -78,10 +78,10 @@ public class VnaImport {
     private int number = 0;
 
     @Autowired
-    private ObjectFactory<ObjectImportThread> objectImportThreadFactory;
+    private ObjectFactory<ObjectImportTask> objectImportTaskFactory;
 
     @Autowired
-    private ObjectFactory<LinkImportThread> linkImportThreadFactory;
+    private ObjectFactory<LinkImportTask> linkImportTaskFactory;
 
     /**
      * Imports a VNA from a byte array.
@@ -117,12 +117,14 @@ public class VnaImport {
     }
 
     // @Transactional(isolation=Isolation.DEFAULT,propagation=Propagation.REQUIRED)
-    private void importObjectList(Element parent, List<SyncObject> syncObjectList, List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
+    private void importObjectList(Element parent, List<SyncObject> syncObjectList,
+            List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
-                ObjectImportThread importThread = objectImportThreadFactory.getObject();
-                importThread.setContext(new ObjectImportContext(parent, syncObject, mapObjectTypeList));
-                objectImportCompletionService.submit(importThread);
+                ObjectImportTask importTask = objectImportTaskFactory.getObject();
+                importTask
+                        .setContext(new ObjectImportContext(parent, syncObject, mapObjectTypeList));
+                objectImportCompletionService.submit(importTask);
             }
             waitForObjectResults(syncObjectList.size());
         }
@@ -133,14 +135,17 @@ public class VnaImport {
             ObjectImportContext objectContext = objectImportCompletionService.take().get();
             importContext.addObject(objectContext);
             if (objectContext != null) {
-                importObjectList(objectContext.getNode(), objectContext.getSyncObject().getChildren(), objectContext.getMapObjectTypeList());
+                importObjectList(objectContext.getNode(),
+                        objectContext.getSyncObject().getChildren(),
+                        objectContext.getMapObjectTypeList());
             }
         }
         number += n;
     }
 
     // @Transactional(isolation=Isolation.READ_UNCOMMITTED)
-    private void importLinkList(List<SyncLink> syncLinkList) throws InterruptedException, ExecutionException {
+    private void importLinkList(List<SyncLink> syncLinkList)
+            throws InterruptedException, ExecutionException {
         if (syncLinkList != null) {
             Map<String, LinkImportContext> contextMap = new HashMap<>();
             for (SyncLink syncLink : syncLinkList) {
@@ -154,7 +159,7 @@ public class VnaImport {
                 }
             }
             for (LinkImportContext c : contextMap.values()) {
-                LinkImportThread importThread = linkImportThreadFactory.getObject();
+                LinkImportTask importThread = linkImportTaskFactory.getObject();
                 importThread.setContext(c);
                 linkImportCompletionService.submit(importThread);
             }
@@ -177,29 +182,23 @@ public class VnaImport {
     }
 
     private List<SyncObject> getSyncObjectList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest)
-                .map(SyncRequest::getSyncData)
-                .map(SyncData::getSyncObject)
-                .orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncData)
+                .map(SyncData::getSyncObject).orElse(Collections.emptyList());
     }
 
     private List<SyncLink> getSyncLinkList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest)
-                .map(SyncRequest::getSyncData)
-                .map(SyncData::getSyncLink)
-                .orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncData)
+                .map(SyncData::getSyncLink).orElse(Collections.emptyList());
     }
 
     private List<MapObjectType> getMapObjectTypeList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest)
-                .map(SyncRequest::getSyncMapping)
-                .map(SyncMapping::getMapObjectType)
-                .orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncMapping)
+                .map(SyncMapping::getMapObjectType).orElse(Collections.emptyList());
     }
 
     private ExecutorService createExecutor() {
         if (LOG.isInfoEnabled()) {
-            LOG.info("Number of threads: " + getNumberOfThreads());
+            LOG.info("Number of threads: {}", getNumberOfThreads());
         }
         return Executors.newFixedThreadPool(getNumberOfThreads());
     }
@@ -212,7 +211,7 @@ public class VnaImport {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
                 if (!pool.awaitTermination(getShutdownTimeoutInSeconds(), TimeUnit.SECONDS)) {
-                    LOG.error("Thread pool did not terminate", pool);
+                    LOG.error("Thread pool did not terminate");
                 }
             }
         } catch (InterruptedException ie) {

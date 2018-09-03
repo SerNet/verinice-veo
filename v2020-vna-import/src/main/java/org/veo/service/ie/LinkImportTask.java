@@ -35,27 +35,25 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("prototype")
-public class LinkImportThread implements Callable<LinkImportContext> {
+public class LinkImportTask implements Callable<LinkImportContext> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LinkImportThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LinkImportTask.class);
 
     private LinkImportContext context;
 
     @Autowired
     private ImportElementService importElementService;
 
-    public LinkImportThread() {
+    public LinkImportTask() {
         super();
     }
 
-    public LinkImportThread(LinkImportContext context) {
+    public LinkImportTask(LinkImportContext context) {
         super();
         this.context = context;
     }
 
     /*
-     * (non-Javadoc)
-     * 
      * @see java.util.concurrent.Callable#call()
      */
     @Override
@@ -63,7 +61,8 @@ public class LinkImportThread implements Callable<LinkImportContext> {
         try {
             importLink();
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Link imported, start id: {}, end id: {}", context.getStartId(), context.getEndIdList());
+                LOG.debug("Link imported, start id: {}, end id: {}", context.getStartId(),
+                        context.getEndIdList());
             }
         } catch (Exception e) {
             LOG.error("Error while importing link, start id: " + context.getStartId() + ", end id: "
@@ -77,7 +76,8 @@ public class LinkImportThread implements Callable<LinkImportContext> {
             LOG.debug("Start importing link, start id: {}, end id: {}...", context.getStartId(),
                     context.getEndIdList());
         }
-        importElementService.createLink(context.getStartId(), context.getEndIdList(), context.getType());
+        importElementService.createLink(context.getStartId(), context.getEndIdList(),
+                context.getType());
     }
 
     public void setContext(LinkImportContext context) {
