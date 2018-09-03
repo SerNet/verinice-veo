@@ -52,3 +52,8 @@ fi
 
 echo export TOKEN=$token
 echo export VEOURL=$url
+
+if which xclip 2>/dev/null
+then
+	echo $TOKEN | xclip -selection clipboard
+fi

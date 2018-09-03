@@ -14,6 +14,10 @@ E.g. to fetch all elements, you can run
 	eval `./authenticate`
 	./authorize elements
 
+### Clipboard
+If `xclip` is present on the system, `./authenticate` will copy the JWT token to the
+clipboard.
+
 ## Generate TLS key pairs
 In order for JWT to work, a TLS key pair is needed. A key pair can be generated using
 
