@@ -1,6 +1,7 @@
 # Misc
 This folder contains miscellaneous scripts to quicker test the API.
 
+## REST Authentication Wrapper
 The main script is `authenticate`. It sends an authorization request and prints the token
 in a format understood by `sh`, similar to `ssh-agent`.
 
@@ -13,3 +14,7 @@ E.g. to fetch all elements, you can run
 	eval `./authenticate`
 	./authorize elements
 
+## Generate TLS key pairs
+In order for JWT to work, a TLS key pair is needed. A key pair can be generated using
+
+	./genkeys
