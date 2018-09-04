@@ -108,7 +108,7 @@ public class VnaImport {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Number of links: {}, starting import...", syncLinkList.size());
             }
-            importLinkList(syncLinkList);
+            // importLinkList(syncLinkList);
         } catch (Exception e) {
             LOG.error("Error while importing VNA.", e);
         } finally {
