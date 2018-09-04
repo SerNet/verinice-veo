@@ -19,6 +19,11 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +36,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.veo.service.ElementMapService;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
+import org.veo.versioning.HistoryService;
 
 /**
  * REST service which provides methods to manage elements.
  *
- * An element is a generic Map<String, Object> with just a few requirements,
- * see org.veo.service.ElementMapService.
+ * An element is a generic Map<String, Object> with just a few requirements, see
+ * org.veo.service.ElementMapService.
  */
 @RestController
 public class ElementsController {
@@ -50,44 +51,64 @@ public class ElementsController {
     @Autowired
     private ElementMapService mapService;
 
+    @Autowired
+    private HistoryService historyService;
+
     public ElementsController() {
     }
 
-    public ElementsController(ElementMapService mapService) {
+    public ElementsController(ElementMapService mapService, HistoryService historyService) {
         this.mapService = mapService;
+        this.historyService = historyService;
     }
 
     @RequestMapping(value = "/elements", method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> getElements() throws IOException {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(mapService.findAll());
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(mapService.findAll());
     }
 
     @RequestMapping(value = "/elements", method = RequestMethod.POST)
-    public ResponseEntity<Resource> createElements(@RequestBody Map<String, Object> content) {
+    public ResponseEntity<Resource> createElements(@RequestBody Map<String, Object> content)
+            throws IOException {
         String uuid = this.mapService.saveNew(content);
+        historyService.save(uuid, content);
         return ResponseEntity.created(URI.create("/elements/" + uuid)).build();
     }
 
-    @RequestMapping(value = "/elements/{uuid:.+}" /* at least on char to distinguish from get all */, method = RequestMethod.GET)
+    @RequestMapping(value = "/elements/{uuid:.+}" /*
+                                                   * at least on char to
+                                                   * distinguish from get all
+                                                   */, method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getElement(@PathVariable("uuid") String uuid) {
-        Map<String, Object> map =  mapService.find(uuid);
+        Map<String, Object> map = mapService.find(uuid);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(map);
     }
 
-    @RequestMapping(value = "/elements/{uuid:.+}/children" /* at least on char to distinguish from get all */, method = RequestMethod.GET)
-    public ResponseEntity<List<Map<String, Object>>> getChildren(@PathVariable("uuid") String uuid) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(mapService.findChildren(uuid));
+    @RequestMapping(value = "/elements/{uuid:.+}/children" /*
+                                                            * at least on char
+                                                            * to distinguish
+                                                            * from get all
+                                                            */, method = RequestMethod.GET)
+    public ResponseEntity<List<Map<String, Object>>> getChildren(
+            @PathVariable("uuid") String uuid) {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(mapService.findChildren(uuid));
     }
 
     @RequestMapping(value = "/elements/{uuid}", method = RequestMethod.PUT)
-    public ResponseEntity<Resource> updateElement(@PathVariable("uuid") String uuid, @RequestBody Map<String, Object> content) {
+    public ResponseEntity<Resource> updateElement(@PathVariable("uuid") String uuid,
+            @RequestBody Map<String, Object> content) {
         mapService.save(uuid, content);
+        historyService.delete(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(value = "/elements/{uuid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid) throws IOException {
+    public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid)
+            throws IOException {
         mapService.delete(uuid);
+        historyService.delete(uuid);
         return ResponseEntity.ok().build();
     }
 }

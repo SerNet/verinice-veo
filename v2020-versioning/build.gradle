@@ -1,16 +1,9 @@
-plugins {
-    id 'java'
-}
-
-group 'org.v2020'
-version '0.1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compileOnly 'javax:javaee-api'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'com.fasterxml.jackson.core:jackson-databind'
+    
+    testCompile 'org.spockframework:spock-spring'
+    
 }
+

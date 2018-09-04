@@ -22,8 +22,49 @@ package org.veo.versioning;
 
 import java.time.ZonedDateTime;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class HistoryEntry {
-    String author;
-    ZonedDateTime timestamp;
-    String data;
+
+    @Id
+    private String id;
+
+    private String author;
+    private ZonedDateTime timestamp;
+    private String dataId;
+    private String data;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public ZonedDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public void setTimestamp(ZonedDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(String dataId) {
+        this.dataId = dataId;
+    }
 }
