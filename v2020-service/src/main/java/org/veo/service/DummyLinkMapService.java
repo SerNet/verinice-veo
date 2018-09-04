@@ -19,22 +19,37 @@
  ******************************************************************************/
 package org.veo.service;
 
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-/**
- * Provides methods to persist maps wich needs the following keys:
- *
- * - parent
- */
-public interface ElementMapService {
+@Service
+public class DummyLinkMapService implements LinkMapService {
+    @Override public List<Map<String, Object>> findAll() {
+        return Collections.emptyList();
+    }
 
-    List<Map<String, Object>> findAll();
-    Map<String, Object> find(String id);
-    List<Map<String, Object>> findChildren(String parentId);
+    @Override public Map<String, Object> find(String id) {
+        return new HashMap<>();
+    }
 
-    void save(String id, Map<String, Object> content);
-    String saveNew(Map<String, Object> content);
+    @Override public List<Map<String, Object>> findByElement(String elementId) {
+        return Collections.emptyList();
+    }
 
-    void delete(String id);
+    @Override public void save(String id, Map<String, Object> content) {
+
+    }
+
+    @Override public String saveNew(Map<String, Object> content) {
+        return UUID.randomUUID().toString();
+    }
+
+    @Override public void delete(String id) {
+
+    }
 }

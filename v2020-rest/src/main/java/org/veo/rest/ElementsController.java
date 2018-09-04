@@ -22,7 +22,6 @@ package org.veo.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.veo.service.ElementMapService;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -50,7 +48,6 @@ public class ElementsController {
     private static final Logger logger = LoggerFactory.getLogger(ElementsController.class);
 
     @Autowired
-    @javax.annotation.Resource(name="${service.element}")
     private ElementMapService mapService;
 
     public ElementsController() {
@@ -67,53 +64,24 @@ public class ElementsController {
 
     @RequestMapping(value = "/elements", method = RequestMethod.POST)
     public ResponseEntity<Resource> createElements(@RequestBody Map<String, Object> content) {
-        try {
-            String uuid = this.mapService.saveNew(content);
-            return ResponseEntity.created(URI.create("/elements/" + uuid)).build();
-        } catch (IOException e) {
-            logger.info("Caught request to persists file");
-            return ResponseEntity.notFound().build();
-        }
+        String uuid = this.mapService.saveNew(content);
+        return ResponseEntity.created(URI.create("/elements/" + uuid)).build();
     }
 
     @RequestMapping(value = "/elements/{uuid:.+}" /* at least on char to distinguish from get all */, method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getElement(@PathVariable("uuid") String uuid) {
-        try {
-            Map<String, Object> map =  mapService.find(uuid);
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(map);
-        } catch (FileNotFoundException e) {
-            logger.info("Caught request to non-existent element {}", uuid);
-            return ResponseEntity.notFound().build();
-        } catch (IOException e) {
-            logger.info("Caught request to file {}", uuid);
-            return ResponseEntity.notFound().build();
-        }
+        Map<String, Object> map =  mapService.find(uuid);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(map);
     }
 
     @RequestMapping(value = "/elements/{uuid:.+}/children" /* at least on char to distinguish from get all */, method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> getChildren(@PathVariable("uuid") String uuid) {
-        try {
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(mapService.findChildren(uuid));
-        } catch (FileNotFoundException e) {
-            logger.info("Caught request to non-existent element {}", uuid);
-            return ResponseEntity.notFound().build();
-        } catch (IOException e) {
-            logger.info("Caught request to file {}", uuid);
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(mapService.findChildren(uuid));
     }
 
     @RequestMapping(value = "/elements/{uuid}", method = RequestMethod.PUT)
     public ResponseEntity<Resource> updateElement(@PathVariable("uuid") String uuid, @RequestBody Map<String, Object> content) {
-        try {
-            mapService.save(uuid, content);
-        } catch (FileNotFoundException e) {
-            logger.info("Caught request to non-existent file {}", uuid);
-            return ResponseEntity.notFound().build();
-        } catch (IOException e) {
-            logger.info("Caught request to file {}", uuid);
-            return ResponseEntity.notFound().build();
-        }
+        mapService.save(uuid, content);
         return ResponseEntity.noContent().build();
     }
 

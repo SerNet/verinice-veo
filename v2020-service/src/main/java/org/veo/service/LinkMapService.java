@@ -19,7 +19,6 @@
  ******************************************************************************/
 package org.veo.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,12 +30,12 @@ import java.util.Map;
  */
 public interface LinkMapService {
 
-    List<Map<String, Object>> findAll() throws IOException;
-    Map<String, Object> find(String id) throws IOException;
-    List<Map<String, Object>> findByElement(String elementId) throws IOException;
+    List<Map<String, Object>> findAll();
+    Map<String, Object> find(String id);
+    List<Map<String, Object>> findByElement(String elementId);
 
-    void save(String id, Map<String, Object> content) throws IOException;
-    String saveNew(Map<String, Object> content) throws IOException;
+    void save(String id, Map<String, Object> content);
+    String saveNew(Map<String, Object> content);
 
-    void delete(String id) throws IOException;
+    void delete(String id);
 }
