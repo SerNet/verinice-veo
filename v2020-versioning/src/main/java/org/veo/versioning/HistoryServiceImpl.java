@@ -22,12 +22,16 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public void save(String uuid, Map<String, Object> content) throws JsonProcessingException {
+    public void save(String uuid, Map<String, Object> content) {
 
         HistoryEntry entry = createHistoryEntry();
         entry.setDataId(uuid);
-        entry.setData(objectMapper.writeValueAsString(content));
-        historyRepository.save(entry);
+        try {
+            entry.setData(objectMapper.writeValueAsString(content));
+            historyRepository.save(entry);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

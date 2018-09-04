@@ -1,15 +1,15 @@
 package org.veo.service;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.veo.model.Element;
 import org.veo.model.VeoException;
 import org.veo.persistence.ElementRepository;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.veo.versioning.HistoryService;
 
 /**
  * Database implementation of the ElementMapService.
@@ -27,6 +27,9 @@ public class ElementMapDbService implements ElementMapService {
 
     @Autowired
     ElementFactory elementFactory;
+
+    @Autowired
+    private HistoryService historyService;
 
     @Override
     public List<Map<String, Object>> findAll() {
@@ -68,6 +71,8 @@ public class ElementMapDbService implements ElementMapService {
         json.put(JsonFactory.ID, id);
         element = elementFactory.updateElement(json, element);
         elementRepository.save(element);
+        historyService.save(id, json);
+
     }
 
     @Override
@@ -78,12 +83,15 @@ public class ElementMapDbService implements ElementMapService {
             throw new VeoException(VeoException.Error.ELEMENT_EXISTS,
                     "Element with uuid " + uuid + " already exists.");
         }
-        return elementRepository.save(element).getUuid();
+        elementRepository.save(element);
+        historyService.save(uuid, json);
+        return uuid;
     }
 
     @Override
     public void delete(String id) {
         elementRepository.deleteById(id);
+        historyService.delete(id);
     }
 
     private List<Map<String, Object>> getResultList(Iterable<Element> allElements) {

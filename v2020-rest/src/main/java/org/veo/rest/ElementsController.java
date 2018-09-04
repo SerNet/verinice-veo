@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.veo.service.ElementMapService;
-import org.veo.versioning.HistoryService;
 
 /**
  * REST service which provides methods to manage elements.
@@ -51,15 +50,11 @@ public class ElementsController {
     @Autowired
     private ElementMapService mapService;
 
-    @Autowired
-    private HistoryService historyService;
-
     public ElementsController() {
     }
 
-    public ElementsController(ElementMapService mapService, HistoryService historyService) {
+    public ElementsController(ElementMapService mapService) {
         this.mapService = mapService;
-        this.historyService = historyService;
     }
 
     @RequestMapping(value = "/elements", method = RequestMethod.GET)
@@ -72,7 +67,6 @@ public class ElementsController {
     public ResponseEntity<Resource> createElements(@RequestBody Map<String, Object> content)
             throws IOException {
         String uuid = this.mapService.saveNew(content);
-        historyService.save(uuid, content);
         return ResponseEntity.created(URI.create("/elements/" + uuid)).build();
     }
 
@@ -100,7 +94,6 @@ public class ElementsController {
     public ResponseEntity<Resource> updateElement(@PathVariable("uuid") String uuid,
             @RequestBody Map<String, Object> content) {
         mapService.save(uuid, content);
-        historyService.delete(uuid);
         return ResponseEntity.noContent().build();
     }
 
@@ -108,7 +101,6 @@ public class ElementsController {
     public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid)
             throws IOException {
         mapService.delete(uuid);
-        historyService.delete(uuid);
         return ResponseEntity.ok().build();
     }
 }
