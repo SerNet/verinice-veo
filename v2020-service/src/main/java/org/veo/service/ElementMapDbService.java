@@ -1,10 +1,5 @@
 package org.veo.service;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -12,13 +7,16 @@ import org.veo.model.Element;
 import org.veo.model.VeoException;
 import org.veo.persistence.ElementRepository;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Database implementation of the ElementMapService.
  *
  * This service uses Spring Data to load, find and persist elements.
  */
-@Service("ElementDatabaseService")
-@Lazy
+@Service
 public class ElementMapDbService implements ElementMapService {
 
     @Autowired
@@ -31,13 +29,13 @@ public class ElementMapDbService implements ElementMapService {
     ElementFactory elementFactory;
 
     @Override
-    public List<Map<String, Object>> findAll() throws IOException {
+    public List<Map<String, Object>> findAll() {
         Iterable<Element> allElements = elementRepository.findAll();
         return getResultList(allElements);
     }
 
     @Override
-    public Map<String, Object> find(String id) throws IOException {
+    public Map<String, Object> find(String id) {
         if (!elementRepository.existsById(id)) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
                     String.format(VeoException.ELEMENT_NOT_EXISTS, id));
@@ -51,7 +49,7 @@ public class ElementMapDbService implements ElementMapService {
     }
 
     @Override
-    public List<Map<String, Object>> findChildren(String parentId) throws IOException {
+    public List<Map<String, Object>> findChildren(String parentId) {
         if (!elementRepository.existsById(parentId)) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
                     String.format(VeoException.ELEMENT_NOT_EXISTS, parentId));
@@ -61,7 +59,7 @@ public class ElementMapDbService implements ElementMapService {
     }
 
     @Override
-    public void save(String id, Map<String, Object> json) throws IOException {
+    public void save(String id, Map<String, Object> json) {
         Element element = elementRepository.findByUuid(id);
         if (element == null) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
@@ -73,7 +71,7 @@ public class ElementMapDbService implements ElementMapService {
     }
 
     @Override
-    public String saveNew(Map<String, Object> json) throws IOException {
+    public String saveNew(Map<String, Object> json) {
         Element element = elementFactory.createElement(json);
         String uuid = element.getUuid();
         if (uuid != null && elementRepository.existsById(uuid)) {
@@ -84,7 +82,7 @@ public class ElementMapDbService implements ElementMapService {
     }
 
     @Override
-    public void delete(String id) throws IOException {
+    public void delete(String id) {
         elementRepository.deleteById(id);
     }
 
