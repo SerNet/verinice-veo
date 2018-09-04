@@ -41,7 +41,6 @@ import org.veo.util.time.TimeFormatter;
 import de.sernet.sync.data.SyncAttribute;
 import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
-import de.sernet.sync.mapping.SyncMapping.MapObjectType.MapAttributeType;
 
 /**
  * A callable task to import one element and its properties from a VNA to
@@ -68,13 +67,17 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
     @Autowired
     private ImportElementService importElementService;
 
+    @Autowired
+    @javax.annotation.Resource(name = "SchemaTypeIdMapper")
+    private TypeIdMapper typeIdMapper;
+
     public ObjectImportTask() {
         super();
     }
 
-    public ObjectImportTask(ObjectImportContext syncObject) {
+    public ObjectImportTask(ObjectImportContext importContext) {
         super();
-        this.context = syncObject;
+        this.context = importContext;
     }
 
     /*
@@ -86,49 +89,56 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
         try {
             importObject();
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Import finished {}", logObject(context.getSyncObject()));
+                LOG.debug("Import finished {}", logObject(getSyncObject()));
             }
         } catch (Exception e) {
-            LOG.error("Error while importing type: " + context.getSyncObject().getExtObjectType(),
-                    e);
+            LOG.error("Error while importing type: " + getSyncObject().getExtObjectType(), e);
         }
         return context;
     }
 
     private void importObject() {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Importing {}...", logObject(context.getSyncObject()));
+            LOG.debug("Importing {}...", logObject(getSyncObject()));
         }
-        SyncObject syncObject = context.getSyncObject();
-        MapObjectType mapObject = getMapObject(context.getMapObjectTypeList(),
-                syncObject.getExtObjectType());
-        Element element = ElementFactory.newInstance(mapObject.getIntId());
-        element.setTitle(TitleAdapter.getTitle(syncObject, mapObject));
-        element.setParent(context.getParent());
-        if (context.getParent() == null) {
-            element.setScope(element);
-        } else {
-            element.setScope(context.getParent().getScope());
+        if (isImported(getSyncObject())) {
+            String veriniceTypeId = getSyncObject().getExtObjectType();
+            String veoTypeId = getVeoElementTypeId(veriniceTypeId);
+
+            Element element = ElementFactory.newInstance(veoTypeId);
+            element.setTitle(TitleAdapter.getTitle(getSyncObject(), getMapObject()));
+            element.setParent(context.getParent());
+            if (context.getParent() == null) {
+                element.setScope(element);
+            } else {
+                element.setScope(context.getParent().getScope());
+            }
+            importProperties(getSyncObject().getSyncAttribute(), element);
+            importElementService.create(element);
+            context.setNode(element);
         }
-        importProperties(syncObject.getSyncAttribute(), mapObject, element);
-        importElementService.create(element);
-        context.setNode(element);
     }
 
-    private void importProperties(List<SyncAttribute> syncObjectList, MapObjectType mapObject,
-            Element element) {
+    private MapObjectType getMapObject() {
+        return getMapObject(context.getMapObjectTypeList(),
+                context.getSyncObject().getExtObjectType());
+    }
+
+    private SyncObject getSyncObject() {
+        return context.getSyncObject();
+    }
+
+    private void importProperties(List<SyncAttribute> syncObjectList, Element element) {
         for (SyncAttribute syncAttribute : syncObjectList) {
-            if (isProperty(syncAttribute)) {
-                String name = syncAttribute.getName();
-                MapAttributeType mapAttribute = getMapAttribute(mapObject, name);
-                String propertyId = name;
-                if (mapAttribute != null) {
-                    propertyId = mapAttribute.getIntId();
-                } else {
-                    LOG.warn("MapAttributeType not found in VNA, using ext-id: {}", name);
-                }
-                element.getProperties().addAll(createProperties(syncAttribute, propertyId));
-            }
+            importProperty(element, syncAttribute);
+        }
+    }
+
+    private void importProperty(Element element, SyncAttribute syncAttribute) {
+        if (isImported(syncAttribute)) {
+            String name = syncAttribute.getName();
+            String propertyId = getVeoPropertyTypeId(name);
+            element.getProperties().addAll(createProperties(syncAttribute, propertyId));
         }
     }
 
@@ -205,16 +215,21 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
         return null;
     }
 
-    private MapAttributeType getMapAttribute(MapObjectType mapObject, String extId) {
-        for (MapAttributeType mapAttribute : mapObject.getMapAttributeType()) {
-            if (extId.equals(mapAttribute.getExtId())) {
-                return mapAttribute;
-            }
-        }
-        return null;
+    private boolean isImported(SyncObject syncObject) {
+        String veriniceTypeId = getSyncObject().getExtObjectType();
+        return (getVeoElementTypeId(veriniceTypeId) != null);
     }
 
-    private boolean isProperty(SyncAttribute syncAttribute) {
+    private boolean isImported(SyncAttribute syncAttribute) {
+        return isNotEmpty(syncAttribute) && isVeoPropertyId(syncAttribute);
+    }
+
+    private boolean isVeoPropertyId(SyncAttribute syncAttribute) {
+        String name = syncAttribute.getName();
+        return (getVeoPropertyTypeId(name) != null);
+    }
+
+    private boolean isNotEmpty(SyncAttribute syncAttribute) {
         return syncAttribute != null && syncAttribute.getName() != null
                 && syncAttribute.getValue() != null;
     }
@@ -229,6 +244,14 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
 
     private String logObject(SyncObject syncObject) {
         return "object: " + syncObject.getExtObjectType() + " - " + syncObject.getExtId();
+    }
+
+    private String getVeoElementTypeId(String vnaTypeId) {
+        return typeIdMapper.getVeoElementTypeId(vnaTypeId);
+    }
+
+    private String getVeoPropertyTypeId(String vnaTypeId) {
+        return typeIdMapper.getVeoPropertyTypeId(vnaTypeId);
     }
 
 }
