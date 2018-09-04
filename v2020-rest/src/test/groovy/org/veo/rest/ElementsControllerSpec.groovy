@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.veo.service.ElementMapService
+import org.veo.versioning.HistoryService
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -20,7 +21,8 @@ public class ElementsControllerSpec extends Specification {
 
     def setup() {
         def mockMapService = new MockMapService();
-        this.elementsController = new ElementsController(mockMapService);
+        HistoryService historyService = Mock()
+        this.elementsController = new ElementsController(mockMapService, historyService);
         this.mockMvc = MockMvcBuilders.standaloneSetup(elementsController).build();
     }
 
