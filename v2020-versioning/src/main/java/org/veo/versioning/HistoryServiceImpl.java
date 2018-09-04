@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.veo.commons.VeoException;
 
 @Service
 public class HistoryServiceImpl implements HistoryService {
@@ -47,8 +51,12 @@ public class HistoryServiceImpl implements HistoryService {
     private static HistoryEntry createHistoryEntry() {
         HistoryEntry entry = new HistoryEntry();
         entry.setTimestamp(ZonedDateTime.now());
-        // FIXME
-        entry.setAuthor("unknown");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            throw new VeoException(VeoException.Error.UNAUTHORIZED, "versioning requires authorization");
+        }
+        User user = (User)auth.getPrincipal();
+        entry.setAuthor(user.getUsername());
         return entry;
     }
 
