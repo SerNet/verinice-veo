@@ -1,6 +1,7 @@
 package org.veo.versioning;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,10 @@ public class HistoryServiceImpl implements HistoryService {
         // FIXME
         entry.setAuthor("unknown");
         return entry;
+    }
+
+    @Override
+    public List<HistoryEntry> getHistory(String uuid) {
+        return historyRepository.findByDataId(uuid);
     }
 }
