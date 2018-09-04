@@ -4,6 +4,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(":v2020-service")
+    compile project(":v2020-commons")
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-rest'
     compile("org.springframework.boot:spring-boot-starter-security")

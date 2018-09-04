@@ -26,11 +26,11 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.veo.commons.VeoException;
 import org.veo.model.Element;
 import org.veo.model.Link;
 import org.veo.model.LinkProperty;
 import org.veo.model.Property;
-import org.veo.model.VeoException;
 import org.veo.persistence.ElementRepository;
 import org.veo.persistence.LinkRepository;
 

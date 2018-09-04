@@ -1,4 +1,4 @@
-package org.veo.model;
+package org.veo.commons;
 /**
  * This exception is thrown if an element to be created already exists.
  */
@@ -6,7 +6,7 @@ public class VeoException extends RuntimeException {
 
     public static final String ELEMENT_NOT_EXISTS = "Element with uuid %s does not exists.";
 
-    public enum Error {ELEMENT_NOT_FOUND, ELEMENT_EXISTS, PARSE_EXCEPTION}
+    public enum Error {ELEMENT_NOT_FOUND, ELEMENT_EXISTS, PARSE_EXCEPTION, UNAUTHORIZED}
 
     private Error error;
 

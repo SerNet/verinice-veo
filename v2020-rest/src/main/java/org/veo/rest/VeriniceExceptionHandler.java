@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.veo.model.VeoException;
-import org.veo.model.VeoException.Error;
+import org.veo.commons.VeoException;
+import org.veo.commons.VeoException.Error;
 
 @ControllerAdvice
 public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
