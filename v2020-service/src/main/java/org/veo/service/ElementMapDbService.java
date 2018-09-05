@@ -41,7 +41,7 @@ public class ElementMapDbService implements ElementMapService {
     public Map<String, Object> find(String id) {
         if (!elementRepository.existsById(id)) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
-                    String.format(VeoException.ELEMENT_NOT_EXISTS, id));
+                    "Element with uuid %id% does not exists.", "id", id);
         }
         Map<String, Object> result = null;
         Element element = elementRepository.findByUuid(id);
@@ -55,7 +55,7 @@ public class ElementMapDbService implements ElementMapService {
     public List<Map<String, Object>> findChildren(String parentId) {
         if (!elementRepository.existsById(parentId)) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
-                    String.format(VeoException.ELEMENT_NOT_EXISTS, parentId));
+                    "Element with uuid %id% does not exists.", "id", parentId);
         }
         Iterable<Element> allElements = elementRepository.findByParentId(parentId);
         return getResultList(allElements);
@@ -66,7 +66,7 @@ public class ElementMapDbService implements ElementMapService {
         Element element = elementRepository.findByUuid(id);
         if (element == null) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
-                    String.format(VeoException.ELEMENT_NOT_EXISTS, id));
+                    "Element with uuid %id% does not exists.", "id", id);
         }
         json.put(JsonFactory.ID, id);
         element = elementFactory.updateElement(json, element);

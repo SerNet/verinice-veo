@@ -68,7 +68,7 @@ public class ElementFactory extends AbstractVeoFactory {
             Element parent = elementRepository.findByUuid(parentUuid);
             if (parent == null) {
                 throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
-                        String.format(VeoException.ELEMENT_NOT_EXISTS, parentUuid));
+                        "Element with uuid %id% does not exists.", "id", parentUuid);
             }
             element.setParent(elementRepository.findByUuid(parentUuid));
         }

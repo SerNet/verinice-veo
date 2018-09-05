@@ -19,11 +19,6 @@
  ******************************************************************************/
 package org.veo.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.veo.commons.VeoException;
@@ -34,16 +29,17 @@ import org.veo.model.Property;
 import org.veo.persistence.ElementRepository;
 import org.veo.persistence.LinkRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * A factory to creates link objects.
- * 
  */
-@Service
-public class LinkFactory extends AbstractVeoFactory {
-    @Autowired
-    LinkRepository linkRepository;
-    @Autowired
-    ElementRepository elementRepository;
+@Service public class LinkFactory extends AbstractVeoFactory {
+    @Autowired LinkRepository linkRepository;
+    @Autowired ElementRepository elementRepository;
 
     public Link createLink(Map<String, Object> json) {
         String id = (String) json.get(JsonFactory.ID);
@@ -72,7 +68,7 @@ public class LinkFactory extends AbstractVeoFactory {
             Element parent = elementRepository.findByUuid(sourceUuid);
             if (parent == null) {
                 throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
-                        String.format(VeoException.ELEMENT_NOT_EXISTS, sourceUuid));
+                        "Element with uuid %id% does not exists.", "id", sourceUuid);
             }
             link.setSource(elementRepository.findByUuid(sourceUuid));
         }
@@ -84,7 +80,7 @@ public class LinkFactory extends AbstractVeoFactory {
             Element parent = elementRepository.findByUuid(targetUuid);
             if (parent == null) {
                 throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
-                        String.format(VeoException.ELEMENT_NOT_EXISTS, targetUuid));
+                        "Element with uuid %id% does not exists.", "id", targetUuid);
             }
             link.setDestination(elementRepository.findByUuid(targetUuid));
         }
