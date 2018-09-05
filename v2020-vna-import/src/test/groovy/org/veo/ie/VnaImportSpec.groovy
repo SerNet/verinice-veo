@@ -41,13 +41,13 @@ class VnaImportSpec extends Specification {
     @Autowired
     ElementService elementService;
 
-    def "import RECPLAST VNA"(){
+    def "import VNA"(){
         setup:
-        def is = VnaImportSpec.class.getResourceAsStream('RECPLAST.vna')
+        def is = VnaImportSpec.class.getResourceAsStream('VnaImportSpec.vna')
         def bytes = is.bytes
         when:
         def vna = vnaImport.importVna(bytes)
         then:
-        elementService.findAll().size() == 2272
+        elementService.findAll().size() == 3
     }
 }
