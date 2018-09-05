@@ -25,7 +25,7 @@ import java.util.Map.Entry;
  * Exception class used for veo.
  *
  * The message of a class can be parameterized using a Map<string, string>. If
- * the key of the map is found in the message sorrounded by '%' it will be
+ * the key of the map is found in the message surrounded by '%' it will be
  * replaced by the value. E.g.
  *
  * message: "error on element with uuid %uuid%" map: [ "uuid": "deadbeef" ]
@@ -41,14 +41,6 @@ public class VeoException extends RuntimeException {
     private static final String DELIMETER = "%";
 
     private final Map<String, String> parameters;
-
-    @Deprecated
-    public static final String ELEMENT_NOT_EXISTS = "Element with uuid %s does not exists.";
-
-    public enum Error {
-        ELEMENT_NOT_FOUND, ELEMENT_EXISTS, PARSE_EXCEPTION, UNAUTHORIZED
-    }
-
     private final Error error;
 
     public VeoException(Error error, String message) {
@@ -115,5 +107,9 @@ public class VeoException extends RuntimeException {
             message = message.replaceAll(DELIMETER + param.getKey() + DELIMETER, param.getValue());
         }
         return message;
+    }
+
+    public enum Error {
+        ELEMENT_NOT_FOUND, ELEMENT_EXISTS, UNAUTHORIZED
     }
 }
