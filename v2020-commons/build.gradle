@@ -1,0 +1,5 @@
+apply plugin: 'groovy'
+
+dependencies {
+    testCompile 'org.spockframework:spock-core'
+}
