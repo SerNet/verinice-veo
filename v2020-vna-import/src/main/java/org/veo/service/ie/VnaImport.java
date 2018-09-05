@@ -131,15 +131,17 @@ public class VnaImport {
                 afterImport(elementImportContext);
             }
         }
-        number += n;
     }
 
     private void afterImport(ElementImportContext elementImportContext) throws InterruptedException, ExecutionException {
         this.importContext.addElement(elementImportContext);
         Element importedElement = elementImportContext.getElement();
-        importObjectList(importedElement,
-                elementImportContext.getSyncObject().getChildren(),
-                elementImportContext.getMapObjectTypeList());
+        if(importedElement!=null) {
+            number++;
+            importObjectList(importedElement,
+                    elementImportContext.getSyncObject().getChildren(),
+                    elementImportContext.getMapObjectTypeList());
+        }
     }
 
     // @Transactional(isolation=Isolation.READ_UNCOMMITTED)
