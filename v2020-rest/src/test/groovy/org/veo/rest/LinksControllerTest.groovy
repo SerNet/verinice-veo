@@ -95,7 +95,7 @@ public class LinksControllerTest {
     private class MockMapService implements LinkMapService {
 
         @Override
-        List<Map<String, Object>> findAll() throws IOException {
+        List<Map<String, Object>> findAll() {
             return [
                     [
                             id   : 'deadbeef',
@@ -116,7 +116,7 @@ public class LinksControllerTest {
         }
 
         @Override
-        Map<String, Object> find(String id) throws IOException {
+        Map<String, Object> find(String id) {
             return [
                     id   : 'deadbeef',
                     source: "111111",
@@ -125,7 +125,7 @@ public class LinksControllerTest {
         }
 
         @Override
-        List<Map<String, Object>> findByElement(String elementId) throws IOException {
+        List<Map<String, Object>> findByElement(String elementId) {
             return [
                     [
                             id    : 'abad1dea',
@@ -141,17 +141,17 @@ public class LinksControllerTest {
         }
 
         @Override
-        void save(String id, Map<String, Object> content) throws IOException {
+        void save(String id, Map<String, Object> content) {
 
         }
 
         @Override
-        String saveNew(Map<String, Object> content) throws IOException {
+        String saveNew(Map<String, Object> content) {
             return "444444"
         }
 
         @Override
-        void delete(String id) throws IOException {
+        void delete(String id) {
 
         }
     }

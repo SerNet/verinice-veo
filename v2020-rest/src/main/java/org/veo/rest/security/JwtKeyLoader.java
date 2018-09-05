@@ -43,6 +43,9 @@ public class JwtKeyLoader {
     private static final String PUBLIC_KEY_FILENAME = "public.der";
     private static final String PRIVATE_KEY_FILENAME = "private.der";
 
+    private JwtKeyLoader() {
+    }
+
     public static PublicKey getPublicJwtKey()
             throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 

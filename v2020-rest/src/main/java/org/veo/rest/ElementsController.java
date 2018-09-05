@@ -110,8 +110,7 @@ public class ElementsController {
     }
 
     @RequestMapping(value = "/elements/{uuid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid)
-            throws IOException {
+    public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid) {
         mapService.delete(uuid);
         return ResponseEntity.ok().build();
     }
