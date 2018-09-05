@@ -22,6 +22,7 @@ package org.veo.versioning;
 
 import java.time.ZonedDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -33,8 +34,11 @@ public class HistoryEntry {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     private String author;
+    @Column(nullable = false)
     private ZonedDateTime timestamp;
+    @Column(nullable = false)
     private String dataId;
     private String data;
 
