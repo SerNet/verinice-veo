@@ -53,7 +53,7 @@ public class HistoryServiceImpl implements HistoryService {
         entry.setTimestamp(ZonedDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
-            throw new VeoException(VeoException.Error.UNAUTHORIZED, "versioning requires authorization");
+            throw new VeoException(VeoException.Error.AUTHENTICATION_REQUIRED, "versioning requires authentication");
         }
         User user = (User)auth.getPrincipal();
         entry.setAuthor(user.getUsername());

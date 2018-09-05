@@ -73,6 +73,6 @@ class HistoryServiceSpec extends Specification {
 
         then:
         VeoException veoException = thrown()
-        veoException.error == VeoException.Error.UNAUTHORIZED
+        veoException.error == VeoException.Error.AUTHENTICATION_REQUIRED
     }
 }

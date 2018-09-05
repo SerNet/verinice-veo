@@ -39,7 +39,7 @@ public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
         switch (error) {
             case ELEMENT_EXISTS: status = HttpStatus.CONFLICT; break;
             case ELEMENT_NOT_FOUND: status = HttpStatus.NOT_FOUND; break;
-            case UNAUTHORIZED: status = HttpStatus.UNAUTHORIZED; break;
+            case AUTHENTICATION_REQUIRED: status = HttpStatus.UNAUTHORIZED; break;
         }
         String bodyOfResponse = veoException.getMessage();
         return handleExceptionInternal(veoException, bodyOfResponse, new HttpHeaders(), status, request);
