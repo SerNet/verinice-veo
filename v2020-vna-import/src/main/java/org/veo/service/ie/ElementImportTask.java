@@ -51,9 +51,9 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType;
  */
 @Component
 @Scope("prototype")
-public class ObjectImportTask implements Callable<ElementImportContext> {
+public class ElementImportTask implements Callable<ElementImportContext> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ObjectImportTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ElementImportTask.class);
 
     private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40)
             .toInstant(ZoneOffset.UTC).toEpochMilli();
@@ -71,11 +71,11 @@ public class ObjectImportTask implements Callable<ElementImportContext> {
     @javax.annotation.Resource(name = "SchemaTypeIdMapper")
     private TypeIdMapper typeIdMapper;
 
-    public ObjectImportTask() {
+    public ElementImportTask() {
         super();
     }
 
-    public ObjectImportTask(ElementImportContext importContext) {
+    public ElementImportTask(ElementImportContext importContext) {
         super();
         this.context = importContext;
     }

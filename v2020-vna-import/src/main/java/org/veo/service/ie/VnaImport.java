@@ -70,13 +70,13 @@ public class VnaImport {
 
     private int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
 
-    private CompletionService<ElementImportContext> objectImportCompletionService;
+    private CompletionService<ElementImportContext> elementImportCompletionService;
     private CompletionService<LinkImportContext> linkImportCompletionService;
     private ImportContext importContext;
     private int number = 0;
 
     @Autowired
-    private ObjectFactory<ObjectImportTask> objectImportTaskFactory;
+    private ObjectFactory<ElementImportTask> elementImportTaskFactory;
 
     @Autowired
     private ObjectFactory<LinkImportTask> linkImportTaskFactory;
@@ -93,7 +93,7 @@ public class VnaImport {
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
     public void importVna(byte[] vnaFileData) {
         ExecutorService taskExecutor = createExecutor();
-        objectImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
+        elementImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         linkImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         importContext = new ImportContext();
         try {
@@ -130,10 +130,10 @@ public class VnaImport {
             List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
-                ObjectImportTask importTask = objectImportTaskFactory.getObject();
+                ElementImportTask importTask = elementImportTaskFactory.getObject();
                 importTask.setContext(
                         new ElementImportContext(parent, syncObject, mapObjectTypeList));
-                objectImportCompletionService.submit(importTask);
+                elementImportCompletionService.submit(importTask);
             }
             waitForObjectResults(syncObjectList.size());
         }
@@ -141,7 +141,7 @@ public class VnaImport {
 
     private void waitForObjectResults(int n) throws InterruptedException, ExecutionException {
         for (int i = 0; i < n; ++i) {
-            ElementImportContext elementImportContext = objectImportCompletionService.take().get();
+            ElementImportContext elementImportContext = elementImportCompletionService.take().get();
             if (elementImportContext != null) {
                 afterImport(elementImportContext);
             }
