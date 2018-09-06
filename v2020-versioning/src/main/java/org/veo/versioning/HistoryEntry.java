@@ -40,6 +40,9 @@ public class HistoryEntry {
     private ZonedDateTime timestamp;
     @Column(nullable = false)
     private String dataId;
+
+    // allow arbitrary text length, *PostgreSQL specific*.
+    @Column(columnDefinition="TEXT")
     private String data;
 
     public String getAuthor() {
