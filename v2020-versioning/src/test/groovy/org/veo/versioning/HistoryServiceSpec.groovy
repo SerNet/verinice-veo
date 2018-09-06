@@ -24,12 +24,10 @@ class HistoryServiceSpec extends Specification {
         given:
         SecurityContext mockSecurityContext = Mock()
         Authentication mockAuthentication = Mock()
-        User mockUser = Mock()
 
         SecurityContextHolder.setContext(mockSecurityContext)
         mockSecurityContext.getAuthentication() >> mockAuthentication
-        mockAuthentication.getPrincipal() >> mockUser
-        mockUser.getUsername() >> 'versioned-user'
+        mockAuthentication.getPrincipal() >> 'versioned-user'
 
         def uuid = UUID.randomUUID().toString()
         def element = [

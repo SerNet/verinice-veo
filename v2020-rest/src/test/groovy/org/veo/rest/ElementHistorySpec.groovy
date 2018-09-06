@@ -29,8 +29,7 @@ public class ElementHistorySpec extends Specification {
 
     void "CRUD operations create history entries"(){
         given:
-        def user = Stub(User){ getUsername() >> 'versioned-user' }
-        def mockAuthentication = Stub(Authentication){ getPrincipal() >> user }
+        def mockAuthentication = Stub(Authentication){ getPrincipal() >> 'versioned-user' }
         def mockSecurityContext = Mock(SecurityContext){ getAuthentication() >> mockAuthentication }
         SecurityContextHolder.setContext(mockSecurityContext)
 

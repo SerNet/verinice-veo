@@ -55,8 +55,8 @@ public class HistoryServiceImpl implements HistoryService {
         if (auth == null) {
             throw new VeoException(VeoException.Error.AUTHENTICATION_REQUIRED, "versioning requires authentication");
         }
-        User user = (User)auth.getPrincipal();
-        entry.setAuthor(user.getUsername());
+        String user = (String)auth.getPrincipal();
+        entry.setAuthor(user);
         return entry;
     }
 
