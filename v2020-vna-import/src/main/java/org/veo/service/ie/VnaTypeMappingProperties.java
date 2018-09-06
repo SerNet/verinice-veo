@@ -29,7 +29,7 @@ import org.springframework.core.env.Environment;
  * property IDs from VNAs to VEO IDs.
  */
 @Configuration
-@PropertySource("classpath:/vna-type-mapping.properties")
+@PropertySource("${veo.vna-type-mapping}")
 public class VnaTypeMappingProperties {
 
     @Autowired

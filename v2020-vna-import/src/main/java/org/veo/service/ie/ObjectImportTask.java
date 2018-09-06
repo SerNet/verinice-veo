@@ -101,19 +101,19 @@ public class ObjectImportTask implements Callable<ElementImportContext> {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Importing {}...", logObject(getSyncObject()));
         }
-        if (isImported(getSyncObject())) {
-            String veriniceTypeId = getSyncObject().getExtObjectType();
-            String veoTypeId = getVeoElementTypeId(veriniceTypeId);
+        String veriniceTypeId = getSyncObject().getExtObjectType();
+        String veoTypeId = getVeoElementTypeId(veriniceTypeId);
 
-            Element element = ElementFactory.newInstance(veoTypeId);
-            element.setTitle(TitleAdapter.getTitle(getSyncObject(), getMapObject()));
-            element.setParent(context.getParent());
-            if (context.getParent() == null) {
-                element.setScope(element);
-            } else {
-                element.setScope(context.getParent().getScope());
-            }
-            importProperties(getSyncObject().getSyncAttribute(), element);
+        Element element = ElementFactory.newInstance(veoTypeId);
+        element.setTitle(TitleAdapter.getTitle(getSyncObject(), getMapObject()));
+        element.setParent(context.getParent());
+        if (context.getParent() == null) {
+            element.setScope(element);
+        } else {
+            element.setScope(context.getParent().getScope());
+        }
+        importProperties(getSyncObject().getSyncAttribute(), element);
+        if (isImported()) {
             importElementService.create(element);
             context.setElement(element);
         }
@@ -215,9 +215,13 @@ public class ObjectImportTask implements Callable<ElementImportContext> {
         return null;
     }
 
-    private boolean isImported(SyncObject syncObject) {
+    private boolean isImported() {
         String veriniceTypeId = getSyncObject().getExtObjectType();
-        return (getVeoElementTypeId(veriniceTypeId) != null);
+        boolean isVeoPropertyId = (getVeoElementTypeId(veriniceTypeId) != null);
+        if (!isVeoPropertyId) {
+            getContext().addMissingMappingProperty(veriniceTypeId);
+        }
+        return isVeoPropertyId;
     }
 
     private boolean isImported(SyncAttribute syncAttribute) {
@@ -226,7 +230,11 @@ public class ObjectImportTask implements Callable<ElementImportContext> {
 
     private boolean isVeoPropertyId(SyncAttribute syncAttribute) {
         String name = syncAttribute.getName();
-        return (getVeoPropertyTypeId(name) != null);
+        boolean isVeoPropertyId = (getVeoPropertyTypeId(name) != null);
+        if (!isVeoPropertyId) {
+            getContext().addMissingMappingProperty(name);
+        }
+        return isVeoPropertyId;
     }
 
     private boolean isNotEmpty(SyncAttribute syncAttribute) {

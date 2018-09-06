@@ -19,11 +19,15 @@
  ******************************************************************************/
 package org.veo.service.ie;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -35,6 +39,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -54,6 +60,7 @@ import de.sernet.sync.sync.SyncRequest;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Service
+@Scope("prototype")
 public class VnaImport {
 
     private static final Logger LOG = LoggerFactory.getLogger(VnaImport.class);
@@ -74,6 +81,12 @@ public class VnaImport {
     @Autowired
     private ObjectFactory<LinkImportTask> linkImportTaskFactory;
 
+    @Value("${veo.vna-type-mapping-missing.write}")
+    private boolean writeMissingProperties = true;
+
+    @Value("${veo.vna-type-mapping-missing.file}")
+    private String missingMappingPropertiesFilePath = "./vna-type-mapping-missing.properties";
+
     /**
      * Imports a VNA from a byte array.
      */
@@ -86,6 +99,7 @@ public class VnaImport {
         try {
             Vna vna = new Vna(vnaFileData);
             importXml(vna.getXml());
+            handleMissingProperties();
         } catch (Exception e) {
             LOG.error("Error while importing VNA.", e);
         } finally {
@@ -93,7 +107,8 @@ public class VnaImport {
         }
     }
 
-    private void importXml(SyncRequest syncRequest) throws InterruptedException, ExecutionException {
+    private void importXml(SyncRequest syncRequest)
+            throws InterruptedException, ExecutionException {
         List<SyncObject> syncObjectList = getSyncObjectList(syncRequest);
         List<MapObjectType> mapObjectTypeList = getMapObjectTypeList(syncRequest);
         if (LOG.isDebugEnabled()) {
@@ -116,8 +131,8 @@ public class VnaImport {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
                 ObjectImportTask importTask = objectImportTaskFactory.getObject();
-                importTask
-                        .setContext(new ElementImportContext(parent, syncObject, mapObjectTypeList));
+                importTask.setContext(
+                        new ElementImportContext(parent, syncObject, mapObjectTypeList));
                 objectImportCompletionService.submit(importTask);
             }
             waitForObjectResults(syncObjectList.size());
@@ -133,13 +148,15 @@ public class VnaImport {
         }
     }
 
-    private void afterImport(ElementImportContext elementImportContext) throws InterruptedException, ExecutionException {
+    private void afterImport(ElementImportContext elementImportContext)
+            throws InterruptedException, ExecutionException {
         this.importContext.addElement(elementImportContext);
+        this.importContext
+                .addAllMissingMappingProperties(elementImportContext.getMissingMappingProperties());
         Element importedElement = elementImportContext.getElement();
-        if(importedElement!=null) {
+        if (importedElement != null) {
             number++;
-            importObjectList(importedElement,
-                    elementImportContext.getSyncObject().getChildren(),
+            importObjectList(importedElement, elementImportContext.getSyncObject().getChildren(),
                     elementImportContext.getMapObjectTypeList());
         }
     }
@@ -195,6 +212,22 @@ public class VnaImport {
     private List<MapObjectType> getMapObjectTypeList(SyncRequest syncRequest) {
         return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncMapping)
                 .map(SyncMapping::getMapObjectType).orElse(Collections.emptyList());
+    }
+
+    private void handleMissingProperties() {
+        Properties missingProperties = importContext.getMissingMappingProperties();
+        if (writeMissingProperties && !missingProperties.isEmpty()) {
+            saveProperties(missingProperties, missingMappingPropertiesFilePath);
+        }
+    }
+
+    public void saveProperties(Properties prop, String filePath) {
+        try (Writer inputStream = new FileWriter(filePath)) {
+            // Storing the properties in the file with a heading comment.
+            prop.store(inputStream, null);
+        } catch (IOException ex) {
+            LOG.error("Error while writing VNA veo schemata mapping properties", ex);
+        }
     }
 
     private ExecutorService createExecutor() {

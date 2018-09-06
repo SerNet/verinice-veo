@@ -20,6 +20,7 @@
 package org.veo.service.ie;
 
 import java.util.List;
+import java.util.Properties;
 
 import org.veo.model.Element;
 
@@ -37,6 +38,7 @@ public class ElementImportContext {
     private List<MapObjectType> mapObjectTypeList;
     private Element parent;
     private Element element;
+    private Properties missingMappingProperties;
 
     public ElementImportContext(Element parent, SyncObject syncObject,
             List<MapObjectType> mapObjectTypeList) {
@@ -44,6 +46,7 @@ public class ElementImportContext {
         this.parent = parent;
         this.syncObject = syncObject;
         this.mapObjectTypeList = mapObjectTypeList;
+        this.missingMappingProperties = new Properties();
     }
 
     public SyncObject getSyncObject() {
@@ -76,6 +79,18 @@ public class ElementImportContext {
 
     public void setElement(Element element) {
         this.element = element;
+    }
+
+    public Properties getMissingMappingProperties() {
+        return missingMappingProperties;
+    }
+
+    public void addMissingMappingProperty(String key) {
+        getMissingMappingProperties().put(key, "");
+    }
+
+    public void setMissingMappingProperties(Properties missingMappingProperties) {
+        this.missingMappingProperties = missingMappingProperties;
     }
 
 }

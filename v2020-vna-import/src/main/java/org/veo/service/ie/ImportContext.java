@@ -21,6 +21,7 @@ package org.veo.service.ie;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Context for importing a VNA file
@@ -35,9 +36,12 @@ public class ImportContext {
      */
     private Map<String, String> extIdUuidMap;
 
+    private Properties missingMappingProperties;
+
     public ImportContext() {
         super();
         extIdUuidMap = new HashMap<>();
+        missingMappingProperties = new Properties();
     }
 
     public void addElement(ElementImportContext elementContext) {
@@ -49,5 +53,21 @@ public class ImportContext {
 
     public String getUuid(String extId) {
         return extIdUuidMap.get(extId);
+    }
+
+    public Properties getMissingMappingProperties() {
+        return missingMappingProperties;
+    }
+
+    public void addMissingMappingProperty(String key) {
+        getMissingMappingProperties().put(key, "");
+    }
+
+    public void addAllMissingMappingProperties(Properties missingMappingProperties) {
+        getMissingMappingProperties().putAll(missingMappingProperties);
+    }
+
+    public void setMissingMappingProperties(Properties missingMappingProperties) {
+        this.missingMappingProperties = missingMappingProperties;
     }
 }
