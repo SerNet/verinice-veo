@@ -225,7 +225,15 @@ public class ElementImportTask implements Callable<ElementImportContext> {
     }
 
     private boolean isImported(SyncAttribute syncAttribute) {
-        return isNotEmpty(syncAttribute) && isVeoPropertyId(syncAttribute);
+        return isNotEmpty(syncAttribute) && isVeoPropertyId(syncAttribute)
+                && isNotTitle(syncAttribute);
+    }
+
+    private boolean isNotTitle(SyncAttribute syncAttribute) {
+        String name = syncAttribute.getName();
+        String vnaTitleKey = TitleAdapter
+                .getTitleKey(this.context.getSyncObject().getExtObjectType());
+        return name == null || !name.equals(vnaTitleKey);
     }
 
     private boolean isVeoPropertyId(SyncAttribute syncAttribute) {
