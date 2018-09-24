@@ -5,6 +5,7 @@
   "type": "object",
   "properties": {
     "$veo.id": {
+      "title": "The id",
       "type": "string"
     },
     "$veo.title": {
