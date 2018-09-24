@@ -34,77 +34,13 @@
       "description": "Each schema needs a set of properties. For a property schema to be valid it has to be one of the predefined property schema, i.e type, id, title or an arbitrary pattern property describing a valid type, e.g. boolean, dateTime etc. Note that this object is a schema describing the property named 'properties'",
       "properties": {
         "$veo.type": {
-          "title": "Type name",
-          "description": "Each element schema shall enforce the type name to be set as type for explicit typing and validation.",
-          "type": "object",
-          "properties": {
-            "type": {
-              "enum": [
-                "string"
-              ]
-            },
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "enum": {
-              "description": "An enum array of length exactly 1 is on par with a constant",
-              "type": "array",
-              "minLength": 1,
-              "maxLength": 1,
-              "items": {
-                "type": "string"
-              }
-            }
-          },
-          "required": [
-            "enum"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/predefined"
         },
         "$veo.title": {
-          "description": "Each element schema shall enforce a title of type string.",
-          "type": "object",
-          "properties": {
-            "type": {
-              "enum": [
-                "string"
-              ]
-            },
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "type"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/string"
         },
         "$veo.id": {
-          "description": "Each element schema shall enforce an id of type string.",
-          "type": "object",
-          "properties": {
-            "type": {
-              "enum": [
-                "string"
-              ]
-            },
-            "title": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "type"
-          ],
-          "additionalProperties": false
+          "$ref": "#/definitions/string"
         }
       },
       "patternProperties": {
