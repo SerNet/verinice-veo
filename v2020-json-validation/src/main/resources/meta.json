@@ -272,9 +272,15 @@
     "predefined": {
       "description": "A predefined property is a property for which only a predefined primitive value set is valid, similar to an enum.",
       "oneOf": [
-        { "$ref": "#/definitions/predefined-string" },
-        { "$ref": "#/definitions/predefined-integer" },
-        { "$ref": "#/definitions/predefined-number" }
+        {
+          "$ref": "#/definitions/predefined-string"
+        },
+        {
+          "$ref": "#/definitions/predefined-integer"
+        },
+        {
+          "$ref": "#/definitions/predefined-number"
+        }
       ]
     },
     "predefined-string": {
@@ -338,7 +344,7 @@
         "enum": {
           "type": "array",
           "items": {
-               "type": "integer"
+            "type": "integer"
           }
         },
         "examples": {
@@ -367,9 +373,15 @@
         },
         "items": {
           "enum": [
-            { "type": "string" },
-            { "type": "integer" },
-            { "type": "number" }
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            }
           ]
         },
         "uniqueItems": {
