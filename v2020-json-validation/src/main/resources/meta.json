@@ -31,6 +31,21 @@
       "default": {}
     },
     "properties": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/elementProperties"
+        }
+      ]
+    }
+  },
+  "required": [
+    "title",
+    "type",
+    "properties"
+  ],
+  "default": true,
+  "definitions": {
+    "elementProperties": {
       "description": "Each schema needs a set of properties. For a property schema to be valid it has to be one of the predefined property schema, i.e type, id, title or an arbitrary pattern property describing a valid type, e.g. boolean, dateTime etc. Note that this object is a schema describing the property named 'properties'",
       "properties": {
         "$veo.type": {
@@ -80,15 +95,7 @@
         "$veo.id",
         "$veo.title"
       ]
-    }
-  },
-  "required": [
-    "title",
-    "type",
-    "properties"
-  ],
-  "default": true,
-  "definitions": {
+    },
     "string": {
       "type": "object",
       "properties": {
