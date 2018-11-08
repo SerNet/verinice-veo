@@ -29,8 +29,12 @@ curlargs=$@
 
 if [ ! -z "$pass_prompt" ]
 then
-	echo Enter password for $username:
+	echo -n "Enter password for $username: "
+	stty_orig=`stty -g`
+	stty -echo
 	read password
+	stty $stty_orig
+	echo
 fi
 
 IFS= curlout=`curl $curlargs -isS -H "Content-Type: application/json" -X POST -d "{
