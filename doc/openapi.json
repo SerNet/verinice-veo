@@ -39,10 +39,16 @@
     "/links/{uuid}": {
       "$ref": "link.json#self"
     },
-    "/schemas": {
+    "/schemas/elements": {
       "$ref": "schemas.json#all"
     },
-    "/schemas/{name}": {
+    "/schemas/elements/{name}": {
+      "$ref": "schemas.json#self"
+    },
+    "/schemas/links": {
+      "$ref": "schemas.json#all"
+    },
+    "/schemas/links/{name}": {
       "$ref": "schemas.json#self"
     }
   },
