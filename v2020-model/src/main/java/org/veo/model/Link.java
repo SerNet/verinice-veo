@@ -20,8 +20,12 @@
 package org.veo.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -33,6 +37,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -48,6 +54,9 @@ public class Link implements Serializable {
     @Column(length = 255)
     private String title;
     
+    @Column(nullable = false, length = 255)
+    private String typeId;
+    
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "source_uuid")
     private Element source;
@@ -62,10 +71,38 @@ public class Link implements Serializable {
     private List<LinkProperty> properties;
     
     public Link() {
-        if (this.uuid == null) {
+        UUID randomUUID = java.util.UUID.randomUUID();
+        uuid = randomUUID.toString();
+    }
+
+    public Link(String uuid) {
+        if (uuid == null) {
             UUID randomUUID = java.util.UUID.randomUUID();
-            uuid = randomUUID.toString();
+            this.uuid = randomUUID.toString();
+        } else {
+            this.uuid = uuid;
         }
+    }
+    
+    /**
+     * Returns a unmodifiable map with all properties of this element. Key of
+     * the map is the key of the property.
+     *
+     * @return A unmodifiable map with all properties
+     */
+    @JsonIgnore
+    public Map<String, List<LinkProperty>> getPropertyMap() {
+        Map<String, List<LinkProperty>> propertyMap = new HashMap<>(getProperties().size());
+        for (LinkProperty property : getProperties()) {
+            List<LinkProperty> propertyList = propertyMap.get(property.getKey());
+            if (propertyList == null) {
+                // The cardinality of most properties is single
+                propertyList = new ArrayList<>(1);
+                propertyMap.put(property.getKey(), propertyList);
+            }
+            propertyList.add(property);
+        }
+        return Collections.unmodifiableMap(propertyMap);
     }
 
     public String getUuid() {
@@ -91,7 +128,11 @@ public class Link implements Serializable {
         return properties;
     }
 
-    public void setUuid(String uuid) {
+    public String getTypeId() {
+		return typeId;
+	}
+
+	public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -111,7 +152,11 @@ public class Link implements Serializable {
         this.properties = properties;
     }
     
-    public void addProperty(LinkProperty property) {
+    public void setTypeId(String typeId) {
+		this.typeId = typeId;
+	}
+
+	public void addProperty(LinkProperty property) {
         getProperties().add(property);
     }
 
@@ -144,6 +189,4 @@ public class Link implements Serializable {
         }
 		return true;
 	}
-    
-    
 }

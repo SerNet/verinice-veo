@@ -33,7 +33,55 @@
     "properties": {
       "oneOf": [
         {
-          "$ref": "#/definitions/elementProperties"
+          "description": "Each schema needs a set of properties. For a property schema to be valid it has to be one of the predefined property schema, i.e type, id, title or an arbitrary pattern property describing a valid type, e.g. boolean, dateTime etc. Note that this object is a schema describing the property named 'properties'",
+          "properties": {
+            "$veo.type": {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/predefined"
+            },
+            "$veo.title": {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+            },
+            "$veo.id": {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+            }
+          },
+          "patternProperties": {
+            "^[a-z][a-zA-Z0-9]*$": {
+              "description": "Define a distinct set of types allowed for element schemas. Distinction allows treating properties as strictly typed.",
+              "oneOf": [
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+                },
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/boolean"
+                },
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/integer"
+                },
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/number"
+                },
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/dateTime"
+                },
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/predefined"
+                },
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/set"
+                },
+                {
+                  "$ref": "http://verinice.com/veo/draft-01/definitions.json#/subset"
+                }
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "$veo.type",
+            "$veo.id",
+            "$veo.title"
+          ]
         }
       ]
     }
@@ -43,339 +91,5 @@
     "type",
     "properties"
   ],
-  "default": true,
-  "definitions": {
-    "elementProperties": {
-      "description": "Each schema needs a set of properties. For a property schema to be valid it has to be one of the predefined property schema, i.e type, id, title or an arbitrary pattern property describing a valid type, e.g. boolean, dateTime etc. Note that this object is a schema describing the property named 'properties'",
-      "properties": {
-        "$veo.type": {
-          "$ref": "#/definitions/predefined"
-        },
-        "$veo.title": {
-          "$ref": "#/definitions/string"
-        },
-        "$veo.id": {
-          "$ref": "#/definitions/string"
-        }
-      },
-      "patternProperties": {
-        "^[a-z][a-zA-Z0-9]*$": {
-          "description": "Define a distinct set of types allowed for element schemas. Distinction allows treating properties as strictly typed.",
-          "oneOf": [
-            {
-              "$ref": "#/definitions/string"
-            },
-            {
-              "$ref": "#/definitions/boolean"
-            },
-            {
-              "$ref": "#/definitions/integer"
-            },
-            {
-              "$ref": "#/definitions/number"
-            },
-            {
-              "$ref": "#/definitions/dateTime"
-            },
-            {
-              "$ref": "#/definitions/predefined"
-            },
-            {
-              "$ref": "#/definitions/set"
-            },
-            {
-              "$ref": "#/definitions/subset"
-            }
-          ]
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "$veo.type",
-        "$veo.id",
-        "$veo.title"
-      ]
-    },
-    "string": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "string"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "examples": {
-          "type": "array"
-        }
-      },
-      "required": [
-        "type",
-        "title"
-      ],
-      "additionalProperties": false
-    },
-    "boolean": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "boolean"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "type",
-        "title"
-      ],
-      "additionalProperties": false
-    },
-    "number": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "number"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "type",
-        "title"
-      ],
-      "additionalProperties": false
-    },
-    "integer": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "integer"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "type",
-        "title"
-      ],
-      "additionalProperties": false
-    },
-    "dateTime": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "enum": [
-            "string"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "format": {
-          "enum": [
-            "date-time"
-          ]
-        },
-        "examples": {
-          "type": "array"
-        }
-      },
-      "required": [
-        "type",
-        "title",
-        "format"
-      ]
-    },
-    "predefined": {
-      "description": "A predefined property is a property for which only a predefined primitive value set is valid, similar to an enum.",
-      "oneOf": [
-        {
-          "$ref": "#/definitions/predefined-string"
-        },
-        {
-          "$ref": "#/definitions/predefined-integer"
-        },
-        {
-          "$ref": "#/definitions/predefined-number"
-        }
-      ]
-    },
-    "predefined-string": {
-      "properties": {
-        "type": {
-          "enum": [
-            "string"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "enum": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "examples": {
-          "type": "array"
-        }
-      },
-      "required": [
-        "enum"
-      ]
-    },
-    "predefined-number": {
-      "properties": {
-        "type": {
-          "enum": [
-            "number"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "enum": {
-          "type": "array",
-          "items": {
-            "type": "number"
-          }
-        },
-        "examples": {
-          "type": "array"
-        }
-      },
-      "required": [
-        "enum"
-      ]
-    },
-    "predefined-integer": {
-      "properties": {
-        "type": {
-          "enum": [
-            "integer"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "enum": {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
-        },
-        "examples": {
-          "type": "array"
-        }
-      },
-      "required": [
-        "enum",
-        "type"
-      ]
-    },
-    "set": {
-      "type": "object",
-      "description": "A set is an array but can only contain unique primitive values.",
-      "properties": {
-        "type": {
-          "enum": [
-            "array"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "items": {
-          "enum": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "integer"
-            },
-            {
-              "type": "number"
-            }
-          ]
-        },
-        "uniqueItems": {
-          "enum": [
-            true
-          ]
-        },
-        "examples": {
-          "type": "array"
-        }
-      },
-      "required": [
-        "type",
-        "title",
-        "items",
-        "uniqueItems"
-      ]
-    },
-    "subset": {
-      "type": "object",
-      "description": "A subset is an array but can only contain unique values of a predefined set.",
-      "properties": {
-        "type": {
-          "enum": [
-            "array"
-          ]
-        },
-        "title": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "items": {
-          "$ref": "#/definitions/predefined"
-        },
-        "uniqueItems": {
-          "enum": [
-            true
-          ]
-        },
-        "examples": {
-          "type": "array"
-        }
-      },
-      "required": [
-        "type",
-        "title",
-        "items",
-        "uniqueItems"
-      ]
-    }
-  }
+  "default": true
 }

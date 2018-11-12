@@ -19,12 +19,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.stream.Stream;
-
-import javax.validation.constraints.NotNull;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +34,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.veo.service.VeoConfigurationService;
 
+import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
+import java.util.stream.Stream;
+
 /**
  * This controller shall provide access to static resource on the file system.
  */
@@ -53,49 +52,80 @@ public class StaticController {
     @Autowired
     private VeoConfigurationService configuration;
 
-    @RequestMapping(value = "/schemas/{name:.+}" /* accept dots in name */, method = RequestMethod.GET)
-    public ResponseEntity<Resource> getSchema(@PathVariable("name") String schemaName) {
+	@RequestMapping(value = "/schemas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Deprecated
+	public ResponseEntity<String[]> getSchemasDeprecated() throws IOException {
+		return listFiles("classpath:schemas/elements/*.json", getSchemaDirectory());
+	}
 
-        Resource resource = getSchemaResource(schemaName);
-        if (!resource.exists()) {
-            logger.info("Caught request to non-existent schema {}", schemaName);
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
+	@RequestMapping(value = "/schemas/elements", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<String[]> getSchemas() throws IOException {
+		return listFiles("classpath:schemas/elements/*.json", getSchemaDirectory());
+	}
 
+	@RequestMapping(value = "/schemas/links", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String[]> getlinkSchemas() throws IOException {
+    	return listFiles("classpath:schemas/links/*.json", getLinkSchemaDirectory());
+    	
     }
 
-    @RequestMapping(value = "/schemas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String[]> getSchemas() throws IOException {
+	@RequestMapping(value = "/schemas/{name:.+}" /* accept dots in name */, method = RequestMethod.GET)
+	@Deprecated
+	public ResponseEntity<Resource> getSchemaDeprecated(@PathVariable("name") String schemaName) {
+		return getSchema(schemaName);
+	}
 
-        File schemaDir = getSchemaDirectory();
-        if (schemaDir.exists() && schemaDir.isDirectory()) {
-            return ResponseEntity.ok().body(schemaDir.list());
+	@RequestMapping(value = "/schemas/elements/{name:.+}" /* accept dots in name */, method = RequestMethod.GET)
+	public ResponseEntity<Resource> getSchema(@PathVariable("name") String schemaName) {
 
-        } else {
-            PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-            Resource[] schemaResources = resourcePatternResolver
-                    .getResources("classpath:schemas/*.json");
-            String[] resourceFileNames = Stream.of(schemaResources).map(Resource::getFilename)
-                    .toArray(String[]::new);
-            return ResponseEntity.ok().body(resourceFileNames);
-        }
-    }
+		Resource resource = getSchemaResource(schemaName, "/schemas/elements/", getSchemaDirectory());
+		if (!resource.exists()) {
+			logger.info("Caught request to non-existent schema {}", schemaName);
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
+	}
 
-    private @NotNull Resource getSchemaResource(String schemaName) {
-        File schemaDir = getSchemaDirectory();
+    @RequestMapping(value = "/schemas/links/{name:.+}" /* accept dots in name */, method = RequestMethod.GET)
+ 	public ResponseEntity<Resource> getLinkSchema(@PathVariable("name") String schemaName) {
+ 	    Resource resource = getSchemaResource(schemaName, "/schemas/links/", getLinkSchemaDirectory());
+ 	    if (!resource.exists()) {
+ 	        logger.info("Caught request to non-existent schema {}", schemaName);
+ 	        return ResponseEntity.notFound().build();
+ 	    }
+ 	    return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
+ 	}
+
+    private ResponseEntity<String[]> listFiles(String locationPattern, File schemaDir) throws IOException {
+		if (schemaDir.exists() && schemaDir.isDirectory()) {
+	        return ResponseEntity.ok().body(schemaDir.list());
+	
+	    } else {
+	        PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+			Resource[] schemaResources = resourcePatternResolver
+	                .getResources(locationPattern);
+	        String[] resourceFileNames = Stream.of(schemaResources).map(Resource::getFilename)
+	                .toArray(String[]::new);
+	        return ResponseEntity.ok().body(resourceFileNames);
+	    }
+	}
+
+	private @NotNull Resource getSchemaResource(String schemaName, String schemaPath, File schemaDir) {
         if (schemaDir.exists() && schemaDir.isDirectory()) {
             logger.info("Providing schemas from {}.", schemaDir.getAbsolutePath());
             File schemaFile = new File(schemaDir, schemaName);
             return new FileSystemResource(schemaFile);
-
         } else {
             logger.info("Providing schemas from class path resources.");
-            return new ClassPathResource("/schemas/".concat(schemaName));
+            return new ClassPathResource(schemaPath.concat(schemaName));
         }
     }
 
     private File getSchemaDirectory() {
-        return new File(configuration.getBaseDir(), "schemas");
+        return new File(configuration.getBaseDir(), "schemas/elements");
+    }
+    
+    private File getLinkSchemaDirectory() {
+        return new File(configuration.getBaseDir(), "schemas/links");
     }
 }

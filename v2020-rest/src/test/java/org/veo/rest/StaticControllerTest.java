@@ -1,8 +1,5 @@
 package org.veo.rest;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +16,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.FileCopyUtils;
 import org.veo.service.VeoConfigurationService;
+
+import java.io.File;
+import java.io.IOException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -51,7 +51,7 @@ public class StaticControllerTest {
     @Test
     public void getSchema() throws Exception {
         this.mockMvc
-                .perform(MockMvcRequestBuilders.get("/schemas/test.json")
+                .perform(MockMvcRequestBuilders.get("/schemas/elements/test.json")
                         .accept("application/schema+json"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
@@ -62,7 +62,7 @@ public class StaticControllerTest {
 
     @Test
     public void getElementTypes() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/schemas/").accept("application/json"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/schemas/elements/").accept("application/json"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content()
                         .contentType("application/json;charset=UTF-8"))

@@ -17,39 +17,18 @@
  * Contributors:
  *     Alexander Ben Nasrallah <an@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.service;
+package org.veo.json;
 
-import org.springframework.stereotype.Service;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.io.IOException;
 
-@Service
-public class DummyLinkMapService implements LinkMapService {
-    @Override public List<Map<String, Object>> findAll() {
-        return Collections.emptyList();
-    }
+/**
+ * Provides method to validate a JSON schema against the veo meta-schema.
+ */
+public class LinkSchemaValidator extends JsonValidator {
 
-    @Override public Map<String, Object> find(String id) {
-        return new HashMap<>();
-    }
-
-    @Override public List<Map<String, Object>> findByElement(String elementId) {
-        return Collections.emptyList();
-    }
-
-    @Override public void save(String id, Map<String, Object> content) {
-
-    }
-
-    @Override public String saveNew(Map<String, Object> content) {
-        return UUID.randomUUID().toString();
-    }
-
-    @Override public void delete(String id) {
-
+    public LinkSchemaValidator() throws IOException, ProcessingException {
+        super(Resources.getLinkMetaSchemaAsStream());
     }
 }

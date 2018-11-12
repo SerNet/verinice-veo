@@ -46,7 +46,15 @@ public class JsonValidator {
                     .addSchemaRedirect("http://verinice.com/veo/draft-01/schema",
                             "resource:/meta.json")
                     .addSchemaRedirect("https://verinice.com/veo/draft-01/schema",
-                            "resource:/meta.json").freeze();
+                            "resource:/meta.json")
+                    .addSchemaRedirect("http://verinice.com/veo/draft-01/link-schema",
+                            "resource:/link_meta.json")
+                    .addSchemaRedirect("https://verinice.com/veo/draft-01/link-schema",
+                            "resource:/link_meta.json")
+                    .addSchemaRedirect("http://verinice.com/veo/draft-01/definitions.json",
+                            "resource:/definitions.json")
+                    .addSchemaRedirect("https://verinice.com/veo/draft-01/definitions.json",
+                            "resource:/definitions.json").freeze();
             final LoadingConfiguration loadingCfg = LoadingConfiguration.newBuilder()
                     .setURITranslatorConfiguration(uriCfg).freeze();
             final JsonSchemaFactory factory = JsonSchemaFactory.newBuilder()

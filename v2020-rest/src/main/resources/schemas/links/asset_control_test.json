@@ -1,0 +1,47 @@
+{
+  "definitions": {},
+  "$schema": "http://verinice.com/veo/draft-01/link-schema#",
+  "type": "object",
+  "description": "A test schema for Links between an asset and a control",
+  "title": "asset_control",
+  "properties": {
+    "$veo.id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "$veo.type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "asset_control"
+      ]
+    },
+    "$veo.title": {
+      "type": "string",
+      "title": "The title of a link"
+    },
+    "source": {
+      "type": "string",
+      "title": "id of the asset"
+    },
+    "target": {
+      "type": "string",
+      "title": "id of the control"
+    },
+    "testProperty1": {
+      "type": "string",
+      "title": "first property test"
+    },
+    "testProperty2": {
+      "type": "string",
+      "title": "second property test"
+    }
+  },
+  "required": [
+    "$veo.id",
+    "$veo.type",
+    "source",
+    "target"
+  ],
+  "$veo.source.type": "asset",
+  "$veo.target.type": "control"
+}

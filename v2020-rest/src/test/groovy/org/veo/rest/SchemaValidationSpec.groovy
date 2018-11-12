@@ -18,6 +18,7 @@
 package org.veo.rest
 
 import org.veo.json.SchemaValidator
+import org.veo.json.LinkSchemaValidator
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -25,15 +26,28 @@ import spock.lang.Unroll
 class SchemaValidationSpec extends Specification {
 
     def validator = new SchemaValidator()
+    def linkValidator = new LinkSchemaValidator()
 
     @Unroll
-    def "Schema #schemaName validates against the meta-schema"() {
+    def "Element-Schema #schemaName validates against the meta-schema"() {
         given:
         def result = validator.validate(schemaStream)
         expect:
         result.successful
         where:
-        schemaFile << new File('src/main/resources/schemas').listFiles()
+        schemaFile << new File('src/main/resources/schemas/elements').listFiles()
+        schemaStream = schemaFile.newInputStream()
+        schemaName = schemaFile.name
+    }
+
+    @Unroll
+    def "Link-Schema #schemaName validates against the meta-schema"() {
+        given:
+        def result = linkValidator.validate(schemaStream)
+        expect:
+        result.successful
+        where:
+        schemaFile << new File('src/main/resources/schemas/links').listFiles()
         schemaStream = schemaFile.newInputStream()
         schemaName = schemaFile.name
     }

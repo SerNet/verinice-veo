@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Alexander Ben Nasrallah.
+ * Copyright (c) 2018 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,28 +15,17 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Alexander Ben Nasrallah <an@sernet.de> - initial API and implementation
+ *     Urs Zeidler uz[at]sernet.de - initial API and implementation
  ******************************************************************************/
-package org.veo.json;
-
-import java.io.InputStream;
+package org.veo.service;
 
 /**
- * This class provides methods to access resources for veo JSON processing, e.g. the meta-schema.
+ * This is the basic class for the object factories like {@link LinkFactory} or {@link ElementFactory}. 
  */
-public class Resources {
-    private static final String META_SCHEMA_FILE_NAME = "meta.json";
-    private static final String LINK_META_SCHEMA_FILE_NAME = "link_meta.json";
+public abstract class AbstractVeoFactory {
 
-    private Resources() {
+	protected boolean isStaticProperty(String name) {
+	    return JsonFactory.STATIC_PROPERTIES.contains(name);
+	}
 
-    }
-
-    public static InputStream getMetaSchemaAsStream() {
-        return Resources.class.getClassLoader().getResourceAsStream(META_SCHEMA_FILE_NAME);
-    }
-
-    public static InputStream getLinkMetaSchemaAsStream() {
-        return Resources.class.getClassLoader().getResourceAsStream(LINK_META_SCHEMA_FILE_NAME);
-    }
 }

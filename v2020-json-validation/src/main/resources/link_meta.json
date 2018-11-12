@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://verinice.com/veo/draft-01/link-schema#",
+  "title": "veo link schema meta-schema",
+  "type": [
+    "object"
+  ],
+  "properties": {
+    "$id": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "$comment": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "definitions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#"
+      },
+      "default": {}
+    },
+    "$veo.source.type": {
+      "type": "string"
+    },
+    "$veo.target.type": {
+      "type": "string"
+    },
+    "properties": {
+      "description": "Each schema needs a set of properties. For a property schema to be valid it has to be one of the predefined property schema, i.e type, id, title or an arbitrary pattern property describing a valid type, e.g. boolean, dateTime etc. Note that this object is a schema describing the property named 'properties'",
+      "properties": {
+        "$veo.type": {
+          "$ref": "http://verinice.com/veo/draft-01/definitions.json#/predefined"
+        },
+        "$veo.title": {
+          "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+        },
+        "$veo.id": {
+          "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+        },
+        "source": {
+          "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+        },
+        "target": {
+          "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+        }
+      },
+      "patternProperties": {
+        "^[a-z][a-zA-Z0-9]*$": {
+          "description": "Define a distinct set of types allowed for element schemas. Distinction allows treating properties as strictly typed.",
+          "oneOf": [
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/string"
+            },
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/boolean"
+            },
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/integer"
+            },
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/number"
+            },
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/dateTime"
+            },
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/predefined"
+            },
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/set"
+            },
+            {
+              "$ref": "http://verinice.com/veo/draft-01/definitions.json#/subset"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "$veo.type",
+        "$veo.id",
+        "source",
+        "target"
+      ]
+    }
+  },
+  "default": true,
+  "required": [
+    "$veo.source.type",
+    "$veo.target.type",
+    "properties",
+    "type"
+  ]
+}

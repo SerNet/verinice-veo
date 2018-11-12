@@ -17,10 +17,17 @@
  * Contributors:
  *     Jochen Kemnade <jk@sernet.de> - initial API and implementation
  *     Alexander Ben Nasrallah
+ *     Urs Zeidler
  ******************************************************************************/
 package org.veo.rest;
 
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,11 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.veo.service.LinkMapService;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
 
 /**
  * REST service which provides methods to manage links.
@@ -44,9 +46,13 @@ import java.util.Map;
 @RestController
 public class LinksController {
 
-    private final LinkMapService mapService;
-
     @Autowired
+    private LinkMapService mapService;
+
+    public LinksController() {
+        super();
+    }
+
     public LinksController(LinkMapService mapRepository) {
         this.mapService = mapRepository;
     }
@@ -58,30 +64,36 @@ public class LinksController {
     }
 
     @RequestMapping(path = "/links/{uuid:.+}" /* at least on char to distinguish form get all */, method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getLink(@PathVariable(value = "uuid") String uuid) throws IOException {
+    public ResponseEntity<Map<String, Object>> getLink(@PathVariable(value = "uuid") String uuid)
+            throws IOException {
         Map<String, Object> result = mapService.find(uuid);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
     }
 
     @RequestMapping(path = "/links/{uuid}", method = RequestMethod.PUT)
-    public ResponseEntity getLinks(@PathVariable(value = "uuid") String uuid, @RequestBody Map<String, Object> content) throws IOException {
+    public ResponseEntity<Resource> getLinks(@PathVariable(value = "uuid") String uuid,
+            @RequestBody Map<String, Object> content) throws IOException {
         this.mapService.save(uuid, content);
         return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(path = "/links", method = RequestMethod.POST)
-    public ResponseEntity postLink(@RequestBody Map<String, Object> content) throws IOException {
+    public ResponseEntity<Resource> createLink(@RequestBody Map<String, Object> content)
+            throws IOException {
         String uuid = this.mapService.saveNew(content);
         return ResponseEntity.created(URI.create("/links/" + uuid)).build();
     }
 
     @RequestMapping(value = "/elements/{uuid}/links", method = RequestMethod.GET)
-    public ResponseEntity<List<Map<String, Object>>> getLinks(@PathVariable("uuid") String uuid) throws IOException {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(mapService.findByElement(uuid));
+    public ResponseEntity<List<Map<String, Object>>> getLinks(@PathVariable("uuid") String uuid)
+            throws IOException {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(mapService.findByElement(uuid));
     }
 
     @RequestMapping(value = "/links/{uuid}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteLink(@PathVariable("uuid") String uuid) throws IOException {
+    public ResponseEntity<Resource> deleteLink(@PathVariable("uuid") String uuid)
+            throws IOException {
         mapService.delete(uuid);
         return ResponseEntity.ok().build();
     }

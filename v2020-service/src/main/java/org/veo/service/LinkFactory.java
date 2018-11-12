@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Daniel Murygin.
+ * Copyright (c) 2018 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  * Contributors:
- *     Daniel Murygin dm[at]sernet.de - initial API and implementation
+ *     Urs Zeidler uz[at]sernet.de - initial API and implementation
  ******************************************************************************/
 package org.veo.service;
 
@@ -27,66 +27,82 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.veo.model.Element;
-import org.veo.model.ElementProperty;
+import org.veo.model.Link;
+import org.veo.model.LinkProperty;
 import org.veo.model.Property;
 import org.veo.model.VeoException;
 import org.veo.persistence.ElementRepository;
+import org.veo.persistence.LinkRepository;
 
 /**
- * ElementFactory creates or updates an element from a property map containing
- * JSON data.
+ * A factory to creates link objects.
+ * 
  */
 @Service
-public class ElementFactory extends AbstractVeoFactory {
-
+public class LinkFactory extends AbstractVeoFactory {
+    @Autowired
+    LinkRepository linkRepository;
     @Autowired
     ElementRepository elementRepository;
 
-    public Element createElement(Map<String, Object> json) {
+    public Link createLink(Map<String, Object> json) {
         String id = (String) json.get(JsonFactory.ID);
         if (id == null) {
             id = UUID.randomUUID().toString();
         }
-        return updateElement(json, new Element(id));
+        return updateLink(json, new Link(id));
     }
 
-    public Element updateElement(Map<String, Object> json, Element element) {
-        setStaticProperties(json, element);
-        setDynamicProperties(json, element);
-        return element;
+    public Link updateLink(Map<String, Object> json, Link link) {
+        setStaticProperties(json, link);
+        setDynamicProperties(json, link);
+        return link;
     }
 
-    private void setStaticProperties(Map<String, Object> json, Element element) {
-        element.setTypeId((String) json.get(JsonFactory.TYPE));
-        element.setTitle((String) json.get(JsonFactory.TITLE));
-        setParent(json, element);
+    private void setStaticProperties(Map<String, Object> json, Link link) {
+        link.setTypeId((String) json.get(JsonFactory.TYPE));
+        link.setTitle((String) json.get(JsonFactory.TITLE));
+        setSource(json, link);
+        setTarget(json, link);
     }
 
-    private void setParent(Map<String, Object> json, Element element) {
-        String parentUuid = (String) json.get(JsonFactory.PARENT);
-        if (parentUuid != null) {
-            Element parent = elementRepository.findByUuid(parentUuid);
+    private void setSource(Map<String, Object> json, Link link) {
+        String sourceUuid = (String) json.get(JsonFactory.SOURCE);
+        if (sourceUuid != null) {
+            Element parent = elementRepository.findByUuid(sourceUuid);
             if (parent == null) {
                 throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
-                        String.format(VeoException.ELEMENT_NOT_EXISTS, parentUuid));
+                        String.format(VeoException.ELEMENT_NOT_EXISTS, sourceUuid));
             }
-            element.setParent(elementRepository.findByUuid(parentUuid));
+            link.setSource(elementRepository.findByUuid(sourceUuid));
         }
     }
 
-    private void setDynamicProperties(Map<String, Object> json, Element element) {
-        Map<String, List<ElementProperty>> propertyMap = element.getPropertyMap();
+    private void setTarget(Map<String, Object> json, Link link) {
+        String targetUuid = (String) json.get(JsonFactory.TARGET);
+        if (targetUuid != null) {
+            Element parent = elementRepository.findByUuid(targetUuid);
+            if (parent == null) {
+                throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
+                        String.format(VeoException.ELEMENT_NOT_EXISTS, targetUuid));
+            }
+            link.setDestination(elementRepository.findByUuid(targetUuid));
+        }
+    }
+
+    private void setDynamicProperties(Map<String, Object> json, Link link) {
+        Map<String, List<LinkProperty>> propertyMap = link.getPropertyMap();
         for (Map.Entry<String, Object> entry : json.entrySet()) {
             if (!isStaticProperty(entry.getKey())) {
-                List<ElementProperty> propertyList = setDynamicProperty(entry, propertyMap);
-                addProperties(propertyList, element);
+                List<LinkProperty> propertyList = setDynamicProperty(entry, propertyMap);
+                addProperties(propertyList, link);
             }
         }
     }
 
-    private List<ElementProperty> setDynamicProperty(Map.Entry<String, Object> entry,
-            Map<String, List<ElementProperty>> propertyMap) {
-        List<ElementProperty> propertyList = propertyMap.get(entry.getKey());
+    private List<LinkProperty> setDynamicProperty(Map.Entry<String, Object> entry,
+            Map<String, List<LinkProperty>> propertyMap) {
+        List<LinkProperty> propertyList = propertyMap.get(entry.getKey());
         if (propertyList == null) {
             propertyList = new ArrayList<>(1);
         }
@@ -95,7 +111,7 @@ public class ElementFactory extends AbstractVeoFactory {
     }
 
     private void setDynamicProperty(Map.Entry<String, Object> entry,
-            List<ElementProperty> properties) {
+            List<LinkProperty> properties) {
         Object value = entry.getValue();
         if (value instanceof Object[]) {
             setMultiProperties(entry.getKey(), (Object[]) value, properties);
@@ -106,12 +122,11 @@ public class ElementFactory extends AbstractVeoFactory {
         }
     }
 
-    private void setMultiProperties(String key, Object[] valueList,
-            List<ElementProperty> properties) {
+    private void setMultiProperties(String key, Object[] valueList, List<LinkProperty> properties) {
         properties.clear();
         int index = 0;
         for (Object singleValue : valueList) {
-            ElementProperty property = new ElementProperty();
+            LinkProperty property = new LinkProperty();
             property.setIndex(index);
             property.setCardinality(Property.Cardinality.MULTI);
             if (singleValue instanceof String) {
@@ -127,10 +142,10 @@ public class ElementFactory extends AbstractVeoFactory {
         }
     }
 
-    private void setSingleProperty(String key, Object value, List<ElementProperty> properties) {
-        ElementProperty property;
+    private void setSingleProperty(String key, Object value, List<LinkProperty> properties) {
+        LinkProperty property;
         if (properties.isEmpty()) {
-            property = new ElementProperty();
+            property = new LinkProperty();
             properties.add(property);
         } else {
             property = properties.get(0);
@@ -146,11 +161,12 @@ public class ElementFactory extends AbstractVeoFactory {
         }
     }
 
-    private void addProperties(List<ElementProperty> propertyList, Element element) {
-        for (ElementProperty property : propertyList) {
-            if (!element.getProperties().contains(property)) {
-                element.addProperty(property);
+    private void addProperties(List<LinkProperty> propertyList, Link link) {
+        for (LinkProperty property : propertyList) {
+            if (!link.getProperties().contains(property)) {
+                link.addProperty(property);
             }
         }
     }
+
 }

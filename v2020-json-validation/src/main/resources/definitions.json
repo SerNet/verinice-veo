@@ -1,0 +1,283 @@
+{
+  "string": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "enum": [
+          "string"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "examples": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "type",
+      "title"
+    ],
+    "additionalProperties": false
+  },
+  "boolean": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "enum": [
+          "boolean"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "type",
+      "title"
+    ],
+    "additionalProperties": false
+  },
+  "number": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "enum": [
+          "number"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "type",
+      "title"
+    ],
+    "additionalProperties": false
+  },
+  "integer": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "enum": [
+          "integer"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "type",
+      "title"
+    ],
+    "additionalProperties": false
+  },
+  "dateTime": {
+    "type": "object",
+    "properties": {
+      "type": {
+        "enum": [
+          "string"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "format": {
+        "enum": [
+          "date-time"
+        ]
+      },
+      "examples": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "type",
+      "title",
+      "format"
+    ]
+  },
+  "predefined": {
+    "description": "A predefined property is a property for which only a predefined primitive value set is valid, similar to an enum.",
+    "oneOf": [
+      {
+        "$ref": "#/predefined-string"
+      },
+      {
+        "$ref": "#/predefined-integer"
+      },
+      {
+        "$ref": "#/predefined-number"
+      }
+    ]
+  },
+  "predefined-string": {
+    "properties": {
+      "type": {
+        "enum": [
+          "string"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "enum": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "examples": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "enum"
+    ]
+  },
+  "predefined-number": {
+    "properties": {
+      "type": {
+        "enum": [
+          "number"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "enum": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      },
+      "examples": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "enum"
+    ]
+  },
+  "predefined-integer": {
+    "properties": {
+      "type": {
+        "enum": [
+          "integer"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "enum": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        }
+      },
+      "examples": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "enum",
+      "type"
+    ]
+  },
+  "set": {
+    "type": "object",
+    "description": "A set is an array but can only contain unique primitive values.",
+    "properties": {
+      "type": {
+        "enum": [
+          "array"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "items": {
+        "enum": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "number"
+          }
+        ]
+      },
+      "uniqueItems": {
+        "enum": [
+          true
+        ]
+      },
+      "examples": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "type",
+      "title",
+      "items",
+      "uniqueItems"
+    ]
+  },
+  "subset": {
+    "type": "object",
+    "description": "A subset is an array but can only contain unique values of a predefined set.",
+    "properties": {
+      "type": {
+        "enum": [
+          "array"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "items": {
+        "$ref": "#/predefined"
+      },
+      "uniqueItems": {
+        "enum": [
+          true
+        ]
+      },
+      "examples": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "type",
+      "title",
+      "items",
+      "uniqueItems"
+    ]
+  }
+}

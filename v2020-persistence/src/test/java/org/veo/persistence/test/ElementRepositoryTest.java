@@ -19,16 +19,7 @@
  ******************************************************************************/
 package org.veo.persistence.test;
 
-import static org.junit.Assert.*;
-
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import net._01001111.text.LoremIpsum;
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +37,16 @@ import org.veo.persistence.ElementRepository;
 import org.veo.persistence.LinkRepository;
 import org.veo.util.time.TimeFormatter;
 
-import net._01001111.text.LoremIpsum;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * By default this test runs with in memory database h2
@@ -114,6 +114,7 @@ public class ElementRepositoryTest {
         Link link = new Link();
         link.setSource(element);
         link.setDestination(linkedElement);
+        link.setTypeId("");
         element.addLinkOutgoing(link);
         elementRepository.save(element);
         
@@ -137,9 +138,10 @@ public class ElementRepositoryTest {
         Link link = new Link();
         link.setSource(element);
         link.setDestination(linkedElement);
+        link.setTypeId("");
         LinkProperty number = new LinkProperty();
         number.setKey(UUID.randomUUID().toString());
-        number.setValue(String.valueOf((long) 23));
+        number.setValue(String.valueOf(23));
         link.addProperty(number);
         link = linkRepository.save(link);
         

@@ -26,10 +26,10 @@ import spock.lang.Unroll
 class ExamplesValidationSpec extends Specification {
 
     def validators = [
-            'asset': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/asset.json")),
-            'person': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/person.json")),
-            'scenario': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/scenario.json")),
-            'control': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/control.json"))
+            'asset': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/asset.json")),
+            'person': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/person.json")),
+            'scenario': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/scenario.json")),
+            'control': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/control.json"))
             ]
 
     @Unroll
