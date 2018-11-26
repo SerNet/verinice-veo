@@ -13,4 +13,4 @@ fi
 
 if [ $# -ge 1 ]; then shift; fi
 
-curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" $@ $VEOURL/$api
+curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" "$@" $VEOURL/$api
