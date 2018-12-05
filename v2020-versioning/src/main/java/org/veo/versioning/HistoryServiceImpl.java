@@ -34,7 +34,7 @@ public class HistoryServiceImpl implements HistoryService {
             entry.setData(objectMapper.writeValueAsString(content));
             historyRepository.save(entry);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new VeoException(VeoException.Error.UNKNOWN, "unable to write history content as json", e);
         }
 
     }
