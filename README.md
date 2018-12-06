@@ -1,4 +1,4 @@
-# v2020
+# verinice veo
 
 A prototype of a new verinice version.
 
