@@ -64,8 +64,8 @@ public class Vna implements Serializable {
     public static final String SYNC_XSD = "sync.xsd"; //$NON-NLS-1$
     public static final String README_TXT = "readme.txt"; //$NON-NLS-1$
 
-    private static final String[] ALL_STATIC_FILES = new String[] { VERINICE_XML, DATA_XSD, MAPPING_XSD, SYNC_XSD,
-            README_TXT, };
+    private static final String[] ALL_STATIC_FILES = new String[] { VERINICE_XML, DATA_XSD,
+            MAPPING_XSD, SYNC_XSD, README_TXT, };
 
     static {
         Arrays.sort(ALL_STATIC_FILES);

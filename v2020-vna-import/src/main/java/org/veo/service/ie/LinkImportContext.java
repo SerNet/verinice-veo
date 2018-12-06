@@ -85,7 +85,6 @@ public class LinkImportContext {
         this.comment = comment;
     }
 
-
     @Override
     public int hashCode() {
         final int prime = 31;

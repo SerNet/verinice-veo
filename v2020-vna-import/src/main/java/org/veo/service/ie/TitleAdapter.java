@@ -151,7 +151,7 @@ public final class TitleAdapter {
         titleKeyMap.put(ElementFactory.SONSTIT_TYPE, SONSTIT_TITLE);
         titleKeyMap.put(ElementFactory.TKKOMPONENTE_TYPE, TKKOMPONENTE_TITLE);
         TITLE_KEY_MAP = Collections.unmodifiableMap(titleKeyMap);
-        
+
         // Titles which are the same for all elements of a specific type
         Map<String, String> titleStaticMap = new HashMap<>();
         titleStaticMap.put(ElementFactory.GEBAEUDEKATEGORIE_TYPE, "Gebäude");
@@ -191,7 +191,8 @@ public final class TitleAdapter {
             return getStaticTitle(id);
         }
         MapAttributeType mapAttribute = getMapAttribute(mapObject, titleKey);
-        return (mapAttribute == null) ? null : getAttribute(syncObject.getSyncAttribute(), mapAttribute.getExtId());
+        return (mapAttribute == null) ? null
+                : getAttribute(syncObject.getSyncAttribute(), mapAttribute.getExtId());
 
     }
 

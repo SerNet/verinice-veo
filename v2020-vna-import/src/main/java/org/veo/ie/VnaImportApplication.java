@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2018 Daniel Murygin.
+ *
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *
+ ******************************************************************************/
 package org.veo.ie;
 
 import java.nio.file.Files;
@@ -50,7 +67,8 @@ public class VnaImportApplication implements CommandLineRunner {
             // parse the command line arguments
             CommandLine line = parser.parse(CommandLineOptions.get(), args);
             String filePath = line.getOptionValue(CommandLineOptions.FILE);
-            String numberOfThreads = line.getOptionValue(CommandLineOptions.THREADS, CommandLineOptions.THREADS_DEFAULT);
+            String numberOfThreads = line.getOptionValue(CommandLineOptions.THREADS,
+                    CommandLineOptions.THREADS_DEFAULT);
             long start = System.currentTimeMillis();
             log.info("Importing: {}...", filePath);
             logNumberOfThreads(numberOfThreads);

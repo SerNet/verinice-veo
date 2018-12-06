@@ -38,7 +38,8 @@ public class ObjectImportContext {
     private Element parent;
     private Element node;
 
-    public ObjectImportContext(Element parent, SyncObject syncObject, List<MapObjectType> mapObjectTypeList) {
+    public ObjectImportContext(Element parent, SyncObject syncObject,
+            List<MapObjectType> mapObjectTypeList) {
         super();
         this.parent = parent;
         this.syncObject = syncObject;

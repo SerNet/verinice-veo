@@ -39,7 +39,8 @@ public class ImportContext {
 
     public void addObject(ObjectImportContext objectContext) {
         if (objectContext.getNode() != null) {
-            extIdDbIdMap.put(objectContext.getSyncObject().getExtId(), objectContext.getNode().getUuid());
+            extIdDbIdMap.put(objectContext.getSyncObject().getExtId(),
+                    objectContext.getNode().getUuid());
         }
     }
 
