@@ -27,18 +27,18 @@ import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 
 /**
- * A context to import one element and its properties from a VNA to database.
+ * Context for importing an element from a VNA file.
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class ObjectImportContext {
+public class ElementImportContext {
 
     private SyncObject syncObject;
     private List<MapObjectType> mapObjectTypeList;
     private Element parent;
-    private Element node;
+    private Element element;
 
-    public ObjectImportContext(Element parent, SyncObject syncObject,
+    public ElementImportContext(Element parent, SyncObject syncObject,
             List<MapObjectType> mapObjectTypeList) {
         super();
         this.parent = parent;
@@ -70,12 +70,12 @@ public class ObjectImportContext {
         this.parent = parent;
     }
 
-    public Element getNode() {
-        return node;
+    public Element getElement() {
+        return element;
     }
 
-    public void setNode(Element node) {
-        this.node = node;
+    public void setElement(Element element) {
+        this.element = element;
     }
 
 }

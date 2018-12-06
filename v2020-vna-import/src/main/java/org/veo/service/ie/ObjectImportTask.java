@@ -51,7 +51,7 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType;
  */
 @Component
 @Scope("prototype")
-public class ObjectImportTask implements Callable<ObjectImportContext> {
+public class ObjectImportTask implements Callable<ElementImportContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ObjectImportTask.class);
 
@@ -60,7 +60,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
     private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now().plusYears(20)
             .toInstant(ZoneOffset.UTC).toEpochMilli();
 
-    private ObjectImportContext context;
+    private ElementImportContext context;
 
     private static final Pattern NUMBER = Pattern.compile("-?\\d+");
 
@@ -75,7 +75,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
         super();
     }
 
-    public ObjectImportTask(ObjectImportContext importContext) {
+    public ObjectImportTask(ElementImportContext importContext) {
         super();
         this.context = importContext;
     }
@@ -85,7 +85,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
      * @see java.util.concurrent.Callable#call()
      */
     @Override
-    public ObjectImportContext call() throws Exception {
+    public ElementImportContext call() throws Exception {
         try {
             importObject();
             if (LOG.isDebugEnabled()) {
@@ -115,7 +115,7 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
             }
             importProperties(getSyncObject().getSyncAttribute(), element);
             importElementService.create(element);
-            context.setNode(element);
+            context.setElement(element);
         }
     }
 
@@ -234,11 +234,11 @@ public class ObjectImportTask implements Callable<ObjectImportContext> {
                 && syncAttribute.getValue() != null;
     }
 
-    public ObjectImportContext getContext() {
+    public ElementImportContext getContext() {
         return context;
     }
 
-    public void setContext(ObjectImportContext importContext) {
+    public void setContext(ElementImportContext importContext) {
         this.context = importContext;
     }
 

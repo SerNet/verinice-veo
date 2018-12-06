@@ -23,28 +23,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A context of for the import of a VNA which holds a map of ext-ids from a VNA
- * and associated UUID from the elements in the database.
+ * Context for importing a VNA file
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public class ImportContext {
 
-    private Map<String, String> extIdDbIdMap;
+    /**
+     * A map of ext-ids from the imported VNA file and associated UUID from the
+     * elements in the database
+     */
+    private Map<String, String> extIdUuidMap;
 
     public ImportContext() {
         super();
-        extIdDbIdMap = new HashMap<>();
+        extIdUuidMap = new HashMap<>();
     }
 
-    public void addObject(ObjectImportContext objectContext) {
-        if (objectContext.getNode() != null) {
-            extIdDbIdMap.put(objectContext.getSyncObject().getExtId(),
-                    objectContext.getNode().getUuid());
+    public void addElement(ElementImportContext elementContext) {
+        if (elementContext.getElement() != null) {
+            extIdUuidMap.put(elementContext.getSyncObject().getExtId(),
+                    elementContext.getElement().getUuid());
         }
     }
 
-    public String getDbId(String extId) {
-        return extIdDbIdMap.get(extId);
+    public String getUuid(String extId) {
+        return extIdUuidMap.get(extId);
     }
 }

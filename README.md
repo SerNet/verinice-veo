@@ -33,7 +33,7 @@ export JAVA_HOME=/path/to/jdk-8
 Set your database properties in file _v2020-vna-import/src/main/resources/application.properties_ and rebuild the application.
 
 ```bash
-./gradlew v2020-vna-import:bootRepackage
+./gradlew v2020-vna-import:bootJar
 java -jar v2020-vna-import/build/libs/v2020-vna-import-0.1.0-SNAPSHOT.jar \
 -f /path/to/verinice-archive-file.vna
 ```

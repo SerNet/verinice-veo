@@ -49,20 +49,11 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import de.sernet.sync.sync.SyncRequest;
 
 /**
- * Service class configured by Spring to import a verinice archive (VNA).
- * 
- * Wire this service to your class to import a VNA:
- * 
- * @Autowired VnaImport vnaImport;
- * 
- * @Override public void run(String... args) throws Exception { byte[]
- *           vnaFileData = Files.readAllBytes(Paths.get(filePath));
- *           vnaImport.setNumberOfThreads(Integer.valueOf(numberOfThreads));
- *           vnaImport.importVna(vnaFileData); }
+ * This service imports a verinice archive (VNA).
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-@Service("vnaImport")
+@Service
 public class VnaImport {
 
     private static final Logger LOG = LoggerFactory.getLogger(VnaImport.class);
@@ -72,7 +63,7 @@ public class VnaImport {
 
     private int numberOfThreads = DEFAULT_NUMBER_OF_THREADS;
 
-    private CompletionService<ObjectImportContext> objectImportCompletionService;
+    private CompletionService<ElementImportContext> objectImportCompletionService;
     private CompletionService<LinkImportContext> linkImportCompletionService;
     private ImportContext importContext;
     private int number = 0;
@@ -94,26 +85,29 @@ public class VnaImport {
         importContext = new ImportContext();
         try {
             Vna vna = new Vna(vnaFileData);
-            SyncRequest syncRequest = vna.getXml();
-            List<SyncObject> syncObjectList = getSyncObjectList(syncRequest);
-            List<MapObjectType> mapObjectTypeList = getMapObjectTypeList(syncRequest);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Starting import of objects...");
-            }
-            importObjectList(null, syncObjectList, mapObjectTypeList);
-            if (LOG.isInfoEnabled()) {
-                LOG.info("{} objects imported.", number);
-            }
-            List<SyncLink> syncLinkList = getSyncLinkList(syncRequest);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Number of links: {}, starting import...", syncLinkList.size());
-            }
-            // importLinkList(syncLinkList);
+            importXml(vna.getXml());
         } catch (Exception e) {
             LOG.error("Error while importing VNA.", e);
         } finally {
             shutdownAndAwaitTermination(taskExecutor);
         }
+    }
+
+    private void importXml(SyncRequest syncRequest) throws InterruptedException, ExecutionException {
+        List<SyncObject> syncObjectList = getSyncObjectList(syncRequest);
+        List<MapObjectType> mapObjectTypeList = getMapObjectTypeList(syncRequest);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Starting import of objects...");
+        }
+        importObjectList(null, syncObjectList, mapObjectTypeList);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("{} objects imported.", number);
+        }
+        List<SyncLink> syncLinkList = getSyncLinkList(syncRequest);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Number of links: {}, starting import...", syncLinkList.size());
+        }
+        // importLinkList(syncLinkList);
     }
 
     // @Transactional(isolation=Isolation.DEFAULT,propagation=Propagation.REQUIRED)
@@ -123,7 +117,7 @@ public class VnaImport {
             for (SyncObject syncObject : syncObjectList) {
                 ObjectImportTask importTask = objectImportTaskFactory.getObject();
                 importTask
-                        .setContext(new ObjectImportContext(parent, syncObject, mapObjectTypeList));
+                        .setContext(new ElementImportContext(parent, syncObject, mapObjectTypeList));
                 objectImportCompletionService.submit(importTask);
             }
             waitForObjectResults(syncObjectList.size());
@@ -132,15 +126,20 @@ public class VnaImport {
 
     private void waitForObjectResults(int n) throws InterruptedException, ExecutionException {
         for (int i = 0; i < n; ++i) {
-            ObjectImportContext objectContext = objectImportCompletionService.take().get();
-            importContext.addObject(objectContext);
-            if (objectContext != null) {
-                importObjectList(objectContext.getNode(),
-                        objectContext.getSyncObject().getChildren(),
-                        objectContext.getMapObjectTypeList());
+            ElementImportContext elementImportContext = objectImportCompletionService.take().get();
+            if (elementImportContext != null) {
+                afterImport(elementImportContext);
             }
         }
         number += n;
+    }
+
+    private void afterImport(ElementImportContext elementImportContext) throws InterruptedException, ExecutionException {
+        this.importContext.addElement(elementImportContext);
+        Element importedElement = elementImportContext.getElement();
+        importObjectList(importedElement,
+                elementImportContext.getSyncObject().getChildren(),
+                elementImportContext.getMapObjectTypeList());
     }
 
     // @Transactional(isolation=Isolation.READ_UNCOMMITTED)
@@ -149,13 +148,13 @@ public class VnaImport {
         if (syncLinkList != null) {
             Map<String, LinkImportContext> contextMap = new HashMap<>();
             for (SyncLink syncLink : syncLinkList) {
-                String startId = importContext.getDbId(syncLink.getDependant());
+                String startId = importContext.getUuid(syncLink.getDependant());
                 LinkImportContext context = contextMap.get(startId);
                 if (context == null) {
                     context = createImportContext(syncLink);
                     contextMap.put(startId, context);
                 } else {
-                    context.addEndId(importContext.getDbId(syncLink.getDependency()));
+                    context.addEndId(importContext.getUuid(syncLink.getDependency()));
                 }
             }
             for (LinkImportContext c : contextMap.values()) {
@@ -174,8 +173,8 @@ public class VnaImport {
     }
 
     private LinkImportContext createImportContext(SyncLink syncLink) {
-        String startId = importContext.getDbId(syncLink.getDependant());
-        String endId = importContext.getDbId(syncLink.getDependency());
+        String startId = importContext.getUuid(syncLink.getDependant());
+        String endId = importContext.getUuid(syncLink.getDependency());
         LinkImportContext context = new LinkImportContext(startId, endId, syncLink.getRelationId());
         context.setComment(syncLink.getComment());
         return context;
