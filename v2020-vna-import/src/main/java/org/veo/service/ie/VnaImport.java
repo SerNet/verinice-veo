@@ -89,9 +89,12 @@ public class VnaImport {
 
     /**
      * Imports a VNA from a byte array.
+     * 
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
-    public void importVna(byte[] vnaFileData) {
+    public void importVna(byte[] vnaFileData) throws InterruptedException, ExecutionException {
         ExecutorService taskExecutor = createExecutor();
         elementImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         linkImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
@@ -100,8 +103,6 @@ public class VnaImport {
             Vna vna = new Vna(vnaFileData);
             importXml(vna.getXml());
             handleMissingProperties();
-        } catch (Exception e) {
-            LOG.error("Error while importing VNA.", e);
         } finally {
             shutdownAndAwaitTermination(taskExecutor);
         }
