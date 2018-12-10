@@ -1,0 +1,7 @@
+plugins {
+    id 'org.unbroken-dome.xjc' version '1.4.1'
+}
+
+xjcGenerate {
+    source = fileTree('src/main/resources') { include '*.xsd' }
+}
