@@ -1,5 +1,10 @@
 apply plugin: 'groovy'
 
 dependencies {
+    compileOnly 'javax:javaee-api'
+    compileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
     testCompile 'org.spockframework:spock-core'
+    testCompile 'org.spockframework:spock-spring'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
 }

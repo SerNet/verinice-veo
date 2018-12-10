@@ -56,8 +56,8 @@ java -jar v2020-rest/build/libs/v2020-rest-0.1.0-SNAPSHOT.jar
 
 ## Modules
 
-### v2020-model
-This module contains the domain model and interfaces of the application. This module be used in any other module of the application.  
+### v2020-commons
+This module contains the core components of the application. This module can be used in any other module of the application.  
 
 ### v2020-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.

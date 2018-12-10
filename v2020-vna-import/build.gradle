@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(':v2020-data-xml')
-    compile project(':v2020-model')
+    compile project(':v2020-commons')
     compile project(':v2020-service')
     compile 'org.springframework.security:spring-security-core'
     compile 'org.springframework.security:spring-security-config'

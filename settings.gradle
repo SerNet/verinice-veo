@@ -1,4 +1,3 @@
-include ':v2020-model'
 include ':v2020-data-xml'
 include ':v2020-persistence'
 include ':v2020-service'

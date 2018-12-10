@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':v2020-model')
+    compile project(':v2020-commons')
 
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.springframework.data:spring-data-rest-core'
