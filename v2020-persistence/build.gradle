@@ -13,6 +13,5 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
     }
-    testCompile 'commons-lang:commons-lang'
     testCompile 'net._01001111:jlorem'
 }

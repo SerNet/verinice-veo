@@ -20,7 +20,6 @@
 package org.veo.persistence.test;
 
 import net._01001111.text.LoremIpsum;
-import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +41,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -79,6 +79,8 @@ public class ElementRepositoryTest {
     
     private LoremIpsum loremIpsum = new LoremIpsum();
     
+    private Random random = new Random();
+
     @Before
     public void init() {
         // empty         
@@ -202,7 +204,7 @@ public class ElementRepositoryTest {
     public void testBigTree() {
         Element element = createElement("org");
         elementRepository.save(element);
-        int maxDepth = RandomUtils.nextInt(2)+1;
+        int maxDepth = random.nextInt(2)+1;
         logger.debug("Creating tree, depth is: " + maxDepth + "...");
         createChildren(element, maxDepth, 0);
     }
@@ -245,17 +247,17 @@ public class ElementRepositoryTest {
         
         ElementProperty label = new ElementProperty();
         label.setKey("label");
-        label.setValue(loremIpsum.words(RandomUtils.nextInt(4)+1));
+        label.setValue(loremIpsum.words(random.nextInt(4)+1));
         element.addProperty(label);
         
         ElementProperty text = new ElementProperty();
         text.setKey("text");
-        text.setValue(loremIpsum.paragraphs(RandomUtils.nextInt(4)+1));
+        text.setValue(loremIpsum.paragraphs(random.nextInt(4)+1));
         element.addProperty(text);
         
         ElementProperty number = new ElementProperty();
         number.setKey("number");
-        number.setValue(String.valueOf(RandomUtils.nextInt(10000)+1));
+        number.setValue(String.valueOf(random.nextInt(10000)+1));
         element.addProperty(number);
         
         return element;
@@ -265,7 +267,7 @@ public class ElementRepositoryTest {
         if(depth>maxDepth) {
             return;
         }
-        int number = RandomUtils.nextInt(10)+1;
+        int number = random.nextInt(10)+1;
         logger.debug("Depth: " + depth + ", creating " + (number + 1) + " childs...");
         for (int i = 0; i < number; i++) {
             Element child = createElement(loremIpsum.randomWord());
