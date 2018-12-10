@@ -2,7 +2,6 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(':v2020-commons')
-    compile project(':v2020-persistence')
     compile project(':v2020-json-validation')
     compile project(':v2020-versioning')
     compile project(':v2020-commons')
