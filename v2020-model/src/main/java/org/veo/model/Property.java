@@ -45,13 +45,13 @@ public abstract class Property implements Serializable {
     @Column(length = 36)
     private String uuid;
 
-    @Column(name="property_key", nullable = false)
+    @Column(name = "property_key", nullable = false)
     private String key;
 
     @Column(length = 400000)
     private String value;
 
-    @Column(name="property_type", nullable = false)
+    @Column(name = "property_type", nullable = false)
     private Type type = Type.TEXT;
 
     @Column(nullable = false)
@@ -103,13 +103,21 @@ public abstract class Property implements Serializable {
         this.value = value;
     }
 
-    public Type getType() { return type; }
+    public Type getType() {
+        return type;
+    }
 
-    public void setType(Type type) { this.type = type; }
+    public void setType(Type type) {
+        this.type = type;
+    }
 
-    public Cardinality getCardinality() { return cardinality; }
+    public Cardinality getCardinality() {
+        return cardinality;
+    }
 
-    public void setCardinality(Cardinality cardinality) { this.cardinality = cardinality; }
+    public void setCardinality(Cardinality cardinality) {
+        this.cardinality = cardinality;
+    }
 
     public void setValue(String key, String value) {
         setKey(key);
@@ -118,8 +126,8 @@ public abstract class Property implements Serializable {
 
     /**
      * @return The values as int
-     * @exception  NumberFormatException  if the value cannot be parsed
-     *             as an integer.
+     * @exception NumberFormatException
+     *                if the value cannot be parsed as an integer.
      */
     public int getValueAsInt() {
         return Integer.valueOf(getValue());
@@ -127,7 +135,8 @@ public abstract class Property implements Serializable {
 
     /**
      * @return The values as ZonedDateTime
-     * @throws DateTimeParseException if the text cannot be parsed
+     * @throws DateTimeParseException
+     *             if the text cannot be parsed
      */
     public ZonedDateTime getValueAsDate() {
         return TimeFormatter.getDateFromIso8601(getValue());
@@ -135,22 +144,36 @@ public abstract class Property implements Serializable {
 
     public Object parseValue() {
         switch (getType()) {
-            case NUMBER: return getValueAsInt();
-            case DATE: return getValueAsDate();
-            case TEXT: return getValue();
-            default: return getValue();
+        case NUMBER:
+            return getValueAsInt();
+        case DATE:
+            return getValueAsDate();
+        case TEXT:
+            return getValue();
+        default:
+            return getValue();
         }
     }
 
-    public boolean isNumber() { return Type.NUMBER.equals(getType()); }
+    public boolean isNumber() {
+        return Type.NUMBER.equals(getType());
+    }
 
-    public boolean isText() { return Type.TEXT.equals(getType()); }
+    public boolean isText() {
+        return Type.TEXT.equals(getType());
+    }
 
-    public boolean isDate() { return Type.DATE.equals(getType()); }
+    public boolean isDate() {
+        return Type.DATE.equals(getType());
+    }
 
-    public boolean isSingle() { return Cardinality.SINGLE.equals(getCardinality()); }
+    public boolean isSingle() {
+        return Cardinality.SINGLE.equals(getCardinality());
+    }
 
-    public boolean isMulti() { return Cardinality.MULTI.equals(getCardinality()); }
+    public boolean isMulti() {
+        return Cardinality.MULTI.equals(getCardinality());
+    }
 
     @Override
     public int hashCode() {
@@ -191,16 +214,13 @@ public abstract class Property implements Serializable {
      * The data type of a property.
      */
     public enum Type {
-        TEXT,
-        NUMBER,
-        DATE
+        TEXT, NUMBER, DATE
     }
 
     /**
      * Determines if a property is the only value or if there are others.
      */
     public enum Cardinality {
-        SINGLE,
-        MULTI
+        SINGLE, MULTI
     }
 }

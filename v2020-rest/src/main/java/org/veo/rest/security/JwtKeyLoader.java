@@ -19,10 +19,6 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +29,10 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * This class provides access to public and private keys in resources.
@@ -51,8 +51,7 @@ public class JwtKeyLoader {
 
         byte[] keyBytes = getBytesFromResource(PUBLIC_KEY_FILENAME);
 
-        X509EncodedKeySpec spec =
-                new X509EncodedKeySpec(keyBytes);
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePublic(spec);
     }
@@ -62,8 +61,7 @@ public class JwtKeyLoader {
 
         byte[] keyBytes = getBytesFromResource(PRIVATE_KEY_FILENAME);
 
-        PKCS8EncodedKeySpec spec =
-                new PKCS8EncodedKeySpec(keyBytes);
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         return kf.generatePrivate(spec);
     }
