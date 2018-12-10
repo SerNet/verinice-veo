@@ -19,27 +19,33 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import static org.veo.rest.security.SecurityConstants.EXPIRATION_TIME;
+import static org.veo.rest.security.SecurityConstants.HEADER_STRING;
+import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
+
+import java.io.IOException;
+import java.security.Key;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.Key;
-import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.veo.rest.security.SecurityConstants.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * This filter extends authentication by added a JWToken to a successful authentication response.
