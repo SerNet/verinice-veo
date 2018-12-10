@@ -143,7 +143,7 @@ public class Vna implements Serializable {
         return uuid;
     }
 
-    public String getTempFileName() {
+    public final String getTempFileName() {
         if (tempFileName == null) {
             tempFileName = createTempFileName(getUuid());
         }
