@@ -224,7 +224,6 @@ public class VnaImport {
 
     public void saveProperties(Properties prop, String filePath) {
         try (Writer inputStream = new FileWriter(filePath)) {
-            // Storing the properties in the file with a heading comment.
             prop.store(inputStream, null);
         } catch (IOException ex) {
             LOG.error("Error while writing VNA veo schemata mapping properties", ex);
