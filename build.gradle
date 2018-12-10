@@ -1,13 +1,5 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.4.RELEASE")
-    }
-}
-
 plugins {
+    id 'org.springframework.boot' version '2.1.1.RELEASE'
     id "com.github.spotbugs" version '1.6.6'
 }
 
@@ -15,7 +7,6 @@ allprojects  {
     group = 'org.v2020'
     version = '0.1.0-SNAPSHOT'
 }
-
 
 subprojects {
     
