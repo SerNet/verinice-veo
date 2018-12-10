@@ -35,9 +35,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.veo.model.HistoryEntry;
 import org.veo.service.ElementMapService;
-import org.veo.versioning.HistoryEntry;
-import org.veo.versioning.HistoryService;
+import org.veo.service.HistoryService;
 
 /**
  * REST service which provides methods to manage elements.

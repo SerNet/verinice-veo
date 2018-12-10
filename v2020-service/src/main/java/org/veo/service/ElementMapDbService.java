@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.veo.model.Element;
 import org.veo.commons.VeoException;
 import org.veo.persistence.ElementRepository;
-import org.veo.versioning.HistoryService;
 
 /**
  * Database implementation of the ElementMapService.

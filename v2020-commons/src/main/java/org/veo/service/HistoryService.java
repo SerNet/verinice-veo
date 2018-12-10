@@ -1,7 +1,9 @@
-package org.veo.versioning;
+package org.veo.service;
 
 import java.util.List;
 import java.util.Map;
+
+import org.veo.model.HistoryEntry;
 
 public interface HistoryService {
 

@@ -6,7 +6,9 @@ dependencies {
 
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.springframework.data:spring-data-rest-core'
+    compile 'org.springframework.security:spring-security-core'
     compile 'com.fasterxml.jackson.core:jackson-databind'
+    
 
     runtime 'mysql:mysql-connector-java'
     runtime 'org.postgresql:postgresql'
@@ -21,4 +23,6 @@ dependencies {
     testCompile 'org.spockframework:spock-core'
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+    testRuntime 'com.h2database:h2'
 }

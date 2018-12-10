@@ -1,18 +1,20 @@
 package org.veo.versioning
 
-import groovy.json.JsonSlurper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
-import spock.lang.Specification
 import org.veo.commons.VeoException
+import org.veo.service.HistoryService
 
-@ContextConfiguration
+import groovy.json.JsonSlurper
+import spock.lang.Specification
+
 @DataJpaTest(showSql=false)
 @ActiveProfiles("test")
 class HistoryServiceSpec extends Specification {
@@ -63,8 +65,8 @@ class HistoryServiceSpec extends Specification {
 
         def uuid = UUID.randomUUID().toString()
         def element = [
-                title: 'Asset 1',
-                foo: 'bar'
+            title: 'Asset 1',
+            foo: 'bar'
         ]
         when:
         historyService.save(uuid, element)
@@ -72,5 +74,10 @@ class HistoryServiceSpec extends Specification {
         then:
         VeoException veoException = thrown()
         veoException.error == VeoException.Error.AUTHENTICATION_REQUIRED
+    }
+
+    @SpringBootConfiguration
+    @ComponentScan("org.veo")
+    static class TextConfiguration {
     }
 }

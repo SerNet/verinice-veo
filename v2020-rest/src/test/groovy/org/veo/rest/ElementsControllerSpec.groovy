@@ -7,7 +7,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.veo.service.ElementMapService
-import org.veo.versioning.HistoryService
+import org.veo.service.HistoryService
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper

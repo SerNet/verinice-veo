@@ -1,4 +1,4 @@
-package org.veo.versioning;
+package org.veo.service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.veo.commons.VeoException;
+import org.veo.model.HistoryEntry;
+import org.veo.persistence.HistoryRepository;
 
 @Service
 public class HistoryServiceImpl implements HistoryService {
