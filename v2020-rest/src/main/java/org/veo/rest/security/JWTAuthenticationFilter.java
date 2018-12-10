@@ -93,7 +93,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .setIssuedAt(new Date())
                 .setAudience("verinice.REST clients")
                 .addClaims(customClaim)
-                .signWith(SignatureAlgorithm.RS512, signingKey)
+                .signWith(signingKey, SignatureAlgorithm.RS512)
                 .compact();
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
