@@ -62,14 +62,6 @@ This module contains the core components of the application. This module can be 
 ### v2020-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.
 
-### Rest Layers
-The 3 REST components are split into 2 layers
-
-#### v2020-service
-This module contains the service implementation of the REST API.
-
-This is no generic module for all kind of "services" or interface implementations.
-
 #### v2020-rest
 This module contains the implementation of the REST services of the REST API.
 
