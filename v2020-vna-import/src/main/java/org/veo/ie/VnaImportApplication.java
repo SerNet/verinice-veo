@@ -49,7 +49,7 @@ import org.veo.util.time.TimeFormatter;
 @EntityScan("org.veo.model")
 public class VnaImportApplication implements CommandLineRunner {
 
-    private static Logger log = LoggerFactory.getLogger(VnaImportApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(VnaImportApplication.class);
 
     private static final String JAR_NAME = "v2020-vna-import-<VERSION>.jar";
 
