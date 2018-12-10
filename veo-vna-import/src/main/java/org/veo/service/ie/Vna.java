@@ -83,7 +83,7 @@ public class Vna implements Serializable {
      * @throws VnaNotValidException
      *             In case of a missing entry in a VNA
      */
-    public Vna(byte[] data) throws VnaNotValidException {
+    public Vna(byte[] data) {
         super();
         uuid = UUID.randomUUID().toString();
         if (LOG.isDebugEnabled()) {

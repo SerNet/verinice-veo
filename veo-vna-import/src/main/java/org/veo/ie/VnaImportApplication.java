@@ -97,7 +97,7 @@ public class VnaImportApplication implements CommandLineRunner {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(VnaImportApplication.class, args);
     }
 

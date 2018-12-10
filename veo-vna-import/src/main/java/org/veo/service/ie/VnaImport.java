@@ -179,9 +179,9 @@ public class VnaImport {
                     context.addEndId(importContext.getUuid(syncLink.getDependency()));
                 }
             }
-            for (LinkImportContext c : contextMap.values()) {
+            for (LinkImportContext context : contextMap.values()) {
                 LinkImportTask importThread = linkImportTaskFactory.getObject();
-                importThread.setContext(c);
+                importThread.setContext(context);
                 linkImportCompletionService.submit(importThread);
             }
             waitForLinkResults(contextMap.size());
