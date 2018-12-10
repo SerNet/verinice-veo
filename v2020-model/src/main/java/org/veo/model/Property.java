@@ -130,7 +130,7 @@ public abstract class Property implements Serializable {
      *                if the value cannot be parsed as an integer.
      */
     public int getValueAsInt() {
-        return Integer.valueOf(getValue());
+        return Integer.parseInt(getValue());
     }
 
     /**
