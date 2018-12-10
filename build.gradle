@@ -1,11 +1,63 @@
 plugins {
     id 'org.springframework.boot' version '2.1.1.RELEASE' apply false
     id "com.github.spotbugs" version '1.6.6'
+    id "com.diffplug.gradle.spotless" version "3.16.0" apply false
 }
 
 allprojects  {
     group = 'org.veo'
     version = '0.1.0-SNAPSHOT'
+
+    apply plugin: "com.diffplug.gradle.spotless"
+
+    spotless {
+        groovyGradle {
+            greclipse()
+            indentWithSpaces(4)
+            paddedCell()
+        }
+        java {
+            target 'src/**/*.java'
+
+            eclipse().configFile(rootProject.file('spotless.eclipseformat.xml'))
+            removeUnusedImports()
+            importOrder 'java', 'javax', 'org', 'com', 'org.veo'
+            trimTrailingWhitespace()
+        }
+        groovy {
+            target 'src/**/*.groovy'
+
+            greclipse()
+            importOrder 'java', 'javax', 'org', 'com', 'org.veo'
+            indentWithSpaces(4)
+            trimTrailingWhitespace()
+        }
+        xml {
+            target 'src/**/*.xml'
+
+            eclipse()
+        }
+        format 'git', {
+            target '**/.gitignore'
+
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        format 'markdown', {
+            target '**/*.md'
+
+            trimTrailingWhitespace()
+            indentWithTabs()
+            endWithNewline()
+        }
+        format 'json', {
+            target '**/*.json'
+
+            trimTrailingWhitespace()
+            indentWithSpaces(2)
+            endWithNewline()
+        }
+    }
 }
 
 subprojects {
