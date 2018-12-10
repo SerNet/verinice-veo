@@ -6,6 +6,11 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.4.RELEASE")
     }
 }
+
+plugins {
+    id "com.github.spotbugs" version '1.6.6'
+}
+
 allprojects  {
     group = 'org.v2020'
     version = '0.1.0-SNAPSHOT'
@@ -16,7 +21,7 @@ subprojects {
     
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'findbugs'
+    apply plugin: 'com.github.spotbugs'
     apply plugin: 'pmd'
     apply plugin: 'jacoco'
 
@@ -54,9 +59,9 @@ subprojects {
     }
 
     pmd.ignoreFailures = true
-    findbugs.ignoreFailures = true
+    spotbugs.ignoreFailures = true
 
-    findbugsTest.enabled = false
+    spotbugsTest.enabled = false
     pmdTest.enabled = false
 
     // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
