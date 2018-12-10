@@ -68,8 +68,8 @@ public class JwtKeyLoader {
 
     private static byte[] getBytesFromResource(String filename) throws IOException {
         ClassPathResource r = new ClassPathResource(filename);
-        try (InputStream openStream = r.getInputStream()) {
-            DataInputStream dis = new DataInputStream(openStream);
+        try (InputStream openStream = r.getInputStream();
+                DataInputStream dis = new DataInputStream(openStream);) {
             int contentLength = openStream.available();
             byte[] keyBytes = new byte[contentLength];
             dis.readFully(keyBytes);
