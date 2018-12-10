@@ -28,7 +28,7 @@ import org.veo.service.LinkService;
 /**
  * A service facade providing all methods to import data from a VNA to a
  * database. This implementation delegates calls to the services from the
- * service layer in v2020-commons.
+ * service layer in v2020-core.
  * 
  * @author Daniel Murygin
  */

@@ -2,5 +2,5 @@ include ':v2020-data-xml'
 include ':v2020-rest'
 include ':v2020-vna-import'
 include ':v2020-json-validation'
-include 'v2020-commons'
+include ':v2020-core'
 
