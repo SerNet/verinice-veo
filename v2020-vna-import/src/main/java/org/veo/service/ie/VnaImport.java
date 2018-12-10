@@ -19,9 +19,11 @@
  ******************************************************************************/
 package org.veo.service.ie;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -223,8 +225,8 @@ public class VnaImport {
     }
 
     public void saveProperties(Properties prop, String filePath) {
-        try (Writer inputStream = new FileWriter(filePath)) {
-            prop.store(inputStream, null);
+        try (Writer writer = Files.newBufferedWriter(Paths.get(filePath), StandardCharsets.UTF_8)) {
+            prop.store(writer, null);
         } catch (IOException ex) {
             LOG.error("Error while writing VNA veo schemata mapping properties", ex);
         }
