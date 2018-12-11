@@ -44,6 +44,8 @@ import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 
+import org.springframework.lang.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -107,13 +109,11 @@ public class Element implements Serializable {
     @JsonIgnore
     private Set<Element> children = new HashSet<>();
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "source_uuid")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "source")
     @JsonIgnore
     private Set<Link> linksOutgoing = new HashSet<>();
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "destination_uuid")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "destination")
     @JsonIgnore
     private Set<Link> linksIncoming = new HashSet<>();
 
@@ -123,14 +123,12 @@ public class Element implements Serializable {
     private List<ElementProperty> properties;
 
     public Element() {
-        if (this.uuid == null) {
-            UUID randomUUID = java.util.UUID.randomUUID();
-            uuid = randomUUID.toString();
-        }
+        this(UUID.randomUUID().toString());
     }
 
-    public Element(String uuid) {
+    public Element(@NonNull String uuid) {
         this.uuid = uuid;
+        properties = new LinkedList<>();
     }
 
     public String getUuid() {
@@ -295,7 +293,7 @@ public class Element implements Serializable {
 
     @Override
     public String toString() {
-        return getTitle() + " - " + getUuid();
+        return getTypeId() + " - " + getTitle() + " - " + getUuid();
     }
 
 }

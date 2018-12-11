@@ -38,6 +38,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 
+import org.springframework.lang.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -57,31 +59,24 @@ public class Link implements Serializable {
     @Column(nullable = false, length = 255)
     private String typeId;
     
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "source_uuid")
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Element source;
-    
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "destination_uuid")
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Element destination;
-    
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
-    @OrderColumn()
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderColumn(name = "properties_order", nullable = false)
     @JoinColumn(name = "link_uuid")
     private List<LinkProperty> properties;
     
     public Link() {
-        UUID randomUUID = java.util.UUID.randomUUID();
-        uuid = randomUUID.toString();
+        this(UUID.randomUUID().toString());
     }
 
-    public Link(String uuid) {
-        if (uuid == null) {
-            UUID randomUUID = java.util.UUID.randomUUID();
-            this.uuid = randomUUID.toString();
-        } else {
-            this.uuid = uuid;
-        }
+    public Link(@NonNull String uuid) {
+        this.uuid = uuid;
+        properties = new LinkedList<>();
     }
     
     /**

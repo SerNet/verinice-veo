@@ -19,7 +19,19 @@
  ******************************************************************************/
 package org.veo.persistence.test;
 
-import net._01001111.text.LoremIpsum;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,17 +48,7 @@ import org.veo.persistence.ElementRepository;
 import org.veo.persistence.LinkRepository;
 import org.veo.util.time.TimeFormatter;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import net._01001111.text.LoremIpsum;
 
 /**
  * By default this test runs with in memory database h2
@@ -107,26 +109,6 @@ public class ElementRepositoryTest {
         assertNotNull(elementResult);
         assertEquals(4, elementResult.getProperties().size());
         assertEquals(1, elementResult.getChildren().size());
-    }
-    
-    @Test
-    public void testSaveAndFindLinkWithNewElement() {
-        Element element = createElement("org");
-        Element linkedElement = createElement("person"); 
-        Link link = new Link();
-        link.setSource(element);
-        link.setDestination(linkedElement);
-        link.setTypeId("");
-        element.addLinkOutgoing(link);
-        elementRepository.save(element);
-        
-        Element elementResult = elementRepository.findOneWithLinks(element.getUuid());
-        assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
-        assertEquals(1, elementResult.getLinksOutgoing().size());  
-        
-        assertEquals(1, elementResult.getLinksOutgoing().size());  
-        assertEquals(1, elementResult.getLinkedDestinations().size());
     }
     
     @Test
@@ -204,7 +186,7 @@ public class ElementRepositoryTest {
     public void testBigTree() {
         Element element = createElement("org");
         elementRepository.save(element);
-        int maxDepth = random.nextInt(2)+1;
+        int maxDepth = random.nextInt(2) + 1;
         logger.debug("Creating tree, depth is: " + maxDepth + "...");
         createChildren(element, maxDepth, 0);
     }
@@ -247,17 +229,17 @@ public class ElementRepositoryTest {
         
         ElementProperty label = new ElementProperty();
         label.setKey("label");
-        label.setValue(loremIpsum.words(random.nextInt(4)+1));
+        label.setValue(loremIpsum.words(random.nextInt(4) + 1));
         element.addProperty(label);
         
         ElementProperty text = new ElementProperty();
         text.setKey("text");
-        text.setValue(loremIpsum.paragraphs(random.nextInt(4)+1));
+        text.setValue(loremIpsum.paragraphs(random.nextInt(4) + 1));
         element.addProperty(text);
         
         ElementProperty number = new ElementProperty();
         number.setKey("number");
-        number.setValue(String.valueOf(random.nextInt(10000)+1));
+        number.setValue(String.valueOf(random.nextInt(10000) + 1));
         element.addProperty(number);
         
         return element;
@@ -267,7 +249,7 @@ public class ElementRepositoryTest {
         if(depth>maxDepth) {
             return;
         }
-        int number = random.nextInt(10)+1;
+        int number = random.nextInt(10) + 1;
         logger.debug("Depth: " + depth + ", creating " + (number + 1) + " childs...");
         for (int i = 0; i < number; i++) {
             Element child = createElement(loremIpsum.randomWord());
