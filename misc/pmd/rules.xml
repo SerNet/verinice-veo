@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Veo Rules" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>
+        veo code rule set
+
+        Priority 1 is used for rules, whose findings can be considered
+        equal to bugs.
+
+        Priority 2 is used for rules, whose findings might be false
+        positive.
+    </description>
+
+    <rule ref="category/java/errorprone.xml">
+    </rule>
+
+    <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
+        <properties>
+            <property name="violationSuppressRegex" value="^Found 'UR'-anomaly.*"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="GuardLogStatement"/>
+    </rule>
+
+    <rule ref="category/java/design.xml">
+        <exclude name="LawOfDemeter"/>
+    </rule>
+
+    <rule ref="category/java/design.xml/LoosePackageCoupling">
+        <properties>
+            <property name="packages" value="org.veo.rest"/>
+        </properties>
+    </rule>
+    
+    <rule ref="category/java/multithreading.xml">
+    </rule>
+    
+
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
+</ruleset>

@@ -101,11 +101,17 @@ subprojects {
 
     repositories { mavenCentral() }
 
-    pmd.ignoreFailures = true
-    spotbugs.ignoreFailures = true
-
-    spotbugsTest.enabled = false
+    pmd {
+        toolVersion = '6.15.0'
+        ruleSetConfig = rootProject.resources.text.fromFile('misc/pmd/rules.xml')
+        ruleSets = []
+        rulePriority = 2
+        consoleOutput = true
+    }
     pmdTest.enabled = false
+
+    spotbugs.ignoreFailures = true
+    spotbugsTest.enabled = false
 
     // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
     if (rootProject.hasProperty('ci')) {
