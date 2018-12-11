@@ -19,8 +19,12 @@
  ******************************************************************************/
 package org.veo.service.ie;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Properties;
+
+import org.veo.model.Element;
+import org.veo.model.Link;
+
+import de.sernet.sync.data.SyncLink;
 
 /**
  * A context to import one link from a VNA to database.
@@ -29,98 +33,54 @@ import java.util.List;
  */
 public class LinkImportContext {
 
-    private String startId;
-    private List<String> endIdList;
-    private String type;
-    private String comment;
+    private SyncLink syncLink;
+    private Element source;
+    private Element destination;
+    private Link link;
+    private Properties missingMappingProperties;
 
     public LinkImportContext() {
         super();
     }
 
-    public LinkImportContext(String startId, String type) {
+    public LinkImportContext(SyncLink syncLink, Element source, Element destination) {
         super();
-        this.startId = startId;
-        this.type = type;
-        endIdList = new LinkedList<>();
+        this.syncLink = syncLink;
+        this.source = source;
+        this.destination = destination;
+        this.missingMappingProperties = new Properties();
     }
 
-    public LinkImportContext(String startId, String endId, String type) {
-        super();
-        this.startId = startId;
-        endIdList = new LinkedList<>();
-        endIdList.add(endId);
-        this.type = type;
+    public Link getLink() {
+        return link;
     }
 
-    public String getStartId() {
-        return startId;
+    public void setLink(Link link) {
+        this.link = link;
     }
 
-    public void setStartId(String startId) {
-        this.startId = startId;
+    public SyncLink getSyncLink() {
+        return syncLink;
     }
 
-    public List<String> getEndIdList() {
-        return endIdList;
+    public Element getSource() {
+        return source;
     }
 
-    public void addEndId(String endId) {
-        endIdList.add(endId);
+    public Element getDestination() {
+        return destination;
     }
 
-    public String getType() {
-        return type;
+    public Properties getMissingMappingProperties() {
+        return missingMappingProperties;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void addMissingMappingProperty(String key) {
+        getMissingMappingProperties().put(key, "");
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((startId == null) ? 0 : startId.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        LinkImportContext other = (LinkImportContext) obj;
-        if (startId == null) {
-            if (other.startId != null) {
-                return false;
-            }
-        } else if (!startId.equals(other.startId)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        return true;
+    public void setMissingMappingProperties(Properties missingMappingProperties) {
+        this.missingMappingProperties = missingMappingProperties;
     }
 
 }

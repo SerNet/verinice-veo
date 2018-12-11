@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.veo.model.Element;
+
 /**
  * Context for importing a VNA file
  * 
@@ -34,25 +36,25 @@ public class ImportContext {
      * A map of ext-ids from the imported VNA file and associated UUID from the
      * elements in the database
      */
-    private Map<String, String> extIdUuidMap;
+    private Map<String, Element> extIdElementMap;
 
     private Properties missingMappingProperties;
 
     public ImportContext() {
         super();
-        extIdUuidMap = new HashMap<>();
+        extIdElementMap = new HashMap<>();
         missingMappingProperties = new Properties();
     }
 
     public void addElement(ElementImportContext elementContext) {
         if (elementContext.getElement() != null) {
-            extIdUuidMap.put(elementContext.getSyncObject().getExtId(),
-                    elementContext.getElement().getUuid());
+            extIdElementMap.put(elementContext.getSyncObject().getExtId(),
+                    elementContext.getElement());
         }
     }
 
-    public String getUuid(String extId) {
-        return extIdUuidMap.get(extId);
+    public Element getElement(String extId) {
+        return extIdElementMap.get(extId);
     }
 
     public Properties getMissingMappingProperties() {

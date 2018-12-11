@@ -25,9 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletionService;
@@ -75,7 +73,8 @@ public class VnaImport {
     private CompletionService<ElementImportContext> elementImportCompletionService;
     private CompletionService<LinkImportContext> linkImportCompletionService;
     private ImportContext importContext;
-    private int number = 0;
+    private int numberOfElements = 0;
+    private int numberOfLinks = 0;
 
     @Autowired
     private ObjectFactory<ElementImportTask> elementImportTaskFactory;
@@ -101,8 +100,7 @@ public class VnaImport {
         elementImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         linkImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         importContext = new ImportContext();
-        try {
-            Vna vna = new Vna(vnaFileData);
+        try (Vna vna = new Vna(vnaFileData)) {
             importXml(vna.getXml());
             handleMissingProperties();
         } finally {
@@ -114,21 +112,21 @@ public class VnaImport {
             throws InterruptedException, ExecutionException {
         List<SyncObject> syncObjectList = getSyncObjectList(syncRequest);
         List<MapObjectType> mapObjectTypeList = getMapObjectTypeList(syncRequest);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Starting import of objects...");
-        }
+        LOG.debug("Starting import of objects...");
+        numberOfElements = 0;
         importObjectList(null, syncObjectList, mapObjectTypeList);
         if (LOG.isInfoEnabled()) {
-            LOG.info("{} objects imported.", number);
+            LOG.info("{} objects imported.", numberOfElements);
         }
         List<SyncLink> syncLinkList = getSyncLinkList(syncRequest);
         if (LOG.isDebugEnabled()) {
             LOG.debug("Number of links: {}, starting import...", syncLinkList.size());
         }
-        // importLinkList(syncLinkList);
+        numberOfLinks = 0;
+        importLinkList(syncLinkList);
+        LOG.info("{} links imported.", numberOfLinks);
     }
 
-    // @Transactional(isolation=Isolation.DEFAULT,propagation=Propagation.REQUIRED)
     private void importObjectList(Element parent, List<SyncObject> syncObjectList,
             List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
@@ -158,48 +156,47 @@ public class VnaImport {
                 .addAllMissingMappingProperties(elementImportContext.getMissingMappingProperties());
         Element importedElement = elementImportContext.getElement();
         if (importedElement != null) {
-            number++;
+            numberOfElements++;
             importObjectList(importedElement, elementImportContext.getSyncObject().getChildren(),
                     elementImportContext.getMapObjectTypeList());
         }
     }
 
-    // @Transactional(isolation=Isolation.READ_UNCOMMITTED)
+    private void afterImport(LinkImportContext linkImportContext) {
+        this.importContext
+                .addAllMissingMappingProperties(linkImportContext.getMissingMappingProperties());
+        if (linkImportContext.getLink() != null) {
+            numberOfLinks++;
+        }
+    }
+
     private void importLinkList(List<SyncLink> syncLinkList)
             throws InterruptedException, ExecutionException {
         if (syncLinkList != null) {
-            Map<String, LinkImportContext> contextMap = new HashMap<>();
+            numberOfLinks = 0;
             for (SyncLink syncLink : syncLinkList) {
-                String startId = importContext.getUuid(syncLink.getDependant());
-                LinkImportContext context = contextMap.get(startId);
-                if (context == null) {
-                    context = createImportContext(syncLink);
-                    contextMap.put(startId, context);
-                } else {
-                    context.addEndId(importContext.getUuid(syncLink.getDependency()));
+                Element source = importContext.getElement(syncLink.getDependant());
+                Element destination = importContext.getElement(syncLink.getDependency());
+                if (source == null || destination == null) {
+                    continue;
                 }
-            }
-            for (LinkImportContext context : contextMap.values()) {
+                LinkImportContext context = new LinkImportContext(syncLink, source, destination);
                 LinkImportTask importThread = linkImportTaskFactory.getObject();
                 importThread.setContext(context);
                 linkImportCompletionService.submit(importThread);
+                numberOfLinks++;
             }
-            waitForLinkResults(contextMap.size());
+            waitForLinkResults(numberOfLinks);
         }
     }
 
     private void waitForLinkResults(int n) throws InterruptedException, ExecutionException {
         for (int i = 0; i < n; ++i) {
-            linkImportCompletionService.take().get();
+            LinkImportContext linkImportContext = linkImportCompletionService.take().get();
+            if (linkImportContext != null) {
+                afterImport(linkImportContext);
+            }
         }
-    }
-
-    private LinkImportContext createImportContext(SyncLink syncLink) {
-        String startId = importContext.getUuid(syncLink.getDependant());
-        String endId = importContext.getUuid(syncLink.getDependency());
-        LinkImportContext context = new LinkImportContext(startId, endId, syncLink.getRelationId());
-        context.setComment(syncLink.getComment());
-        return context;
     }
 
     private List<SyncObject> getSyncObjectList(SyncRequest syncRequest) {

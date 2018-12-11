@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Daniel Murygin.
+ * Copyright (c) 2017 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -24,26 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-/*******************************************************************************
- * Copyright (c) 2017 Daniel Murygin.
- *
- * This program is free software: you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation, either version 3 
- * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,    
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
- * See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. 
- * If not, see <http://www.gnu.org/licenses/>.
- * 
- * Contributors:
- *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
- ******************************************************************************/
+import org.veo.model.Element;
+import org.veo.model.Link;
+import org.veo.service.LinkService;
 
 /**
  * A callable task to import one link from a VNA to database.
@@ -59,7 +42,11 @@ public class LinkImportTask implements Callable<LinkImportContext> {
     private LinkImportContext context;
 
     @Autowired
-    private ImportElementService importElementService;
+    LinkService linkService;
+
+    @Autowired
+    @javax.annotation.Resource(name = "SchemaTypeIdMapper")
+    private TypeIdMapper typeIdMapper;
 
     public LinkImportTask() {
         super();
@@ -78,23 +65,47 @@ public class LinkImportTask implements Callable<LinkImportContext> {
         try {
             importLink();
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Link imported, start id: {}, end id: {}", context.getStartId(),
-                        context.getEndIdList());
+                LOG.debug("Link imported, start id: {}, end id: {}", context.getSource(),
+                        context.getDestination());
             }
         } catch (Exception e) {
-            LOG.error("Error while importing link, start id: " + context.getStartId() + ", end id: "
-                    + context.getEndIdList(), e);
+            LOG.error("Error while importing link, start id: " + context.getSource() + ", end id: "
+                    + context.getDestination(), e);
         }
         return context;
     }
 
     private void importLink() {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Start importing link, start id: {}, end id: {}...", context.getStartId(),
-                    context.getEndIdList());
+            LOG.debug("Start importing link, start id: {}, end id: {}...", context.getSource(),
+                    context.getDestination());
         }
-        importElementService.createLink(context.getStartId(), context.getEndIdList(),
-                context.getType());
+        if (isImported()) {
+            Element source = context.getSource();
+            Element destination = context.getDestination();
+            Link link = new Link();
+            link.setSource(source);
+            link.setDestination(destination);
+            link.setTypeId(getVeoElementTypeId(context.getSyncLink().getRelationId()));
+            linkService.save(link);
+            source.getLinksOutgoing().add(link);
+            destination.getLinksIncoming().add(link);
+            context.setLink(link);
+        }
+    }
+
+    private boolean isImported() {
+        String veriniceLinkTypeId = context.getSyncLink().getRelationId();
+        String veoLinkTypeId = getVeoElementTypeId(veriniceLinkTypeId);
+        boolean isVeoPropertyId = (veoLinkTypeId != null);
+        if (!isVeoPropertyId) {
+            context.addMissingMappingProperty(veriniceLinkTypeId);
+        }
+        return isVeoPropertyId;
+    }
+
+    private String getVeoElementTypeId(String vnaTypeId) {
+        return typeIdMapper.getVeoElementTypeId(vnaTypeId);
     }
 
     public void setContext(LinkImportContext context) {

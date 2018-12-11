@@ -51,7 +51,7 @@ import de.sernet.sync.sync.SyncRequest;
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class Vna implements Serializable {
+public class Vna implements Serializable, AutoCloseable {
 
     private static final long serialVersionUID = 4563763042849838627L;
 
@@ -131,7 +131,7 @@ public class Vna implements Serializable {
         return XmlIO.read(getXmlFilePath(), SyncRequest.class);
     }
 
-    public void clear() {
+    public void close() {
         try {
             FileUtils.deleteDirectory(new File(getTempFileName()));
         } catch (IOException e) {

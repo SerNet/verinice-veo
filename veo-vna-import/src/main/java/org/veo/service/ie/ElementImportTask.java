@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.model.Property;
+import org.veo.service.ElementService;
 import org.veo.util.time.TimeFormatter;
 
 import de.sernet.sync.data.SyncAttribute;
@@ -65,7 +66,7 @@ public class ElementImportTask implements Callable<ElementImportContext> {
     private static final Pattern NUMBER = Pattern.compile("-?\\d+");
 
     @Autowired
-    private ImportElementService importElementService;
+    ElementService elementService;
 
     @Autowired
     @javax.annotation.Resource(name = "SchemaTypeIdMapper")
@@ -114,7 +115,7 @@ public class ElementImportTask implements Callable<ElementImportContext> {
         }
         importProperties(getSyncObject().getSyncAttribute(), element);
         if (isImported()) {
-            importElementService.create(element);
+            element = elementService.save(element);
             context.setElement(element);
         }
     }
