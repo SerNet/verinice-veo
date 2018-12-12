@@ -3,7 +3,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":v2020-core")
+    compile project(":veo-core")
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-rest'
     compile("org.springframework.boot:spring-boot-starter-security")
@@ -13,7 +13,7 @@ dependencies {
     runtime 'io.jsonwebtoken:jjwt-jackson'
     runtime 'com.h2database:h2'
 
-    testCompile project(":v2020-json-validation")
+    testCompile project(":veo-json-validation")
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testRuntime 'com.h2database:h2'

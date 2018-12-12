@@ -1,6 +1,6 @@
-include ':v2020-data-xml'
-include ':v2020-rest'
-include ':v2020-vna-import'
-include ':v2020-json-validation'
-include ':v2020-core'
+include ':veo-data-xml'
+include ':veo-rest'
+include ':veo-vna-import'
+include ':veo-json-validation'
+include ':veo-core'
 

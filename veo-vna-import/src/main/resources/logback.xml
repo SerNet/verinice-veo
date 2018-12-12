@@ -12,13 +12,13 @@
     </appender>
 	
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./v2020-vna-import.log</file>
+        <file>./veo-vna-import.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</Pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>./v2020-vna-import.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>./veo-vna-import.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>5MB</maxFileSize>

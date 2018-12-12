@@ -30,39 +30,39 @@ export JAVA_HOME=/path/to/jdk-8
 
 **Run VNA Import**
 
-Set your database properties in file _v2020-vna-import/src/main/resources/application.properties_ and rebuild the application.
+Set your database properties in file _veo-vna-import/src/main/resources/application.properties_ and rebuild the application.
 
 ```bash
-./gradlew v2020-vna-import:bootJar
-java -jar v2020-vna-import/build/libs/v2020-vna-import-0.1.0-SNAPSHOT.jar \
+./gradlew veo-vna-import:bootJar
+java -jar veo-vna-import/build/libs/veo-vna-import-0.1.0-SNAPSHOT.jar \
 -f /path/to/verinice-archive-file.vna
 ```
 
 **Run REST Service**
 
-Set your database properties in file _v2020-rest/src/main/resources/application.properties_ and rebuild the application.
+Set your database properties in file _veo-rest/src/main/resources/application.properties_ and rebuild the application.
 
 
 ```bash
-./gradlew v2020-rest:bootRun
+./gradlew veo-rest:bootRun
 ```
 
 or
 
 ```bash
-./gradlew v2020-rest:jar
-java -jar v2020-rest/build/libs/v2020-rest-0.1.0-SNAPSHOT.jar
+./gradlew veo-rest:jar
+java -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
 ```
 
 ## Modules
 
-### v2020-core
+### veo-core
 This module contains the core components of the application. This module can be used in any other module of the application.  
 
-### v2020-data-xml
+### veo-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.
 
-#### v2020-rest
+#### veo-rest
 This module contains the implementation of the REST services of the REST API.
 
 The JSON schemas accepted by the API can be found in *${veo.basedir}/schemas/*. If this directory
@@ -72,10 +72,10 @@ does not exist, built-in schema files will be served as default.
 default. The gradle task `bootRun` sets *veo.basedir* to
 *$HOME/.local/share/veo*.
 
-### v2020-vna-import
+### veo-vna-import
 This module contains an importer for verinice archives (VNAs).
 
-### v2020-json-validation
+### veo-json-validation
 This module provides functionality to validate JSON used throughout the API.
 
 Each JSON has to be valid against a JSON schema, possibly defined by clients,
@@ -85,10 +85,10 @@ veo JSON schemas a meta schema is defined, see [META-SCHEMA.md](META-SCHEMA.md)
 ## Database
 Entity–relationship model of the database:
 
-![ERM of the the database](v2020-persistence/src/main/sql/database-erm.png)
+![ERM of the the database](veo-persistence/src/main/sql/database-erm.png)
 
 ## Authentication and Authorization
-v2020-rest uses JWT to authorize users. Tokens can be obtained by a `POST` on `/login`, e.g.
+veo-rest uses JWT to authorize users. Tokens can be obtained by a `POST` on `/login`, e.g.
 
 	curl -i -H "Content-Type: application/json" -X POST -d '{
 			"username": "user",

@@ -51,7 +51,7 @@ public class VnaImportApplication implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(VnaImportApplication.class);
 
-    private static final String JAR_NAME = "v2020-vna-import-<VERSION>.jar";
+    private static final String JAR_NAME = "veo-vna-import-<VERSION>.jar";
 
     public VnaImportApplication() {
         // Empty constructor

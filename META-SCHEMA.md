@@ -109,6 +109,6 @@ and has no information whether to use a checkbox or toggle switch. This restrict
 meta-schema and schema describe the structure of the data and not how they are presented, similar to HTML and CSS. Such
 information shall be given by a UI-schema which is still to be defined.
 
-[order.json]: v2020-json-validation/src/test/resources/order.json "An example element schema"
-[meta.json]: v2020-json-validation/src/main/resources/meta.json "The meta-schema"
+[order.json]: veo-json-validation/src/test/resources/order.json "An example element schema"
+[meta.json]: veo-json-validation/src/main/resources/meta.json "The meta-schema"
 

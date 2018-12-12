@@ -13,7 +13,7 @@ set -e
 
 ITER=3
 SCRIPTDIR=`dirname $0`
-SCHEMADIR=$SCRIPTDIR/../v2020-rest/src/main/resources/schemas
+SCHEMADIR=$SCRIPTDIR/../veo-rest/src/main/resources/schemas
 SCHEMAS="\
 	person.json \
 	asset.json \
