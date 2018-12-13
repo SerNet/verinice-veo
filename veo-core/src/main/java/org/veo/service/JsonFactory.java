@@ -20,10 +20,8 @@
 package org.veo.service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -46,15 +44,6 @@ public class JsonFactory {
     public static final String TYPE = "$veo.type";
     public static final String SOURCE = "source";
     public static final String TARGET = "target";
-
-    public static final Set<String> STATIC_PROPERTIES;
-    static {
-        STATIC_PROPERTIES = new HashSet<>(5);
-        STATIC_PROPERTIES.add(ID);
-        STATIC_PROPERTIES.add(PARENT);
-        STATIC_PROPERTIES.add(TITLE);
-        STATIC_PROPERTIES.add(TYPE);
-    }
 
     public Map<String, Object> createJson(Element element) {
         Map<String, Object> json = new HashMap<>();

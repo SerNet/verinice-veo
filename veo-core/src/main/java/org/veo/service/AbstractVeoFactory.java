@@ -19,14 +19,26 @@
  ******************************************************************************/
 package org.veo.service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * This is the basic class for the object factories like {@link LinkFactory} or
  * {@link ElementFactory}.
  */
 public abstract class AbstractVeoFactory {
 
+    private static final Set<String> STATIC_PROPERTIES;
+
+    static {
+        STATIC_PROPERTIES = Stream
+                .of(JsonFactory.ID, JsonFactory.PARENT, JsonFactory.TITLE, JsonFactory.TYPE)
+                .collect(Collectors.toSet());
+    }
+
     protected boolean isStaticProperty(String name) {
-        return JsonFactory.STATIC_PROPERTIES.contains(name);
+        return AbstractVeoFactory.STATIC_PROPERTIES.contains(name);
     }
 
 }

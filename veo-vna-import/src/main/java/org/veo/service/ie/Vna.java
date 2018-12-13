@@ -152,7 +152,7 @@ public class Vna implements Serializable, AutoCloseable {
         }
     }
 
-    public String getUuid() {
+    public final String getUuid() {
         return uuid;
     }
 
