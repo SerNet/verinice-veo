@@ -21,18 +21,17 @@ package org.veo.rest;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.veo.core.VeoCoreConfiguration;
 
 /**
  * @author Daniel Murygin dm[at]sernet[dot]de
  */
 @SpringBootApplication
-@ComponentScan(basePackages = { "org.veo" })
-@EntityScan("org.veo.model")
+@Import(VeoCoreConfiguration.class)
 public class RestApplication {
 
     @Bean

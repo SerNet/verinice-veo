@@ -3,5 +3,11 @@ apply plugin: 'groovy'
 dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile 'com.github.java-json-tools:json-schema-validator'
+
+    testCompile project(':veo-core')
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile "org.spockframework:spock-core"
+    
+    testRuntime 'com.h2database:h2'
+    
 }

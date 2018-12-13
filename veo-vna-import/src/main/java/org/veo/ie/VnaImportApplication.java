@@ -31,8 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
+import org.veo.core.VeoCoreConfiguration;
 import org.veo.service.ie.VnaImport;
 import org.veo.util.time.TimeFormatter;
 
@@ -45,8 +45,7 @@ import org.veo.util.time.TimeFormatter;
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @SpringBootApplication
-@ComponentScan(basePackages = { "org.veo" })
-@EntityScan("org.veo.model")
+@Import(VeoCoreConfiguration.class)
 public class VnaImportApplication implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(VnaImportApplication.class);

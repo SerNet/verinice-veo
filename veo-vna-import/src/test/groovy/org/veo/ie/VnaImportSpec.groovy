@@ -24,14 +24,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
-import org.veo.persistence.PersistenceApplication
 import org.veo.service.ElementService
 import org.veo.service.LinkService
 import org.veo.service.ie.VnaImport
 
 import spock.lang.Specification
 
-@ContextConfiguration
 @DataJpaTest(showSql=false)
 @ActiveProfiles("test")
 class VnaImportSpec extends Specification {

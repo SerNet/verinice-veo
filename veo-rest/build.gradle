@@ -13,19 +13,19 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(":veo-core")
-    compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-data-rest'
     compile("org.springframework.boot:spring-boot-starter-security")
+    compile 'org.springframework.boot:spring-boot-starter-web'
     compile("io.jsonwebtoken:jjwt-api")
 
     runtime 'io.jsonwebtoken:jjwt-impl'
     runtime 'io.jsonwebtoken:jjwt-jackson'
     runtime 'com.h2database:h2'
+    runtime 'org.postgresql:postgresql'
 
     testCompile project(":veo-json-validation")
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testRuntime 'com.h2database:h2'
 }
 
 bootRun {
