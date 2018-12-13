@@ -54,47 +54,47 @@ therefore be called a property of type `dateTime`.
 [meta.json] defines the type `dateTime` or `#/definitions/dateTime` in the following way:
 
 	{
-	  "definitions": {
-	    "dateTime": {
-	      "type": "object",
-	      "properties": {
-	        "type": {
-	          "enum": [
-	            "string"
-	          ]
-	        },
-	        "title": {
-	          "type": "string"
-	        },
-	        "description": {
-	          "type": "string"
-	        },
-	        "format": {
-	          "enum": [
-	            "date-time"
-	          ]
-	        }
-	      },
-	      "required": [
-	        "type",
-	        "title",
-	        "format"
-	      ]
-	    }
-	  }
+		"definitions": {
+			"dateTime": {
+				"type": "object",
+				"properties": {
+					"type": {
+						"enum": [
+							"string"
+						]
+					},
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"format": {
+						"enum": [
+							"date-time"
+						]
+					}
+				},
+				"required": [
+					"type",
+					"title",
+					"format"
+				]
+			}
+		}
 	}
 
 Then in [order.json][] a property `orderTime` of type `dateTime` can be defined like this:
 
 	{
-	  "properties": {
-	    "orderTime": {
-	      "type": "string",
-	      "title": "The time the order has been made",
-	      "format": "date-time",
-	      "description": "An example property of type dateTime"
-	    }
-	  }
+		"properties": {
+			"orderTime": {
+				"type": "string",
+				"title": "The time the order has been made",
+				"format": "date-time",
+				"description": "An example property of type dateTime"
+			}
+		}
 	}
 
 **NOTE** Typing is implicit.
