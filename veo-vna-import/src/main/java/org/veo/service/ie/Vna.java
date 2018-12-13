@@ -42,12 +42,24 @@ import de.sernet.sync.sync.SyncRequest;
  * more information.
  * 
  * Content of a verinice archive:
- * 
- * files directory containing all attached files | +-<EXT_ID>_<FILE_NAME>.doc
- * file 1 | +-<EXT_ID>_<FILE_NAME>.pdf file 2 | +- ... | verinice.xml XML file
- * containing data of all verinice elements | sync.xsd XML Schema / XML Schema
- * Definition (XSD) for verinice.xml | data.xsd XSD for verinice.xml |
- * mapping.xsd XSD for verinice.xml
+ *
+ * @formatter:off
+ * files                 directory containing all attached files
+ *   |
+ *   -<EXT_ID>_<FILE_NAME>.doc file 1
+ *   |
+ *   -<EXT_ID>_<FILE_NAME>.pdf file 2
+ *   |
+ *   - ...
+ *   |
+ * verinice.xml          XML file containing data of all verinice elements
+ *   |
+ * sync.xsd              XML Schema / XML Schema Definition (XSD) for verinice.xml
+ *   |
+ * data.xsd              XSD for verinice.xml
+ *   |
+ * mapping.xsd           XSD for verinice.xml
+ * @formatter:on
  * 
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
