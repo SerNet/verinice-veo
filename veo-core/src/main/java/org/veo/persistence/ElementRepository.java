@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
 import org.veo.model.Element;
 
 /**
@@ -44,10 +45,10 @@ public interface ElementRepository extends CrudRepository<Element, String> {
 
     @Query("SELECT DISTINCT e FROM Element e left join fetch e.properties where e.parent.uuid = :uuidParent")
     public List<Element> findByParentId(@Param("uuidParent") String uuidParent);
-    
+
     @EntityGraph(value = "properties", type = EntityGraphType.LOAD)
     public Element findByUuid(String id);
-    
+
     @Query("SELECT DISTINCT e FROM Element e left join fetch e.properties")
     public Iterable<Element> findAllWithProperties();
 }

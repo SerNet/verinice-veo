@@ -1,9 +1,10 @@
 package org.veo.util.io
 
-import spock.lang.Specification
+import java.nio.file.Files
 
 import javax.xml.bind.JAXBContext
-import java.nio.file.Files
+
+import spock.lang.Specification
 
 class XmlIOSpec extends Specification {
 
@@ -29,11 +30,11 @@ class XmlIOSpec extends Specification {
         person.name = 'Guybrush Threepwood'
         person.age = 23
         File file = Files.createTempFile('xmliospec', '.xml').toFile();
-        
+
         when:
         JAXBContext jaxbContext = JAXBContext.newInstance(Person)
         XmlIO.write(jaxbContext, null, file.absolutePath, person)
-        
+
         then:
         file.text ==
                 '''\

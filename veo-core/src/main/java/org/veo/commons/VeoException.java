@@ -66,7 +66,7 @@ public class VeoException extends RuntimeException {
     /**
      * Convenient constructor, which creates a Map of length 1 using the key and
      * value.
-     * 
+     *
      * @param message
      *            parameterized message
      * @param key
@@ -81,7 +81,7 @@ public class VeoException extends RuntimeException {
     /**
      * Convenient constructor, which creates a Map of length 1 using the key and
      * value.
-     * 
+     *
      * @param message
      *            parameterized message
      * @param key

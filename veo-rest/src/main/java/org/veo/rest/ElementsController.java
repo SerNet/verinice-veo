@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.veo.model.HistoryEntry;
 import org.veo.service.ElementMapService;
 import org.veo.service.HistoryService;
@@ -77,8 +78,7 @@ public class ElementsController {
     }
 
     @RequestMapping(value = "/elements/{uuid:.+}" /*
-                                                   * at least on char to
-                                                   * distinguish from get all
+                                                   * at least on char to distinguish from get all
                                                    */, method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getElement(@PathVariable("uuid") String uuid) {
         Map<String, Object> map = mapService.find(uuid);
@@ -86,9 +86,8 @@ public class ElementsController {
     }
 
     @RequestMapping(value = "/elements/{uuid:.+}/children" /*
-                                                            * at least on char
-                                                            * to distinguish
-                                                            * from get all
+                                                            * at least on char to distinguish from
+                                                            * get all
                                                             */, method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> getChildren(
             @PathVariable("uuid") String uuid) {

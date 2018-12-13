@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.veo.service.test;
 
@@ -17,15 +17,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
+
 import org.veo.json.JsonValidator;
 import org.veo.json.ValidationResult;
 import org.veo.model.Element;
 import org.veo.model.Link;
 import org.veo.service.JsonFactory;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 
 /**
  * @author urszeidler

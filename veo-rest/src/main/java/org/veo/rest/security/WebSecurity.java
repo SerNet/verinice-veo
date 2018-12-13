@@ -73,9 +73,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
-        inMemoryUserDetailsManager.createUser(User.withUsername("user").password("password").roles("USER").build());
-        inMemoryUserDetailsManager.createUser(User.withUsername("app_client").password("nopass").roles("USER").build());
-        inMemoryUserDetailsManager.createUser(User.withUsername("admin").password("password").roles("USER").build());
+        inMemoryUserDetailsManager
+                .createUser(User.withUsername("user").password("password").roles("USER").build());
+        inMemoryUserDetailsManager.createUser(
+                User.withUsername("app_client").password("nopass").roles("USER").build());
+        inMemoryUserDetailsManager
+                .createUser(User.withUsername("admin").password("password").roles("USER").build());
         return inMemoryUserDetailsManager;
     }
 }

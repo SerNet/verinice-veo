@@ -20,6 +20,7 @@
 package org.veo.json
 
 import com.fasterxml.jackson.databind.JsonNode
+
 import spock.lang.Specification
 
 class SchemaValidatorSpec extends Specification {
@@ -44,7 +45,7 @@ class SchemaValidatorSpec extends Specification {
         !result.successful
         when:
         JsonNode errorMessage = result.getMessages().find { message -> message.get('level').textValue() == 'error' }
-            .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
+        .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
         then:
         errorMessage.get('keyword').textValue() == 'additionalProperties'
         when:
@@ -65,7 +66,7 @@ class SchemaValidatorSpec extends Specification {
         then:
         !result.isSuccessful()
         JsonNode errorMessage = result.getMessages().find { message -> message.get('level').textValue() == 'error' }
-            .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
+        .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
         errorMessage.get('instance').get('pointer').textValue() == '/properties/$veo.id/type'
         errorMessage.get('keyword').textValue() == 'enum'
         errorMessage.get('value').textValue() == 'boolean'
@@ -79,7 +80,7 @@ class SchemaValidatorSpec extends Specification {
         then:
         !result.isSuccessful()
         JsonNode errorMessage = result.getMessages().find { message -> message.get('level').textValue() == 'error' }
-            .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
+        .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
         errorMessage.get('instance').get('pointer').textValue() == '/properties/transportation'
         errorMessage.get('matched').intValue() == 0
     }
@@ -92,7 +93,7 @@ class SchemaValidatorSpec extends Specification {
         then:
         !result.isSuccessful()
         JsonNode errorMessage = result.getMessages().find { message -> message.get('level').textValue() == 'error' }
-            .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
+        .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
         errorMessage.get('instance').get('pointer').textValue() == '/properties/ingredients'
         errorMessage.get('matched').intValue() == 0
     }

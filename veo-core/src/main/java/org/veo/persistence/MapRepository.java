@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This interface describes method to store maps of string to object
- * of ony kind.
+ * This interface describes method to store maps of string to object of ony
+ * kind.
  */
 public interface MapRepository {
 

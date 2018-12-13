@@ -54,30 +54,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author Daniel Murygin
  */
 @Entity
-@NamedEntityGraphs(
-        {
-                @NamedEntityGraph(
-                        name = "linksWithProperties",
-                        attributeNodes = {
-                                @NamedAttributeNode(value = "linksOutgoing", subgraph = "linksGraph"),
-                                @NamedAttributeNode(value = "properties")
-                        },
-                        subgraphs = {
-                                @NamedSubgraph(
-                                        name = "linksGraph",
-                                        attributeNodes = {
-                                                @NamedAttributeNode(value = "properties")
-                                        }
-                                )
-                        }
-                ),
-                @NamedEntityGraph(
-                        name = "properties",
-                        attributeNodes = {
-                                @NamedAttributeNode(value = "properties")
-                        }
-                )
-        })
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "linksWithProperties", attributeNodes = {
+                @NamedAttributeNode(value = "linksOutgoing", subgraph = "linksGraph"),
+                @NamedAttributeNode(value = "properties") }, subgraphs = {
+                        @NamedSubgraph(name = "linksGraph", attributeNodes = {
+                                @NamedAttributeNode(value = "properties") }) }),
+        @NamedEntityGraph(name = "properties", attributeNodes = {
+                @NamedAttributeNode(value = "properties") }) })
 @JsonInclude(Include.NON_NULL)
 public class Element implements Serializable {
 
@@ -241,20 +225,20 @@ public class Element implements Serializable {
     }
 
     /**
-     * Returns a unmodifiable map with all properties of this element.
-     * Key of the map is the key of the property.
+     * Returns a unmodifiable map with all properties of this element. Key of the
+     * map is the key of the property.
      *
      * @return A unmodifiable map with all properties
      */
     @JsonIgnore
-    public Map<String,List<ElementProperty>> getPropertyMap() {
-        Map<String,List<ElementProperty>> propertyMap = new HashMap<>(getProperties().size());
-        for (ElementProperty property:getProperties()) {
+    public Map<String, List<ElementProperty>> getPropertyMap() {
+        Map<String, List<ElementProperty>> propertyMap = new HashMap<>(getProperties().size());
+        for (ElementProperty property : getProperties()) {
             List<ElementProperty> propertyList = propertyMap.get(property.getKey());
-            if(propertyList==null) {
+            if (propertyList == null) {
                 // The cardinality of most properties is single
                 propertyList = new ArrayList<>(1);
-                propertyMap.put(property.getKey(),propertyList);
+                propertyMap.put(property.getKey(), propertyList);
             }
             propertyList.add(property);
         }

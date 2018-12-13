@@ -32,6 +32,8 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net._01001111.text.LoremIpsum;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import org.veo.core.VeoCoreConfiguration;
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
@@ -50,19 +53,17 @@ import org.veo.persistence.ElementRepository;
 import org.veo.persistence.LinkRepository;
 import org.veo.util.time.TimeFormatter;
 
-import net._01001111.text.LoremIpsum;
-
 /**
  * By default this test runs with in memory database h2 without any
  * configuration. Add this annotation:
- * 
+ *
  * @AutoConfigureTestDatabase(replace=Replace.NONE) to run this test with a
  *                                                  database configured in
  *                                                  src/test/resources/application.properties
- * 
+ *
  *                                                  See:
  *                                                  https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html
- * 
+ *
  * @author Daniel Murygin
  */
 @RunWith(SpringRunner.class)

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2015 Daniel Murygin.
  *
- * This program is free software: you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation, either version 3 
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,    
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. 
+ * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
@@ -45,7 +45,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.veo.model.Element;
 
 import de.sernet.sync.data.SyncData;
 import de.sernet.sync.data.SyncLink;
@@ -54,9 +53,11 @@ import de.sernet.sync.mapping.SyncMapping;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import de.sernet.sync.sync.SyncRequest;
 
+import org.veo.model.Element;
+
 /**
  * This service imports a verinice archive (VNA).
- * 
+ *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Service
@@ -90,7 +91,7 @@ public class VnaImport {
 
     /**
      * Imports a VNA from a byte array.
-     * 
+     *
      * @throws ExecutionException
      * @throws InterruptedException
      */

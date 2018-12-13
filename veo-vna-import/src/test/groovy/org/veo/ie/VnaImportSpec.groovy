@@ -24,10 +24,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
+
 import org.veo.service.ElementService
 import org.veo.service.LinkService
 import org.veo.service.ie.VnaImport
-
 import spock.lang.Specification
 
 @DataJpaTest(showSql=false)
@@ -39,30 +39,30 @@ class VnaImportSpec extends Specification {
 
     @Autowired
     ElementService elementService;
-    
+
     @Autowired
     LinkService linkService;
 
     def "import VNA"(){
         setup:
-            def is = VnaImportSpec.class.getResourceAsStream('VnaImportSpec.vna')
-            def bytes = is.bytes
+        def is = VnaImportSpec.class.getResourceAsStream('VnaImportSpec.vna')
+        def bytes = is.bytes
         when:
-            def vna = vnaImport.importVna(bytes)
-            Iterator elements = elementService.findAll().iterator()
-            int numberOfElements = 0
-            while(elements.hasNext()) {
-                numberOfElements++
-                elements.next()
-            }
-            Iterator links = linkService.getAll().iterator()
-            int numberOfLinks = 0
-            while(links.hasNext()) {
-                numberOfLinks++
-                links.next()
-            }
+        def vna = vnaImport.importVna(bytes)
+        Iterator elements = elementService.findAll().iterator()
+        int numberOfElements = 0
+        while(elements.hasNext()) {
+            numberOfElements++
+            elements.next()
+        }
+        Iterator links = linkService.getAll().iterator()
+        int numberOfLinks = 0
+        while(links.hasNext()) {
+            numberOfLinks++
+            links.next()
+        }
         then:
-            numberOfElements == 11
-            numberOfLinks == 4
+        numberOfElements == 11
+        numberOfLinks == 4
     }
 }

@@ -26,6 +26,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
 import org.veo.commons.VeoException;
 import org.veo.model.Link;
 import org.veo.persistence.LinkRepository;
@@ -33,19 +34,26 @@ import org.veo.persistence.LinkRepository;
 /**
  * The database backed service to persist link.
  */
-@Service("LinkDatabaseService") @Lazy public class LinkMapDbService implements LinkMapService {
-    @Autowired LinkRepository repository;
+@Service("LinkDatabaseService")
+@Lazy
+public class LinkMapDbService implements LinkMapService {
+    @Autowired
+    LinkRepository repository;
 
-    @Autowired JsonFactory jsonFactory;
+    @Autowired
+    JsonFactory jsonFactory;
 
-    @Autowired LinkFactory linkFactory;
+    @Autowired
+    LinkFactory linkFactory;
 
-    @Override public List<Map<String, Object>> findAll() {
+    @Override
+    public List<Map<String, Object>> findAll() {
         Iterable<Link> allLinks = repository.findAll();
         return getResultList(allLinks);
     }
 
-    @Override public Map<String, Object> find(String id) {
+    @Override
+    public Map<String, Object> find(String id) {
         if (!repository.existsById(id)) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
                     "Link with uuid %id% does not exists.", "id", id);
@@ -58,12 +66,14 @@ import org.veo.persistence.LinkRepository;
         return result;
     }
 
-    @Override public List<Map<String, Object>> findByElement(String elementId) {
+    @Override
+    public List<Map<String, Object>> findByElement(String elementId) {
         List<Link> linksList = repository.findBySourceOrTarget(elementId);
         return getResultList(linksList);
     }
 
-    @Override public void save(String id, Map<String, Object> json) {
+    @Override
+    public void save(String id, Map<String, Object> json) {
         Link link = repository.findByUuid(id);
         if (link == null) {
             throw new VeoException(VeoException.Error.ELEMENT_NOT_FOUND,
@@ -74,7 +84,8 @@ import org.veo.persistence.LinkRepository;
         repository.save(link);
     }
 
-    @Override public String saveNew(Map<String, Object> json) {
+    @Override
+    public String saveNew(Map<String, Object> json) {
         Link link = linkFactory.createLink(json);
         String uuid = link.getUuid();
         if (uuid != null && repository.existsById(uuid)) {
@@ -84,7 +95,8 @@ import org.veo.persistence.LinkRepository;
         return repository.save(link).getUuid();
     }
 
-    @Override public void delete(String id) {
+    @Override
+    public void delete(String id) {
         repository.deleteById(id);
     }
 

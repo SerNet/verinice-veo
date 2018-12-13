@@ -30,10 +30,13 @@ import java.util.Map;
 public interface ElementMapService {
 
     List<Map<String, Object>> findAll();
+
     Map<String, Object> find(String id);
+
     List<Map<String, Object>> findChildren(String parentId);
 
     void save(String id, Map<String, Object> content);
+
     String saveNew(Map<String, Object> content);
 
     void delete(String id);

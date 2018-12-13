@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2017 Daniel Murygin.
  *
- * This program is free software: you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation, either version 3 
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,    
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. 
+ * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
@@ -34,7 +34,7 @@ import de.sernet.sync.mapping.SyncMapping.MapObjectType.MapAttributeType;
 
 /**
  * Returns a title of a SyncObject from verinice archive VNAs.
- * 
+ *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public final class TitleAdapter {
@@ -222,8 +222,7 @@ public final class TitleAdapter {
      * @param syncAttributeList
      *            A list of sync attributes from a VNA
      * @param propertyId
-     * @return The value of the property with the given id in the list of
-     *         attributes
+     * @return The value of the property with the given id in the list of attributes
      */
     public static String getAttribute(List<SyncAttribute> syncAttributeList, String propertyId) {
         for (SyncAttribute attribute : syncAttributeList) {

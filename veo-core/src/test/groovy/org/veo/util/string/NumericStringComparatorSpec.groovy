@@ -18,5 +18,4 @@ class NumericStringComparatorSpec extends Specification {
         'spock.lang.Specification'      | 11    | -1  | 'Specification'
         'org.veo.util.string'           | 0     | 19  | 'org.veo.util.string'
     }
-    
 }

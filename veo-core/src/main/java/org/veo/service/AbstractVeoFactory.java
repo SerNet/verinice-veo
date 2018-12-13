@@ -20,12 +20,13 @@
 package org.veo.service;
 
 /**
- * This is the basic class for the object factories like {@link LinkFactory} or {@link ElementFactory}. 
+ * This is the basic class for the object factories like {@link LinkFactory} or
+ * {@link ElementFactory}.
  */
 public abstract class AbstractVeoFactory {
 
-	protected boolean isStaticProperty(String name) {
-	    return JsonFactory.STATIC_PROPERTIES.contains(name);
-	}
+    protected boolean isStaticProperty(String name) {
+        return JsonFactory.STATIC_PROPERTIES.contains(name);
+    }
 
 }

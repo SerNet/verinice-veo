@@ -25,16 +25,18 @@ import java.util.Map;
 /**
  * Provides methods to persist maps wich needs the following keys:
  *
- * - source
- * - target
+ * - source - target
  */
 public interface LinkMapService {
 
     List<Map<String, Object>> findAll();
+
     Map<String, Object> find(String id);
+
     List<Map<String, Object>> findByElement(String elementId);
 
     void save(String id, Map<String, Object> content);
+
     String saveNew(Map<String, Object> content);
 
     void delete(String id);

@@ -6,11 +6,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.veo.commons.VeoException;
 import org.veo.model.HistoryEntry;
 import org.veo.persistence.HistoryRepository;
@@ -35,7 +36,8 @@ public class HistoryServiceImpl implements HistoryService {
             entry.setData(objectMapper.writeValueAsString(content));
             historyRepository.save(entry);
         } catch (JsonProcessingException e) {
-            throw new VeoException(VeoException.Error.UNKNOWN, "unable to write history content as json", e);
+            throw new VeoException(VeoException.Error.UNKNOWN,
+                    "unable to write history content as json", e);
         }
 
     }
@@ -54,9 +56,10 @@ public class HistoryServiceImpl implements HistoryService {
         entry.setTimestamp(ZonedDateTime.now());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
-            throw new VeoException(VeoException.Error.AUTHENTICATION_REQUIRED, "versioning requires authentication");
+            throw new VeoException(VeoException.Error.AUTHENTICATION_REQUIRED,
+                    "versioning requires authentication");
         }
-        String user = (String)auth.getPrincipal();
+        String user = (String) auth.getPrincipal();
         entry.setAuthor(user);
         return entry;
     }

@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+
 import org.veo.service.LinkMapService
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -97,52 +98,51 @@ public class LinksControllerTest {
         @Override
         List<Map<String, Object>> findAll() {
             return [
-                    [
-                            id   : 'deadbeef',
-                            source: "111111",
-                            target: "222222",
-                    ],
-                    [
-                            id   : 'abad1dea',
-                            source: "222222",
-                            target: '333333',
-                    ],
-                    [
-                            id   : '110011',
-                            source: '333333',
-                            target: "111111",
-                    ]
+                [
+                    id   : 'deadbeef',
+                    source: "111111",
+                    target: "222222",
+                ],
+                [
+                    id   : 'abad1dea',
+                    source: "222222",
+                    target: '333333',
+                ],
+                [
+                    id   : '110011',
+                    source: '333333',
+                    target: "111111",
+                ]
             ]
         }
 
         @Override
         Map<String, Object> find(String id) {
             return [
-                    id   : 'deadbeef',
-                    source: "111111",
-                    target: "222222"
+                id   : 'deadbeef',
+                source: "111111",
+                target: "222222"
             ]
         }
 
         @Override
         List<Map<String, Object>> findByElement(String elementId) {
             return [
-                    [
-                            id    : 'abad1dea',
-                            source: '222222',
-                            target: '333333',
-                    ],
-                    [
-                            id    : '110011',
-                            source: '333333',
-                            target: '111111'
-                    ]
+                [
+                    id    : 'abad1dea',
+                    source: '222222',
+                    target: '333333',
+                ],
+                [
+                    id    : '110011',
+                    source: '333333',
+                    target: '111111'
+                ]
             ]
         }
 
         @Override
         void save(String id, Map<String, Object> content) {
-
         }
 
         @Override
@@ -152,7 +152,6 @@ public class LinksControllerTest {
 
         @Override
         void delete(String id) {
-
         }
     }
 }

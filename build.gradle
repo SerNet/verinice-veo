@@ -61,7 +61,7 @@ allprojects  {
 }
 
 subprojects {
-    
+
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'com.github.spotbugs'
@@ -73,7 +73,7 @@ subprojects {
             mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
         }
     }
-          
+
     dependencyManagement {
         dependencies {
             dependency 'commons-io:commons-io:2.6'
@@ -90,17 +90,13 @@ subprojects {
             dependency "org.spockframework:spock-core:1.2-groovy-2.4"
         }
     }
-      
+
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-      
-    tasks.withType(JavaCompile) {
-      	options.encoding = 'UTF-8'
-    }
-    
-    repositories {
-        mavenCentral()
-    }
+
+    tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+
+    repositories { mavenCentral() }
 
     pmd.ignoreFailures = true
     spotbugs.ignoreFailures = true
@@ -115,19 +111,13 @@ subprojects {
             doLast {
                 if (!sourceSets.test.allSource.empty) {
                     def timestamp = System.currentTimeMillis()
-                    test.reports.junitXml.destination.eachFile {
-                        it.lastModified = timestamp
-                    }
+                    test.reports.junitXml.destination.eachFile { it.lastModified = timestamp }
                 }
             }
         }
         build.dependsOn(jenkinsTestFix)
 
-        test {
-            testLogging {
-                exceptionFormat = 'full'
-            }
-        }
+        test { testLogging { exceptionFormat = 'full' } }
     }
 
     dependencies {

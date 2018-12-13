@@ -1,16 +1,16 @@
 package org.veo.util.time
 
+import java.time.Duration
+
 import spock.lang.Specification
 import spock.lang.Unroll
-
-import java.time.Duration
 
 class TimeFormatterSpec extends Specification {
 
     @Unroll
     def "#milliSeconds ms (#duration) should be converted to '#humanReadable'"(){
         expect:
-        
+
         TimeFormatter.getHumanRedableTime(milliSeconds) == humanReadable
         where:
         duration                                         | humanReadable
@@ -25,9 +25,7 @@ class TimeFormatterSpec extends Specification {
         Duration.ofDays(7)                               | '7 d'
         Duration.ofMinutes(2).minusMillis(1)             | '2 m'
         Duration.ofMinutes(2).plusSeconds(30)            | '2 m, 30 s'
-        
-        milliSeconds = duration.toMillis()
 
+        milliSeconds = duration.toMillis()
     }
-    
 }

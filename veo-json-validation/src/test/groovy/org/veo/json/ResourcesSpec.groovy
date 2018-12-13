@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.fge.jsonschema.core.report.ProcessingReport
 import com.github.fge.jsonschema.main.JsonSchema
 import com.github.fge.jsonschema.main.JsonSchemaFactory
+
 import spock.lang.Specification
 
 class ResourcesSpec extends Specification {

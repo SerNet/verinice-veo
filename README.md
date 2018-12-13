@@ -57,7 +57,7 @@ java -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
 ## Modules
 
 ### veo-core
-This module contains the core components of the application. This module can be used in any other module of the application.  
+This module contains the core components of the application. This module can be used in any other module of the application.
 
 ### veo-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.
@@ -100,4 +100,3 @@ On success the response will contain a header
 	Authorization: Bearer <token>
 
 This header has to be part of every further request
-

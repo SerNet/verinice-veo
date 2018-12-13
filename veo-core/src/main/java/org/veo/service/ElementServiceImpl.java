@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import org.veo.model.Element;
 import org.veo.persistence.ElementRepository;
 
@@ -21,17 +22,17 @@ public class ElementServiceImpl implements ElementService {
 
     @Autowired
     ElementRepository elementRepository;
-    
+
     @Override
     public Element save(Element element) {
         return elementRepository.save(element);
     }
-    
+
     @Override
     public Element load(String uuid) {
         return elementRepository.findByUuid(uuid);
     }
-    
+
     @Override
     public Element loadWithAllReferences(String uuid) {
         return elementRepository.findOneWithAll(uuid);
@@ -55,6 +56,4 @@ public class ElementServiceImpl implements ElementService {
         elementRepository.delete(element);
     }
 
-    
-    
 }

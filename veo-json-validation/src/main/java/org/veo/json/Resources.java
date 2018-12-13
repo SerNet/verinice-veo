@@ -22,7 +22,8 @@ package org.veo.json;
 import java.io.InputStream;
 
 /**
- * This class provides methods to access resources for veo JSON processing, e.g. the meta-schema.
+ * This class provides methods to access resources for veo JSON processing, e.g.
+ * the meta-schema.
  */
 public class Resources {
     private static final String META_SCHEMA_FILE_NAME = "meta.json";

@@ -17,17 +17,17 @@
  ******************************************************************************/
 package org.veo.commons
 
-import spock.lang.Specification;
+import spock.lang.Specification
 
 public class VeoExceptionSpec extends Specification {
 
     def "get parametrized message"()  {
         given:
         def veoException = new VeoException(VeoException.Error.ELEMENT_NOT_FOUND, "element with uuid '%uuid%' not found", "uuid", "deadbeef");
-        
+
         when:
         def message = veoException.getMessage();
-        
+
         then:
         message == "element with uuid 'deadbeef' not found"
     }

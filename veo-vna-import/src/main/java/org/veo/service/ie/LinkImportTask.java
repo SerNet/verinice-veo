@@ -24,13 +24,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
 import org.veo.model.Element;
 import org.veo.model.Link;
 import org.veo.service.LinkService;
 
 /**
  * A callable task to import one link from a VNA to database.
- * 
+ *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @Component

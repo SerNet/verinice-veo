@@ -6,11 +6,12 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.veo.service.ElementMapService
-import org.veo.service.HistoryService
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+
+import org.veo.service.ElementMapService
+import org.veo.service.HistoryService
 import spock.lang.Specification
 
 @SpringBootTest("veo.basedir=/tmp/veo")

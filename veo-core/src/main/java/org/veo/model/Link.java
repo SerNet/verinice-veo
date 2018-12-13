@@ -48,17 +48,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 public class Link implements Serializable {
-    
+
     @Id
     @Column(length = 36)
     private String uuid;
-    
+
     @Column(length = 255)
     private String title;
-    
+
     @Column(nullable = false, length = 255)
     private String typeId;
-    
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Element source;
 
@@ -69,7 +69,7 @@ public class Link implements Serializable {
     @OrderColumn(name = "properties_order", nullable = false)
     @JoinColumn(name = "link_uuid")
     private List<LinkProperty> properties;
-    
+
     public Link() {
         this(UUID.randomUUID().toString());
     }
@@ -78,10 +78,10 @@ public class Link implements Serializable {
         this.uuid = uuid;
         properties = new LinkedList<>();
     }
-    
+
     /**
-     * Returns a unmodifiable map with all properties of this element. Key of
-     * the map is the key of the property.
+     * Returns a unmodifiable map with all properties of this element. Key of the
+     * map is the key of the property.
      *
      * @return A unmodifiable map with all properties
      */
@@ -117,17 +117,17 @@ public class Link implements Serializable {
     }
 
     public List<LinkProperty> getProperties() {
-        if(properties==null) {
+        if (properties == null) {
             properties = new LinkedList<>();
         }
         return properties;
     }
 
     public String getTypeId() {
-		return typeId;
-	}
+        return typeId;
+    }
 
-	public void setUuid(String uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -146,42 +146,42 @@ public class Link implements Serializable {
     public void setProperties(List<LinkProperty> properties) {
         this.properties = properties;
     }
-    
-    public void setTypeId(String typeId) {
-		this.typeId = typeId;
-	}
 
-	public void addProperty(LinkProperty property) {
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public void addProperty(LinkProperty property) {
         getProperties().add(property);
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-		if (obj == null) {
+        if (obj == null) {
             return false;
         }
-		if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-		Link other = (Link) obj;
-		if (uuid == null) {
-			if (other.uuid != null) {
+        Link other = (Link) obj;
+        if (uuid == null) {
+            if (other.uuid != null) {
                 return false;
             }
-		} else if (!uuid.equals(other.uuid)) {
+        } else if (!uuid.equals(other.uuid)) {
             return false;
         }
-		return true;
-	}
+        return true;
+    }
 }

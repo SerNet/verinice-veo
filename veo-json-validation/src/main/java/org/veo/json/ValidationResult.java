@@ -26,7 +26,8 @@ import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 
 /**
- * This class bundles information of JSON validation, e.g. success, warnings, errors etc.
+ * This class bundles information of JSON validation, e.g. success, warnings,
+ * errors etc.
  */
 public class ValidationResult {
 
@@ -39,7 +40,7 @@ public class ValidationResult {
         this.successful = report.isSuccess();
 
         messages = FACTORY.arrayNode();
-        for (final ProcessingMessage message: report)
+        for (final ProcessingMessage message : report)
             messages.add(message.asJson());
     }
 
@@ -57,19 +58,8 @@ public class ValidationResult {
      *         "properties": {
      *             "domain": {
      *                 "enum": [ "$ref resolving", "syntax", "validation", "unknown" ],
-     *                 "required": true
-     *             },
-     *             "keyword": {
-     *                 "type": "string",
-     *                 "required": true
-     *             },
-     *             "message": {
-     *                 "type": "string",
-     *                 "required": true
-     *             }
-     *         }
-     *     }
-     * }
+     * "required": true }, "keyword": { "type": "string", "required": true },
+     * "message": { "type": "string", "required": true } } } }
      */
     public ArrayNode getMessages() {
         return messages;

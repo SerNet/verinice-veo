@@ -19,18 +19,20 @@ package org.veo.rest
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+
 import org.veo.json.JsonValidator
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
 class ExamplesValidationSpec extends Specification {
 
     def validators = [
-            'asset': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/asset.json")),
-            'person': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/person.json")),
-            'scenario': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/scenario.json")),
-            'control': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/control.json"))
-            ]
+        'asset': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/asset.json")),
+        'person': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/person.json")),
+        'scenario': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/scenario.json")),
+        'control': new JsonValidator(this.class.getClassLoader().getResourceAsStream("schemas/elements/control.json"))
+    ]
 
     @Unroll
     def "Example #exampleName validates against it's schema"() {

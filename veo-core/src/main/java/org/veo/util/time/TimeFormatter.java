@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2012 Daniel Murygin.
  *
- * This program is free software: you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation, either version 3 
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,    
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. 
+ * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
@@ -25,14 +25,15 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Provides public static utility functions to format dates and times.
- * Do not instantiate this class.
- * 
+ * Provides public static utility functions to format dates and times. Do not
+ * instantiate this class.
+ *
  * @author Daniel Murygin
  */
 public final class TimeFormatter {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     private static final int MILLIS_PER_SECOND = 1000;
 

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2017 Daniel Murygin.
  *
- * This program is free software: you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation, either version 3 
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,    
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. 
+ * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
@@ -28,19 +28,20 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.veo.util.io.Archive;
-import org.veo.util.io.XmlIO;
 
 import de.sernet.sync.sync.SyncRequest;
 
+import org.veo.util.io.Archive;
+import org.veo.util.io.XmlIO;
+
 /**
  * Wrapper class to access the content of a verinice archive (VNA) file.
- * 
+ *
  * A verinice archive is an ordinary ZIP-Archive with file extension '.vna'. You
  * can open/import a verinice archive with verinice. Verinice is an Open Source
  * information security management system (ISMS), see http://verinice.org for
  * more information.
- * 
+ *
  * Content of a verinice archive:
  *
  * @formatter:off
@@ -60,7 +61,7 @@ import de.sernet.sync.sync.SyncRequest;
  *   |
  * mapping.xsd           XSD for verinice.xml
  * @formatter:on
- * 
+ *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 public class Vna implements Serializable, AutoCloseable {
@@ -89,7 +90,7 @@ public class Vna implements Serializable, AutoCloseable {
 
     /**
      * Creates a Vna instance out of <code>byte[] data</code>.
-     * 
+     *
      * @param data
      *            Data of a verinice archive (VNA, zip archive)
      * @throws VnaNotValidException
@@ -126,9 +127,9 @@ public class Vna implements Serializable, AutoCloseable {
     }
 
     /**
-     * Returns file verinice.xml from the archive. If there is no verinice.xml
-     * in the archive null is returned.
-     * 
+     * Returns file verinice.xml from the archive. If there is no verinice.xml in
+     * the archive null is returned.
+     *
      * @return verinice.xml from the archive
      */
     public byte[] getXmlFileData() {

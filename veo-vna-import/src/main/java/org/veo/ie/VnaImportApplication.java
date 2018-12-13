@@ -32,6 +32,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+
 import org.veo.core.VeoCoreConfiguration;
 import org.veo.service.ie.VnaImport;
 import org.veo.util.time.TimeFormatter;
@@ -41,7 +42,7 @@ import org.veo.util.time.TimeFormatter;
  * start this application with property spring.main.web-environment=false in
  * your application.properties file to turn the starting of a web environment
  * off.
- * 
+ *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
 @SpringBootApplication

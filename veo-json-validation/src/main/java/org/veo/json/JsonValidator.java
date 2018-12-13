@@ -19,6 +19,9 @@
  ******************************************************************************/
 package org.veo.json;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
@@ -26,9 +29,6 @@ import com.github.fge.jsonschema.core.load.configuration.LoadingConfiguration;
 import com.github.fge.jsonschema.core.load.uri.URITranslatorConfiguration;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Provides method to validate a JSON against a JSON schema.
@@ -54,7 +54,8 @@ public class JsonValidator {
                     .addSchemaRedirect("http://verinice.com/veo/draft-01/definitions.json",
                             "resource:/definitions.json")
                     .addSchemaRedirect("https://verinice.com/veo/draft-01/definitions.json",
-                            "resource:/definitions.json").freeze();
+                            "resource:/definitions.json")
+                    .freeze();
             final LoadingConfiguration loadingCfg = LoadingConfiguration.newBuilder()
                     .setURITranslatorConfiguration(uriCfg).freeze();
             final JsonSchemaFactory factory = JsonSchemaFactory.newBuilder()
@@ -77,8 +78,7 @@ public class JsonValidator {
         }
     }
 
-    public ValidationResult validate(JsonNode schemaMap)
-            throws ProcessingException {
+    public ValidationResult validate(JsonNode schemaMap) throws ProcessingException {
         try {
             return new ValidationResult(schema.validate(schemaMap));
         } catch (ProcessingException e) {

@@ -42,7 +42,7 @@ public class HistoryEntry {
     private String dataId;
 
     // allow arbitrary text length, *PostgreSQL specific*.
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String data;
 
     public String getAuthor() {

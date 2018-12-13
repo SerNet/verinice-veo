@@ -29,6 +29,5 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "link_property")
 public class LinkProperty extends Property {
-    
-    
+
 }

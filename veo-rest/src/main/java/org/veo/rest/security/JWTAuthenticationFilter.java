@@ -48,7 +48,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
- * This filter extends authentication by added a JWToken to a successful authentication response.
+ * This filter extends authentication by added a JWToken to a successful
+ * authentication response.
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -66,41 +67,30 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest req,
-                                                HttpServletResponse res) {
+    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
         try {
-            ApplicationUser credentials = new ObjectMapper()
-                    .readValue(req.getInputStream(), ApplicationUser.class);
+            ApplicationUser credentials = new ObjectMapper().readValue(req.getInputStream(),
+                    ApplicationUser.class);
 
-            return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            credentials.getUsername(),
-                            credentials.getPassword(),
-                            new ArrayList<>())
-            );
+            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    credentials.getUsername(), credentials.getPassword(), new ArrayList<>()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest req,
-                                            HttpServletResponse res,
-                                            FilterChain chain,
-                                            Authentication auth) {
+    protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res,
+            FilterChain chain, Authentication auth) {
 
         Map<String, Object> customClaim = new HashMap<>();
         // Add some example claims to play with whats possible.
-        customClaim.put("profiles", new String[] {"export", "import", "tasks"});
+        customClaim.put("profiles", new String[] { "export", "import", "tasks" });
         String token = Jwts.builder()
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .setSubject(((User) auth.getPrincipal()).getUsername())
-                .setIssuer("verinice.VEO")
-                .setIssuedAt(new Date())
-                .setAudience("verinice.REST clients")
-                .addClaims(customClaim)
-                .signWith(signingKey, SignatureAlgorithm.RS512)
-                .compact();
+                .setSubject(((User) auth.getPrincipal()).getUsername()).setIssuer("verinice.VEO")
+                .setIssuedAt(new Date()).setAudience("verinice.REST clients").addClaims(customClaim)
+                .signWith(signingKey, SignatureAlgorithm.RS512).compact();
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

@@ -19,8 +19,14 @@
  ******************************************************************************/
 package org.veo.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import org.veo.commons.VeoException;
 import org.veo.model.Element;
 import org.veo.model.Link;
@@ -29,17 +35,15 @@ import org.veo.model.Property;
 import org.veo.persistence.ElementRepository;
 import org.veo.persistence.LinkRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * A factory to creates link objects.
  */
-@Service public class LinkFactory extends AbstractVeoFactory {
-    @Autowired LinkRepository linkRepository;
-    @Autowired ElementRepository elementRepository;
+@Service
+public class LinkFactory extends AbstractVeoFactory {
+    @Autowired
+    LinkRepository linkRepository;
+    @Autowired
+    ElementRepository elementRepository;
 
     public Link createLink(Map<String, Object> json) {
         String id = (String) json.get(JsonFactory.ID);

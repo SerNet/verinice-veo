@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2015 Daniel Murygin.
  *
- * This program is free software: you can redistribute it and/or 
- * modify it under the terms of the GNU Lesser General Public License 
- * as published by the Free Software Foundation, either version 3 
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation, either version 3
  * of the License, or (at your option) any later version.
- * This program is distributed in the hope that it will be useful,    
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program. 
+ * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contributors:
  *     Daniel Murygin <dm[at]sernet[dot]de> - initial API and implementation
  ******************************************************************************/
@@ -33,20 +33,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import de.sernet.sync.data.SyncAttribute;
+import de.sernet.sync.data.SyncObject;
+import de.sernet.sync.mapping.SyncMapping.MapObjectType;
+
 import org.veo.model.Element;
 import org.veo.model.ElementProperty;
 import org.veo.model.Property;
 import org.veo.service.ElementService;
 import org.veo.util.time.TimeFormatter;
 
-import de.sernet.sync.data.SyncAttribute;
-import de.sernet.sync.data.SyncObject;
-import de.sernet.sync.mapping.SyncMapping.MapObjectType;
-
 /**
  * A callable task to import one element and its properties from a VNA to
  * database.
- * 
+ *
  * @see VnaImport
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
@@ -82,7 +83,7 @@ public class ElementImportTask implements Callable<ElementImportContext> {
     }
 
     /*
-     * 
+     *
      * @see java.util.concurrent.Callable#call()
      */
     @Override
@@ -196,8 +197,8 @@ public class ElementImportTask implements Callable<ElementImportContext> {
      * Returns true if it is sure s is a timestamp for which NOW+20 years >
      * timestamp > NOW-40 years.
      *
-     * Timestamp means the difference, measured in milliseconds, between the
-     * current time and midnight, January 1, 1970 UTC.
+     * Timestamp means the difference, measured in milliseconds, between the current
+     * time and midnight, January 1, 1970 UTC.
      *
      * @param s
      *            A time timestamp / epoch milli string

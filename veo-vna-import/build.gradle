@@ -7,9 +7,9 @@ dependencies {
     compile 'commons-io:commons-io'
     compile 'commons-cli:commons-cli'
     compile 'org.springframework:spring-tx'
-    
+
     runtime 'org.postgresql:postgresql'
-    
+
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 

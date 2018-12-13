@@ -7,6 +7,7 @@ package org.veo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import org.veo.model.Element;
 import org.veo.model.Link;
 import org.veo.persistence.ElementRepository;
@@ -21,10 +22,10 @@ public class LinkServiceImpl implements LinkService {
 
     @Autowired
     LinkRepository linkRepository;
-    
+
     @Autowired
     ElementRepository elementRepository;
-    
+
     @Override
     public Link save(Element source, Element destination) {
         Link link = new Link();
@@ -37,7 +38,7 @@ public class LinkServiceImpl implements LinkService {
     public Link save(String sourceId, String destinationId) {
         Element source = elementRepository.findByUuid(sourceId);
         Element destination = null;
-        if(sourceId.equals(destinationId)) {
+        if (sourceId.equals(destinationId)) {
             destination = source;
         } else {
             destination = elementRepository.findByUuid(destinationId);
@@ -47,12 +48,12 @@ public class LinkServiceImpl implements LinkService {
 
     @Override
     public Link save(Link link) {
-       return  linkRepository.save(link);
+        return linkRepository.save(link);
     }
-    
+
     @Override
-    public Iterable<Link> getAll(){
+    public Iterable<Link> getAll() {
         return linkRepository.findAll();
     }
-    
+
 }

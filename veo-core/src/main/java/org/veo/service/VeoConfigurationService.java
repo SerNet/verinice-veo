@@ -19,20 +19,21 @@
  ******************************************************************************/
 package org.veo.service;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * This class provides access to veo specific application properties and environment/system variable.
+ * This class provides access to veo specific application properties and
+ * environment/system variable.
  */
 @Service
 public class VeoConfigurationService {
 
     @Value("${veo.basedir}")
     private String baseDir;
+
     public String getBaseDir() {
         return baseDir;
     }
-    
+
 }

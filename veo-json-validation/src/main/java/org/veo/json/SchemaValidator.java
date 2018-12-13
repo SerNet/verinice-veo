@@ -19,9 +19,9 @@
  ******************************************************************************/
 package org.veo.json;
 
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-
 import java.io.IOException;
+
+import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 
 /**
  * Provides method to validate a JSON schema against the veo meta-schema.

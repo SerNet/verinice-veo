@@ -25,8 +25,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * This class checks for application users in the application persistence instance and
- * provides user details understood by spring.
+ * This class checks for application users in the application persistence
+ * instance and provides user details understood by spring.
  */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

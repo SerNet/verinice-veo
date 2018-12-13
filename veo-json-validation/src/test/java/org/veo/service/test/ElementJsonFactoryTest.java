@@ -20,11 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.veo.model.Element;
-import org.veo.model.ElementProperty;
-import org.veo.model.Property;
-import org.veo.service.ElementFactory;
-import org.veo.service.JsonFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +27,12 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
+
+import org.veo.model.Element;
+import org.veo.model.ElementProperty;
+import org.veo.model.Property;
+import org.veo.service.ElementFactory;
+import org.veo.service.JsonFactory;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

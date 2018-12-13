@@ -34,13 +34,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 import org.veo.service.LinkMapService;
 
 /**
  * REST service which provides methods to manage links.
  *
- * An link is a generic Map<String, Object> with just a few requirements,
- * see org.veo.service.LinkMapService.
+ * An link is a generic Map<String, Object> with just a few requirements, see
+ * org.veo.service.LinkMapService.
  */
 @RestController
 public class LinksController {
@@ -69,7 +70,8 @@ public class LinksController {
     }
 
     @RequestMapping(path = "/links/{uuid}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> getLinks(@PathVariable(value = "uuid") String uuid, @RequestBody Map<String, Object> content) {
+    public ResponseEntity<Object> getLinks(@PathVariable(value = "uuid") String uuid,
+            @RequestBody Map<String, Object> content) {
         this.mapService.save(uuid, content);
         return ResponseEntity.noContent().build();
     }
@@ -82,7 +84,8 @@ public class LinksController {
 
     @RequestMapping(value = "/elements/{uuid}/links", method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> getLinks(@PathVariable("uuid") String uuid) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(mapService.findByElement(uuid));
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .body(mapService.findByElement(uuid));
     }
 
     @RequestMapping(value = "/links/{uuid}", method = RequestMethod.DELETE)

@@ -20,8 +20,8 @@
 package org.veo.json;
 
 /**
- * Throw this Exception if a validation could not be completed but an error occurred
- * while validating, e.g. IOException, corrupt syntax in JSON files.
+ * Throw this Exception if a validation could not be completed but an error
+ * occurred while validating, e.g. IOException, corrupt syntax in JSON files.
  */
 public class ProcessingException extends Exception {
 

@@ -19,7 +19,18 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
-import io.jsonwebtoken.Jwts;
+import static org.veo.rest.security.SecurityConstants.HEADER_STRING;
+import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
+
+import java.io.IOException;
+import java.security.Key;
+import java.util.ArrayList;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,16 +38,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.Key;
-import java.util.ArrayList;
-
-import static org.veo.rest.security.SecurityConstants.HEADER_STRING;
-import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
+import io.jsonwebtoken.Jwts;
 
 /**
  * This filters checks incoming request for JWT tokens and their validity.
@@ -56,9 +58,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req,
-                                    HttpServletResponse res,
-                                    FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
+            FilterChain chain) throws IOException, ServletException {
         String header = req.getHeader(HEADER_STRING);
 
         if (header == null || !header.toLowerCase().startsWith(TOKEN_PREFIX.toLowerCase())) {
@@ -81,10 +82,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private String parseUserFromToken(String token) {
-        return Jwts.parser()
-                    .setSigningKey(verificationKey)
-                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-                    .getBody()
-                    .getSubject();
+        return Jwts.parser().setSigningKey(verificationKey)
+                .parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
     }
 }

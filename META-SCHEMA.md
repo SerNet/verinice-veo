@@ -111,4 +111,3 @@ information shall be given by a UI-schema which is still to be defined.
 
 [order.json]: veo-json-validation/src/test/resources/order.json "An example element schema"
 [meta.json]: veo-json-validation/src/main/resources/meta.json "The meta-schema"
-

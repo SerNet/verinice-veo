@@ -26,23 +26,32 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import org.veo.commons.VeoException;
 import org.veo.commons.VeoException.Error;
 
 @ControllerAdvice
 public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({ VeoException.class})
-    protected ResponseEntity<Object> handleVeoException(VeoException veoException, WebRequest request) {
+    @ExceptionHandler({ VeoException.class })
+    protected ResponseEntity<Object> handleVeoException(VeoException veoException,
+            WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         Error error = veoException.getError();
         switch (error) {
-            case ELEMENT_EXISTS: status = HttpStatus.CONFLICT; break;
-            case ELEMENT_NOT_FOUND: status = HttpStatus.NOT_FOUND; break;
-            case AUTHENTICATION_REQUIRED: status = HttpStatus.UNAUTHORIZED; break;
+        case ELEMENT_EXISTS:
+            status = HttpStatus.CONFLICT;
+            break;
+        case ELEMENT_NOT_FOUND:
+            status = HttpStatus.NOT_FOUND;
+            break;
+        case AUTHENTICATION_REQUIRED:
+            status = HttpStatus.UNAUTHORIZED;
+            break;
         }
         String bodyOfResponse = veoException.getMessage();
-        return handleExceptionInternal(veoException, bodyOfResponse, new HttpHeaders(), status, request);
+        return handleExceptionInternal(veoException, bodyOfResponse, new HttpHeaders(), status,
+                request);
     }
 
 }

@@ -1,12 +1,8 @@
 import com.github.jengelman.gradle.plugins.processes.tasks.JavaFork
 
-plugins {
-  id "net.foragerr.jmeter" version "1.1.0-4.0"
-}
+plugins { id "net.foragerr.jmeter" version "1.1.0-4.0" }
 
-plugins {
-    id 'com.github.johnrengelman.processes' version "0.5.0"
-}
+plugins { id 'com.github.johnrengelman.processes' version "0.5.0" }
 
 apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
@@ -30,12 +26,8 @@ dependencies {
 
 bootRun {
     def activeSpringProfiles = 'psql'
-    findProperty('springProfiles')?.with {
-      activeSpringProfiles = it
-    }
-    System.properties.'spring.profiles.active'?.with {
-      activeSpringProfiles = it
-    }
+    findProperty('springProfiles')?.with { activeSpringProfiles = it }
+    System.properties.'spring.profiles.active'?.with { activeSpringProfiles = it }
     systemProperty 'spring.profiles.active', activeSpringProfiles
     systemProperty 'veo.basedir', "${System.getProperty("user.home")}/.local/share/veo"
 }
@@ -50,11 +42,15 @@ def testThreadsJMeter = System.properties.'jmeter.test.threads' ?: 5
 jmeter {
     reportXslt = file("src/test/jmeter/jmeter-results-detail-report_21.xsl")
     jmLog = file("build/jmeter-report/jmeter.log")
-	jmUserProperties = ["port=$serverPortJMeter", "host=$serverHostJMeter", 
-	  "iterations=$testIterationsJMeter", "threads=$testThreadsJMeter" ]
-	reportPostfix = ''
+    jmUserProperties = [
+        "port=$serverPortJMeter",
+        "host=$serverHostJMeter",
+        "iterations=$testIterationsJMeter",
+        "threads=$testThreadsJMeter"
+    ]
+    reportPostfix = ''
     enableReports = true
-    enableExtendedReports = true 
+    enableExtendedReports = true
     csvLogFile=false
 }
 
@@ -62,36 +58,36 @@ task startSpringBoot(type: JavaFork) {
     description = 'Start Spring Boot in the background.'
     group = 'Load Test'
     classpath = sourceSets.main.runtimeClasspath
-    main = 'org.veo.rest.RestApplication' 
-    systemProperty 'server.port', serverPortJMeter  
+    main = 'org.veo.rest.RestApplication'
+    systemProperty 'server.port', serverPortJMeter
 }
 startSpringBoot.dependsOn assemble
- 
+
 task waitUntilSpringBootIsUp {
     description = 'Call the /schemas/links endpoint and wait until it responds with 200.'
     group = 'Load Test'
     doLast {
-	    String url = "http://$serverHostJMeter:$serverPortJMeter/schemas/links"
-	    boolean success = false
-	    int count = 0
-	    while (count < 15 && !success) {
-	        println 'Trying to connect to \'' + url + '\' : Attempt number=' + count
-	        try {
-	            count += 1
-	            def connection = new URL(url).openConnection()
-				connection.requestMethod = 'GET'
-	            connection.responseCode == 200
-	            success = true
-	         }
-	        catch (all) {
-	            sleep(5 * 1000) // wait for another 5 seconds until next retry
-	        }
-	    }
-	    if (success) {
-	        println 'SUCCESSFULLY connected to \'' + url + '\''
-	    } else {
-	        println 'FAILED to connect to \'' + url + '\''
-	    }
+        String url = "http://$serverHostJMeter:$serverPortJMeter/schemas/links"
+        boolean success = false
+        int count = 0
+        while (count < 15 && !success) {
+            println 'Trying to connect to \'' + url + '\' : Attempt number=' + count
+            try {
+                count += 1
+                def connection = new URL(url).openConnection()
+                connection.requestMethod = 'GET'
+                connection.responseCode == 200
+                success = true
+            }
+            catch (all) {
+                sleep(5 * 1000) // wait for another 5 seconds until next retry
+            }
+        }
+        if (success) {
+            println 'SUCCESSFULLY connected to \'' + url + '\''
+        } else {
+            println 'FAILED to connect to \'' + url + '\''
+        }
     }
 }
 waitUntilSpringBootIsUp.dependsOn startSpringBoot
@@ -101,9 +97,7 @@ jmGui.dependsOn waitUntilSpringBootIsUp
 jmRun {
     dependsOn waitUntilSpringBootIsUp
     doLast {
-        fileTree('build/jmeter-report/'){
-            include '*.xml'
-        }.visit { item ->
+        fileTree('build/jmeter-report/'){ include '*.xml' }.visit { item ->
             def fileName = item.name
             def path = item.file.parent
             def outputName = fileName.replaceAll(/-\d+-\d+/, '')

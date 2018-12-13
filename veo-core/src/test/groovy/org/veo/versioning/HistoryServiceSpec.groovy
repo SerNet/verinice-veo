@@ -8,10 +8,11 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
-import org.veo.commons.VeoException
-import org.veo.service.HistoryService
 
 import groovy.json.JsonSlurper
+
+import org.veo.commons.VeoException
+import org.veo.service.HistoryService
 import spock.lang.Specification
 
 @DataJpaTest(showSql=false)

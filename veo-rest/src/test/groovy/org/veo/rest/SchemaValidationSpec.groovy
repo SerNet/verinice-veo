@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.rest
 
-import org.veo.json.SchemaValidator
 import org.veo.json.LinkSchemaValidator
+import org.veo.json.SchemaValidator
 
 import spock.lang.Specification
 import spock.lang.Unroll
