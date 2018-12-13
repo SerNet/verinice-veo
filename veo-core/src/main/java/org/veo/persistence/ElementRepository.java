@@ -27,20 +27,16 @@ public interface ElementRepository extends CrudRepository<Element, String> {
     @EntityGraph(value = "properties", type = EntityGraphType.LOAD)
     public Element findOneWithChildren(@Param("uuid") String uuid);
 
-    @Query("SELECT e FROM Element e " + 
-           "LEFT JOIN FETCH e.linksOutgoing " +
-           "lEFT JOIN FETCH e.linksIncoming " + 
-           "WHERE e.uuid = :uuid")
+    @Query("SELECT e FROM Element e "
+            + "LEFT JOIN FETCH e.linksOutgoing lEFT JOIN FETCH e.linksIncoming "
+            + "WHERE e.uuid = :uuid")
     @EntityGraph(value = "linksWithProperties", type = EntityGraphType.LOAD)
     public Element findOneWithLinks(@Param("uuid") String uuid);
-    
-    @Query("SELECT DISTINCT e FROM Element e " + 
-            "LEFT JOIN FETCH e.properties " +
-            "LEFT JOIN FETCH e.children " +
-            "LEFT JOIN FETCH e.parent " +
-            "LEFT JOIN FETCH e.linksOutgoing " +
-            "LEFT JOIN FETCH e.linksIncoming " + 
-            "WHERE e.uuid = :uuid")
+
+    @Query("SELECT DISTINCT e FROM Element e "
+            + "LEFT JOIN FETCH e.properties LEFT JOIN FETCH e.children "
+            + "LEFT JOIN FETCH e.parent LEFT JOIN FETCH e.linksOutgoing "
+            + "LEFT JOIN FETCH e.linksIncoming WHERE e.uuid = :uuid")
     public Element findOneWithAll(@Param("uuid") String uuid);
 
     @Query("SELECT DISTINCT e FROM Element e left join fetch e.properties where e.typeId = :typeId")
