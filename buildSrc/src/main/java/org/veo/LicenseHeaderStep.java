@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) $YEAR $AUTHOR.
+ * Copyright (c) 2018 Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -99,9 +99,10 @@ public final class LicenseHeaderStep implements Serializable {
                 // don't change files which have a different license
                 return raw;
             }
-            String licenseTemplaceWithTokensReplaced = licenseHeaderTemplate
-                    .replace("$YEAR", "\\E.*\\Q").replace("$AUTHOR", "\\E.*\\Q");
-            Pattern p = Pattern.compile("^\\Q" + licenseTemplaceWithTokensReplaced + "\\E",
+            String licenseTemplateWithTokensReplaced = licenseHeaderTemplate
+                    .replace("$YEAR", "\\E\\d{4}\\Q")
+                    .replace("$AUTHOR", "\\E[\\p{IsAlphabetic}' -]+\\Q");
+            Pattern p = Pattern.compile("^\\Q" + licenseTemplateWithTokensReplaced + "\\E",
                     Pattern.UNIX_LINES | Pattern.MULTILINE);
             Matcher m = p.matcher(existingLicense);
             if (m.find()) {
