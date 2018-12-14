@@ -54,6 +54,22 @@ or
 java -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
 ```
 
+**Deploy to Cloud Foundry**
+
+Check and set your Cloud Foundry parameters in file `veo-rest/build.gradle` in section `cfConfig`. After that export user name and password as environment variables:
+
+```bash
+export CF_CCUSER=NAME
+export CF_CCPASSWORD=PASSWORD
+```
+
+You can not push your the REST service to a Cloud Foundry instance:
+
+```bash
+./gradlew cf-push
+```
+
+
 ## Modules
 
 ### veo-core

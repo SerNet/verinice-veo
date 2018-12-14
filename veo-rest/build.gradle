@@ -108,6 +108,20 @@ jmRun {
 
 jmReport.dependsOn jmRun
 
+// Set PWS user and password:
+// $ export CF_CCUSER=NAME
+// $ export CF_CCPASSWORD=PASSWORD
+// Push application
+// $ ./gradlew cf-push
+cfConfig {
+    ccHost = "api.run.pivotal.io"
+    org = "veo"
+    space = "development"
+    name = "veo-api"
+
+    filePath = bootJar.archivePath
+    buildpack = "https://github.com/cloudfoundry/java-buildpack.git"
+}
 
 gradle.buildFinished {
     startSpringBoot.processHandle?.abort()
