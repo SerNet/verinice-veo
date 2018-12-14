@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.1.1.RELEASE' apply false
     id "com.github.spotbugs" version '1.6.6'
     id "com.diffplug.gradle.spotless" version "3.16.0" apply false
+    id "com.github.pivotalservices.cf-app" version "2.3.0-rc.8"
 }
 
 allprojects  {
@@ -127,4 +128,19 @@ subprojects {
         compile 'org.slf4j:slf4j-api'
         runtime 'ch.qos.logback:logback-classic'
     }
+}
+
+// Set PWS user and password:
+// $ export CF_CCUSER=NAME
+// $ export CF_CCPASSWORD=PASSWORD
+// Push application
+// $ ./gradlew cf-push
+cfConfig {
+    ccHost = "api.run.pivotal.io"
+    org = "veo"
+    space = "development"
+    name = "veo-api"
+
+    filePath = "veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar"
+    buildpack = "https://github.com/cloudfoundry/java-buildpack.git"
 }
