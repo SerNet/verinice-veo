@@ -58,6 +58,20 @@ public class ElementsControllerSpec extends Specification {
         parsedResponse instanceof List
     }
 
+    def "getRootElements"() throws Exception {
+        when:
+        def result = mockMvc.perform(MockMvcRequestBuilders.get("/elements").param("parent","").accept("application/json")).andReturn()
+        def response = result.response
+        then:
+        response.status == HttpStatus.OK.value()
+        response.contentType == MediaType.APPLICATION_JSON_UTF8_VALUE
+        when:
+        def parsedResponse =
+                new JsonSlurper().parseText(response.contentAsString)
+        then:
+        parsedResponse instanceof List
+    }
+
     def "get"() throws Exception {
         when:
         def result = mockMvc.perform(MockMvcRequestBuilders.get("/elements/deadbeef").accept("application/json")).andReturn()
@@ -138,23 +152,36 @@ public class ElementsControllerSpec extends Specification {
         List<Map<String, Object>> findAll()  {
             return [
                 [
-                    id   : 'deadbeef',
-                    title: "I'm test data…"
+                    id   : 'b2bde5ab-b496-4466-af24-1ed2c6166313',
+                    title: "I'm a root element…"
                 ],
                 [
-                    id   : 'abad1dea',
-                    title: "I'm test data, too"
+                    id   : '6e0b04d1-e0e1-42a2-a965-ffb1c45352f0',
+                    title: "I'm a 2nd root element…"
                 ],
                 [
-                    id   : '813ad81',
+                    id   : '816ed09c-175a-4527-a2c1-150c93814d18',
                     title: "I'm a child",
-                    parent: "abad1dea"
+                    parent: "6e0b04d1-e0e1-42a2-a965-ffb1c45352f0"
                 ],
                 [
-                    id   : '813ad81',
+                    id   : 'ef9c43de-4c5c-47d7-a034-cfab9517ee20',
                     title: "I'm a child, too",
-                    parent: "abad1dea"
+                    parent: "b2bde5ab-b496-4466-af24-1ed2c6166313"
                 ],
+            ]
+        }
+
+        List<Map<String, Object>> findRootElements() {
+            return [
+                [
+                    id   : 'b2bde5ab-b496-4466-af24-1ed2c6166313',
+                    title: "I'm a root element…"
+                ],
+                [
+                    id   : '6e0b04d1-e0e1-42a2-a965-ffb1c45352f0',
+                    title: "I'm a 2nd root element…"
+                ]
             ]
         }
 

@@ -1,8 +1,16 @@
 {
   "all": {
     "get": {
-      "description": "Returns the list of all readable elements",
-      "summary": "Retreive all elements",
+      "description": "Returns the list of readable elements",
+      "summary": "Retreive elements",
+      "parameters": [
+        {
+          "name": "parent",
+          "in": "query",
+          "required": false,
+          "description": "If null, return all elements, if empty, return root elements only, if UUID, return children of element."
+        }
+      ],
       "responses": {
         "200": {
           "description": "List elements",

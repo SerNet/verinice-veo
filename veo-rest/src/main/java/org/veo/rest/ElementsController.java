@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.model.HistoryEntry;
@@ -44,6 +45,8 @@ import org.veo.service.HistoryService;
  */
 @RestController
 public class ElementsController {
+
+    public static final String PARENT_PARAM = "parent";
 
     @Autowired
     private ElementMapService mapService;
@@ -60,9 +63,10 @@ public class ElementsController {
     }
 
     @GetMapping(value = "/elements")
-    public ResponseEntity<List<Map<String, Object>>> getElements() {
+    public ResponseEntity<List<Map<String, Object>>> getElements(
+            @RequestParam(value = PARENT_PARAM, required = false) String parentUuid) {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(mapService.findAll());
+                .body(getElementList(parentUuid));
     }
 
     @PostMapping(value = "/elements")
@@ -101,6 +105,16 @@ public class ElementsController {
     public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid) {
         mapService.delete(uuid);
         return ResponseEntity.ok().build();
+    }
+
+    private List<Map<String, Object>> getElementList(String parentUuid) {
+        if (parentUuid == null) {
+            return mapService.findAll();
+        }
+        if (parentUuid.isEmpty()) {
+            return mapService.findRootElements();
+        }
+        return mapService.findChildren(parentUuid);
     }
 
 }
