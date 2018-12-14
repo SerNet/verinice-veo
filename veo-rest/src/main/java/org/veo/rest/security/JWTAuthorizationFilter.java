@@ -21,8 +21,9 @@ import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
 
 import java.io.IOException;
 import java.security.Key;
-import java.util.ArrayList;
-import java.util.Locale;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -45,6 +46,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
     private Key verificationKey;
+    private static final Pattern AUTHORIZATION_HEADER_PATTERN = Pattern.compile("^" + TOKEN_PREFIX,
+            Pattern.CASE_INSENSITIVE);
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
@@ -60,28 +63,27 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             FilterChain chain) throws IOException, ServletException {
         String header = req.getHeader(HEADER_STRING);
 
-        if (header == null || !header.toLowerCase(Locale.getDefault())
-                .startsWith(TOKEN_PREFIX.toLowerCase(Locale.getDefault()))) {
+        if (header == null) {
             chain.doFilter(req, res);
             return;
         }
+        Matcher m = AUTHORIZATION_HEADER_PATTERN.matcher(header);
+        if (!m.find()) {
+            chain.doFilter(req, res);
+            return;
+        }
+        String user = parseUserFromToken(header.substring(m.end()));
 
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
+        UsernamePasswordAuthenticationToken authentication = user != null
+                ? new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList())
+                : null;
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(req, res);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String user = parseUserFromToken(request.getHeader(HEADER_STRING));
-        if (user == null) {
-            return null;
-        }
-        return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-    }
-
     private String parseUserFromToken(String token) {
-        return Jwts.parser().setSigningKey(verificationKey)
-                .parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody().getSubject();
+        return Jwts.parser().setSigningKey(verificationKey).parseClaimsJws(token).getBody()
+                .getSubject();
     }
 }
