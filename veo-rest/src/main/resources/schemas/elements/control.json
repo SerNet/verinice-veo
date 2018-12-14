@@ -17,7 +17,7 @@
     },
     "$veo.title": {
       "type": "string",
-      "title": "The title of the asset"
+      "title": "The title of the control"
     },
     "parent": {
       "type": "string",
