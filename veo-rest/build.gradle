@@ -70,6 +70,7 @@ class StartSpringBootAsync extends DefaultTask {
         main = 'org.veo.rest.RestApplication'
         classpath = project.sourceSets.main.runtimeClasspath
         systemProperty('server.port', serverPort)
+        systemProperty('logging.config', project.file('src/test/jmeter/logback.xml').absolutePath)
       }
     } as Callable)
   }
