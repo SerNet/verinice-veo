@@ -162,6 +162,41 @@ public class ElementRepositoryTest {
     }
 
     @Test
+    public void testFindByParent() {
+        Element parent = createElement("org");
+        Element child = createElement("asset_group");
+        child.setParent(parent);
+        parent.addChild(child);
+        elementRepository.save(parent);
+        List<Element> children = elementRepository.findByParentId(parent.getUuid());
+        assertNotNull(children);
+        assertEquals(1, children.size());
+        assertEquals(child.getUuid(), children.get(0).getUuid());
+    }
+
+    @Test
+    public void testFindRoots() {
+        List<Element> roots = elementRepository.findByParentIdIsNull();
+        assertNotNull(roots);
+        assertEquals(0, roots.size());
+        Element parent = createElement("org");
+        Element child = createElement("asset_group");
+        child.setParent(parent);
+        parent.addChild(child);
+        elementRepository.save(parent);
+        Element parent2 = createElement("org 2");
+        elementRepository.save(parent2);
+        int maxDepth = random.nextInt(2) + 1;
+        logger.debug("Creating tree, depth is: " + maxDepth + "...");
+        createChildren(parent2, maxDepth, 0);
+        roots = elementRepository.findByParentIdIsNull();
+        assertNotNull(roots);
+        assertEquals(2, roots.size());
+        assertTrue(roots.contains(parent));
+        assertTrue(roots.contains(parent2));
+    }
+
+    @Test
     public void testChangeParent() {
         Element parent = createElement("org");
         Element child = createElement("asset_group");

@@ -78,6 +78,12 @@ public class ElementMapDbService implements ElementMapService {
     }
 
     @Override
+    public List<Map<String, Object>> findRootElements() {
+        Iterable<Element> rootElements = elementRepository.findByParentIdIsNull();
+        return getResultList(rootElements);
+    }
+
+    @Override
     public void save(String id, Map<String, Object> json) {
         Element element = elementRepository.findByUuid(id);
         if (element == null) {

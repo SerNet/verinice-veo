@@ -32,6 +32,8 @@ public interface ElementMapService {
 
     List<Map<String, Object>> findChildren(String parentId);
 
+    List<Map<String, Object>> findRootElements();
+
     void save(String id, Map<String, Object> content);
 
     String saveNew(Map<String, Object> content);
