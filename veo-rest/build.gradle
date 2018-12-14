@@ -60,6 +60,7 @@ task startSpringBoot(type: JavaFork) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'org.veo.rest.RestApplication'
     systemProperty 'server.port', serverPortJMeter
+    systemProperty 'logging.config', file('src/test/jmeter/logback.xml').absolutePath
 }
 startSpringBoot.dependsOn assemble
 
