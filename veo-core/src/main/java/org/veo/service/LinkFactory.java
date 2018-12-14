@@ -30,17 +30,15 @@ import org.veo.model.Link;
 import org.veo.model.LinkProperty;
 import org.veo.model.Property;
 import org.veo.persistence.ElementRepository;
-import org.veo.persistence.LinkRepository;
 
 /**
  * A factory to creates link objects.
  */
 @Service
 public class LinkFactory extends AbstractVeoFactory {
+
     @Autowired
-    LinkRepository linkRepository;
-    @Autowired
-    ElementRepository elementRepository;
+    private ElementRepository elementRepository;
 
     public Link createLink(Map<String, Object> json) {
         String id = (String) json.get(JsonFactory.ID);
@@ -107,7 +105,7 @@ public class LinkFactory extends AbstractVeoFactory {
         return propertyList;
     }
 
-    private void setDynamicProperty(Map.Entry<String, Object> entry,
+    private static void setDynamicProperty(Map.Entry<String, Object> entry,
             List<LinkProperty> properties) {
         Object value = entry.getValue();
         if (value instanceof Object[]) {
@@ -119,7 +117,8 @@ public class LinkFactory extends AbstractVeoFactory {
         }
     }
 
-    private void setMultiProperties(String key, Object[] valueList, List<LinkProperty> properties) {
+    private static void setMultiProperties(String key, Object[] valueList,
+            List<LinkProperty> properties) {
         properties.clear();
         int index = 0;
         for (Object singleValue : valueList) {
@@ -139,7 +138,7 @@ public class LinkFactory extends AbstractVeoFactory {
         }
     }
 
-    private void setSingleProperty(String key, Object value, List<LinkProperty> properties) {
+    private static void setSingleProperty(String key, Object value, List<LinkProperty> properties) {
         LinkProperty property;
         if (properties.isEmpty()) {
             property = new LinkProperty();
@@ -158,7 +157,7 @@ public class LinkFactory extends AbstractVeoFactory {
         }
     }
 
-    private void addProperties(List<LinkProperty> propertyList, Link link) {
+    private static void addProperties(List<LinkProperty> propertyList, Link link) {
         for (LinkProperty property : propertyList) {
             if (!link.getProperties().contains(property)) {
                 link.addProperty(property);
