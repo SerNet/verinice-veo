@@ -19,16 +19,16 @@ allprojects  {
         java {
             target 'src/**/*.java'
 
-            eclipse().configFile(rootProject.file('spotless.eclipseformat.xml'))
+            eclipse().configFile(rootProject.file('misc/eclipse/java-format.xml'))
+            importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             removeUnusedImports()
-            importOrder 'java', 'javax', 'org', 'com', 'org.veo'
             trimTrailingWhitespace()
         }
         groovy {
             target 'src/**/*.groovy'
 
             greclipse()
-            importOrder 'java', 'javax', 'org', 'com', 'org.veo'
+            importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             indentWithSpaces(4)
             trimTrailingWhitespace()
         }
