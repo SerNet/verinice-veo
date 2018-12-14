@@ -4,7 +4,6 @@ out/
 bin/
 
 *.iml
-*.log
 .classpath
 .gradle/
 .idea
