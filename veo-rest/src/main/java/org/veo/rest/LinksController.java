@@ -13,11 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Jochen Kemnade <jk@sernet.de> - initial API and implementation
- *     Alexander Ben Nasrallah
- *     Urs Zeidler
  ******************************************************************************/
 package org.veo.rest;
 
