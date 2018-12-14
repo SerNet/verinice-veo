@@ -1,0 +1,10 @@
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.diffplug.spotless:spotless-lib:1.17.0'
+    compile 'com.diffplug.spotless:spotless-lib-extra:1.17.0'
+}

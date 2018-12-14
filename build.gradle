@@ -10,6 +10,8 @@ allprojects  {
 
     apply plugin: "com.diffplug.gradle.spotless"
 
+    def currentUserName = "git config user.name".execute().text.trim()
+
     spotless {
         groovyGradle {
             greclipse()
@@ -17,16 +19,17 @@ allprojects  {
             paddedCell()
         }
         java {
-            target 'src/**/*.java'
+            target 'src/**/*.java', 'buildSrc/**/*.java'
 
             eclipse().configFile(rootProject.file('misc/eclipse/java-format.xml'))
             importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
+            addStep org.veo.LicenseHeaderStep.create(currentUserName)
             removeUnusedImports()
             trimTrailingWhitespace()
         }
         groovy {
-            target 'src/**/*.groovy'
-
+            target 'src/**/*.groovy', 'buildSrc/**/*.groovy'
+            addStep org.veo.LicenseHeaderStep.create(currentUserName)
             greclipse()
             importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             indentWithSpaces(4)
