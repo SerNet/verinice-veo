@@ -24,6 +24,8 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,10 +53,7 @@ public class VnaImportApplication implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(VnaImportApplication.class);
 
     private static final String JAR_NAME = "veo-vna-import-<VERSION>.jar";
-
-    public VnaImportApplication() {
-        // Empty constructor
-    }
+    private static final String THREADS_DEFAULT = "1";
 
     @Autowired
     VnaImport vnaImport;
@@ -62,13 +61,13 @@ public class VnaImportApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         CommandLineParser parser = new DefaultParser();
+        Options options = newCommandLineOptions();
+
         try {
-            // parse the command line arguments
-            CommandLine line = parser.parse(CommandLineOptions.get(), args);
-            String filePath = line.getOptionValue(CommandLineOptions.FILE);
-            String numberOfThreads = line.getOptionValue(CommandLineOptions.THREADS,
-                    CommandLineOptions.THREADS_DEFAULT);
             long start = System.currentTimeMillis();
+            CommandLine line = parser.parse(options, args);
+            final String filePath = line.getOptionValue("file");
+            final String numberOfThreads = line.getOptionValue("threads", THREADS_DEFAULT);
             log.info("Importing: {}...", filePath);
             logNumberOfThreads(numberOfThreads);
             try (InputStream rawZipStream = Files.newInputStream(Paths.get(filePath))) {
@@ -79,8 +78,19 @@ public class VnaImportApplication implements CommandLineRunner {
             }
         } catch (ParseException exp) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar " + JAR_NAME, CommandLineOptions.get());
+            formatter.printHelp("java -jar " + JAR_NAME, options);
         }
+    }
+
+    private Options newCommandLineOptions() {
+        Options options = new Options();
+        options.addOption(new Option("h", "help", false, "print this message"));
+        options.addOption(Option.builder("f").hasArg().required()
+                .desc("use given VNA file (required)").longOpt("file").build());
+        options.addOption(Option.builder("t").hasArg()
+                .desc("number of threads (default: " + THREADS_DEFAULT + ")").longOpt("threads")
+                .build());
+        return options;
     }
 
     private void logNumberOfThreads(String numberOfThreads) {
