@@ -34,7 +34,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 import org.veo.core.VeoCoreConfiguration;
-import org.veo.service.ie.VnaImport;
 import org.veo.util.time.TimeFormatter;
 
 /**

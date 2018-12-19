@@ -14,7 +14,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.service.ie;
+package org.veo.ie;
 
 import java.util.Collections;
 import java.util.HashMap;

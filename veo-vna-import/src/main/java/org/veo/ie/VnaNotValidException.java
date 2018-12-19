@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Daniel Murygin.
+ * Copyright (c) 2015 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,25 +14,20 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.service.ie;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+package org.veo.ie;
 
 /**
- * This class wraps the access to the mapping properties that map element and
- * property IDs from VNAs to VEO IDs.
+ * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-@Configuration
-@PropertySource(value = "${veo.vna-type-mapping}", encoding = "UTF-8")
-public class VnaTypeMappingProperties {
+public class VnaNotValidException extends RuntimeException {
 
-    @Autowired
-    Environment properties;
+    private static final long serialVersionUID = 7303221037111060002L;
 
-    public String getValue(String key) {
-        return properties.getProperty(key);
+    public VnaNotValidException(Exception e) {
+        super(e);
+    }
+
+    public VnaNotValidException(String message) {
+        super(message);
     }
 }

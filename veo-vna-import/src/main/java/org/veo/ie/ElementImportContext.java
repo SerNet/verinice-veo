@@ -14,58 +14,68 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.service.ie;
+package org.veo.ie;
 
+import java.util.List;
 import java.util.Properties;
 
-import de.sernet.sync.data.SyncLink;
+import de.sernet.sync.data.SyncObject;
+import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 
 import org.veo.model.Element;
-import org.veo.model.Link;
 
 /**
- * A context to import one link from a VNA to database.
+ * Context for importing an element from a VNA file.
  *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class LinkImportContext {
+public class ElementImportContext {
 
-    private SyncLink syncLink;
-    private Element source;
-    private Element destination;
-    private Link link;
+    private SyncObject syncObject;
+    private List<MapObjectType> mapObjectTypeList;
+    private Element parent;
+    private Element element;
     private Properties missingMappingProperties;
 
-    public LinkImportContext() {
+    public ElementImportContext(Element parent, SyncObject syncObject,
+            List<MapObjectType> mapObjectTypeList) {
         super();
-    }
-
-    public LinkImportContext(SyncLink syncLink, Element source, Element destination) {
-        super();
-        this.syncLink = syncLink;
-        this.source = source;
-        this.destination = destination;
+        this.parent = parent;
+        this.syncObject = syncObject;
+        this.mapObjectTypeList = mapObjectTypeList;
         this.missingMappingProperties = new Properties();
     }
 
-    public Link getLink() {
-        return link;
+    public SyncObject getSyncObject() {
+        return syncObject;
     }
 
-    public void setLink(Link link) {
-        this.link = link;
+    public void setSyncObject(SyncObject syncObject) {
+        this.syncObject = syncObject;
     }
 
-    public SyncLink getSyncLink() {
-        return syncLink;
+    public List<MapObjectType> getMapObjectTypeList() {
+        return mapObjectTypeList;
     }
 
-    public Element getSource() {
-        return source;
+    public void setMapObjectType(List<MapObjectType> mapObjectTypeList) {
+        this.mapObjectTypeList = mapObjectTypeList;
     }
 
-    public Element getDestination() {
-        return destination;
+    public Element getParent() {
+        return parent;
+    }
+
+    public void setParent(Element parent) {
+        this.parent = parent;
+    }
+
+    public Element getElement() {
+        return element;
+    }
+
+    public void setElement(Element element) {
+        this.element = element;
     }
 
     public Properties getMissingMappingProperties() {

@@ -14,27 +14,25 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.service.ie;
+package org.veo.ie;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 
 /**
- *
- * This interface provides methods for mapping IDs from verinice archives (VNA)
- * to IDs from veo.
+ * This class wraps the access to the mapping properties that map element and
+ * property IDs from VNAs to VEO IDs.
  */
-public interface TypeIdMapper {
+@Configuration
+@PropertySource(value = "${veo.vna-type-mapping}", encoding = "UTF-8")
+public class VnaTypeMappingProperties {
 
-    /**
-     * @param vnaElementTypeId
-     *            An element ID from a VNA
-     * @return the veo element ID for the given ID from a VNA
-     */
-    String getVeoElementTypeId(String vnaElementTypeId);
+    @Autowired
+    Environment properties;
 
-    /**
-     * @param vnaPropertyTypeid
-     *            A property ID from a VNA
-     * @return the veo property ID for the given ID from a VNA
-     */
-    String getVeoPropertyTypeId(String vnaPropertyTypeid);
-
+    public String getValue(String key) {
+        return properties.getProperty(key);
+    }
 }

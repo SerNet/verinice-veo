@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Daniel Murygin.
+ * Copyright (c) 2018 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,20 +14,27 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.service.ie;
+package org.veo.ie;
 
 /**
- * @author Daniel Murygin <dm[at]sernet[dot]de>
+ *
+ * This interface provides methods for mapping IDs from verinice archives (VNA)
+ * to IDs from veo.
  */
-public class VnaNotValidException extends RuntimeException {
+public interface TypeIdMapper {
 
-    private static final long serialVersionUID = 7303221037111060002L;
+    /**
+     * @param vnaElementTypeId
+     *            An element ID from a VNA
+     * @return the veo element ID for the given ID from a VNA
+     */
+    String getVeoElementTypeId(String vnaElementTypeId);
 
-    public VnaNotValidException(Exception e) {
-        super(e);
-    }
+    /**
+     * @param vnaPropertyTypeid
+     *            A property ID from a VNA
+     * @return the veo property ID for the given ID from a VNA
+     */
+    String getVeoPropertyTypeId(String vnaPropertyTypeid);
 
-    public VnaNotValidException(String message) {
-        super(message);
-    }
 }

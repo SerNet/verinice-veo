@@ -24,9 +24,9 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringRunner
 
+import org.veo.ie.VnaImport
 import org.veo.service.ElementService
 import org.veo.service.LinkService
-import org.veo.service.ie.VnaImport
 import spock.lang.Specification
 
 @DataJpaTest(showSql=false)
