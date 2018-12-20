@@ -45,9 +45,8 @@ class VnaImportSpec extends Specification {
     def "import VNA"(){
         setup:
         def is = VnaImportSpec.class.getResourceAsStream('VnaImportSpec.vna')
-        def bytes = is.bytes
         when:
-        def vna = vnaImport.importVna(bytes)
+        vnaImport.importVna(is)
         Iterator elements = elementService.findAll().iterator()
         int numberOfElements = 0
         while(elements.hasNext()) {

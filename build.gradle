@@ -80,7 +80,6 @@ subprojects {
 
     dependencyManagement {
         dependencies {
-            dependency 'commons-io:commons-io:2.6'
             dependency 'org.postgresql:postgresql:42.2.5'
             dependency 'net._01001111:jlorem:1.3'
             dependency 'commons-cli:commons-cli:1.4'

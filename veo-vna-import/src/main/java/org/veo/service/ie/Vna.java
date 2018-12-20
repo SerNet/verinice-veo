@@ -16,20 +16,14 @@
  ******************************************************************************/
 package org.veo.service.ie;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.UUID;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.sernet.sync.sync.SyncRequest;
-
-import org.veo.util.io.Archive;
-import org.veo.util.io.XmlIO;
 
 /**
  * Wrapper class to access the content of a verinice archive (VNA) file.
@@ -61,111 +55,37 @@ import org.veo.util.io.XmlIO;
  *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class Vna implements Serializable, AutoCloseable {
-
-    private static final long serialVersionUID = 4563763042849838627L;
+public class Vna {
 
     private static final Logger LOG = LoggerFactory.getLogger(Vna.class);
+    private static final String VERINICE_XML = "verinice.xml";
 
-    public static final String EXTENSION_VERINICE_ARCHIVE = ".vna"; //$NON-NLS-1$
-    public static final String VERINICE_XML = "verinice.xml"; //$NON-NLS-1$
-    public static final String DATA_XSD = "data.xsd"; //$NON-NLS-1$
-    public static final String MAPPING_XSD = "mapping.xsd"; //$NON-NLS-1$
-    public static final String SYNC_XSD = "sync.xsd"; //$NON-NLS-1$
-    public static final String README_TXT = "readme.txt"; //$NON-NLS-1$
-
-    private static final String[] ALL_STATIC_FILES = new String[] { VERINICE_XML, DATA_XSD,
-            MAPPING_XSD, SYNC_XSD, README_TXT, };
-
-    static {
-        Arrays.sort(ALL_STATIC_FILES);
+    private Vna() {
     }
 
-    private String uuid;
-    private String tempFileName = null;
-    public static final String FILES = "files"; //$NON-NLS-1$
-
     /**
-     * Creates a Vna instance out of <code>byte[] data</code>.
+     * Unmarshals verinice.xml out of a verinice archive input stream.
      *
-     * @param data
-     *            Data of a verinice archive (VNA, zip archive)
+     * @param inpuStream
+     *            The input stream on an open verinice archive (VNA, zip archive)
      * @throws VnaNotValidException
      *             In case of a missing entry in a VNA
      */
-    public Vna(byte[] data) {
-        super();
-        uuid = UUID.randomUUID().toString();
+    public static SyncRequest getXml(InputStream inputStream) throws VnaNotValidException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Creating new Vna...");
         }
-        try {
-            Archive.extractZipArchive(data, getTempFileName());
+        try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+            for (ZipEntry zipEntry = zipInputStream.getNextEntry(); zipEntry != null; zipInputStream
+                    .getNextEntry()) {
+                if (VERINICE_XML.equals(zipEntry.getName())) {
+                    return javax.xml.bind.JAXB.unmarshal(zipInputStream, SyncRequest.class);
+                }
+            }
         } catch (Exception e) {
             LOG.error("Error while reading verinice archive", e);
             throw new VnaNotValidException(e);
         }
-    }
-
-    public byte[] getFileData(String fileName) {
-        String fullPath = getPathToTempFile(fileName);
-        try {
-            return FileUtils.readFileToByteArray(new File(fullPath));
-        } catch (Exception e) {
-            LOG.error("Error while loading file data: " + fullPath, e);
-            return null;
-        }
-    }
-
-    private String getPathToTempFile(String fileName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getTempFileName()).append(File.separator).append(fileName);
-        return sb.toString();
-    }
-
-    /**
-     * Returns file verinice.xml from the archive. If there is no verinice.xml in
-     * the archive null is returned.
-     *
-     * @return verinice.xml from the archive
-     */
-    public byte[] getXmlFileData() {
-        return getFileData(VERINICE_XML);
-    }
-
-    public String getXmlFilePath() {
-        return getPathToTempFile(VERINICE_XML);
-    }
-
-    public SyncRequest getXml() {
-        return XmlIO.read(getXmlFilePath(), SyncRequest.class);
-    }
-
-    public void close() {
-        try {
-            FileUtils.deleteDirectory(new File(getTempFileName()));
-        } catch (IOException e) {
-            LOG.error("Error while deleting zipfile content.", e);
-        }
-    }
-
-    public final String getUuid() {
-        return uuid;
-    }
-
-    public final String getTempFileName() {
-        if (tempFileName == null) {
-            tempFileName = createTempFileName(getUuid());
-        }
-        return tempFileName;
-    }
-
-    private static String createTempFileName(String uuid) {
-        String tempDir = System.getProperty("java.io.tmpdir");
-        StringBuilder sb = new StringBuilder().append(tempDir);
-        if (!tempDir.endsWith(String.valueOf(File.separatorChar))) {
-            sb.append(File.separatorChar);
-        }
-        return sb.append(uuid).toString();
+        throw new VnaNotValidException(String.format("vna does not contain %s", VERINICE_XML));
     }
 }

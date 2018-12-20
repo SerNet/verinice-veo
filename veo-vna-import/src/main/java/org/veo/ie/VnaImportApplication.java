@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.ie;
 
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -71,12 +72,12 @@ public class VnaImportApplication implements CommandLineRunner {
             long start = System.currentTimeMillis();
             log.info("Importing: {}...", filePath);
             logNumberOfThreads(numberOfThreads);
-            byte[] vnaFileData = Files.readAllBytes(Paths.get(filePath));
-            vnaImport.setNumberOfThreads(Integer.parseInt(numberOfThreads));
-            vnaImport.importVna(vnaFileData);
-            long ms = System.currentTimeMillis() - start;
-            logRuntime(ms);
-
+            try (InputStream rawZipStream = Files.newInputStream(Paths.get(filePath))) {
+                vnaImport.setNumberOfThreads(Integer.parseInt(numberOfThreads));
+                vnaImport.importVna(rawZipStream);
+                long ms = System.currentTimeMillis() - start;
+                logRuntime(ms);
+            }
         } catch (ParseException exp) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar " + JAR_NAME, CommandLineOptions.get());

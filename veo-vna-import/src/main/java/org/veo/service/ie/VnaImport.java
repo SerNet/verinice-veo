@@ -17,6 +17,7 @@
 package org.veo.service.ie;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -93,13 +94,13 @@ public class VnaImport {
      * @throws InterruptedException
      */
     @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
-    public void importVna(byte[] vnaFileData) throws InterruptedException, ExecutionException {
+    public void importVna(InputStream vnaStream) throws InterruptedException, ExecutionException {
         ExecutorService taskExecutor = createExecutor();
         elementImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         linkImportCompletionService = new ExecutorCompletionService<>(taskExecutor);
         importContext = new ImportContext();
-        try (Vna vna = new Vna(vnaFileData)) {
-            importXml(vna.getXml());
+        try {
+            importXml(Vna.getXml(vnaStream));
             handleMissingProperties();
         } finally {
             shutdownAndAwaitTermination(taskExecutor);

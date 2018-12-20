@@ -4,7 +4,6 @@ apply plugin: 'groovy'
 dependencies {
     compile project(':veo-data-xml')
     compile project(':veo-core')
-    compile 'commons-io:commons-io'
     compile 'commons-cli:commons-cli'
     compile 'org.springframework:spring-tx'
 
