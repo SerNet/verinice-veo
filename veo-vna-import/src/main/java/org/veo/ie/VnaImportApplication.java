@@ -78,7 +78,6 @@ public class VnaImportApplication implements CommandLineRunner {
             logRuntime(ms);
 
         } catch (ParseException exp) {
-            // oops, something went wrong
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar " + JAR_NAME, CommandLineOptions.get());
         }
