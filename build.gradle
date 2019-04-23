@@ -1,7 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.1.RELEASE' apply false
-    id "com.github.spotbugs" version '1.6.6'
-    id "com.diffplug.gradle.spotless" version "3.16.0" apply false
+    id 'org.springframework.boot' version '2.1.5.RELEASE' apply false
+    id "com.github.spotbugs" version '2.0.0'
+    id "com.diffplug.gradle.spotless" version "3.23.0" apply false
     id "com.github.pivotalservices.cf-app" version "2.3.0-rc.8"
 }
 
@@ -84,14 +84,14 @@ subprojects {
             dependency 'net._01001111:jlorem:1.3'
             dependency 'commons-cli:commons-cli:1.4'
             dependency 'javax:javaee-api:8.0'
-            dependency "io.jsonwebtoken:jjwt-api:0.10.5"
-            dependency "io.jsonwebtoken:jjwt-impl:0.10.5"
-            dependency "io.jsonwebtoken:jjwt-jackson:0.10.5"
+            dependency "io.jsonwebtoken:jjwt-api:0.10.6"
+            dependency "io.jsonwebtoken:jjwt-impl:0.10.6"
+            dependency "io.jsonwebtoken:jjwt-jackson:0.10.6"
             dependency 'com.github.java-json-tools:json-schema-validator:2.2.10'
-            dependency 'com.h2databas:h2:1.4.197'
-            dependency "org.spockframework:spock-spring:1.2-groovy-2.4"
-            dependency "org.spockframework:spock-core:1.2-groovy-2.4"
-            dependency 'org.apache.commons:commons-lang3:3.8.1'
+            dependency 'com.h2databas:h2:1.4.199'
+            dependency "org.spockframework:spock-spring:1.3-groovy-2.4"
+            dependency "org.spockframework:spock-core:1.3-groovy-2.4"
+            dependency 'org.apache.commons:commons-lang3:3.9'
         }
     }
 
