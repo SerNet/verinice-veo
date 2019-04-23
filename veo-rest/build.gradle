@@ -1,8 +1,10 @@
-import com.github.jengelman.gradle.plugins.processes.tasks.JavaFork
+import java.util.concurrent.Callable
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
-plugins { id "net.foragerr.jmeter" version "1.1.0-4.0" }
-
-plugins { id 'com.github.johnrengelman.processes' version "0.5.0" }
+plugins { 
+  id "net.foragerr.jmeter" version "1.1.0-4.0"
+}
 
 apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
@@ -54,12 +56,29 @@ jmeter {
     csvLogFile=false
 }
 
-task startSpringBoot(type: JavaFork) {
+class StartSpringBootAsync extends DefaultTask {
+  ExecutorService es
+
+  @Input
+  int serverPort
+
+  @TaskAction
+  def startAsync() {
+    es = Executors.newSingleThreadExecutor()
+    es.submit({
+      project.javaexec {
+        main = 'org.veo.rest.RestApplication'
+        classpath = project.sourceSets.main.runtimeClasspath
+        systemProperty('server.port', serverPort)
+      }
+    } as Callable)
+  }
+}
+
+task startSpringBoot(type: StartSpringBootAsync) {
     description = 'Start Spring Boot in the background.'
     group = 'Load Test'
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'org.veo.rest.RestApplication'
-    systemProperty 'server.port', serverPortJMeter
+    serverPort = serverPortJMeter
 }
 startSpringBoot.dependsOn assemble
 
@@ -124,6 +143,6 @@ cfConfig {
 }
 
 gradle.buildFinished {
-    startSpringBoot.processHandle?.abort()
+    startSpringBoot.es?.shutdownNow()
 }
 
