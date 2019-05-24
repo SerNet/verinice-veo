@@ -29,37 +29,19 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.ConfigurableApplicationContext;
 
-import org.veo.core.VeoCoreConfiguration;
 import org.veo.util.time.TimeFormatter;
 
-/**
- * Spring Boot application class to run the import of a VNA file. You should
- * start this application with property spring.main.web-environment=false in
- * your application.properties file to turn the starting of a web environment
- * off.
- *
- * @author Daniel Murygin <dm[at]sernet[dot]de>
- */
-@SpringBootApplication
-@Import(VeoCoreConfiguration.class)
-public class VnaImportApplication implements CommandLineRunner {
+public class VnaImportApplication {
 
     private static final Logger log = LoggerFactory.getLogger(VnaImportApplication.class);
 
     private static final String JAR_NAME = "veo-vna-import-<VERSION>.jar";
     private static final String THREADS_DEFAULT = "1";
 
-    @Autowired
-    VnaImport vnaImport;
-
-    @Override
-    public void run(String... args) throws Exception {
+    public static void main(String[] args) throws Exception {
         CommandLineParser parser = new DefaultParser();
         Options options = newCommandLineOptions();
 
@@ -67,11 +49,15 @@ public class VnaImportApplication implements CommandLineRunner {
             long start = System.currentTimeMillis();
             CommandLine line = parser.parse(options, args);
             final String filePath = line.getOptionValue("file");
-            final String numberOfThreads = line.getOptionValue("threads", THREADS_DEFAULT);
+            final int numberOfThreads = Integer
+                    .parseInt(line.getOptionValue("threads", THREADS_DEFAULT));
+            ConfigurableApplicationContext context = SpringApplication
+                    .run(VnaImportConfiguration.class, args);
             log.info("Importing: {}...", filePath);
             logNumberOfThreads(numberOfThreads);
             try (InputStream rawZipStream = Files.newInputStream(Paths.get(filePath))) {
-                vnaImport.setNumberOfThreads(Integer.parseInt(numberOfThreads));
+                VnaImport vnaImport = context.getBean(VnaImport.class);
+                vnaImport.setNumberOfThreads(numberOfThreads);
                 vnaImport.importVna(rawZipStream);
                 long ms = System.currentTimeMillis() - start;
                 logRuntime(ms);
@@ -82,7 +68,7 @@ public class VnaImportApplication implements CommandLineRunner {
         }
     }
 
-    private Options newCommandLineOptions() {
+    private static Options newCommandLineOptions() {
         Options options = new Options();
         options.addOption(new Option("h", "help", false, "print this message"));
         options.addOption(Option.builder("f").hasArg().required()
@@ -93,20 +79,15 @@ public class VnaImportApplication implements CommandLineRunner {
         return options;
     }
 
-    private void logNumberOfThreads(String numberOfThreads) {
-        if (!"1".equals(numberOfThreads)) {
+    private static void logNumberOfThreads(int numberOfThreads) {
+        if (numberOfThreads != 1) {
             log.info("Number of parallel threads: {}", numberOfThreads);
         }
     }
 
-    private void logRuntime(long ms) {
+    private static void logRuntime(long ms) {
         if (log.isInfoEnabled()) {
             log.info("Import finished, runtime: {}", TimeFormatter.getHumanRedableTime(ms));
         }
     }
-
-    public static void main(String[] args) {
-        SpringApplication.run(VnaImportApplication.class, args);
-    }
-
 }
