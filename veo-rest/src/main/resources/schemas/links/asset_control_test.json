@@ -5,17 +5,17 @@
   "description": "A test schema for Links between an asset and a control",
   "title": "asset_control",
   "properties": {
-    "$veo.id": {
+    "id": {
       "type": "string",
       "title": "The UUID to identify the element"
     },
-    "$veo.type": {
+    "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
         "asset_control"
       ]
     },
-    "$veo.title": {
+    "title": {
       "type": "string",
       "title": "The title of a link"
     },
@@ -37,11 +37,11 @@
     }
   },
   "required": [
-    "$veo.id",
-    "$veo.type",
+    "id",
+    "type",
     "source",
     "target"
   ],
-  "$veo.source.type": "asset",
-  "$veo.target.type": "control"
+  "source.type": "asset",
+  "target.type": "control"
 }

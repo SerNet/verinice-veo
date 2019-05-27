@@ -64,7 +64,7 @@ class SchemaValidatorSpec extends Specification {
         !result.isSuccessful()
         JsonNode errorMessage = result.getMessages().find { message -> message.get('level').textValue() == 'error' }
         .get('reports').get('/properties/properties/oneOf/0').find { message -> message.get('level').textValue() == 'error' }
-        errorMessage.get('instance').get('pointer').textValue() == '/properties/$veo.id/type'
+        errorMessage.get('instance').get('pointer').textValue() == '/properties/id/type'
         errorMessage.get('keyword').textValue() == 'enum'
         errorMessage.get('value').textValue() == 'boolean'
     }

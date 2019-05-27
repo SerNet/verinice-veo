@@ -113,7 +113,7 @@ public class LinkValidationTest {
         Link link = createLinkAssetControl();
 
         Map<String, Object> linkJsonMap = jsonFactory.createJson(link);
-        linkJsonMap.remove("$veo.type");
+        linkJsonMap.remove("type");
 
         JsonNode jsonNodeAsset = mapper.valueToTree(linkJsonMap);
         ValidationResult validationResult = linkSchemaValidator.validate(jsonNodeAsset);

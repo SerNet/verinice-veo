@@ -49,7 +49,7 @@ public class ElementHistorySpec extends Specification {
         def mockSecurityContext = Mock(SecurityContext){ getAuthentication() >> mockAuthentication }
         SecurityContextHolder.setContext(mockSecurityContext)
 
-        def data = ['$veo.title':'Asset 1', '$veo.type': 'asset']
+        def data = ['title':'Asset 1', 'type': 'asset']
 
         when:
         def uuid = createElement(data)
@@ -63,9 +63,9 @@ public class ElementHistorySpec extends Specification {
         when:
         def savedData = parseJSON(firstHistoryEntry.data)
         then:
-        savedData.'$veo.title' == 'Asset 1'
+        savedData.'title' == 'Asset 1'
         when:
-        def newData = ['$veo.title':'Asset 1', '$veo.type': 'asset', 'description': 'Example asset']
+        def newData = ['title':'Asset 1', 'type': 'asset', 'description': 'Example asset']
         saveElement(uuid, newData)
         history = getHistory(uuid)
         then:

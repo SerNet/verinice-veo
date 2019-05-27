@@ -41,7 +41,7 @@ class LinkFactorySpec extends Specification {
     def "create a simple link"(){
         when:
         def link = linkFactory.createLink([
-            '$veo.id': '0815'
+            'id': '0815'
         ])
         then:
         link.uuid == '0815'
@@ -67,8 +67,8 @@ class LinkFactorySpec extends Specification {
 
         when:
         def link = linkFactory.createLink([
-            '$veo.id': linkId,
-            '$veo.type': 'father',
+            'id': linkId,
+            'type': 'father',
             'source': anakin.getUuid(),
             'target': luke.getUuid()])
 

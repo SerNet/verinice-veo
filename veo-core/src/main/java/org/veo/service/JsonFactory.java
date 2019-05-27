@@ -35,10 +35,10 @@ import org.veo.model.Property;
 @Service
 public class JsonFactory {
 
-    public static final String ID = "$veo.id";
+    public static final String ID = "id";
     public static final String PARENT = "parent";
-    public static final String TITLE = "$veo.title";
-    public static final String TYPE = "$veo.type";
+    public static final String TITLE = "title";
+    public static final String TYPE = "type";
     public static final String SOURCE = "source";
     public static final String TARGET = "target";
 

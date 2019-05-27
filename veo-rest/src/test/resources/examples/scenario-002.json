@@ -1,7 +1,7 @@
 {
-  "$veo.id": "b17a7210-3158-49f7-8c59-567ebbb9b91e",
-  "$veo.type": "scenario",
-  "$veo.title": "High Tide",
+  "id": "b17a7210-3158-49f7-8c59-567ebbb9b91e",
+  "type": "scenario",
+  "title": "High Tide",
   "parent": "bdc6b5f7-ddd0-4423-9e6e-e0152447bb79",
   "code": "S-002",
   "probability": "mid",

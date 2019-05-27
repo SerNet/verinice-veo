@@ -57,7 +57,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"$veo.id\": \"{{asset_group_id}}\",\n    \"$veo.type\": \"/schemas/assetgroup.json\",\n    \"$veo.title\": \"Asset Group\"\n}"
+              "raw": "{\n\t\"id\": \"{{asset_group_id}}\",\n    \"type\": \"/schemas/assetgroup.json\",\n    \"title\": \"Asset Group\"\n}"
             },
             "url": {
               "raw": "http://localhost:8070/elements",
@@ -103,7 +103,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"$veo.id\": \"{{asset_id}}\",\n    \"$veo.type\": \"asset\",\n    \"$veo.title\": \"Asset\",\n    \"parent\": \"{{asset_group_id}}\",\n    \"description\": \"This asset was created by Postman during a test of the veo REST service.\",\n    \"role\": [\"role-a\",\"role-b\"],\n    \"business-value\": [1,3,5],\n    \"asset-type\": \"physical\",\n    \"business-impact-confidentiality\": \"low\",\n    \"business-impact-integrity\": \"normal\",\n    \"business-impact-availability\": \"high\"\n}"
+              "raw": "{\n\t\"id\": \"{{asset_id}}\",\n    \"type\": \"asset\",\n    \"title\": \"Asset\",\n    \"parent\": \"{{asset_group_id}}\",\n    \"description\": \"This asset was created by Postman during a test of the veo REST service.\",\n    \"role\": [\"role-a\",\"role-b\"],\n    \"business-value\": [1,3,5],\n    \"asset-type\": \"physical\",\n    \"business-impact-confidentiality\": \"low\",\n    \"business-impact-integrity\": \"normal\",\n    \"business-impact-availability\": \"high\"\n}"
             },
             "url": {
               "raw": "http://localhost:8070/elements",
@@ -140,17 +140,17 @@
                   "  \"description\": \"Schema for assets from ISO 27000\",",
                   "  \"title\": \"ISO Assets\",",
                   "  \"properties\": {",
-                  "    \"$veo.id\": {",
+                  "    \"id\": {",
                   "      \"type\": \"string\",",
                   "      \"title\": \"The UUID to identify the element\"",
                   "    },",
-                  "    \"$veo.type\": {",
+                  "    \"type\": {",
                   "      \"description\": \"The name of the type described by this schema.\",",
                   "      \"enum\": [",
                   "        \"asset\"",
                   "      ]",
                   "    },",
-                  "    \"$veo.title\": {",
+                  "    \"title\": {",
                   "      \"type\": \"string\",",
                   "      \"title\": \"The title of the asset\"",
                   "    },",
@@ -221,10 +221,10 @@
                   "    }",
                   "  },",
                   "  \"required\": [",
-                  "    \"$veo.id\",",
-                  "    \"$veo.type\",",
+                  "    \"id\",",
+                  "    \"type\",",
                   "    \"parent\",",
-                  "    \"$veo.title\"",
+                  "    \"title\"",
                   "  ]",
                   "};",
                   "",
@@ -417,7 +417,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n\t\"$veo.id\": \"{{asset_group_id}}\",\n    \"$veo.type\": \"assetgroup\",\n    \"$veo.title\": \"Asset Group\"\n}"
+              "raw": "{\n\t\"id\": \"{{asset_group_id}}\",\n    \"type\": \"assetgroup\",\n    \"title\": \"Asset Group\"\n}"
             },
             "url": {
               "raw": "http://localhost:8070/elements",
@@ -471,7 +471,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"$veo.type\": \"asset\",\n    \"$veo.title\": \"Asset\",\n    \"parent\": \"{{asset_group_id}}\",\n    \"description\": \"This asset was created by Postman during a test of the veo REST service.\",\n    \"role\": [\"role-a\",\"role-b\"],\n    \"business-value\": [1,3,5],\n    \"asset-type\": \"physical\",\n    \"business-impact-confidentiality\": \"low\",\n    \"business-impact-integrity\": \"normal\",\n    \"business-impact-availability\": \"high\"\n}"
+              "raw": "{\n    \"type\": \"asset\",\n    \"title\": \"Asset\",\n    \"parent\": \"{{asset_group_id}}\",\n    \"description\": \"This asset was created by Postman during a test of the veo REST service.\",\n    \"role\": [\"role-a\",\"role-b\"],\n    \"business-value\": [1,3,5],\n    \"asset-type\": \"physical\",\n    \"business-impact-confidentiality\": \"low\",\n    \"business-impact-integrity\": \"normal\",\n    \"business-impact-availability\": \"high\"\n}"
             },
             "url": {
               "raw": "http://localhost:8070/elements",

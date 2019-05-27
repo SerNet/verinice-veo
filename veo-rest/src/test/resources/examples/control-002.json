@@ -1,7 +1,7 @@
 {
-  "$veo.id": "2bc3e3d0-ea1c-4a49-a17f-288ac943d97b",
-  "$veo.type": "control",
-  "$veo.title": "Fire Extinguisher",
+  "id": "2bc3e3d0-ea1c-4a49-a17f-288ac943d97b",
+  "type": "control",
+  "title": "Fire Extinguisher",
   "parent": "b327dde7-c450-4c83-973a-3aebcceb7d76",
   "code": "C-001",
   "tags": [

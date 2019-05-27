@@ -5,17 +5,17 @@
   "description": "Schema for processes from ISO 27000",
   "title": "ISO Process",
   "properties": {
-    "$veo.id": {
+    "id": {
       "type": "string",
       "title": "The UUID to identify the element"
     },
-    "$veo.type": {
+    "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
         "process"
       ]
     },
-    "$veo.title": {
+    "title": {
       "type": "string",
       "title": "The title of the process"
     },
@@ -33,9 +33,9 @@
     }
   },
   "required": [
-    "$veo.id",
-    "$veo.type",
+    "id",
+    "type",
     "parent",
-    "$veo.title"
+    "title"
   ]
 }

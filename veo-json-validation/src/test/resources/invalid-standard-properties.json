@@ -5,11 +5,11 @@
   "title": "Order-Schema",
   "description": "A sample schema to test that the standard properties, e.g id, type etc. are fixed.",
   "properties": {
-    "$veo.id": {
+    "id": {
       "type": "boolean",
       "title": "The UUID to identify the element"
     },
-    "$veo.type": {
+    "type": {
       "type": "number",
       "title": "The schema URI to identify the type of the element",
       "description": "The schema URI to identify the type of the element relative to the base URI",
@@ -17,7 +17,7 @@
         "/schemas/order.json"
       ]
     },
-    "$veo.title": {
+    "title": {
       "type": "number",
       "title": "The title"
     }

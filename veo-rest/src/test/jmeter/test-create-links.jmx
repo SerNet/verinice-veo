@@ -213,13 +213,13 @@
             <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="get_source_type" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">source_type</stringProp>
-              <stringProp name="JSONPostProcessor.jsonPathExprs">$.[&apos;$veo.source.type&apos;]</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.[&apos;source.type&apos;]</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="get_target_type" enabled="true">
               <stringProp name="JSONPostProcessor.referenceNames">target_type</stringProp>
-              <stringProp name="JSONPostProcessor.jsonPathExprs">$.[&apos;$veo.target.type&apos;]</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.[&apos;target.type&apos;]</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
@@ -247,9 +247,9 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-	&quot;$veo.id&quot;: &quot;${source_uuid}&quot;,&#xd;
-    &quot;$veo.type&quot;: &quot;${source_type}&quot;,&#xd;
-    &quot;$veo.title&quot;: &quot;${source_type} link test&quot;&#xd;
+	&quot;id&quot;: &quot;${source_uuid}&quot;,&#xd;
+    &quot;type&quot;: &quot;${source_type}&quot;,&#xd;
+    &quot;title&quot;: &quot;${source_type} link test&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                   </elementProp>
@@ -278,9 +278,9 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-	&quot;$veo.id&quot;: &quot;${target_uuid}&quot;,&#xd;
-    &quot;$veo.type&quot;: &quot;${target_type}&quot;,&#xd;
-    &quot;$veo.title&quot;: &quot;${target_type} link test&quot;&#xd;
+	&quot;id&quot;: &quot;${target_uuid}&quot;,&#xd;
+    &quot;type&quot;: &quot;${target_type}&quot;,&#xd;
+    &quot;title&quot;: &quot;${target_type} link test&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                   </elementProp>
@@ -309,9 +309,9 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-	&quot;$veo.id&quot;: &quot;${uuid}&quot;,&#xd;
-    &quot;$veo.type&quot;: &quot;${schema}&quot;,&#xd;
-    &quot;$veo.title&quot;: &quot;${schema} test&quot;,&#xd;
+	&quot;id&quot;: &quot;${uuid}&quot;,&#xd;
+    &quot;type&quot;: &quot;${schema}&quot;,&#xd;
+    &quot;title&quot;: &quot;${schema} test&quot;,&#xd;
     &quot;source&quot;: &quot;${source_uuid}&quot;,&#xd;
     &quot;target&quot;: &quot;${target_uuid}&quot; &#xd;
 }</stringProp>
@@ -364,7 +364,7 @@
             </HTTPSamplerProxy>
             <hashTree>
               <org.apache.jmeter.assertions.JSONPathAssertion guiclass="org.apache.jmeter.assertions.gui.JSONPathAssertionGui" testclass="org.apache.jmeter.assertions.JSONPathAssertion" testname="JSON Assertion id" enabled="true">
-                <stringProp name="JSON_PATH">$.[&apos;$veo.id&apos;]</stringProp>
+                <stringProp name="JSON_PATH">$.[&apos;id&apos;]</stringProp>
                 <stringProp name="EXPECTED_VALUE">${uuid}</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>
@@ -373,7 +373,7 @@
               </org.apache.jmeter.assertions.JSONPathAssertion>
               <hashTree/>
               <org.apache.jmeter.assertions.JSONPathAssertion guiclass="org.apache.jmeter.assertions.gui.JSONPathAssertionGui" testclass="org.apache.jmeter.assertions.JSONPathAssertion" testname="JSON Assertion type" enabled="true">
-                <stringProp name="JSON_PATH">$.[&apos;$veo.type&apos;]</stringProp>
+                <stringProp name="JSON_PATH">$.[&apos;type&apos;]</stringProp>
                 <stringProp name="EXPECTED_VALUE">${schema}</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>
@@ -382,7 +382,7 @@
               </org.apache.jmeter.assertions.JSONPathAssertion>
               <hashTree/>
               <org.apache.jmeter.assertions.JSONPathAssertion guiclass="org.apache.jmeter.assertions.gui.JSONPathAssertionGui" testclass="org.apache.jmeter.assertions.JSONPathAssertion" testname="JSON Assertion title" enabled="true">
-                <stringProp name="JSON_PATH">$.[&apos;$veo.title&apos;]</stringProp>
+                <stringProp name="JSON_PATH">$.[&apos;title&apos;]</stringProp>
                 <stringProp name="EXPECTED_VALUE">${schema} test</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>

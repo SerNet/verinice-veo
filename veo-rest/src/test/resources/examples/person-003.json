@@ -1,7 +1,7 @@
 {
-  "$veo.id": "cb35d2f2-7ebb-431d-bfec-476ebe64d58a",
-  "$veo.type": "person",
-  "$veo.title": "Mustermann",
+  "id": "cb35d2f2-7ebb-431d-bfec-476ebe64d58a",
+  "type": "person",
+  "title": "Mustermann",
   "parent": "8500fe74-58ee-4091-bfa5-027fa0a1b5b4",
   "givenName": "Max"
 }

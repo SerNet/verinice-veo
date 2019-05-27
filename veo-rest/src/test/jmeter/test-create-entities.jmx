@@ -221,9 +221,9 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-	&quot;$veo.id&quot;: &quot;${uuid}&quot;,&#xd;
-    &quot;$veo.type&quot;: &quot;${schema}&quot;,&#xd;
-    &quot;$veo.title&quot;: &quot;${schema} entity test&quot;&#xd;
+	&quot;id&quot;: &quot;${uuid}&quot;,&#xd;
+    &quot;type&quot;: &quot;${schema}&quot;,&#xd;
+    &quot;title&quot;: &quot;${schema} entity test&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                   </elementProp>
@@ -273,7 +273,7 @@
             </HTTPSamplerProxy>
             <hashTree>
               <org.apache.jmeter.assertions.JSONPathAssertion guiclass="org.apache.jmeter.assertions.gui.JSONPathAssertionGui" testclass="org.apache.jmeter.assertions.JSONPathAssertion" testname="JSON Assertion id" enabled="true">
-                <stringProp name="JSON_PATH">$.[&apos;$veo.id&apos;]</stringProp>
+                <stringProp name="JSON_PATH">$.[&apos;id&apos;]</stringProp>
                 <stringProp name="EXPECTED_VALUE">${uuid}</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>
@@ -282,7 +282,7 @@
               </org.apache.jmeter.assertions.JSONPathAssertion>
               <hashTree/>
               <org.apache.jmeter.assertions.JSONPathAssertion guiclass="org.apache.jmeter.assertions.gui.JSONPathAssertionGui" testclass="org.apache.jmeter.assertions.JSONPathAssertion" testname="JSON Assertion type" enabled="true">
-                <stringProp name="JSON_PATH">$.[&apos;$veo.type&apos;]</stringProp>
+                <stringProp name="JSON_PATH">$.[&apos;type&apos;]</stringProp>
                 <stringProp name="EXPECTED_VALUE">${schema}</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>
@@ -291,7 +291,7 @@
               </org.apache.jmeter.assertions.JSONPathAssertion>
               <hashTree/>
               <org.apache.jmeter.assertions.JSONPathAssertion guiclass="org.apache.jmeter.assertions.gui.JSONPathAssertionGui" testclass="org.apache.jmeter.assertions.JSONPathAssertion" testname="JSON Assertion title" enabled="true">
-                <stringProp name="JSON_PATH">$.[&apos;$veo.title&apos;]</stringProp>
+                <stringProp name="JSON_PATH">$.[&apos;title&apos;]</stringProp>
                 <stringProp name="EXPECTED_VALUE">${schema} entity test</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>

@@ -37,7 +37,7 @@ class ExamplesValidationSpec extends Specification {
     def "Example #exampleName validates against it's schema"() {
         given:
         JsonNode json = new ObjectMapper().readTree(exampleStream)
-        def type = json.get('$veo.type').textValue()
+        def type = json.get('type').textValue()
         def result = validators[type].validate(json)
         expect:
         result.successful

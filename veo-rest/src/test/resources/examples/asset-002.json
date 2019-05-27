@@ -1,7 +1,7 @@
 {
-  "$veo.id": "0c845f12-5dc3-498f-92ba-f6455f1f059c",
-  "$veo.type": "asset",
-  "$veo.title": "Galaga",
+  "id": "0c845f12-5dc3-498f-92ba-f6455f1f059c",
+  "type": "asset",
+  "title": "Galaga",
   "parent": "af4e29eb-9496-42c0-b806-c3695d803c24",
   "abbreviation": "A-001",
   "assetType": "software",

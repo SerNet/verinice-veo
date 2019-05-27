@@ -5,11 +5,11 @@
   "title": "Order-Schema",
   "description": "A sample schema to display all possibilities of the meta schema.",
   "properties": {
-    "$veo.id": {
+    "id": {
       "type": "string",
       "title": "The UUID to identify the element"
     },
-    "$veo.type": {
+    "type": {
       "type": "string",
       "title": "Type name",
       "description": "The name of the type described by this schema",
@@ -17,7 +17,7 @@
         "order"
       ]
     },
-    "$veo.title": {
+    "title": {
       "type": "string",
       "title": "An Order"
     },

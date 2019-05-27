@@ -5,11 +5,11 @@
   "type": "object",
   "description": "Schema for human entities",
   "properties": {
-    "$veo.id": {
+    "id": {
       "type": "string",
       "title": "The UUID to identify the element"
     },
-    "$veo.type": {
+    "type": {
       "type": "string",
       "title": "type name",
       "description": "The name of the type described by this schema.",
@@ -17,7 +17,7 @@
         "person"
       ]
     },
-    "$veo.title": {
+    "title": {
       "type": "string",
       "title": "The title of the asset"
     },
@@ -31,9 +31,9 @@
     }
   },
   "required": [
-    "$veo.id",
-    "$veo.type",
+    "id",
+    "type",
     "parent",
-    "$veo.title"
+    "title"
   ]
 }

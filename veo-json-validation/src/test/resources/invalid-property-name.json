@@ -5,11 +5,11 @@
   "title": "Order-Schema",
   "description": "A sample schema to test that property names are restricted",
   "properties": {
-    "$veo.id": {
+    "id": {
       "type": "string",
       "title": "The UUID to identify the element"
     },
-    "$veo.type": {
+    "type": {
       "type": "string",
       "title": "The schema URI to identify the type of the element",
       "description": "The schema URI to identify the type of the element relative to the base URI",
@@ -17,7 +17,7 @@
         "/schemas/order.json"
       ]
     },
-    "$veo.title": {
+    "title": {
       "type": "string",
       "title": "The title"
     },
