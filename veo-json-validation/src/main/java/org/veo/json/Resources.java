@@ -22,7 +22,7 @@ import java.io.InputStream;
  * This class provides methods to access resources for veo JSON processing, e.g.
  * the meta-schema.
  */
-public class Resources {
+public final class Resources {
     private static final String META_SCHEMA_FILE_NAME = "meta.json";
     private static final String LINK_META_SCHEMA_FILE_NAME = "link_meta.json";
 
@@ -31,10 +31,12 @@ public class Resources {
     }
 
     public static InputStream getMetaSchemaAsStream() {
-        return Resources.class.getClassLoader().getResourceAsStream(META_SCHEMA_FILE_NAME);
+        return Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(META_SCHEMA_FILE_NAME);
     }
 
     public static InputStream getLinkMetaSchemaAsStream() {
-        return Resources.class.getClassLoader().getResourceAsStream(LINK_META_SCHEMA_FILE_NAME);
+        return Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(LINK_META_SCHEMA_FILE_NAME);
     }
 }

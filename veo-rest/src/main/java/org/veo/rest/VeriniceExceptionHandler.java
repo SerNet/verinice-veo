@@ -45,6 +45,9 @@ public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
         case AUTHENTICATION_REQUIRED:
             status = HttpStatus.UNAUTHORIZED;
             break;
+        default:
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            break;
         }
         String bodyOfResponse = veoException.getMessage();
         return handleExceptionInternal(veoException, bodyOfResponse, new HttpHeaders(), status,

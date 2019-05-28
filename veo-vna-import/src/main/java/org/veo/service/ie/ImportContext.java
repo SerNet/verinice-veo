@@ -33,7 +33,7 @@ public class ImportContext {
      * A map of ext-ids from the imported VNA file and associated UUID from the
      * elements in the database
      */
-    private Map<String, Element> extIdElementMap;
+    private final Map<String, Element> extIdElementMap;
 
     private Properties missingMappingProperties;
 

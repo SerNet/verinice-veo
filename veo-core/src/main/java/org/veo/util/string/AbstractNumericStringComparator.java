@@ -107,10 +107,9 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
     public abstract String convertToString(T o);
 
     /*
-     * (non-Javadoc)
-     *
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
+    @Override
     public int compare(T o1, T o2) {
         if (o1 == null) {
             return 1;
@@ -123,9 +122,9 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
         return compareString(s1, s2);
     }
 
-    private int compareString(String string1, String string2) {
-        string1 = string1.toLowerCase();
-        string2 = string2.toLowerCase();
+    private int compareString(final String s1, final String s2) {
+        String string1 = s1.toLowerCase(Locale.getDefault());
+        String string2 = s2.toLowerCase(Locale.getDefault());
 
         // find the first digit.
         int idx1 = getFirstDigitIndex(string1);

@@ -27,16 +27,13 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
  * This class provides access to public and private keys in resources.
  */
-public class JwtKeyLoader {
+public final class JwtKeyLoader {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JwtKeyLoader.class);
     private static final String PUBLIC_KEY_FILENAME = "public.der";
     private static final String PRIVATE_KEY_FILENAME = "private.der";
 

@@ -22,6 +22,7 @@ import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
 import java.io.IOException;
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -59,7 +60,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             FilterChain chain) throws IOException, ServletException {
         String header = req.getHeader(HEADER_STRING);
 
-        if (header == null || !header.toLowerCase().startsWith(TOKEN_PREFIX.toLowerCase())) {
+        if (header == null || !header.toLowerCase(Locale.getDefault())
+                .startsWith(TOKEN_PREFIX.toLowerCase(Locale.getDefault()))) {
             chain.doFilter(req, res);
             return;
         }

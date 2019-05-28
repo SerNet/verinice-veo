@@ -91,6 +91,7 @@ subprojects {
             dependency 'com.h2databas:h2:1.4.197'
             dependency "org.spockframework:spock-spring:1.2-groovy-2.4"
             dependency "org.spockframework:spock-core:1.2-groovy-2.4"
+            dependency 'org.apache.commons:commons-lang3:3.8.1'
         }
     }
 

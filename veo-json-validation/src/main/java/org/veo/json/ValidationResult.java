@@ -30,8 +30,8 @@ public class ValidationResult {
 
     private static final JsonNodeFactory FACTORY = JacksonUtils.nodeFactory();
 
-    private boolean successful;
-    private ArrayNode messages;
+    private final boolean successful;
+    private final ArrayNode messages;
 
     ValidationResult(ProcessingReport report) {
         this.successful = report.isSuccess();

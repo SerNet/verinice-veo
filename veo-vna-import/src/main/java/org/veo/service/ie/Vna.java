@@ -55,7 +55,7 @@ import de.sernet.sync.sync.SyncRequest;
  *
  * @author Daniel Murygin <dm[at]sernet[dot]de>
  */
-public class Vna {
+public final class Vna {
 
     private static final Logger LOG = LoggerFactory.getLogger(Vna.class);
     private static final String VERINICE_XML = "verinice.xml";

@@ -41,6 +41,10 @@ public class HistoryEntry {
     @Column(columnDefinition = "TEXT")
     private String data;
 
+    public Long getId() {
+        return id;
+    }
+
     public String getAuthor() {
         return author;
     }

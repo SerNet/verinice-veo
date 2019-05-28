@@ -22,6 +22,8 @@ import static org.veo.rest.security.SecurityConstants.TOKEN_PREFIX;
 
 import java.io.IOException;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,6 +46,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+import org.veo.commons.VeoException;
+
 /**
  * This filter extends authentication by added a JWToken to a successful
  * authentication response.
@@ -51,14 +55,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
     private Key signingKey;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
         try {
             this.signingKey = JwtKeyLoader.getPrivateJwtKey();
-        } catch (Exception e) {
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             LOG.error("Error loading private key.", e);
         }
     }
@@ -72,7 +76,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     credentials.getUsername(), credentials.getPassword(), new ArrayList<>()));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new VeoException(VeoException.Error.AUTHENTICATION_ERROR,
+                    "unable to read credentials");
         }
     }
 

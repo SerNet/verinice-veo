@@ -21,7 +21,7 @@ import org.veo.model.Element;
 /**
  * @author Daniel Murygin
  */
-public class ElementFactory {
+public final class ElementFactory {
 
     // Type ids of ISO27000 elements from SNCA.xml
     public static final String ASSET_GROUP_TYPE = "assetgroup";

@@ -72,8 +72,8 @@ public class VnaImport {
     private CompletionService<ElementImportContext> elementImportCompletionService;
     private CompletionService<LinkImportContext> linkImportCompletionService;
     private ImportContext importContext;
-    private int numberOfElements = 0;
-    private int numberOfLinks = 0;
+    private int numberOfElements;
+    private int numberOfLinks;
 
     @Autowired
     private ObjectFactory<ElementImportTask> elementImportTaskFactory;

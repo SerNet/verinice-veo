@@ -54,10 +54,12 @@ public class ElementServiceImpl implements ElementService {
         return elementRepository.findByTypeId(typeId);
     }
 
+    @Override
     public Iterable<Element> findAll() {
         return elementRepository.findAll();
     }
 
+    @Override
     public List<String> allRootElements() {
         return elementRepository.allRootElements();
     }

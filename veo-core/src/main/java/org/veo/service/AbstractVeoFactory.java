@@ -24,7 +24,7 @@ import java.util.stream.Stream;
  * This is the basic class for the object factories like {@link LinkFactory} or
  * {@link ElementFactory}.
  */
-public abstract class AbstractVeoFactory {
+public class AbstractVeoFactory {
 
     private static final Set<String> STATIC_PROPERTIES;
 
@@ -32,6 +32,9 @@ public abstract class AbstractVeoFactory {
         STATIC_PROPERTIES = Stream
                 .of(JsonFactory.ID, JsonFactory.PARENT, JsonFactory.TITLE, JsonFactory.TYPE)
                 .collect(Collectors.toSet());
+    }
+
+    protected AbstractVeoFactory() {
     }
 
     protected boolean isStaticProperty(String name) {

@@ -109,6 +109,6 @@ public class VeoException extends RuntimeException {
     }
 
     public enum Error {
-        ELEMENT_NOT_FOUND, ELEMENT_EXISTS, AUTHENTICATION_REQUIRED, UNKNOWN
+        ELEMENT_NOT_FOUND, ELEMENT_EXISTS, AUTHENTICATION_REQUIRED, UNKNOWN, AUTHENTICATION_ERROR
     }
 }
