@@ -1,18 +1,4 @@
 #!/bin/sh
 
 echo '[git hook] executing gradle check before commit'
-
-# stash any unstaged changes
-git stash -q --keep-index
-
-# run the check with the gradle wrapper
-./gradlew -q check --daemon
-
-# store the last exit code in a variable
-RESULT=$?
-
-# unstash the unstashed changes
-git stash pop -q
-
-# return the './gradlew check' exit code
-exit $RESULT
+./gradlew -q check
