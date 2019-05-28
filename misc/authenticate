@@ -50,8 +50,8 @@ then
 	exit 1
 fi
 
-echo export TOKEN=$token
-echo export VEOURL=$url
+echo export "'"TOKEN=$token"'"
+echo export "'"VEOURL=$url"'"
 
 if which xclip 2>/dev/null
 then
