@@ -15,7 +15,7 @@ E.g. to fetch all elements, you can run
 	./authorize elements
 
 ### Clipboard
-If `xclip` is present on the system, `./authenticate` will copy the JWT token to the
+If `xsel` is present on the system, `./authenticate` will copy the JWT token to the
 clipboard.
 
 ## Generate TLS key pairs

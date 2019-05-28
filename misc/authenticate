@@ -53,7 +53,7 @@ fi
 echo export "'"TOKEN=$token"'"
 echo export "'"VEOURL=$url"'"
 
-if which xclip >/dev/null 2>&1
+if which xsel >/dev/null 2>/dev/null
 then
-	echo $TOKEN | xclip -selection clipboard
+	echo -n "$TOKEN" | xsel -i -b
 fi
