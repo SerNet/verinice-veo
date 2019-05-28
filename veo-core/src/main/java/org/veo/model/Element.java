@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -99,9 +98,8 @@ public class Element implements Serializable {
     private Set<Link> linksIncoming = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn(name = "properties_order", nullable = false)
     @JoinColumn(name = "element_uuid")
-    private List<ElementProperty> properties;
+    private Set<ElementProperty> properties;
 
     public Element() {
         this(UUID.randomUUID().toString());
@@ -109,7 +107,7 @@ public class Element implements Serializable {
 
     public Element(@NonNull String uuid) {
         this.uuid = uuid;
-        properties = new LinkedList<>();
+        properties = new HashSet<>();
     }
 
     public String getUuid() {
@@ -194,14 +192,14 @@ public class Element implements Serializable {
         this.scope = scope;
     }
 
-    public List<ElementProperty> getProperties() {
+    public Set<ElementProperty> getProperties() {
         if (properties == null) {
-            properties = new LinkedList<>();
+            properties = new HashSet<>();
         }
         return properties;
     }
 
-    public void setProperties(List<ElementProperty> properties) {
+    public void setProperties(Set<ElementProperty> properties) {
         this.properties = properties;
     }
 

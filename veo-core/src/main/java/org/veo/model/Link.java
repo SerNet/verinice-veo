@@ -20,9 +20,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -33,7 +34,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 
 import org.springframework.lang.NonNull;
 
@@ -63,9 +63,8 @@ public class Link implements Serializable {
     private Element destination;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn(name = "properties_order", nullable = false)
     @JoinColumn(name = "link_uuid")
-    private List<LinkProperty> properties;
+    private Set<LinkProperty> properties;
 
     public Link() {
         this(UUID.randomUUID().toString());
@@ -73,7 +72,7 @@ public class Link implements Serializable {
 
     public Link(@NonNull String uuid) {
         this.uuid = uuid;
-        properties = new LinkedList<>();
+        properties = new HashSet<>();
     }
 
     /**
@@ -113,9 +112,9 @@ public class Link implements Serializable {
         return destination;
     }
 
-    public List<LinkProperty> getProperties() {
+    public Set<LinkProperty> getProperties() {
         if (properties == null) {
-            properties = new LinkedList<>();
+            properties = new HashSet<>();
         }
         return properties;
     }
@@ -140,7 +139,7 @@ public class Link implements Serializable {
         this.destination = destination;
     }
 
-    public void setProperties(List<LinkProperty> properties) {
+    public void setProperties(Set<LinkProperty> properties) {
         this.properties = properties;
     }
 

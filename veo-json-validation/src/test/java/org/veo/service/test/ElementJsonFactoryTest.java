@@ -21,12 +21,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -109,8 +110,8 @@ public class ElementJsonFactoryTest {
         assertEquals(assetJsonMap.get(JsonFactory.TITLE), element.getTitle());
         assertEquals("asset", element.getTypeId());
 
-        List<ElementProperty> properties = element.getProperties();
-        List<ElementProperty> propertiesRole = getElementProperties(properties, ROLE);
+        Set<ElementProperty> properties = element.getProperties();
+        Set<ElementProperty> propertiesRole = getElementProperties(properties, ROLE);
         assertEquals("Number of role properties is not 2", 2, propertiesRole.size());
         assertTrue("Property " + ROLE_A + " not found",
                 isPropertyValue(propertiesRole, ROLE, ROLE_A));
@@ -119,7 +120,7 @@ public class ElementJsonFactoryTest {
         assertTrue("Property index 1 not found", isIndexValue(propertiesRole, ROLE, 0));
         assertTrue("Property index 2 not found", isIndexValue(propertiesRole, ROLE, 1));
 
-        List<ElementProperty> propertiesBusinessValue = getElementProperties(properties,
+        Set<ElementProperty> propertiesBusinessValue = getElementProperties(properties,
                 BUSINESS_VALUE);
         assertTrue("Property " + BUSINESS_VALUE_1 + " not found",
                 isPropertyValue(propertiesBusinessValue, BUSINESS_VALUE, BUSINESS_VALUE_1));
@@ -139,22 +140,22 @@ public class ElementJsonFactoryTest {
         String uuid = UUID.randomUUID().toString();
         Map<String, Object> assetJsonMap = createAssetJsonMap(uuid);
         Element element = elementFactory.createElement(assetJsonMap);
-        List<ElementProperty> propertyListAssetType = getElementProperties(element.getProperties(),
+        Set<ElementProperty> propertyListAssetType = getElementProperties(element.getProperties(),
                 ASSET_TYPE);
         assertEquals(1, propertyListAssetType.size());
-        ElementProperty assetType = propertyListAssetType.get(0);
+        ElementProperty assetType = propertyListAssetType.iterator().next();
 
         assetJsonMap.put(ASSET_TYPE, ASSET_TYPE_SOFTWARE);
 
         Element updatedElement = elementFactory.updateElement(assetJsonMap, element);
 
-        List<ElementProperty> updatedElementProperties = updatedElement.getProperties();
+        Set<ElementProperty> updatedElementProperties = updatedElement.getProperties();
         assertTrue("Property \"" + ASSET_TYPE_SOFTWARE + "\" not found",
                 isPropertyValue(updatedElementProperties, ASSET_TYPE, ASSET_TYPE_SOFTWARE));
 
         propertyListAssetType = getElementProperties(updatedElementProperties, ASSET_TYPE);
         assertEquals(1, propertyListAssetType.size());
-        ElementProperty updatedAssetType = propertyListAssetType.get(0);
+        ElementProperty updatedAssetType = propertyListAssetType.iterator().next();
 
         assertEquals(assetType.getUuid(), updatedAssetType.getUuid());
     }
@@ -166,7 +167,7 @@ public class ElementJsonFactoryTest {
         asset.setTitle("Hello Asset!");
         asset.setParent(assetGroup);
         asset.setTypeId("asset");
-        List<ElementProperty> properties = new LinkedList<>();
+        Set<ElementProperty> properties = new HashSet<>();
 
         ElementProperty propertyAssetType = new ElementProperty();
         propertyAssetType.setValue("asset-type", "physical");
@@ -213,9 +214,9 @@ public class ElementJsonFactoryTest {
         return assetJsonMap;
     }
 
-    private List<ElementProperty> getElementProperties(List<ElementProperty> allProperties,
+    private Set<ElementProperty> getElementProperties(Set<ElementProperty> allProperties,
             String key) {
-        List<ElementProperty> properties = new ArrayList<>(2);
+        Set<ElementProperty> properties = new HashSet<>(2);
         for (ElementProperty property : allProperties) {
             if (key.equals(property.getKey())) {
                 properties.add(property);
@@ -253,7 +254,7 @@ public class ElementJsonFactoryTest {
         return values;
     }
 
-    private boolean isPropertyValue(List<ElementProperty> properties, String key,
+    private boolean isPropertyValue(Set<ElementProperty> properties, String key,
             Object expectedValue) {
         for (ElementProperty p : properties) {
             if (key.equals(p.getKey()) && expectedValue.equals(p.parseValue())) {
@@ -263,7 +264,7 @@ public class ElementJsonFactoryTest {
         return false;
     }
 
-    private boolean isIndexValue(List<ElementProperty> properties, String key, int index) {
+    private boolean isIndexValue(Set<ElementProperty> properties, String key, int index) {
         for (ElementProperty p : properties) {
             if (key.equals(p.getKey()) && index == p.getIndex()) {
                 return true;
