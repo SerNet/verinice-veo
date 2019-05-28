@@ -116,3 +116,21 @@ On success the response will contain a header
 	Authorization: Bearer <token>
 
 This header has to be part of every further request
+
+## Code Styles
+Code styles are enforced using the gradle plugins
+[pmd](https://docs.gradle.org/current/userguide/pmd_plugin.html) and
+[spotless](https://github.com/diffplug/spotless).
+
+To verify your code run
+
+	./gradlew pmdMain
+	./gradlew spotlessCheck
+
+or just
+
+	./gradlew check
+
+A sample [git hook](misc/git/pre-commit) is provided, which
+checks the code style on each commit. To install, copy the file to
+*.git/hooks/pre-commit*.
