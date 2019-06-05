@@ -131,6 +131,7 @@ or just
 
 	./gradlew check
 
-A sample [git hook](misc/git/pre-commit) is provided, which
-checks the code style on each commit. To install, copy the file to
-*.git/hooks/pre-commit*.
+Sample git hooks are provided in *misc/git*, e. g.
+[pre-commit](misc/git/pre-commit), which checks the code style on each commit.
+To install, copy the file to *.git/hooks/pre-commit*, etc. Make sure the
+scripts are executable.
