@@ -17,7 +17,6 @@ allprojects  {
         groovyGradle {
             greclipse()
             indentWithSpaces(4)
-            paddedCell()
         }
         java {
             target 'src/**/*.java', 'buildSrc/**/*.java'
