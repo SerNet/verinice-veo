@@ -11,7 +11,6 @@ pipeline {
         stage('Setup') {
             steps {
                 sh 'env'
-                notifyBB()
                 buildDescription "${env.GIT_BRANCH} ${env.GIT_COMMIT[0..8]}"
             }
         }
@@ -46,15 +45,9 @@ pipeline {
             recordIssues(tools: [taskScanner(highTags: 'FIXME', ignoreCase: true, normalTags: 'TODO', excludePattern: 'Jenkinsfile')])
             jacoco classPattern: '**/build/classes/java/main'
             junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
-            notifyBB()
         }
         success {
             archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar, veo-vna-import/build/libs/*.jar', fingerprint: true
         }
     }
 }
-
-def notifyBB() {
-    notifyBitbucket commitSha1: '', considerUnstableAsSuccess: false, credentialsId: 'bitbucket', disableInprogressNotification: false, ignoreUnverifiedSSLPeer: false, includeBuildNumberInKey: false, prependParentProjectKey: false, projectKey: '', stashServerBaseUrl: 'https://git.verinice.org/bb'
-}
-
