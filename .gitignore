@@ -9,7 +9,9 @@ bin/
 .idea
 .project
 .settings/
+*.log
 
+vna-type-mapping-missing.properties
 misc/private.der
 misc/private.pem
 misc/public.der
