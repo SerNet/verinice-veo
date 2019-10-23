@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'openjdk:11-jdk'
+            args '-v $HOME/.gradle:/root/.gradle'
+        }
+    }
 
     environment {
         GRADLE_OPTS='-Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128'
@@ -16,23 +21,23 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh './gradlew classes'
+                sh './gradlew --no-daemon classes'
             }
         }
         stage('Test') {
             steps {
-                sh './gradlew test'
-                sh './gradlew jenkinsTestFix'
+                sh './gradlew --no-daemon test'
+                sh './gradlew --no-daemon jenkinsTestFix'
             }
         }
         stage('Analyze') {
             steps {
-                sh './gradlew check'
+                sh './gradlew --no-daemon check'
             }
         }
         stage('Artifacts') {
             steps {
-                sh './gradlew build'
+                sh './gradlew --no-daemon build'
             }
         }
     }
