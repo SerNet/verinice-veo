@@ -47,7 +47,7 @@ pipeline {
             recordIssues(tools: [pmdParser(pattern: '**/build/reports/pmd/main.xml')])
             recordIssues(tools: [java()])
             recordIssues(tools: [javaDoc()])
-            recordIssues(tools: [taskScanner(highTags: 'FIXME', ignoreCase: true, normalTags: 'TODO', excludePattern: 'Jenkinsfile')])
+            recordIssues(tools: [taskScanner(highTags: 'FIXME', ignoreCase: true, normalTags: 'TODO', excludePattern: 'Jenkinsfile, **/.gradle/**')])
             jacoco classPattern: '**/build/classes/java/main'
             junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
         }
