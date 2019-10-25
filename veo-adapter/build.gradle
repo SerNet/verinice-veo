@@ -1,0 +1,13 @@
+apply plugin: 'groovy'
+
+dependencies {
+
+    compile project(":veo-core-usecase")
+    compile 'org.modelmapper:modelmapper'
+
+    testCompile 'org.spockframework:spock-spring'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'com.github.javafaker:javafaker:1.0.1'
+
+    testRuntime 'com.h2database:h2'
+}

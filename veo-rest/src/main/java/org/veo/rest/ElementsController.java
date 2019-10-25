@@ -20,6 +20,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -78,7 +81,8 @@ public class ElementsController {
     }
 
     @GetMapping(value = "/elements/{uuid:.+}")
-    public ResponseEntity<Map<String, Object>> getElement(@PathVariable("uuid") String uuid) {
+    public ResponseEntity<Map<String, Object>> getElement(
+            @PathVariable("uuid") @NotBlank @Size(min = 1, max = 50) String uuid) {
         Map<String, Object> map = mapService.find(uuid);
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON_UTF8)

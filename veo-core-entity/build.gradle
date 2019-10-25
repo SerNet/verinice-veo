@@ -1,0 +1,9 @@
+apply plugin: 'groovy'
+
+dependencies {
+
+    testCompile 'org.spockframework:spock-spring'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'com.github.javafaker:javafaker'
+    testRuntime 'com.h2database:h2'
+}
