@@ -14,8 +14,11 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.asset;
+package org.veo.adapter.presenter.api.process;
+
+import org.veo.core.usecase.process.CreateProcessUseCase;
 
 public final class CreateProcessOutputMapper {
 
+    public static CreateProcessUseCase.OutputData map()
 }

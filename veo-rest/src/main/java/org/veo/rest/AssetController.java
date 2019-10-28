@@ -19,7 +19,9 @@ package org.veo.rest;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -35,9 +37,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.veo.adapter.gateway.interactor.UseCaseInteractor;
+import org.veo.adapter.presenter.api.dto.AssetDto;
+import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.model.HistoryEntry;
+import org.veo.rest.security.CurrentUser;
 import org.veo.service.ElementMapService;
 import org.veo.service.HistoryService;
 
@@ -49,12 +55,22 @@ import org.veo.service.HistoryService;
 @RequestMapping("/asset")
 public class AssetController {
     
-    private usecaseinter
-
-    public AssetController() {
+    private UseCaseInteractor useCaseInteractor;
+    private CreateAssetUseCase createAssetUseCase;
+    
+    public AssetController(UseCaseInteractor useCaseInteractor,
+            CreateAssetUseCase createAssetUseCase) {
+        this.useCaseInteractor = useCaseInteractor;
+        this.createAssetUseCase = createAssetUseCase;
     }
 
-  
-
+    @PostMapping
+    @ResponseStatus(Htt)
+    CompletableFuture<ResponseEntity<ApiResponse>> create(
+            @CurrentUser user,
+            @Valid @RequestBody AssetDto dto
+            ) {
+        
+    }
 
 }

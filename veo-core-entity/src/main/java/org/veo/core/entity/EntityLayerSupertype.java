@@ -33,32 +33,77 @@ public abstract class EntityLayerSupertype {
     private Key key;
     Unit unit;
     Lifecycle state;
+
     Date validFrom;
     Date validUntil;
+    long version;
+    boolean isDraft;
+
+    protected boolean isDraft() {
+        return isDraft;
+    }
+
+    public void setDraft(boolean isDraft) {
+        this.isDraft = isDraft;
+    }
 
     public Unit getUnit() {
         return unit;
     }
 
-    protected void setUnit(Unit unit) {
+    public void setUnit(Unit unit) {
         this.unit = unit;
     }
 
-    protected EntityLayerSupertype(Key id, Lifecycle state, Date validFrom, Date validUntil) {
+    protected EntityLayerSupertype(Key id, Lifecycle state, Date validFrom, Date validUntil, long version, boolean isDraft) {
         this.key = id;
         this.state = state;
         this.validFrom = validFrom;
         this.validUntil = validUntil;
+        this.version = version;
+        this.isDraft = isDraft;
+    }
+    
+    public long getVersion() {
+        return version;
     }
 
-    protected EntityLayerSupertype() {
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    public EntityLayerSupertype() {
     }
 
     public Key getKey() {
         return key;
     }
 
-    protected void setKey(Key key) {
+    public Lifecycle getState() {
+        return state;
+    }
+
+    public void setState(Lifecycle state) {
+        this.state = state;
+    }
+
+    public Date getValidFrom() {
+        return validFrom;
+    }
+
+    public void setValidFrom(Date validFrom) {
+        this.validFrom = validFrom;
+    }
+
+    public Date getValidUntil() {
+        return validUntil;
+    }
+
+    public void setValidUntil(Date validUntil) {
+        this.validUntil = validUntil;
+    }
+
+    public void setKey(Key key) {
         this.key = key;
     }
 

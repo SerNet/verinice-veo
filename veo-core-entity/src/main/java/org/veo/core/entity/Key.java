@@ -16,9 +16,13 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
 
 /**
  * <code>Key</code> stores one element as a key or multiple elements as a
@@ -30,27 +34,26 @@ import java.util.UUID;
  * keys, but in most cases a tuple of other key objects should be used in
  * compound keys.
  *
- * For more information on the key pattern see the description in PoEAA.
+ * For more information on the key pattern see the description in M.Fowler's PoEAA.
  *
  */
-public class Key {
+public class Key<T> {
 
     private enum SPECIAL_KEYS {
         KEY_UNDEFINED
-    };
-
-    private Object[] fields;
-
-    public Key(Object... fields) {
-        checkFieldsNotNull(fields);
-        this.fields = fields;
     }
 
-    public Key(UUID uuid) {
-        if (uuid == null)
-            throw new IllegalArgumentException("Key must not be null");
-        this.fields = new Object[1];
-        fields[0] = uuid;
+    private List<T> fields;
+
+    
+    @SafeVarargs
+    public Key(T... fields) {
+        List<T> input = new ArrayList<>();
+        for (T t : fields) {
+            this.fields.add(t);
+        }
+        checkFieldsNotNull(input);
+        this.fields = input;
     }
 
     /**
@@ -58,22 +61,18 @@ public class Key {
      *
      * @return
      */
-    public static Key newUuid() {
-        return new Key(UUID.randomUUID());
+    public static Key<UUID> newUuid() {
+        return new Key<>(UUID.randomUUID());
+    }
+    
+    public static Key<UUID> uuidFrom(String value) {
+        return new Key<>(UUID.fromString(value));
     }
 
-    public Key(Object obj) {
+    public Key(T obj) {
         if (obj == null)
             throw new IllegalArgumentException("Key must not be null");
-        this.fields = new Object[1];
-        this.fields[0] = obj;
-    }
-
-    private Key(SPECIAL_KEYS obj) {
-        if (obj == null)
-            throw new IllegalArgumentException("Key must not be null");
-        this.fields = new Object[1];
-        this.fields[0] = obj;
+        this.fields = Collections.singletonList(obj);
     }
 
     /**
@@ -82,23 +81,21 @@ public class Key {
      *
      * @return
      */
-    public static Key undefined() {
-        return new Key(SPECIAL_KEYS.KEY_UNDEFINED);
+    public static Key<SPECIAL_KEYS> undefined() {
+        return new Key<>(SPECIAL_KEYS.KEY_UNDEFINED);
     }
 
-    private void checkFieldsNotNull(Object[] fields) {
+    private void checkFieldsNotNull(List<T> fields) {
         if (fields == null)
             throw new IllegalArgumentException("Key must not be null");
-        if (Arrays.stream(fields).anyMatch(Objects::isNull))
+        if (fields.stream().anyMatch(Objects::isNull))
             throw new IllegalArgumentException("An element of a key must not be null");
     }
 
+ 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + Arrays.deepHashCode(fields);
-        return result;
+        return Objects.hash(fields);
     }
 
     /**
@@ -106,7 +103,9 @@ public class Key {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this.fields.length == 1 && this.fields[0].equals(SPECIAL_KEYS.KEY_UNDEFINED))
+        if (this.fields == null)
+            return false;
+        if (this.fields.contains(SPECIAL_KEYS.KEY_UNDEFINED))
             return false;
         if (this == obj)
             return true;
@@ -114,12 +113,11 @@ public class Key {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Key other = (Key) obj;
-        if (this.fields.length != other.fields.length)
-            return false;
+        @SuppressWarnings("unchecked")
+        Key<T> other = (Key<T>) obj;
         if (other.isUndefined())
             return false;
-        return Arrays.equals(this.fields, other.fields);
+        return this.fields.equals(other.fields);
     }
 
     /**
@@ -128,7 +126,7 @@ public class Key {
      * @return
      */
     public boolean isUndefined() {
-        return fields[0] == SPECIAL_KEYS.KEY_UNDEFINED;
+        return fields != null && fields.contains(SPECIAL_KEYS.KEY_UNDEFINED);
     }
 
     /**
@@ -137,8 +135,8 @@ public class Key {
      * @param i
      * @return
      */
-    public Object value(int i) {
-        return fields[i];
+    public T value(int i) {
+        return fields.get(i);
     }
 
     /**
@@ -146,13 +144,16 @@ public class Key {
      *
      * @return
      */
-    public Object value() {
+    public T value() {
         checkSingleKey();
-        return fields[0];
+        return fields.get(0);
     }
 
     private void checkSingleKey() {
-        if (fields.length > 0)
+        if (fields == null)
+            throw new IllegalStateException("Cannot take single value on uninitialized key.");
+
+        if (fields.isEmpty())
             throw new IllegalStateException("Cannot take single value on compound key");
     }
 
@@ -168,9 +169,9 @@ public class Key {
     }
 
     private String uuidValue(int i) {
-        if (!(fields[i] instanceof UUID))
+        if (!(fields.get(i) instanceof UUID))
             throw new IllegalStateException("Cannot take UUID value on non-UUID key");
-        return fields[i].toString();
+        return fields.get(i).toString();
     }
 
 }

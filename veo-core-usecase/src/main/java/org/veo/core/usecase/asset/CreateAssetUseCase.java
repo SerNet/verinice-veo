@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
+import java.util.UUID;
+
 import org.veo.core.entity.Key;
 import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.asset.IAssetRepository;
@@ -39,11 +41,12 @@ public class CreateAssetUseCase
     private Asset createAsset(InputData input) {
         return new Asset(Key.undefined(), input.getName());
     }
+   
 
     // TODO: use lombok @Value instead?
     public static class InputData implements UseCase.InputData {
 
-        private final Key key;
+        private final Key<UUID> key;
         private final String name;
 
         public Key getKey() {
@@ -54,11 +57,12 @@ public class CreateAssetUseCase
             return name;
         }
 
-        public InputData(Key key, String name) {
+        public InputData(Key<UUID> key, String name) {
             this.key = key;
             this.name = name;
         }
     }
+    
 
     // TODO: use lombok @Value instead?
     public static class OutputData implements UseCase.OutputData {

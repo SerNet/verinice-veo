@@ -16,12 +16,24 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
+import org.modelmapper.ModelMapper;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.asset.Asset;
+import org.veo.core.entity.process.Process;
 
 public class ProcessDto {
     private String id;
     private String name;
     private Asset[] assets;
+    private String validFrom;
+    private String validUntil;
+    
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public ProcessDto(String id, String name, Asset[] assets) {
         super();
@@ -53,5 +65,38 @@ public class ProcessDto {
     public void setAssets(Asset[] assets) {
         this.assets = assets;
     }
-
+    
+    public static ProcessDto from(Process asset) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(asset, ProcessDto.class);
+    }
+    
+    public Process toProcess() {
+        Process process = new Process(Key.uuidFrom(this.id), this.name);
+        return process;
+    }
+    
+    public Date getValidFromConverted(String timezoneId) throws ParseException {
+        return getConvertedDate(this.validFrom, timezoneId);
+    }
+    
+    public void setValidFrom(Date date, String timezoneId) {
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
+        this.validFrom = dateFormat.format(date);
+    }
+    
+    public Date getValidUntilConverted(String timezoneId) throws ParseException {
+        return getConvertedDate(this.validUntil, timezoneId);
+    }
+    
+    public void setValidUntil(Date date, String timezoneId) {
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
+        this.validUntil = dateFormat.format(date);
+    }
+    
+    private Date getConvertedDate(String date, String timezoneId) throws ParseException {
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
+        return dateFormat.parse(date);
+    }
+    
 }

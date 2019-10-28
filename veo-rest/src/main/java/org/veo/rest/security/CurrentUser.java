@@ -13,40 +13,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.rest.security;
 
-import org.modelmapper.ModelMapper;
-import org.veo.adapter.presenter.api.process.xxx;
-import org.veo.core.entity.asset.Asset;
-import org.veo.core.usecase.process.CreateProcessUseCase;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class AssetDto {
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
-    private String id;
-    private String name;
-
-    public AssetDto(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-   
+@Target({ElementType.PARAMETER, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@AuthenticationPrincipal
+public @interface CurrentUser {
 
 }

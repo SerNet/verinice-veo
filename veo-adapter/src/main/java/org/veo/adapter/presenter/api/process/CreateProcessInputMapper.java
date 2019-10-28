@@ -14,11 +14,15 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.asset;
+package org.veo.adapter.presenter.api.process;
+
+import java.util.Date;
+import java.util.TimeZone;
 
 import org.modelmapper.ModelMapper;
 
 import org.veo.adapter.presenter.api.dto.ProcessDto;
+import org.veo.adapter.presenter.api.dto.xxx;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 
 /**
@@ -28,8 +32,13 @@ import org.veo.core.usecase.process.CreateProcessUseCase;
  */
 public final class CreateProcessInputMapper {
 
-    public static CreateProcessUseCase.InputData map(ProcessDto dto) {
+    public static CreateProcessUseCase.InputData map(ProcessDto dto, TimeZone tz) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(dto, CreateProcessUseCase.InputData.class);
+        xxx map key
+        
+        
     }
+    
+   
 }

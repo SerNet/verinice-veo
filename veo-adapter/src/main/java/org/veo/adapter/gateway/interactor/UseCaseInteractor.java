@@ -34,7 +34,9 @@ public class UseCaseInteractor implements IUseCaseInteractor {
     public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
             UseCase<I, O> useCase, I input, Function<O, R> outputMapper) {
 
-        return CompletableFuture.supplyAsync(() -> input).thenApplyAsync(useCase::execute)
+        return CompletableFuture
+                .supplyAsync(() -> input)
+                .thenApplyAsync(useCase::execute)
                 .thenApplyAsync(outputMapper);
     }
 

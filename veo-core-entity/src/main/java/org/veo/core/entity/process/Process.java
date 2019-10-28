@@ -37,7 +37,7 @@ public class Process extends EntityLayerSupertype {
     private Set<Asset> assets;
 
     public Process(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, new Date(), null);
+        super(id, EntityLayerSupertype.Lifecycle.CREATING, new Date(), null, 0, false);
         this.name = name;
         this.assets = new HashSet<>();
     }
