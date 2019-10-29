@@ -11,7 +11,7 @@ allprojects  {
 
     apply plugin: "com.diffplug.gradle.spotless"
 
-    def currentUserName = "git config user.name".execute().text.trim()
+    def currentUserName = "git config user.name".execute().text.trim() ?: "<name>"
 
     spotless {
         groovyGradle {
