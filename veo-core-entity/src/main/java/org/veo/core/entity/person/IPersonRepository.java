@@ -14,35 +14,24 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.entity.person;
 
+import java.util.Set;
+import java.util.UUID;
 
-public class AssetDto {
+import org.veo.core.entity.IRepository;
+import org.veo.core.entity.Key;
 
-    private String id;
-    private String name;
+/**
+ * A repository for <code>Person</code> entities.
+ *
+ */
+public interface IPersonRepository extends IRepository {
 
-    public AssetDto(String id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    Person store(Person asset);
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    Person getById(Key<?> id);
     
-   
+    Set<Person> getByIds(Set<Key<UUID>> ids);
 
 }

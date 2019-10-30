@@ -26,6 +26,13 @@ import org.veo.core.usecase.UseCase.OutputData;
 
 /**
  * Provides a use case interactor with asynchronous callback.
+ * 
+ * Input is provided in the format expected by the use case. A mapper can
+ * be used to transform the input before this method is called.
+ * 
+ * The output is provided in the format produced by the use case. The mapping
+ * function given as the last parameter will be called asynchronously to
+ * transform the result and return it to the caller.
  *
  */
 public class UseCaseInteractor implements IUseCaseInteractor {
@@ -33,11 +40,12 @@ public class UseCaseInteractor implements IUseCaseInteractor {
     @Override
     public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
             UseCase<I, O> useCase, I input, Function<O, R> outputMapper) {
-
+        // @formatter:off
         return CompletableFuture
                 .supplyAsync(() -> input)
                 .thenApplyAsync(useCase::execute)
                 .thenApplyAsync(outputMapper);
+        // @formatter:on
     }
 
 }

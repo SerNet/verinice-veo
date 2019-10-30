@@ -17,10 +17,13 @@
 package org.veo.core.usecase.process;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.asset.Asset;
+import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
 import org.veo.core.usecase.UseCase;
@@ -34,36 +37,41 @@ import org.veo.core.usecase.UseCase;
 public class CreateProcessUseCase
         extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData> {
 
-    private IProcessRepository ProcessRepository;
+    private IProcessRepository processRepository;
+    private IAssetRepository assetRepository;
 
-    public CreateProcessUseCase(IProcessRepository ProcessRepository) {
-        this.ProcessRepository = ProcessRepository;
+    public CreateProcessUseCase(IProcessRepository processRepository, IAssetRepository assetRepository) {
+        this.processRepository = processRepository;
+        this.assetRepository = assetRepository;
     }
 
     @Override
     public OutputData execute(InputData input) {
         Process Process = createProcess(input);
-        return new OutputData(ProcessRepository.store(Process));
+        return new OutputData(processRepository.store(Process));
     }
 
     private Process createProcess(InputData input) {
         Process process = new Process(Key.undefined(), input.getName());
-        process.addAssets(input.getAssets());
+        process.addAssets(assetRepository.getByIds(input.getAssetIds()));
         return process;
     }
 
     // TODO: use lombok @Value instead?
     public static class InputData implements UseCase.InputData {
 
-        private final Key key;
+        private final Key<UUID> key;
         private final String name;
-        private final Set<Asset> assets;
+        private final Set<Key<UUID>> assetIds;
+        private final Date validUntil;
+        private final Date validFrom;
+        
 
-        public Set<Asset> getAssets() {
-            return Collections.unmodifiableSet(assets);
+        public Set<Key<UUID>> getAssetIds() {
+            return Collections.unmodifiableSet(assetIds);
         }
 
-        public Key getKey() {
+        public Key<UUID> getKey() {
             return key;
         }
 
@@ -71,24 +79,26 @@ public class CreateProcessUseCase
             return name;
         }
 
-        public InputData(Key key, String name, Set<Asset> assets) {
+        public InputData(Key<UUID> key, String name, Set<Key<UUID>> assetIds, Date validFrom, Date validUntil) {
             this.key = key;
             this.name = name;
-            this.assets = assets;
+            this.assetIds = assetIds;
+            this.validFrom = validFrom;
+            this.validUntil = validUntil;
         }
     }
 
     // TODO: use lombok @Value instead?
     public static class OutputData implements UseCase.OutputData {
 
-        private final Process Process;
+        private Process process;
 
         public Process getProcess() {
-            return Process;
+            return process;
         }
 
-        public OutputData(Process Process) {
-            this.Process = Process;
+        public OutputData(Process process) {
+            this.process = process;
         }
     }
 }

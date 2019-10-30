@@ -13,36 +13,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.usecase.common;
 
+import org.veo.core.entity.DomainException;
 
-public class AssetDto {
+public class NotFoundException extends DomainException {
 
-    private String id;
-    private String name;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6041522797284109491L;
 
-    public AssetDto(String id, String name) {
-        this.id = id;
-        this.name = name;
+    public NotFoundException(String id) {
+        super("Entity not found for ID: " + id);
     }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-   
-
 }

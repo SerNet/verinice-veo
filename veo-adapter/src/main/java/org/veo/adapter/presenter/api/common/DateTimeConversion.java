@@ -13,36 +13,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.adapter.presenter.api.common;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
-public class AssetDto {
+public class DateTimeConversion {
 
-    private String id;
-    private String name;
-
-    public AssetDto(String id, String name) {
-        this.id = id;
-        this.name = name;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    
+    public DateTimeConversion(String timezoneId) {
+        dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public Date getConvertedDate(String date) throws InvalidDateException {
+        try {
+            return dateFormat.parse(date);
+        } catch (ParseException e) {
+            throw new InvalidDateException(date);
+        }
     }
     
-   
-
+    public String formatDate(Date date) {
+        return dateFormat.format(date);
+    }
 }

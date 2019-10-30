@@ -16,30 +16,44 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.modelmapper.ModelMapper;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.process.Process;
+import org.veo.core.usecase.process.GetProcessUseCase.OutputData;
 
 public class ProcessDto {
-    private String id;
-    private String name;
-    private Asset[] assets;
-    private String validFrom;
-    private String validUntil;
     
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    @NotNull(message="An ID must always be present.")
+    @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
+        flags = Pattern.Flag.CASE_INSENSITIVE, 
+        message="ID must be a valid UUID string following RFC 4122.")
+    private String id;
+    
+    @NotNull(message="A name must be present.") 
+    @Size(min=1, max=255, message="The name must be between 1 and 255 characters long.")
+    private String name;
+    
+    @NotNull(message="An array of asset IDs must be present, but it may be empty.")
+    @Size(min=0, max=1000000, message="Array size must be less than one million asset IDs.")
+    private String[] assetIDs;
+    
+    @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}")
+    // additional date validation should be done on the parsed date object
+    private String validFrom;
+    
+    @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}")
+    // additional date validation should be done on the parsed date object
+    private String validUntil;
 
-    public ProcessDto(String id, String name, Asset[] assets) {
-        super();
+    public ProcessDto(String id, String name, String[] assetIDs) {
         this.id = id;
         this.name = name;
-        this.assets = assets;
+        this.assetIDs = assetIDs;
+        
     }
 
     public String getId() {
@@ -58,45 +72,40 @@ public class ProcessDto {
         this.name = name;
     }
 
-    public Asset[] getAssets() {
-        return assets;
+    public String[] getAssetIDs() {
+        return assetIDs;
     }
 
-    public void setAssets(Asset[] assets) {
-        this.assets = assets;
+    public void setAssetIDs(String[] assetIDs) {
+        this.assetIDs = assetIDs;
     }
-    
-    public static ProcessDto from(Process asset) {
+
+    public static ProcessDto from(Process process) {
         ModelMapper mapper = new ModelMapper();
-        return mapper.map(asset, ProcessDto.class);
+        return mapper.map(process, ProcessDto.class);
     }
-    
+
     public Process toProcess() {
-        Process process = new Process(Key.uuidFrom(this.id), this.name);
-        return process;
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(this, Process.class);
+        return new Process(Key.uuidFrom(this.id), this.name);
     }
-    
-    public Date getValidFromConverted(String timezoneId) throws ParseException {
-        return getConvertedDate(this.validFrom, timezoneId);
+
+    public String getValidFrom() {
+        return validFrom;
     }
-    
-    public void setValidFrom(Date date, String timezoneId) {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
-        this.validFrom = dateFormat.format(date);
+
+    public void setValidFrom(String validFrom) {
+        this.validFrom = validFrom;
     }
-    
-    public Date getValidUntilConverted(String timezoneId) throws ParseException {
-        return getConvertedDate(this.validUntil, timezoneId);
+
+    public String getValidUntil() {
+        return validUntil;
     }
-    
-    public void setValidUntil(Date date, String timezoneId) {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
-        this.validUntil = dateFormat.format(date);
+
+    public void setValidUntil(String validUntil) {
+        this.validUntil = validUntil;
     }
-    
-    private Date getConvertedDate(String date, String timezoneId) throws ParseException {
-        dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
-        return dateFormat.parse(date);
-    }
-    
+
+
 }

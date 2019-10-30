@@ -20,6 +20,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
@@ -33,7 +39,11 @@ import org.veo.core.entity.asset.Asset;
  */
 public class Process extends EntityLayerSupertype {
 
+    @NotBlank
     private String name;
+    
+    @NotNull(message="The array of assets must not be null.")
+    @Size(min=0, max=1000000, message="No more than one million assets may be directly referenced by a process.")
     private Set<Asset> assets;
 
     public Process(Key id, String name) {

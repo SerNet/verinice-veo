@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 /**
@@ -65,10 +67,36 @@ public class Key<T> {
         return new Key<>(UUID.randomUUID());
     }
     
+    /**
+     * Creates a UUID-based key from the given String representation.
+     * 
+     * @param value
+     * @return
+     */
     public static Key<UUID> uuidFrom(String value) {
         return new Key<>(UUID.fromString(value));
     }
+    
+    /**
+     * Returns a set of UUID-based keys from the given String representations.
+     * 
+     * @param values
+     * @return
+     */
+    public static Set<Key<UUID>> uuidsFrom(Set<String> values) {
+     // @formatter:off
+        return values
+                .stream()
+                .map(v -> (Key.uuidFrom(v))) 
+                .collect(Collectors.toSet()) ;
+     // @formatter:on
+    }
 
+    /**
+     * Creates a simple key based on the given object.
+     * 
+     * @param obj
+     */
     public Key(T obj) {
         if (obj == null)
             throw new IllegalArgumentException("Key must not be null");

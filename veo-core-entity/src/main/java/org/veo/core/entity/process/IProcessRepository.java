@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.core.entity.process;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.veo.core.entity.IRepository;
 import org.veo.core.entity.Key;
 
@@ -23,10 +26,10 @@ import org.veo.core.entity.Key;
  * A repository for <code>Process</code> entities.
  *
  */
-public interface IProcessRepository extends IRepository {
+public interface IProcessRepository extends IRepository<Process, UUID> {
 
-    Process store(Process Process);
+    Process store(Process process);
 
-    Process getById(Key id);
+    Optional<Process> getById(Key<UUID> id);
 
 }

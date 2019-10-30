@@ -30,9 +30,7 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
     public abstract O execute(I input);
 
     /**
-     * The input data structure that is particular to this use case. Only primitive
-     * types and simple data structures that are native to the JDK must be used by
-     * the implementation.
+     * The input data structure that is particular to this use case.
      *
      * InputData should be an immutable value object.
      */
@@ -41,9 +39,7 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
     }
 
     /**
-     * The output data structure that is particular to this use case. Only primitive
-     * types and simple data structures that are native to the JDK must be used by
-     * the implementation.
+     * The output data structure that is particular to this use case.
      *
      * OutputData should be an immutable value object.
      */

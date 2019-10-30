@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
+
 /*
 * The repository provides access to entities through a well-known interface.
 *
@@ -27,10 +29,10 @@ package org.veo.core.entity;
 * the repository does not just offer CRUD operations but
 * uses factories and builders to build entities to specification.
 * */
-public interface IRepository {
+public interface IRepository<T, U> {
 
-    EntityLayerSupertype store(EntityLayerSupertype asset);
+    T store(T asset);
 
-    EntityLayerSupertype getById(Key id);
+    Optional<T> getById(Key<U> id);
 
 }

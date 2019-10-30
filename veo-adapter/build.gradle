@@ -4,6 +4,7 @@ dependencies {
 
     compile project(":veo-core-usecase")
     compile 'org.modelmapper:modelmapper'
+    compile 'javax.validation:validation-api'
 
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'

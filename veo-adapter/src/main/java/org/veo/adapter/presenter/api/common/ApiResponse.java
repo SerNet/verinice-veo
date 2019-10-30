@@ -13,36 +13,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.adapter.presenter.api.common;
 
-
-public class AssetDto {
-
-    private String id;
-    private String name;
-
-    public AssetDto(String id, String name) {
-        this.id = id;
-        this.name = name;
+public class ApiResponse {
+    
+    private final Boolean success;
+    private final String message;
+    
+    public ApiResponse(Boolean success, String message) {
+        this.success = success;
+        this.message = message;
     }
 
-    public String getId() {
-        return id;
+    protected Boolean getSuccess() {
+        return success;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    protected String getMessage() {
+        return message;
     }
     
-   
+    
 
 }

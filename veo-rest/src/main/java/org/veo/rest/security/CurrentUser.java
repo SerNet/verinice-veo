@@ -27,6 +27,12 @@ import java.lang.annotation.Target;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+/**
+ * Convenience annotation to get a reference to the currently authenticated user.
+ * 
+ * @author akoderman
+ *
+ */
 @Target({ElementType.PARAMETER, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

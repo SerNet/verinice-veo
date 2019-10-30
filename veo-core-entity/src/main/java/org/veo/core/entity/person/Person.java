@@ -14,25 +14,20 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.entity.person;
 
+import java.util.Date;
 
-public class AssetDto {
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
 
-    private String id;
+public class Person extends EntityLayerSupertype {
+
     private String name;
 
-    public AssetDto(String id, String name) {
-        this.id = id;
+    public Person(Key id, String name) {
+        super(id, EntityLayerSupertype.Lifecycle.CREATING, new Date(), null, 0, false);
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -42,7 +37,4 @@ public class AssetDto {
     public void setName(String name) {
         this.name = name;
     }
-    
-   
-
 }

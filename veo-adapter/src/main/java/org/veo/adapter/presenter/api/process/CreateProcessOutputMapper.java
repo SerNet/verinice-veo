@@ -16,9 +16,26 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.process;
 
-import org.veo.core.usecase.process.CreateProcessUseCase;
 
+import java.util.UUID;
+
+import org.veo.core.entity.Key;
+import org.veo.core.entity.process.Process;
+
+/**
+ * Returns the id of the newly created process as output.
+ * 
+ * @author akoderman
+ *
+ */
 public final class CreateProcessOutputMapper {
 
-    public static CreateProcessUseCase.OutputData map()
+    public static Key<UUID> map(Process process) {
+        // TODO: move conversion to getprocess() - not needed here because only ID is returned
+        //DateTimeConversion timeConversion = new DateTimeConversion(timezoneId);
+        //ProcessDto dto = ProcessDto.from(process);
+        //dto.setValidFrom(timeConversion.formatDate(process.getValidFrom()));
+        //dto.setValidUntil(timeConversion.formatDate(process.getValidUntil()));
+        return process.getKey(); 
+    }
 }

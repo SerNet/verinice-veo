@@ -26,7 +26,7 @@ public class Asset extends EntityLayerSupertype {
     private String name;
 
     public Asset(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, new Date(), null);
+        super(id, EntityLayerSupertype.Lifecycle.CREATING, new Date(), null, 0, false);
         this.name = name;
     }
 

@@ -17,6 +17,12 @@
 package org.veo.core.entity;
 
 import java.util.Date;
+import java.util.UUID;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.PositiveOrZero;
 
 /**
  * Implements common fields and methods for objects in the entity layer.
@@ -30,13 +36,26 @@ public abstract class EntityLayerSupertype {
         CREATING, ACTIVE, STORING, LOADING, DELETING, DELETED, MODIFYING, ARCHIVING, ARCHIVED
     }
 
-    private Key key;
+    @NotNull
+    private Key<UUID> key;
+    
+    @NotNull
     Unit unit;
+    
+    @NotNull
     Lifecycle state;
 
+    @PastOrPresent(message="The start of the entity's validity must be in the past.")
+    @NotNull(message="The start of the entity's validity must be in the past.")
     Date validFrom;
+    
+    
+    @PastOrPresent(message="The end of the entity's validity must be be set in the past or set to 'null' if it is currently still valid.")
     Date validUntil;
+
+    @PositiveOrZero
     long version;
+
     boolean isDraft;
 
     protected boolean isDraft() {
@@ -55,7 +74,7 @@ public abstract class EntityLayerSupertype {
         this.unit = unit;
     }
 
-    protected EntityLayerSupertype(Key id, Lifecycle state, Date validFrom, Date validUntil, long version, boolean isDraft) {
+    protected EntityLayerSupertype(Key<UUID> id, Lifecycle state, Date validFrom, Date validUntil, long version, boolean isDraft) {
         this.key = id;
         this.state = state;
         this.validFrom = validFrom;
@@ -75,7 +94,7 @@ public abstract class EntityLayerSupertype {
     public EntityLayerSupertype() {
     }
 
-    public Key getKey() {
+    public Key<UUID> getKey() {
         return key;
     }
 
@@ -103,7 +122,7 @@ public abstract class EntityLayerSupertype {
         this.validUntil = validUntil;
     }
 
-    public void setKey(Key key) {
+    public void setKey(Key<UUID> key) {
         this.key = key;
     }
 

@@ -17,28 +17,40 @@
 package org.veo.adapter.presenter.api.process;
 
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.Set;
 
-import org.modelmapper.ModelMapper;
 
+import org.veo.adapter.presenter.api.common.DateTimeConversion;
 import org.veo.adapter.presenter.api.dto.ProcessDto;
-import org.veo.adapter.presenter.api.dto.xxx;
+import org.veo.core.entity.DomainException;
+import org.veo.core.entity.Key;
 import org.veo.core.usecase.process.CreateProcessUseCase;
+import org.veo.core.usecase.process.CreateProcessUseCase.InputData;
 
 /**
  * Map between the request DTO received from a client and the input expected by
  * the data source. (This is not needed for simple input data.)
+ * 
+ * The request DTO is not mapped to a process entity in this case because a new process is 
+ * created from the input values.
+ * 
+ * The newly created process is returned by the use case. 
+ * @see CreateProcessOutputMapper
  *
  */
 public final class CreateProcessInputMapper {
-
-    public static CreateProcessUseCase.InputData map(ProcessDto dto, TimeZone tz) {
-        ModelMapper mapper = new ModelMapper();
-        return mapper.map(dto, CreateProcessUseCase.InputData.class);
-        xxx map key
-        
-        
-    }
     
-   
+    public static CreateProcessUseCase.InputData map(ProcessDto dto, String timezoneId) throws DomainException {
+        DateTimeConversion timeConversion = new DateTimeConversion(timezoneId);
+        Date validFrom = timeConversion.getConvertedDate(dto.getValidFrom()); 
+        Date validUntil = timeConversion.getConvertedDate(dto.getValidUntil());
+
+        return new InputData(
+                Key.uuidFrom(dto.getId()), 
+                dto.getName(), 
+                Key.uuidsFrom(Set.of(dto.getAssetIDs())),
+                validFrom,
+                validUntil
+          );
+    }
 }

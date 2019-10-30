@@ -16,17 +16,22 @@
  ******************************************************************************/
 package org.veo.core.entity.asset;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 import org.veo.core.entity.IRepository;
 import org.veo.core.entity.Key;
 
 /**
- * A repository for <code>Asset</code> entities.
+ * A repository for <code>Person</code> entities.
+ * 
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
  *
  */
-public interface IAssetRepository extends IRepository {
+public interface IAssetRepository extends IRepository<Asset, UUID> {
 
-    Asset store(Asset asset);
-
-    Asset getById(Key id);
+    Set<Asset> getByIds(Set<Key<UUID>> ids);
 
 }
