@@ -14,7 +14,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.gateway.interactor;
+package org.veo.adapter.usecase.interactor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;

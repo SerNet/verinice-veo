@@ -13,29 +13,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.core.entity.asset;
+package org.veo.persistence.entity.jpa;
 
-import java.time.Instant;
-import java.util.Date;
+import javax.persistence.Entity;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
+import org.veo.core.entity.asset.Asset;
 
-public class Asset extends EntityLayerSupertype {
-
-    private String name;
-
-    public Asset(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0, false);
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+@Entity
+public class AssetData extends EntityLayerSupertypeData  {
+    
+// 
+        
+        public static AssetData from(Asset Asset) {
+            // map fields
+            return new AssetData();
+        }
+        
+        public Asset toAsset() {
+            return new Asset();
+            //map fields
+        }
 }

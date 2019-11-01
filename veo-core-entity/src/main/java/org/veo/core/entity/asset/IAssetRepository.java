@@ -24,7 +24,7 @@ import org.veo.core.entity.IRepository;
 import org.veo.core.entity.Key;
 
 /**
- * A repository for <code>Person</code> entities.
+ * A repository for <code>Asset</code> entities.
  * 
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
@@ -32,6 +32,15 @@ import org.veo.core.entity.Key;
  */
 public interface IAssetRepository extends IRepository<Asset, UUID> {
 
-    Set<Asset> getByIds(Set<Key<UUID>> ids);
+    public Set<Asset> getByIds(Set<Key<UUID>> ids);
+    
+    /**
+     * Retrieve assets for the given process.
+     * 
+     * @param processIds
+     * @return
+     */
+    public Set<Asset> getByProcessId(Key<UUID> processId);
+    
 
 }

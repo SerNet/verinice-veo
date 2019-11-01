@@ -16,22 +16,15 @@
  ******************************************************************************/
 package org.veo.core.entity.person;
 
-import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.IRepository;
-import org.veo.core.entity.Key;
 
 /**
  * A repository for <code>Person</code> entities.
  *
  */
-public interface IPersonRepository extends IRepository {
+public interface IPersonRepository extends IRepository<Person, UUID> {
 
-    Person store(Person asset);
-
-    Person getById(Key<?> id);
-    
-    Set<Person> getByIds(Set<Key<UUID>> ids);
 
 }

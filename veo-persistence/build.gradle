@@ -2,8 +2,13 @@ apply plugin: 'groovy'
 
 dependencies {
 
-    compile 'javax.validation:validation-api'
+    compile project(":veo-core-entity")
     
+    compile 'javax.validation:validation-api'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.modelmapper:modelmapper'
+    
+        
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testRuntime 'com.h2database:h2'

@@ -43,13 +43,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.veo.adapter.gateway.interactor.UseCaseInteractor;
 import org.veo.adapter.presenter.api.common.ApiResponse;
 import org.veo.adapter.presenter.api.common.InvalidDateException;
-import org.veo.adapter.presenter.api.dto.AssetDto;
+import org.veo.adapter.presenter.api.dto.AssetItemDto;
 import org.veo.adapter.presenter.api.dto.ProcessDto;
 import org.veo.adapter.presenter.api.process.CreateProcessInputMapper;
 import org.veo.adapter.presenter.api.process.CreateProcessOutputMapper;
+import org.veo.adapter.usecase.interactor.UseCaseInteractor;
 import org.veo.commons.VeoException;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Key;
@@ -63,7 +63,7 @@ import org.veo.service.ElementMapService;
 import org.veo.service.HistoryService;
 
 /**
- * Controller for Process resources.
+ * Controller for the resource API of "Process" entities.
  *
  */
 @RestController
@@ -79,6 +79,12 @@ public class ProcessController {
         this.createProcessUseCase = createProcessUseCase;
     }
     
+    /**
+     * Load the process for the given id. The result is provided asynchronously by the executed use case.
+     * 
+     * @param id an ID in the UUID format as specified in RFC 4122
+     * @return the process for the given ID if one was found. Null otherwise.
+     */
     @GetMapping("/{id}")
     CompletableFuture<ProcessDto> getProcessById(@PathVariable String id) {
         return useCaseInteractor.execute(
@@ -89,6 +95,14 @@ public class ProcessController {
     }
 
 
+    /**
+     * Create and persist a new process object for the given parameters.
+     * 
+     * @param user the currently logged in user. Provided by the authentication context.
+     * @param dto the required fields to create a new process. Provided as request body.
+     * @param requestTimezone the timezone in which the request originated. Should be set by the HTTP client. Server's timezone will be used if missing.
+     * @return a resource URI for the newly created process.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // see: https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
     CompletableFuture<ResponseEntity<ApiResponse>> create(

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.List;
 import java.util.Optional;
 
 /*
@@ -31,8 +32,15 @@ import java.util.Optional;
 * */
 public interface IRepository<T, U> {
 
-    T store(T asset);
+    public T save(T entity);
 
-    Optional<T> getById(Key<U> id);
+    public Optional<T> findById(Key<U> id);
+    
+    public List<T> findByName(String search);
+    
+    public void delete(T entity);
+
+    public void deleteById(Key<U> entity);
+    
 
 }

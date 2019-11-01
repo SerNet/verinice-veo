@@ -17,8 +17,8 @@
  * Contributors:
  *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.persistence.entity.common;
+package org.veo.persistence.entity.jpa;
 
-public class IdConverter {
+public class UnitData {
 
 }

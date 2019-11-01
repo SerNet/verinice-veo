@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity.process;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -47,7 +48,7 @@ public class Process extends EntityLayerSupertype {
     private Set<Asset> assets;
 
     public Process(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, new Date(), null, 0, false);
+        super(id, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0, false);
         this.name = name;
         this.assets = new HashSet<>();
     }

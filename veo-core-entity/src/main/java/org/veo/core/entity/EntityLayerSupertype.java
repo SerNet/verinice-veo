@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -32,8 +33,16 @@ import javax.validation.constraints.PositiveOrZero;
  */
 public abstract class EntityLayerSupertype {
 
+    /**
+     * 
+     *
+     */
     public enum Lifecycle {
-        CREATING, ACTIVE, STORING, LOADING, DELETING, DELETED, MODIFYING, ARCHIVING, ARCHIVED
+        CREATING,
+        DRAFT,
+        ACTIVE,
+        DELETED,
+        ARCHIVED
     }
 
     @NotNull
@@ -47,24 +56,14 @@ public abstract class EntityLayerSupertype {
 
     @PastOrPresent(message="The start of the entity's validity must be in the past.")
     @NotNull(message="The start of the entity's validity must be in the past.")
-    Date validFrom;
+    Instant validFrom;
     
     
     @PastOrPresent(message="The end of the entity's validity must be be set in the past or set to 'null' if it is currently still valid.")
-    Date validUntil;
+    Instant validUntil;
 
     @PositiveOrZero
     long version;
-
-    boolean isDraft;
-
-    protected boolean isDraft() {
-        return isDraft;
-    }
-
-    public void setDraft(boolean isDraft) {
-        this.isDraft = isDraft;
-    }
 
     public Unit getUnit() {
         return unit;
@@ -74,13 +73,12 @@ public abstract class EntityLayerSupertype {
         this.unit = unit;
     }
 
-    protected EntityLayerSupertype(Key<UUID> id, Lifecycle state, Date validFrom, Date validUntil, long version, boolean isDraft) {
+    protected EntityLayerSupertype(Key<UUID> id, Lifecycle state, Instant validFrom, Instant validUntil, long version, boolean isDraft) {
         this.key = id;
         this.state = state;
         this.validFrom = validFrom;
         this.validUntil = validUntil;
         this.version = version;
-        this.isDraft = isDraft;
     }
     
     public long getVersion() {
@@ -106,19 +104,19 @@ public abstract class EntityLayerSupertype {
         this.state = state;
     }
 
-    public Date getValidFrom() {
+    public Instant getValidFrom() {
         return validFrom;
     }
 
-    public void setValidFrom(Date validFrom) {
+    public void setValidFrom(Instant validFrom) {
         this.validFrom = validFrom;
     }
 
-    public Date getValidUntil() {
+    public Instant getValidUntil() {
         return validUntil;
     }
 
-    public void setValidUntil(Date validUntil) {
+    public void setValidUntil(Instant validUntil) {
         this.validUntil = validUntil;
     }
 

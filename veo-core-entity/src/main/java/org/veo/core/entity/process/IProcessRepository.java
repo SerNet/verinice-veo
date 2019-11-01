@@ -17,6 +17,7 @@
 package org.veo.core.entity.process;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.IRepository;
@@ -28,8 +29,11 @@ import org.veo.core.entity.Key;
  */
 public interface IProcessRepository extends IRepository<Process, UUID> {
 
-    Process store(Process process);
-
-    Optional<Process> getById(Key<UUID> id);
-
+    /**
+     * Retrieve processes for which the given person is responsible.
+     * 
+     * @param personId
+     * @return
+     */
+    public Set<Process> getProcessByResponsiblePerson(Key<UUID> personId);
 }

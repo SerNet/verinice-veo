@@ -6,4 +6,5 @@ include ':veo-core'
 include ':veo-core-entity'
 include ':veo-core-usecase'
 include ':veo-adapter'
+include ':veo-persistence'
 

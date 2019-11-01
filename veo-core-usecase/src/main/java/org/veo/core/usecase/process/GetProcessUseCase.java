@@ -51,7 +51,6 @@ public class GetProcessUseCase
     }
 
 
-    // TODO: use lombok @Value instead?
     public static class InputData implements UseCase.InputData {
         private final Key<UUID> id;
 
@@ -64,7 +63,6 @@ public class GetProcessUseCase
         }
     }
 
-    // TODO: use lombok @Value instead?
     public static class OutputData implements UseCase.OutputData {
         private final Process process;
 

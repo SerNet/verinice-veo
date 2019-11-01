@@ -14,21 +14,35 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.asset;
+package org.veo.adapter.presenter.api.dto;
 
-import java.time.Instant;
-import java.util.Date;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
+/**
+ * Transfer object for assets when used as a collection of assets that is
+ * included inside other objects.
+ * 
+ * Contains just the display name and the ID of the asset. With this the
+ * asset can be listed by name and queried if more information about it is needed.
+ * 
+ * @author akoderman
+ *
+ */
+public class AssetItemDto {
 
-public class Asset extends EntityLayerSupertype {
-
+    private String id;
     private String name;
 
-    public Asset(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0, false);
+    public AssetItemDto(String id, String name) {
+        this.id = id;
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -38,4 +52,7 @@ public class Asset extends EntityLayerSupertype {
     public void setName(String name) {
         this.name = name;
     }
+    
+   
+
 }

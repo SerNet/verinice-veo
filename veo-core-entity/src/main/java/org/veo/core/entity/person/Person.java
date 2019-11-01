@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity.person;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.veo.core.entity.EntityLayerSupertype;
@@ -26,7 +27,7 @@ public class Person extends EntityLayerSupertype {
     private String name;
 
     public Person(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, new Date(), null, 0, false);
+        super(id, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0, false);
         this.name = name;
     }
 

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -27,13 +28,13 @@ import org.veo.core.usecase.process.GetProcessUseCase.OutputData;
 
 public class ProcessDto {
     
-    @NotNull(message="An ID must always be present.")
     @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
         flags = Pattern.Flag.CASE_INSENSITIVE, 
-        message="ID must be a valid UUID string following RFC 4122.")
+        message="ID must either be null (for new processes) or a valid UUID string following RFC 4122. ")
     private String id;
     
     @NotNull(message="A name must be present.") 
+    @NotBlank
     @Size(min=1, max=255, message="The name must be between 1 and 255 characters long.")
     private String name;
     
@@ -88,7 +89,7 @@ public class ProcessDto {
     public Process toProcess() {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(this, Process.class);
-        return new Process(Key.uuidFrom(this.id), this.name);
+        //return new Process(Key.uuidFrom(this.id), this.name); TODO implement mapping method from string to key for modelmapper
     }
 
     public String getValidFrom() {
