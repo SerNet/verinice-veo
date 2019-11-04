@@ -17,24 +17,30 @@
  * Contributors:
  *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.persistence.access.jpa;
 
-import javax.persistence.Entity;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-import org.veo.core.entity.asset.Asset;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.process.Process;
+import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.persistence.entity.jpa.ProcessData;
 
-@Entity
-public class AssetData extends EntityLayerSupertypeData  {
+/**
+ * A CRUD repository that will be implemented at runtime by magic and/or Spring Boot.
+ * 
+ */
+public interface JpaAssetDataRepository extends CrudRepository<AssetData, Key<UUID>>{
+
+    @Query("SELECT p.assets FROM Process p where p.id = :processId")
+    public Set<AssetData> findByProcessId(Key<UUID> processId);
     
-// 
-        
-        public static AssetData from(Asset Asset) {
-            // map fields
-            return new AssetData();
-        }
-        
-        public Asset toAsset() {
-            return null;
-            //TODO map fields
-        }
+    Collection<AssetData> findByNameContainingIgnoreCase(String search);
+
+
 }

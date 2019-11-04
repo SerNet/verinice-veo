@@ -17,24 +17,17 @@
  * Contributors:
  *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.rest.configuration;
 
-import javax.persistence.Entity;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import org.veo.core.entity.asset.Asset;
-
-@Entity
-public class AssetData extends EntityLayerSupertypeData  {
-    
-// 
-        
-        public static AssetData from(Asset Asset) {
-            // map fields
-            return new AssetData();
-        }
-        
-        public Asset toAsset() {
-            return null;
-            //TODO map fields
-        }
+/**
+ * Configure repositories and persistence entities for Spring-Data.
+ */
+@Configuration
+@EntityScan(basePackages = {"org.veo.persistence.entity.jpa"})
+@EnableJpaRepositories(basePackages = {"org.veo.persistence.access.jpa", "org.veo.persistence.access"})
+public class DatabaseConfiguration {
 }

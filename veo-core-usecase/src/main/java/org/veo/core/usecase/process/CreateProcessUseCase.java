@@ -48,7 +48,7 @@ public class CreateProcessUseCase
     @Override
     public OutputData execute(InputData input) {
         Process Process = createProcess(input);
-        return new OutputData(processRepository.store(Process));
+        return new OutputData(processRepository.save(Process));
     }
 
     private Process createProcess(InputData input) {

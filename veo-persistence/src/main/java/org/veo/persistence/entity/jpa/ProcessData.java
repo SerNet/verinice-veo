@@ -33,6 +33,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.modelmapper.ModelMapper;
 import org.veo.core.entity.process.Process;
 
 @Entity(name="process")
@@ -42,7 +43,7 @@ public class ProcessData extends EntityLayerSupertypeData {
  
     private String name;
 
-    /* not modelled from asset's side - will be replaced by Aspect
+    /* not modelled from asset's side. TODO will be replaced by Aspect
     @ManyToMany
     * @JoinTable(name = "process_asset", 
         joinColumns = { @JoinColumn(name="processId", referencedColumnName="uuid") }, 
@@ -64,6 +65,6 @@ public class ProcessData extends EntityLayerSupertypeData {
     }
     
     public Process toProcess() {
-        return new ();
+        return null; // TODO map data
     }
 }

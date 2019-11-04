@@ -52,7 +52,7 @@ public class Key<T> {
     public Key(T... fields) {
         List<T> input = new ArrayList<>();
         for (T t : fields) {
-            this.fields.add(t);
+            input.add(t);
         }
         checkFieldsNotNull(input);
         this.fields = input;
@@ -178,10 +178,10 @@ public class Key<T> {
     }
 
     private void checkSingleKey() {
-        if (fields == null)
+        if (fields == null || fields.isEmpty())
             throw new IllegalStateException("Cannot take single value on uninitialized key.");
 
-        if (fields.isEmpty())
+        if (fields.size()>1)
             throw new IllegalStateException("Cannot take single value on compound key");
     }
 

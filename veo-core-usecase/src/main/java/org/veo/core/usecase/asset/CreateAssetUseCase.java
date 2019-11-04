@@ -35,7 +35,7 @@ public class CreateAssetUseCase
     @Override
     public OutputData execute(InputData input) {
         Asset asset = createAsset(input);
-        return new OutputData(assetRepository.store(asset));
+        return new OutputData(assetRepository.save(asset));
     }
 
     private Asset createAsset(InputData input) {

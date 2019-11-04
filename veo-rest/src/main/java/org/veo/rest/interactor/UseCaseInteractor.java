@@ -14,11 +14,12 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.usecase.interactor;
+package org.veo.rest.interactor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import org.springframework.stereotype.Service;
 import org.veo.core.usecase.IUseCaseInteractor;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.InputData;
@@ -35,6 +36,7 @@ import org.veo.core.usecase.UseCase.OutputData;
  * transform the result and return it to the caller.
  *
  */
+@Service
 public class UseCaseInteractor implements IUseCaseInteractor {
 
     @Override

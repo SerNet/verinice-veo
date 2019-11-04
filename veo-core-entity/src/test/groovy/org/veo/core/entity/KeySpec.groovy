@@ -48,7 +48,7 @@ public class KeySpec extends Specification {
         Key key = new Key("TheValue");
         
         then: "the key compares correctly to other keys"
-        !key.undefined();
+        key.isUndefined() == false
         !key.equals(simpleKey)
         !key.equals(compoundKeyMultiType)
         !key.equals(compoundKeySameType)
@@ -74,16 +74,17 @@ public class KeySpec extends Specification {
         Key key = new Key("TheValue", 2, false);
         
         then: "the key compares correctly to other keys"
-        !key.undefined();
+        key.isUndefined() == false
         !key.equals(otherSimpleKey)
         !key.equals(otherCompoundKeyMultiType)
         !key.equals(otherCompoundKeySameType)
-        
-        when: "we try to read a compound key as a simple value"
         key.equals(sameKey)
         
+        when: "we try to read a compound key as a simple value"
+        key.value()
+        
         then: "an exception is thrown"
-        key.value() thrown
+        thrown IllegalStateException
     }
 
     def "Create a UUID based key" () {

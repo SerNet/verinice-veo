@@ -10,6 +10,7 @@ apply plugin: 'groovy'
 dependencies {
     compile project(":veo-core")
     compile project(":veo-adapter")
+    compile project(":veo-persistence")
 
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     compile 'org.springframework.boot:spring-boot-starter-data-rest'

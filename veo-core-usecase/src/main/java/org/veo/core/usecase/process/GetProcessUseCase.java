@@ -44,7 +44,7 @@ public class GetProcessUseCase
     public OutputData execute(InputData input) {
         // @formatter:off
         return repository
-                .getById(input.getId())
+                .findById(input.getId())
                 .map(OutputData::new)
                 .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
         // @formatter:on

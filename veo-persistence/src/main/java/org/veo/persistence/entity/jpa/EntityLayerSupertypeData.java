@@ -34,6 +34,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.classic.Lifecycle;
+import org.modelmapper.ModelMapper;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 
@@ -58,6 +59,50 @@ public abstract class EntityLayerSupertypeData {
     
     @Column(name="valid_until", nullable=true)
     private Instant validUntil;
+
+    
+    
+    public Key<UUID> getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(Key<UUID> uuid) {
+        this.uuid = uuid;
+    }
+
+    public UnitData getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitData unit) {
+        this.unit = unit;
+    }
+
+    public Lifecycle getState() {
+        return state;
+    }
+
+    public void setState(Lifecycle state) {
+        this.state = state;
+    }
+
+    public Instant getValidFrom() {
+        return validFrom;
+    }
+
+    public void setValidFrom(Instant validFrom) {
+        this.validFrom = validFrom;
+    }
+
+    public Instant getValidUntil() {
+        return validUntil;
+    }
+
+    public void setValidUntil(Instant validUntil) {
+        this.validUntil = validUntil;
+    }
+    
+    
     
     
 }
