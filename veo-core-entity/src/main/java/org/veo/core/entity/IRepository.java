@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 /*
-* The repository provides access to entities through a well-known interface.
+* The repository provides access to business entities through a well-known interface.
 *
 * It provides methods to add, remove or reconstitute objects and encapsulates
 * the actual interaction with the data store.

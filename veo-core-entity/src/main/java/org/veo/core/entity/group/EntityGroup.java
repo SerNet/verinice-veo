@@ -13,23 +13,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.core.entity.person;
+package org.veo.core.entity.group;
 
 import java.time.Instant;
-import java.util.Date;
 
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
-public class Person extends EntityLayerSupertype {
+/**
+ * A group of entity objects of the same type.
+ * A group may contain other groups.
+ * An entity can be present in more than one group.
+ * A group helps to organize entities and makes it easier to work with multiple
+ * entities at the same time.
+ * A group of objects can be used in business use cases instead of working with single elements.
+ * 
+ * @author akoderman
+ *
+ */
+public class EntityGroup extends EntityLayerSupertype {
 
     private String name;
+    
 
-    public Person(Key id, Unit unit, String name) {
-        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
-        this.name = name;
+    public EntityGroup(Key id, Unit unit, String name) {
+        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0L);
     }
 
     public String getName() {

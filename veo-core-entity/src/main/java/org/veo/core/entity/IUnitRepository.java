@@ -14,29 +14,18 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.person;
+package org.veo.core.entity;
 
-import java.time.Instant;
-import java.util.Date;
+import java.util.UUID;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
+/**
+ * A repository for <code>Unit</code> entities.
+ * 
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
+ *
+ */
+public interface IUnitRepository extends IRepository<Unit, UUID> {
 
-public class Person extends EntityLayerSupertype {
 
-    private String name;
-
-    public Person(Key id, Unit unit, String name) {
-        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

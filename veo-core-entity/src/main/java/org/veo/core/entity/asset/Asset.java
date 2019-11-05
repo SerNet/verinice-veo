@@ -21,13 +21,14 @@ import java.util.Date;
 
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 
 public class Asset extends EntityLayerSupertype {
 
     private String name;
 
-    public Asset(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0, false);
+    public Asset(Key id, Unit unit, String name) {
+        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
         this.name = name;
     }
 

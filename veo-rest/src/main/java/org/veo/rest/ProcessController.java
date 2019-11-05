@@ -17,53 +17,38 @@
 package org.veo.rest;
 
 import java.net.URI;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.presenter.api.common.ApiResponse;
 import org.veo.adapter.presenter.api.common.InvalidDateException;
-import org.veo.adapter.presenter.api.dto.AssetItemDto;
 import org.veo.adapter.presenter.api.dto.ProcessDto;
 import org.veo.adapter.presenter.api.process.CreateProcessInputMapper;
 import org.veo.adapter.presenter.api.process.CreateProcessOutputMapper;
 import org.veo.commons.VeoException;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Key;
-import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
-import org.veo.model.HistoryEntry;
 import org.veo.rest.interactor.UseCaseInteractor;
-import org.veo.rest.security.ApplicationUser;
 import org.veo.rest.security.CurrentUser;
-import org.veo.service.ElementMapService;
-import org.veo.service.HistoryService;
 
 /**
  * Controller for the resource API of "Process" entities.
+ * 
+ * A process is a business entity 
  *
  */
 @RestController

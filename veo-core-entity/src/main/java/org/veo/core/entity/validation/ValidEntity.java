@@ -13,30 +13,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.core.entity.person;
+package org.veo.core.entity.validation;
 
-import java.time.Instant;
-import java.util.Date;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
+/**
+ * Annotation to mark types and method parameters that should be validated at runtime. 
+ *
+ */
+@Target({ElementType.PARAMETER, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface ValidEntity {
 
-public class Person extends EntityLayerSupertype {
-
-    private String name;
-
-    public Person(Key id, Unit unit, String name) {
-        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

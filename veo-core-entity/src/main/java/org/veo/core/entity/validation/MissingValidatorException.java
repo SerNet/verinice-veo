@@ -13,30 +13,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.core.entity.person;
+package org.veo.core.entity.validation;
 
-import java.time.Instant;
-import java.util.Date;
+import org.veo.core.entity.DomainException;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
+public class MissingValidatorException extends DomainException {
 
-public class Person extends EntityLayerSupertype {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7322017940401000834L;
 
-    private String name;
-
-    public Person(Key id, Unit unit, String name) {
-        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
-        this.name = name;
+    public MissingValidatorException(String message) {
+        super(message);
     }
 
-    public String getName() {
-        return name;
-    }
+  
 
-    public void setName(String name) {
-        this.name = name;
-    }
 }

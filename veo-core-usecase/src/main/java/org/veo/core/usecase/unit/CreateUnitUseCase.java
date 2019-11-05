@@ -14,53 +14,67 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
+package org.veo.core.usecase.unit;
 
 import java.util.UUID;
 
+import org.veo.core.entity.Client;
+import org.veo.core.entity.IClientRepository;
+import org.veo.core.entity.IUnitRepository;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.usecase.UseCase;
 
-public class CreateAssetUseCase
-        extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
+/**
+ * Create a new unit underneath an existing unit.
+ * 
+ * @author akoderman
+ *
+ */
+public class CreateUnitUseCase
+        extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
 
-    private IAssetRepository assetRepository;
+    private IUnitRepository unitRepository;
+    private IClientRepository clientRepository;
 
-    public CreateAssetUseCase(IAssetRepository assetRepository) {
-        this.assetRepository = assetRepository;
+    public CreateUnitUseCase(IUnitRepository unitRepository, IClientRepository clientRepository) {
+        this.unitRepository = unitRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Override
     public OutputData execute(InputData input) {
-        Asset asset = createAsset(input);
-        return new OutputData(assetRepository.save(asset));
+        Unit Unit = createUnit(input);
+        return new OutputData(unitRepository.save(Unit));
     }
 
-    private Asset createAsset(InputData input) {
-        return new Asset(Key.newUuid(),
-                input.getUnit(),
-                input.getName()
-        );
+    private Unit createUnit(InputData input) {
+        return new Unit(Key.newUuid(), input.getName(), input.getUnit());
     }
    
+
     // TODO: use lombok @Value instead?
     public static class InputData implements UseCase.InputData {
 
-        private final Unit unit;
+        private final Key<UUID> key;
         private final String name;
+        private final Unit unit;
 
-        public Unit getUnit() {
-            return unit;
+        public Key getKey() {
+            return key;
         }
 
         public String getName() {
             return name;
         }
+        
 
-        public InputData(Unit unit, String name) {
+        public Unit getUnit() {
+            return unit;
+        }
+
+        public InputData(Key<UUID> key, String name, Unit unit) {
+            this.key = key;
             this.name = name;
             this.unit = unit;
         }
@@ -70,14 +84,14 @@ public class CreateAssetUseCase
     // TODO: use lombok @Value instead?
     public static class OutputData implements UseCase.OutputData {
 
-        private final Asset asset;
+        private final Unit Unit;
 
-        public Asset getAsset() {
-            return asset;
+        public Unit getUnit() {
+            return Unit;
         }
 
-        public OutputData(Asset asset) {
-            this.asset = asset;
+        public OutputData(Unit Unit) {
+            this.Unit = Unit;
         }
     }
 }

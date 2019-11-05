@@ -73,13 +73,16 @@ public abstract class EntityLayerSupertype {
         this.unit = unit;
     }
 
-    protected EntityLayerSupertype(Key<UUID> id, Lifecycle state, Instant validFrom, Instant validUntil, long version, boolean isDraft) {
+    protected EntityLayerSupertype(Key<UUID> id, Unit unit, Lifecycle state, Instant validFrom, Instant validUntil, long version) {
         this.key = id;
+        this.unit = unit;
         this.state = state;
         this.validFrom = validFrom;
         this.validUntil = validUntil;
         this.version = version;
     }
+    
+   
     
     public long getVersion() {
         return version;
@@ -89,7 +92,9 @@ public abstract class EntityLayerSupertype {
         this.version = version;
     }
 
-    public EntityLayerSupertype() {
+    @SuppressWarnings("unused")
+    private EntityLayerSupertype() {
+        // hide empty constructor
     }
 
     public Key<UUID> getKey() {

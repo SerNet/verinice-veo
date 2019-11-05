@@ -30,6 +30,7 @@ import javax.validation.constraints.Size;
 
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
 
 /**
@@ -47,8 +48,8 @@ public class Process extends EntityLayerSupertype {
     @Size(min=0, max=1000000, message="No more than one million assets may be directly referenced by a process.")
     private Set<Asset> assets;
 
-    public Process(Key id, String name) {
-        super(id, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0, false);
+    public Process(Key id, Unit unit, String name) {
+        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
         this.name = name;
         this.assets = new HashSet<>();
     }
