@@ -17,11 +17,16 @@
 package org.veo.core.entity;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.entity.validation.ValidEntity;
 
 /**
  * A client is the root element of the ownership structure and an access barrier.
@@ -32,6 +37,7 @@ import javax.validation.constraints.Size;
  * A client can be used to separate multiple completely disjunct users of the system from each other.
  * 
  */
+@ValidEntity
 public class Client {
     
     @NotNull
@@ -84,8 +90,25 @@ public class Client {
         return units;
     }
 
+    /**
+     * Replaces the collection of top level units for this client with a new collection.
+     * Ensures that all units already belong to this client.
+     *  
+     * @param units
+     */
     public void setUnits(Collection<Unit> units) {
+        checkSameClient(units);
         this.units = units;
+    }
+
+    private void checkSameClient(Collection<Unit> newUnits) {
+        if ( !(new SameClientSpecification<EntityLayerSupertype>(this))
+                .isSatisfiedBy(newUnits)
+        ) {
+            throw new ClientBoundaryViolationException("Units from a different client cannot be moved to another client. "
+                    + "Attempted operation failed for client: " + this.getName());
+        }
+        
     }
 
 }

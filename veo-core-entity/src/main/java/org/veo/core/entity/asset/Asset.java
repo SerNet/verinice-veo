@@ -22,7 +22,9 @@ import java.util.Date;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.validation.ValidEntity;
 
+@ValidEntity
 public class Asset extends EntityLayerSupertype {
 
     private String name;

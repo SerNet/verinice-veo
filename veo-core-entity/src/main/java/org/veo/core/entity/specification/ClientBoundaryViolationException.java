@@ -17,21 +17,19 @@
  * Contributors:
  *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.core.entity.validation;
+package org.veo.core.entity.specification;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.veo.core.entity.DomainException;
 
-/**
- * Annotation to mark types and method parameters that should be validated at runtime. 
- *
- */
-@Target({ElementType.PARAMETER, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface ValidEntity {
+public class ClientBoundaryViolationException extends DomainException {
+
+    public ClientBoundaryViolationException(String message) {
+        super(message);
+    }
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -916291050060012237L;
 
 }

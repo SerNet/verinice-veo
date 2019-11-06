@@ -32,6 +32,7 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
+import org.veo.core.entity.validation.ValidEntity;
 
 /**
  * A business process.
@@ -39,6 +40,7 @@ import org.veo.core.entity.asset.Asset;
  * @author akoderman
  *
  */
+@ValidEntity
 public class Process extends EntityLayerSupertype {
 
     @NotBlank
@@ -54,11 +56,12 @@ public class Process extends EntityLayerSupertype {
         this.assets = new HashSet<>();
     }
 
-    public void addAsset(Asset asset) {
+    public void addAsset(@ValidEntity Asset asset) {
+        checkSameClient(asset);
         this.assets.add(asset);
     }
 
-    public void addAssets(Set<Asset> assets) {
+    public void addAssets(@ValidEntity Set<Asset> assets) {
         this.assets.addAll(assets);
     }
 

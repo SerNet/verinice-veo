@@ -19,6 +19,8 @@ package org.veo.core.usecase.process;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.veo.core.entity.Key;
 import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
@@ -50,7 +52,7 @@ public class GetProcessUseCase
         // @formatter:on
     }
 
-
+    @Valid
     public static class InputData implements UseCase.InputData {
         private final Key<UUID> id;
 
@@ -62,9 +64,9 @@ public class GetProcessUseCase
             this.id = id;
         }
     }
-
+    @Valid
     public static class OutputData implements UseCase.OutputData {
-        private final Process process;
+        @Valid private final Process process;
 
         public Process getProcess() {
             return process;

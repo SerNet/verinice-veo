@@ -19,12 +19,19 @@ package org.veo.core.entity.person;
 import java.time.Instant;
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.validation.ValidEntity;
 
+@ValidEntity
 public class Person extends EntityLayerSupertype {
 
+    @NotNull
+    @NotBlank
     private String name;
 
     public Person(Key id, Unit unit, String name) {

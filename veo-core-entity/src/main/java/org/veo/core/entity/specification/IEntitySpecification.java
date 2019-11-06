@@ -17,26 +17,26 @@
  * Contributors:
  *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.core.entity.validation;
+package org.veo.core.entity.specification;
 
-import org.veo.core.entity.Client;
+import java.util.Collection;
+import java.util.Set;
+
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Unit;
 
 /**
- * The entity layer will call a validator to ensure integrity of
- * business objects at runtime.
+ * An intention-revealing interface for business rule specifications.
  * 
- *  The validator implementation must support the Java API for JavaBeans Validation 2.0
- *  as defined in JSR-380.
- *
+ * Specifications are used by entity builders and constructors to ensure that
+ * all entities are built to spec.
+ * 
+ *  Specifications are also used by setter-methods and other state-changing operations
+ *  to ensure that the overall business model stays valid.
+ * 
  */
-public interface IEntityValidator {
+public interface IEntitySpecification<T extends EntityLayerSupertype> {
     
-    public boolean validate(EntityLayerSupertype entity);
+    public boolean isSatisfiedBy(T entity);
     
-    public boolean validate(Client client);
-    
-    public boolean validate(Unit unit);
-
+    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection);
 }

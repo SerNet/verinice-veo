@@ -24,6 +24,7 @@ import org.veo.adapter.presenter.api.common.DateTimeConversion;
 import org.veo.adapter.presenter.api.dto.ProcessDto;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase.InputData;
 
@@ -47,10 +48,12 @@ public final class CreateProcessInputMapper {
 
         return new InputData(
                 Key.uuidFrom(dto.getId()), 
+                map(dto.getUnitId()), 
                 dto.getName(), 
                 Key.uuidsFrom(Set.of(dto.getAssetIDs())),
                 validFrom,
                 validUntil
           );
     }
+
 }

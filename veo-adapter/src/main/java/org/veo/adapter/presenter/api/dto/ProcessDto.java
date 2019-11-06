@@ -38,6 +38,12 @@ public class ProcessDto {
     @Size(min=1, max=255, message="The name must be between 1 and 255 characters long.")
     private String name;
     
+    @NotNull
+    @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
+            flags = Pattern.Flag.CASE_INSENSITIVE, 
+            message="Unit ID must be a valid UUID string following RFC 4122.")
+    private String unitId;
+    
     @NotNull(message="An array of asset IDs must be present, but it may be empty.")
     @Size(min=0, max=1000000, message="Array size must be less than one million asset IDs.")
     private String[] assetIDs;
@@ -50,8 +56,9 @@ public class ProcessDto {
     // additional date validation should be done on the parsed date object
     private String validUntil;
 
-    public ProcessDto(String id, String name, String[] assetIDs) {
+    public ProcessDto(String id, String unitId, String name, String[] assetIDs) {
         this.id = id;
+        this.unitId = unitId;
         this.name = name;
         this.assetIDs = assetIDs;
         
@@ -59,6 +66,16 @@ public class ProcessDto {
 
     public String getId() {
         return id;
+    }
+    
+    
+
+    public String getUnitId() {
+        return unitId;
+    }
+
+    public void setUnitId(String unitId) {
+        this.unitId = unitId;
     }
 
     public void setId(String id) {

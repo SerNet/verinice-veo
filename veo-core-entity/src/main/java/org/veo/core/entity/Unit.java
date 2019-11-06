@@ -28,7 +28,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.veo.core.entity.validation.EntityValidatorRegistry;
+import org.veo.core.entity.group.EntityGroup;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.SameClientSpecification;
 
 /**
  * An organizational unit. Units may have sub-units.
@@ -63,36 +65,25 @@ public class Unit {
     @NotNull
     private Client client;
 
-    
-
     public Unit(Key<UUID> id, String name, Client client) {
         this.id = id;
         this.name = name;
         this.client = client;
         this.subUnits = new HashSet<>();
-        validate();
     }
     
-    
-    private void validate() {
-        EntityValidatorRegistry.getValidator().validate(this);
-    }
-
-
-    public Unit(@NotNull Key<UUID> id,
-            @NotNull @NotBlank(message = "The name of the unit may not be blank.") String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-
-
     public Client getClient() {
         return client;
     }
 
     public void setClient(Client client) {
+        checkSameClient(client);
         this.client = client;
+    }
+
+    private void checkSameClient(Client otherClient) {
+        if ( !(new SameClientSpecification<EntityLayerSupertype>(this.client)).isSatisfiedBy(otherClient)) 
+            throw new ClientBoundaryViolationException("A unit cannot be relocated to another client. Operation failed for unit: " + this.getName());
     }
 
     public String getName() {

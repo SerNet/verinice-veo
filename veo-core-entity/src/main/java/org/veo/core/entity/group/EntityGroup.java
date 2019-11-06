@@ -20,10 +20,17 @@
 package org.veo.core.entity.group;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.validation.ValidEntity;
 
 /**
  * A group of entity objects of the same type.
@@ -36,13 +43,35 @@ import org.veo.core.entity.Unit;
  * @author akoderman
  *
  */
-public class EntityGroup extends EntityLayerSupertype {
+@ValidEntity
+public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupertype {
 
+    @NotNull
+    @NotBlank
     private String name;
-    
+
+    @NotNull
+    @Size(min=0, max=1000000)
+    private Set<T> groupMembers;
 
     public EntityGroup(Key id, Unit unit, String name) {
         super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0L);
+        this.name=name;
+        this.groupMembers = new HashSet<>();
+    }
+    
+    public Set<T> getGroupMembers() {
+        return groupMembers;
+    }
+    
+    public void addGroupMember(T member) {
+        checkSameClient(member);
+        this.groupMembers.add(member);
+    }
+
+    public void setGroupMembers(Set<T> groupMembers) {
+        checkSameClients(groupMembers);
+        this.groupMembers = groupMembers;
     }
 
     public String getName() {

@@ -19,7 +19,10 @@ package org.veo.rest.interactor;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.veo.core.usecase.IUseCaseInteractor;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.InputData;
@@ -37,11 +40,14 @@ import org.veo.core.usecase.UseCase.OutputData;
  *
  */
 @Service
+@Validated
 public class UseCaseInteractor implements IUseCaseInteractor {
 
     @Override
     public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
-            UseCase<I, O> useCase, I input, Function<O, R> outputMapper) {
+            UseCase<I, O> useCase, 
+            @Valid I input, // TODO implement test to make sure all marked complex types in fields are validated
+            Function<O, R> outputMapper) {
         // @formatter:off
         return CompletableFuture
                 .supplyAsync(() -> input)

@@ -18,6 +18,8 @@ package org.veo.core.usecase.asset;
 
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
@@ -47,9 +49,10 @@ public class CreateAssetUseCase
     }
    
     // TODO: use lombok @Value instead?
+    @Valid
     public static class InputData implements UseCase.InputData {
 
-        private final Unit unit;
+        @Valid private final Unit unit;
         private final String name;
 
         public Unit getUnit() {
@@ -68,9 +71,10 @@ public class CreateAssetUseCase
     
 
     // TODO: use lombok @Value instead?
+    @Valid 
     public static class OutputData implements UseCase.OutputData {
 
-        private final Asset asset;
+        @Valid private final Asset asset;
 
         public Asset getAsset() {
             return asset;

@@ -18,6 +18,8 @@ package org.veo.core.usecase.unit;
 
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.IClientRepository;
 import org.veo.core.entity.IUnitRepository;
@@ -49,16 +51,17 @@ public class CreateUnitUseCase
     }
 
     private Unit createUnit(InputData input) {
-        return new Unit(Key.newUuid(), input.getName(), input.getUnit());
+        return new Unit(Key.newUuid(), input.getName(), input.getUnit().getClient());
     }
    
 
     // TODO: use lombok @Value instead?
+    @Valid
     public static class InputData implements UseCase.InputData {
 
-        private final Key<UUID> key;
+        @Valid private final Key<UUID> key;
         private final String name;
-        private final Unit unit;
+        @Valid private final Unit unit;
 
         public Key getKey() {
             return key;
@@ -82,16 +85,17 @@ public class CreateUnitUseCase
     
 
     // TODO: use lombok @Value instead?
+    @Valid
     public static class OutputData implements UseCase.OutputData {
 
-        private final Unit Unit;
+        @Valid private final Unit unit;
 
         public Unit getUnit() {
-            return Unit;
+            return unit;
         }
 
-        public OutputData(Unit Unit) {
-            this.Unit = Unit;
+        public OutputData(Unit unit) {
+            this.unit = unit;
         }
     }
 }

@@ -17,13 +17,15 @@
 package org.veo.core.entity;
 
 import java.time.Instant;
-import java.util.Date;
+import java.util.Collection;
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
+
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.SameClientSpecification;
 
 /**
  * Implements common fields and methods for objects in the entity layer.
@@ -65,12 +67,29 @@ public abstract class EntityLayerSupertype {
     @PositiveOrZero
     long version;
 
-    public Unit getUnit() {
-        return unit;
+    public void setUnit(Unit unit) {
+        checkSameClient(unit.getClient());
+        this.unit = unit;
+    }
+    
+    private void checkSameClient(Client client) {
+        if (!(new SameClientSpecification<EntityLayerSupertype>(client).isSatisfiedBy(this)))
+            throw new ClientBoundaryViolationException("The client boundary would be "
+                    + "violated by the attempted opertion on element: " + this.toString());
     }
 
-    public void setUnit(Unit unit) {
-        this.unit = unit;
+    protected void checkSameClient(EntityLayerSupertype otherObject) {
+        checkSameClient(otherObject.getUnit().getClient());
+    }
+    
+    protected void checkSameClients(Collection<? extends EntityLayerSupertype> groupMembers) {
+        groupMembers
+            .stream()
+            .forEach(this::checkSameClient);
+    }
+
+    public Unit getUnit() {
+        return unit;
     }
 
     protected EntityLayerSupertype(Key<UUID> id, Unit unit, Lifecycle state, Instant validFrom, Instant validUntil, long version) {
@@ -81,8 +100,6 @@ public abstract class EntityLayerSupertype {
         this.validUntil = validUntil;
         this.version = version;
     }
-    
-   
     
     public long getVersion() {
         return version;
