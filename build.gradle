@@ -37,7 +37,7 @@ allprojects  {
             trimTrailingWhitespace()
         }
         xml {
-            target 'src/**/*.xml'
+            target 'src/**/*.xml', 'misc/eclipse/java-format.xml'
 
             eclipse()
         }
