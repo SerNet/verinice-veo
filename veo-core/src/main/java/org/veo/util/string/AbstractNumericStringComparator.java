@@ -106,7 +106,7 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
 
     public abstract String convertToString(T o);
 
-    /*
+    /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override

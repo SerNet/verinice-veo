@@ -26,12 +26,9 @@ public class NumericStringComparator extends AbstractNumericStringComparator<Obj
 
     private static final long serialVersionUID = 2971144218737520545L;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * sernet.gs.service.AbstractNumericStringComparator#convertToString(java.lang.
-     * Object)
+    /**
+     * @see sernet.gs.service.AbstractNumericStringComparator#convertToString(java.lang.
+     *      Object)
      */
     @Override
     public String convertToString(Object o) {

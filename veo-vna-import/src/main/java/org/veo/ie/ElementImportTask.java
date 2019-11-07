@@ -79,8 +79,7 @@ public class ElementImportTask implements Callable<ElementImportContext> {
         this.context = importContext;
     }
 
-    /*
-     *
+    /**
      * @see java.util.concurrent.Callable#call()
      */
     @Override
