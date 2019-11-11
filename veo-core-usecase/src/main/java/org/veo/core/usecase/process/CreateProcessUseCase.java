@@ -18,20 +18,21 @@ package org.veo.core.usecase.process;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
-import org.veo.core.entity.IUnitRepository;
+import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.unit.GetUnitUseCase;
 
 /**
  * Creates a persistent new process object.
@@ -42,31 +43,43 @@ import org.veo.core.usecase.UseCase;
 public class CreateProcessUseCase
         extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData> {
 
-    private IProcessRepository processRepository;
-    private IAssetRepository assetRepository;
-    private IUnitRepository unitRepository;
+    private final IProcessRepository processRepository;
+    private final IAssetRepository assetRepository;
+    private final GetUnitUseCase getUnitUseCase;
 
-    public CreateProcessUseCase(IProcessRepository processRepository, IAssetRepository assetRepository, IUnitRepository unitRepository) {
+    public CreateProcessUseCase(IProcessRepository processRepository,
+            IAssetRepository assetRepository, GetUnitUseCase getUnitUseCase) {
         this.processRepository = processRepository;
         this.assetRepository = assetRepository;
-        this.unitRepository = unitRepository;
+        this.getUnitUseCase = getUnitUseCase;
     }
 
     @Override
     public OutputData execute(InputData input) {
-        Process Process = createProcess(input);
-        return new OutputData(processRepository.save(Process));
+        return new OutputData(
+                createProcess(input, getUnit(input))
+        );
     }
 
-    private Process createProcess(InputData input) {
-        // todo use GetUnitByIdUsecase, that throws exception when unit not found. reused in other create use cases
-        Process process = new Process(Key.undefined(), getUnit(input), input.getName());
+    @Transactional(TxType.REQUIRED)
+    private Process createProcess(InputData input, Unit unit) {
+        Process process = Process.newProcess(unit, input.getName());
         process.addAssets(assetRepository.getByIds(input.getAssetIds()));
-        return process;
+
+        // change state from CREATING to STORED_CURRENT:
+        process.setState(Lifecycle.STORED_CURRENT);
+        process.increaseVersion();
+
+        // process with STORED_CURRENT state will only be returned if could be
+        // persisted
+        // otherwise an exception is thrown and the object discarded.
+        return processRepository.save(process);
     }
 
-    private Optional<Unit> getUnit(InputData input) {
-        return unitRepository.findById(input.getKey());
+    @Transactional(TxType.SUPPORTS)
+    private Unit getUnit(InputData input) {
+        GetUnitUseCase.InputData inputData = new GetUnitUseCase.InputData(input.getUnitId());
+        return getUnitUseCase.execute(inputData).getUnit();
     }
 
     // TODO: use lombok @Value instead?
@@ -79,7 +92,6 @@ public class CreateProcessUseCase
         private final Set<Key<UUID>> assetIds;
         private final Date validUntil;
         private final Date validFrom;
-        
 
         public Set<Key<UUID>> getAssetIds() {
             return Collections.unmodifiableSet(assetIds);
@@ -92,7 +104,6 @@ public class CreateProcessUseCase
         public String getName() {
             return name;
         }
-        
 
         public Date getValidUntil() {
             return validUntil;
@@ -106,7 +117,8 @@ public class CreateProcessUseCase
             return unitId;
         }
 
-        public InputData(Key<UUID> key, Key<UUID> unitId, String name, Set<Key<UUID>> assetIds, Date validFrom, Date validUntil) {
+        public InputData(Key<UUID> key, Key<UUID> unitId, String name, Set<Key<UUID>> assetIds,
+                Date validFrom, Date validUntil) {
             this.key = key;
             this.unitId = unitId;
             this.name = name;
@@ -117,10 +129,11 @@ public class CreateProcessUseCase
     }
 
     // TODO: use lombok @Value instead?
-    @Valid 
+    @Valid
     public static class OutputData implements UseCase.OutputData {
 
-        @Valid private Process process;
+        @Valid
+        private Process process;
 
         public Process getProcess() {
             return process;

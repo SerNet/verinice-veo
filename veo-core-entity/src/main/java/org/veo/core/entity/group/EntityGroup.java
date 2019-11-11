@@ -30,7 +30,7 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.validation.ValidEntity;
+import org.veo.core.entity.specification.IEntitySpecification;
 
 /**
  * A group of entity objects of the same type.
@@ -43,7 +43,6 @@ import org.veo.core.entity.validation.ValidEntity;
  * @author akoderman
  *
  */
-@ValidEntity
 public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupertype {
 
     @NotNull
@@ -81,4 +80,14 @@ public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupe
     public void setName(String name) {
         this.name = name;
     }
+    
+    /**
+     * Returns a new set containing just the elements that fulfill
+     * the given specification.
+     * 
+     */
+    public Set<T> findMembersFulfilling(IEntitySpecification<T> spec) {
+        return spec.selectSatisfyingElementsFrom(groupMembers);
+    }
+    
 }

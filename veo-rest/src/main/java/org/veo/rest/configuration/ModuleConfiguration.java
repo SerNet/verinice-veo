@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
+import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.persistence.access.AssetRepository;
 import org.veo.persistence.access.ProcessRepository;
 
@@ -37,8 +38,11 @@ import org.veo.persistence.access.ProcessRepository;
 public class ModuleConfiguration {
 
     @Bean
-    public CreateProcessUseCase createProcessUseCase(ProcessRepository processRepository, AssetRepository assetRepository) {
-        return new CreateProcessUseCase(processRepository, assetRepository);
+    public CreateProcessUseCase createProcessUseCase(
+            ProcessRepository processRepository, 
+            AssetRepository assetRepository,
+            GetUnitUseCase getUnitUseCase) {
+        return new CreateProcessUseCase(processRepository, assetRepository, getUnitUseCase);
     }
     
     @Bean

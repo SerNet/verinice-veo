@@ -30,8 +30,8 @@ import org.veo.core.entity.EntityLayerSupertype;
  * Specifications are used by entity builders and constructors to ensure that
  * all entities are built to spec.
  * 
- *  Specifications are also used by setter-methods and other state-changing operations
- *  to ensure that the overall business model stays valid.
+ * Specifications are also used by setter-methods and other state-changing operations
+ * to ensure that the overall business model stays valid.
  * 
  */
 public interface IEntitySpecification<T extends EntityLayerSupertype> {

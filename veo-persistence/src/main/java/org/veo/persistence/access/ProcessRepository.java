@@ -25,8 +25,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
@@ -59,6 +60,8 @@ public class ProcessRepository implements IProcessRepository {
     }
 
     @Override
+    @EntityGraph(attributePaths="assets")
+    @Transactional(readOnly = true)
     public Optional<Process> findById(Key<UUID> id) {
         return jpaRepository
                     .findById(id)
@@ -66,6 +69,7 @@ public class ProcessRepository implements IProcessRepository {
     }
 
     @Override
+    @EntityGraph(attributePaths="assets")
     public List<Process> findByName(String search) {
         return jpaRepository
                     .findByNameContainingIgnoreCase(search)

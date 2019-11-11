@@ -18,6 +18,7 @@ package org.veo.core.usecase.unit;
 
 import java.util.UUID;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
@@ -36,18 +37,17 @@ import org.veo.core.usecase.UseCase;
 public class CreateUnitUseCase
         extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
 
-    private IUnitRepository unitRepository;
-    private IClientRepository clientRepository;
+    private final IUnitRepository unitRepository;
 
-    public CreateUnitUseCase(IUnitRepository unitRepository, IClientRepository clientRepository) {
+    public CreateUnitUseCase(IUnitRepository unitRepository) {
         this.unitRepository = unitRepository;
-        this.clientRepository = clientRepository;
     }
 
     @Override
+    @Transactional
     public OutputData execute(InputData input) {
-        Unit Unit = createUnit(input);
-        return new OutputData(unitRepository.save(Unit));
+        Unit unit = createUnit(input);
+        return new OutputData(unitRepository.save(unit));
     }
 
     private Unit createUnit(InputData input) {

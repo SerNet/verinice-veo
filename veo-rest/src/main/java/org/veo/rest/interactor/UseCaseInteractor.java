@@ -22,6 +22,7 @@ import java.util.function.Function;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.veo.core.usecase.IUseCaseInteractor;
 import org.veo.core.usecase.UseCase;
@@ -54,6 +55,18 @@ public class UseCaseInteractor implements IUseCaseInteractor {
                 .thenApplyAsync(useCase::execute)
                 .thenApplyAsync(outputMapper);
         // @formatter:on
+    }
+
+    @Override
+    /**
+     * Validation of the use case input is accomplished using JSR-380 annotations
+     * and the validator provided by the spring application context (see above).
+     * 
+     * Therefore this method does not need to be implemented here. Instead of
+     * passing "validated(input)" we annotate the method parameter: "@Valid I input".
+     */
+    public <I extends InputData> void validated(I input) {
+        // implementation not required, see JavaDoc
     }
 
 }

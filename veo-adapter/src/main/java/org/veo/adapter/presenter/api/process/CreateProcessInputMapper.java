@@ -48,7 +48,7 @@ public final class CreateProcessInputMapper {
 
         return new InputData(
                 Key.uuidFrom(dto.getId()), 
-                map(dto.getUnitId()), 
+                Key.uuidFrom(dto.getUnitId()),
                 dto.getName(), 
                 Key.uuidsFrom(Set.of(dto.getAssetIDs())),
                 validFrom,

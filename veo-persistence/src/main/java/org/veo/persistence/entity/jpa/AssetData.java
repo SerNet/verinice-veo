@@ -20,6 +20,7 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
+import javax.validation.Valid;
 
 import org.veo.core.entity.asset.Asset;
 
@@ -28,7 +29,7 @@ public class AssetData extends EntityLayerSupertypeData  {
     
 // 
         
-        public static AssetData from(Asset Asset) {
+        public static AssetData from(@Valid Asset Asset) {
             // map fields
             return new AssetData();
         }

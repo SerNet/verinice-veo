@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.veo.core.entity.Key;
@@ -29,7 +27,7 @@ import org.veo.core.usecase.UseCase;
 public class CreateAssetUseCase
         extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
 
-    private IAssetRepository assetRepository;
+    private final IAssetRepository assetRepository;
 
     public CreateAssetUseCase(IAssetRepository assetRepository) {
         this.assetRepository = assetRepository;

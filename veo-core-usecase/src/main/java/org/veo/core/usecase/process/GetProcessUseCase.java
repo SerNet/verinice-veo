@@ -16,9 +16,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.Optional;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Key;
@@ -36,7 +36,7 @@ import org.veo.core.usecase.common.NotFoundException;
 public class GetProcessUseCase
         extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData> {
 
-    private IProcessRepository repository;
+    private final IProcessRepository repository;
 
     public GetProcessUseCase(IProcessRepository repository) {
         this.repository = repository;

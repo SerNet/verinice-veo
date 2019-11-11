@@ -18,13 +18,10 @@ package org.veo.core.entity.process;
 
 import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -32,7 +29,6 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.validation.ValidEntity;
 
 /**
  * A business process.
@@ -40,7 +36,6 @@ import org.veo.core.entity.validation.ValidEntity;
  * @author akoderman
  *
  */
-@ValidEntity
 public class Process extends EntityLayerSupertype {
 
     @NotBlank
@@ -50,18 +45,31 @@ public class Process extends EntityLayerSupertype {
     @Size(min=0, max=1000000, message="No more than one million assets may be directly referenced by a process.")
     private Set<Asset> assets;
 
-    public Process(Key id, Unit unit, String name) {
-        super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
+    public Process(Key id, Unit unit, String name, Lifecycle state, Instant validFrom,
+            Instant validUntil, int version) {
+        super(id, unit, state, validFrom, validUntil, version);
         this.name = name;
         this.assets = new HashSet<>();
     }
-
-    public void addAsset(@ValidEntity Asset asset) {
+    
+    /**
+     * Factory method to create a new process object.
+     * 
+     * @param unit
+     * @param name
+     * @return
+     */
+    public static Process newProcess(Unit unit, String name) {
+        return new Process(Key.newUuid(), unit, name, Lifecycle.CREATING, Instant.now(), null, 0);
+    }
+    
+    public void addAsset(Asset asset) {
         checkSameClient(asset);
         this.assets.add(asset);
     }
 
-    public void addAssets(@ValidEntity Set<Asset> assets) {
+    public void addAssets(Set<Asset> assets) {
+        checkSameClients(assets);
         this.assets.addAll(assets);
     }
 

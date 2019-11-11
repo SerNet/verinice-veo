@@ -28,7 +28,7 @@ package org.veo.core.usecase;
 public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.OutputData> {
 
     public abstract O execute(I input);
-
+    
     /**
      * The input data structure that is particular to this use case.
      *

@@ -17,7 +17,6 @@
 package org.veo.core.entity;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -26,7 +25,6 @@ import javax.validation.constraints.Size;
 
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
-import org.veo.core.entity.validation.ValidEntity;
 
 /**
  * A client is the root element of the ownership structure and an access barrier.
@@ -37,7 +35,6 @@ import org.veo.core.entity.validation.ValidEntity;
  * A client can be used to separate multiple completely disjunct users of the system from each other.
  * 
  */
-@ValidEntity
 public class Client {
     
     @NotNull

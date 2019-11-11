@@ -32,6 +32,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.veo.core.entity.process.Process;
@@ -59,7 +60,7 @@ public class ProcessData extends EntityLayerSupertypeData {
     
 
     
-    public static ProcessData from(Process process) {
+    public static ProcessData from(@Valid Process process) {
         // map fields
         return new ProcessData();
     }

@@ -83,7 +83,8 @@ public class Unit {
 
     private void checkSameClient(Client otherClient) {
         if ( !(new SameClientSpecification<EntityLayerSupertype>(this.client)).isSatisfiedBy(otherClient)) 
-            throw new ClientBoundaryViolationException("A unit cannot be relocated to another client. Operation failed for unit: " + this.getName());
+            throw new ClientBoundaryViolationException("A unit must not be relocated to another client. "
+                    + "Operation failed for unit: " + this.getName());
     }
 
     public String getName() {
