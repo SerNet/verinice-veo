@@ -33,7 +33,7 @@ public class ProcessSpec extends Specification {
             Instant beforeCreation = Instant.now();
     
         when: "a new process is created"
-            Process process = new Process(key, "New Process");
+            Process process = Process.newProcess(unit, "New Process");
     
         then: "the process was initialized with expected values"
             process.key.uuidValue().equals(key.uuidValue());

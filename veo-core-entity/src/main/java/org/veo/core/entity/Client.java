@@ -17,6 +17,8 @@
 package org.veo.core.entity;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
@@ -46,11 +48,11 @@ public class Client {
     
     @NotNull
     @Size(min=1, max=1000000, message="A client must be working with at least one domain.")
-    private Collection<Domain> domains;
+    private Set<Domain> domains;
     
     @NotNull
     @Size(min=1, max=1000000, message="A client must have at least one unit.")
-    private Collection<Unit> units;
+    private Set<Unit> units;
 
     
     
@@ -70,16 +72,21 @@ public class Client {
         this.name = name;
     }
 
-    public Client(Key<UUID> id, String name) {
+    private Client(Key<UUID> id, String name) {
         this.id = id;
         this.name = name;
+        domains = new HashSet<Domain>();
+    }
+    
+    public static Client newClient(String name) {
+        return new Client(Key.newUuid(), name);
     }
 
     public Collection<Domain> getDomains() {
         return domains;
     }
 
-    public void setDomains(Collection<Domain> domains) {
+    public void setDomains(Set<Domain> domains) {
         this.domains = domains;
     }
 
@@ -93,7 +100,7 @@ public class Client {
      *  
      * @param units
      */
-    public void setUnits(Collection<Unit> units) {
+    public void setUnits(Set<Unit> units) {
         checkSameClient(units);
         this.units = units;
     }

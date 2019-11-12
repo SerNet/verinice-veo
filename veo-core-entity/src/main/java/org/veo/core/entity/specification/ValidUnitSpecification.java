@@ -13,40 +13,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Contributors:
+ *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
-package org.veo.core.entity.asset;
+package org.veo.core.entity.specification;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
-public class Asset extends EntityLayerSupertype {
+public class ValidUnitSpecification implements IEntitySpecification<EntityLayerSupertype>{
 
-    private String name;
-
-    private Asset(Key id, Unit unit, String name, Lifecycle status, Instant validFrom,
-            Instant validUntil, long version) {
-        super(id, unit, status, validFrom, validUntil, version);
-        this.name = name;
+    @Override
+    public boolean isSatisfiedBy(EntityLayerSupertype entity) {
+        return isSatisfiedBy(entity.getUnit());
     }
 
-    public static Asset newAsset(Unit unit, String name) {
-        return new Asset(Key.newUuid(), unit, name, Lifecycle.CREATING, Instant.now(), null, 0);
+    @Override
+    public Set<EntityLayerSupertype> selectSatisfyingElementsFrom(
+            Collection<EntityLayerSupertype> collection) {
+        return collection.stream()
+                .filter(this::isSatisfiedBy)
+                .collect(Collectors.toSet());
     }
 
-    public static Asset existingAsset(Key<UUID> id, Unit unit, String name, Lifecycle state,
-            Instant validFrom, Instant validUntil, long version) {
-        return new Asset(id, unit, name, state, validFrom, validUntil, version);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public boolean isSatisfiedBy(Unit unit) {
+        return (unit != null
+                && unit.getId().isUndefined()
+                && unit.getName() != null
+                && unit.getName().isEmpty()
+               );
     }
 }

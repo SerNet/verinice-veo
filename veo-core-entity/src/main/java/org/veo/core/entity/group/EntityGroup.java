@@ -22,6 +22,7 @@ package org.veo.core.entity.group;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,6 +31,7 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.specification.IEntitySpecification;
 
 /**
@@ -53,10 +55,18 @@ public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupe
     @Size(min=0, max=1000000)
     private Set<T> groupMembers;
 
-    public EntityGroup(Key id, Unit unit, String name) {
+    private EntityGroup(Key id, Unit unit, String name) {
         super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0L);
         this.name=name;
         this.groupMembers = new HashSet<>();
+    }
+    
+    public static <T extends EntityLayerSupertype> EntityGroup<T> newGroup(Unit unit, String name) {
+        return new EntityGroup<>(Key.newUuid(), unit, name);
+    }
+    
+    public static <T extends EntityLayerSupertype> EntityGroup<T> existingGroup(Key<UUID> id, Unit unit, String name) {
+        return new EntityGroup<>(id, unit, name);
     }
     
     public Set<T> getGroupMembers() {

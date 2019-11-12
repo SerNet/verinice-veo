@@ -65,11 +65,19 @@ public class Unit {
     @NotNull
     private Client client;
 
-    public Unit(Key<UUID> id, String name, Client client) {
+    private Unit(Key<UUID> id, String name, Client client) {
         this.id = id;
         this.name = name;
         this.client = client;
         this.subUnits = new HashSet<>();
+    }
+    
+    public static Unit newUnit(Client client, String name) {
+        return new Unit(Key.newUuid(), name, client);
+    }
+    
+    public static Unit existingUnit(Key<UUID> id, Client client, String name) {
+        return new Unit(id, name, client);
     }
     
     public Client getClient() {
@@ -102,6 +110,12 @@ public class Unit {
     public void setSubUnits(Set<Unit> subUnits) {
         this.subUnits = subUnits;
     }
+
+    public Key<UUID> getId() {
+        return id;
+    }
+    
+    
 
     
 }

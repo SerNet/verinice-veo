@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -40,18 +41,19 @@ public class Process extends EntityLayerSupertype {
 
     @NotBlank
     private String name;
-    
-    @NotNull(message="The array of assets must not be null.")
-    @Size(min=0, max=1000000, message="No more than one million assets may be directly referenced by a process.")
+
+    @NotNull(message = "The array of assets must not be null.")
+    @Size(min = 0, max = 1000000,
+            message = "No more than one million assets may be directly referenced by a process.")
     private Set<Asset> assets;
 
-    public Process(Key id, Unit unit, String name, Lifecycle state, Instant validFrom,
+    private Process(Key id, Unit unit, String name, Lifecycle state, Instant validFrom,
             Instant validUntil, int version) {
         super(id, unit, state, validFrom, validUntil, version);
         this.name = name;
         this.assets = new HashSet<>();
     }
-    
+
     /**
      * Factory method to create a new process object.
      * 
@@ -62,7 +64,12 @@ public class Process extends EntityLayerSupertype {
     public static Process newProcess(Unit unit, String name) {
         return new Process(Key.newUuid(), unit, name, Lifecycle.CREATING, Instant.now(), null, 0);
     }
-    
+
+    public static Process existingProcess(Key<UUID> id, Unit unit, String name, Lifecycle state,
+            Instant validFrom, int version) {
+        return new Process(id, unit, name, state, validFrom, validFrom, version);
+    }
+
     public void addAsset(Asset asset) {
         checkSameClient(asset);
         this.assets.add(asset);

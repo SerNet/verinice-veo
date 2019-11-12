@@ -26,7 +26,9 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
 
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.InvalidUnitException;
 import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.entity.specification.ValidUnitSpecification;
 
 /**
  * Implements common fields and methods for objects in the entity layer.
@@ -115,8 +117,14 @@ public abstract class EntityLayerSupertype {
     public void setUnit(Unit unit) {
         checkSameClient(unit.getClient());
         this.unit = unit;
+        checkValidUnit(unit);
     }
     
+    private void checkValidUnit(Unit unit){
+        if (! (new ValidUnitSpecification()).isSatisfiedBy(unit))
+            throw new InvalidUnitException("The supplied unit is not a valid unit object: " + unit.getName());
+    }
+
     private void checkSameClient(Client client) {
         if (!(new SameClientSpecification<EntityLayerSupertype>(client).isSatisfiedBy(this)))
             throw new ClientBoundaryViolationException("The client boundary would be "
@@ -138,6 +146,7 @@ public abstract class EntityLayerSupertype {
     }
 
     protected EntityLayerSupertype(Key<UUID> id, Unit unit, Lifecycle state, Instant validFrom, Instant validUntil, long version) {
+        checkValidUnit(unit);
         this.key = id;
         this.unit = unit;
         this.state = state;
