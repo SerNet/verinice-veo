@@ -19,6 +19,19 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-public class UnitData {
+import javax.validation.Valid;
 
+import org.veo.core.entity.Unit;
+
+public class UnitData {
+    
+    public static UnitData from(@Valid Unit Asset) {
+        // TODO map fields
+        return new UnitData();
+    }
+    
+    public Unit toUnit() {
+        return null;
+        // TODO map fields
+    }
 }

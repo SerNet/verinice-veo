@@ -33,9 +33,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.classic.Lifecycle;
 import org.modelmapper.ModelMapper;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.Key;
 
 @Entity
@@ -44,23 +44,24 @@ import org.veo.core.entity.Key;
 public abstract class EntityLayerSupertypeData {
 
     @Id
-    private Key<UUID> uuid;
+    Key<UUID> uuid;
     
     @ManyToOne
     @JoinColumn(name="unit_id", nullable=false)
-    private UnitData unit;
+    UnitData unit;
     
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)
     Lifecycle state;
     
     @Column(name="valid_from", nullable=false)
-    private Instant validFrom;
+    Instant validFrom;
     
     @Column(name="valid_until", nullable=true)
-    private Instant validUntil;
+    Instant validUntil;
 
-    
+    @Column(name="version", nullable=false)
+    long version;
     
     public Key<UUID> getUuid() {
         return uuid;

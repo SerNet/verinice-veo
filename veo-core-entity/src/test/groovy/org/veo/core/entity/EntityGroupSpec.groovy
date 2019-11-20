@@ -36,6 +36,7 @@ public class EntityGroupSpec extends Specification {
         this.unit = Unit.newUnit(Client.newClient("New Client"), "New Unit");
     }
     
+    
     def "A group object can be created" () {
         given: "a timestamp"
             Instant beforeCreation = Instant.now();
@@ -53,8 +54,9 @@ public class EntityGroupSpec extends Specification {
             group.getValidUntil() == null;
     }
     
+    
     def "A group must have a valid unit" () {
-        given: "an uninitialized unit object"
+        given: "an unit object with an invalidated key"
             Unit wrongUnit = Unit.existingUnit(Key.undefined(), null, "");
             
         when: "a group is created with it"
@@ -64,32 +66,41 @@ public class EntityGroupSpec extends Specification {
            thrown InvalidUnitException;
     }
 
+    
     def "A group can contain assets" () {
     }
 
+    
     def "A group can contain processes" () {
     }
 
+    
     def "A group can only contain objects of the same type" () {
     }
 
+    
     def "A group can contain other groups" () {
     }
+    
     
     def "A group can not contain itself" () {
     }
 
+    
     def "Subgroups may contain different elements" () {
     }
 
+    
     def "A group must not contain elements from a different client" () {
     }
+    
     
     def "A group can return its members" () {
         
     }
     
-    def "A group can return members that fulfill a specification" {
+    
+    def "A group can return members that fulfill a specification" () {
         
     }
 }

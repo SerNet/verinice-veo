@@ -65,6 +65,7 @@ public abstract class EntityLayerSupertype {
         DELETING
     }
     
+    // @formatter:off
     /**
      * The version number starts a 0 for a new object and is increased whenever the entity is
      * edited by the user and saved.
@@ -90,9 +91,11 @@ public abstract class EntityLayerSupertype {
      * (*)  When the DRAFT is saved, v1 will have its state set to STORED_ARCHIVED and its "validUntil" timestamp
      *      set to now().
      * (**) A deleted version will keep the version number but have its state set to STORED_DELETED
-     *      and the "validUntil" field set to the timestamp of the delete operation.
+     *      and the "validUntil" field set to the timestamp of the delete operation. It will represent
+     *      the last known state of the object.
      * 
      */
+    // @formatter:on
     @PositiveOrZero
     private AtomicLong version;
 

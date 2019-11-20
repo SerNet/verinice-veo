@@ -48,10 +48,17 @@ public class Process extends EntityLayerSupertype {
     private Set<Asset> assets;
 
     private Process(Key id, Unit unit, String name, Lifecycle state, Instant validFrom,
-            Instant validUntil, int version) {
+            Instant validUntil, long version) {
         super(id, unit, state, validFrom, validUntil, version);
         this.name = name;
         this.assets = new HashSet<>();
+    }
+
+    public Process(Key<UUID> id, Unit unit, String name, Lifecycle state, Instant validFrom,
+            Instant validUntil, long version, Set<Asset> assets) {
+        super(id, unit, state, validFrom, validUntil, version);
+        this.name = name;
+        this.assets = assets;
     }
 
     /**
@@ -66,8 +73,13 @@ public class Process extends EntityLayerSupertype {
     }
 
     public static Process existingProcess(Key<UUID> id, Unit unit, String name, Lifecycle state,
-            Instant validFrom, int version) {
+            Instant validFrom, long version) {
         return new Process(id, unit, name, state, validFrom, validFrom, version);
+    }
+    
+    public static Process existingProcessWithAssets(Key<UUID> id, Unit unit, String name, Lifecycle state,
+            Instant validFrom, long version, Set<Asset> assets) {
+        return new Process(id, unit, name, state, validFrom, validFrom, version, assets);
     }
 
     public void addAsset(Asset asset) {

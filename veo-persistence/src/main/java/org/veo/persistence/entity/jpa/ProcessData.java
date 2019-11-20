@@ -21,6 +21,7 @@ package org.veo.persistence.entity.jpa;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,37 +36,45 @@ import javax.persistence.Table;
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
+import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.process.Process;
 
-@Entity(name="process")
-@Table(name="processes")
+@Entity(name = "process")
+@Table(name = "processes")
 public class ProcessData extends EntityLayerSupertypeData {
 
- 
     private String name;
 
-    /* not modelled from asset's side. TODO will be replaced by Aspect
-    @ManyToMany
-    * @JoinTable(name = "process_asset", 
-        joinColumns = { @JoinColumn(name="processId", referencedColumnName="uuid") }, 
-        inverseJoinColumns = {@JoinColumn(name="assetId", referencedColumnName="uuid")})
-        */
-    @OneToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            fetch = FetchType.EAGER,
-            orphanRemoval=true,
-            mappedBy="process"
-    )
+    /*
+     * Not modelled from asset's side. TODO will be replaced by Aspect
+     * relationship. This would be the mapping if this were a bidirectional
+     * association:
+     * 
+     * @ManyToMany
+     * 
+     * @JoinTable(name = "process_asset", joinColumns =
+     * { @JoinColumn(name="processId", referencedColumnName="uuid") },
+     * inverseJoinColumns = {@JoinColumn(name="assetId",
+     * referencedColumnName="uuid")})
+     */
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER,
+            orphanRemoval = true, mappedBy = "process")
     private Set<AssetData> assets;
-    
 
-    
     public static ProcessData from(@Valid Process process) {
         // map fields
         return new ProcessData();
     }
-    
+
     public Process toProcess() {
-        return null; // TODO map data
+        return Process.existingProcessWithAssets(
+                uuid, unit.toUnit(), name, state, validFrom, version, toAssetSet(assets)
+        );
+    }
+
+    private Set<Asset> toAssetSet(Set<AssetData> assets) {
+        return assets.stream()
+                .map(AssetData::toAsset)
+                .collect(Collectors.toSet());
     }
 }

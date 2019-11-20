@@ -43,7 +43,7 @@ public class ValidUnitSpecification implements IEntitySpecification<EntityLayerS
 
     public boolean isSatisfiedBy(Unit unit) {
         return (unit != null
-                && unit.getId().isUndefined()
+                && !unit.getId().isUndefined()
                 && unit.getName() != null
                 && unit.getName().isEmpty()
                );
