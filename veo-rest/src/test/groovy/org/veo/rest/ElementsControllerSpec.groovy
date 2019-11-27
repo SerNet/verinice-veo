@@ -74,7 +74,7 @@ public class ElementsControllerSpec extends Specification {
 
     def "get"() throws Exception {
         when:
-        def result = mockMvc.perform(MockMvcRequestBuilders.get("/elements/deadbeef").accept("application/json")).andReturn()
+        def result = mockMvc.perform(MockMvcRequestBuilders.get("/elements/deadbeef").accept("application/json;charset=UTF-8")).andReturn()
         def response = result.response
         then:
         response.status == HttpStatus.OK.value()
@@ -107,9 +107,9 @@ public class ElementsControllerSpec extends Specification {
         def postBody = JsonOutput.toJson([title:"I am new"])
         when:
         def result = mockMvc.perform(MockMvcRequestBuilders.post("/elements")
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(postBody.toString())
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andReturn()
         def response = result.response
         then:
@@ -128,9 +128,9 @@ public class ElementsControllerSpec extends Specification {
         when:
 
         def result = mockMvc.perform(MockMvcRequestBuilders.put("/elements/deadbeef")
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(postBody.toString())
-                .accept(MediaType.APPLICATION_JSON)).andReturn()
+                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE)).andReturn()
         def response = result.response
         then:
         response.status == HttpStatus.NO_CONTENT.value()

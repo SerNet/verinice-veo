@@ -47,24 +47,24 @@ public class LinksControllerTest {
 
     @Test
     void getAll() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/links").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get("/links").accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.jsonPath('$').isArray())
     }
 
     @Test
     void get() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/links/deadbeef").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get("/links/deadbeef").accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.jsonPath('$.source').value("111111"))
                 .andExpect(MockMvcResultMatchers.jsonPath('$.target').value("222222"))
     }
 
     @Test
     void delete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/links/abad1dea").accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/links/abad1dea").accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
     }
 
@@ -76,9 +76,9 @@ public class LinksControllerTest {
         }'''
 
         mockMvc.perform(MockMvcRequestBuilders.post("/links")
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(postBody.toString())
-                .accept(MediaType.APPLICATION_JSON))
+                .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().stringValues("Location", "/links/444444"))
     }
@@ -103,7 +103,7 @@ public class LinksControllerTest {
     void getByElement() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/elements/333333/links").accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath('$').isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath('$[0].id').value("abad1dea"))
                 .andExpect(MockMvcResultMatchers.jsonPath('$[1].id').value("110011"))

@@ -23,10 +23,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import org.veo.core.VeoCoreConfiguration;
-
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+
+import org.veo.core.VeoCoreConfiguration;
 
 /**
  * @author Daniel Murygin dm[at]sernet[dot]de
@@ -34,7 +38,16 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 @SpringBootApplication(scanBasePackages = {
         "org.veo.adapter.usecase.interactor.UseCaseInteractor" })
 @Import(VeoCoreConfiguration.class)
-@SecurityScheme(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH, type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "jwt")
+@SecurityScheme(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH,
+                type = SecuritySchemeType.HTTP,
+                scheme = "bearer",
+                bearerFormat = "jwt")
+@OpenAPIDefinition(info = @Info(title = "verinice.VEO REST API",
+                                description = "OpenAPI documentation for verinice.VEO.",
+                                license = @License(name = "GNU Lesser General Public License",
+                                                   url = "https://www.gnu.org/licenses/lgpl-3.0.de.html"),
+                                contact = @Contact(url = "http://verinice.com",
+                                                   email = "verinice@sernet.de")))
 public class RestApplication {
 
     public static final String SECURITY_SCHEME_BEARER_AUTH = "BearerAuth";

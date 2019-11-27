@@ -31,9 +31,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.service.LinkMapService;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+import org.veo.service.LinkMapService;
 
 /**
  * REST service which provides methods to manage links.
@@ -43,9 +45,30 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
  */
 @RestController
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
+
 public class LinksController {
 
     private static final String UUID = "uuid";
+
+    private static final String UUID_DESCRIPTION = "UUID of the link";
+    private static final String UUID_DEFINITION = "This is the normalized UUID representation:\n"
+            + "* a block of 8 HEX chars followed by\n* 3 blocks of 4 HEX chars followed by\n"
+            + "* a block of 12 HEX chars.";
+    private static final String UUID_EXAMPLE = "f35b982c-8ad4-4515-96ee-df5fdd4247b9";
+    // @formatter:off
+    private static final String LINK_DATA_EXAMPLE = "{\n" +
+            "    \"id\": \"a5f4a759-cce0-4b1f-9c56-f9f56a9c0037\",\n" +
+            "    \"schema\": {\n" +
+            "        \"$ref\": \"/schemas/link.json\"\n" +
+            "    },\n" +
+            "    \"source\": {\n" +
+            "        \"$ref\": \"/elements/b90e5a21-dd30-4f74-8db0-158bc311b3fc\"\n" +
+            "    },\n" +
+            "    \"target\": {\n" +
+            "        \"$ref\": \"/elements/c241e047-3857-4939-af3e-1e48d053581a\"\n" +
+            "    }\n" +
+            "}";
+    // @formatter:on
 
     @Autowired
     private LinkMapService mapService;
@@ -59,40 +82,78 @@ public class LinksController {
     }
 
     @GetMapping(value = "/links")
+    @Operation(summary = "Loads all links")
     public ResponseEntity<List<Map<String, Object>>> getLinks() {
         List<Map<String, Object>> result = mapService.findAll();
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(result);
     }
 
     @GetMapping(value = "/links/{" + UUID + ":.+}")
-    public ResponseEntity<Map<String, Object>> getLink(@PathVariable(value = UUID) String uuid) {
+    @Operation(summary = "Loads a link")
+    public ResponseEntity<Map<String, Object>> getLink(
+            @Parameter(name = "UUID",
+                       description = UUID_DESCRIPTION + "\n\n" + UUID_DEFINITION,
+                       example = UUID_EXAMPLE,
+                       required = true) @PathVariable(value = UUID) String uuid) {
         Map<String, Object> result = mapService.find(uuid);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(result);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(result);
     }
 
     @PutMapping(value = "/links/{" + UUID + "}")
-    public ResponseEntity<Object> getLinks(@PathVariable(value = UUID) String uuid,
+    @Operation(summary = "Updates a link")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Link data",
+                                                          required = true,
+                                                          content = @io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                                                                                                 schema = @io.swagger.v3.oas.annotations.media.Schema(example = LINK_DATA_EXAMPLE)))
+    public ResponseEntity<Object> getLinks(
+            @Parameter(name = "UUID",
+                       description = UUID_DESCRIPTION + "\n\n" + UUID_DEFINITION,
+                       example = UUID_EXAMPLE,
+                       required = true) @PathVariable(value = UUID) String uuid,
             @RequestBody Map<String, Object> content) {
         this.mapService.save(uuid, content);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                             .build();
     }
 
     @PostMapping(value = "/links")
+    @Operation(summary = "Creates a link")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Link data",
+                                                          required = true,
+                                                          content = @io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                                                                                                 schema = @io.swagger.v3.oas.annotations.media.Schema(example = LINK_DATA_EXAMPLE)))
     public ResponseEntity<Object> postLink(@RequestBody Map<String, Object> content) {
         String uuid = this.mapService.saveNew(content);
-        return ResponseEntity.created(URI.create("/links/" + uuid)).build();
+        return ResponseEntity.created(URI.create("/links/" + uuid))
+                             .build();
     }
 
     @GetMapping(value = "/elements/{" + UUID + "}/links")
-    public ResponseEntity<List<Map<String, Object>>> getLinks(@PathVariable(UUID) String uuid) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(mapService.findByElement(uuid));
+    @Operation(summary = "Loads links of an elements")
+    public ResponseEntity<List<Map<String, Object>>> getLinks(
+            @Parameter(name = "UUID",
+                       description = "UUID of the element" + "\n\n" + UUID_DEFINITION,
+                       example = UUID_EXAMPLE,
+                       required = true) @PathVariable(UUID) String uuid) {
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON)
+                             .body(mapService.findByElement(uuid));
     }
 
     @DeleteMapping(value = "/links/{" + UUID + "}")
-    public ResponseEntity<Object> deleteLink(@PathVariable(UUID) String uuid) {
+    @Operation(summary = "Deletes a link")
+    public ResponseEntity<Object> deleteLink(
+            @Parameter(name = "UUID",
+                       description = UUID_DESCRIPTION + "\n\n" + UUID_DEFINITION,
+                       example = UUID_EXAMPLE,
+                       required = true) @PathVariable(UUID) String uuid) {
         mapService.delete(uuid);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                             .build();
     }
 
 }
