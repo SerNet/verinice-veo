@@ -32,6 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.service.LinkMapService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * REST service which provides methods to manage links.
  *
@@ -39,6 +41,7 @@ import org.veo.service.LinkMapService;
  * org.veo.service.LinkMapService.
  */
 @RestController
+@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public class LinksController {
 
     @Autowired

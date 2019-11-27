@@ -38,10 +38,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.service.VeoConfigurationService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * This controller shall provide access to static resource on the file system.
  */
 @RestController
+@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public class StaticController {
     private static final Logger logger = LoggerFactory.getLogger(StaticController.class);
 

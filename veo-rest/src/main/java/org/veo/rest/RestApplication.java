@@ -25,13 +25,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.veo.core.VeoCoreConfiguration;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+
 /**
  * @author Daniel Murygin dm[at]sernet[dot]de
  */
 @SpringBootApplication(scanBasePackages = {
         "org.veo.adapter.usecase.interactor.UseCaseInteractor" })
 @Import(VeoCoreConfiguration.class)
+@SecurityScheme(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH, type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "jwt")
 public class RestApplication {
+
+    public static final String SECURITY_SCHEME_BEARER_AUTH = "BearerAuth";
 
     @Bean
     public PasswordEncoder passwordEncoder() {

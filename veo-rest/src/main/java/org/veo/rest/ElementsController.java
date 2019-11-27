@@ -40,6 +40,7 @@ import org.veo.model.HistoryEntry;
 import org.veo.service.ElementMapService;
 import org.veo.service.HistoryService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 /**
  * REST service which provides methods to manage elements.
  *
@@ -47,6 +48,7 @@ import org.veo.service.HistoryService;
  * org.veo.service.ElementMapService.
  */
 @RestController
+@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public class ElementsController {
 
     public static final String PARENT_PARAM = "parent";
