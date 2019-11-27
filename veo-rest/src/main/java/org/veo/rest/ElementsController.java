@@ -41,6 +41,7 @@ import org.veo.service.ElementMapService;
 import org.veo.service.HistoryService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 /**
  * REST service which provides methods to manage elements.
  *
@@ -51,6 +52,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public class ElementsController {
 
+    public static final String UUID_PARAM = "uuid";
     public static final String PARENT_PARAM = "parent";
 
     @Autowired
@@ -82,41 +84,41 @@ public class ElementsController {
                              .build();
     }
 
-    @GetMapping(value = "/elements/{uuid:.+}")
-    public ResponseEntity<Map<String, Object>> getElement(
-            @PathVariable("uuid") @NotBlank @Size(min = 1, max = 50) String uuid) {
+    @GetMapping(value = "/elements/{" + UUID_PARAM + ":.+}")
+    public ResponseEntity<Map<String, Object>> getElement(@PathVariable(UUID_PARAM) @NotBlank @Size(min = 1, max = 50) String uuid) {
         Map<String, Object> map = mapService.find(uuid);
         return ResponseEntity.ok()
-                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .contentType(MediaType.APPLICATION_JSON)
                              .body(map);
     }
 
-    @GetMapping(value = "/elements/{uuid:.+}/children")
+    @GetMapping(value = "/elements/{" + UUID_PARAM + ":.+}/children")
     public ResponseEntity<List<Map<String, Object>>> getChildren(
             @PathVariable("uuid") String uuid) {
         return ResponseEntity.ok()
-                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .contentType(MediaType.APPLICATION_JSON)
                              .body(mapService.findChildren(uuid));
     }
 
-    @GetMapping(value = "/elements/{uuid:.+}/history")
-    public ResponseEntity<List<HistoryEntry>> getElementHistory(@PathVariable("uuid") String uuid) {
+    @GetMapping(value = "/elements/{" + UUID_PARAM + ":.+}/history")
+    public ResponseEntity<List<HistoryEntry>> getElementHistory(
+            @PathVariable(UUID_PARAM) String uuid) {
         List<HistoryEntry> history = historyService.getHistory(uuid);
         return ResponseEntity.ok()
                              .contentType(MediaType.APPLICATION_JSON_UTF8)
                              .body(history);
     }
 
-    @PutMapping(value = "/elements/{uuid}")
-    public ResponseEntity<Resource> updateElement(@PathVariable("uuid") String uuid,
+    @PutMapping(value = "/elements/{" + UUID_PARAM + "}")
+    public ResponseEntity<Resource> updateElement(@PathVariable(UUID_PARAM) String uuid,
             @RequestBody Map<String, Object> content) {
         mapService.save(uuid, content);
         return ResponseEntity.noContent()
                              .build();
     }
 
-    @DeleteMapping(value = "/elements/{uuid}")
-    public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid) {
+    @DeleteMapping(value = "/elements/{" + UUID_PARAM + "}")
+    public ResponseEntity<Resource> deleteElement(@PathVariable(UUID_PARAM) String uuid) {
         mapService.delete(uuid);
         return ResponseEntity.ok()
                              .build();

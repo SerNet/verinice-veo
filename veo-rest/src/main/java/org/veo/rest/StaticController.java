@@ -31,9 +31,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.service.VeoConfigurationService;
@@ -48,86 +47,69 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public class StaticController {
     private static final Logger logger = LoggerFactory.getLogger(StaticController.class);
 
-    private static final MediaType JSON_SCHEMA_UTF8 = MediaType.valueOf("application/schema+json; charset=utf-8");
+    private static final MediaType JSON_SCHEMA_UTF8 = MediaType
+            .valueOf("application/schema+json; charset=utf-8");
 
     @Autowired
     private VeoConfigurationService configuration;
 
-    @RequestMapping(value = "/schemas",
-                    method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/schemas", produces = MediaType.APPLICATION_JSON_VALUE)
     @Deprecated
     public ResponseEntity<String[]> getSchemasDeprecated() throws IOException {
         return listFiles("classpath:schemas/elements/*.json", getSchemaDirectory());
     }
 
-    @RequestMapping(value = "/schemas/elements",
-                    method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/schemas/elements", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String[]> getSchemas() throws IOException {
         return listFiles("classpath:schemas/elements/*.json", getSchemaDirectory());
     }
 
-    @RequestMapping(value = "/schemas/links",
-                    method = RequestMethod.GET,
-                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/schemas/links", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String[]> getlinkSchemas() throws IOException {
         return listFiles("classpath:schemas/links/*.json", getLinkSchemaDirectory());
 
     }
 
-    @RequestMapping(value = "/schemas/{name:.+}" /* accept dots in name */,
-                    method = RequestMethod.GET)
+    @GetMapping(value = "/schemas/{name:.+}")
     @Deprecated
     public ResponseEntity<Resource> getSchemaDeprecated(@PathVariable("name") String schemaName) {
         return getSchema(schemaName);
     }
 
-    @RequestMapping(value = "/schemas/elements/{name:.+}" /* accept dots in name */,
-                    method = RequestMethod.GET)
+    @GetMapping(value = "/schemas/elements/{name:.+}")
     public ResponseEntity<Resource> getSchema(@PathVariable("name") String schemaName) {
 
         Resource resource = getSchemaResource(schemaName, "/schemas/elements/",
-                                              getSchemaDirectory());
+                getSchemaDirectory());
         if (!resource.exists()) {
             logger.info("Caught request to non-existent schema {}", schemaName);
-            return ResponseEntity.notFound()
-                                 .build();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok()
-                             .contentType(JSON_SCHEMA_UTF8)
-                             .body(resource);
+        return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
     }
 
-    @RequestMapping(value = "/schemas/links/{name:.+}" /* accept dots in name */,
-                    method = RequestMethod.GET)
+    @GetMapping(value = "/schemas/links/{name:.+}")
     public ResponseEntity<Resource> getLinkSchema(@PathVariable("name") String schemaName) {
         Resource resource = getSchemaResource(schemaName, "/schemas/links/",
-                                              getLinkSchemaDirectory());
+                getLinkSchemaDirectory());
         if (!resource.exists()) {
             logger.info("Caught request to non-existent schema {}", schemaName);
-            return ResponseEntity.notFound()
-                                 .build();
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok()
-                             .contentType(JSON_SCHEMA_UTF8)
-                             .body(resource);
+        return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
     }
 
     private ResponseEntity<String[]> listFiles(String locationPattern, File schemaDir)
             throws IOException {
         if (schemaDir.exists() && schemaDir.isDirectory()) {
-            return ResponseEntity.ok()
-                                 .body(schemaDir.list());
+            return ResponseEntity.ok().body(schemaDir.list());
 
         } else {
             PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
             Resource[] schemaResources = resourcePatternResolver.getResources(locationPattern);
-            String[] resourceFileNames = Stream.of(schemaResources)
-                                               .map(Resource::getFilename)
-                                               .toArray(String[]::new);
-            return ResponseEntity.ok()
-                                 .body(resourceFileNames);
+            String[] resourceFileNames = Stream.of(schemaResources).map(Resource::getFilename)
+                    .toArray(String[]::new);
+            return ResponseEntity.ok().body(resourceFileNames);
         }
     }
 
