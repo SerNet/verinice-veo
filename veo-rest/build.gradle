@@ -17,6 +17,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-security")
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile("io.jsonwebtoken:jjwt-api")
+    compile 'org.springdoc:springdoc-openapi-ui'
+    compile 'io.swagger.core.v3:swagger-core'
 
     runtime 'io.jsonwebtoken:jjwt-impl'
     runtime 'io.jsonwebtoken:jjwt-jackson'
