@@ -45,6 +45,9 @@ public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
         case AUTHENTICATION_REQUIRED:
             status = HttpStatus.UNAUTHORIZED;
             break;
+        case NOT_IMPLEMENTED:
+            status = HttpStatus.NOT_IMPLEMENTED;
+            break;
         default:
             status = HttpStatus.INTERNAL_SERVER_ERROR;
             break;
