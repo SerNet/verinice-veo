@@ -8,6 +8,7 @@ dependencies {
 
     compile 'org.modelmapper:modelmapper'
     compile 'javax.validation:validation-api'
+    compile 'io.swagger.core.v3:swagger-core'
 
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'

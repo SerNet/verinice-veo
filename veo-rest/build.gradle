@@ -16,6 +16,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-data-rest'
     compile("org.springframework.boot:spring-boot-starter-security")
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-webflux'
     compile("io.jsonwebtoken:jjwt-api")
     compile 'org.springdoc:springdoc-openapi-ui'
     compile 'io.swagger.core.v3:swagger-core'

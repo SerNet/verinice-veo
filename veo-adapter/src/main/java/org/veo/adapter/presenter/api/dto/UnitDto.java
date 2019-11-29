@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -28,21 +28,20 @@ import org.modelmapper.ModelMapper;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.core.entity.asset.Asset;
-
 /**
- * Transfer object for complete assets.
+ * Transfer object for units.
  *
- * Contains all information of the asset.
+ * Contains all information of the unit.
  */
 @Value
-public class AssetDto {
+public class UnitDto {
 
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
              flags = Pattern.Flag.CASE_INSENSITIVE,
              message = "ID must either be null (for new processes) or a valid UUID string following RFC 4122. ")
+
     @NotNull
-    @Schema(description = "The UUID of the asset",
+    @Schema(description = "The UUID of the unit",
             example = "f35b982c-8ad4-4515-96ee-df5fdd4247b9",
             required = true)
     private String id;
@@ -51,11 +50,11 @@ public class AssetDto {
     @NotBlank
     @Size(min = 1, max = 255, message = "The name must be between 1 and 255 characters long.")
     @With
-    @Schema(description = "The name of the Asset", example = "File server", required = true)
+    @Schema(description = "The name of the unit", example = "Office Berlin", required = true)
     private String name;
 
-    public static AssetDto from(Asset asset) {
+    public static UnitDto from(Object unit) {
         ModelMapper mapper = new ModelMapper();
-        return mapper.map(asset, AssetDto.class);
+        return mapper.map(unit, UnitDto.class);
     }
 }
