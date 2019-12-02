@@ -5,7 +5,13 @@ A prototype of a new verinice version.
 ## Build
 
 **Prerequisite:**
-* Install Java 8.
+* Install Java 11.
+* If you are using an IDE (Eclipse, IntelliJ, VSCode,...) you need to run it with the lombok compile time preprocessor. Simply download lombok.jar (i.e. from Maven Central) and run the helper: "java -jar lombok.jar". This will add the required parameter to your eclipse.ini or other configuration.  If you want to do it by hand, add the following parameter at the end of your eclipse.ini:
+
+```
+-javaagent:/home/akoderman/eclipse-workspace/verince-workspace-develop2/eclipse/lombok.jar
+```
+
 
 **Clone project:**
 
@@ -24,7 +30,7 @@ export JAVA_HOME=/path/to/jdk-8
 ## Run
 
 **Prerequisite:**
-* Install Java 8.
+* Install Java 11.
 * Install MySQL, MariaDB or PostgreSQL
 * Create an empty database _v2020_
 
