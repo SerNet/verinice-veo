@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+Ahsut5Cairo8 * Copyright (c) 2019 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,56 +14,43 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.unit;
+package org.veo.core.usecase.asset;
+
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
-import org.veo.core.entity.IUnitRepository;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
+import org.veo.core.entity.asset.Asset;
+import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
 /**
- * Create a new unit underneath an existing unit.
+ * Change properties of an asset.
  * 
  * @author akoderman
  *
  */
-public class CreateUnitUseCase
-        extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
+public  class MoveAssetToUnitUseCase extends UpdateAssetUseCase {
 
-    private final IUnitRepository unitRepository;
-
-    public CreateUnitUseCase(IUnitRepository unitRepository) {
-        this.unitRepository = unitRepository;
+    
+    public MoveAssetToUnitUseCase(IAssetRepository assetRepository) {
+        super(assetRepository);
     }
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
-        Unit unit = createUnit(input);
-        return new OutputData(unitRepository.save(unit));
-    }
-
-    private Unit createUnit(InputData input) {
-        return Unit.newUnitBelongingToClient(input.getUnit().getClient(), input.getName());
-    }
-   
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        private final String name;
-        @Valid private final Unit unit;
-    }
-    
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid private final Unit unit;
+    protected Asset update(Asset asset, InputData input) {
+        if (!asset.getState().equals(Lifecycle.STORED_CURRENT)) {
+            throw new IllegalStateException("Only the current version of an asset can be moved.");
+        }
+        asset.moveToUnit(input.getChangedAsset().getUnit());
+        return asset;
     }
 }

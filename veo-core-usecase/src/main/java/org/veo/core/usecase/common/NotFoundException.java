@@ -28,7 +28,7 @@ public class NotFoundException extends DomainException {
      */
     private static final long serialVersionUID = -6041522797284109491L;
 
-    public NotFoundException(String id) {
-        super("Entity not found for ID: " + id);
+    public NotFoundException(String messageTemplate, Object... arguments) {
+        super(String.format(messageTemplate, arguments));
     }
 }

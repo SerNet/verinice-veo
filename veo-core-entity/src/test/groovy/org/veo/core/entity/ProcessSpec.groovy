@@ -27,16 +27,20 @@ import org.veo.core.entity.process.Process;
 
 public class ProcessSpec extends Specification {
 
+    Unit unit;
+    
+    def setup() {
+        this.unit = Unit.newUnitBelongingToClient(Client.newClient("New Client"), "New Unit");
+    }
+    
     def "Create a new process object" () {
         given: "a Key object"
-            Key key = Key.newUuid();
             Instant beforeCreation = Instant.now();
     
         when: "a new process is created"
             Process process = Process.newProcess(unit, "New Process");
     
         then: "the process was initialized with expected values"
-            process.key.uuidValue().equals(key.uuidValue());
             process.getName().equals("New Process");
             process.getState().equals(EntityLayerSupertype.Lifecycle.CREATING);
             process.getVersion().equals(0L);
@@ -49,15 +53,16 @@ public class ProcessSpec extends Specification {
     def "Create a new process with assets" () {
         given: "an array of assets"
             Key key = Key.newUuid();
+            
             Set assets = [
-                [Key.newUuid(), "Asset 1"],
-                [Key.newUuid(), "Asset 2"],
-                [Key.newUuid(), "Asset 3"],
+                Asset.newAsset(unit, "Asset 1"),
+                Asset.newAsset(unit, "Asset 2"),
+                Asset.newAsset(unit, "Asset 3"),
             ];
             
         
         when: "a new process is created with these assets"
-            Process process = new Process(key, "New Process");
+            Process process = Process.newProcess(unit, "New Process");
             process.addAssets(assets);
             
         then: "the process was created as expected"

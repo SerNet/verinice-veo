@@ -26,15 +26,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.asset.IAssetRepository;
-import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.entity.asset.Asset;
-import org.veo.persistence.access.jpa.JpaAssetDataRepository;
+import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.persistence.access.jpa.JpaAssetDataRepository;
 import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.persistence.entity.jpa.SimpleKey;
 
 /**
  * An implementation of repository interface that converts between entities
@@ -54,27 +52,27 @@ public class AssetRepository implements IAssetRepository {
     }
 
     @Override
-    public Asset save(Asset Asset) {
+    public Asset save(Asset asset) {
         return jpaRepository
-                .save(AssetData.from(Asset))
+                .save(AssetData.from(asset))
                 .toAsset();
     }
 
     @Override
     public Optional<Asset> findById(Key<UUID> id) {
         return jpaRepository
-                    .findById(id)
+                    .findById(SimpleKey.from(id))
                     .map(AssetData::toAsset);
     }
 
     @Override
-    public void delete(Asset entity) {
-        jpaRepository.delete(AssetData.from(entity));
+    public void delete(Asset asset) {
+        jpaRepository.delete(AssetData.from(asset));
     }
 
     @Override
     public void deleteById(Key<UUID> id) {
-        jpaRepository.deleteById(id);
+        jpaRepository.deleteById(SimpleKey.from(id));
     }
 
     @Override
@@ -88,7 +86,7 @@ public class AssetRepository implements IAssetRepository {
 
     @Override
     public Set<Asset> getByIds(Set<Key<UUID>> ids) {
-        Iterable<AssetData> allById = jpaRepository.findAllById(ids);
+        Iterable<AssetData> allById = jpaRepository.findAllById(SimpleKey.from(ids));
         return StreamSupport
                 .stream(allById.spliterator(), false)
                 .map(AssetData::toAsset)
@@ -98,13 +96,9 @@ public class AssetRepository implements IAssetRepository {
     @Override
     public Set<Asset> getByProcessId(Key<UUID> processId) {
         return jpaRepository
-                .findByProcessId(processId)
+                .findByProcessId(SimpleKey.from(processId))
                 .stream()
                 .map(AssetData::toAsset)
                 .collect(Collectors.toSet());
     }
-
-
-
-    
 }

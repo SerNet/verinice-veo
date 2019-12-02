@@ -42,6 +42,7 @@ public class Process extends EntityLayerSupertype {
     @NotBlank
     private String name;
 
+    // TODO this relation needs to be replaced by an relational-aspect
     @NotNull(message = "The array of assets must not be null.")
     @Size(min = 0, max = 1000000,
             message = "No more than one million assets may be directly referenced by a process.")
@@ -54,7 +55,7 @@ public class Process extends EntityLayerSupertype {
         this.assets = new HashSet<>();
     }
 
-    public Process(Key<UUID> id, Unit unit, String name, Lifecycle state, Instant validFrom,
+    private Process(Key<UUID> id, Unit unit, String name, Lifecycle state, Instant validFrom,
             Instant validUntil, long version, Set<Asset> assets) {
         super(id, unit, state, validFrom, validUntil, version);
         this.name = name;

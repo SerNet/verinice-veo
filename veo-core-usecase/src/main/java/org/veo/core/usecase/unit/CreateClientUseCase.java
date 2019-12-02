@@ -14,57 +14,57 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.process;
-
-import java.util.UUID;
+package org.veo.core.usecase.unit;
 
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
-import org.veo.core.entity.Key;
-import org.veo.core.entity.process.IProcessRepository;
-import org.veo.core.entity.process.Process;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.IUnitRepository;
+import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.common.NotFoundException;
 
 import lombok.Value;
 
 /**
- * Reinstantiate a persisted process object.
- *
+ * Create a new unit for a new client.
+ * 
  * @author akoderman
  *
  */
-public class GetProcessUseCase
-        extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData> {
+public class CreateClientUseCase
+        extends UseCase<CreateClientUseCase.InputData, CreateClientUseCase.OutputData> {
 
-    private final IProcessRepository repository;
+    private final IUnitRepository unitRepository;
 
-    public GetProcessUseCase(IProcessRepository repository) {
-        this.repository = repository;
+    public CreateClientUseCase(IUnitRepository unitRepository) {
+        this.unitRepository = unitRepository;
     }
 
     @Override
-    @Transactional(TxType.SUPPORTS)
+    @Transactional(TxType.REQUIRED)
     public OutputData execute(InputData input) {
-        // @formatter:off
-        return repository
-                .findById(input.getId())
-                .map(OutputData::new)
-                .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
-        // @formatter:on
+        Unit unit = createUnit(input);
+        return new OutputData(unitRepository.save(unit));
     }
+
+    private Unit createUnit(InputData input) {
+        return Unit.newUnitBelongingToClient(Client.newClient(input.getClientName()), input.getName());
+    }
+   
 
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
-        private final Key<UUID> id;
+        private final String clientName;
+        private final String name;
     }
     
+
     @Valid
     @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final Process process;
+        @Valid private final Unit unit;
     }
 }

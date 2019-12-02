@@ -19,42 +19,39 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.io.Serializable;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.Valid;
+import javax.persistence.Embeddable;
 
-import org.veo.core.entity.Unit;
-
+import org.veo.core.entity.Key;
 import lombok.Data;
+
 
 @Data
 
-@Entity
-@IdClass(SimpleKey.class)
-public class UnitData {
-    
-    @EmbeddedId
-    private SimpleKey uuid;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private ClientData client;
-    
-    @Column
-    private String name;
-    
-    public static UnitData from(@Valid Unit Asset) {
-        // TODO map fields
-        return new UnitData();
+@Embeddable
+public class SimpleKey implements Serializable {
+
+    @Column(name="uuid")
+    private final String uuid;
+
+    public static SimpleKey from (Key<UUID> key) {
+        return new SimpleKey(key.uuidValue());
     }
     
-    public Unit toUnit() {
-        return null;
-        // TODO map fields
+    public Key<UUID> toKey() {
+        return Key.uuidFrom(this.uuid);
     }
+
+    public static Set<SimpleKey> from(Set<Key<UUID>> ids) {
+        return ids.stream()
+                .map(SimpleKey::from)
+                .collect(Collectors.toSet()); 
+            
+    }
+
 }

@@ -25,8 +25,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.SameClientSpecification;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * A client is the root element of the ownership structure and an access barrier.
@@ -37,40 +39,26 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * A client can be used to separate multiple completely disjunct users of the system from each other.
  * 
  */
+
+@Getter
+@Setter
+@EqualsAndHashCode
+
 public class Client {
     
     @NotNull
-    private Key<UUID> id;
+    private final Key<UUID> id;
     
     @NotNull
     @NotBlank(message="The name of a client must not be blank.")
+    @Size(max=255)
     private String name;
     
     @NotNull
     @Size(min=1, max=1000000, message="A client must be working with at least one domain.")
     private Set<Domain> domains;
-    
-    @NotNull
-    @Size(min=1, max=1000000, message="A client must have at least one unit.")
-    private Set<Unit> units;
 
-    
-    
-    public Key<UUID> getId() {
-        return id;
-    }
-
-    public void setId(Key<UUID> id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+   
 
     private Client(Key<UUID> id, String name) {
         this.id = id;
@@ -78,41 +66,17 @@ public class Client {
         domains = new HashSet<Domain>();
     }
     
-    public static Client newClient(String name) {
-        return new Client(Key.newUuid(), name);
-    }
-
-    public Collection<Domain> getDomains() {
-        return domains;
-    }
-
-    public void setDomains(Set<Domain> domains) {
+    private Client(Key<UUID> id, String name, Set<Domain> domains) {
+        this.id = id;
+        this.name = name;
         this.domains = domains;
     }
 
-    public Collection<Unit> getUnits() {
-        return units;
+    public static Client newClient(String name) {
+        return new Client(Key.newUuid(), name);
     }
-
-    /**
-     * Replaces the collection of top level units for this client with a new collection.
-     * Ensures that all units already belong to this client.
-     *  
-     * @param units
-     */
-    public void setUnits(Set<Unit> units) {
-        checkSameClient(units);
-        this.units = units;
+    
+    public static Client existingClient(Key<UUID> id, String name, Set<Domain> domains ) {
+        return new Client(id, name, domains);
     }
-
-    private void checkSameClient(Collection<Unit> newUnits) {
-        if ( !(new SameClientSpecification<EntityLayerSupertype>(this))
-                .isSatisfiedBy(newUnits)
-        ) {
-            throw new ClientBoundaryViolationException("Units from a different client cannot be moved to another client. "
-                    + "Attempted operation failed for client: " + this.getName());
-        }
-        
-    }
-
 }

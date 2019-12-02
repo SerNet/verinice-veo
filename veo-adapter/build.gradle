@@ -3,6 +3,9 @@ apply plugin: 'groovy'
 dependencies {
 
     compile project(":veo-core-usecase")
+    
+    compileOnly('org.projectlombok:lombok')
+    
     compile 'org.modelmapper:modelmapper'
     compile 'javax.validation:validation-api'
 

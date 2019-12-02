@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+Ahsut5Cairo8 * Copyright (c) 2019 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,35 +14,33 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.process;
+package org.veo.core.usecase.asset;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
-import org.veo.core.entity.IRepository;
-import org.veo.core.entity.Key;
+import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.asset.Asset;
+import org.veo.core.entity.asset.IAssetRepository;
 
 /**
- * A repository for <code>Process</code> entities.
+ * Change properties of an asset.
+ * 
+ * @author akoderman
  *
  */
-public interface IProcessRepository extends IRepository<Process, UUID> {
+public  class EditAssetUseCase extends UpdateAssetUseCase {
 
-    /**
-     * Retrieve processes for which the given person is responsible.
-     * 
-     * @param personId
-     * @return
-     */
-    public Set<Process> getProcessByResponsiblePerson(Key<UUID> personId);
+    public EditAssetUseCase(IAssetRepository assetRepository) {
+        super(assetRepository);
+    }
 
-    /**
-     * Find processes that hold a reference to the specified asset.
-     * 
-     * @param asset
-     * @return
-     */
-    public Set<Process> findProcessesContainingAsset(Asset asset);
+    @Override
+    @Transactional(TxType.REQUIRED)
+    protected Asset update(Asset asset, InputData input) {
+        if (!asset.getState().equals(Lifecycle.STORED_CURRENT)) {
+            throw new IllegalStateException("Only the current version of an asset can be saved.");
+        }
+        return input.getChangedAsset();
+    }
 }

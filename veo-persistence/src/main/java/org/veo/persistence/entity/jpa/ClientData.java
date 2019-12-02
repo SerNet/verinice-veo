@@ -19,16 +19,18 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Set;
+
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.Valid;
-
-import org.veo.core.entity.Unit;
+import javax.persistence.JoinTable;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -36,25 +38,25 @@ import lombok.Data;
 
 @Entity
 @IdClass(SimpleKey.class)
-public class UnitData {
-    
+public class ClientData {
+
+    @NotNull
     @EmbeddedId
     private SimpleKey uuid;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private ClientData client;
-    
-    @Column
+
+    @Column(name = "name")
+    @NotBlank(message="The name of a client must not be blank.")
     private String name;
     
-    public static UnitData from(@Valid Unit Asset) {
-        // TODO map fields
-        return new UnitData();
-    }
-    
-    public Unit toUnit() {
-        return null;
-        // TODO map fields
-    }
+   
+    /*
+     *  Domains are value objects, not entities.
+     *  However, they are not embedded here, but referenced to a join table. 
+     */
+    @ElementCollection(targetClass = DomainValue.class)
+    @JoinTable(name = "domains") 
+    @JoinColumn(name = "client_uuid", referencedColumnName = "uuid")
+    @Size(min=1, max=1000000, message="A client must be working with at least one domain.")
+    private Set<DomainValue> domains;
+
 }

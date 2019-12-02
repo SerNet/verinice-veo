@@ -24,21 +24,20 @@ import javax.validation.constraints.Size;
 import org.modelmapper.ModelMapper;
 import org.veo.core.entity.asset.Asset;
 
+import lombok.NonNull;
 import lombok.Value;
 import lombok.With;
 
 /**
- * Transfer object for assets when used as a collection of assets that is
- * included inside other objects.
+ * Transfer object for complete assets.
  * 
- * Contains just the display name and the ID of the asset. With this the
- * asset can be listed by name and queried if more information about it is needed.
+ * Contains all information of the asset.
  * 
  * @author akoderman
  *
  */
 @Value
-public class AssetItemDto {
+public class AssetDto {
 
     @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
             flags = Pattern.Flag.CASE_INSENSITIVE, 
@@ -54,8 +53,8 @@ public class AssetItemDto {
     @With
     private String name;
 
-    public static AssetItemDto from(Asset asset) {
+    public static AssetDto from(Asset asset) {
         ModelMapper mapper = new ModelMapper();
-        return mapper.map(asset, AssetItemDto.class);
+        return mapper.map(asset, AssetDto.class);
     }
 }

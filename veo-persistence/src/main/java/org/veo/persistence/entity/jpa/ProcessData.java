@@ -19,7 +19,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,22 +26,32 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
 
-import org.modelmapper.ModelMapper;
 import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.process.Process;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@ToString
 
 @Entity(name = "process")
 @Table(name = "processes")
 public class ProcessData extends EntityLayerSupertypeData {
 
+    @Column(name="name")
     private String name;
 
     /*
@@ -57,8 +66,13 @@ public class ProcessData extends EntityLayerSupertypeData {
      * inverseJoinColumns = {@JoinColumn(name="assetId",
      * referencedColumnName="uuid")})
      */
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER,
-            orphanRemoval = true, mappedBy = "process")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(
+        cascade = { CascadeType.PERSIST, CascadeType.MERGE }, 
+        fetch = FetchType.EAGER,
+        orphanRemoval = true 
+    )
     private Set<AssetData> assets;
 
     public static ProcessData from(@Valid Process process) {
@@ -68,7 +82,7 @@ public class ProcessData extends EntityLayerSupertypeData {
 
     public Process toProcess() {
         return Process.existingProcessWithAssets(
-                uuid, unit.toUnit(), name, state, validFrom, version, toAssetSet(assets)
+                uuid.toKey(), unit.toUnit(), name, state, validFrom, version, toAssetSet(assets)
         );
     }
 

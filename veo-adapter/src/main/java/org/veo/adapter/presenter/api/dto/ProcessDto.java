@@ -26,6 +26,10 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.process.Process;
 import org.veo.core.usecase.process.GetProcessUseCase.OutputData;
 
+import lombok.Value;
+import lombok.With;
+
+@Value
 public class ProcessDto {
     
     @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
@@ -36,67 +40,30 @@ public class ProcessDto {
     @NotNull(message="A name must be present.") 
     @NotBlank
     @Size(min=1, max=255, message="The name must be between 1 and 255 characters long.")
+    @With
     private String name;
     
     @NotNull
     @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
             flags = Pattern.Flag.CASE_INSENSITIVE, 
             message="Unit ID must be a valid UUID string following RFC 4122.")
+    @With
     private String unitId;
     
     @NotNull(message="An array of asset IDs must be present, but it may be empty.")
     @Size(min=0, max=1000000, message="Array size must be less than one million asset IDs.")
+    @With
     private String[] assetIDs;
     
     @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}")
     // additional date validation should be done on the parsed date object
+    @With
     private String validFrom;
     
     @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}")
     // additional date validation should be done on the parsed date object
+    @With
     private String validUntil;
-
-    public ProcessDto(String id, String unitId, String name, String[] assetIDs) {
-        this.id = id;
-        this.unitId = unitId;
-        this.name = name;
-        this.assetIDs = assetIDs;
-        
-    }
-
-    public String getId() {
-        return id;
-    }
-    
-    
-
-    public String getUnitId() {
-        return unitId;
-    }
-
-    public void setUnitId(String unitId) {
-        this.unitId = unitId;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String[] getAssetIDs() {
-        return assetIDs;
-    }
-
-    public void setAssetIDs(String[] assetIDs) {
-        this.assetIDs = assetIDs;
-    }
 
     public static ProcessDto from(Process process) {
         ModelMapper mapper = new ModelMapper();
@@ -108,22 +75,4 @@ public class ProcessDto {
         return mapper.map(this, Process.class);
         //return new Process(Key.uuidFrom(this.id), this.name); TODO implement mapping method from string to key for modelmapper
     }
-
-    public String getValidFrom() {
-        return validFrom;
-    }
-
-    public void setValidFrom(String validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    public String getValidUntil() {
-        return validUntil;
-    }
-
-    public void setValidUntil(String validUntil) {
-        this.validUntil = validUntil;
-    }
-
-
 }

@@ -25,10 +25,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.PositiveOrZero;
 
+import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.InvalidUnitException;
 import org.veo.core.entity.specification.SameClientSpecification;
 import org.veo.core.entity.specification.ValidUnitSpecification;
+
+import lombok.NonNull;
+import lombok.With;
 
 /**
  * Implements common fields and methods for objects in the entity layer.
@@ -103,11 +107,9 @@ public abstract class EntityLayerSupertype {
     // TODO for object versioning: create composite key of: uuid + version
     private Key<UUID> key;
     
-    @NotNull
-    Unit unit;
+    @NotNull Unit unit;
     
-    @NotNull
-    Lifecycle state;
+    @NotNull Lifecycle state;
 
     @PastOrPresent(message="The start of the entity's validity must be in the past.")
     @NotNull(message="The start of the entity's validity must be in the past.")
@@ -118,14 +120,15 @@ public abstract class EntityLayerSupertype {
     Instant validUntil;
 
     public void setUnit(Unit unit) {
+        checkValidUnit(unit);
         checkSameClient(unit.getClient());
         this.unit = unit;
-        checkValidUnit(unit);
     }
     
     private void checkValidUnit(Unit unit){
-        if (! (new ValidUnitSpecification()).isSatisfiedBy(unit))
-            throw new InvalidUnitException("The supplied unit is not a valid unit object: " + unit.getName());
+        if (unit == null 
+                || !(new ValidUnitSpecification()).isSatisfiedBy(unit))
+            throw new InvalidUnitException("The supplied unit is not a valid unit object: ", unit);
     }
 
     private void checkSameClient(Client client) {
@@ -206,5 +209,7 @@ public abstract class EntityLayerSupertype {
     public void setKey(Key<UUID> key) {
         this.key = key;
     }
+
+   
 
 }

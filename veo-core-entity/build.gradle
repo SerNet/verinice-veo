@@ -2,6 +2,8 @@ apply plugin: 'groovy'
 
 dependencies {
 
+   
+
     compile 'javax.validation:validation-api'
     
     testCompile 'org.spockframework:spock-spring'

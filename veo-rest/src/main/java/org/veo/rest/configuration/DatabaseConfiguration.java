@@ -28,6 +28,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @EntityScan(basePackages = {"org.veo.persistence.entity.jpa"})
-@EnableJpaRepositories(basePackages = {"org.veo.persistence.access.jpa", "org.veo.persistence.access"})
+
+// Repositories are already configured in VeoCoreConfiguration.
+//@EnableJpaRepositories(basePackages = {"org.veo.persistence.access.jpa", "org.veo.persistence.access"})
 public class DatabaseConfiguration {
 }

@@ -42,8 +42,12 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * subsidiaries. Service providers might have one unit for each client that
  * is using the software.
  * 
+ * A unit always belongs to exactly one client. This means that every entity also 
+ * transitively belongs to exactly one client. Units cannot be moved between clients.
+ * 
  * The <code>EntityGroup</code> object is much more flexible and the
- * preferred choice to group entities together in most cases.
+ * preferred choice to group entities together for business modeling purposes. 
+ * Units should exclusively be used to model ownership and high-level access restrictions.
  * 
  *  @see EntityGroup
  * 
@@ -72,21 +76,32 @@ public class Unit {
         this.subUnits = new HashSet<>();
     }
     
-    public static Unit newUnit(Client client, String name) {
+    private Unit(Key<UUID> id, String name, Client client, Set<Unit> subUnits) {
+        this(Key.newUuid(), name, client);
+        this.subUnits = new HashSet<>();
+    }
+    
+    public static Unit newUnitBelongingToClient(Client client, String name) {
         return new Unit(Key.newUuid(), name, client);
     }
     
-    public static Unit existingUnit(Key<UUID> id, Client client, String name) {
-        return new Unit(id, name, client);
+    public Unit createNewSubunit(String name) {
+        Unit newUnit = new Unit(Key.newUuid(), name, this.getClient());
+        addSubUnit(newUnit);
+        return newUnit;
+    }
+    
+    public static Unit existingUnit(Key<UUID> id, Client client, String name, Set<Unit> subunits) {
+        return new Unit(id, name, client, subunits);
     }
     
     public Client getClient() {
         return client;
     }
 
-    public void setClient(Client client) {
-        checkSameClient(client);
-        this.client = client;
+    public void addSubUnit(Unit unit) {
+        checkSameClient(unit.getClient());
+        this.subUnits.add(unit);
     }
 
     private void checkSameClient(Client otherClient) {
@@ -108,7 +123,15 @@ public class Unit {
     }
 
     public void setSubUnits(Set<Unit> subUnits) {
+        checkSameClients(subUnits);
         this.subUnits = subUnits;
+    }
+    
+    protected void checkSameClients(Collection<Unit> subUnits) {
+        subUnits
+            .stream()
+            .map(unit -> unit.getClient())
+            .forEach(this::checkSameClient);
     }
 
     public Key<UUID> getId() {

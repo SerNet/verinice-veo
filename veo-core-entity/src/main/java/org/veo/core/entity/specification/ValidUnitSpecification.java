@@ -45,7 +45,7 @@ public class ValidUnitSpecification implements IEntitySpecification<EntityLayerS
         return (unit != null
                 && !unit.getId().isUndefined()
                 && unit.getName() != null
-                && unit.getName().isEmpty()
+                && !unit.getName().isEmpty()
                );
     }
 }

@@ -20,19 +20,24 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.repository.CrudRepository;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.process.Process;
 import org.veo.persistence.entity.jpa.ProcessData;
+import org.veo.persistence.entity.jpa.SimpleKey;
 
 /**
  * A CRUD repository that will be implemented at runtime by magic and/or Spring Boot.
  * 
  */
-public interface JpaProcessDataRepository extends CrudRepository<ProcessData, Key<UUID>>{
+public interface JpaProcessDataRepository extends CrudRepository<ProcessData, SimpleKey>{
 
     Collection<ProcessData> findByNameContainingIgnoreCase(String search);
+
+    Set<Process> findDistinctByAssetsIn(Set<Asset> assets);
 
 }

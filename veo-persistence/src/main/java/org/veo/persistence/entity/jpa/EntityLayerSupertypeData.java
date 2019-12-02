@@ -20,31 +20,33 @@
 package org.veo.persistence.entity.jpa;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.modelmapper.ModelMapper;
-import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
-import org.veo.core.entity.Key;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-@IdClass(Key.class)
+@IdClass(SimpleKey.class)
 public abstract class EntityLayerSupertypeData {
 
-    @Id
-    Key<UUID> uuid;
+    @EmbeddedId
+    SimpleKey uuid;
     
     @ManyToOne
     @JoinColumn(name="unit_id", nullable=false)
@@ -62,48 +64,5 @@ public abstract class EntityLayerSupertypeData {
 
     @Column(name="version", nullable=false)
     long version;
-    
-    public Key<UUID> getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(Key<UUID> uuid) {
-        this.uuid = uuid;
-    }
-
-    public UnitData getUnit() {
-        return unit;
-    }
-
-    public void setUnit(UnitData unit) {
-        this.unit = unit;
-    }
-
-    public Lifecycle getState() {
-        return state;
-    }
-
-    public void setState(Lifecycle state) {
-        this.state = state;
-    }
-
-    public Instant getValidFrom() {
-        return validFrom;
-    }
-
-    public void setValidFrom(Instant validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    public Instant getValidUntil() {
-        return validUntil;
-    }
-
-    public void setValidUntil(Instant validUntil) {
-        this.validUntil = validUntil;
-    }
-    
-    
-    
     
 }

@@ -14,60 +14,71 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.unit;
+package org.veo.core.usecase.asset;
 
 import java.util.UUID;
 
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
-import org.veo.core.entity.IUnitRepository;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.asset.Asset;
+import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NotFoundException;
 
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
-/**
- * Reinstantiate a persisted unit object.
- *
- *
- */
-public class GetUnitUseCase
-        extends UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
+@Slf4j
+public abstract class UpdateAssetUseCase
+        extends UseCase<UpdateAssetUseCase.InputData, UpdateAssetUseCase.OutputData> {
 
-    private final IUnitRepository repository;
+    private final IAssetRepository assetRepository;
 
-    public GetUnitUseCase(IUnitRepository repository) {
-        this.repository = repository;
+    public UpdateAssetUseCase(IAssetRepository assetRepository) {
+        this.assetRepository = assetRepository;
     }
 
-    /**
-     * Find a persisted unit object and reinstantiate it.
-     * Throws a domain exception if the requested unit object was not found in the repository.
-     */
     @Override
-    @Transactional(TxType.SUPPORTS)
+    @Transactional(TxType.REQUIRED)
     public OutputData execute(InputData input) {
-        // @formatter:off
-        return repository
-                .findById(input.getId())
-                .map(OutputData::new)
-                .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
-        // @formatter:on
+        log.info("Updating asset with id {}", input.getId());
+        final Key<UUID> id = input.getId();
+        return this.assetRepository
+                .findById(id)
+                .map(a -> update(a,input))
+                .map(this::save)
+                .map(this::output)
+                .orElseThrow(() -> new NotFoundException("Asset %s was not found.", id));
     }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        private final Key<UUID> id;
+    protected abstract Asset update(Asset asset, InputData input);
+    
+    private Asset save(Asset asset) {
+        return this.assetRepository.save(asset);
     }
+    
+    private OutputData output(Asset asset) {
+        return new OutputData(asset);
+    }
+
     
     @Valid
     @Value
+    public static class InputData implements UseCase.InputData {
+        @Valid @NotNull private final Key<UUID> id;
+        @Valid private final Asset changedAsset;
+    }
+
+    @Valid
+    @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final Unit unit;
+        @Valid private final Asset asset;
     }
 }

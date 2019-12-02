@@ -16,13 +16,18 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.usecase.UseCase;
+
+import lombok.Value;
 
 public class CreateAssetUseCase
         extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
@@ -34,52 +39,28 @@ public class CreateAssetUseCase
     }
 
     @Override
+    @Transactional(TxType.REQUIRED)
     public OutputData execute(InputData input) {
         Asset asset = createAsset(input);
         return new OutputData(assetRepository.save(asset));
     }
 
     private Asset createAsset(InputData input) {
-        return new Asset(Key.newUuid(),
-                input.getUnit(),
-                input.getName()
-        );
+        return Asset.newAsset(input.getUnit(), input.getName());
     }
    
-    // TODO: use lombok @Value instead?
+    
     @Valid
+    @Value
     public static class InputData implements UseCase.InputData {
-
         @Valid private final Unit unit;
         private final String name;
-
-        public Unit getUnit() {
-            return unit;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public InputData(Unit unit, String name) {
-            this.name = name;
-            this.unit = unit;
-        }
     }
     
 
-    // TODO: use lombok @Value instead?
-    @Valid 
+    @Valid
+    @Value
     public static class OutputData implements UseCase.OutputData {
-
-        @Valid private final Asset asset;
-
-        public Asset getAsset() {
-            return asset;
-        }
-
-        public OutputData(Asset asset) {
-            this.asset = asset;
-        }
+        @Valid private final EntityLayerSupertype asset;
     }
 }

@@ -34,6 +34,8 @@ import org.veo.core.entity.process.Process;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 
+import lombok.Value;
+
 /**
  * Creates a persistent new process object.
  *
@@ -82,65 +84,21 @@ public class CreateProcessUseCase
         return getUnitUseCase.execute(inputData).getUnit();
     }
 
-    // TODO: use lombok @Value instead?
     @Valid
+    @Value
     public static class InputData implements UseCase.InputData {
-
         private final Key<UUID> key;
         private final Key<UUID> unitId;
         private final String name;
         private final Set<Key<UUID>> assetIds;
         private final Date validUntil;
         private final Date validFrom;
-
-        public Set<Key<UUID>> getAssetIds() {
-            return Collections.unmodifiableSet(assetIds);
-        }
-
-        public Key<UUID> getKey() {
-            return key;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Date getValidUntil() {
-            return validUntil;
-        }
-
-        public Date getValidFrom() {
-            return validFrom;
-        }
-
-        public Key<UUID> getUnitId() {
-            return unitId;
-        }
-
-        public InputData(Key<UUID> key, Key<UUID> unitId, String name, Set<Key<UUID>> assetIds,
-                Date validFrom, Date validUntil) {
-            this.key = key;
-            this.unitId = unitId;
-            this.name = name;
-            this.assetIds = assetIds;
-            this.validFrom = validFrom;
-            this.validUntil = validUntil;
-        }
     }
 
-    // TODO: use lombok @Value instead?
     @Valid
+    @Value
     public static class OutputData implements UseCase.OutputData {
-
         @Valid
         private Process process;
-
-        public Process getProcess() {
-            return process;
-        }
-
-        public OutputData(Process process) {
-            this.process = process;
-        }
     }
 }

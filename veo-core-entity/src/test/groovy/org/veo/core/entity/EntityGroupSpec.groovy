@@ -1,3 +1,5 @@
+package org.veo.core.entity
+
 /*******************************************************************************
  * Copyright (c) 2019 Alexander Koderman
  *
@@ -14,7 +16,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity
+
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
@@ -27,13 +29,14 @@ import org.veo.core.entity.asset.Asset
 import org.veo.core.entity.group.EntityGroup
 import org.veo.core.entity.process.Process;
 import org.veo.core.entity.specification.InvalidUnitException
+import org.veo.core.entity.group.EntityGroup
 
 public class EntityGroupSpec extends Specification {
 
     Unit unit;
     
     def setup() {
-        this.unit = Unit.newUnit(Client.newClient("New Client"), "New Unit");
+        this.unit = Unit.newUnitBelongingToClient(Client.newClient("New Client"), "New Unit");
     }
     
     
@@ -54,23 +57,30 @@ public class EntityGroupSpec extends Specification {
             group.getValidUntil() == null;
     }
     
-    
-    def "A group must have a valid unit" () {
-        given: "an unit object with an invalidated key"
-            Unit wrongUnit = Unit.existingUnit(Key.undefined(), null, "");
-            
-        when: "a group is created with it"
-            EntityGroup group = EntityGroup.existingGroup(Key.newUuid(), wrongUnit, "invalid group");
+    def "A group must have unit" () {
+        when: "a group is created with no unit"
+            EntityGroup group = EntityGroup.existingGroup(Key.newUuid(), null, "no group");
             
        then: "an exception is thrown"
            thrown InvalidUnitException;
     }
-
     
     def "A group can contain assets" () {
+        given: "a set of two assets"
+            Set assets = Set.of(
+                Asset.newAsset(unit, "New asset 1"),
+                Asset.newAsset(unit, "New asset 2")
+            );
+
+        when: "a group is created with the assets:"
+            EntityGroup<Asset> assetGroup = EntityGroup.existingGroup(Key.newUuid(), unit, "Asset-Group");
+            assetGroup.setGroupMembers(assets);
+
+        then: "the group contains the assets"
+           assetGroup.getGroupMembers().size() == 2;
     }
 
-    
+/*
     def "A group can contain processes" () {
     }
 
@@ -79,15 +89,13 @@ public class EntityGroupSpec extends Specification {
     }
 
     
-    def "A group can contain other groups" () {
+    def "A group can contain subgroups of identical types" () {
     }
     
+    def "A group can contain subgroups of different types" () {
+    }
     
     def "A group can not contain itself" () {
-    }
-
-    
-    def "Subgroups may contain different elements" () {
     }
 
     
@@ -103,4 +111,10 @@ public class EntityGroupSpec extends Specification {
     def "A group can return members that fulfill a specification" () {
         
     }
+    
+    def "A group can be used just like a single element of the same type" () {
+        
+    }
+*/
+    
 }

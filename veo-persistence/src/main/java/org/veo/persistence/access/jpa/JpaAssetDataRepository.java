@@ -27,15 +27,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.veo.core.entity.Key;
 import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.persistence.entity.jpa.SimpleKey;
 
 /**
  * A CRUD repository that will be implemented at runtime by magic and/or Spring Boot.
  * 
  */
-public interface JpaAssetDataRepository extends CrudRepository<AssetData, Key<UUID>> {
+public interface JpaAssetDataRepository extends CrudRepository<AssetData, SimpleKey> {
 
-    @Query("SELECT p.assets FROM Process p where p.id = :processId")
-    public Set<AssetData> findByProcessId(Key<UUID> processId);
+    @Query("SELECT DISTINCT p.assets FROM process p where p.id = :processId")
+    public Set<AssetData> findByProcessId(SimpleKey processId);
     
     Collection<AssetData> findByNameContainingIgnoreCase(String search);
 

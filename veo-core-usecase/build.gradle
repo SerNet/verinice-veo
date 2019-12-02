@@ -2,12 +2,14 @@ apply plugin: 'groovy'
 
 dependencies {
 
+    compileOnly('org.projectlombok:lombok')
     compile project(":veo-core-entity")
     
-    // using JTA transaction annotations currently.
-    // alternative would to use spring transactional annotations
-    // these would support readonly transactions among other additional features
+    // Using JTA transaction annotations currently.
+    // The alternative would be to use spring transactional annotations.
+    // These would support readonly transactions among other additional features.
     compile 'javax.transaction:javax.transaction-api'
+    
 
     testCompile 'org.spockframework:spock-spring'
     testCompile 'org.springframework.boot:spring-boot-starter-test'

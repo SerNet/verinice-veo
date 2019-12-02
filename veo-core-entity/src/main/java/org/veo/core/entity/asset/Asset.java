@@ -23,6 +23,16 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@ToString
+
 public class Asset extends EntityLayerSupertype {
 
     private String name;
@@ -42,11 +52,21 @@ public class Asset extends EntityLayerSupertype {
         return new Asset(id, unit, name, state, validFrom, validUntil, version);
     }
 
-    public String getName() {
-        return name;
+    /**
+     * Marks the asset as deleted. No further updates will be possible.
+     * (Additionally, the deleted asset could be stored in a separate archive-table.)
+     * (Or alternatively - the asset could just be removed from the database.)
+     * 
+     * @return
+     */
+    public Asset delete() {
+        this.setState(Lifecycle.STORED_DELETED);
+        return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void moveToUnit(Unit unit) {
+        setUnit(unit);
     }
+
+
 }

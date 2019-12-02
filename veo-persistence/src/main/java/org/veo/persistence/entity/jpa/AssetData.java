@@ -19,18 +19,40 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.Valid;
 
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.asset.Asset;
 
-@Entity
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@ToString
+
+@Entity(name = "asset")
+@Table(name = "assets")
 public class AssetData extends EntityLayerSupertypeData  {
     
-// 
+
+        private String name;
         
-        public static AssetData from(@Valid Asset Asset) {
-            // map fields
+        
+    
+        public static AssetData from(@Valid EntityLayerSupertype Asset) {
+            // TODO map fields
             return new AssetData();
         }
         

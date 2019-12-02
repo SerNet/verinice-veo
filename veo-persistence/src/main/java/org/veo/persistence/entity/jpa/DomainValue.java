@@ -1,5 +1,5 @@
 /*******************************************************************************
-SimpleKeyData.java * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,45 +19,38 @@ SimpleKeyData.java * Copyright (c) 2019 Alexander Koderman.
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.io.Serializable;
-import java.util.Objects;
+import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-// Does not need JPA annotations. Referenced as IdClass by entities.
-public class SimpleKeyData implements Serializable{
+import lombok.Value;
+import lombok.With;
 
-    private static final long serialVersionUID = -3297691428729918495L;
 
-    public SimpleKeyData(String uuid) {
-        super();
-        this.uuid = uuid;
-    }
+/**
+ * Domains are value objects. They do not have an ID.
+ * They may hold references to other entities.
+ */
+@Value
+@With
 
-    protected String getUuid() {
-        return uuid;
-    }
+@Embeddable
+public class DomainValue {
 
-    protected void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    private String uuid;
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        SimpleKeyData other = (SimpleKeyData) obj;
-        return Objects.equals(uuid, other.uuid);
-    }
+    @NotNull
+    @NotBlank(message="The name of a domain must not be blank.")
+    @Size(max=255)
+    private final String name;
     
+    @NotNull
+    @NotBlank(message="The authority of a domain must not be blank.")
+    @Size(max=255)
+    private final String authority;
     
+    @NotNull
+    @NotBlank(message="The version of a domain must not be blank.")
+    @Size(max=255)
+    private final String version;
+
 }
