@@ -10,6 +10,7 @@ bin/
 .project
 .settings/
 *.log
+lombok.config
 
 vna-type-mapping-missing.properties
 misc/private.der
