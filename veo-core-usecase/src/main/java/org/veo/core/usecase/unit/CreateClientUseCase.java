@@ -28,7 +28,7 @@ import org.veo.core.usecase.UseCase;
 import lombok.Value;
 
 /**
- * Create a new unit for a new client.
+ * Create a new client and unit.
  * 
  * @author akoderman
  *

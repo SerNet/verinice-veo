@@ -27,6 +27,7 @@ import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.persistence.access.AssetRepository;
 import org.veo.persistence.access.ProcessRepository;
+import org.veo.persistence.access.UnitRepository;
 
 /**
  * This configuration takes care of wiring classes from core modules (Entity-Layer, Use Case-Layer)
@@ -53,5 +54,10 @@ public class ModuleConfiguration {
     @Bean
     public CreateAssetUseCase createAssetUseCase(AssetRepository assetRepository) {
         return new CreateAssetUseCase(assetRepository);
+    }
+    
+    @Bean
+    public GetUnitUseCase getUnitUseCase(UnitRepository unitRepository) {
+        return new GetUnitUseCase(unitRepository);
     }
 }

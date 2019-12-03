@@ -58,8 +58,6 @@ public class Client {
     @Size(min=1, max=1000000, message="A client must be working with at least one domain.")
     private Set<Domain> domains;
 
-   
-
     private Client(Key<UUID> id, String name) {
         this.id = id;
         this.name = name;
