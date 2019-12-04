@@ -14,28 +14,24 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest.annotations.asset;
+package org.veo.rest.annotations.group;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.http.MediaType;
+import io.swagger.v3.oas.annotations.Parameter;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-
-@RequestBody(description = "Asset data",
-             required = true,
-             content = @io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                                                    schema = @io.swagger.v3.oas.annotations.media.Schema(example = LabelsAsset.ASSET_DATA_EXAMPLE)))
-@Target({ METHOD, PARAMETER, ANNOTATION_TYPE })
+@Parameter(name = "type",
+           description = "Type of the group, one of: asset, container, control, person, process, risk, scenario",
+           example = "asset",
+           required = false)
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
-public @interface RequestBodyAsset {
-
+@Target({ PARAMETER, METHOD, FIELD, ANNOTATION_TYPE })
+public @interface ParameterType {
 }
