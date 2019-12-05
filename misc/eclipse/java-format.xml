@@ -16,7 +16,7 @@
 			value="16" />
 		<setting
 			id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_annotation"
-			value="0" />
+			value="82" />
 		<setting
 			id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_enum_constant"
 			value="16" />

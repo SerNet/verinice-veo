@@ -58,7 +58,8 @@ public class LinksController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
     }
 
-    @RequestMapping(path = "/links/{uuid:.+}" /* at least on char to distinguish form get all */, method = RequestMethod.GET)
+    @RequestMapping(path = "/links/{uuid:.+}" /* at least on char to distinguish form get all */,
+                    method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getLink(@PathVariable(value = "uuid") String uuid) {
         Map<String, Object> result = mapService.find(uuid);
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);

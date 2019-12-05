@@ -51,30 +51,38 @@ public class StaticController {
     @Autowired
     private VeoConfigurationService configuration;
 
-    @RequestMapping(value = "/schemas", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/schemas",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @Deprecated
     public ResponseEntity<String[]> getSchemasDeprecated() throws IOException {
         return listFiles("classpath:schemas/elements/*.json", getSchemaDirectory());
     }
 
-    @RequestMapping(value = "/schemas/elements", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/schemas/elements",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String[]> getSchemas() throws IOException {
         return listFiles("classpath:schemas/elements/*.json", getSchemaDirectory());
     }
 
-    @RequestMapping(value = "/schemas/links", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/schemas/links",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String[]> getlinkSchemas() throws IOException {
         return listFiles("classpath:schemas/links/*.json", getLinkSchemaDirectory());
 
     }
 
-    @RequestMapping(value = "/schemas/{name:.+}" /* accept dots in name */, method = RequestMethod.GET)
+    @RequestMapping(value = "/schemas/{name:.+}" /* accept dots in name */,
+                    method = RequestMethod.GET)
     @Deprecated
     public ResponseEntity<Resource> getSchemaDeprecated(@PathVariable("name") String schemaName) {
         return getSchema(schemaName);
     }
 
-    @RequestMapping(value = "/schemas/elements/{name:.+}" /* accept dots in name */, method = RequestMethod.GET)
+    @RequestMapping(value = "/schemas/elements/{name:.+}" /* accept dots in name */,
+                    method = RequestMethod.GET)
     public ResponseEntity<Resource> getSchema(@PathVariable("name") String schemaName) {
 
         Resource resource = getSchemaResource(schemaName, "/schemas/elements/",
@@ -86,7 +94,8 @@ public class StaticController {
         return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
     }
 
-    @RequestMapping(value = "/schemas/links/{name:.+}" /* accept dots in name */, method = RequestMethod.GET)
+    @RequestMapping(value = "/schemas/links/{name:.+}" /* accept dots in name */,
+                    method = RequestMethod.GET)
     public ResponseEntity<Resource> getLinkSchema(@PathVariable("name") String schemaName) {
         Resource resource = getSchemaResource(schemaName, "/schemas/links/",
                 getLinkSchemaDirectory());

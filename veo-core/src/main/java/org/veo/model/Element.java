@@ -51,13 +51,17 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  */
 @Entity
 @NamedEntityGraphs({
-        @NamedEntityGraph(name = "linksWithProperties", attributeNodes = {
-                @NamedAttributeNode(value = "linksOutgoing", subgraph = "linksGraph"),
-                @NamedAttributeNode(value = "properties") }, subgraphs = {
-                        @NamedSubgraph(name = "linksGraph", attributeNodes = {
-                                @NamedAttributeNode(value = "properties") }) }),
-        @NamedEntityGraph(name = "properties", attributeNodes = {
-                @NamedAttributeNode(value = "properties") }) })
+        @NamedEntityGraph(name = "linksWithProperties",
+                          attributeNodes = {
+                                  @NamedAttributeNode(value = "linksOutgoing",
+                                                      subgraph = "linksGraph"),
+                                  @NamedAttributeNode(value = "properties") },
+                          subgraphs = {
+                                  @NamedSubgraph(name = "linksGraph",
+                                                 attributeNodes = {
+                                                         @NamedAttributeNode(value = "properties") }) }),
+        @NamedEntityGraph(name = "properties",
+                          attributeNodes = { @NamedAttributeNode(value = "properties") }) })
 @JsonInclude(Include.NON_NULL)
 public class Element implements Serializable {
 
