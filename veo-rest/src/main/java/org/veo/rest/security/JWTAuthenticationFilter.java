@@ -71,7 +71,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
         try {
             ApplicationUser credentials = new ObjectMapper().readValue(req.getInputStream(),
-                    ApplicationUser.class);
+                                                                       ApplicationUser.class);
 
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     credentials.getUsername(), credentials.getPassword(), new ArrayList<>()));
@@ -89,10 +89,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Add some example claims to play with whats possible.
         customClaim.put("profiles", new String[] { "export", "import", "tasks" });
         String token = Jwts.builder()
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .setSubject(((User) auth.getPrincipal()).getUsername()).setIssuer("verinice.VEO")
-                .setIssuedAt(new Date()).setAudience("verinice.REST clients").addClaims(customClaim)
-                .signWith(signingKey, SignatureAlgorithm.RS512).compact();
+                           .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                           .setSubject(((User) auth.getPrincipal()).getUsername())
+                           .setIssuer("verinice.VEO")
+                           .setIssuedAt(new Date())
+                           .setAudience("verinice.REST clients")
+                           .addClaims(customClaim)
+                           .signWith(signingKey, SignatureAlgorithm.RS512)
+                           .compact();
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

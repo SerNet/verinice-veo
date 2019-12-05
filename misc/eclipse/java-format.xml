@@ -25,7 +25,7 @@
 			value="16" />
 		<setting
 			id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_method_invocation"
-			value="16" />
+			value="18" />
 		<setting
 			id="org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression"
 			value="16" />
@@ -88,7 +88,7 @@
 			value="80" />
 		<setting
 			id="org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation"
-			value="16" />
+			value="83" />
 		<setting
 			id="org.eclipse.jdt.core.formatter.alignment_for_shift_operator"
 			value="0" />

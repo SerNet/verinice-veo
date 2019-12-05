@@ -49,10 +49,10 @@ public class VnaImportApplication {
             long start = System.currentTimeMillis();
             CommandLine line = parser.parse(options, args);
             final String filePath = line.getOptionValue("file");
-            final int numberOfThreads = Integer
-                    .parseInt(line.getOptionValue("threads", THREADS_DEFAULT));
-            ConfigurableApplicationContext context = SpringApplication
-                    .run(VnaImportConfiguration.class, args);
+            final int numberOfThreads = Integer.parseInt(line.getOptionValue("threads",
+                                                                             THREADS_DEFAULT));
+            ConfigurableApplicationContext context = SpringApplication.run(VnaImportConfiguration.class,
+                                                                           args);
             log.info("Importing: {}...", filePath);
             logNumberOfThreads(numberOfThreads);
             try (InputStream rawZipStream = Files.newInputStream(Paths.get(filePath))) {
@@ -71,11 +71,17 @@ public class VnaImportApplication {
     private static Options newCommandLineOptions() {
         Options options = new Options();
         options.addOption(new Option("h", "help", false, "print this message"));
-        options.addOption(Option.builder("f").hasArg().required()
-                .desc("use given VNA file (required)").longOpt("file").build());
-        options.addOption(Option.builder("t").hasArg()
-                .desc("number of threads (default: " + THREADS_DEFAULT + ")").longOpt("threads")
-                .build());
+        options.addOption(Option.builder("f")
+                                .hasArg()
+                                .required()
+                                .desc("use given VNA file (required)")
+                                .longOpt("file")
+                                .build());
+        options.addOption(Option.builder("t")
+                                .hasArg()
+                                .desc("number of threads (default: " + THREADS_DEFAULT + ")")
+                                .longOpt("threads")
+                                .build());
         return options;
     }
 

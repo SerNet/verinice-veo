@@ -76,8 +76,7 @@ public final class Vna {
             LOG.debug("Creating new Vna...");
         }
         try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
-            for (ZipEntry zipEntry = zipInputStream.getNextEntry(); zipEntry != null; zipInputStream
-                    .getNextEntry()) {
+            for (ZipEntry zipEntry = zipInputStream.getNextEntry(); zipEntry != null; zipInputStream.getNextEntry()) {
                 if (VERINICE_XML.equals(zipEntry.getName())) {
                     return javax.xml.bind.JAXB.unmarshal(zipInputStream, SyncRequest.class);
                 }

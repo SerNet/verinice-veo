@@ -45,8 +45,9 @@ public class ImportContext {
 
     public void addElement(ElementImportContext elementContext) {
         if (elementContext.getElement() != null) {
-            extIdElementMap.put(elementContext.getSyncObject().getExtId(),
-                    elementContext.getElement());
+            extIdElementMap.put(elementContext.getSyncObject()
+                                              .getExtId(),
+                                elementContext.getElement());
         }
     }
 

@@ -131,8 +131,8 @@ public class VnaImport {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
                 ElementImportTask importTask = elementImportTaskFactory.getObject();
-                importTask.setContext(
-                        new ElementImportContext(parent, syncObject, mapObjectTypeList));
+                importTask.setContext(new ElementImportContext(parent, syncObject,
+                        mapObjectTypeList));
                 elementImportCompletionService.submit(importTask);
             }
             waitForObjectResults(syncObjectList.size());
@@ -141,7 +141,8 @@ public class VnaImport {
 
     private void waitForObjectResults(int n) throws InterruptedException, ExecutionException {
         for (int i = 0; i < n; ++i) {
-            ElementImportContext elementImportContext = elementImportCompletionService.take().get();
+            ElementImportContext elementImportContext = elementImportCompletionService.take()
+                                                                                      .get();
             if (elementImportContext != null) {
                 afterImport(elementImportContext);
             }
@@ -151,19 +152,18 @@ public class VnaImport {
     private void afterImport(ElementImportContext elementImportContext)
             throws InterruptedException, ExecutionException {
         this.importContext.addElement(elementImportContext);
-        this.importContext
-                .addAllMissingMappingProperties(elementImportContext.getMissingMappingProperties());
+        this.importContext.addAllMissingMappingProperties(elementImportContext.getMissingMappingProperties());
         Element importedElement = elementImportContext.getElement();
         if (importedElement != null) {
             numberOfElements++;
-            importObjectList(importedElement, elementImportContext.getSyncObject().getChildren(),
-                    elementImportContext.getMapObjectTypeList());
+            importObjectList(importedElement, elementImportContext.getSyncObject()
+                                                                  .getChildren(),
+                             elementImportContext.getMapObjectTypeList());
         }
     }
 
     private void afterImport(LinkImportContext linkImportContext) {
-        this.importContext
-                .addAllMissingMappingProperties(linkImportContext.getMissingMappingProperties());
+        this.importContext.addAllMissingMappingProperties(linkImportContext.getMissingMappingProperties());
         if (linkImportContext.getLink() != null) {
             numberOfLinks++;
         }
@@ -191,7 +191,8 @@ public class VnaImport {
 
     private void waitForLinkResults(int n) throws InterruptedException, ExecutionException {
         for (int i = 0; i < n; ++i) {
-            LinkImportContext linkImportContext = linkImportCompletionService.take().get();
+            LinkImportContext linkImportContext = linkImportCompletionService.take()
+                                                                             .get();
             if (linkImportContext != null) {
                 afterImport(linkImportContext);
             }
@@ -199,18 +200,24 @@ public class VnaImport {
     }
 
     private List<SyncObject> getSyncObjectList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncData)
-                .map(SyncData::getSyncObject).orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest)
+                       .map(SyncRequest::getSyncData)
+                       .map(SyncData::getSyncObject)
+                       .orElse(Collections.emptyList());
     }
 
     private List<SyncLink> getSyncLinkList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncData)
-                .map(SyncData::getSyncLink).orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest)
+                       .map(SyncRequest::getSyncData)
+                       .map(SyncData::getSyncLink)
+                       .orElse(Collections.emptyList());
     }
 
     private List<MapObjectType> getMapObjectTypeList(SyncRequest syncRequest) {
-        return Optional.ofNullable(syncRequest).map(SyncRequest::getSyncMapping)
-                .map(SyncMapping::getMapObjectType).orElse(Collections.emptyList());
+        return Optional.ofNullable(syncRequest)
+                       .map(SyncRequest::getSyncMapping)
+                       .map(SyncMapping::getMapObjectType)
+                       .orElse(Collections.emptyList());
     }
 
     private void handleMissingProperties() {
@@ -250,7 +257,8 @@ public class VnaImport {
             // (Re-)Cancel if current thread also interrupted
             pool.shutdownNow();
             // Preserve interrupt status
-            Thread.currentThread().interrupt();
+            Thread.currentThread()
+                  .interrupt();
         }
     }
 

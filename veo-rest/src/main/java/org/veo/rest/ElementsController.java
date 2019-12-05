@@ -65,46 +65,55 @@ public class ElementsController {
     @GetMapping(value = "/elements")
     public ResponseEntity<List<Map<String, Object>>> getElements(
             @RequestParam(value = PARENT_PARAM, required = false) String parentUuid) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(getElementList(parentUuid));
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .body(getElementList(parentUuid));
     }
 
     @PostMapping(value = "/elements")
     public ResponseEntity<Resource> createElements(@RequestBody Map<String, Object> content) {
         String uuid = this.mapService.saveNew(content);
-        return ResponseEntity.created(URI.create("/elements/" + uuid)).build();
+        return ResponseEntity.created(URI.create("/elements/" + uuid))
+                             .build();
     }
 
     @GetMapping(value = "/elements/{uuid:.+}")
     public ResponseEntity<Map<String, Object>> getElement(@PathVariable("uuid") String uuid) {
         Map<String, Object> map = mapService.find(uuid);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(map);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .body(map);
     }
 
     @GetMapping(value = "/elements/{uuid:.+}/children")
     public ResponseEntity<List<Map<String, Object>>> getChildren(
             @PathVariable("uuid") String uuid) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(mapService.findChildren(uuid));
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .body(mapService.findChildren(uuid));
     }
 
     @GetMapping(value = "/elements/{uuid:.+}/history")
     public ResponseEntity<List<HistoryEntry>> getElementHistory(@PathVariable("uuid") String uuid) {
         List<HistoryEntry> history = historyService.getHistory(uuid);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(history);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .body(history);
     }
 
     @PutMapping(value = "/elements/{uuid}")
     public ResponseEntity<Resource> updateElement(@PathVariable("uuid") String uuid,
             @RequestBody Map<String, Object> content) {
         mapService.save(uuid, content);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                             .build();
     }
 
     @DeleteMapping(value = "/elements/{uuid}")
     public ResponseEntity<Resource> deleteElement(@PathVariable("uuid") String uuid) {
         mapService.delete(uuid);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                             .build();
     }
 
     private List<Map<String, Object>> getElementList(String parentUuid) {

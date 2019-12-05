@@ -29,9 +29,9 @@ public class AbstractVeoFactory {
     private static final Set<String> STATIC_PROPERTIES;
 
     static {
-        STATIC_PROPERTIES = Stream
-                .of(JsonFactory.ID, JsonFactory.PARENT, JsonFactory.TITLE, JsonFactory.TYPE)
-                .collect(Collectors.toSet());
+        STATIC_PROPERTIES = Stream.of(JsonFactory.ID, JsonFactory.PARENT, JsonFactory.TITLE,
+                                      JsonFactory.TYPE)
+                                  .collect(Collectors.toSet());
     }
 
     protected AbstractVeoFactory() {

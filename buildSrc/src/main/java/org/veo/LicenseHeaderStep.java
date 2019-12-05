@@ -33,8 +33,9 @@ public final class LicenseHeaderStep implements Serializable {
     private static final String DEFAULT_YEAR_DELIMITER = "-";
     private static final String LICENSE_HEADER_DELIMITER = "package ";
 
-    private static final SerializableFileFilter UNSUPPORTED_JVM_FILES_FILTER = SerializableFileFilter
-            .skipFilesNamed("package-info.java", "package-info.groovy", "module-info.java");
+    private static final SerializableFileFilter UNSUPPORTED_JVM_FILES_FILTER = SerializableFileFilter.skipFilesNamed("package-info.java",
+                                                                                                                     "package-info.groovy",
+                                                                                                                     "module-info.java");
 
     private static final String licenseHeaderTemplate = "/*******************************************************************************\n"
             + " * Copyright (c) $YEAR $AUTHOR.\n" + " *\n"
@@ -59,9 +60,8 @@ public final class LicenseHeaderStep implements Serializable {
      */
     public static FormatterStep create(String author) {
         Objects.requireNonNull(author, "author");
-        return FormatterStep.create(LicenseHeaderStep.NAME,
-                new LicenseHeaderStep(author, LICENSE_HEADER_DELIMITER, DEFAULT_YEAR_DELIMITER),
-                step -> step::format);
+        return FormatterStep.create(LicenseHeaderStep.NAME, new LicenseHeaderStep(author,
+                LICENSE_HEADER_DELIMITER, DEFAULT_YEAR_DELIMITER), step -> step::format);
     }
 
     public static String name() {
@@ -84,7 +84,7 @@ public final class LicenseHeaderStep implements Serializable {
 
         this.author = author;
         this.delimiterPattern = Pattern.compile('^' + delimiter,
-                Pattern.UNIX_LINES | Pattern.MULTILINE);
+                                                Pattern.UNIX_LINES | Pattern.MULTILINE);
     }
 
     /** Formats the given string. */
@@ -99,11 +99,12 @@ public final class LicenseHeaderStep implements Serializable {
                 // don't change files which have a different license
                 return raw;
             }
-            String licenseTemplateWithTokensReplaced = licenseHeaderTemplate
-                    .replace("$YEAR", "\\E\\d{4}\\Q")
-                    .replace("$AUTHOR", "\\E[\\p{IsAlphabetic}' -]+\\Q");
+            String licenseTemplateWithTokensReplaced = licenseHeaderTemplate.replace("$YEAR",
+                                                                                     "\\E\\d{4}\\Q")
+                                                                            .replace("$AUTHOR",
+                                                                                     "\\E[\\p{IsAlphabetic}' -]+\\Q");
             Pattern p = Pattern.compile("^\\Q" + licenseTemplateWithTokensReplaced + "\\E",
-                    Pattern.UNIX_LINES | Pattern.MULTILINE);
+                                        Pattern.UNIX_LINES | Pattern.MULTILINE);
             Matcher m = p.matcher(existingLicense);
             if (m.find()) {
                 // if no change is required, return the raw string without
@@ -119,11 +120,13 @@ public final class LicenseHeaderStep implements Serializable {
                     yearToUse = existingInfoMatcher.group(1);
                     authorToUse = existingInfoMatcher.group(2);
                 } else {
-                    yearToUse = String.valueOf(YearMonth.now().getYear());
+                    yearToUse = String.valueOf(YearMonth.now()
+                                                        .getYear());
                     authorToUse = author;
                 }
                 String licenseHeaderExtrapolated = licenseHeaderTemplate.replace("$YEAR", yearToUse)
-                        .replace("$AUTHOR", authorToUse);
+                                                                        .replace("$AUTHOR",
+                                                                                 authorToUse);
                 return licenseHeaderExtrapolated + raw.substring(matcher.start());
             }
         }

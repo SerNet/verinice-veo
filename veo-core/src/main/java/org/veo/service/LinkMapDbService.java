@@ -89,7 +89,8 @@ public class LinkMapDbService implements LinkMapService {
             throw new VeoException(VeoException.Error.ELEMENT_EXISTS,
                     "Element with uuid " + uuid + " already exists.");
         }
-        return repository.save(link).getUuid();
+        return repository.save(link)
+                         .getUuid();
     }
 
     @Override

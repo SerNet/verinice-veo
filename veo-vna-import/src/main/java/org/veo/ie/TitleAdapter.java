@@ -224,7 +224,8 @@ public final class TitleAdapter {
     public static String getAttribute(List<SyncAttribute> syncAttributeList, String propertyId) {
         for (SyncAttribute attribute : syncAttributeList) {
             if (propertyId.equals(attribute.getName())) {
-                return attribute.getValue().get(0);
+                return attribute.getValue()
+                                .get(0);
             }
         }
         LOG.warn("No property found for property type id: {}", propertyId);

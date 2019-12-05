@@ -51,7 +51,7 @@ public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
         }
         String bodyOfResponse = veoException.getMessage();
         return handleExceptionInternal(veoException, bodyOfResponse, new HttpHeaders(), status,
-                request);
+                                       request);
     }
 
 }

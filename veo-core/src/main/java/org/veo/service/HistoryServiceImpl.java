@@ -70,7 +70,8 @@ public class HistoryServiceImpl implements HistoryService {
     private static HistoryEntry createHistoryEntry() {
         HistoryEntry entry = new HistoryEntry();
         entry.setTimestamp(ZonedDateTime.now());
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext()
+                                                   .getAuthentication();
         if (auth == null) {
             throw new VeoException(VeoException.Error.AUTHENTICATION_REQUIRED,
                     "versioning requires authentication");

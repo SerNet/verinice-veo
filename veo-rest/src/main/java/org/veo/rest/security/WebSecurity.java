@@ -43,17 +43,27 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers(HttpMethod.GET, "/")
-                .permitAll().anyRequest().authenticated().and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                // this disables session creation on Spring Security
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors()
+            .and()
+            .csrf()
+            .disable()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+            .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+            // this disables session creation on Spring Security
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(inMemoryUserDetailsManager()).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(inMemoryUserDetailsManager())
+            .passwordEncoder(passwordEncoder);
 
     }
 
@@ -67,12 +77,18 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
-        inMemoryUserDetailsManager
-                .createUser(User.withUsername("user").password("password").roles("USER").build());
-        inMemoryUserDetailsManager.createUser(
-                User.withUsername("app_client").password("nopass").roles("USER").build());
-        inMemoryUserDetailsManager
-                .createUser(User.withUsername("admin").password("password").roles("USER").build());
+        inMemoryUserDetailsManager.createUser(User.withUsername("user")
+                                                  .password("password")
+                                                  .roles("USER")
+                                                  .build());
+        inMemoryUserDetailsManager.createUser(User.withUsername("app_client")
+                                                  .password("nopass")
+                                                  .roles("USER")
+                                                  .build());
+        inMemoryUserDetailsManager.createUser(User.withUsername("admin")
+                                                  .password("password")
+                                                  .roles("USER")
+                                                  .build());
         return inMemoryUserDetailsManager;
     }
 }

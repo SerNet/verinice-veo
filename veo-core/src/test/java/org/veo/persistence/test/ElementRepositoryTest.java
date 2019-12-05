@@ -95,7 +95,8 @@ public class ElementRepositoryTest {
         elementRepository.save(element);
         Element elementResult = elementRepository.findByUuid(element.getUuid());
         assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(4, elementResult.getProperties()
+                                     .size());
     }
 
     @Test
@@ -108,8 +109,10 @@ public class ElementRepositoryTest {
 
         Element elementResult = elementRepository.findOneWithChildren(element.getUuid());
         assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
-        assertEquals(1, elementResult.getChildren().size());
+        assertEquals(4, elementResult.getProperties()
+                                     .size());
+        assertEquals(1, elementResult.getChildren()
+                                     .size());
     }
 
     @Test
@@ -125,7 +128,8 @@ public class ElementRepositoryTest {
         link.setDestination(linkedElement);
         link.setTypeId("");
         LinkProperty number = new LinkProperty();
-        number.setKey(UUID.randomUUID().toString());
+        number.setKey(UUID.randomUUID()
+                          .toString());
         number.setValue(String.valueOf(23));
         link.addProperty(number);
         link = linkRepository.save(link);
@@ -134,11 +138,18 @@ public class ElementRepositoryTest {
 
         Element elementResult = elementRepository.findOneWithLinks(element.getUuid());
         assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
-        assertEquals(1, elementResult.getLinksOutgoing().size());
+        assertEquals(4, elementResult.getProperties()
+                                     .size());
+        assertEquals(1, elementResult.getLinksOutgoing()
+                                     .size());
 
-        assertEquals(1, elementResult.getLinksOutgoing().iterator().next().getProperties().size());
-        assertEquals(1, elementResult.getLinkedDestinations().size());
+        assertEquals(1, elementResult.getLinksOutgoing()
+                                     .iterator()
+                                     .next()
+                                     .getProperties()
+                                     .size());
+        assertEquals(1, elementResult.getLinkedDestinations()
+                                     .size());
     }
 
     @Test
@@ -147,7 +158,8 @@ public class ElementRepositoryTest {
         elementRepository.save(element);
         Element elementResult = elementRepository.findOneWithAll(element.getUuid());
         assertNotNull(elementResult);
-        assertEquals(4, elementResult.getProperties().size());
+        assertEquals(4, elementResult.getProperties()
+                                     .size());
     }
 
     @Test
@@ -171,7 +183,8 @@ public class ElementRepositoryTest {
         List<Element> children = elementRepository.findByParentId(parent.getUuid());
         assertNotNull(children);
         assertEquals(1, children.size());
-        assertEquals(child.getUuid(), children.get(0).getUuid());
+        assertEquals(child.getUuid(), children.get(0)
+                                              .getUuid());
     }
 
     @Test
@@ -206,7 +219,9 @@ public class ElementRepositoryTest {
 
         Element elementResult = elementRepository.findOneWithLinks(child.getUuid());
         assertNotNull(elementResult);
-        assertTrue(parent.getUuid().equals(elementResult.getParent().getUuid()));
+        assertTrue(parent.getUuid()
+                         .equals(elementResult.getParent()
+                                              .getUuid()));
 
         Element newParent = createElement("org");
         newParent = elementRepository.save(newParent);
@@ -215,7 +230,9 @@ public class ElementRepositoryTest {
 
         elementResult = elementRepository.findOneWithLinks(child.getUuid());
         assertNotNull(elementResult);
-        assertTrue(newParent.getUuid().equals(elementResult.getParent().getUuid()));
+        assertTrue(newParent.getUuid()
+                            .equals(elementResult.getParent()
+                                                 .getUuid()));
     }
 
     @Test
@@ -260,7 +277,9 @@ public class ElementRepositoryTest {
 
         ElementProperty date = new ElementProperty();
         date.setKey("date");
-        date.setValue(Calendar.getInstance().getTime().toString());
+        date.setValue(Calendar.getInstance()
+                              .getTime()
+                              .toString());
         element.addProperty(date);
 
         ElementProperty label = new ElementProperty();

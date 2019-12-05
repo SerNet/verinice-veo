@@ -31,12 +31,14 @@ public final class Resources {
     }
 
     public static InputStream getMetaSchemaAsStream() {
-        return Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(META_SCHEMA_FILE_NAME);
+        return Thread.currentThread()
+                     .getContextClassLoader()
+                     .getResourceAsStream(META_SCHEMA_FILE_NAME);
     }
 
     public static InputStream getLinkMetaSchemaAsStream() {
-        return Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream(LINK_META_SCHEMA_FILE_NAME);
+        return Thread.currentThread()
+                     .getContextClassLoader()
+                     .getResourceAsStream(LINK_META_SCHEMA_FILE_NAME);
     }
 }

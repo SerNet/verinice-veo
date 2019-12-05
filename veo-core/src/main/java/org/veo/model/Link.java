@@ -67,7 +67,8 @@ public class Link implements Serializable {
     private Set<LinkProperty> properties;
 
     public Link() {
-        this(UUID.randomUUID().toString());
+        this(UUID.randomUUID()
+                 .toString());
     }
 
     public Link(@NonNull String uuid) {

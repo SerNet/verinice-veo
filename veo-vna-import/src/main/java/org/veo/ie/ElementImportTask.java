@@ -54,10 +54,14 @@ public class ElementImportTask implements Callable<ElementImportContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ElementImportTask.class);
 
-    private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now().minusYears(40)
-            .toInstant(ZoneOffset.UTC).toEpochMilli();
-    private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now().plusYears(20)
-            .toInstant(ZoneOffset.UTC).toEpochMilli();
+    private static final long EPOCH_40_YEARS_AGO = LocalDateTime.now()
+                                                                .minusYears(40)
+                                                                .toInstant(ZoneOffset.UTC)
+                                                                .toEpochMilli();
+    private static final long EPOCH_20_YEARS_LATER = LocalDateTime.now()
+                                                                  .plusYears(20)
+                                                                  .toInstant(ZoneOffset.UTC)
+                                                                  .toEpochMilli();
 
     private ElementImportContext context;
 
@@ -108,7 +112,8 @@ public class ElementImportTask implements Callable<ElementImportContext> {
         if (context.getParent() == null) {
             element.setScope(element);
         } else {
-            element.setScope(context.getParent().getScope());
+            element.setScope(context.getParent()
+                                    .getScope());
         }
         importProperties(getSyncObject().getSyncAttribute(), element);
         if (isImported()) {
@@ -118,8 +123,8 @@ public class ElementImportTask implements Callable<ElementImportContext> {
     }
 
     private MapObjectType getMapObject() {
-        return getMapObject(context.getMapObjectTypeList(),
-                context.getSyncObject().getExtObjectType());
+        return getMapObject(context.getMapObjectTypeList(), context.getSyncObject()
+                                                                   .getExtObjectType());
     }
 
     private SyncObject getSyncObject() {
@@ -136,7 +141,8 @@ public class ElementImportTask implements Callable<ElementImportContext> {
         if (isImported(syncAttribute)) {
             String name = syncAttribute.getName();
             String propertyId = getVeoPropertyTypeId(name);
-            element.getProperties().addAll(createProperties(syncAttribute, propertyId));
+            element.getProperties()
+                   .addAll(createProperties(syncAttribute, propertyId));
         }
     }
 
@@ -166,8 +172,8 @@ public class ElementImportTask implements Callable<ElementImportContext> {
         if (valueAsNumber.isPresent()) {
             Long number = valueAsNumber.get();
             if (isTimestamp(number)) {
-                property.setValue(
-                        TimeFormatter.getIso8601FromEpochMillis(number, ZoneId.systemDefault()));
+                property.setValue(TimeFormatter.getIso8601FromEpochMillis(number,
+                                                                          ZoneId.systemDefault()));
                 property.setType(Property.Type.DATE);
             } else {
                 property.setValue(value);
@@ -177,12 +183,13 @@ public class ElementImportTask implements Callable<ElementImportContext> {
             property.setValue(value);
             property.setType(Property.Type.TEXT);
         }
-        property.setCardinality(
-                (isMulti) ? Property.Cardinality.MULTI : Property.Cardinality.SINGLE);
+        property.setCardinality((isMulti) ? Property.Cardinality.MULTI
+                : Property.Cardinality.SINGLE);
     }
 
     private static Optional<Long> tryToParseAsNumber(String s) {
-        if (s != null && !s.isEmpty() && NUMBER.matcher(s).matches()) {
+        if (s != null && !s.isEmpty() && NUMBER.matcher(s)
+                                               .matches()) {
             return Optional.ofNullable(Long.valueOf(s));
         } else {
             return Optional.empty();
@@ -229,8 +236,8 @@ public class ElementImportTask implements Callable<ElementImportContext> {
 
     private boolean isNotTitle(SyncAttribute syncAttribute) {
         String name = syncAttribute.getName();
-        String vnaTitleKey = TitleAdapter
-                .getTitleKey(this.context.getSyncObject().getExtObjectType());
+        String vnaTitleKey = TitleAdapter.getTitleKey(this.context.getSyncObject()
+                                                                  .getExtObjectType());
         return name == null || !name.equals(vnaTitleKey);
     }
 

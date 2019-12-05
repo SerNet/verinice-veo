@@ -45,8 +45,7 @@ import org.veo.service.VeoConfigurationService;
 public class StaticController {
     private static final Logger logger = LoggerFactory.getLogger(StaticController.class);
 
-    private static final MediaType JSON_SCHEMA_UTF8 = MediaType
-            .valueOf("application/schema+json; charset=utf-8");
+    private static final MediaType JSON_SCHEMA_UTF8 = MediaType.valueOf("application/schema+json; charset=utf-8");
 
     @Autowired
     private VeoConfigurationService configuration;
@@ -86,37 +85,46 @@ public class StaticController {
     public ResponseEntity<Resource> getSchema(@PathVariable("name") String schemaName) {
 
         Resource resource = getSchemaResource(schemaName, "/schemas/elements/",
-                getSchemaDirectory());
+                                              getSchemaDirectory());
         if (!resource.exists()) {
             logger.info("Caught request to non-existent schema {}", schemaName);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound()
+                                 .build();
         }
-        return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
+        return ResponseEntity.ok()
+                             .contentType(JSON_SCHEMA_UTF8)
+                             .body(resource);
     }
 
     @RequestMapping(value = "/schemas/links/{name:.+}" /* accept dots in name */,
                     method = RequestMethod.GET)
     public ResponseEntity<Resource> getLinkSchema(@PathVariable("name") String schemaName) {
         Resource resource = getSchemaResource(schemaName, "/schemas/links/",
-                getLinkSchemaDirectory());
+                                              getLinkSchemaDirectory());
         if (!resource.exists()) {
             logger.info("Caught request to non-existent schema {}", schemaName);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound()
+                                 .build();
         }
-        return ResponseEntity.ok().contentType(JSON_SCHEMA_UTF8).body(resource);
+        return ResponseEntity.ok()
+                             .contentType(JSON_SCHEMA_UTF8)
+                             .body(resource);
     }
 
     private ResponseEntity<String[]> listFiles(String locationPattern, File schemaDir)
             throws IOException {
         if (schemaDir.exists() && schemaDir.isDirectory()) {
-            return ResponseEntity.ok().body(schemaDir.list());
+            return ResponseEntity.ok()
+                                 .body(schemaDir.list());
 
         } else {
             PathMatchingResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
             Resource[] schemaResources = resourcePatternResolver.getResources(locationPattern);
-            String[] resourceFileNames = Stream.of(schemaResources).map(Resource::getFilename)
-                    .toArray(String[]::new);
-            return ResponseEntity.ok().body(resourceFileNames);
+            String[] resourceFileNames = Stream.of(schemaResources)
+                                               .map(Resource::getFilename)
+                                               .toArray(String[]::new);
+            return ResponseEntity.ok()
+                                 .body(resourceFileNames);
         }
     }
 

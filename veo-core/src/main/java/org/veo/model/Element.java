@@ -106,7 +106,8 @@ public class Element implements Serializable {
     private Set<ElementProperty> properties;
 
     public Element() {
-        this(UUID.randomUUID().toString());
+        this(UUID.randomUUID()
+                 .toString());
     }
 
     public Element(@NonNull String uuid) {

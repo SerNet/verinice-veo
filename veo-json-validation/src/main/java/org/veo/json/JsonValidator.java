@@ -39,24 +39,26 @@ public class JsonValidator {
         JsonNode metaSchemaNode = mapper.readTree(is);
         try {
             final URITranslatorConfiguration uriCfg = URITranslatorConfiguration.newBuilder()
-                    .setNamespace("http://verinice.com/veo/")
-                    .addSchemaRedirect("http://verinice.com/veo/draft-01/schema",
-                            "resource:/meta.json")
-                    .addSchemaRedirect("https://verinice.com/veo/draft-01/schema",
-                            "resource:/meta.json")
-                    .addSchemaRedirect("http://verinice.com/veo/draft-01/link-schema",
-                            "resource:/link_meta.json")
-                    .addSchemaRedirect("https://verinice.com/veo/draft-01/link-schema",
-                            "resource:/link_meta.json")
-                    .addSchemaRedirect("http://verinice.com/veo/draft-01/definitions.json",
-                            "resource:/definitions.json")
-                    .addSchemaRedirect("https://verinice.com/veo/draft-01/definitions.json",
-                            "resource:/definitions.json")
-                    .freeze();
+                                                                                .setNamespace("http://verinice.com/veo/")
+                                                                                .addSchemaRedirect("http://verinice.com/veo/draft-01/schema",
+                                                                                                   "resource:/meta.json")
+                                                                                .addSchemaRedirect("https://verinice.com/veo/draft-01/schema",
+                                                                                                   "resource:/meta.json")
+                                                                                .addSchemaRedirect("http://verinice.com/veo/draft-01/link-schema",
+                                                                                                   "resource:/link_meta.json")
+                                                                                .addSchemaRedirect("https://verinice.com/veo/draft-01/link-schema",
+                                                                                                   "resource:/link_meta.json")
+                                                                                .addSchemaRedirect("http://verinice.com/veo/draft-01/definitions.json",
+                                                                                                   "resource:/definitions.json")
+                                                                                .addSchemaRedirect("https://verinice.com/veo/draft-01/definitions.json",
+                                                                                                   "resource:/definitions.json")
+                                                                                .freeze();
             final LoadingConfiguration loadingCfg = LoadingConfiguration.newBuilder()
-                    .setURITranslatorConfiguration(uriCfg).freeze();
+                                                                        .setURITranslatorConfiguration(uriCfg)
+                                                                        .freeze();
             final JsonSchemaFactory factory = JsonSchemaFactory.newBuilder()
-                    .setLoadingConfiguration(loadingCfg).freeze();
+                                                               .setLoadingConfiguration(loadingCfg)
+                                                               .freeze();
 
             schema = factory.getJsonSchema(metaSchemaNode);
         } catch (ProcessingException e) {

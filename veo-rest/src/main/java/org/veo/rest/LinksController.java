@@ -55,39 +55,47 @@ public class LinksController {
     @RequestMapping(path = "/links", method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> getLinks() throws IOException {
         List<Map<String, Object>> result = mapService.findAll();
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .body(result);
     }
 
     @RequestMapping(path = "/links/{uuid:.+}" /* at least on char to distinguish form get all */,
                     method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getLink(@PathVariable(value = "uuid") String uuid) {
         Map<String, Object> result = mapService.find(uuid);
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .body(result);
     }
 
     @RequestMapping(path = "/links/{uuid}", method = RequestMethod.PUT)
     public ResponseEntity<Object> getLinks(@PathVariable(value = "uuid") String uuid,
             @RequestBody Map<String, Object> content) {
         this.mapService.save(uuid, content);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noContent()
+                             .build();
     }
 
     @RequestMapping(path = "/links", method = RequestMethod.POST)
     public ResponseEntity<Object> postLink(@RequestBody Map<String, Object> content) {
         String uuid = this.mapService.saveNew(content);
-        return ResponseEntity.created(URI.create("/links/" + uuid)).build();
+        return ResponseEntity.created(URI.create("/links/" + uuid))
+                             .build();
     }
 
     @RequestMapping(value = "/elements/{uuid}/links", method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, Object>>> getLinks(@PathVariable("uuid") String uuid) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8)
-                .body(mapService.findByElement(uuid));
+        return ResponseEntity.ok()
+                             .contentType(MediaType.APPLICATION_JSON_UTF8)
+                             .body(mapService.findByElement(uuid));
     }
 
     @RequestMapping(value = "/links/{uuid}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> deleteLink(@PathVariable("uuid") String uuid) {
         mapService.delete(uuid);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                             .build();
     }
 
 }

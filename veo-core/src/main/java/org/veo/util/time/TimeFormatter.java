@@ -29,8 +29,7 @@ import java.time.format.DateTimeFormatter;
  */
 public final class TimeFormatter {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     private static final int MILLIS_PER_SECOND = 1000;
 
@@ -56,7 +55,8 @@ public final class TimeFormatter {
     }
 
     public static String getIso8601FromEpochMillis(long epochMillis, ZoneId zoneId) {
-        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(epochMillis).atZone(zoneId);
+        ZonedDateTime zonedDateTime = Instant.ofEpochMilli(epochMillis)
+                                             .atZone(zoneId);
         return zonedDateTime.format(DATE_TIME_FORMATTER_ISO_8601);
     }
 
@@ -105,7 +105,7 @@ public final class TimeFormatter {
         }
 
         return formatInterval(interval, outputDays, outputHours, outputMinutes, outputSeconds,
-                outputMilliseconds);
+                              outputMilliseconds);
     }
 
     private static String formatInterval(Interval interval, boolean outputDays, boolean outputHours,
@@ -113,31 +113,36 @@ public final class TimeFormatter {
         StringBuilder sb = new StringBuilder();
 
         if (outputDays) {
-            sb.append(interval.days).append(" d");
+            sb.append(interval.days)
+              .append(" d");
         }
         if (outputHours) {
             if (sb.length() > 0) {
                 sb.append(", ");
             }
-            sb.append(interval.hours).append(" h");
+            sb.append(interval.hours)
+              .append(" h");
         }
         if (outputMinutes) {
             if (sb.length() > 0) {
                 sb.append(", ");
             }
-            sb.append(interval.minutes).append(" m");
+            sb.append(interval.minutes)
+              .append(" m");
         }
         if (outputSeconds) {
             if (sb.length() > 0) {
                 sb.append(", ");
             }
-            sb.append(interval.seconds).append(" s");
+            sb.append(interval.seconds)
+              .append(" s");
         }
         if (outputMilliseconds) {
             if (sb.length() > 0) {
                 sb.append(", ");
             }
-            sb.append(interval.milliseconds).append(" ms");
+            sb.append(interval.milliseconds)
+              .append(" ms");
         }
         return sb.toString();
     }

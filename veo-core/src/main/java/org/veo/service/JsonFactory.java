@@ -59,8 +59,10 @@ public class JsonFactory {
     private Map<String, String> createStaticProperties(Link link) {
         Map<String, String> staticProperties = new HashMap<>(5);
         staticProperties.put(ID, link.getUuid());
-        staticProperties.put(SOURCE, link.getSource().getUuid());
-        staticProperties.put(TARGET, link.getDestination().getUuid());
+        staticProperties.put(SOURCE, link.getSource()
+                                         .getUuid());
+        staticProperties.put(TARGET, link.getDestination()
+                                         .getUuid());
         if (link.getTitle() != null) {
             staticProperties.put(TITLE, link.getTitle());
         }
@@ -81,7 +83,8 @@ public class JsonFactory {
         Map<String, String> staticProperties = new HashMap<>(4);
         staticProperties.put(ID, element.getUuid());
         if (element.getParent() != null) {
-            staticProperties.put(PARENT, element.getParent().getUuid());
+            staticProperties.put(PARENT, element.getParent()
+                                                .getUuid());
         }
         staticProperties.put(TITLE, element.getTitle());
         staticProperties.put(TYPE, element.getTypeId());

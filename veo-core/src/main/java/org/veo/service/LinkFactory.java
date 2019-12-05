@@ -43,7 +43,8 @@ public class LinkFactory extends AbstractVeoFactory {
     public Link createLink(Map<String, Object> json) {
         String id = (String) json.get(JsonFactory.ID);
         if (id == null) {
-            id = UUID.randomUUID().toString();
+            id = UUID.randomUUID()
+                     .toString();
         }
         return updateLink(json, new Link(id));
     }
@@ -159,7 +160,8 @@ public class LinkFactory extends AbstractVeoFactory {
 
     private static void addProperties(List<LinkProperty> propertyList, Link link) {
         for (LinkProperty property : propertyList) {
-            if (!link.getProperties().contains(property)) {
+            if (!link.getProperties()
+                     .contains(property)) {
                 link.addProperty(property);
             }
         }

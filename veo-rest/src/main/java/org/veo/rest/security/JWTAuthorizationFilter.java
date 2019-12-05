@@ -46,8 +46,8 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
     private Key verificationKey;
-    private static final Pattern AUTHORIZATION_HEADER_PATTERN = Pattern.compile("^" + TOKEN_PREFIX,
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern AUTHORIZATION_HEADER_PATTERN = Pattern.compile("^"
+            + TOKEN_PREFIX, Pattern.CASE_INSENSITIVE);
 
     public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
@@ -78,12 +78,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 ? new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList())
                 : null;
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext()
+                             .setAuthentication(authentication);
         chain.doFilter(req, res);
     }
 
     private String parseUserFromToken(String token) {
-        return Jwts.parser().setSigningKey(verificationKey).parseClaimsJws(token).getBody()
-                .getSubject();
+        return Jwts.parser()
+                   .setSigningKey(verificationKey)
+                   .parseClaimsJws(token)
+                   .getBody()
+                   .getSubject();
     }
 }

@@ -49,8 +49,7 @@ import org.veo.service.JsonFactory;
 @DataJpaTest
 public class LinkValidationTest {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(LinkValidationTest.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(LinkValidationTest.class.getName());
 
     @Autowired
     JsonFactory jsonFactory;
@@ -61,8 +60,9 @@ public class LinkValidationTest {
 
     @Before
     public void setup() throws IOException, ProcessingException {
-        linkSchemaValidator = new JsonValidator(
-                this.getClass().getClassLoader().getResourceAsStream("schemas/asset_control.json"));
+        linkSchemaValidator = new JsonValidator(this.getClass()
+                                                    .getClassLoader()
+                                                    .getResourceAsStream("schemas/asset_control.json"));
         mapper = new ObjectMapper();
     }
 

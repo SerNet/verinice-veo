@@ -221,7 +221,7 @@ public class NumericStringComparatorTest {
 
     protected void isFirstLessThanSecond(String startsWithUmlautO, String startsWithZ) {
         assertTrue(startsWithUmlautO + " is not less than " + startsWithZ,
-                FIRST_IS_LESS_THAN_SECOND >= NSC.compare(startsWithUmlautO, startsWithZ));
+                   FIRST_IS_LESS_THAN_SECOND >= NSC.compare(startsWithUmlautO, startsWithZ));
     }
 
 }

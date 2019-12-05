@@ -66,7 +66,7 @@ public class LinkImportTask implements Callable<LinkImportContext> {
             importLink();
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Link imported, start id: {}, end id: {}", context.getSource(),
-                        context.getDestination());
+                          context.getDestination());
             }
         } catch (Exception e) {
             LOG.error("Error while importing link, start id: " + context.getSource() + ", end id: "
@@ -78,7 +78,7 @@ public class LinkImportTask implements Callable<LinkImportContext> {
     private void importLink() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Start importing link, start id: {}, end id: {}...", context.getSource(),
-                    context.getDestination());
+                      context.getDestination());
         }
         if (isImported()) {
             Element source = context.getSource();
@@ -86,16 +86,20 @@ public class LinkImportTask implements Callable<LinkImportContext> {
             Link link = new Link();
             link.setSource(source);
             link.setDestination(destination);
-            link.setTypeId(getVeoElementTypeId(context.getSyncLink().getRelationId()));
+            link.setTypeId(getVeoElementTypeId(context.getSyncLink()
+                                                      .getRelationId()));
             linkService.save(link);
-            source.getLinksOutgoing().add(link);
-            destination.getLinksIncoming().add(link);
+            source.getLinksOutgoing()
+                  .add(link);
+            destination.getLinksIncoming()
+                       .add(link);
             context.setLink(link);
         }
     }
 
     private boolean isImported() {
-        String veriniceLinkTypeId = context.getSyncLink().getRelationId();
+        String veriniceLinkTypeId = context.getSyncLink()
+                                           .getRelationId();
         String veoLinkTypeId = getVeoElementTypeId(veriniceLinkTypeId);
         boolean isVeoPropertyId = (veoLinkTypeId != null);
         if (!isVeoPropertyId) {

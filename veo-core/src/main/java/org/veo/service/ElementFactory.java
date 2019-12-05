@@ -43,7 +43,8 @@ public class ElementFactory extends AbstractVeoFactory {
     public Element createElement(Map<String, Object> json) {
         String id = (String) json.get(JsonFactory.ID);
         if (id == null) {
-            id = UUID.randomUUID().toString();
+            id = UUID.randomUUID()
+                     .toString();
         }
         return updateElement(json, new Element(id));
     }
@@ -146,7 +147,8 @@ public class ElementFactory extends AbstractVeoFactory {
 
     private void addProperties(List<ElementProperty> propertyList, Element element) {
         for (ElementProperty property : propertyList) {
-            if (!element.getProperties().contains(property)) {
+            if (!element.getProperties()
+                        .contains(property)) {
                 element.addProperty(property);
             }
         }

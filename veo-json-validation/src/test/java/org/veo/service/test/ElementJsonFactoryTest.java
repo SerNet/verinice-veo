@@ -55,8 +55,7 @@ import org.veo.service.JsonFactory;
 @DataJpaTest
 public class ElementJsonFactoryTest {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(ElementJsonFactoryTest.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ElementJsonFactoryTest.class.getName());
 
     private static final String ROLE = "role";
     private static final String ROLE_A = "role-a";
@@ -85,8 +84,9 @@ public class ElementJsonFactoryTest {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNodeAsset = mapper.valueToTree(assetJsonMap);
 
-        final JsonNode schemaJsonNode = mapper.readTree(
-                this.getClass().getClassLoader().getResourceAsStream("schemas/asset.json"));
+        final JsonNode schemaJsonNode = mapper.readTree(this.getClass()
+                                                            .getClassLoader()
+                                                            .getResourceAsStream("schemas/asset.json"));
         final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
         final JsonSchema schema = factory.getJsonSchema(schemaJsonNode);
 
@@ -101,7 +101,8 @@ public class ElementJsonFactoryTest {
 
     @Test
     public void testCreateElement() {
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID()
+                          .toString();
         Map<String, Object> assetJsonMap = createAssetJsonMap(uuid);
 
         Element element = elementFactory.createElement(assetJsonMap);
@@ -114,36 +115,38 @@ public class ElementJsonFactoryTest {
         Set<ElementProperty> propertiesRole = getElementProperties(properties, ROLE);
         assertEquals("Number of role properties is not 2", 2, propertiesRole.size());
         assertTrue("Property " + ROLE_A + " not found",
-                isPropertyValue(propertiesRole, ROLE, ROLE_A));
+                   isPropertyValue(propertiesRole, ROLE, ROLE_A));
         assertTrue("Property " + ROLE_B + " not found",
-                isPropertyValue(propertiesRole, ROLE, ROLE_B));
+                   isPropertyValue(propertiesRole, ROLE, ROLE_B));
         assertTrue("Property index 1 not found", isIndexValue(propertiesRole, ROLE, 0));
         assertTrue("Property index 2 not found", isIndexValue(propertiesRole, ROLE, 1));
 
         Set<ElementProperty> propertiesBusinessValue = getElementProperties(properties,
-                BUSINESS_VALUE);
+                                                                            BUSINESS_VALUE);
         assertTrue("Property " + BUSINESS_VALUE_1 + " not found",
-                isPropertyValue(propertiesBusinessValue, BUSINESS_VALUE, BUSINESS_VALUE_1));
+                   isPropertyValue(propertiesBusinessValue, BUSINESS_VALUE, BUSINESS_VALUE_1));
         assertTrue("Property " + BUSINESS_VALUE_2 + " not found",
-                isPropertyValue(propertiesBusinessValue, BUSINESS_VALUE, BUSINESS_VALUE_2));
+                   isPropertyValue(propertiesBusinessValue, BUSINESS_VALUE, BUSINESS_VALUE_2));
         assertTrue("Property index 1 not found",
-                isIndexValue(propertiesBusinessValue, BUSINESS_VALUE, 0));
+                   isIndexValue(propertiesBusinessValue, BUSINESS_VALUE, 0));
         assertTrue("Property index 2 not found",
-                isIndexValue(propertiesBusinessValue, BUSINESS_VALUE, 1));
+                   isIndexValue(propertiesBusinessValue, BUSINESS_VALUE, 1));
 
         assertTrue("Property \"" + ASSET_TYPE_PHYSICAL + "\" not found",
-                isPropertyValue(properties, ASSET_TYPE, ASSET_TYPE_PHYSICAL));
+                   isPropertyValue(properties, ASSET_TYPE, ASSET_TYPE_PHYSICAL));
     }
 
     @Test
     public void testUpdateElement() {
-        String uuid = UUID.randomUUID().toString();
+        String uuid = UUID.randomUUID()
+                          .toString();
         Map<String, Object> assetJsonMap = createAssetJsonMap(uuid);
         Element element = elementFactory.createElement(assetJsonMap);
         Set<ElementProperty> propertyListAssetType = getElementProperties(element.getProperties(),
-                ASSET_TYPE);
+                                                                          ASSET_TYPE);
         assertEquals(1, propertyListAssetType.size());
-        ElementProperty assetType = propertyListAssetType.iterator().next();
+        ElementProperty assetType = propertyListAssetType.iterator()
+                                                         .next();
 
         assetJsonMap.put(ASSET_TYPE, ASSET_TYPE_SOFTWARE);
 
@@ -151,11 +154,12 @@ public class ElementJsonFactoryTest {
 
         Set<ElementProperty> updatedElementProperties = updatedElement.getProperties();
         assertTrue("Property \"" + ASSET_TYPE_SOFTWARE + "\" not found",
-                isPropertyValue(updatedElementProperties, ASSET_TYPE, ASSET_TYPE_SOFTWARE));
+                   isPropertyValue(updatedElementProperties, ASSET_TYPE, ASSET_TYPE_SOFTWARE));
 
         propertyListAssetType = getElementProperties(updatedElementProperties, ASSET_TYPE);
         assertEquals(1, propertyListAssetType.size());
-        ElementProperty updatedAssetType = propertyListAssetType.iterator().next();
+        ElementProperty updatedAssetType = propertyListAssetType.iterator()
+                                                                .next();
 
         assertEquals(assetType.getUuid(), updatedAssetType.getUuid());
     }
@@ -231,7 +235,7 @@ public class ElementJsonFactoryTest {
         List<Object> values = getValues(property);
         for (Object expected : expectedValues) {
             assertTrue("Could not find value(s) " + expected + " of property " + key,
-                    values.contains(expected));
+                       values.contains(expected));
         }
 
     }
