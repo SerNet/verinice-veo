@@ -1,5 +1,5 @@
 /*******************************************************************************
-Ahsut5Cairo8 * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,28 +16,19 @@ Ahsut5Cairo8 * Copyright (c) 2019 Alexander Koderman.
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
 
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.asset.IAssetRepository;
-import org.veo.core.usecase.UseCase;
-
-import lombok.Value;
 
 /**
  * Associate this asset with a different unit.
- * 
+ *
  */
-public  class MoveAssetToUnitUseCase extends UpdateAssetUseCase {
+public class MoveAssetToUnitUseCase extends UpdateAssetUseCase {
 
-    
     public MoveAssetToUnitUseCase(IAssetRepository assetRepository) {
         super(assetRepository);
     }
@@ -45,10 +36,12 @@ public  class MoveAssetToUnitUseCase extends UpdateAssetUseCase {
     @Override
     @Transactional(TxType.REQUIRED)
     protected Asset update(Asset asset, InputData input) {
-        if (!asset.getState().equals(Lifecycle.STORED_CURRENT)) {
+        if (!asset.getState()
+                  .equals(Lifecycle.STORED_CURRENT)) {
             throw new IllegalStateException("Only the current version of an asset can be moved.");
         }
-        asset.moveToUnit(input.getChangedAsset().getUnit());
+        asset.moveToUnit(input.getChangedAsset()
+                              .getUnit());
         return asset;
     }
 }

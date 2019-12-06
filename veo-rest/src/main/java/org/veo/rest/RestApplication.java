@@ -28,7 +28,8 @@ import org.veo.core.VeoCoreConfiguration;
 /**
  * @author Daniel Murygin dm[at]sernet[dot]de
  */
-@SpringBootApplication(scanBasePackages = {"org.veo.adapter.usecase.interactor.UseCaseInteractor"})
+@SpringBootApplication(scanBasePackages = {
+        "org.veo.adapter.usecase.interactor.UseCaseInteractor" })
 @Import(VeoCoreConfiguration.class)
 public class RestApplication {
 

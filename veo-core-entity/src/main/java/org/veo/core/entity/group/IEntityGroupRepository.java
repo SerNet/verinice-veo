@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity.group;
 
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.IRepository;
@@ -25,12 +23,11 @@ import org.veo.core.entity.Key;
 
 /**
  * A repository for <code>EntityGroup</code> entities.
- * 
+ *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  *
  */
 public interface IEntityGroupRepository extends IRepository<EntityGroup, Key<UUID>> {
-
 
 }

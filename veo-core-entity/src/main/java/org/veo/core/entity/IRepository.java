@@ -35,12 +35,11 @@ public interface IRepository<T, K> {
     public T save(T entity);
 
     public Optional<T> findById(K id);
-    
+
     public List<T> findByName(String search);
-    
+
     public void delete(T entity);
 
     public void deleteById(K entity);
-    
 
 }

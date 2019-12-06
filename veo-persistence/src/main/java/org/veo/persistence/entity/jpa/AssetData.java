@@ -13,20 +13,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
-
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.Valid;
-
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.asset.Asset;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -34,6 +26,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.asset.Asset;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,20 +39,17 @@ import lombok.ToString;
 
 @Entity(name = "asset")
 @Table(name = "assets")
-public class AssetData extends EntityLayerSupertypeData  {
-    
+public class AssetData extends EntityLayerSupertypeData {
 
-        private String name;
-        
-        
-    
-        public static AssetData from(@Valid EntityLayerSupertype Asset) {
-            // TODO map fields
-            return new AssetData();
-        }
-        
-        public Asset toAsset() {
-            return null;
-            //TODO map fields
-        }
+    private String name;
+
+    public static AssetData from(@Valid EntityLayerSupertype Asset) {
+        // TODO map fields
+        return new AssetData();
+    }
+
+    public Asset toAsset() {
+        return null;
+        // TODO map fields
+    }
 }

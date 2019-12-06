@@ -24,6 +24,8 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
+import lombok.Value;
+
 import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -32,8 +34,6 @@ import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
-
-import lombok.Value;
 
 /**
  * Creates a persistent new process object.
@@ -56,9 +56,7 @@ public class CreateProcessUseCase
 
     @Override
     public OutputData execute(InputData input) {
-        return new OutputData(
-                createProcess(input, getUnit(input))
-        );
+        return new OutputData(createProcess(input, getUnit(input)));
     }
 
     @Transactional(TxType.REQUIRED)
@@ -68,7 +66,6 @@ public class CreateProcessUseCase
 
         // change state from CREATING to STORED_CURRENT:
         process.setState(Lifecycle.STORED_CURRENT);
-       
 
         // process with STORED_CURRENT state will only be returned if could be
         // persisted
@@ -79,7 +76,8 @@ public class CreateProcessUseCase
     @Transactional(TxType.SUPPORTS)
     private Unit getUnit(InputData input) {
         GetUnitUseCase.InputData inputData = new GetUnitUseCase.InputData(input.getUnitId());
-        return getUnitUseCase.execute(inputData).getUnit();
+        return getUnitUseCase.execute(inputData)
+                             .getUnit();
     }
 
     @Valid

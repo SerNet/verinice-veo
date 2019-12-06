@@ -26,16 +26,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.asset.Asset;
-
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
+import org.veo.core.entity.asset.Asset;
 
 /**
  * A business process.
@@ -48,14 +47,14 @@ import lombok.ToString;
 @ToString
 public class Process extends EntityLayerSupertype<Process> {
 
-    
     @NotBlank
     private String name;
 
     // TODO this relation needs to be replaced by an relational-aspect
     @NotNull(message = "The array of assets must not be null.")
-    @Size(min = 0, max = 1000000,
-            message = "No more than one million assets may be directly referenced by a process.")
+    @Size(min = 0,
+          max = 1000000,
+          message = "No more than one million assets may be directly referenced by a process.")
     private Set<Asset> assets;
 
     private Process(Key id, Unit unit, String name, Lifecycle state, Instant validFrom,
@@ -74,7 +73,7 @@ public class Process extends EntityLayerSupertype<Process> {
 
     /**
      * Factory method to create a new process object.
-     * 
+     *
      * @param unit
      * @param name
      * @return
@@ -87,9 +86,9 @@ public class Process extends EntityLayerSupertype<Process> {
             Instant validFrom, long version) {
         return new Process(id, unit, name, state, validFrom, validFrom, version);
     }
-    
-    public static Process existingProcessWithAssets(Key<UUID> id, Unit unit, String name, Lifecycle state,
-            Instant validFrom, long version, Set<Asset> assets) {
+
+    public static Process existingProcessWithAssets(Key<UUID> id, Unit unit, String name,
+            Lifecycle state, Instant validFrom, long version, Set<Asset> assets) {
         return new Process(id, unit, name, state, validFrom, validFrom, version, assets);
     }
 
@@ -115,7 +114,5 @@ public class Process extends EntityLayerSupertype<Process> {
     public Process withId(Key<UUID> id) {
         return this.withId(id);
     }
-
-   
 
 }

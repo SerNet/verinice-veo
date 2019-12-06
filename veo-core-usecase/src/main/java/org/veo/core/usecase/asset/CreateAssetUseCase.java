@@ -20,14 +20,12 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
+import lombok.Value;
+
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.asset.IAssetRepository;
 import org.veo.core.usecase.UseCase;
-
-import lombok.Value;
 
 public class CreateAssetUseCase
         extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
@@ -48,19 +46,19 @@ public class CreateAssetUseCase
     private Asset createAsset(InputData input) {
         return Asset.newAsset(input.getUnit(), input.getName());
     }
-   
-    
+
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
-        @Valid private final Unit unit;
+        @Valid
+        private final Unit unit;
         private final String name;
     }
-    
 
     @Valid
     @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final Asset asset;
+        @Valid
+        private final Asset asset;
     }
 }

@@ -19,15 +19,14 @@ package org.veo.core.entity.asset;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Getter
@@ -35,7 +34,6 @@ import lombok.ToString;
 @ToString
 public class Asset extends EntityLayerSupertype<Asset> {
 
-    
     private String name;
 
     private Asset(Key<UUID> id, Unit unit, String name, Lifecycle status, Instant validFrom,
@@ -55,9 +53,10 @@ public class Asset extends EntityLayerSupertype<Asset> {
 
     /**
      * Marks the asset as removed. No further updates will be possible.
-     * (Additionally, the removed asset could be stored in a separate archive-table.)
-     * (Or alternatively the asset could just be deleted from the database completely.)
-     * 
+     * (Additionally, the removed asset could be stored in a separate
+     * archive-table.) (Or alternatively the asset could just be deleted from the
+     * database completely.)
+     *
      * @return
      */
     public Asset remove() {

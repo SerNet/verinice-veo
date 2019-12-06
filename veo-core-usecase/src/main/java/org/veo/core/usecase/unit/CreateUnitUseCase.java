@@ -20,15 +20,15 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
+import lombok.Value;
+
 import org.veo.core.entity.IUnitRepository;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
-
 /**
  * Create a new unit underneath an existing unit.
- * 
+ *
  * @author akoderman
  *
  */
@@ -49,21 +49,23 @@ public class CreateUnitUseCase
     }
 
     private Unit createUnit(InputData input) {
-        return Unit.newUnitBelongingToClient(input.getUnit().getClient(), input.getName());
+        return Unit.newUnitBelongingToClient(input.getUnit()
+                                                  .getClient(),
+                                             input.getName());
     }
-   
 
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
         private final String name;
-        @Valid private final Unit unit;
+        @Valid
+        private final Unit unit;
     }
-    
 
     @Valid
     @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final Unit unit;
+        @Valid
+        private final Unit unit;
     }
 }

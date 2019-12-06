@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
@@ -28,31 +25,31 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 
-import org.veo.core.entity.Unit;
-
 import lombok.Data;
+
+import org.veo.core.entity.Unit;
 
 @Data
 
 @Entity
 @IdClass(SimpleKey.class)
 public class UnitData {
-    
+
     @EmbeddedId
     private SimpleKey uuid;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
     private ClientData client;
-    
+
     @Column
     private String name;
-    
+
     public static UnitData from(@Valid Unit Asset) {
         // TODO map fields
         return new UnitData();
     }
-    
+
     public Unit toUnit() {
         return null;
         // TODO map fields

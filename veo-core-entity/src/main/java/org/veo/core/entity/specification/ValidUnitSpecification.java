@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
@@ -26,7 +23,7 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
 
-public class ValidUnitSpecification implements IEntitySpecification<EntityLayerSupertype>{
+public class ValidUnitSpecification implements IEntitySpecification<EntityLayerSupertype> {
 
     @Override
     public boolean isSatisfiedBy(EntityLayerSupertype entity) {
@@ -37,15 +34,14 @@ public class ValidUnitSpecification implements IEntitySpecification<EntityLayerS
     public Set<EntityLayerSupertype> selectSatisfyingElementsFrom(
             Collection<EntityLayerSupertype> collection) {
         return collection.stream()
-                .filter(this::isSatisfiedBy)
-                .collect(Collectors.toSet());
+                         .filter(this::isSatisfiedBy)
+                         .collect(Collectors.toSet());
     }
 
     public boolean isSatisfiedBy(Unit unit) {
-        return (unit != null
-                && !unit.getId().isUndefined()
-                && unit.getName() != null
-                && !unit.getName().isEmpty()
-               );
+        return (unit != null && !unit.getId()
+                                     .isUndefined()
+                && unit.getName() != null && !unit.getName()
+                                                  .isEmpty());
     }
 }

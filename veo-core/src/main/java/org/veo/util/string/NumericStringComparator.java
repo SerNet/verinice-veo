@@ -24,10 +24,9 @@ import org.veo.model.Element;
  */
 public class NumericStringComparator extends AbstractNumericStringComparator<Object> {
 
-   
     /**
      * @see sernet.gs.service.AbstractNumericStringComparator#convertToString(java.lang.
-     * Object)
+     *      Object)
      */
     @Override
     public String convertToString(Object o) {

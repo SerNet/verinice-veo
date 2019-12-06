@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
@@ -26,17 +23,17 @@ import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * An intention-revealing interface for business rule specifications.
- * 
+ *
  * Specifications are used by entity builders and constructors to ensure that
  * all entities are built to spec.
- * 
- * Specifications are also used by setter-methods and other state-changing operations
- * to ensure that the overall business model stays valid.
- * 
+ *
+ * Specifications are also used by setter-methods and other state-changing
+ * operations to ensure that the overall business model stays valid.
+ *
  */
 public interface IEntitySpecification<T extends EntityLayerSupertype> {
-    
+
     public boolean isSatisfiedBy(T entity);
-    
+
     public Set<T> selectSatisfyingElementsFrom(Collection<T> collection);
 }

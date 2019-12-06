@@ -13,23 +13,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.rest.configuration;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Configure repositories and persistence entities for Spring-Data.
  */
 @Configuration
-@EntityScan(basePackages = {"org.veo.persistence.entity.jpa"})
+@EntityScan(basePackages = { "org.veo.persistence.entity.jpa" })
 
 // Repositories are already configured in VeoCoreConfiguration.
-//@EnableJpaRepositories(basePackages = {"org.veo.persistence.access.jpa", "org.veo.persistence.access"})
+// @EnableJpaRepositories(basePackages = {"org.veo.persistence.access.jpa",
+// "org.veo.persistence.access"})
 public class DatabaseConfiguration {
 }

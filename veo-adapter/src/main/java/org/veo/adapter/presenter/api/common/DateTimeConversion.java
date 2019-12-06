@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
@@ -27,7 +24,7 @@ import java.util.TimeZone;
 public class DateTimeConversion {
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    
+
     public DateTimeConversion(String timezoneId) {
         dateFormat.setTimeZone(TimeZone.getTimeZone(timezoneId));
     }
@@ -39,7 +36,7 @@ public class DateTimeConversion {
             throw new InvalidDateException(date);
         }
     }
-    
+
     public String formatDate(Date date) {
         return dateFormat.format(date);
     }

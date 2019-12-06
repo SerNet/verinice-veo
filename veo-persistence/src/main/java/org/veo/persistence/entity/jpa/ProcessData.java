@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
@@ -30,15 +27,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.Valid;
 
-import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.process.Process;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.veo.core.entity.asset.Asset;
+import org.veo.core.entity.process.Process;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -51,28 +48,23 @@ import lombok.ToString;
 @Table(name = "processes")
 public class ProcessData extends EntityLayerSupertypeData {
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    /*
-     * Not modelled from asset's side. TODO will be replaced by Aspect
-     * relationship. This would be the mapping if this were a bidirectional
-     * association:
-     * 
+    /* Not modelled from asset's side. TODO will be replaced by Aspect relationship.
+     * This would be the mapping if this were a bidirectional association:
+     *
      * @ManyToMany
-     * 
+     *
      * @JoinTable(name = "process_asset", joinColumns =
      * { @JoinColumn(name="processId", referencedColumnName="uuid") },
      * inverseJoinColumns = {@JoinColumn(name="assetId",
-     * referencedColumnName="uuid")})
-     */
+     * referencedColumnName="uuid")}) */
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    @OneToMany(
-        cascade = { CascadeType.PERSIST, CascadeType.MERGE }, 
-        fetch = FetchType.EAGER,
-        orphanRemoval = true 
-    )
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+               fetch = FetchType.EAGER,
+               orphanRemoval = true)
     private Set<AssetData> assets;
 
     public static ProcessData from(@Valid Process process) {
@@ -81,14 +73,13 @@ public class ProcessData extends EntityLayerSupertypeData {
     }
 
     public Process toProcess() {
-        return Process.existingProcessWithAssets(
-                uuid.toKey(), unit.toUnit(), name, state, validFrom, version, toAssetSet(assets)
-        );
+        return Process.existingProcessWithAssets(uuid.toKey(), unit.toUnit(), name, state,
+                                                 validFrom, version, toAssetSet(assets));
     }
 
     private Set<Asset> toAssetSet(Set<AssetData> assets) {
         return assets.stream()
-                .map(AssetData::toAsset)
-                .collect(Collectors.toSet());
+                     .map(AssetData::toAsset)
+                     .collect(Collectors.toSet());
     }
 }

@@ -13,21 +13,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
 
 import org.springframework.data.repository.CrudRepository;
+
 import org.veo.persistence.entity.jpa.SimpleKey;
 import org.veo.persistence.entity.jpa.UnitData;
 
 /**
- * A CRUD repository that will be implemented at runtime by magic and/or Spring Boot.
- * 
+ * A CRUD repository that will be implemented at runtime by magic and/or Spring
+ * Boot.
+ *
  */
 public interface JpaUnitDataRepository extends CrudRepository<UnitData, SimpleKey> {
 

@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity.process;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ public interface IProcessRepository extends IRepository<Process, Key<UUID>> {
 
     /**
      * Retrieve processes for which the given person is responsible.
-     * 
+     *
      * @param personId
      * @return
      */
@@ -40,7 +39,7 @@ public interface IProcessRepository extends IRepository<Process, Key<UUID>> {
 
     /**
      * Find processes that hold a reference to the specified asset.
-     * 
+     *
      * @param asset
      * @return
      */

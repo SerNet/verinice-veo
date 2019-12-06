@@ -22,50 +22,49 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
-import org.modelmapper.ModelMapper;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.process.Process;
-import org.veo.core.usecase.process.GetProcessUseCase.OutputData;
-
 import lombok.Value;
 import lombok.With;
 
+import org.modelmapper.ModelMapper;
+
+import org.veo.core.entity.process.Process;
+
 @Value
 public class ProcessDto {
-    
-    @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
-        flags = Pattern.Flag.CASE_INSENSITIVE, 
-        message="ID must either be null (for new processes) or a valid UUID string following RFC 4122. ")
+
+    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+             flags = Pattern.Flag.CASE_INSENSITIVE,
+             message = "ID must either be null (for new processes) or a valid UUID string following RFC 4122. ")
     private String id;
-    
+
     @NotNull
     @PositiveOrZero
     private long version;
-    
-    @NotNull(message="A name must be present.") 
+
+    @NotNull(message = "A name must be present.")
     @NotBlank
-    @Size(min=1, max=255, message="The name must be between 1 and 255 characters long.")
+    @Size(min = 1, max = 255, message = "The name must be between 1 and 255 characters long.")
     @With
     private String name;
-    
+
     @NotNull
-    @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
-            flags = Pattern.Flag.CASE_INSENSITIVE, 
-            message="Unit ID must be a valid UUID string following RFC 4122.")
+    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+             flags = Pattern.Flag.CASE_INSENSITIVE,
+             message = "Unit ID must be a valid UUID string following RFC 4122.")
     @With
     private String unitId;
-    
-    @NotNull(message="An array of asset IDs must be present, but it may be empty.")
-    @Size(min=0, max=1000000, message="Array size must be less than one million asset IDs.")
+
+    @NotNull(message = "An array of asset IDs must be present, but it may be empty.")
+    @Size(min = 0, max = 1000000, message = "Array size must be less than one million asset IDs.")
     @With
     private String[] assetIDs;
-    
-    @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}")
+
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
     // additional date validation should be done on the parsed date object
     @With
     private String validFrom;
-    
-    @Pattern(regexp="\\d{4}-\\d{2}-\\d{2}")
+
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
     // additional date validation should be done on the parsed date object
     @With
     private String validUntil;
@@ -78,8 +77,8 @@ public class ProcessDto {
     public Process toProcess() {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(this, Process.class);
-        //return new Process(Key.uuidFrom(this.id), this.name); TODO implement mapping method from string to key for modelmapper
+        // return new Process(Key.uuidFrom(this.id), this.name); TODO implement mapping
+        // method from string to key for modelmapper
     }
-    
-   
+
 }

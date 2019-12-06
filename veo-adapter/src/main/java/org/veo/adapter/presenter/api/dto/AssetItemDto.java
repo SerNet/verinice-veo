@@ -21,36 +21,36 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import org.modelmapper.ModelMapper;
-import org.veo.core.entity.asset.Asset;
-
 import lombok.Value;
 import lombok.With;
+
+import org.modelmapper.ModelMapper;
+
+import org.veo.core.entity.asset.Asset;
 
 /**
  * Transfer object for assets when used as a collection of assets that is
  * included inside other objects.
- * 
- * Contains just the display name and the ID of the asset. With this the
- * asset can be listed by name and queried if more information about it is needed.
- * 
+ *
+ * Contains just the display name and the ID of the asset. With this the asset
+ * can be listed by name and queried if more information about it is needed.
+ *
  * @author akoderman
  *
  */
 @Value
 public class AssetItemDto {
 
-    @Pattern(regexp="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", 
-            flags = Pattern.Flag.CASE_INSENSITIVE, 
-            message="ID must either be null (for new processes) or a valid UUID string following RFC 4122. ")
-      
-    @NotNull 
+    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+             flags = Pattern.Flag.CASE_INSENSITIVE,
+             message = "ID must either be null (for new processes) or a valid UUID string following RFC 4122. ")
+
+    @NotNull
     private String id;
-    
-    
-    @NotNull(message="A name must be present.") 
+
+    @NotNull(message = "A name must be present.")
     @NotBlank
-    @Size(min=1, max=255, message="The name must be between 1 and 255 characters long.")
+    @Size(min = 1, max = 255, message = "The name must be between 1 and 255 characters long.")
     @With
     private String name;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-Ahsut5Cairo8 * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,19 +25,19 @@ import org.veo.core.entity.process.IProcessRepository;
 
 /**
  * Change properties of an asset.
- * 
+ *
  * @author akoderman
  *
  */
-public  class DeleteAssetUseCase extends UpdateAssetUseCase {
+public class DeleteAssetUseCase extends UpdateAssetUseCase {
 
     private IProcessRepository processRepository;
 
-    public DeleteAssetUseCase(IAssetRepository assetRepository, IProcessRepository processRepository) {
+    public DeleteAssetUseCase(IAssetRepository assetRepository,
+            IProcessRepository processRepository) {
         super(assetRepository);
         this.processRepository = processRepository;
     }
-    
 
     @Override
     @Transactional(TxType.REQUIRED)
@@ -49,7 +49,7 @@ public  class DeleteAssetUseCase extends UpdateAssetUseCase {
 
     private void removeAssetFromProcesses(Asset asset) {
         processRepository.findProcessesContainingAsset(asset)
-            .stream()
-            .forEach(p -> p.removeAsset(asset));
+                         .stream()
+                         .forEach(p -> p.removeAsset(asset));
     }
 }

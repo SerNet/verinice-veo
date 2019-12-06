@@ -13,25 +13,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.access;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import org.veo.core.entity.Key;
 import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.process.IProcessRepository;
@@ -41,9 +37,9 @@ import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.SimpleKey;
 
 /**
- * An implementation of repository interface that converts between entities
- * and their JPA-annotated representations. 
- * 
+ * An implementation of repository interface that converts between entities and
+ * their JPA-annotated representations.
+ *
  * @author akoderman
  *
  */
@@ -51,37 +47,32 @@ import org.veo.persistence.entity.jpa.SimpleKey;
 public class ProcessRepository implements IProcessRepository {
 
     private JpaProcessDataRepository jpaRepository;
-    
-    
-    
+
     public ProcessRepository(JpaProcessDataRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
     @Override
     public Process save(Process process) {
-        return jpaRepository
-                .save(ProcessData.from(process))
-                .toProcess();
+        return jpaRepository.save(ProcessData.from(process))
+                            .toProcess();
     }
 
     @Override
-    @EntityGraph(attributePaths="assets")
+    @EntityGraph(attributePaths = "assets")
     @Transactional(readOnly = true)
     public Optional<Process> findById(Key<UUID> id) {
-        return jpaRepository
-                    .findById(SimpleKey.from(id))
-                    .map(ProcessData::toProcess);
+        return jpaRepository.findById(SimpleKey.from(id))
+                            .map(ProcessData::toProcess);
     }
 
     @Override
-    @EntityGraph(attributePaths="assets")
+    @EntityGraph(attributePaths = "assets")
     public List<Process> findByName(String search) {
-        return jpaRepository
-                    .findByNameContainingIgnoreCase(search)
-                    .stream()
-                    .map(ProcessData::toProcess)
-                    .collect(Collectors.toList());
+        return jpaRepository.findByNameContainingIgnoreCase(search)
+                            .stream()
+                            .map(ProcessData::toProcess)
+                            .collect(Collectors.toList());
     }
 
     @Override
@@ -91,7 +82,8 @@ public class ProcessRepository implements IProcessRepository {
 
     @Override
     public Set<Process> getProcessByResponsiblePerson(Key<UUID> personId) {
-        // TODO Use query over aspect relation to find processes for the given person entity
+        // TODO Use query over aspect relation to find processes for the given person
+        // entity
         return null;
     }
 
@@ -105,7 +97,4 @@ public class ProcessRepository implements IProcessRepository {
         return jpaRepository.findDistinctByAssetsIn(new HashSet<Asset>(Arrays.asList(asset)));
     }
 
-    
-
-    
 }

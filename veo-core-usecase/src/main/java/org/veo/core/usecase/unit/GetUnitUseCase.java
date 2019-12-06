@@ -22,21 +22,20 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
+import lombok.Value;
+
 import org.veo.core.entity.IUnitRepository;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NotFoundException;
 
-import lombok.Value;
-
 /**
  * Reinstantiate a persisted unit object.
  *
  *
  */
-public class GetUnitUseCase
-        extends UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
+public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
 
     private final IUnitRepository repository;
 
@@ -45,8 +44,8 @@ public class GetUnitUseCase
     }
 
     /**
-     * Find a persisted unit object and reinstantiate it.
-     * Throws a domain exception if the requested unit object was not found in the repository.
+     * Find a persisted unit object and reinstantiate it. Throws a domain exception
+     * if the requested unit object was not found in the repository.
      */
     @Override
     @Transactional(TxType.SUPPORTS)
@@ -64,10 +63,11 @@ public class GetUnitUseCase
     public static class InputData implements UseCase.InputData {
         private final Key<UUID> id;
     }
-    
+
     @Valid
     @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final Unit unit;
+        @Valid
+        private final Unit unit;
     }
 }

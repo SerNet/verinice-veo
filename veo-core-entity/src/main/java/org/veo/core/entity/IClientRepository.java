@@ -20,12 +20,11 @@ import java.util.UUID;
 
 /**
  * A repository for <code>Client</code> entities.
- * 
+ *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  *
  */
 public interface IClientRepository extends IRepository<Client, Key<UUID>> {
-
 
 }

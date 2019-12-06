@@ -13,24 +13,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.core.usecase.common;
 
 import org.veo.core.entity.DomainException;
 
 /**
- * Runtime exception thrown when a requested object could not be found, i.e. during an update
- * operation.
- * This could be caused by concurrent editing of an object - since the version number of the object has been changed between \
+ * Runtime exception thrown when a requested object could not be found, i.e.
+ * during an update operation. This could be caused by concurrent editing of an
+ * object - since the version number of the object has been changed between \
  * the beginning of a user's editing and the attempted save operation.
- * 
- * This exception must be caught by the controller and an appropriate status code and message must be returned to the caller.
- * The caller will need to remediate the situation, i.e. by temporarily noting down all changes, then reloading the object
- * and applying the changes again.
- * 
+ *
+ * This exception must be caught by the controller and an appropriate status
+ * code and message must be returned to the caller. The caller will need to
+ * remediate the situation, i.e. by temporarily noting down all changes, then
+ * reloading the object and applying the changes again.
+ *
  *
  */
 public class NotFoundException extends DomainException {

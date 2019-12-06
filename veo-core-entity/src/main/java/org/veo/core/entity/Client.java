@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -25,19 +24,20 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * A client is the root element of the ownership structure and an access barrier.
- * Data from one client must never be visible to another client.
- * Data from one client must not be referenced by or linked to by data from another client. 
- * No user-manageable configuration or settings must be shared between clients.
+ * A client is the root element of the ownership structure and an access
+ * barrier. Data from one client must never be visible to another client. Data
+ * from one client must not be referenced by or linked to by data from another
+ * client. No user-manageable configuration or settings must be shared between
+ * clients.
  *
- * A client can be used to separate multiple completely disjunct users of the system from each other.
- * 
+ * A client can be used to separate multiple completely disjunct users of the
+ * system from each other.
+ *
  */
 
 @Getter
@@ -45,17 +45,17 @@ import lombok.Setter;
 @EqualsAndHashCode
 
 public class Client {
-    
+
     @NotNull
     private final Key<UUID> id;
-    
+
     @NotNull
-    @NotBlank(message="The name of a client must not be blank.")
-    @Size(max=255)
+    @NotBlank(message = "The name of a client must not be blank.")
+    @Size(max = 255)
     private String name;
-    
+
     @NotNull
-    @Size(min=1, max=1000000, message="A client must be working with at least one domain.")
+    @Size(min = 1, max = 1000000, message = "A client must be working with at least one domain.")
     private Set<Domain> domains;
 
     private Client(Key<UUID> id, String name) {
@@ -63,7 +63,7 @@ public class Client {
         this.name = name;
         domains = new HashSet<Domain>();
     }
-    
+
     private Client(Key<UUID> id, String name, Set<Domain> domains) {
         this.id = id;
         this.name = name;
@@ -73,8 +73,8 @@ public class Client {
     public static Client newClient(String name) {
         return new Client(Key.newUuid(), name);
     }
-    
-    public static Client existingClient(Key<UUID> id, String name, Set<Domain> domains ) {
+
+    public static Client existingClient(Key<UUID> id, String name, Set<Domain> domains) {
         return new Client(id, name, domains);
     }
 }

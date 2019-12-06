@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.access;
 
@@ -27,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
+
 import org.veo.core.entity.Key;
 import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.asset.IAssetRepository;
@@ -35,9 +33,9 @@ import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.SimpleKey;
 
 /**
- * An implementation of repository interface that converts between entities
- * and their JPA-annotated representations. 
- * 
+ * An implementation of repository interface that converts between entities and
+ * their JPA-annotated representations.
+ *
  * @author akoderman
  *
  */
@@ -45,24 +43,21 @@ import org.veo.persistence.entity.jpa.SimpleKey;
 public class AssetRepository implements IAssetRepository {
 
     private JpaAssetDataRepository jpaRepository;
-    
-    
+
     public AssetRepository(JpaAssetDataRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
     @Override
     public Asset save(Asset asset) {
-        return jpaRepository
-                .save(AssetData.from(asset))
-                .toAsset();
+        return jpaRepository.save(AssetData.from(asset))
+                            .toAsset();
     }
 
     @Override
     public Optional<Asset> findById(Key<UUID> id) {
-        return jpaRepository
-                    .findById(SimpleKey.from(id))
-                    .map(AssetData::toAsset);
+        return jpaRepository.findById(SimpleKey.from(id))
+                            .map(AssetData::toAsset);
     }
 
     @Override
@@ -77,28 +72,25 @@ public class AssetRepository implements IAssetRepository {
 
     @Override
     public List<Asset> findByName(String search) {
-        return jpaRepository
-                .findByNameContainingIgnoreCase(search)
-                .stream()
-                .map(AssetData::toAsset)
-                .collect(Collectors.toList());
+        return jpaRepository.findByNameContainingIgnoreCase(search)
+                            .stream()
+                            .map(AssetData::toAsset)
+                            .collect(Collectors.toList());
     }
 
     @Override
     public Set<Asset> getByIds(Set<Key<UUID>> ids) {
         Iterable<AssetData> allById = jpaRepository.findAllById(SimpleKey.from(ids));
-        return StreamSupport
-                .stream(allById.spliterator(), false)
-                .map(AssetData::toAsset)
-                .collect(Collectors.toSet());
+        return StreamSupport.stream(allById.spliterator(), false)
+                            .map(AssetData::toAsset)
+                            .collect(Collectors.toSet());
     }
 
     @Override
     public Set<Asset> getByProcessId(Key<UUID> processId) {
-        return jpaRepository
-                .findByProcessId(SimpleKey.from(processId))
-                .stream()
-                .map(AssetData::toAsset)
-                .collect(Collectors.toSet());
+        return jpaRepository.findByProcessId(SimpleKey.from(processId))
+                            .stream()
+                            .map(AssetData::toAsset)
+                            .collect(Collectors.toSet());
     }
 }

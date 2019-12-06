@@ -1,5 +1,5 @@
 /*******************************************************************************
-Ahsut5Cairo8 * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,10 +25,10 @@ import org.veo.core.entity.asset.IAssetRepository;
 
 /**
  * Change properties of an asset.
- * 
+ *
  *
  */
-public  class EditAssetUseCase extends UpdateAssetUseCase {
+public class EditAssetUseCase extends UpdateAssetUseCase {
 
     public EditAssetUseCase(IAssetRepository assetRepository) {
         super(assetRepository);
@@ -40,7 +40,8 @@ public  class EditAssetUseCase extends UpdateAssetUseCase {
     @Override
     @Transactional(TxType.REQUIRED)
     protected Asset update(Asset asset, InputData input) {
-        if (!asset.getState().equals(Lifecycle.STORED_CURRENT)) {
+        if (!asset.getState()
+                  .equals(Lifecycle.STORED_CURRENT)) {
             throw new IllegalStateException("Only the current version of an asset can be saved.");
         }
         return input.getChangedAsset();

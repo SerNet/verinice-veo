@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
@@ -27,10 +24,9 @@ import javax.validation.constraints.Size;
 import lombok.Value;
 import lombok.With;
 
-
 /**
- * Domains are value objects. They do not have an ID.
- * They may hold references to other entities.
+ * Domains are value objects. They do not have an ID. They may hold references
+ * to other entities.
  */
 @Value
 @With
@@ -39,18 +35,18 @@ import lombok.With;
 public class DomainValue {
 
     @NotNull
-    @NotBlank(message="The name of a domain must not be blank.")
-    @Size(max=255)
+    @NotBlank(message = "The name of a domain must not be blank.")
+    @Size(max = 255)
     private final String name;
-    
+
     @NotNull
-    @NotBlank(message="The authority of a domain must not be blank.")
-    @Size(max=255)
+    @NotBlank(message = "The authority of a domain must not be blank.")
+    @Size(max = 255)
     private final String authority;
-    
+
     @NotNull
-    @NotBlank(message="The version of a domain must not be blank.")
-    @Size(max=255)
+    @NotBlank(message = "The version of a domain must not be blank.")
+    @Size(max = 255)
     private final String version;
 
 }

@@ -27,5 +27,4 @@ import org.veo.core.entity.Key;
  */
 public interface IPersonRepository extends IRepository<Person, Key<UUID>> {
 
-
 }

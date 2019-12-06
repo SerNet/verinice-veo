@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
@@ -45,18 +42,15 @@ public class ClientData {
     private SimpleKey uuid;
 
     @Column(name = "name")
-    @NotBlank(message="The name of a client must not be blank.")
+    @NotBlank(message = "The name of a client must not be blank.")
     private String name;
-    
-   
-    /*
-     *  Domains are value objects, not entities.
-     *  However, they are not embedded here, but referenced to a join table. 
-     */
+
+    /* Domains are value objects, not entities. However, they are not embedded here,
+     * but referenced to a join table. */
     @ElementCollection(targetClass = DomainValue.class)
-    @JoinTable(name = "domains") 
+    @JoinTable(name = "domains")
     @JoinColumn(name = "client_uuid", referencedColumnName = "uuid")
-    @Size(min=1, max=1000000, message="A client must be working with at least one domain.")
+    @Size(min = 1, max = 1000000, message = "A client must be working with at least one domain.")
     private Set<DomainValue> domains;
 
 }

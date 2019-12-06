@@ -20,16 +20,16 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
+import lombok.Value;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.IUnitRepository;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
 
-import lombok.Value;
-
 /**
  * Create a new client and unit.
- * 
+ *
  * @author akoderman
  *
  */
@@ -50,9 +50,9 @@ public class CreateClientUseCase
     }
 
     private Unit createUnit(InputData input) {
-        return Unit.newUnitBelongingToClient(Client.newClient(input.getClientName()), input.getName());
+        return Unit.newUnitBelongingToClient(Client.newClient(input.getClientName()),
+                                             input.getName());
     }
-   
 
     @Valid
     @Value
@@ -60,11 +60,11 @@ public class CreateClientUseCase
         private final String clientName;
         private final String name;
     }
-    
 
     @Valid
     @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final Unit unit;
+        @Valid
+        private final Unit unit;
     }
 }

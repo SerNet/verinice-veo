@@ -20,12 +20,11 @@ import java.util.UUID;
 
 /**
  * A repository for <code>Unit</code> entities.
- * 
+ *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  *
  */
 public interface IUnitRepository extends IRepository<Unit, Key<UUID>> {
-
 
 }

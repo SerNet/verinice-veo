@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 
 /**
  * <code>Key</code> stores one element as a key or multiple elements as a
@@ -36,7 +34,8 @@ import java.util.stream.Collectors;
  * keys, but in most cases a tuple of other key objects should be used in
  * compound keys.
  *
- * For more information on the key pattern see the description in M.Fowler's PoEAA.
+ * For more information on the key pattern see the description in M.Fowler's
+ * PoEAA.
  *
  */
 public class Key<T> {
@@ -44,10 +43,9 @@ public class Key<T> {
     protected enum SPECIAL_KEYS {
         KEY_UNDEFINED
     }
-    
+
     private List<T> fields;
 
-    
     @SafeVarargs
     public Key(T... fields) {
         List<T> input = new ArrayList<>();
@@ -66,20 +64,20 @@ public class Key<T> {
     public static Key<UUID> newUuid() {
         return new Key<>(UUID.randomUUID());
     }
-    
+
     /**
      * Creates a UUID-based key from the given String representation.
-     * 
+     *
      * @param value
      * @return
      */
     public static Key<UUID> uuidFrom(String value) {
         return new Key<>(UUID.fromString(value));
     }
-    
+
     /**
      * Returns a set of UUID-based keys from the given String representations.
-     * 
+     *
      * @param values
      * @return
      */
@@ -87,14 +85,14 @@ public class Key<T> {
      // @formatter:off
         return values
                 .stream()
-                .map(v -> (Key.uuidFrom(v))) 
+                .map(v -> (Key.uuidFrom(v)))
                 .collect(Collectors.toSet()) ;
      // @formatter:on
     }
 
     /**
      * Creates a simple key based on the given object.
-     * 
+     *
      * @param obj
      */
     public Key(T obj) {
@@ -116,7 +114,8 @@ public class Key<T> {
     private void checkFieldsNotNull(List<T> fields) {
         if (fields == null)
             throw new IllegalArgumentException("Key must not be null");
-        if (fields.stream().anyMatch(Objects::isNull))
+        if (fields.stream()
+                  .anyMatch(Objects::isNull))
             throw new IllegalArgumentException("An element of a key must not be null");
     }
 
@@ -150,11 +149,12 @@ public class Key<T> {
     /**
      * Check if this key is undefined.
      *
-     * @return 
+     * @return
      */
     public boolean isUndefined() {
         checkFieldsNotNull(this.fields);
-        return fields.stream().anyMatch(f -> f == SPECIAL_KEYS.KEY_UNDEFINED);
+        return fields.stream()
+                     .anyMatch(f -> f == SPECIAL_KEYS.KEY_UNDEFINED);
     }
 
     /**
@@ -181,7 +181,7 @@ public class Key<T> {
         if (fields == null || fields.isEmpty())
             throw new IllegalStateException("Cannot take single value on uninitialized key.");
 
-        if (fields.size()>1)
+        if (fields.size() > 1)
             throw new IllegalStateException("Cannot take single value on compound key");
     }
 
@@ -199,7 +199,8 @@ public class Key<T> {
     private String uuidValue(int i) {
         if (!(fields.get(i) instanceof UUID))
             throw new IllegalStateException("Cannot take UUID value on non-UUID key");
-        return fields.get(i).toString();
+        return fields.get(i)
+                     .toString();
     }
 
 }

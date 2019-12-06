@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
@@ -31,6 +28,5 @@ public class InvalidUnitException extends DomainException {
     public InvalidUnitException(String messageTemplate, Unit unit) {
         super(String.format(messageTemplate, unit));
     }
-
 
 }

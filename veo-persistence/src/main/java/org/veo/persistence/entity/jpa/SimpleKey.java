@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
@@ -27,31 +24,31 @@ import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import org.veo.core.entity.Key;
 import lombok.Data;
 
+import org.veo.core.entity.Key;
 
 @Data
 
 @Embeddable
 public class SimpleKey implements Serializable {
 
-    @Column(name="uuid")
+    @Column(name = "uuid")
     private final String uuid;
 
-    public static SimpleKey from (Key<UUID> key) {
+    public static SimpleKey from(Key<UUID> key) {
         return new SimpleKey(key.uuidValue());
     }
-    
+
     public Key<UUID> toKey() {
         return Key.uuidFrom(this.uuid);
     }
 
     public static Set<SimpleKey> from(Set<Key<UUID>> ids) {
         return ids.stream()
-                .map(SimpleKey::from)
-                .collect(Collectors.toSet()); 
-            
+                  .map(SimpleKey::from)
+                  .collect(Collectors.toSet());
+
     }
 
 }

@@ -22,15 +22,14 @@ import java.util.UUID;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Getter
@@ -38,8 +37,6 @@ import lombok.ToString;
 @ToString
 public class Person extends EntityLayerSupertype<Person> {
 
-   
-    
     @NotNull
     @NotBlank
     private String name;
@@ -54,6 +51,4 @@ public class Person extends EntityLayerSupertype<Person> {
         return this.withId(id);
     }
 
-
-    
 }

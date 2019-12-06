@@ -22,13 +22,13 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
+import lombok.Value;
+
 import org.veo.core.entity.Key;
 import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NotFoundException;
-
-import lombok.Value;
 
 /**
  * Reinstantiate a persisted process object.
@@ -59,10 +59,11 @@ public class GetProcessUseCase
     public static class InputData implements UseCase.InputData {
         private final Key<UUID> id;
     }
-    
+
     @Valid
     @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final Process process;
+        @Valid
+        private final Process process;
     }
 }

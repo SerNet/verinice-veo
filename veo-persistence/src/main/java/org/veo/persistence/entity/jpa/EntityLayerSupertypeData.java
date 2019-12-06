@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
@@ -23,21 +20,18 @@ import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.IdClass;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
-import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 
 @Data
 @NoArgsConstructor
@@ -48,22 +42,22 @@ public abstract class EntityLayerSupertypeData {
 
     @EmbeddedId
     SimpleKey uuid;
-    
+
     @Version
     long version;
-    
+
     @ManyToOne
-    @JoinColumn(name="unit_id", nullable=false)
+    @JoinColumn(name = "unit_id", nullable = false)
     UnitData unit;
-    
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
+    @Column(nullable = false)
     Lifecycle state;
-    
-    @Column(name="valid_from", nullable=false)
+
+    @Column(name = "valid_from", nullable = false)
     Instant validFrom;
-    
-    @Column(name="valid_until", nullable=true)
+
+    @Column(name = "valid_until", nullable = true)
     Instant validUntil;
 
 }

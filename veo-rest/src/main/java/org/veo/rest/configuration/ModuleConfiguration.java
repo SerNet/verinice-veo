@@ -13,14 +13,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.rest.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
@@ -30,32 +28,30 @@ import org.veo.persistence.access.ProcessRepository;
 import org.veo.persistence.access.UnitRepository;
 
 /**
- * This configuration takes care of wiring classes from core modules (Entity-Layer, Use Case-Layer)
- * that have no dependency to the Spring framework. 
- * They are therefore not picked up and autowired by Spring.
- * 
+ * This configuration takes care of wiring classes from core modules
+ * (Entity-Layer, Use Case-Layer) that have no dependency to the Spring
+ * framework. They are therefore not picked up and autowired by Spring.
+ *
  */
 @Configuration
 public class ModuleConfiguration {
 
     @Bean
-    public CreateProcessUseCase createProcessUseCase(
-            ProcessRepository processRepository, 
-            AssetRepository assetRepository,
-            GetUnitUseCase getUnitUseCase) {
+    public CreateProcessUseCase createProcessUseCase(ProcessRepository processRepository,
+            AssetRepository assetRepository, GetUnitUseCase getUnitUseCase) {
         return new CreateProcessUseCase(processRepository, assetRepository, getUnitUseCase);
     }
-    
+
     @Bean
     public GetProcessUseCase getProcessUseCase(ProcessRepository processRepository) {
         return new GetProcessUseCase(processRepository);
     }
-    
+
     @Bean
     public CreateAssetUseCase createAssetUseCase(AssetRepository assetRepository) {
         return new CreateAssetUseCase(assetRepository);
     }
-    
+
     @Bean
     public GetUnitUseCase getUnitUseCase(UnitRepository unitRepository) {
         return new GetUnitUseCase(unitRepository);

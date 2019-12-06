@@ -13,9 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
- *
- * Contributors:
- *     Alexander Koderman <ak@sernet.de> - initial API and implementation
  ******************************************************************************/
 package org.veo.core.entity.group;
 
@@ -28,56 +25,56 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.specification.IEntitySpecification;
-
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
+import org.veo.core.entity.specification.IEntitySpecification;
+
 /**
- * A group of entity objects of the same type.
- * A group may contain other groups.
- * An entity can be present in more than one group.
- * A group helps to organize entities and makes it easier to work with multiple
- * entities at the same time.
- * A group of objects can be used in business use cases instead of working with single elements.
- * 
+ * A group of entity objects of the same type. A group may contain other groups.
+ * An entity can be present in more than one group. A group helps to organize
+ * entities and makes it easier to work with multiple entities at the same time.
+ * A group of objects can be used in business use cases instead of working with
+ * single elements.
+ *
  *
  */
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Getter
 @Setter
 @ToString
-public class EntityGroup<T extends EntityLayerSupertype<T>> extends EntityLayerSupertype<EntityGroup<T>> {
+public class EntityGroup<T extends EntityLayerSupertype<T>>
+        extends EntityLayerSupertype<EntityGroup<T>> {
 
-    
     @NotNull
     @NotBlank
     private String name;
 
     @NotNull
-    @Size(min=0, max=1000000)
+    @Size(min = 0, max = 1000000)
     private Set<T> groupMembers;
 
     private EntityGroup(Key<UUID> id, Unit unit, String name) {
         super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0L);
-        this.name=name;
+        this.name = name;
         this.groupMembers = new HashSet<>();
     }
-    
-    public static <T extends EntityLayerSupertype<T>> EntityGroup<T> newGroup(Unit unit, String name) {
+
+    public static <T extends EntityLayerSupertype<T>> EntityGroup<T> newGroup(Unit unit,
+            String name) {
         return new EntityGroup<>(Key.newUuid(), unit, name);
     }
-    
-    public static <T extends EntityLayerSupertype<T>> EntityGroup<T> existingGroup(Key<UUID> id, Unit unit, String name) {
+
+    public static <T extends EntityLayerSupertype<T>> EntityGroup<T> existingGroup(Key<UUID> id,
+            Unit unit, String name) {
         return new EntityGroup<>(id, unit, name);
     }
-    
+
     public void addGroupMember(T member) {
         checkSameClient(member);
         this.groupMembers.add(member);
@@ -89,9 +86,9 @@ public class EntityGroup<T extends EntityLayerSupertype<T>> extends EntityLayerS
     }
 
     /**
-     * Returns a new set containing just the elements that fulfill
-     * the given specification.
-     * 
+     * Returns a new set containing just the elements that fulfill the given
+     * specification.
+     *
      */
     public Set<T> findMembersFulfilling(IEntitySpecification<T> spec) {
         return spec.selectSatisfyingElementsFrom(groupMembers);
