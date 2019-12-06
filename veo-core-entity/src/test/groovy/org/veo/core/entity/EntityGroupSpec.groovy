@@ -48,7 +48,7 @@ public class EntityGroupSpec extends Specification {
             EntityGroup<Asset> group = EntityGroup.newGroup(unit, "New group");
             
         then: "the group is initialized as expected"
-            group.getKey() != null;
+            group.getId() != null;
             group.getName().equals("New group");
             group.getState().equals(Lifecycle.CREATING);
             group.getVersion().equals(0L);
@@ -57,7 +57,7 @@ public class EntityGroupSpec extends Specification {
             group.getValidUntil() == null;
     }
     
-    def "A group must have unit" () {
+    def "A group must have a unit" () {
         when: "a group is created with no unit"
             EntityGroup group = EntityGroup.existingGroup(Key.newUuid(), null, "no group");
             

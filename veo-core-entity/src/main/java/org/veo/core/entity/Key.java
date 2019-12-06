@@ -41,10 +41,10 @@ import java.util.stream.Collectors;
  */
 public class Key<T> {
 
-    private enum SPECIAL_KEYS {
+    protected enum SPECIAL_KEYS {
         KEY_UNDEFINED
     }
-
+    
     private List<T> fields;
 
     
@@ -120,7 +120,6 @@ public class Key<T> {
             throw new IllegalArgumentException("An element of a key must not be null");
     }
 
- 
     @Override
     public int hashCode() {
         return Objects.hash(fields);
@@ -133,7 +132,7 @@ public class Key<T> {
     public boolean equals(Object obj) {
         if (this.fields == null)
             return false;
-        if (this.fields.contains(SPECIAL_KEYS.KEY_UNDEFINED))
+        if (this.isUndefined())
             return false;
         if (this == obj)
             return true;
@@ -151,10 +150,11 @@ public class Key<T> {
     /**
      * Check if this key is undefined.
      *
-     * @return
+     * @return 
      */
     public boolean isUndefined() {
-        return fields != null && fields.contains(SPECIAL_KEYS.KEY_UNDEFINED);
+        checkFieldsNotNull(this.fields);
+        return fields.stream().anyMatch(f -> f == SPECIAL_KEYS.KEY_UNDEFINED);
     }
 
     /**

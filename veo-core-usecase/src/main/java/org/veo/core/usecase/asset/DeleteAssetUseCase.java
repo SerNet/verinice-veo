@@ -42,7 +42,7 @@ public  class DeleteAssetUseCase extends UpdateAssetUseCase {
     @Override
     @Transactional(TxType.REQUIRED)
     protected Asset update(Asset asset, InputData input) {
-        asset.delete();
+        asset.remove();
         removeAssetFromProcesses(asset);
         return asset;
     }

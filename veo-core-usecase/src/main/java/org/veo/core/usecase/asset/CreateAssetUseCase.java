@@ -61,6 +61,6 @@ public class CreateAssetUseCase
     @Valid
     @Value
     public static class OutputData implements UseCase.OutputData {
-        @Valid private final EntityLayerSupertype asset;
+        @Valid private final Asset asset;
     }
 }

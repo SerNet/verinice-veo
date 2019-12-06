@@ -36,6 +36,6 @@ public final class CreateProcessOutputMapper {
         //ProcessDto dto = ProcessDto.from(process);
         //dto.setValidFrom(timeConversion.formatDate(process.getValidFrom()));
         //dto.setValidUntil(timeConversion.formatDate(process.getValidUntil()));
-        return process.getKey(); 
+        return process.getId(); 
     }
 }

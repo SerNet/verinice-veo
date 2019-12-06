@@ -26,7 +26,6 @@ import org.veo.core.entity.asset.IAssetRepository;
 /**
  * Change properties of an asset.
  * 
- * @author akoderman
  *
  */
 public  class EditAssetUseCase extends UpdateAssetUseCase {
@@ -35,6 +34,9 @@ public  class EditAssetUseCase extends UpdateAssetUseCase {
         super(assetRepository);
     }
 
+    /**
+     * Completely update the saved asset with the received values.
+     */
     @Override
     @Transactional(TxType.REQUIRED)
     protected Asset update(Asset asset, InputData input) {

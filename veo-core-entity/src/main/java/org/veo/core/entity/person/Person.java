@@ -17,6 +17,7 @@
 package org.veo.core.entity.person;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,22 +26,34 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
-public class Person extends EntityLayerSupertype {
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@Getter
+@Setter
+@ToString
+public class Person extends EntityLayerSupertype<Person> {
+
+   
+    
     @NotNull
     @NotBlank
     private String name;
 
-    public Person(Key id, Unit unit, String name) {
+    public Person(Key<UUID> id, Unit unit, String name) {
         super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0);
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public Person withId(Key<UUID> id) {
+        return this.withId(id);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
+    
 }

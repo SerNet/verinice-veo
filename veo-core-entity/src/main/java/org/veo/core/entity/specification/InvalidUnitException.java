@@ -32,9 +32,5 @@ public class InvalidUnitException extends DomainException {
         super(String.format(messageTemplate, unit));
     }
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1250553756878309184L;
 
 }

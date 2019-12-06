@@ -36,7 +36,6 @@ import java.util.Map.Entry;
  */
 public class VeoException extends RuntimeException {
 
-    private static final long serialVersionUID = 5687387925339897969L;
     private static final String DELIMETER = "%";
 
     private final Map<String, String> parameters;

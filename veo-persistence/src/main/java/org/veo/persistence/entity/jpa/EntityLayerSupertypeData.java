@@ -31,6 +31,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 
 import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 
@@ -40,13 +42,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 
-@Entity
-@Inheritance(strategy=InheritanceType.JOINED)
+@MappedSuperclass
 @IdClass(SimpleKey.class)
 public abstract class EntityLayerSupertypeData {
 
     @EmbeddedId
     SimpleKey uuid;
+    
+    @Version
+    long version;
     
     @ManyToOne
     @JoinColumn(name="unit_id", nullable=false)
@@ -62,7 +66,4 @@ public abstract class EntityLayerSupertypeData {
     @Column(name="valid_until", nullable=true)
     Instant validUntil;
 
-    @Column(name="version", nullable=false)
-    long version;
-    
 }

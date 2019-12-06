@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -39,7 +38,6 @@ import lombok.Value;
 /**
  * Creates a persistent new process object.
  *
- * @author akoderman
  *
  */
 public class CreateProcessUseCase
@@ -70,7 +68,7 @@ public class CreateProcessUseCase
 
         // change state from CREATING to STORED_CURRENT:
         process.setState(Lifecycle.STORED_CURRENT);
-        process.increaseVersion();
+       
 
         // process with STORED_CURRENT state will only be returned if could be
         // persisted
@@ -87,7 +85,7 @@ public class CreateProcessUseCase
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
-        private final Key<UUID> key;
+        private final Key<UUID> id;
         private final Key<UUID> unitId;
         private final String name;
         private final Set<Key<UUID>> assetIds;

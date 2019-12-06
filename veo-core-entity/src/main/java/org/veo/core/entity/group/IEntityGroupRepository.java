@@ -30,7 +30,7 @@ import org.veo.core.entity.Key;
  * with more specific methods - i.e. queries based on particular fields.
  *
  */
-public interface IEntityGroupRepository extends IRepository<EntityGroup, UUID> {
+public interface IEntityGroupRepository extends IRepository<EntityGroup, Key<UUID>> {
 
 
 }

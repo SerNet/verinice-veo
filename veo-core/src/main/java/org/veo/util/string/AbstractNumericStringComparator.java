@@ -76,9 +76,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractNumericStringComparator<T> implements Comparator<T>, Serializable {
 
-    private static final long serialVersionUID = -9196544676244562514L;
-
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractNumericStringComparator.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(AbstractNumericStringComparator.class);
 
     // Collator for basic string comparison
     private transient Collator collator = Collator.getInstance(Locale.getDefault());
@@ -130,8 +129,8 @@ public abstract class AbstractNumericStringComparator<T> implements Comparator<T
         int idx2 = getFirstDigitIndex(string2);
 
         // no digits found, compare string the ordinary way
-        if ((idx1 == -1) || (idx2 == -1) || (!string1.substring(0, idx1)
-                                                     .equals(string2.substring(0, idx2)))) {
+        if ((idx1 == -1) || (idx2 == -1)
+                || (!string1.substring(0, idx1).equals(string2.substring(0, idx2)))) {
             return compareStringOrdinary(string1, string2);
         }
 

@@ -27,9 +27,5 @@ public class ClientBoundaryViolationException extends DomainException {
         super(message);
     }
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -916291050060012237L;
 
 }

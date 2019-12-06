@@ -24,11 +24,10 @@ import org.veo.model.Element;
  */
 public class NumericStringComparator extends AbstractNumericStringComparator<Object> {
 
-    private static final long serialVersionUID = 2971144218737520545L;
-
+   
     /**
      * @see sernet.gs.service.AbstractNumericStringComparator#convertToString(java.lang.
-     *      Object)
+     * Object)
      */
     @Override
     public String convertToString(Object o) {

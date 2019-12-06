@@ -30,7 +30,7 @@ import org.veo.core.entity.Key;
  * with more specific methods - i.e. queries based on particular fields.
  *
  */
-public interface IAssetRepository extends IRepository<Asset, UUID> {
+public interface IAssetRepository extends IRepository<Asset, Key<UUID>> {
 
     public Set<Asset> getByIds(Set<Key<UUID>> ids);
     

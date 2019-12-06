@@ -23,8 +23,6 @@ import org.veo.core.entity.DomainException;
 
 public class InvalidDateException extends DomainException {
 
-    private static final long serialVersionUID = 2746296353392670526L;
-
     public InvalidDateException(String dateString) {
         super("Could not parse invalid date: " + dateString);
     }

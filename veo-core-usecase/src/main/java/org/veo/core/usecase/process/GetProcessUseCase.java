@@ -33,8 +33,6 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted process object.
  *
- * @author akoderman
- *
  */
 public class GetProcessUseCase
         extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData> {

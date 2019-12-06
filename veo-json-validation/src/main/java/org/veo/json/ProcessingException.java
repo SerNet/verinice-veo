@@ -22,8 +22,6 @@ package org.veo.json;
  */
 public class ProcessingException extends Exception {
 
-    static final long serialVersionUID = 1L;
-
     public ProcessingException(String message, Throwable throwable) {
         super(message, throwable);
     }

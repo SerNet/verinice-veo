@@ -32,10 +32,8 @@ import org.veo.core.usecase.UseCase;
 import lombok.Value;
 
 /**
- * Change properties of an asset.
+ * Associate this asset with a different unit.
  * 
- * @author akoderman
- *
  */
 public  class MoveAssetToUnitUseCase extends UpdateAssetUseCase {
 

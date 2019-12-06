@@ -19,12 +19,10 @@ package org.veo.adapter.presenter.api.process;
 import java.util.Date;
 import java.util.Set;
 
-
 import org.veo.adapter.presenter.api.common.DateTimeConversion;
 import org.veo.adapter.presenter.api.dto.ProcessDto;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase.InputData;
 
@@ -45,7 +43,7 @@ public final class CreateProcessInputMapper {
         DateTimeConversion timeConversion = new DateTimeConversion(timezoneId);
         Date validFrom = timeConversion.getConvertedDate(dto.getValidFrom()); 
         Date validUntil = timeConversion.getConvertedDate(dto.getValidUntil());
-
+        
         return new InputData(
                 Key.uuidFrom(dto.getId()), 
                 Key.uuidFrom(dto.getUnitId()),

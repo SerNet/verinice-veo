@@ -31,14 +31,24 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * A business process.
  *
- * @author akoderman
  *
  */
-public class Process extends EntityLayerSupertype {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@Getter
+@Setter
+@ToString
+public class Process extends EntityLayerSupertype<Process> {
 
+    
     @NotBlank
     private String name;
 
@@ -101,12 +111,11 @@ public class Process extends EntityLayerSupertype {
         return Collections.unmodifiableSet(this.assets);
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public Process withId(Key<UUID> id) {
+        return this.withId(id);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+   
 
 }

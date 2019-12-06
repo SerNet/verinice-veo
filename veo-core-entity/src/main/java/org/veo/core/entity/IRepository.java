@@ -30,17 +30,17 @@ import java.util.Optional;
 * the repository does not just offer CRUD operations but
 * uses factories and builders to build entities to specification.
 * */
-public interface IRepository<T, U> {
+public interface IRepository<T, K> {
 
     public T save(T entity);
 
-    public Optional<T> findById(Key<U> id);
+    public Optional<T> findById(K id);
     
     public List<T> findByName(String search);
     
     public void delete(T entity);
 
-    public void deleteById(Key<U> entity);
+    public void deleteById(K entity);
     
 
 }

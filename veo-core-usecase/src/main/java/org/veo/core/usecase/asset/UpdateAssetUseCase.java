@@ -35,6 +35,16 @@ import org.veo.core.usecase.common.NotFoundException;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Abstract superclass for all operations that change an asset. The <code>update()</code> method must be overwritten 
+ * to make all necessary changes to the asset.
+ * 
+ * Note: increasing the version number of the key here will lead to a new asset being saved since the version
+ * is part of the entity ID together with the UUID. In almost all cases increasing the version number should be left
+ * to the repository.
+ * 
+ *
+ */
 @Slf4j
 public abstract class UpdateAssetUseCase
         extends UseCase<UpdateAssetUseCase.InputData, UpdateAssetUseCase.OutputData> {
@@ -55,7 +65,7 @@ public abstract class UpdateAssetUseCase
                 .map(a -> update(a,input))
                 .map(this::save)
                 .map(this::output)
-                .orElseThrow(() -> new NotFoundException("Asset %s was not found.", id));
+                .orElseThrow(() -> new NotFoundException("Asset %s was not found.", id.uuidValue()));
     }
 
     protected abstract Asset update(Asset asset, InputData input);

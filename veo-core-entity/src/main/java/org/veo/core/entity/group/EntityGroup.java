@@ -31,8 +31,13 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.asset.Asset;
 import org.veo.core.entity.specification.IEntitySpecification;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * A group of entity objects of the same type.
@@ -42,11 +47,15 @@ import org.veo.core.entity.specification.IEntitySpecification;
  * entities at the same time.
  * A group of objects can be used in business use cases instead of working with single elements.
  * 
- * @author akoderman
  *
  */
-public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupertype {
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@Getter
+@Setter
+@ToString
+public class EntityGroup<T extends EntityLayerSupertype<T>> extends EntityLayerSupertype<EntityGroup<T>> {
 
+    
     @NotNull
     @NotBlank
     private String name;
@@ -55,22 +64,18 @@ public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupe
     @Size(min=0, max=1000000)
     private Set<T> groupMembers;
 
-    private EntityGroup(Key id, Unit unit, String name) {
+    private EntityGroup(Key<UUID> id, Unit unit, String name) {
         super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0L);
         this.name=name;
         this.groupMembers = new HashSet<>();
     }
     
-    public static <T extends EntityLayerSupertype> EntityGroup<T> newGroup(Unit unit, String name) {
+    public static <T extends EntityLayerSupertype<T>> EntityGroup<T> newGroup(Unit unit, String name) {
         return new EntityGroup<>(Key.newUuid(), unit, name);
     }
     
-    public static <T extends EntityLayerSupertype> EntityGroup<T> existingGroup(Key<UUID> id, Unit unit, String name) {
+    public static <T extends EntityLayerSupertype<T>> EntityGroup<T> existingGroup(Key<UUID> id, Unit unit, String name) {
         return new EntityGroup<>(id, unit, name);
-    }
-    
-    public Set<T> getGroupMembers() {
-        return groupMembers;
     }
     
     public void addGroupMember(T member) {
@@ -83,14 +88,6 @@ public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupe
         this.groupMembers = groupMembers;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
     /**
      * Returns a new set containing just the elements that fulfill
      * the given specification.
@@ -99,5 +96,10 @@ public class EntityGroup<T extends EntityLayerSupertype> extends EntityLayerSupe
     public Set<T> findMembersFulfilling(IEntitySpecification<T> spec) {
         return spec.selectSatisfyingElementsFrom(groupMembers);
     }
-    
+
+    @Override
+    public EntityGroup<T> withId(Key<UUID> id) {
+        return this.withId(id);
+    }
+
 }

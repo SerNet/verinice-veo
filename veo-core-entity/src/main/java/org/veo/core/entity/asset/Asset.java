@@ -23,21 +23,22 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Getter
 @Setter
 @ToString
+public class Asset extends EntityLayerSupertype<Asset> {
 
-public class Asset extends EntityLayerSupertype {
-
+    
     private String name;
 
-    private Asset(Key id, Unit unit, String name, Lifecycle status, Instant validFrom,
+    private Asset(Key<UUID> id, Unit unit, String name, Lifecycle status, Instant validFrom,
             Instant validUntil, long version) {
         super(id, unit, status, validFrom, validUntil, version);
         this.name = name;
@@ -53,20 +54,24 @@ public class Asset extends EntityLayerSupertype {
     }
 
     /**
-     * Marks the asset as deleted. No further updates will be possible.
-     * (Additionally, the deleted asset could be stored in a separate archive-table.)
-     * (Or alternatively - the asset could just be removed from the database.)
+     * Marks the asset as removed. No further updates will be possible.
+     * (Additionally, the removed asset could be stored in a separate archive-table.)
+     * (Or alternatively the asset could just be deleted from the database completely.)
      * 
      * @return
      */
-    public Asset delete() {
+    public Asset remove() {
         this.setState(Lifecycle.STORED_DELETED);
         return this;
     }
 
     public void moveToUnit(Unit unit) {
-        setUnit(unit);
+        super.setUnit(unit);
     }
 
+    @Override
+    public Asset withId(Key<UUID> id) {
+        return this.withId(id);
+    }
 
 }

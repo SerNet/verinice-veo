@@ -31,16 +31,26 @@ import org.veo.core.entity.specification.InvalidUnitException;
 import org.veo.core.entity.specification.SameClientSpecification;
 import org.veo.core.entity.specification.ValidUnitSpecification;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.With;
 
 /**
  * Implements common fields and methods for objects in the entity layer.
  *
- * @author akoderman
  *
  */
-public abstract class EntityLayerSupertype {
+@RequiredArgsConstructor
+@Setter
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public abstract class EntityLayerSupertype<T extends EntityLayerSupertype<T>> {
 
     /**
      * Lifecycle state of an entity. 
@@ -100,25 +110,39 @@ public abstract class EntityLayerSupertype {
      * 
      */
     // @formatter:on
-    @PositiveOrZero
-    private AtomicLong version;
-
+    
     @NotNull
-    // TODO for object versioning: create composite key of: uuid + version
-    private Key<UUID> key;
+    @EqualsAndHashCode.Include
+    private final Key<UUID> id;
     
-    @NotNull Unit unit;
+    protected @NotNull Unit unit;
     
-    @NotNull Lifecycle state;
-
+    protected @NotNull Lifecycle state;
+    
     @PastOrPresent(message="The start of the entity's validity must be in the past.")
     @NotNull(message="The start of the entity's validity must be in the past.")
-    Instant validFrom;
-    
+    protected Instant validFrom;
     
     @PastOrPresent(message="The end of the entity's validity must be be set in the past or set to 'null' if it is currently still valid.")
-    Instant validUntil;
+    protected Instant validUntil;
 
+    @PositiveOrZero
+    protected long version;
+    
+    protected EntityLayerSupertype( Key<UUID> id,  Unit unit,
+            Lifecycle state,
+           Instant validFrom,
+            Instant validUntil,
+          long version) {
+        checkValidUnit(unit);
+        this.id = id;
+        this.unit = unit;
+        this.state = state;
+        this.validFrom = validFrom;
+        this.validUntil = validUntil;
+        this.version = version;
+    }
+    
     public void setUnit(Unit unit) {
         checkValidUnit(unit);
         checkSameClient(unit.getClient());
@@ -132,84 +156,30 @@ public abstract class EntityLayerSupertype {
     }
 
     private void checkSameClient(Client client) {
-        if (!(new SameClientSpecification<EntityLayerSupertype>(client).isSatisfiedBy(this)))
+        if (!(new SameClientSpecification<EntityLayerSupertype<?>>(client).isSatisfiedBy(this)))
             throw new ClientBoundaryViolationException("The client boundary would be "
                     + "violated by the attempted opertion on element: " + this.toString());
     }
 
-    protected void checkSameClient(EntityLayerSupertype otherObject) {
+    protected void checkSameClient(EntityLayerSupertype<?> otherObject) {
         checkSameClient(otherObject.getUnit().getClient());
     }
     
-    protected void checkSameClients(Collection<? extends EntityLayerSupertype> groupMembers) {
+    protected void checkSameClients(Collection<? extends EntityLayerSupertype<?>> groupMembers) {
         groupMembers
             .stream()
             .forEach(this::checkSameClient);
     }
 
-    public Unit getUnit() {
-        return unit;
-    }
-
-    protected EntityLayerSupertype(Key<UUID> id, Unit unit, Lifecycle state, Instant validFrom, Instant validUntil, long version) {
-        checkValidUnit(unit);
-        this.key = id;
-        this.unit = unit;
-        this.state = state;
-        this.validFrom = validFrom;
-        this.validUntil = validUntil;
-        this.version = new AtomicLong(version);
-    }
-    
-    public long getVersion() {
-        return version.get();
-    }
-
     /**
-     * Increase version number.
-     * @return the new version number.
+     * Produce a clone of this entity with the given key.
+     * 
+     * @param id the new key object
+     * @return
      */
-    public long increaseVersion() {
-        return version.incrementAndGet();
-    }
-
-    @SuppressWarnings("unused")
-    private EntityLayerSupertype() {
-        // hide empty constructor
-    }
-
-    public Key<UUID> getKey() {
-        return key;
-    }
-
-    public Lifecycle getState() {
-        return state;
-    }
-
-    public void setState(Lifecycle state) {
-        this.state = state;
-    }
-
-    public Instant getValidFrom() {
-        return validFrom;
-    }
-
-    public void setValidFrom(Instant validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    public Instant getValidUntil() {
-        return validUntil;
-    }
-
-    public void setValidUntil(Instant validUntil) {
-        this.validUntil = validUntil;
-    }
-
-    public void setKey(Key<UUID> key) {
-        this.key = key;
-    }
+    public abstract T withId(Key<UUID> id);
 
    
 
+  
 }

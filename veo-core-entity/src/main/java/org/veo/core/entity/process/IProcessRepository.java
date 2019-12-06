@@ -28,7 +28,7 @@ import org.veo.core.entity.asset.Asset;
  * A repository for <code>Process</code> entities.
  *
  */
-public interface IProcessRepository extends IRepository<Process, UUID> {
+public interface IProcessRepository extends IRepository<Process, Key<UUID>> {
 
     /**
      * Retrieve processes for which the given person is responsible.

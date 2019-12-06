@@ -25,7 +25,7 @@ import java.util.UUID;
  * with more specific methods - i.e. queries based on particular fields.
  *
  */
-public interface IUnitRepository extends IRepository<Unit, UUID> {
+public interface IUnitRepository extends IRepository<Unit, Key<UUID>> {
 
 
 }
