@@ -44,7 +44,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 
-public class Client {
+public final class Client {
 
     @NotNull
     private final Key<UUID> id;

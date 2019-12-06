@@ -24,9 +24,9 @@ import javax.validation.Valid;
 
 import lombok.Value;
 
-import org.veo.core.entity.IUnitRepository;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.UnitRepository;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NotFoundException;
 
@@ -37,9 +37,9 @@ import org.veo.core.usecase.common.NotFoundException;
  */
 public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
 
-    private final IUnitRepository repository;
+    private final UnitRepository repository;
 
-    public GetUnitUseCase(IUnitRepository repository) {
+    public GetUnitUseCase(UnitRepository repository) {
         this.repository = repository;
     }
 

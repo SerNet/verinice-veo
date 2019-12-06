@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
 
-public class ValidUnitSpecification implements IEntitySpecification<EntityLayerSupertype> {
+public class ValidUnitSpecification<T extends EntityLayerSupertype<T>>
+        implements EntitySpecification<T> {
 
     @Override
     public boolean isSatisfiedBy(EntityLayerSupertype entity) {
@@ -31,8 +32,7 @@ public class ValidUnitSpecification implements IEntitySpecification<EntityLayerS
     }
 
     @Override
-    public Set<EntityLayerSupertype> selectSatisfyingElementsFrom(
-            Collection<EntityLayerSupertype> collection) {
+    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
         return collection.stream()
                          .filter(this::isSatisfiedBy)
                          .collect(Collectors.toSet());
@@ -44,4 +44,5 @@ public class ValidUnitSpecification implements IEntitySpecification<EntityLayerS
                 && unit.getName() != null && !unit.getName()
                                                   .isEmpty());
     }
+
 }

@@ -29,9 +29,9 @@ import lombok.Value;
 import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.asset.IAssetRepository;
-import org.veo.core.entity.process.IProcessRepository;
+import org.veo.core.entity.asset.AssetRepository;
 import org.veo.core.entity.process.Process;
+import org.veo.core.entity.process.ProcessRepository;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 
@@ -43,12 +43,12 @@ import org.veo.core.usecase.unit.GetUnitUseCase;
 public class CreateProcessUseCase
         extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData> {
 
-    private final IProcessRepository processRepository;
-    private final IAssetRepository assetRepository;
+    private final ProcessRepository processRepository;
+    private final AssetRepository assetRepository;
     private final GetUnitUseCase getUnitUseCase;
 
-    public CreateProcessUseCase(IProcessRepository processRepository,
-            IAssetRepository assetRepository, GetUnitUseCase getUnitUseCase) {
+    public CreateProcessUseCase(ProcessRepository processRepository,
+            AssetRepository assetRepository, GetUnitUseCase getUnitUseCase) {
         this.processRepository = processRepository;
         this.assetRepository = assetRepository;
         this.getUnitUseCase = getUnitUseCase;

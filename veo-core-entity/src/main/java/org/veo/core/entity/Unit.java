@@ -53,7 +53,7 @@ import org.veo.core.entity.specification.SameClientSpecification;
  *
  *
  */
-public class Unit {
+public final class Unit {
 
     @NotNull
     private Key<UUID> id;
@@ -105,8 +105,7 @@ public class Unit {
     }
 
     private void checkSameClient(Client otherClient) {
-        if (!(new SameClientSpecification<EntityLayerSupertype>(
-                this.client)).isSatisfiedBy(otherClient))
+        if (!(new SameClientSpecification(this.client)).isSatisfiedBy(otherClient))
             throw new ClientBoundaryViolationException(
                     "A unit must not be relocated to another client. "
                             + "Operation failed for unit: " + this.getName());

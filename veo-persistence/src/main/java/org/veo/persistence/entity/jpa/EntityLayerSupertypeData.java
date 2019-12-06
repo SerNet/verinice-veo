@@ -38,7 +38,7 @@ import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 
 @MappedSuperclass
 @IdClass(SimpleKey.class)
-public abstract class EntityLayerSupertypeData {
+public class EntityLayerSupertypeData {
 
     @EmbeddedId
     SimpleKey uuid;

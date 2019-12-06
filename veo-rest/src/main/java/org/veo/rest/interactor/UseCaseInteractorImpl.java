@@ -24,10 +24,10 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import org.veo.core.usecase.IUseCaseInteractor;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.InputData;
 import org.veo.core.usecase.UseCase.OutputData;
+import org.veo.core.usecase.UseCaseInteractor;
 
 /**
  * Provides a use case interactor with asynchronous callback.
@@ -42,7 +42,7 @@ import org.veo.core.usecase.UseCase.OutputData;
  */
 @Service
 @Validated
-public class UseCaseInteractor implements IUseCaseInteractor {
+public class UseCaseInteractorImpl implements UseCaseInteractor {
 
     @Override
     public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(

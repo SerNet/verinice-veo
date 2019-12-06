@@ -33,7 +33,7 @@ import lombok.ToString;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.specification.IEntitySpecification;
+import org.veo.core.entity.specification.EntitySpecification;
 
 /**
  * A group of entity objects of the same type. A group may contain other groups.
@@ -48,7 +48,7 @@ import org.veo.core.entity.specification.IEntitySpecification;
 @Getter
 @Setter
 @ToString
-public class EntityGroup<T extends EntityLayerSupertype<T>>
+public final class EntityGroup<T extends EntityLayerSupertype<T>>
         extends EntityLayerSupertype<EntityGroup<T>> {
 
     @NotNull
@@ -90,7 +90,7 @@ public class EntityGroup<T extends EntityLayerSupertype<T>>
      * specification.
      *
      */
-    public Set<T> findMembersFulfilling(IEntitySpecification<T> spec) {
+    public Set<T> findMembersFulfilling(EntitySpecification<T> spec) {
         return spec.selectSatisfyingElementsFrom(groupMembers);
     }
 

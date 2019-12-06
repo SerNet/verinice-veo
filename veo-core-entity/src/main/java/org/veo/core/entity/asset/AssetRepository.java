@@ -14,32 +14,31 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.asset;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
-/*
-* The repository provides access to business entities through a well-known interface.
-*
-* It provides methods to add, remove or reconstitute objects and encapsulates
-* the actual interaction with the data store.
-*
-* The repository guarantees all invariants of the entities entity to maintain
-* the integrity of the entities and all references. More than a simple data gateway,
-* the repository does not just offer CRUD operations but
-* uses factories and builders to build entities to specification.
-* */
-public interface IRepository<T, K> {
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Repository;
 
-    public T save(T entity);
+/**
+ * A repository for <code>Asset</code> entities.
+ *
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
+ *
+ */
+public interface AssetRepository extends Repository<Asset, Key<UUID>> {
 
-    public Optional<T> findById(K id);
+    public Set<Asset> getByIds(Set<Key<UUID>> ids);
 
-    public List<T> findByName(String search);
-
-    public void delete(T entity);
-
-    public void deleteById(K entity);
+    /**
+     * Retrieve assets for the given process.
+     *
+     * @param processIds
+     * @return
+     */
+    public Set<Asset> getByProcessId(Key<UUID> processId);
 
 }

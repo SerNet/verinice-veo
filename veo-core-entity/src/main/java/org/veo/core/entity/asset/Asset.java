@@ -32,7 +32,7 @@ import org.veo.core.entity.Unit;
 @Getter
 @Setter
 @ToString
-public class Asset extends EntityLayerSupertype<Asset> {
+public final class Asset extends EntityLayerSupertype<Asset> {
 
     private String name;
 

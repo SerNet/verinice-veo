@@ -20,8 +20,8 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.IAssetRepository;
-import org.veo.core.entity.process.IProcessRepository;
+import org.veo.core.entity.asset.AssetRepository;
+import org.veo.core.entity.process.ProcessRepository;
 
 /**
  * Change properties of an asset.
@@ -31,10 +31,10 @@ import org.veo.core.entity.process.IProcessRepository;
  */
 public class DeleteAssetUseCase extends UpdateAssetUseCase {
 
-    private IProcessRepository processRepository;
+    private ProcessRepository processRepository;
 
-    public DeleteAssetUseCase(IAssetRepository assetRepository,
-            IProcessRepository processRepository) {
+    public DeleteAssetUseCase(AssetRepository assetRepository,
+            ProcessRepository processRepository) {
         super(assetRepository);
         this.processRepository = processRepository;
     }

@@ -18,19 +18,17 @@ package org.veo.persistence.access;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Key;
-import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.IAssetRepository;
-import org.veo.persistence.access.jpa.JpaAssetDataRepository;
-import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.core.entity.Unit;
+import org.veo.core.entity.UnitRepository;
+import org.veo.persistence.access.jpa.JpaUnitDataRepository;
 import org.veo.persistence.entity.jpa.SimpleKey;
+import org.veo.persistence.entity.jpa.UnitData;
 
 /**
  * An implementation of repository interface that converts between entities and
@@ -40,29 +38,37 @@ import org.veo.persistence.entity.jpa.SimpleKey;
  *
  */
 @Repository
-public class AssetRepository implements IAssetRepository {
+public class UnitRepositoryImpl implements UnitRepository {
 
-    private JpaAssetDataRepository jpaRepository;
+    private JpaUnitDataRepository jpaRepository;
 
-    public AssetRepository(JpaAssetDataRepository jpaRepository) {
+    public UnitRepositoryImpl(JpaUnitDataRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
     @Override
-    public Asset save(Asset asset) {
-        return jpaRepository.save(AssetData.from(asset))
-                            .toAsset();
+    public Unit save(Unit entity) {
+        return jpaRepository.save(UnitData.from(entity))
+                            .toUnit();
     }
 
     @Override
-    public Optional<Asset> findById(Key<UUID> id) {
+    public Optional<Unit> findById(Key<UUID> id) {
         return jpaRepository.findById(SimpleKey.from(id))
-                            .map(AssetData::toAsset);
+                            .map(UnitData::toUnit);
     }
 
     @Override
-    public void delete(Asset asset) {
-        jpaRepository.delete(AssetData.from(asset));
+    public List<Unit> findByName(String search) {
+        return jpaRepository.findByNameContainingIgnoreCase(search)
+                            .stream()
+                            .map(UnitData::toUnit)
+                            .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(Unit entity) {
+        jpaRepository.delete(UnitData.from(entity));
     }
 
     @Override
@@ -70,27 +76,4 @@ public class AssetRepository implements IAssetRepository {
         jpaRepository.deleteById(SimpleKey.from(id));
     }
 
-    @Override
-    public List<Asset> findByName(String search) {
-        return jpaRepository.findByNameContainingIgnoreCase(search)
-                            .stream()
-                            .map(AssetData::toAsset)
-                            .collect(Collectors.toList());
-    }
-
-    @Override
-    public Set<Asset> getByIds(Set<Key<UUID>> ids) {
-        Iterable<AssetData> allById = jpaRepository.findAllById(SimpleKey.from(ids));
-        return StreamSupport.stream(allById.spliterator(), false)
-                            .map(AssetData::toAsset)
-                            .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Asset> getByProcessId(Key<UUID> processId) {
-        return jpaRepository.findByProcessId(SimpleKey.from(processId))
-                            .stream()
-                            .map(AssetData::toAsset)
-                            .collect(Collectors.toSet());
-    }
 }

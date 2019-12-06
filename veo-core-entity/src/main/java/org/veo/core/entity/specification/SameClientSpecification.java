@@ -34,8 +34,8 @@ import org.veo.core.entity.Unit;
  * <code>IEntitySecification</code>.
  *
  */
-public class SameClientSpecification<T extends EntityLayerSupertype>
-        implements IEntitySpecification<T> {
+public class SameClientSpecification<T extends EntityLayerSupertype<T>>
+        implements EntitySpecification<T> {
 
     private Client client;
 

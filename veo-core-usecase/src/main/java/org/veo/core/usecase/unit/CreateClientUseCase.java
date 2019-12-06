@@ -23,8 +23,8 @@ import javax.validation.Valid;
 import lombok.Value;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.IUnitRepository;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.UnitRepository;
 import org.veo.core.usecase.UseCase;
 
 /**
@@ -36,9 +36,9 @@ import org.veo.core.usecase.UseCase;
 public class CreateClientUseCase
         extends UseCase<CreateClientUseCase.InputData, CreateClientUseCase.OutputData> {
 
-    private final IUnitRepository unitRepository;
+    private final UnitRepository unitRepository;
 
-    public CreateClientUseCase(IUnitRepository unitRepository) {
+    public CreateClientUseCase(UnitRepository unitRepository) {
         this.unitRepository = unitRepository;
     }
 

@@ -24,15 +24,15 @@ import lombok.Value;
 
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.IAssetRepository;
+import org.veo.core.entity.asset.AssetRepository;
 import org.veo.core.usecase.UseCase;
 
 public class CreateAssetUseCase
         extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
 
-    private final IAssetRepository assetRepository;
+    private final AssetRepository assetRepository;
 
-    public CreateAssetUseCase(IAssetRepository assetRepository) {
+    public CreateAssetUseCase(AssetRepository assetRepository) {
         this.assetRepository = assetRepository;
     }
 

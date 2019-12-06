@@ -21,7 +21,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.IAssetRepository;
+import org.veo.core.entity.asset.AssetRepository;
 
 /**
  * Change properties of an asset.
@@ -30,7 +30,7 @@ import org.veo.core.entity.asset.IAssetRepository;
  */
 public class EditAssetUseCase extends UpdateAssetUseCase {
 
-    public EditAssetUseCase(IAssetRepository assetRepository) {
+    public EditAssetUseCase(AssetRepository assetRepository) {
         super(assetRepository);
     }
 

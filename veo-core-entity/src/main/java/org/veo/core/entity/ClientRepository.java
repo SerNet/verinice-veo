@@ -14,26 +14,17 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.specification;
+package org.veo.core.entity;
 
-import java.util.Collection;
-import java.util.Set;
-
-import org.veo.core.entity.EntityLayerSupertype;
+import java.util.UUID;
 
 /**
- * An intention-revealing interface for business rule specifications.
+ * A repository for <code>Client</code> entities.
  *
- * Specifications are used by entity builders and constructors to ensure that
- * all entities are built to spec.
- *
- * Specifications are also used by setter-methods and other state-changing
- * operations to ensure that the overall business model stays valid.
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
  *
  */
-public interface IEntitySpecification<T extends EntityLayerSupertype> {
+public interface ClientRepository extends Repository<Client, Key<UUID>> {
 
-    public boolean isSatisfiedBy(T entity);
-
-    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection);
 }

@@ -30,8 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
+import org.veo.core.entity.process.ProcessRepository;
 import org.veo.persistence.access.jpa.JpaProcessDataRepository;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.SimpleKey;
@@ -44,11 +44,11 @@ import org.veo.persistence.entity.jpa.SimpleKey;
  *
  */
 @Repository
-public class ProcessRepository implements IProcessRepository {
+public class ProcessRepositoryImpl implements ProcessRepository {
 
     private JpaProcessDataRepository jpaRepository;
 
-    public ProcessRepository(JpaProcessDataRepository jpaRepository) {
+    public ProcessRepositoryImpl(JpaProcessDataRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 

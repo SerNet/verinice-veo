@@ -21,7 +21,7 @@ import javax.transaction.Transactional.TxType;
 
 import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
 import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.IAssetRepository;
+import org.veo.core.entity.asset.AssetRepository;
 
 /**
  * Associate this asset with a different unit.
@@ -29,7 +29,7 @@ import org.veo.core.entity.asset.IAssetRepository;
  */
 public class MoveAssetToUnitUseCase extends UpdateAssetUseCase {
 
-    public MoveAssetToUnitUseCase(IAssetRepository assetRepository) {
+    public MoveAssetToUnitUseCase(AssetRepository assetRepository) {
         super(assetRepository);
     }
 

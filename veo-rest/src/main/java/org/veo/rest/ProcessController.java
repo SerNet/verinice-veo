@@ -43,7 +43,7 @@ import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
-import org.veo.rest.interactor.UseCaseInteractor;
+import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.CurrentUser;
 
 /**
@@ -56,11 +56,11 @@ import org.veo.rest.security.CurrentUser;
 @RequestMapping("/process")
 public class ProcessController {
 
-    private UseCaseInteractor useCaseInteractor;
+    private UseCaseInteractorImpl useCaseInteractor;
     private CreateProcessUseCase createProcessUseCase;
     private GetProcessUseCase getProcessUseCase;
 
-    public ProcessController(UseCaseInteractor useCaseInteractor,
+    public ProcessController(UseCaseInteractorImpl useCaseInteractor,
             CreateProcessUseCase createProcessUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createProcessUseCase = createProcessUseCase;

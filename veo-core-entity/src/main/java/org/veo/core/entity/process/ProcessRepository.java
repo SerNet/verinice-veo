@@ -14,20 +14,34 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.group;
+package org.veo.core.entity.process;
 
+import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.IRepository;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Repository;
+import org.veo.core.entity.asset.Asset;
 
 /**
- * A repository for <code>EntityGroup</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * A repository for <code>Process</code> entities.
  *
  */
-public interface IEntityGroupRepository extends IRepository<EntityGroup, Key<UUID>> {
+public interface ProcessRepository extends Repository<Process, Key<UUID>> {
 
+    /**
+     * Retrieve processes for which the given person is responsible.
+     *
+     * @param personId
+     * @return
+     */
+    public Set<Process> getProcessByResponsiblePerson(Key<UUID> personId);
+
+    /**
+     * Find processes that hold a reference to the specified asset.
+     *
+     * @param asset
+     * @return
+     */
+    public Set<Process> findProcessesContainingAsset(Asset asset);
 }

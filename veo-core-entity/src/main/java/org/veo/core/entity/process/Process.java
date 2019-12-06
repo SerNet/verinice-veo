@@ -45,7 +45,7 @@ import org.veo.core.entity.asset.Asset;
 @Getter
 @Setter
 @ToString
-public class Process extends EntityLayerSupertype<Process> {
+public final class Process extends EntityLayerSupertype<Process> {
 
     @NotBlank
     private String name;

@@ -31,7 +31,7 @@ import java.util.function.Function;
  * blocking the caller's thread until the result is ready.
  *
  */
-public interface IUseCaseInteractor {
+public interface UseCaseInteractor {
 
     /**
      * This function is used to execute a use case with an asynchronous callback.

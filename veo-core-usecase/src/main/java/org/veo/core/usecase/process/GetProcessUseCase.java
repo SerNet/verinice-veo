@@ -25,8 +25,8 @@ import javax.validation.Valid;
 import lombok.Value;
 
 import org.veo.core.entity.Key;
-import org.veo.core.entity.process.IProcessRepository;
 import org.veo.core.entity.process.Process;
+import org.veo.core.entity.process.ProcessRepository;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NotFoundException;
 
@@ -37,9 +37,9 @@ import org.veo.core.usecase.common.NotFoundException;
 public class GetProcessUseCase
         extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData> {
 
-    private final IProcessRepository repository;
+    private final ProcessRepository repository;
 
-    public GetProcessUseCase(IProcessRepository repository) {
+    public GetProcessUseCase(ProcessRepository repository) {
         this.repository = repository;
     }
 

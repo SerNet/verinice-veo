@@ -14,34 +14,32 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.process;
+package org.veo.core.entity;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
+import java.util.Optional;
 
-import org.veo.core.entity.IRepository;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.asset.Asset;
+/*
+* The repository provides access to business entities through a well-known interface.
+*
+* It provides methods to add, remove or reconstitute objects and encapsulates
+* the actual interaction with the data store.
+*
+* The repository guarantees all invariants of the entities entity to maintain
+* the integrity of the entities and all references. More than a simple data gateway,
+* the repository does not just offer CRUD operations but
+* uses factories and builders to build entities to specification.
+* */
+public interface Repository<T, K> {
 
-/**
- * A repository for <code>Process</code> entities.
- *
- */
-public interface IProcessRepository extends IRepository<Process, Key<UUID>> {
+    public T save(T entity);
 
-    /**
-     * Retrieve processes for which the given person is responsible.
-     *
-     * @param personId
-     * @return
-     */
-    public Set<Process> getProcessByResponsiblePerson(Key<UUID> personId);
+    public Optional<T> findById(K id);
 
-    /**
-     * Find processes that hold a reference to the specified asset.
-     *
-     * @param asset
-     * @return
-     */
-    public Set<Process> findProcessesContainingAsset(Asset asset);
+    public List<T> findByName(String search);
+
+    public void delete(T entity);
+
+    public void deleteById(K entity);
+
 }

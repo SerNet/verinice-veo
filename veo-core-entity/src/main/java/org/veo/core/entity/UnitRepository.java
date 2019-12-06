@@ -14,17 +14,17 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.person;
+package org.veo.core.entity;
 
 import java.util.UUID;
 
-import org.veo.core.entity.IRepository;
-import org.veo.core.entity.Key;
-
 /**
- * A repository for <code>Person</code> entities.
+ * A repository for <code>Unit</code> entities.
+ *
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
  *
  */
-public interface IPersonRepository extends IRepository<Person, Key<UUID>> {
+public interface UnitRepository extends Repository<Unit, Key<UUID>> {
 
 }

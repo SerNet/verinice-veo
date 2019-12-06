@@ -14,31 +14,20 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.asset;
+package org.veo.core.entity.group;
 
-import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.IRepository;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Repository;
 
 /**
- * A repository for <code>Asset</code> entities.
+ * A repository for <code>EntityGroup</code> entities.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  *
  */
-public interface IAssetRepository extends IRepository<Asset, Key<UUID>> {
-
-    public Set<Asset> getByIds(Set<Key<UUID>> ids);
-
-    /**
-     * Retrieve assets for the given process.
-     *
-     * @param processIds
-     * @return
-     */
-    public Set<Asset> getByProcessId(Key<UUID> processId);
+public interface EntityGroupRepository extends Repository<EntityGroup, Key<UUID>> {
 
 }

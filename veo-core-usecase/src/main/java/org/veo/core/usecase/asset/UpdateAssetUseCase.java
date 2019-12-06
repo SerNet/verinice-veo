@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.IAssetRepository;
+import org.veo.core.entity.asset.AssetRepository;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NotFoundException;
 
@@ -48,9 +48,9 @@ import org.veo.core.usecase.common.NotFoundException;
 public abstract class UpdateAssetUseCase
         extends UseCase<UpdateAssetUseCase.InputData, UpdateAssetUseCase.OutputData> {
 
-    private final IAssetRepository assetRepository;
+    private final AssetRepository assetRepository;
 
-    public UpdateAssetUseCase(IAssetRepository assetRepository) {
+    public UpdateAssetUseCase(AssetRepository assetRepository) {
         this.assetRepository = assetRepository;
     }
 
