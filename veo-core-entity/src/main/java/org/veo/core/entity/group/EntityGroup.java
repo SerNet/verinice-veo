@@ -17,6 +17,7 @@
 package org.veo.core.entity.group;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -63,6 +64,7 @@ public final class EntityGroup<T extends EntityLayerSupertype<T>>
         super(id, unit, EntityLayerSupertype.Lifecycle.CREATING, Instant.now(), null, 0L);
         this.name = name;
         this.groupMembers = new HashSet<>();
+
     }
 
     public static <T extends EntityLayerSupertype<T>> EntityGroup<T> newGroup(Unit unit,
@@ -86,17 +88,33 @@ public final class EntityGroup<T extends EntityLayerSupertype<T>>
     }
 
     /**
+     * Implements the client check for the group itself as well as its members.
+     */
+    @Override
+    public void checkSameClient(EntityLayerSupertype<?> otherObject) {
+        super.checkSameClient(otherObject);
+        this.groupMembers.stream()
+                         .forEach(gm -> gm.checkSameClient(otherObject));
+    }
+
+    /**
+     * Checks if the provided arguments all belong to the same client as this
+     * object.
+     *
+     * @param groupMembers
+     */
+    private void checkSameClients(Collection<? extends EntityLayerSupertype<?>> groupMembers) {
+        groupMembers.stream()
+                    .forEach(super::checkSameClient);
+    }
+
+    /**
      * Returns a new set containing just the elements that fulfill the given
      * specification.
      *
      */
     public Set<T> findMembersFulfilling(EntitySpecification<T> spec) {
         return spec.selectSatisfyingElementsFrom(groupMembers);
-    }
-
-    @Override
-    public EntityGroup<T> withId(Key<UUID> id) {
-        return this.withId(id);
     }
 
 }

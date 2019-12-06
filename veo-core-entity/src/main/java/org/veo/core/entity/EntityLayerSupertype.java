@@ -17,7 +17,6 @@
 package org.veo.core.entity;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
@@ -133,9 +132,17 @@ public abstract class EntityLayerSupertype<T extends EntityLayerSupertype<T>> {
         this.version = version;
     }
 
+    /**
+     * Associate this entity with a new valid unit. If it already is associated with
+     * a unit, make sure that the new one belongs to the same client.
+     *
+     * @param unit
+     */
     public void setUnit(Unit unit) {
         checkValidUnit(unit);
-        checkSameClient(unit.getClient());
+        if (this.unit != null) {
+            checkSameClient(unit.getClient());
+        }
         this.unit = unit;
     }
 
@@ -150,23 +157,9 @@ public abstract class EntityLayerSupertype<T extends EntityLayerSupertype<T>> {
                     + "violated by the attempted opertion on element: " + this.toString());
     }
 
-    protected void checkSameClient(EntityLayerSupertype<?> otherObject) {
+    public void checkSameClient(EntityLayerSupertype<?> otherObject) {
         checkSameClient(otherObject.getUnit()
                                    .getClient());
     }
-
-    protected void checkSameClients(Collection<? extends EntityLayerSupertype<?>> groupMembers) {
-        groupMembers.stream()
-                    .forEach(this::checkSameClient);
-    }
-
-    /**
-     * Produce a clone of this entity with the given key.
-     *
-     * @param id
-     *            the new key object
-     * @return
-     */
-    public abstract T withId(Key<UUID> id);
 
 }

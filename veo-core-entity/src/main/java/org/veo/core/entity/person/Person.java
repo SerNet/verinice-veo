@@ -46,9 +46,4 @@ public class Person extends EntityLayerSupertype<Person> {
         this.name = name;
     }
 
-    @Override
-    public Person withId(Key<UUID> id) {
-        return this.withId(id);
-    }
-
 }

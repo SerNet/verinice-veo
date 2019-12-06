@@ -23,6 +23,19 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
 
+/**
+ * Checks if the given entity has a valid unit. This means that
+ *
+ * <pre>
+ * - the unit is not null
+ * - the unit must not have an undefined Key as ID
+ * - the unit's name is not null and not an empty string.
+ * </pre>
+ *
+ * @author akoderman
+ *
+ * @param <T>
+ */
 public class ValidUnitSpecification<T extends EntityLayerSupertype<T>>
         implements EntitySpecification<T> {
 

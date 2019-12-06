@@ -30,10 +30,31 @@ import org.veo.core.entity.EntityLayerSupertype;
  * Specifications are also used by setter-methods and other state-changing
  * operations to ensure that the overall business model stays valid.
  *
+ * If a repositories is given a specification it can implement its own version
+ * that can based on database-queries.
+ *
  */
 public interface EntitySpecification<T extends EntityLayerSupertype<T>> {
 
+    /**
+     * Determines if this specification is fulfilled by the provided entity.
+     *
+     * @param entity
+     *            The entity to test.
+     * @return {@literal true} if the entity fulfills the specification.
+     *         {@literal false} otherwise.
+     */
     public boolean isSatisfiedBy(T entity);
 
+    /**
+     * Return only those entities from a collection that fulfill the
+     * {@code isSatisfiedBy()} condition.
+     *
+     * @param collection
+     *            a collection of elements to filter by the specification's
+     *            condition
+     * @return all entities fulfilling the specification
+     */
     public Set<T> selectSatisfyingElementsFrom(Collection<T> collection);
+
 }

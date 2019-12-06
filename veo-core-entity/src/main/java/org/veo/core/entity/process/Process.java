@@ -98,7 +98,8 @@ public final class Process extends EntityLayerSupertype<Process> {
     }
 
     public void addAssets(Set<Asset> assets) {
-        checkSameClients(assets);
+        assets.stream()
+              .forEach(this::checkSameClient);
         this.assets.addAll(assets);
     }
 
@@ -108,11 +109,6 @@ public final class Process extends EntityLayerSupertype<Process> {
 
     public Set<Asset> getAssets() {
         return Collections.unmodifiableSet(this.assets);
-    }
-
-    @Override
-    public Process withId(Key<UUID> id) {
-        return this.withId(id);
     }
 
 }

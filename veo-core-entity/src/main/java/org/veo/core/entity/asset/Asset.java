@@ -68,9 +68,4 @@ public final class Asset extends EntityLayerSupertype<Asset> {
         super.setUnit(unit);
     }
 
-    @Override
-    public Asset withId(Key<UUID> id) {
-        return this.withId(id);
-    }
-
 }

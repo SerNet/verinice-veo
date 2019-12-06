@@ -61,9 +61,10 @@ public class ProcessController {
     private GetProcessUseCase getProcessUseCase;
 
     public ProcessController(UseCaseInteractorImpl useCaseInteractor,
-            CreateProcessUseCase createProcessUseCase) {
+            CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createProcessUseCase = createProcessUseCase;
+        this.getProcessUseCase = getProcessUseCase;
     }
 
     /**
