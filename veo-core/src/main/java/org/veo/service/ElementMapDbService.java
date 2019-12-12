@@ -49,7 +49,7 @@ public class ElementMapDbService implements ElementMapService {
 
     @Override
     public List<Map<String, Object>> findAll() {
-        Iterable<Element> allElements = elementRepository.findAll();
+        Iterable<Element> allElements = elementRepository.findAllWithProperties();
         return getResultList(allElements);
     }
 
