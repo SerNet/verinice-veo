@@ -1,13 +1,10 @@
 apply plugin: 'groovy'
 
 dependencies {
+    compileOnly 'javax.validation:validation-api'
 
-
-
-    compile 'javax.validation:validation-api'
-
-    testCompile 'org.spockframework:spock-spring'
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.spockframework:spock-spring'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //    testCompile 'com.github.javafaker:javafaker'
-    testRuntime 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
 }

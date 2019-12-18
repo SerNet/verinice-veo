@@ -8,27 +8,27 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":veo-core")
-    compile project(":veo-adapter")
-    compile project(":veo-persistence")
+    implementation project(":veo-core")
+    implementation project(":veo-adapter")
+    implementation project(":veo-persistence")
 
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'org.springframework.boot:spring-boot-starter-data-rest'
-    compile("org.springframework.boot:spring-boot-starter-security")
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-webflux'
-    compile("io.jsonwebtoken:jjwt-api")
-    compile 'org.springdoc:springdoc-openapi-ui'
-    compile 'io.swagger.core.v3:swagger-core'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.jsonwebtoken:jjwt-api'
+    implementation 'org.springdoc:springdoc-openapi-ui'
+    implementation 'io.swagger.core.v3:swagger-core'
 
-    runtime 'io.jsonwebtoken:jjwt-impl'
-    runtime 'io.jsonwebtoken:jjwt-jackson'
-    runtime 'com.h2database:h2'
-    runtime 'org.postgresql:postgresql'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'org.postgresql:postgresql'
 
-    testCompile project(":veo-json-validation")
-    testCompile 'org.spockframework:spock-spring'
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation project(":veo-json-validation")
+    testImplementation 'org.spockframework:spock-spring'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 bootRun {

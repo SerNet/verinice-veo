@@ -1,16 +1,17 @@
 apply plugin: 'groovy'
+apply plugin: 'java-library'
 
 dependencies {
 
-    compile project(":veo-core-entity")
+    api project(":veo-core-entity")
 
-    compileOnly('org.projectlombok:lombok')
+    compileOnly 'org.projectlombok:lombok'
 
-    compile 'javax.validation:validation-api'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'org.modelmapper:modelmapper'
+    compileOnly 'javax.validation:validation-api'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.modelmapper:modelmapper'
 
-    testCompile 'org.spockframework:spock-spring'
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testRuntime 'com.h2database:h2'
+    testImplementation 'org.spockframework:spock-spring'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'com.h2database:h2'
 }

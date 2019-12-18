@@ -1,12 +1,12 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile 'com.fasterxml.jackson.core:jackson-databind'
-    compile 'com.github.java-json-tools:json-schema-validator'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.github.java-json-tools:json-schema-validator'
 
-    testCompile project(':veo-core')
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile "org.spockframework:spock-core"
+    testImplementation project(':veo-core')
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.spockframework:spock-core'
 
-    testRuntime 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
 }

@@ -4,4 +4,4 @@ xjcGenerate {
     source = fileTree('src/main/resources') { include '*.xsd' }
 }
 
-dependencies { compile 'javax.xml.bind:jaxb-api' }
+dependencies { compileOnly 'javax.xml.bind:jaxb-api' }
