@@ -1,6 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '2.2.0.RELEASE' apply false
-    id "com.github.spotbugs" version '2.0.0'
+    id "com.github.spotbugs" version '3.0.0'
     id "com.diffplug.gradle.spotless" version "3.25.0" apply false
     id "com.github.pivotalservices.cf-app" version "2.3.0-rc.8"
     id "io.freefair.lombok" version "4.1.5"
