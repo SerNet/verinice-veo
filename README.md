@@ -137,7 +137,9 @@ or just
 
 	./gradlew check
 
-Sample git hooks are provided in *misc/git*, e. g.
+You can find formatting settings for IDEs in [misc/eclipse](misc/eclipse).
+
+Sample git hooks are provided in [misc/git](misc/git), e. g.
 [pre-commit](misc/git/pre-commit), which checks the code style on each commit.
 To install, copy the file to *.git/hooks/pre-commit*, etc. Make sure the
 scripts are executable.
