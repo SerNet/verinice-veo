@@ -84,7 +84,7 @@ public final class EntityGroup<T extends EntityLayerSupertype<T>>
 
     public void setGroupMembers(Set<T> groupMembers) {
         checkSameClients(groupMembers);
-        this.groupMembers = groupMembers;
+        this.groupMembers = new HashSet<>(groupMembers);
     }
 
     /**
