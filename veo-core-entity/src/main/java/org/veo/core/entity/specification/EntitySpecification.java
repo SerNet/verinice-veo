@@ -18,6 +18,7 @@ package org.veo.core.entity.specification;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.EntityLayerSupertype;
 
@@ -55,6 +56,9 @@ public interface EntitySpecification<T extends EntityLayerSupertype<T>> {
      *            condition
      * @return all entities fulfilling the specification
      */
-    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection);
-
+    default Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
+        return collection.stream()
+                         .filter(this::isSatisfiedBy)
+                         .collect(Collectors.toSet());
+    }
 }

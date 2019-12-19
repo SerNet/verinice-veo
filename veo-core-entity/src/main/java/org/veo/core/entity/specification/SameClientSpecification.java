@@ -50,13 +50,6 @@ public class SameClientSpecification<T extends EntityLayerSupertype<T>>
                      .equals(this.client);
     }
 
-    @Override
-    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
-        return collection.stream()
-                         .filter(this::isSatisfiedBy)
-                         .collect(Collectors.toSet());
-    }
-
     public boolean isSatisfiedBy(Client otherClient) {
         return this.client.equals(otherClient);
     }

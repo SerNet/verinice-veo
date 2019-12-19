@@ -16,10 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
 
@@ -42,13 +38,6 @@ public class ValidUnitSpecification<T extends EntityLayerSupertype<T>>
     @Override
     public boolean isSatisfiedBy(EntityLayerSupertype entity) {
         return isSatisfiedBy(entity.getUnit());
-    }
-
-    @Override
-    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
-        return collection.stream()
-                         .filter(this::isSatisfiedBy)
-                         .collect(Collectors.toSet());
     }
 
     public boolean isSatisfiedBy(Unit unit) {
