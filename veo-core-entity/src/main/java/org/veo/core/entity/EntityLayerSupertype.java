@@ -148,13 +148,16 @@ public abstract class EntityLayerSupertype<T extends EntityLayerSupertype<T>> {
 
     private void checkValidUnit(Unit unit) {
         if (unit == null || !(new ValidUnitSpecification<T>()).isSatisfiedBy(unit))
-            throw new InvalidUnitException("The supplied unit is not a valid unit object: ", unit);
+            throw new InvalidUnitException("The supplied unit is not a valid unit object: %s",
+                    unit);
     }
 
     private void checkSameClient(Client client) {
-        if (!(new SameClientSpecification<T>(client).isSatisfiedBy((T) this)))
+        if (!(new SameClientSpecification<T>(client).isSatisfiedBy((T) this))) {
             throw new ClientBoundaryViolationException("The client boundary would be "
-                    + "violated by the attempted opertion on element: " + this.toString());
+                    + "violated by the attempted operation on element: " + this.toString()
+                    + " from client " + client.toString());
+        }
     }
 
     public void checkSameClient(EntityLayerSupertype<?> otherObject) {
