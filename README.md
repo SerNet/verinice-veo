@@ -23,7 +23,7 @@ cd v2020
 **Build project:**
 
 ```bash
-export JAVA_HOME=/path/to/jdk-8
+export JAVA_HOME=/path/to/jdk-11
 ./gradlew build [-x test]
 ```
 
