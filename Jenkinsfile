@@ -6,6 +6,10 @@ pipeline {
         }
     }
 
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '50', artifactNumToKeepStr: '5'))
+    }
+
     environment {
         // In case the build server exports a custom JAVA_HOME, we fix the JAVA_HOME
         // to the one used by the docker image.
