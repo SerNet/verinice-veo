@@ -22,6 +22,9 @@ COPY veo-vna-import/build.gradle veo-vna-import/build.gradle
 COPY buildSrc/src buildSrc/src
 COPY buildSrc/build.gradle buildSrc/build.gradle
 
+# We assume that the sources will change more frequently than the
+# dependencies, therefore we do a dry-run build to download all the
+# dependencies in a layer before copying the source in the next.
 RUN ./gradlew --no-daemon --dry-run build
 COPY . .
 RUN ./gradlew --no-daemon build
