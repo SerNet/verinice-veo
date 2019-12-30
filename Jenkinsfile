@@ -1,3 +1,4 @@
+// Jenkinsfile to build the project, run tests and generate build reports
 pipeline {
     agent {
         docker {
