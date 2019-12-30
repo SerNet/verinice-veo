@@ -1,0 +1,5 @@
+.git
+.gitignore
+Jenkinsfile
+Jenkinsfile.docker
+Dockerfile
