@@ -36,7 +36,7 @@ LABEL org.opencontainers.image.authors=verinice@sernet.de
 LABEL org.opencontainers.image.ref.name=veo
 LABEL org.opencontainers.image.version=0.1.0
 
-WORKDIR /root
+WORKDIR /app
 COPY --from=BUILDER /root/dev/myapp/veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar .
 EXPOSE 8070
 CMD ["java", "-jar", "veo-rest-0.1.0-SNAPSHOT.jar"]
