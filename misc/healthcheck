@@ -1,0 +1,15 @@
+#!/bin/sh -e
+# checks the health status of a running server
+# usage: healthcheck [server url]
+
+URL=${1:-http://localhost:8070}
+
+if curl --fail -i "$URL"
+then
+	echo
+	echo 'service is healthy'
+else
+	echo
+	echo 'service is unhealthy'
+	exit 1
+fi
