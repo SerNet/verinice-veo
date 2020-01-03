@@ -124,11 +124,14 @@ subprojects {
     }
     pmdTest.enabled = false
 
-    spotbugs.ignoreFailures = true
     spotbugsTest.enabled = false
+    // write human readable report on normal builds
+    spotbugsMain.reports.xml.enabled = false
+    spotbugsMain.reports.html.enabled = true
 
-    // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
+    // specific "continious integration" settings needed by Jenkins
     if (rootProject.hasProperty('ci')) {
+        // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
         task jenkinsTestFix {
             inputs.files test.outputs.files
             doLast {
@@ -141,6 +144,10 @@ subprojects {
         build.dependsOn(jenkinsTestFix)
 
         test { testLogging { exceptionFormat = 'full' } }
+
+        // Jenkins needs xml reports to detect and display bugs.
+        spotbugsMain.reports.xml.enabled = true
+        spotbugsMain.reports.html.enabled = false
     }
 
     dependencies {
