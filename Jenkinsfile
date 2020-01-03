@@ -46,11 +46,11 @@ pipeline {
     }
     post {
         always {
-            recordIssues(tools: [spotBugs(pattern: '**/build/reports/spotbugs/main.xml', useRankAsPriority: true)])
-            recordIssues(tools: [pmdParser(pattern: '**/build/reports/pmd/main.xml')])
-            recordIssues(tools: [java()])
-            recordIssues(tools: [javaDoc()])
-            recordIssues(tools: [taskScanner(highTags: 'FIXME', ignoreCase: true, normalTags: 'TODO', excludePattern: 'Jenkinsfile, **/.gradle/**')])
+            recordIssues(enabledForFailure: true, tools: [spotBugs(pattern: '**/build/reports/spotbugs/main.xml', useRankAsPriority: true)])
+            recordIssues(enabledForFailure: true, tools: [pmdParser(pattern: '**/build/reports/pmd/main.xml')])
+            recordIssues(enabledForFailure: true, tools: [java()])
+            recordIssues(enabledForFailure: true, tools: [javaDoc()])
+            recordIssues(enabledForFailure: true, tools: [taskScanner(highTags: 'FIXME', ignoreCase: true, normalTags: 'TODO', excludePattern: 'Jenkinsfile, **/.gradle/**')])
             jacoco classPattern: '**/build/classes/java/main'
             junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
         }
