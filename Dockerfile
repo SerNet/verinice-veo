@@ -13,9 +13,13 @@ RUN ./gradlew --version
 
 # copy all gradle files so gradle knows which dependencies to fetch
 COPY build.gradle settings.gradle ./
+COPY veo-adapter/build.gradle veo-adapter/build.gradle
+COPY veo-core-entity/build.gradle veo-core-entity/build.gradle
+COPY veo-core-usecase/build.gradle veo-core-usecase/build.gradle
 COPY veo-core/build.gradle veo-core/build.gradle
 COPY veo-data-xml/build.gradle veo-data-xml/build.gradle
 COPY veo-json-validation/build.gradle veo-json-validation/build.gradle
+COPY veo-persistence/build.gradle veo-persistence/build.gradle
 COPY veo-rest/build.gradle veo-rest/build.gradle
 COPY veo-vna-import/build.gradle veo-vna-import/build.gradle
 
