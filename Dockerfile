@@ -33,7 +33,7 @@ RUN ./gradlew --no-daemon build
 FROM openjdk:11-jre-slim
 LABEL org.opencontainers.image.vendor="SerNet GmbH"
 LABEL org.opencontainers.image.authors=verinice@sernet.de
-LABEL org.opencontainers.image.ref.name=veo
+LABEL org.opencontainers.image.ref.name=verinice.VEO
 LABEL org.opencontainers.image.version=0.1.0
 
 RUN apt-get update
