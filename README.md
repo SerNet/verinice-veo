@@ -84,7 +84,7 @@ This module contains the core components of the application. This module can be 
 ### veo-data-xml
 This module contains the JAXB class files for accessing SNCA.xml from verinice.
 
-#### veo-rest
+### veo-rest
 This module contains the implementation of the REST services of the REST API.
 
 The JSON schemas accepted by the API can be found in *${veo.basedir}/schemas/*. If this directory
