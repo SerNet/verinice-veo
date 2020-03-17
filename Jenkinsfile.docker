@@ -19,22 +19,4 @@ node {
     stage('Build image') {
         app = docker.build('verinice/veo', '--build-arg GRADLE_OPTS="${GRADLE_OPTS}" .')
     }
-
-    stage('Push image') {
-        // Finally, we'll push the image with several tags:
-        // Pushing multiple tags is cheap, as all the layers are reused.
-        docker.withRegistry(env.DOCKER_REGISTRY_PUSH) {
-            if (branchName == 'master') {
-                app.push("latest")
-                app.push(env.BUILD_NUMBER)
-            } else {
-                // Note that '/' is not allowed in docker tags.
-                def dockertag = branchName.replace("/","-")
-                app.push("${dockertag}-${env.BUILD_NUMBER}")
-            }
-            if (env.TAG_NAME) {
-                app.push("${env.TAG_NAME}")
-            }
-        }
-    }
 }
