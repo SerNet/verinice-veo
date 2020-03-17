@@ -69,7 +69,7 @@ export CF_CCUSER=NAME
 export CF_CCPASSWORD=PASSWORD
 ```
 
-You can not push your the REST service to a Cloud Foundry instance:
+You can now push the REST service to a Cloud Foundry instance:
 
 ```bash
 ./gradlew cf-push
