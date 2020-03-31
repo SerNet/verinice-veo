@@ -221,23 +221,6 @@ Click on 'Request Token'. Enter your credentials. Then select the aquired token 
 
 You can now send your HTTP request. The access token will time out (usually after 1-5 minutes) nad has to be requested again for another request.
 
-
-### Deploy to Cloud Foundry
-
-Check and set your Cloud Foundry parameters in file `veo-rest/build.gradle` in section `cfConfig`. After that export user name and password as environment variables:
-
-```bash
-export CF_CCUSER=NAME
-export CF_CCPASSWORD=PASSWORD
-```
-
-You can now push the REST service to a Cloud Foundry instance:
-
-```bash
-./gradlew cf-push
-```
-
-
 ## Modules
 
 ### veo-data-xml [DEPRECATED]
