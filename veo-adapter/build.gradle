@@ -9,6 +9,11 @@ sourceSets {
 apply plugin: 'groovy'
 apply plugin: 'java-library'
 
+
+configurations {
+    generateSchemas
+}
+
 dependencies {
 
     api project(":veo-core-usecase")
@@ -22,4 +27,37 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     testRuntimeOnly 'com.h2database:h2'
+
+    generateSchemas 'com.github.victools:jsonschema-generator:4.13.0'
+    generateSchemas 'com.github.victools:jsonschema-module-jackson:[4.10.0,5.0.0)'
+    generateSchemas 'com.github.victools:jsonschema-module-javax-validation:[4.10.0,5.0.0)'
+    generateSchemas 'com.github.victools:jsonschema-module-swagger-2:[4.10.0,5.0.0)'
+    generateSchemas 'io.swagger.core.v3:swagger-annotations:2.1.2'
 }
+
+task generateEntitySchemas(type: JavaExec) {
+    def targetDirectory = file('src/main/resources/schemas/elements')
+    outputs.dir targetDirectory
+    classpath compileJava.outputs.files
+    classpath compileJava.classpath
+    classpath configurations.generateSchemas
+    classpath file("${rootDir}/buildSrc/build/classes/java/main")
+    main = 'org.veo.GenerateEntitySchema'
+    args = [
+        targetDirectory.absolutePath,
+        'org.veo.adapter.presenter.api.response',
+        'Asset',
+        'Control',
+        'Person',
+        'Process'
+    ]
+}
+
+plugins.withId('eclipse'){
+    eclipse {
+        synchronizationTasks generateEntitySchemas
+        autoBuildTasks generateEntitySchemas
+    }
+}
+
+processResources.dependsOn(generateEntitySchemas)

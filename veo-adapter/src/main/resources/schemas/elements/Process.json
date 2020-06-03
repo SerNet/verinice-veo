@@ -1,65 +1,90 @@
 {
-  "definitions": {
-    
-  },
-  "$schema": "http://verinice.com/veo/draft-01/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "description": "Schema for Process",
-  "title": "Process",
   "properties": {
-    "id": {
-      "type": "string",
-      "title": "The UUID to identify the element"
-    },
-    "type": {
-      "description": "The name of the type described by this schema.",
-      "enum": [
-        "Process"
-      ]
-    },
-    "name": {
-      "title": "name",
-      "type": "string"
-    },
     "abbreviation": {
-      "title": "abbreviation",
-      "type": "string"
-    },
-    "description": {
-      "title": "description",
-      "type": "string"
-    },
-    "domains": {
-      "type": "array",
-      "description": "The ids (UUID) of elements of the type domain.",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true
-    },
-    "links": {
-      "type": "object",
-      "description": "The contained objects of the type customLink.",
-      "properties": {
-        
-      }
+      "type": "string",
+      "description": "The abbreviation for the EntityLayerSupertype."
     },
     "customAspects": {
       "type": "object",
-      "description": "The contained objects of the type customProperties.",
-      "properties": {
-        
+      "title": "CustomAspect",
+      "description": "A custom property which is determined by the requested entity schema - see '/schemas'"
+    },
+    "description": {
+      "type": "string",
+      "description": "The description for the EntityLayerSupertype."
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "A friendly human readable title of the referenced domain."
+          },
+          "href": {
+            "type": "string",
+            "description": "The resource URL of the referenced domain."
+          }
+        },
+        "required": [
+          "href"
+        ],
+        "description": "The domains this entity is being used in."
       }
     },
-    "owner": {
+    "id": {
       "type": "string",
-      "description": "The id (UUID) of an element of the type unit."
+      "description": "ID must be a valid UUID string following RFC 4122."
+    },
+    "links": {
+      "type": "object",
+      "title": "CustomLink",
+      "description": "Custom relations which do not affect the behavior."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name for the EntityLayerSupertype."
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "A friendly human readable title of the referenced unit."
+        },
+        "href": {
+          "type": "string",
+          "description": "The resource URL of the referenced unit."
+        }
+      },
+      "required": [
+        "href"
+      ],
+      "description": "A reference to the unit containing this entity."
+    },
+    "validFrom": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved."
+    },
+    "validUntil": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying the point in time when this version of the entity was superseded by a newer version or deleted. Empty if this is the current version."
+    },
+    "version": {
+      "type": "integer",
+      "description": "The version is an integer that is automatically incremented by the server whenever the entity is saved.",
+      "minimum": 0
     }
   },
   "required": [
     "id",
-    "type",
     "name",
-    "owner"
-  ]
+    "owner",
+    "version"
+  ],
+  "title": "Process",
+  "description": "Schema for Process"
 }
