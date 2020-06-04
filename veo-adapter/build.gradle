@@ -1,6 +1,9 @@
+def generatedSchemasDir = "$buildDir/generated_entity_schemas"
+
 sourceSets {
     main {
         resources {
+            srcDir generatedSchemasDir
             exclude 'schemas/custom', 'schemas/links', 'schemas/elements'
         }
     }
@@ -36,8 +39,9 @@ dependencies {
 }
 
 task generateEntitySchemas(type: JavaExec) {
-    def targetDirectory = file('src/main/resources/schemas/elements')
+    def targetDirectory = file("$generatedSchemasDir/schemas")
     outputs.dir targetDirectory
+    inputs.files compileJava.outputs
     classpath compileJava.outputs.files
     classpath compileJava.classpath
     classpath configurations.generateSchemas
