@@ -17,6 +17,7 @@
 package org.veo;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -41,22 +42,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class GenerateEntitySchema {
 
     public static void main(String[] args) throws Exception {
-        String outputDir = args[0];
-        String packageName = args[1];
-
+        String outputBaseDir = args[0];
+        Path outputExendedSchemas = Paths.get(outputBaseDir, "entity");
+        String snippetDir = args[1];
+        String packageName = args[2];
         CustomPrettyPrinter prettyPrinter = new CustomPrettyPrinter();
         prettyPrinter.indentArraysWith(new DefaultIndenter());
         ObjectWriter writer = new ObjectMapper().writer(prettyPrinter);
 
         SchemaGenerator generator = createSchemaGenerator();
+        SchemaMerger schemaMerger = new SchemaMerger(Paths.get(snippetDir));
 
-        for (int i = 2; i < args.length; i++) {
+        for (int i = 3; i < args.length; i++) {
             String baseName = args[i];
             Class<?> clazz = Class.forName(packageName + "." + baseName + "Dto");
 
             JsonNode jsonSchema = generator.generateSchema(clazz);
 
-            writer.writeValue(Files.createDirectories(Paths.get(outputDir))
+            schemaMerger.extendSchema(jsonSchema, baseName);
+
+            writer.writeValue(Files.createDirectories(outputExendedSchemas)
                                    .resolve(baseName + ".json")
                                    .toFile(),
                               jsonSchema);

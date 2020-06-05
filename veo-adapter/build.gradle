@@ -4,7 +4,7 @@ sourceSets {
     main {
         resources {
             srcDir generatedSchemasDir
-            exclude 'schemas/custom', 'schemas/links', 'schemas/elements'
+            exclude 'schemas/custom', 'schemas/links'
         }
     }
 }
@@ -40,8 +40,10 @@ dependencies {
 
 task generateEntitySchemas(type: JavaExec) {
     def targetDirectory = file("$generatedSchemasDir/schemas")
+    def schemaSnippetDir = file("src/main/resources/schemas")
     outputs.dir targetDirectory
     inputs.files compileJava.outputs
+    inputs.files schemaSnippetDir
     classpath compileJava.outputs.files
     classpath compileJava.classpath
     classpath configurations.generateSchemas
@@ -49,6 +51,7 @@ task generateEntitySchemas(type: JavaExec) {
     main = 'org.veo.GenerateEntitySchema'
     args = [
         targetDirectory.absolutePath,
+        schemaSnippetDir.absolutePath,
         'org.veo.adapter.presenter.api.response',
         'Asset',
         'Control',
