@@ -1,3 +1,11 @@
+sourceSets {
+    main {
+        resources {
+            exclude 'schemas/custom', 'schemas/links', 'schemas/elements'
+        }
+    }
+}
+
 apply plugin: 'groovy'
 apply plugin: 'java-library'
 
