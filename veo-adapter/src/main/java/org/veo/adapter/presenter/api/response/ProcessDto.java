@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
@@ -43,6 +44,7 @@ import org.veo.core.entity.Process;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Schema(title = "Process", description = "Schema for Process")
 public class ProcessDto extends EntityLayerSupertypeDto {
 
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {

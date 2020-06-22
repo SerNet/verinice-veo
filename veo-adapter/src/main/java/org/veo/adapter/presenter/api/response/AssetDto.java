@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
@@ -43,6 +44,7 @@ import org.veo.core.entity.ModelObject;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Schema(title = "Asset", description = "Schema for Asset")
 public class AssetDto extends EntityLayerSupertypeDto {
 
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
