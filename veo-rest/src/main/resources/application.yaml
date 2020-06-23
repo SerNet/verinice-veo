@@ -5,6 +5,8 @@ veo:
   basedir: ${user.home}/.local/share/veo
   cors:
     origins: <ALLOWED_ORIGIN1>, <ALLOWED_ORIGIN2>
+  logging:
+    properties: 'spring.datasource.url,spring.jpa.database-platform'
 
 spring:
   data:

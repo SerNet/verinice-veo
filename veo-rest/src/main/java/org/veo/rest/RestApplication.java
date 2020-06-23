@@ -18,10 +18,16 @@ package org.veo.rest;
 
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -37,6 +43,8 @@ import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+
+import org.veo.SpringPropertyLogger;
 
 /**
  * Main application class for the REST service. Uses JPA repositories.
@@ -80,6 +88,10 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 public class RestApplication {
 
     public static final String SECURITY_SCHEME_OAUTH = "OAuth2";
+    private static final Logger logger = LoggerFactory.getLogger("veo-rest application properties");
+
+    @Autowired
+    private ApplicationContext appContext;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -101,4 +113,8 @@ public class RestApplication {
         return executor;
     }
 
+    @EventListener(ApplicationReadyEvent.class)
+    public void logSpringProperties() {
+        SpringPropertyLogger.logProperties(logger, appContext.getEnvironment());
+    }
 }
