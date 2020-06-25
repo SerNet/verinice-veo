@@ -67,8 +67,14 @@ public class UnitRepositoryImpl implements UnitRepository {
         TransformTargetToEntityContext context = Optional.ofNullable(dataToEntityContext)
                                                          .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext);
 
-        return dataRepository.findById(id.uuidValue())
-                             .map(data -> data.toUnit(context));
+        boolean fetchClient = ((DataTargetToEntityContext) context).getUnitClientFunction() != null;
+        Optional<UnitData> dataObject;
+        if (fetchClient) {
+            dataObject = dataRepository.findByIdFetchClient(id.uuidValue());
+        } else {
+            dataObject = dataRepository.findById(id.uuidValue());
+        }
+        return dataObject.map(data -> data.toUnit(context));
 
     }
 
