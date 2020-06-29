@@ -7,6 +7,9 @@ veo:
     origins: <ALLOWED_ORIGIN1>, <ALLOWED_ORIGIN2>
 
 spring:
+  data:
+    rest:
+      detection-strategy: annotated
   jpa:
     hibernate:
       ddl-auto: update
