@@ -32,6 +32,8 @@ public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
 
     public List<T> findByUnit(Unit owner, boolean includeGroups);
 
+    public List<T> findByLinkTarget(EntityLayerSupertype entity);
+
     public List<BaseModelGroup<T>> findGroupsByClient(Client client);
 
     public List<BaseModelGroup<T>> findGroupsByUnit(Unit owner);

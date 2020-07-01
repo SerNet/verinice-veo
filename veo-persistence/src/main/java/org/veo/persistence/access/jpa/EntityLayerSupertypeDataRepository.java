@@ -37,21 +37,24 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
 
     @Query("select e from #{#entityName} as e where e.owner.id = ?1 and type(e) = #{#entityName}")
     @Deprecated
-    // FIXME this method should be removed, it was only added because findByOwnerId
-    // also returns groups, which it shouldn't. We probably need to fix our JPA
-    // mapping in that regard
+    // FIXME this method should be removed, it was only added because
+    // findByOwnerId also returns groups, which it shouldn't. We probably need
+    // to fix our JPA mapping in that regard
     List<T> findEntitiesByOwnerId(String ownerId);
 
     @Query("select e from #{#entityName} as e where e.owner.client.id = ?1 and type(e) = #{#entityName}")
     @Deprecated
-    // FIXME this method should be removed, it was only added because findByOwnerId
-    // also returns groups, which it shouldn't. We probably need to fix our JPA
-    // mapping in that regard
+    // FIXME this method should be removed, it was only added because
+    // findByOwnerId also returns groups, which it shouldn't. We probably need
+    // to fix our JPA mapping in that regard
     List<T> findEntitiesByOwner_ClientId(String uuidValue);
+
+    List<T> findByLinks_TargetId(String uuidValue);
 
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_ClientId(String uuidValue);
 
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwnerId(String uuidValue);
 
     void deleteByOwnerId(String uuidValue);
+
 }

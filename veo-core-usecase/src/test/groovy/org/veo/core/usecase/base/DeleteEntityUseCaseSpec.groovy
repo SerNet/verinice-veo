@@ -16,20 +16,38 @@
  ******************************************************************************/
 package org.veo.core.usecase.base
 
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Control
+import org.veo.core.entity.CustomLink
+import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.DeleteEntityUseCase.InputData
+import org.veo.core.usecase.repository.AssetRepository
+import org.veo.core.usecase.repository.ControlRepository
+import org.veo.core.usecase.repository.DocumentRepository
 import org.veo.core.usecase.repository.PersonRepository
 import org.veo.core.usecase.repository.ProcessRepository
 
 public class DeleteEntityUseCaseSpec extends UseCaseSpec {
 
-    ProcessRepository processRepository = Mock()
+    AssetRepository assetRepository = Mock()
+    ControlRepository controlRepository = Mock()
+    DocumentRepository documentRepository = Mock()
     PersonRepository personRepository = Mock()
+    ProcessRepository processRepository = Mock()
 
     def usecase = new DeleteEntityUseCase(repositoryProvider)
+
+    def setup() {
+        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Asset) >> assetRepository
+        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Control) >> controlRepository
+        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentRepository
+        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personRepository
+        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processRepository
+    }
 
     def "Delete a process" () {
         def id = Key.newUuid()
@@ -40,7 +58,15 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
         when:
         usecase.execute(new InputData(Process,id, existingClient))
         then:
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processRepository
+        [
+            assetRepository,
+            controlRepository,
+            documentRepository,
+            personRepository,
+            processRepository
+        ].each {
+            1 * it.findByLinkTarget(_) >> []
+        }
         1 * processRepository.findById(id) >> Optional.of(process)
         1 * processRepository.deleteById(id)
     }
@@ -54,8 +80,45 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
         when:
         usecase.execute(new InputData(Person,id, existingClient))
         then:
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personRepository
+        [
+            assetRepository,
+            controlRepository,
+            documentRepository,
+            personRepository,
+            processRepository
+        ].each {
+            1 * it.findByLinkTarget(_) >> []
+        }
         1 * personRepository.findById(id) >> Optional.of(person)
         1 * personRepository.deleteById(id)
+    }
+
+    def "Delete a document that is a link target" () {
+        def id = Key.newUuid()
+        Document document = Mock() {
+            getOwner() >> existingUnit
+            getId() >> id
+        }
+        CustomLink customLink = Mock {
+            getTarget() >> document
+        }
+        Person person = Mock {
+            getLinks () >> [customLink]
+        }
+
+        when:
+        def output = usecase.execute(new InputData(Document,id, existingClient))
+        then:
+        [
+            assetRepository,
+            controlRepository,
+            documentRepository,
+            personRepository,
+            processRepository
+        ].each {
+            1 * it.findByLinkTarget(_) >> [person]
+        }
+        1 * documentRepository.findById(id) >> Optional.of(document)
+        1 * documentRepository.deleteById(id)
     }
 }

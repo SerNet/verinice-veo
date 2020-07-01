@@ -17,15 +17,21 @@
 package org.veo.core.usecase.base;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import lombok.Value;
 
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
@@ -50,7 +56,15 @@ public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, 
                                                         input.getId()
                                                              .uuidValue()));
         checkSameClient(input.authenticatedClient, entity);
-        // TODO VEO-161 also remove entity from links pointing to it
+        Stream.of(Asset.class, Control.class, Document.class, Person.class, Process.class)
+              .map(repositoryProvider::getEntityLayerSupertypeRepositoryFor)
+              .forEach(r -> r.findByLinkTarget(entity)
+                             .forEach(entityWithLink -> {
+                                 entityWithLink.getLinks()
+                                               .removeIf(link -> link.getTarget()
+                                                                     .equals(entity));
+                                 ((EntityLayerSupertypeRepository) repository).save(entityWithLink);
+                             }));
         repository.deleteById(entity.getId());
         return null;
     }

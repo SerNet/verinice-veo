@@ -29,6 +29,7 @@ import groovy.json.JsonSlurper
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.*
+import org.veo.core.entity.custom.LinkImpl
 import org.veo.core.entity.custom.SimpleProperties
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -392,5 +393,32 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the asset is deleted"
         results.andExpect(status().isOk())
         assetRepository.findById(asset.id).empty
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "delete an asset that is a link target"() {
+
+        given: "two assets with a link between them"
+
+        def asset2 = txTemplate.execute {
+            assetRepository.save(newAsset(unit, {
+                domains = [domain1] as Set
+            }))
+        }
+
+        def asset1 = txTemplate.execute {
+            assetRepository.save(newAsset(unit, {
+                domains = [domain1] as Set
+                CustomLink link = new LinkImpl(Key.newUuid(), "requires", asset2, it)
+                addToLinks(link)
+            }))
+        }
+
+        when: "a delete request is sent to the server for link target"
+
+        def results = delete("/assets/${asset2.id.uuidValue()}")
+        then: "the asset is deleted"
+        results.andExpect(status().isOk())
+        assetRepository.findById(asset2.id).empty
     }
 }

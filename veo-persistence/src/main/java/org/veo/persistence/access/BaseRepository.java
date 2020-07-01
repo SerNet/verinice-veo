@@ -140,6 +140,15 @@ public abstract class BaseRepository<T extends EntityLayerSupertype, S extends E
                    .collect(Collectors.toList());
     }
 
+    public List<T> findByLinkTarget(EntityLayerSupertype entity) {
+        TransformTargetToEntityContext context = DataTargetToEntityContext.getCompleteTransformationContext();
+        return dataRepository.findByLinks_TargetId(entity.getId()
+                                                         .uuidValue())
+                             .stream()
+                             .map(data -> dataToEntityMapper.apply(data, context))
+                             .collect(Collectors.toList());
+    }
+
     @Override
     public List<BaseModelGroup<T>> findGroupsByClient(Client client) {
         return dataRepository.findGroupsByOwner_ClientId(client.getId()
