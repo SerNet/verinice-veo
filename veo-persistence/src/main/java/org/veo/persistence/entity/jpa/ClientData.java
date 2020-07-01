@@ -45,7 +45,7 @@ public class ClientData extends BaseModelObjectData {
     private String name;
     // many to one client-> unit
     @Column(name = "units")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UnitData> units;
     // many to one client-> domain
     @Column(name = "domains")
@@ -107,7 +107,5 @@ public class ClientData extends BaseModelObjectData {
         }
         throw new IllegalArgumentException("Wrong context type");
     }
-
-    // FIXME VEO-127 do not use Cascade.REMOVE (or .ALL) on OneToMany associations
 
 }

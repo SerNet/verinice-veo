@@ -60,7 +60,7 @@ public class UnitData extends BaseModelObjectData implements NameAbleData {
     private ClientData client;
     // many to one unit-> unit
     @Column(name = "units")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UnitData> units;
     // one to one unit-> unit
     @ManyToOne(fetch = FetchType.LAZY)

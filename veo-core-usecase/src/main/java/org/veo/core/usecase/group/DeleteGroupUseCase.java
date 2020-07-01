@@ -52,13 +52,12 @@ public class DeleteGroupUseCase
                                                .orElseThrow(() -> new NotFoundException(
                                                        "Group %s was not found.", input.getId()
                                                                                        .uuidValue()));
-        // TODO VEO-124 this check should always be done implicitly by UnitImpl or
-        // ModelValidator. Without this check, it would be possible to overwrite
-        // objects from other clients with our own clientID, thereby hijacking these
-        // objects!
+        // TODO VEO-124 this check should always be done implicitly by UnitImpl
+        // or ModelValidator. Without this check, it would be possible to
+        // overwrite objects from other clients with our own clientID, thereby
+        // hijacking these objects!
         checkSameClient(input.authenticatedClient, group);
-        // TODO VEO-127 also remove entity from references in bidirectional
-        // relationships
+        // TODO VEO-161 also remove entity from links pointing to it
 
         repository.deleteById(group.getId());
         return new OutputData(input.getId());

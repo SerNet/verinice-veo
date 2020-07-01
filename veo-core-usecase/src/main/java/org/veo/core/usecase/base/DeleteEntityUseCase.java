@@ -51,8 +51,7 @@ public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, 
                                                                                input.getId()
                                                                                     .uuidValue()));
         checkSameClient(input.authenticatedClient, entity);
-        // TODO VEO-127 also remove entity from references in bidirectional
-        // relationships
+        // TODO VEO-161 also remove entity from links pointing to it
         repository.deleteById(entity.getId());
         return EmptyOutput.INSTANCE;
     }

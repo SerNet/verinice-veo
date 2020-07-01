@@ -50,7 +50,8 @@ public class EntityLayerSupertypeData extends BaseModelObjectData implements Nam
     private Set<DomainData> domains;
     // many to one entitylayersupertype-> customlink
     @Column(name = "links")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    // TODO review mappedBy attribute for VEO-161
+    @OneToMany(mappedBy = "source", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CustomLinkData> links;
     // many to one entitylayersupertype-> customproperties
     @Column(name = "customaspects")

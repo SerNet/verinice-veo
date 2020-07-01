@@ -74,6 +74,7 @@ public class CustomPropertiesData extends BaseModelObjectData {
     @OneToMany(targetEntity = PropertyData.class,
                fetch = FetchType.EAGER,
                cascade = CascadeType.ALL,
+               orphanRemoval = true,
                mappedBy = "parentId")
     private java.util.Set<PropertyData> dataProperties = new java.util.HashSet<>();
 
