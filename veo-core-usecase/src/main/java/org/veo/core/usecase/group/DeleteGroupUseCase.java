@@ -64,9 +64,9 @@ public class DeleteGroupUseCase extends UseCase<DeleteGroupUseCase.InputData, Vo
 
     @Value
     public static class InputData {
-        private final Key<UUID> id;
-        private final GroupType groupType;
-        private final Client authenticatedClient;
+        Key<UUID> id;
+        GroupType groupType;
+        Client authenticatedClient;
     }
 
 }

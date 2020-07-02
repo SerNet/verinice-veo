@@ -67,7 +67,7 @@ public class GetPersonUseCase extends UseCase<GetPersonUseCase.InputData, Person
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> id;
-        private final Client authenticatedClient;
+        Key<UUID> id;
+        Client authenticatedClient;
     }
 }

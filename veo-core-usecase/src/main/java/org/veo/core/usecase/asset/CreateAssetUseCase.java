@@ -69,8 +69,8 @@ public class CreateAssetUseCase extends UseCase<CreateAssetUseCase.InputData, As
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> unitId;
-        private final String name;
-        private final Client authenticatedClient;
+        Key<UUID> unitId;
+        String name;
+        Client authenticatedClient;
     }
 }

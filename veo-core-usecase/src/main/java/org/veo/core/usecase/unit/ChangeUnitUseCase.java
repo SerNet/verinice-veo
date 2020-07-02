@@ -111,7 +111,7 @@ public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputD
     @Valid
     @Value
     public static class InputData {
-        private final Unit changedUnit;
-        private final Client client;
+        Unit changedUnit;
+        Client client;
     }
 }

@@ -70,8 +70,8 @@ public class CreateProcessUseCase extends UseCase<CreateProcessUseCase.InputData
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> unitId;
-        private final String name;
-        private final Client authenticatedClient;
+        Key<UUID> unitId;
+        String name;
+        Client authenticatedClient;
     }
 }

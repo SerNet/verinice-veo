@@ -51,10 +51,10 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype>
     public static class InputData<T> {
 
         @Valid
-        private final T entity;
+        T entity;
 
         @Valid
-        private final Client authenticatedClient;
+        Client authenticatedClient;
 
     }
 }

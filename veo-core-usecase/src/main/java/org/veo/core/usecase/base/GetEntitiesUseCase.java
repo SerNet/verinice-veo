@@ -80,7 +80,7 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
     @Valid
     @Value
     public static class InputData {
-        private final Client authenticatedClient;
-        private final Optional<String> unitUuid;
+        Client authenticatedClient;
+        Optional<String> unitUuid;
     }
 }

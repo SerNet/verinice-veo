@@ -84,8 +84,8 @@ public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupe
     @Valid
     @Value
     public static class InputData {
-        private final Client authenticatedClient;
-        private final GroupType groupType;
-        private final Optional<String> unitUuid;
+        Client authenticatedClient;
+        GroupType groupType;
+        Optional<String> unitUuid;
     }
 }

@@ -89,10 +89,10 @@ public class CreateGroupUseCase extends UseCase<CreateGroupUseCase.InputData, Ba
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> unitId;
-        private final String name;
-        private final GroupType groupType;
-        private final Client authenticatedClient;
+        Key<UUID> unitId;
+        String name;
+        GroupType groupType;
+        Client authenticatedClient;
 
     }
 }

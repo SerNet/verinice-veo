@@ -63,7 +63,7 @@ public class GetAssetUseCase extends UseCase<GetAssetUseCase.InputData, Asset> {
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> id;
-        private final Client authenticatedClient;
+        Key<UUID> id;
+        Client authenticatedClient;
     }
 }

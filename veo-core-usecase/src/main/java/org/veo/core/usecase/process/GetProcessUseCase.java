@@ -55,7 +55,7 @@ public class GetProcessUseCase extends UseCase<GetProcessUseCase.InputData, Proc
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> id;
-        private final Client authenticatedClient;
+        Key<UUID> id;
+        Client authenticatedClient;
     }
 }

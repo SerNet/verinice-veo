@@ -62,8 +62,8 @@ public abstract class UpdateGroupUseCase
     @Value
     public static class InputData {
         @Valid
-        private final BaseModelGroup<?> group;
-        private final Client authenticatedClient;
+        BaseModelGroup<?> group;
+        Client authenticatedClient;
 
     }
 }

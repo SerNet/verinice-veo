@@ -72,7 +72,7 @@ public class GetUnitsUseCase extends UseCase<GetUnitsUseCase.InputData, Set<Unit
     @Valid
     @Value
     public static class InputData {
-        private final Client authenticatedClient;
-        private final Optional<String> parentUuid;
+        Client authenticatedClient;
+        Optional<String> parentUuid;
     }
 }

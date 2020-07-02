@@ -67,7 +67,7 @@ public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, Unit> {
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> unitId;
-        private final Client authenticatedClient;
+        Key<UUID> unitId;
+        Client authenticatedClient;
     }
 }

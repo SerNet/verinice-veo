@@ -99,8 +99,8 @@ public class CreateUnitUseCase extends UseCase<CreateUnitUseCase.InputData, Unit
     @Valid
     @Value
     public static class InputData {
-        private final NameableInputData nameableInput;
-        private final Key<UUID> clientId;
-        private final Optional<Key<UUID>> parentUnitId;
+        NameableInputData nameableInput;
+        Key<UUID> clientId;
+        Optional<Key<UUID>> parentUnitId;
     }
 }

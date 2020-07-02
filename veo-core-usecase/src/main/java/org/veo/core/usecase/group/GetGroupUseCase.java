@@ -65,8 +65,8 @@ public class GetGroupUseCase extends UseCase<GetGroupUseCase.InputData, BaseMode
     @Valid
     @Value
     public static class InputData {
-        private final Key<UUID> id;
-        private final GroupType groupType;
-        private final Client authenticatedClient;
+        Key<UUID> id;
+        GroupType groupType;
+        Client authenticatedClient;
     }
 }

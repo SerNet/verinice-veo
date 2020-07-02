@@ -46,16 +46,16 @@ public class DomainValue {
     @NotNull
     @NotBlank(message = "The name of a domain must not be blank.")
     @Size(max = 255)
-    private final String name;
+    String name;
 
     @NotNull
     @NotBlank(message = "The authority of a domain must not be blank.")
     @Size(max = 255)
-    private final String authority;
+    String authority;
 
     @NotNull
     @NotBlank(message = "The version of a domain must not be blank.")
     @Size(max = 255)
-    private final String version;
+    String version;
 
 }

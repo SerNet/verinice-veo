@@ -57,9 +57,9 @@ public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, 
 
     @Value
     public static class InputData {
-        private Class<? extends EntityLayerSupertype> entityClass;
-        private final Key<UUID> id;
-        private final Client authenticatedClient;
+        Class<? extends EntityLayerSupertype> entityClass;
+        Key<UUID> id;
+        Client authenticatedClient;
 
     }
 
