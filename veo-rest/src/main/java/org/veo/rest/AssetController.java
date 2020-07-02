@@ -25,8 +25,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -158,7 +156,6 @@ public class AssetController extends AbstractEntityController {
                                          });
     }
 
-    @Transactional(TxType.REQUIRED)
     @PutMapping(value = "/{id}")
     @Operation(summary = "Updates an asset")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Asset updated"),

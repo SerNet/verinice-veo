@@ -25,8 +25,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -157,7 +155,6 @@ public class ControlController extends AbstractEntityController {
                                          });
     }
 
-    @Transactional(TxType.REQUIRED)
     @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Updates a control")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Control updated"),
