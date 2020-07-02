@@ -1,0 +1,69 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "AssetCommons"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "assetNum": {
+          "title": "Number",
+          "type": "string"
+        },
+        "assetType": {
+          "title": "Type of Asset",
+          "enum": [
+            "assetTypeInf",
+            "assetTypeSoftware",
+            "assetTypePhys",
+            "assetTypeService",
+            "assetTypePeople",
+            "assetTypeIntangible",
+            "assetTypeVirtual",
+            "assetTypeAdv"
+          ]
+        },
+        "assetPlatform": {
+          "title": "Platform",
+          "type": "string"
+        },
+        "assetStatus": {
+          "title": "Status",
+          "enum": [
+            "assetStatusOperation",
+            "assetStatusPlanning",
+            "assetStatusBasicinstallation",
+            "assetStatusConfiguration",
+            "assetStatusTest",
+            "assetStatusDelivery",
+            "assetStatusRepair",
+            "assetStatusStandby",
+            "assetStatusReserve"
+          ]
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

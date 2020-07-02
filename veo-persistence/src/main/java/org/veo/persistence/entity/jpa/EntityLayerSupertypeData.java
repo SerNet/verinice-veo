@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,48 +16,106 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.time.Instant;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.IdClass;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
+@Entity(name = "entitylayersupertype")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+public class EntityLayerSupertypeData extends BaseModelObjectData implements NameAbleData {
 
-@Data
-@NoArgsConstructor
+    @NotNull
+    @Column(name = "name")
+    @ToString.Include
+    private String name;
+    @Column(name = "abbreviation")
+    private String abbreviation;
+    @Column(name = "description")
+    private String description;
+    // many to one entitylayersupertype-> domain
+    @Column(name = "domains")
+    @ManyToMany
+    private Set<DomainData> domains;
+    // many to one entitylayersupertype-> customlink
+    @Column(name = "links")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CustomLinkData> links;
+    // many to one entitylayersupertype-> customproperties
+    @Column(name = "customaspects")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CustomPropertiesData> customAspects;
+    @NotNull
+    // one to one entitylayersupertype-> unit
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private UnitData owner;
 
-@MappedSuperclass
-@IdClass(SimpleKey.class)
-public class EntityLayerSupertypeData {
+    public String getName() {
+        return this.name;
+    }
 
-    @EmbeddedId
-    SimpleKey uuid;
+    public void setName(String aName) {
+        this.name = aName;
+    }
 
-    @Version
-    long version;
+    public String getAbbreviation() {
+        return this.abbreviation;
+    }
 
-    @ManyToOne
-    @JoinColumn(name = "unit_id", nullable = false)
-    UnitData unit;
+    public void setAbbreviation(String aAbbreviation) {
+        this.abbreviation = aAbbreviation;
+    }
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    Lifecycle state;
+    public String getDescription() {
+        return this.description;
+    }
 
-    @Column(name = "valid_from", nullable = false)
-    Instant validFrom;
+    public void setDescription(String aDescription) {
+        this.description = aDescription;
+    }
 
-    @Column(name = "valid_until", nullable = true)
-    Instant validUntil;
+    public Set<DomainData> getDomains() {
+        return this.domains;
+    }
+
+    public void setDomains(Set<DomainData> aDomains) {
+        this.domains = aDomains;
+    }
+
+    public Set<CustomLinkData> getLinks() {
+        return this.links;
+    }
+
+    public void setLinks(Set<CustomLinkData> aLinks) {
+        this.links = aLinks;
+    }
+
+    public Set<CustomPropertiesData> getCustomAspects() {
+        return this.customAspects;
+    }
+
+    public void setCustomAspects(Set<CustomPropertiesData> aCustomAspects) {
+        this.customAspects = aCustomAspects;
+    }
+
+    public UnitData getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(UnitData aOwner) {
+        this.owner = aOwner;
+    }
 
 }

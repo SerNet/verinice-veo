@@ -22,7 +22,7 @@ import java.util.Properties;
 import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 
-import org.veo.model.Element;
+import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * Context for importing an element from a VNA file.
@@ -33,11 +33,11 @@ public class ElementImportContext {
 
     private SyncObject syncObject;
     private List<MapObjectType> mapObjectTypeList;
-    private Element parent;
-    private Element element;
+    private EntityLayerSupertype parent;
+    private EntityLayerSupertype element;
     private Properties missingMappingProperties;
 
-    public ElementImportContext(Element parent, SyncObject syncObject,
+    public ElementImportContext(EntityLayerSupertype parent, SyncObject syncObject,
             List<MapObjectType> mapObjectTypeList) {
         super();
         this.parent = parent;
@@ -62,19 +62,19 @@ public class ElementImportContext {
         this.mapObjectTypeList = mapObjectTypeList;
     }
 
-    public Element getParent() {
+    public EntityLayerSupertype getParent() {
         return parent;
     }
 
-    public void setParent(Element parent) {
+    public void setParent(EntityLayerSupertype parent) {
         this.parent = parent;
     }
 
-    public Element getElement() {
+    public EntityLayerSupertype getElement() {
         return element;
     }
 
-    public void setElement(Element element) {
+    public void setElement(EntityLayerSupertype element) {
         this.element = element;
     }
 

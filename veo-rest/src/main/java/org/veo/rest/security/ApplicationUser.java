@@ -16,18 +16,86 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
+
 /**
- * ApplicationUser describes the body of an authentication request.
+ * ApplicationUser describes an authenticated user received from the user
+ * details service.
  */
-public class ApplicationUser {
-    private String username;
-    private String password;
+@Getter
+@Data
+@RequiredArgsConstructor
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
+public class ApplicationUser implements UserDetails {
+    private static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";
 
-    public String getUsername() {
-        return username;
+    private String password = null; // unused but required by UserDetails
+    private final String username;
+    private final String clientId;
+    private final String scopes;
+    private final String email;
+    private final String name;
+    private final String givenName;
+    private final String familyName;
+    private final List<String> groups;
+
+    private Collection<? extends GrantedAuthority> authorities;
+    private boolean accountNonExpired = !false;
+    private boolean accountNonLocked = !false;
+    private boolean credentialsNonExpired = !false;
+    private boolean enabled = true;
+    private Map<String, Object> claims;
+
+    private ApplicationUser(Jwt jwt) {
+        this(jwt.getClaimAsString("preferred_username"),
+                extractClientId(jwt.getClaimAsStringList("groups")), jwt.getClaimAsString("scope"),
+                jwt.getClaimAsString("email"), jwt.getClaimAsString("name"),
+                jwt.getClaimAsString("given_name"), jwt.getClaimAsString("family_name"),
+                jwt.getClaimAsStringList("groups"));
+        this.claims = jwt.getClaims();
     }
 
-    public String getPassword() {
-        return password;
+    private static String extractClientId(List<String> groups) {
+        List<String> clientIDs = Optional.ofNullable(groups)
+                                         .orElseGet(Collections::emptyList)
+                                         .stream()
+                                         .filter(g -> g.matches("^/veo_client:" + UUID_REGEX + "$"))
+                                         .map(g -> g.replaceFirst("/veo_client:", ""))
+                                         .collect(Collectors.toList());
+
+        if (clientIDs.size() != 1) {
+            throw new IllegalArgumentException(
+                    String.format("Expected 1 client for the account. Got %d.", clientIDs.size()));
+        }
+
+        return clientIDs.get(0);
     }
+
+    public static ApplicationUser authenticatedUser(Object principal) {
+        if (principal instanceof Jwt)
+            return new ApplicationUser((Jwt) principal);
+        else if (principal instanceof ApplicationUser)
+            return (ApplicationUser) principal;
+        throw new IllegalArgumentException("Principal does not represent an authenticated user.");
+    }
+
+    public static ApplicationUser authenticatedUser(String username, String clientId,
+            String scopes) {
+        return new ApplicationUser(username, clientId, scopes, "", "", "", "",
+                Collections.emptyList());
+    }
+
 }

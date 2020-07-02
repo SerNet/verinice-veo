@@ -16,55 +16,87 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.net.URI;
-import java.util.TimeZone;
-import java.util.UUID;
+import static org.veo.rest.ControllerConstants.PARENT_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_REGEX;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.presenter.api.common.ApiResponse;
-import org.veo.adapter.presenter.api.common.InvalidDateException;
-import org.veo.adapter.presenter.api.dto.ProcessDto;
-import org.veo.adapter.presenter.api.process.CreateProcessInputMapper;
-import org.veo.adapter.presenter.api.process.CreateProcessOutputMapper;
-import org.veo.commons.VeoException;
-import org.veo.core.entity.DomainException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.io.mapper.CreateProcessOutputMapper;
+import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
+import org.veo.adapter.presenter.api.request.CreateProcessDto;
+import org.veo.adapter.presenter.api.response.ProcessDto;
+import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Process;
+import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
+import org.veo.core.usecase.process.GetProcessesUseCase;
+import org.veo.core.usecase.process.UpdateProcessUseCase;
+import org.veo.rest.annotations.ParameterUuid;
+import org.veo.rest.annotations.ParameterUuidParent;
+import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
-import org.veo.rest.security.CurrentUser;
+import org.veo.rest.security.ApplicationUser;
 
 /**
  * Controller for the resource API of "Process" entities.
  *
  * A process is a business entity
- *
  */
 @RestController
-@RequestMapping("/process")
-public class ProcessController {
+@RequestMapping(ProcessController.URL_BASE_PATH)
+public class ProcessController extends AbstractEntityController {
+
+    public static final String URL_BASE_PATH = "/processes";
 
     private UseCaseInteractorImpl useCaseInteractor;
     private CreateProcessUseCase createProcessUseCase;
     private GetProcessUseCase getProcessUseCase;
+    private UpdateProcessUseCase updateProcessUseCase;
+    private final DeleteEntityUseCase deleteEntityUseCase;
+    private GetProcessesUseCase getProcessesUseCase;
 
     public ProcessController(UseCaseInteractorImpl useCaseInteractor,
-            CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase) {
+            CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
+            UpdateProcessUseCase putProcessUseCase, DeleteEntityUseCase deleteEntityUseCase,
+            GetProcessesUseCase getProcessesUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createProcessUseCase = createProcessUseCase;
         this.getProcessUseCase = getProcessUseCase;
+        this.updateProcessUseCase = putProcessUseCase;
+        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.getProcessesUseCase = getProcessesUseCase;
     }
 
     /**
@@ -76,50 +108,89 @@ public class ProcessController {
      * @return the process for the given ID if one was found. Null otherwise.
      */
     @GetMapping("/{id}")
-    CompletableFuture<ProcessDto> getProcessById(@PathVariable String id) {
-        return useCaseInteractor.execute(getProcessUseCase,
-                                         new GetProcessUseCase.InputData(Key.uuidFrom(id)),
-                                         output -> (ProcessDto.from(output.getProcess())));
+    public CompletableFuture<ProcessDto> getProcessById(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String id) {
+        return useCaseInteractor.execute(getProcessUseCase, new GetProcessUseCase.InputData(
+                Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
+                    DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+                    tcontext.partialDomain()
+                            .partialUnit();
+                    return ProcessDto.from(output.getProcess(), tcontext);
+                });
     }
 
-    /**
-     * Create and persist a new process object for the given parameters.
-     *
-     * @param user
-     *            the currently logged in user. Provided by the authentication
-     *            context.
-     * @param dto
-     *            the required fields to create a new process. Provided as request
-     *            body.
-     * @param requestTimezone
-     *            the timezone in which the request originated. Should be set by the
-     *            HTTP client. Server's timezone will be used if missing.
-     * @return a resource URI for the newly created process.
-     */
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED) // see:
-                                        // https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-    CompletableFuture<ResponseEntity<ApiResponse>> create(@CurrentUser CurrentUser user,
-            @Valid @RequestBody ProcessDto dto, TimeZone requestTimezone) {
-        try {
+    @PostMapping()
+    @Operation(summary = "Creates a process")
+    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Process created") })
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @Valid @NotNull @RequestBody CreateProcessDto dto) {
 
-            final String timezoneId = requestTimezone.getID();
-            return useCaseInteractor.execute(createProcessUseCase,
-                                             CreateProcessInputMapper.map(dto, timezoneId),
-                                             output -> {
-                                                 Key<UUID> uuid = CreateProcessOutputMapper.map(output.getProcess());
-                                                 return ResponseEntity.created(URI.create("/process/"
-                                                         + uuid.uuidValue()))
-                                                                      .body(new ApiResponse(true,
-                                                                              "Process created successfully."));
-                                             });
+        return useCaseInteractor.execute(createProcessUseCase,
+                                         CreateEntityInputMapper.map(getAuthenticatedClient(auth),
+                                                                     dto.getOwner()
+                                                                        .getId(),
+                                                                     dto.getName()),
+                                         output -> {
+                                             ApiResponseBody body = CreateProcessOutputMapper.map(output.getProcess());
+                                             return RestApiResponse.created(URL_BASE_PATH, body);
+                                         });
+    }
 
-        } catch (InvalidDateException e) {
-            throw new VeoException(VeoException.Error.ILLEGAL_ARGUMENTS,
-                    "Could not create process - illegal date given.");
-        } catch (DomainException e) {
-            throw new VeoException(VeoException.Error.UNKNOWN, "Could not create process.");
-        }
+    @Transactional(TxType.REQUIRED)
+    @PutMapping(value = "/{id}")
+    @Operation(summary = "Updates a unit")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Unit updated"),
+            @ApiResponse(responseCode = "404", description = "Unit not found") })
+    public @Valid CompletableFuture<ProcessDto> updateProcess(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String id, @Valid @RequestBody ProcessDto processDto) {
+
+        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+        Client client = getClient(user.getClientId());
+        DtoTargetToEntityContext tcontext = configureDtoContext(client, processDto.getReferences());
+        Process p;
+        return useCaseInteractor.execute(updateProcessUseCase,
+                                         new ModifyEntityUseCase.InputData<Process>(
+                                                 processDto.toProcess(tcontext),
+                                                 getAuthenticatedClient(auth)),
+                                         output -> {
+                                             ProcessDto ret = ProcessDto.from(output.getEntity(),
+                                                                              DtoEntityToTargetContext.getCompleteTransformationContext());
+                                             return ret;
+                                         });
+    }
+
+    @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @Operation(summary = "Deletes a process")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Process deleted"),
+            @ApiResponse(responseCode = "404", description = "Process not found") })
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProcess(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+        return useCaseInteractor.execute(deleteEntityUseCase,
+                                         new DeleteEntityUseCase.InputData(Process.class,
+                                                 Key.uuidFrom(uuid), getAuthenticatedClient(auth)),
+                                         output -> ResponseEntity.ok()
+                                                                 .build());
+    }
+
+    @GetMapping
+    @Operation(summary = "Loads all processs")
+    public @Valid CompletableFuture<List<ProcessDto>> getProcesses(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
+                                               required = false) String parentUuid) {
+        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+
+        return useCaseInteractor.execute(getProcessesUseCase, new GetProcessesUseCase.InputData(
+                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
+                    return output.getEntities()
+                                 .stream()
+                                 .map(u -> ProcessDto.from(u, tcontext))
+                                 .collect(Collectors.toList());
+                });
     }
 
 }

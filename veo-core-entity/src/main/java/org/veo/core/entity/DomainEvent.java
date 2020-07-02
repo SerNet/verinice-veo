@@ -21,7 +21,6 @@ package org.veo.core.entity;
  * application extend and use this event class.
  *
  * @author akoderman
- *
  */
 public abstract class DomainEvent {
 

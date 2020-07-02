@@ -32,12 +32,13 @@ import org.veo.core.entity.Unit;
  *
  * @param <T>
  */
-public class ValidUnitSpecification<T extends EntityLayerSupertype<T>>
+public class ValidUnitSpecification<T extends EntityLayerSupertype>
         implements EntitySpecification<T> {
 
     @Override
     public boolean isSatisfiedBy(EntityLayerSupertype entity) {
-        return isSatisfiedBy(entity.getUnit());
+        // return isSatisfiedBy(entity.getUnit());
+        return false;// TODO:CHECK
     }
 
     public boolean isSatisfiedBy(Unit unit) {

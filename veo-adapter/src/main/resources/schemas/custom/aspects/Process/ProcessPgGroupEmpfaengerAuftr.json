@@ -1,0 +1,95 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ProcessPgGroupEmpfaengerAuftr"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "processEmpfDienstl": {
+          "title": "Auftragnehmer / Dienstleister",
+          "type": "string"
+        },
+        "processEmpfDienstlArt": {
+          "title": "Art der Daten",
+          "type": "array",
+          "items": {
+            "enum": [
+              "processEmpfDienstlArt1",
+              "processEmpfDienstlArt2",
+              "processEmpfDienstlArt3",
+              "processEmpfDienstlArt4",
+              "processEmpfDienstlArt5",
+              "processEmpfDienstlArt6",
+              "processEmpfDienstlArt7",
+              "processEmpfDienstlArt8",
+              "processEmpfDienstlArt9",
+              "processEmpfDienstlArt10",
+              "processEmpfDienstlArt11",
+              "processEmpfDienstlArt12",
+              "processEmpfDienstlArt13",
+              "processEmpfDienstlArt14",
+              "processEmpfDienstlArt15",
+              "processEmpfDienstlArt16",
+              "processEmpfDienstlArt17",
+              "processEmpfDienstlArt18",
+              "processEmpfDienstlArt19",
+              "processEmpfDienstlArt20",
+              "processEmpfDienstlArt21",
+              "processEmpfDienstlArt22",
+              "processEmpfDienstlArt23",
+              "processEmpfDienstlArt24",
+              "processEmpfDienstlArt25",
+              "processEmpfDienstlArt27",
+              "processEmpfDienstlArt28",
+              "processEmpfDienstlArt29",
+              "processEmpfDienstlArt30",
+              "processEmpfDienstlArt31",
+              "processEmpfDienstlArt32",
+              "processEmpfDienstlArt24a"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "processEmpfDienstlArtSonst": {
+          "title": "Sonstige Datenart",
+          "type": "string"
+        },
+        "processEmpfDienstlZweck": {
+          "title": "Zweck des Datentransfers",
+          "type": "string"
+        },
+        "processEmpfDienstlErlaeuterung": {
+          "title": "Erläuterung",
+          "type": "string"
+        },
+        "empfaengerDienstlDokument": {
+          "title": "Dokument",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

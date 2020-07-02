@@ -24,10 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import org.veo.model.Element;
-import org.veo.model.Link;
-import org.veo.service.LinkService;
-
 /**
  * A callable task to import one link from a VNA to database.
  *
@@ -40,9 +36,6 @@ public class LinkImportTask implements Callable<LinkImportContext> {
     private static final Logger LOG = LoggerFactory.getLogger(LinkImportTask.class);
 
     private LinkImportContext context;
-
-    @Autowired
-    LinkService linkService;
 
     @Autowired
     @javax.annotation.Resource(name = "SchemaTypeIdMapper")
@@ -81,19 +74,8 @@ public class LinkImportTask implements Callable<LinkImportContext> {
                       context.getDestination());
         }
         if (isImported()) {
-            Element source = context.getSource();
-            Element destination = context.getDestination();
-            Link link = new Link();
-            link.setSource(source);
-            link.setDestination(destination);
-            link.setTypeId(getVeoElementTypeId(context.getSyncLink()
-                                                      .getRelationId()));
-            linkService.save(link);
-            source.getLinksOutgoing()
-                  .add(link);
-            destination.getLinksIncoming()
-                       .add(link);
-            context.setLink(link);
+            // TODO create link, persist link and add it to source and destination link
+            // lists.
         }
     }
 

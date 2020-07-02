@@ -26,12 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +46,7 @@ import de.sernet.sync.mapping.SyncMapping;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import de.sernet.sync.sync.SyncRequest;
 
-import org.veo.model.Element;
+import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * This service imports a verinice archive (VNA).
@@ -126,7 +121,7 @@ public class VnaImport {
         LOG.info("{} links imported.", numberOfLinks);
     }
 
-    private void importObjectList(Element parent, List<SyncObject> syncObjectList,
+    private void importObjectList(EntityLayerSupertype parent, List<SyncObject> syncObjectList,
             List<MapObjectType> mapObjectTypeList) throws InterruptedException, ExecutionException {
         if (syncObjectList != null) {
             for (SyncObject syncObject : syncObjectList) {
@@ -153,7 +148,7 @@ public class VnaImport {
             throws InterruptedException, ExecutionException {
         this.importContext.addElement(elementImportContext);
         this.importContext.addAllMissingMappingProperties(elementImportContext.getMissingMappingProperties());
-        Element importedElement = elementImportContext.getElement();
+        EntityLayerSupertype importedElement = elementImportContext.getElement();
         if (importedElement != null) {
             numberOfElements++;
             importObjectList(importedElement, elementImportContext.getSyncObject()
@@ -174,8 +169,8 @@ public class VnaImport {
         if (syncLinkList != null) {
             numberOfLinks = 0;
             for (SyncLink syncLink : syncLinkList) {
-                Element source = importContext.getElement(syncLink.getDependant());
-                Element destination = importContext.getElement(syncLink.getDependency());
+                EntityLayerSupertype source = importContext.getElement(syncLink.getDependant());
+                EntityLayerSupertype destination = importContext.getElement(syncLink.getDependency());
                 if (source == null || destination == null) {
                     continue;
                 }

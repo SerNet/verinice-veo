@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# usage: ./authorize [curl args...]
+
+# check env
+if [ -z $TOKEN ]
+then
+	authentication_cmd="`dirname $0`/authenticate"
+	printf '$TOKEN is unset please run "eval `%s`".\n' $authentication_cmd >&2
+	exit 1
+fi
+
+curl \
+	-b $HOME/.cache/veo-development/authentication-cookies \
+	-H "Authorization: Bearer $TOKEN" \
+	-H "Content-Type: application/json" \
+	"$@"

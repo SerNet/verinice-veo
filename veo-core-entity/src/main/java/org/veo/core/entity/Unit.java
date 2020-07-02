@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,128 +14,102 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
 package org.veo.core.entity;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.veo.core.entity.group.EntityGroup;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.SameClientSpecification;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
- * An organizational unit. Units may have sub-units. Every entity object is
- * assigned to exactly one unit at all times. When the unit is deleted, all its
- * entities will be deleted as well.
- *
- * A unit defines object ownership. Small and medium organizations may just have
- * one unit. Large enterprises may have multiple units for different
- * subsidiaries. Service providers might have one unit for each client that is
- * using the software.
- *
- * A unit always belongs to exactly one client. This means that every entity
- * also transitively belongs to exactly one client. Units cannot be moved
- * between clients.
- *
- * The <code>EntityGroup</code> object is much more flexible and the preferred
- * choice to group entities together for business modeling purposes. Units
- * should exclusively be used to model ownership and high-level access
+ * A unit is high level group of elements defined by organizational structure.
+ * Units may contain other units. For instance, a unit could be a division, a
+ * department or a project. Unit is a component that defines ownership and
+ * primary responsibility. An organizational unit. Units may have sub-units.
+ * Every entity object is assigned to exactly one unit at all times. When the
+ * unit is deleted, all its entities will be deleted as well. A unit defines
+ * object ownership. Small and medium organizations may just have one unit.
+ * Large enterprises may have multiple units for different subsidiaries. Service
+ * providers might have one unit for each client that is using the software. A
+ * unit always belongs to exactly one client. This means that every entity also
+ * transitively belongs to exactly one client. Units cannot be moved between
+ * clients. The <code>EntityGroup</code> object is much more flexible and the
+ * preferred choice to group entities together for business modeling purposes.
+ * Units should exclusively be used to model ownership and high-level access
  * restrictions.
- *
- * @see EntityGroup
- *
- *
  */
-public final class Unit {
+public interface Unit extends NameAble, ModelObject {
 
-    @NotNull
-    private Key<UUID> id;
+    Client getClient();
 
-    @NotNull
-    @NotBlank(message = "The name of the unit may not be blank.")
-    private String name;
+    void setClient(Client aClient);
 
-    @NotNull
-    @Size(min = 0, max = 1000000)
-    private Set<Unit> subUnits;
+    /**
+     * Add the given Unit to the collection units. Adding will set the parent to
+     * this.
+     *
+     * @return true if added
+     */
+    boolean addToUnits(Unit aUnit);
 
-    @NotNull
-    private Client client;
+    /**
+     * Remove the given Unit from the collection units. Removing will set the parent
+     * to null.
+     *
+     * @return true if removed
+     */
+    boolean removeFromUnits(Unit aUnit);
 
-    private Unit(Key<UUID> id, String name, Client client) {
-        this.id = id;
-        this.name = name;
-        this.client = client;
-        this.subUnits = new HashSet<>();
+    Set<Unit> getUnits();
+
+    void setUnits(Set<Unit> aUnits);
+
+    Unit getParent();
+
+    void setParent(Unit aParent);
+
+    /**
+     * Add the given Domain to the collection domains.
+     *
+     * @return true if added
+     */
+    boolean addToDomains(Domain aDomain);
+
+    /**
+     * Remove the given Domain from the collection domains.
+     *
+     * @return true if removed
+     */
+    boolean removeFromDomains(Domain aDomain);
+
+    Set<Domain> getDomains();
+
+    void setDomains(Set<Domain> aDomains);
+
+    /**
+     * Returns flat list of all units and their subunits recursively.
+     *
+     * @param units
+     * @return
+     */
+    public static Set<Unit> flatten(Set<Unit> units) {
+        return units.stream()
+                    .flatMap(u -> Stream.concat(Stream.of(u), flatten(u.getUnits()).stream()))
+                    .collect(Collectors.toSet());
     }
 
-    private Unit(Key<UUID> id, String name, Client client, Set<Unit> subUnits) {
-        this(Key.newUuid(), name, client);
-        this.subUnits = new HashSet<>();
-    }
+    /**
+     * Creates a new unit as a sub-unit of this one.
+     *
+     * @param name
+     *            The name for the new unit
+     * @return The newly created unit
+     */
+    public Unit createSubUnit(String name);
 
-    public static Unit newUnitBelongingToClient(Client client, String name) {
-        return new Unit(Key.newUuid(), name, client);
-    }
-
-    public Unit createNewSubunit(String name) {
-        Unit newUnit = new Unit(Key.newUuid(), name, this.getClient());
-        addSubUnit(newUnit);
-        return newUnit;
-    }
-
-    public static Unit existingUnit(Key<UUID> id, Client client, String name, Set<Unit> subunits) {
-        return new Unit(id, name, client, subunits);
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void addSubUnit(Unit unit) {
-        checkSameClient(unit.getClient());
-        this.subUnits.add(unit);
-    }
-
-    private void checkSameClient(Client otherClient) {
-        if (!(new SameClientSpecification(this.client)).isSatisfiedBy(otherClient))
-            throw new ClientBoundaryViolationException(
-                    "A unit must not be relocated to another client. "
-                            + "Operation failed for unit: " + this.getName());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Collection<Unit> getSubUnits() {
-        return subUnits;
-    }
-
-    public void setSubUnits(Set<Unit> subUnits) {
-        checkSameClients(subUnits);
-        this.subUnits = subUnits;
-    }
-
-    protected void checkSameClients(Collection<Unit> subUnits) {
-        subUnits.stream()
-                .map(unit -> unit.getClient())
-                .forEach(this::checkSameClient);
-    }
-
-    public Key<UUID> getId() {
-        return id;
-    }
+    /**
+     * Removes the unit. Disassociates it from a parent collection if it is a
+     * sub-unit.
+     */
+    void remove();
 
 }

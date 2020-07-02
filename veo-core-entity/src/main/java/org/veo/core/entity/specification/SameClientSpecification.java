@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Unit;
 
 /**
  * Clients must be strictly separated. All references from one object to another
@@ -32,9 +31,8 @@ import org.veo.core.entity.Unit;
  * Provides methods to check for equality of client and unit objects and
  * collections in addition to the entity checks from the interface
  * <code>IEntitySecification</code>.
- *
  */
-public class SameClientSpecification<T extends EntityLayerSupertype<T>>
+public class SameClientSpecification<T extends EntityLayerSupertype>
         implements EntitySpecification<T> {
 
     private Client client;
@@ -45,23 +43,19 @@ public class SameClientSpecification<T extends EntityLayerSupertype<T>>
 
     @Override
     public boolean isSatisfiedBy(T entity) {
-        return entity.getUnit()
-                     .getClient()
-                     .equals(this.client);
+        // return client.hasUnit(entity.getUnit());
+        return false;// TODO:CHECK
+    }
+
+    @Override
+    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
+        return collection.stream()
+                         .filter(this::isSatisfiedBy)
+                         .collect(Collectors.toSet());
     }
 
     public boolean isSatisfiedBy(Client otherClient) {
         return this.client.equals(otherClient);
-    }
-
-    public boolean isSatisfiedBy(Collection<Unit> otherUnits) {
-        return selectSatisfyingUnits(otherUnits).size() != otherUnits.size();
-    }
-
-    public Set<Unit> selectSatisfyingUnits(Collection<Unit> collection) {
-        return collection.stream()
-                         .filter(u -> (isSatisfiedBy(u.getClient())))
-                         .collect(Collectors.toSet());
     }
 
 }

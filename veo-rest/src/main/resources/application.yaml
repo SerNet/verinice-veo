@@ -1,0 +1,29 @@
+server:
+  port: 8070
+
+veo:
+  basedir: ${user.home}/.local/share/veo
+  cors:
+    origins: <ALLOWED_ORIGIN1>, <ALLOWED_ORIGIN2>
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    ## Turn OSIV off - only the business layer decides the fetching strategy for a particular use case:
+    open-in-view: false
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          ## Auth Server OIDC Discovery location, i.e.: http://<AUTHSERVER>/auth/realms/<REALM>
+          issuer-uri: http://<AUTHSERVER>/auth/realms/<REALM>
+          ## Auth Server private key location, i.e.: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
+          jwk-set-uri: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
+
+## Change log level for different packages:
+#logging:
+#  level:
+#    org.springframework: DEBUG
+

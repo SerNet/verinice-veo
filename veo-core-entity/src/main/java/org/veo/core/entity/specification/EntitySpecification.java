@@ -33,9 +33,8 @@ import org.veo.core.entity.EntityLayerSupertype;
  *
  * If a repositories is given a specification it can implement its own version
  * that can based on database-queries.
- *
  */
-public interface EntitySpecification<T extends EntityLayerSupertype<T>> {
+public interface EntitySpecification<T extends EntityLayerSupertype> {
 
     /**
      * Determines if this specification is fulfilled by the provided entity.

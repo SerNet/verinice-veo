@@ -1,0 +1,95 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ProcessPgGroupDaten"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "processPgGroupDatenart": {
+          "title": "Art der verarbeiteten Daten",
+          "type": "array",
+          "items": {
+            "enum": [
+              "processArt1",
+              "processArt2",
+              "processArt3",
+              "processArt4",
+              "processArt5",
+              "processArt6",
+              "processArt7",
+              "processArt8",
+              "processArt9",
+              "processArt10",
+              "processArt11",
+              "processArt12",
+              "processArt13",
+              "processArt14",
+              "processArt15",
+              "processArt16",
+              "processArt17",
+              "processArt18",
+              "processArt19",
+              "processArt20",
+              "processArt21",
+              "processArt22",
+              "processArt23",
+              "processArt24",
+              "processArt25",
+              "processArt27",
+              "processArt28",
+              "processArt29",
+              "processArt30",
+              "processArt31",
+              "processArt32",
+              "processArt24a"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "processArtSonst": {
+          "title": "Sonstige Datenart",
+          "type": "string"
+        },
+        "processDvHerkunft": {
+          "title": "Herkunft der Daten",
+          "enum": [
+            "processDvHerkunft1",
+            "processDvHerkunft2",
+            "processDvHerkunft3"
+          ]
+        },
+        "processDvHerkunftSonst": {
+          "title": "Sonstige Herkunft",
+          "type": "string"
+        },
+        "processDvSonstherkBemerk": {
+          "title": "Bemerkungen",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

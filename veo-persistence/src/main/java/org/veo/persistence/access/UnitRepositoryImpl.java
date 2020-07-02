@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -18,62 +18,85 @@ package org.veo.persistence.access;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.UnitRepository;
-import org.veo.persistence.access.jpa.JpaUnitDataRepository;
-import org.veo.persistence.entity.jpa.SimpleKey;
+import org.veo.core.entity.transform.TransformEntityToTargetContext;
+import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.persistence.access.jpa.UnitDataRepository;
+import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.UnitData;
+import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
+import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
 
-/**
- * An implementation of repository interface that converts between entities and
- * their JPA-annotated representations.
- *
- * @author akoderman
- *
- */
 @Repository
+@AllArgsConstructor
 public class UnitRepositoryImpl implements UnitRepository {
 
-    private JpaUnitDataRepository jpaRepository;
+    // public Collection<UnitData> findByNameContainingIgnoreCase(String search);
 
-    public UnitRepositoryImpl(JpaUnitDataRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
-    }
+    private UnitDataRepository dataRepository;
+
+    private ModelObjectValidation validation;
 
     @Override
-    public Unit save(Unit entity) {
-        return jpaRepository.save(UnitData.from(entity))
-                            .toUnit();
+    public Unit save(Unit unit, TransformEntityToTargetContext entityToDataContext,
+            TransformTargetToEntityContext dataToEntityContext) {
+        validation.validateModelObject(unit);
+        return dataRepository.save(UnitData.from(unit, Optional.ofNullable(entityToDataContext)
+                                                               .orElseGet(DataEntityToTargetContext::getCompleteTransformationContext)))
+                             .toUnit(Optional.ofNullable(dataToEntityContext)
+                                             .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext));
     }
 
     @Override
     public Optional<Unit> findById(Key<UUID> id) {
-        return jpaRepository.findById(SimpleKey.from(id))
-                            .map(UnitData::toUnit);
+        return findById(id, null);
+    }
+
+    @Override
+    public Optional<Unit> findById(Key<UUID> id,
+            TransformTargetToEntityContext dataToEntityContext) {
+        TransformTargetToEntityContext context = Optional.ofNullable(dataToEntityContext)
+                                                         .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext);
+
+        return dataRepository.findById(id.uuidValue())
+                             .map(data -> data.toUnit(context));
+
     }
 
     @Override
     public List<Unit> findByName(String search) {
-        return jpaRepository.findByNameContainingIgnoreCase(search)
-                            .stream()
-                            .map(UnitData::toUnit)
-                            .collect(Collectors.toList());
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public void delete(Unit entity) {
-        jpaRepository.delete(UnitData.from(entity));
+        dataRepository.delete(UnitData.from(entity));
     }
 
     @Override
     public void deleteById(Key<UUID> id) {
-        jpaRepository.deleteById(SimpleKey.from(id));
+        dataRepository.deleteById(id.uuidValue());
+    }
+
+    @Override
+    public boolean exists(Key<UUID> id) {
+        return dataRepository.existsById(id.uuidValue());
+    }
+
+    @Override
+    public Set<Unit> getByIds(Set<Key<UUID>> ids) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

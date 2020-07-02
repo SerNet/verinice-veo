@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,70 +16,56 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.validation.Valid;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.process.Process;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Getter
-@Setter
-@ToString
+import org.veo.core.entity.Process;
+import org.veo.core.entity.transform.TransformEntityToTargetContext;
+import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
+import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
+import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
+import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "process")
-@Table(name = "processes")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProcessData extends EntityLayerSupertypeData {
 
-    @Column(name = "name")
-    private String name;
-
-    /* Not modelled from asset's side. TODO will be replaced by Aspect relationship.
-     * This would be the mapping if this were a bidirectional association:
-     *
-     * @ManyToMany
-     *
-     * @JoinTable(name = "process_asset", joinColumns =
-     * { @JoinColumn(name="processId", referencedColumnName="uuid") },
-     * inverseJoinColumns = {@JoinColumn(name="assetId",
-     * referencedColumnName="uuid")}) */
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE },
-               fetch = FetchType.EAGER,
-               orphanRemoval = true)
-    private Set<AssetData> assets;
-
+    /**
+     * transform the given entity 'Process' to the corresponding 'ProcessData' with
+     * the DataEntityToTargetContext.getCompleteTransformationContext().
+     */
     public static ProcessData from(@Valid Process process) {
-        // map fields
-        return new ProcessData();
+        return from(process, DataEntityToTargetContext.getCompleteTransformationContext());
     }
 
+    /**
+     * Transform the given data object 'ProcessData' to the corresponding 'Process'
+     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
+     */
     public Process toProcess() {
-        return Process.existingProcessWithAssets(uuid.toKey(), unit.toUnit(), name, state,
-                                                 validFrom, version, toAssetSet(assets));
+        return toProcess(DataTargetToEntityContext.getCompleteTransformationContext());
     }
 
-    private Set<Asset> toAssetSet(Set<AssetData> assets) {
-        return assets.stream()
-                     .map(AssetData::toAsset)
-                     .collect(Collectors.toSet());
+    public static ProcessData from(@Valid Process process,
+            TransformEntityToTargetContext tcontext) {
+        if (tcontext instanceof DataEntityToTargetContext) {
+            return DataEntityToTargetTransformer.transformProcess2Data((DataEntityToTargetContext) tcontext,
+                                                                       process);
+        }
+        throw new IllegalArgumentException("Wrong context type");
     }
+
+    public Process toProcess(TransformTargetToEntityContext tcontext) {
+        if (tcontext instanceof DataTargetToEntityContext) {
+            return DataTargetToEntityTransformer.transformData2Process((DataTargetToEntityContext) tcontext,
+                                                                       this);
+        }
+        throw new IllegalArgumentException("Wrong context type");
+    }
+
 }

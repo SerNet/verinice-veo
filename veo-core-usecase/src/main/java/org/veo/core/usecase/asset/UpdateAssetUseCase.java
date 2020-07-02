@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2020 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,81 +16,36 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.UUID;
+import java.time.Instant;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-
-import org.veo.core.entity.Key;
-import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.AssetRepository;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.common.NotFoundException;
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.transform.TransformContextProvider;
+import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.repository.AssetRepository;
 
 /**
- * Abstract superclass for all operations that change an asset. The
- * <code>update()</code> method must be overwritten to make all necessary
- * changes to the asset.
- *
- * Note: increasing the version number of the key here will lead to a new asset
- * being saved since the version is part of the entity ID together with the
- * UUID. In almost all cases increasing the version number should be left to the
- * repository.
- *
- *
+ * @author urszeidler
  */
-@Slf4j
-public abstract class UpdateAssetUseCase
-        extends UseCase<UpdateAssetUseCase.InputData, UpdateAssetUseCase.OutputData> {
+public class UpdateAssetUseCase extends ModifyEntityUseCase<Asset> {
 
     private final AssetRepository assetRepository;
 
-    public UpdateAssetUseCase(AssetRepository assetRepository) {
+    public UpdateAssetUseCase(AssetRepository assetRepository,
+            TransformContextProvider transformContextProvider) {
+        super(transformContextProvider);
         this.assetRepository = assetRepository;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
-        log.info("Updating asset with id {}", input.getId());
-        final Key<UUID> id = input.getId();
-        return this.assetRepository.findById(id)
-                                   .map(a -> update(a, input))
-                                   .map(this::save)
-                                   .map(this::output)
-                                   .orElseThrow(() -> new NotFoundException(
-                                           "Asset %s was not found.", id.uuidValue()));
+    protected OutputData<Asset> performModification(InputData<Asset> input) {
+        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
+                                                                                           .partialDomain()
+                                                                                           .partialClient();
+        Asset asset = input.getEntity();
+        asset.setVersion(asset.getVersion() + 1);
+        asset.setValidFrom(Instant.now());
+        return new OutputData<>(assetRepository.save(asset, null, dataTargetToEntityContext));
     }
 
-    protected abstract Asset update(Asset asset, InputData input);
-
-    private Asset save(Asset asset) {
-        return this.assetRepository.save(asset);
-    }
-
-    private OutputData output(Asset asset) {
-        return new OutputData(asset);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        @Valid
-        @NotNull
-        private final Key<UUID> id;
-        @Valid
-        private final Asset changedAsset;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Asset asset;
-    }
 }

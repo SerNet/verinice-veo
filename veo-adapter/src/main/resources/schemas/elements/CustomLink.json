@@ -1,0 +1,48 @@
+{
+  "definitions": {
+    
+  },
+  "$schema": "http://verinice.com/veo/draft-01/schema#",
+  "type": "object",
+  "description": "Schema for CustomLink",
+  "title": "CustomLink",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "CustomLink"
+      ]
+    },
+    "name": {
+      "title": "name",
+      "type": "string"
+    },
+    "abbreviation": {
+      "title": "abbreviation",
+      "type": "string"
+    },
+    "description": {
+      "title": "description",
+      "type": "string"
+    },
+    "target": {
+      "type": "string",
+      "description": "The id (UUID) of an element of the type entityLayerSupertype."
+    },
+    "source": {
+      "type": "string",
+      "description": "The id (UUID) of an element of the type entityLayerSupertype."
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "name",
+    "target",
+    "source"
+  ]
+}

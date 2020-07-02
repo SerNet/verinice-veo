@@ -1,0 +1,72 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ProcessDvGroupBenachrichtigung"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "processPgBenachrichtigung": {
+          "title": "Informationspflichten",
+          "enum": [
+            "processBgBenachrichtigungErfolgt",
+            "processBgBenachrichtigungNichterfolgt"
+          ]
+        },
+        "processPgBenachrichtigungBegruendung": {
+          "title": "Grund für Nichtbenachrichtigung",
+          "type": "array",
+          "items": {
+            "enum": [
+              "processBgBenachrichtigungBegruendung0",
+              "processBgBenachrichtigungBegruendung1",
+              "processBgBenachrichtigungBegruendung2",
+              "processBgBenachrichtigungBegruendung3",
+              "processBgBenachrichtigungBegruendung4",
+              "processBgBenachrichtigungBegruendung5",
+              "processBgBenachrichtigungBegruendung6",
+              "processBgBenachrichtigungBegruendung7",
+              "processBgBenachrichtigungBegruendung8",
+              "processBgBenachrichtigungBegruendung9",
+              "processBgBenachrichtigungBegruendung10",
+              "processBgBenachrichtigungBegruendung11",
+              "processBgBenachrichtigungBegruendung12",
+              "processBgBenachrichtigungBegruendung13"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "processPgBenachrichtigungErlaeuterung": {
+          "title": "Erläuterung",
+          "type": "string"
+        },
+        "processPgBenachrichtigungDokument": {
+          "title": "Dokument",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

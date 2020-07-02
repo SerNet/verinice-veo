@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,81 +16,22 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import org.springframework.stereotype.Repository;
 
-import org.veo.core.entity.Key;
-import org.veo.core.entity.asset.Asset;
-import org.veo.core.entity.asset.AssetRepository;
-import org.veo.persistence.access.jpa.JpaAssetDataRepository;
+import org.veo.core.entity.Asset;
+import org.veo.core.usecase.repository.AssetRepository;
+import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.SimpleKey;
+import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.groups.AssetGroupData;
 
-/**
- * An implementation of repository interface that converts between entities and
- * their JPA-annotated representations.
- *
- * @author akoderman
- *
- */
 @Repository
-public class AssetRepositoryImpl implements AssetRepository {
+public class AssetRepositoryImpl extends BaseRepository<Asset, AssetData>
+        implements AssetRepository {
 
-    private JpaAssetDataRepository jpaRepository;
-
-    public AssetRepositoryImpl(JpaAssetDataRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
-    }
-
-    @Override
-    public Asset save(Asset asset) {
-        return jpaRepository.save(AssetData.from(asset))
-                            .toAsset();
-    }
-
-    @Override
-    public Optional<Asset> findById(Key<UUID> id) {
-        return jpaRepository.findById(SimpleKey.from(id))
-                            .map(AssetData::toAsset);
-    }
-
-    @Override
-    public void delete(Asset asset) {
-        jpaRepository.delete(AssetData.from(asset));
-    }
-
-    @Override
-    public void deleteById(Key<UUID> id) {
-        jpaRepository.deleteById(SimpleKey.from(id));
-    }
-
-    @Override
-    public List<Asset> findByName(String search) {
-        return jpaRepository.findByNameContainingIgnoreCase(search)
-                            .stream()
-                            .map(AssetData::toAsset)
-                            .collect(Collectors.toList());
-    }
-
-    @Override
-    public Set<Asset> getByIds(Set<Key<UUID>> ids) {
-        Iterable<AssetData> allById = jpaRepository.findAllById(SimpleKey.from(ids));
-        return StreamSupport.stream(allById.spliterator(), false)
-                            .map(AssetData::toAsset)
-                            .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Asset> getByProcessId(Key<UUID> processId) {
-        return jpaRepository.findByProcessId(SimpleKey.from(processId))
-                            .stream()
-                            .map(AssetData::toAsset)
-                            .collect(Collectors.toSet());
+    public AssetRepositoryImpl(AssetDataRepository dataRepository,
+            ModelObjectValidation validation) {
+        super(dataRepository, validation, AssetData::from, AssetData::toAsset,
+                groupData -> ((AssetGroupData) groupData).toAssetGroup());
     }
 }

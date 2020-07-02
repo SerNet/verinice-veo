@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo '[git hook] executing gradle checks before commit'
-./gradlew -q spotlessCheck pmdMain
+./gradlew --parallel -q spotlessCheck pmdMain

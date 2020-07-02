@@ -1,0 +1,146 @@
+#!/bin/sh -e
+
+username=${VEO_USER:-veo-testuser1}
+password=$VEO_USER_PASSWORD
+realm=veo-staging
+clientId=veo-development-client
+# comma separated list?
+scopes=profile
+clientSecret=
+oicUrl=https://auth-staging.verinice.com
+pass_prompt=
+tmpDir=`mktemp -d /tmp/veo-auth-XXXX`
+trap "rm -rf \"$tmpDir\"" 1 2 3 6
+
+usage() {
+	cat <<EOF >&2
+$0 [-u username] [-p] [-a url] [-r realm] [-c clientId] [-s scope] [-e] [-v]
+
+-u username		the username to login (default: \$VEO_USER, fallback: $username)
+-p				prompt for password (default: \$VEO_USER_PASSWORD)
+-a url			OpenID Connect server host address (default: $oicUrl)
+-r realm		OpenID Connect realm (default: $realm)
+-c clientId		OpenID Connect clientId (default: $clientId)
+-s scope		OpenID Connect scope. Can be used multiple times  (default: $scopes)
+
+-e				generate Bourne shell export commands on stdout. Similar to ssh-agent -s.
+
+-v				verbose
+-h				print this help
+
+Fetches an authentication token from an OpenID Connect resources server.
+If xsel(1) is installed the token will be written to the clipboard.
+Alternatively you can run
+
+	eval \`$0 -e\`
+
+This will export the TOKEN into your current shell session, which is
+assumed by ./authorize.
+EOF
+exit 1
+}
+
+die () {
+	echo $1 >&2
+    exit 1
+}
+
+which curl >/dev/null 2>&1 || die 'missing curl'
+which jq >/dev/null 2>&1 || die 'missing jq'
+which gawk >/dev/null 2>&1 || die 'gawk is required'
+
+while getopts u:pa:r:c:s:evh option
+do
+	case $option in
+	u)	username="$OPTARG" ;;
+	p)	pass_prompt=1 ;;
+	a)	oicUrl="$OPTARG" ;;
+	r)	realm="$OPTARG" ;;
+	c)	clientId="$OPTARG" ;;
+	s)	if [ -z "$scopes" ]
+		then
+			scopes="$OPTARG"
+		else
+			scopes="$scopes,$OPTARG"
+		fi
+		;;
+	e)	print_export=1	;;
+	v)	set -x
+		CURL_VERBOSE=-v
+		;;
+	h) usage ;;
+	?) usage ;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+if [ ! -z "$pass_prompt" ]
+then
+	echo -n "Enter password for $username: "
+	stty_orig=`stty -g`
+	stty -echo
+	read password
+	stty $stty_orig
+	echo
+fi
+
+# Use a temporary cookies file to force an active session.
+cookieFile="$tmpDir/cookies"
+authEndpoint=`curl -sS $CURL_VERBOSE \
+	-b "$cookieFile" -c "$cookieFile" \
+	"$oicUrl/auth/realms/$realm/protocol/openid-connect/auth?response_type=code&client_id=$clientId&scope=$scopes" \
+| gawk '/id="kc-form-login"/ {
+	match($0, /action="([^"]*)"/, matches);
+	print matches[1]
+}' \
+| sed 's/&amp;/\&/g'`
+
+[ -z "$authEndpoint" ] && die 'error fetching authentication endpoint'
+
+headerFile="$tmpDir/header"
+curl -sS $CURL_VERBOSE \
+	-b "$cookieFile" -c "$cookieFile" \
+	-D "$headerFile" \
+	-H 'Accept: application/json' \
+	--data-urlencode "username=$username" \
+	--data-urlencode "password=$password" \
+	"$authEndpoint"
+
+authCode=`gawk '/^[Ll]ocation/ {
+	match($2, /code=([.a-z0-9-]*)/, matches);
+	print matches[1]
+}' "$headerFile"`
+
+[ -z "$authCode" ] && die 'error fetching authentication code'
+
+authResponse=`curl -sS $CURL_VERBOSE \
+	-b "$cookieFile" -c "$cookieFile" \
+	-H 'Accept: application/json' \
+	--data-urlencode  'grant_type=authorization_code' \
+	--data-urlencode  "client_id=$clientId" \
+	--data-urlencode  "client_secret=$clientSecret" \
+	--data-urlencode  "code=$authCode" \
+	"$oicUrl/auth/realms/$realm/protocol/openid-connect/token"`
+
+authToken=`echo "$authResponse" | jq -Mr .access_token`
+
+if [ "$authToken" = "null" ]
+then
+	echo 'error fetching authentication token' >&2
+	echo "$authResponse" >&2
+	exit 1
+fi
+
+if [ -n "$print_export" ]
+then
+	printf "export TOKEN='%s'\n" "$authToken"
+else
+	echo $authToken
+fi
+
+if which xsel >/dev/null 2>/dev/null
+then
+	echo -n "$authToken" | xsel -i -b
+fi
+
+rm -rf "$tmpDir"

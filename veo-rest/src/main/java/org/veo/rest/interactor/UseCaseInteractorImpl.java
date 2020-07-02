@@ -38,7 +38,6 @@ import org.veo.core.usecase.UseCaseInteractor;
  * The output is provided in the format produced by the use case. The mapping
  * function given as the last parameter will be called asynchronously to
  * transform the result and return it to the caller.
- *
  */
 @Service
 @Validated
@@ -49,12 +48,9 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
             UseCase<I, O> useCase, @Valid I input, // TODO implement test to make sure all marked
                                                    // complex types in fields are validated
             Function<O, R> outputMapper) {
-        // @formatter:off
-        return CompletableFuture
-                .supplyAsync(() -> input)
-                .thenApplyAsync(useCase::execute)
-                .thenApplyAsync(outputMapper);
-        // @formatter:on
+        return CompletableFuture.supplyAsync(() -> input)
+                                .thenApplyAsync(useCase::execute)
+                                .thenApplyAsync(outputMapper);
     }
 
     @Override

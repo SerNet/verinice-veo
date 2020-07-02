@@ -22,7 +22,6 @@ package org.veo.core.entity;
  * catched using validation and type checking.
  *
  * @author akoderman
- *
  */
 public abstract class DomainException extends RuntimeException {
 

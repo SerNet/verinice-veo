@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.veo.model.Element;
+import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * Context for importing a VNA file
@@ -33,7 +33,7 @@ public class ImportContext {
      * A map of ext-ids from the imported VNA file and associated UUID from the
      * elements in the database
      */
-    private final Map<String, Element> extIdElementMap;
+    private final Map<String, EntityLayerSupertype> extIdElementMap;
 
     private Properties missingMappingProperties;
 
@@ -51,7 +51,7 @@ public class ImportContext {
         }
     }
 
-    public Element getElement(String extId) {
+    public EntityLayerSupertype getElement(String extId) {
         return extIdElementMap.get(extId);
     }
 

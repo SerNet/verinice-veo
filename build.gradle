@@ -1,16 +1,19 @@
 plugins {
-    id 'org.springframework.boot' version '2.2.0.RELEASE' apply false
-    id "com.github.spotbugs" version '3.0.0'
-    id "com.diffplug.gradle.spotless" version "3.25.0" apply false
+    id 'org.springframework.boot' version '2.3.1.RELEASE' apply false
+    id "com.github.spotbugs" version '4.3.0'
+    id "com.diffplug.gradle.spotless" version "4.3.1" apply false
     id "com.github.pivotalservices.cf-app" version "2.3.0-rc.8"
-    id "io.freefair.lombok" version "4.1.5"
+    id "io.freefair.lombok" version "5.1.0"
 }
+
+def continuousIntegrationBuild = rootProject.hasProperty('ci')
 
 allprojects  {
     group = 'org.veo'
-    version = '0.1.0-SNAPSHOT'
+    version = '0.2.0-SNAPSHOT'
 
     apply plugin: "com.diffplug.gradle.spotless"
+
 
     def currentUserName = "git config user.name".execute().text.trim() ?: "<name>"
 
@@ -22,12 +25,17 @@ allprojects  {
         }
         java {
             target 'src/**/*.java', 'buildSrc/**/*.java'
-
             eclipse().configFile(rootProject.file('misc/eclipse/java-format.xml'))
             importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             addStep org.veo.LicenseHeaderStep.create(currentUserName)
             removeUnusedImports()
             trimTrailingWhitespace()
+            replaceRegex('Consecutive empty block comment lines', /( *\*\n){2,}/, '*\n')
+            replaceRegex('Empty line at block comment end', / \*\n *\*\//, ' */')
+            replaceRegex('Empty comment block', /\/\*+\s+\*\//, '')
+            replaceRegex('Empty line after annotation', /(^ +@[a-zA-Z0-9]+\([^)]+\)\n)\n+/, '$1')
+            replaceRegex('Empty line inside annotation', /(^ +@[a-zA-Z0-9]+\([^)]+\n)\n+/, '$1')
+            replaceRegex('Default value for Schema#required()', /((?<=@Schema\([^)]{1,500}), required = false)|((?<=@Schema\()required = false(, )?)/, '')
         }
         groovy {
             target 'src/**/*.groovy', 'buildSrc/**/*.groovy'
@@ -36,6 +44,8 @@ allprojects  {
             importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             indentWithSpaces(4)
             trimTrailingWhitespace()
+            replaceRegex('Extra space around equals sign', /(  += )|( =  +)/, ' = ')
+            replaceRegex('Not one space between right round and left curly bracket', /\) *\{/, ') {')
         }
         xml {
             target 'src/**/*.xml', 'misc/eclipse/java-format.xml'
@@ -50,17 +60,22 @@ allprojects  {
         }
         format 'markdown', {
             target '**/*.md'
-
+            targetExclude '**/bin/**', '**/target/**'
             trimTrailingWhitespace()
             indentWithTabs()
             endWithNewline()
         }
         format 'json', {
             target '**/*.json'
-
-            trimTrailingWhitespace()
-            indentWithSpaces(2)
+            targetExclude '**/bin/**', '**/target/**'
+            eclipseWtp('json').configFile rootProject.file('misc/eclipse/json-format.prefs')
             endWithNewline()
+        }
+        format 'Jenkinsfile', {
+            target 'Jenkinsfile'
+            indentWithSpaces(4)
+            endWithNewline()
+            trimTrailingWhitespace()
         }
     }
 }
@@ -82,7 +97,7 @@ subprojects {
 
     dependencyManagement {
         dependencies {
-            dependency 'org.postgresql:postgresql:42.2.6'
+            dependency 'org.postgresql:postgresql:42.2.14'
             dependency 'net._01001111:jlorem:1.3'
             dependency 'commons-cli:commons-cli:1.4'
             dependency 'javax:javaee-api:8.0'
@@ -90,21 +105,22 @@ subprojects {
                 'jjwt-api',
                 'jjwt-impl',
                 'jjwt-jackson'
-            ].each { dependency "io.jsonwebtoken:$it:0.10.7" }
-            dependency 'com.github.java-json-tools:json-schema-validator:2.2.10'
+            ].each { dependency "io.jsonwebtoken:$it:0.11.2" }
+            dependency 'com.github.java-json-tools:json-schema-validator:2.2.13'
             dependency 'com.h2databas:h2:1.4.199'
             [
                 'spock-core',
                 'spock-spring'
-            ].each { dependency "org.spockframework:$it:1.3-groovy-2.4" }
-            dependency 'org.apache.commons:commons-lang3:3.9'
+            ].each { dependency "org.spockframework:$it:1.3-groovy-2.5" }
+            dependency 'org.apache.commons:commons-lang3:3.10'
             dependency 'org.modelmapper:modelmapper:2.3.5'
-            dependency "org.springframework.boot:spring-boot-devtools:1.3.0.RELEASE"
+            dependency 'com.github.chhsiao90:modelmapper-module-java8-datatypes:1.1.0'
             dependency 'javax.validation:validation-api:2.0.1.Final'
             // should be provided by spring boot dep. mgmt.:
             // dependency 'javax.transaction:javax.transaction-api:1.3'
-            dependency 'org.springdoc:springdoc-openapi-ui:1.2.17'
-            dependency 'io.swagger.core.v3:swagger-core:2.1.0'
+            dependency 'org.springdoc:springdoc-openapi-ui:1.4.0'
+            dependency 'io.swagger.core.v3:swagger-core:2.1.2'
+            dependency 'com.github.javafaker:javafaker:1.0.2'
         }
     }
 
@@ -116,7 +132,7 @@ subprojects {
     repositories { mavenCentral() }
 
     pmd {
-        toolVersion = '6.17.0'
+        toolVersion = '6.24.0'
         ruleSetConfig = rootProject.resources.text.fromFile('misc/pmd/rules.xml')
         ruleSets = []
         rulePriority = 2
@@ -126,11 +142,14 @@ subprojects {
 
     spotbugsTest.enabled = false
     // write human readable report on normal builds
-    spotbugsMain.reports.xml.enabled = false
-    spotbugsMain.reports.html.enabled = true
+    spotbugsMain.reports {
+        // Jenkins needs xml reports to detect and display bugs.
+        xml.enabled = continuousIntegrationBuild
+        html.enabled = !continuousIntegrationBuild
+    }
 
-    // specific "continious integration" settings needed by Jenkins
-    if (rootProject.hasProperty('ci')) {
+    // specific "continuous integration" settings needed by Jenkins
+    if (continuousIntegrationBuild) {
         // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
         task jenkinsTestFix {
             inputs.files test.outputs.files
@@ -141,19 +160,25 @@ subprojects {
                 }
             }
         }
-        build.dependsOn(jenkinsTestFix)
 
-        test { testLogging { exceptionFormat = 'full' } }
-
-        // Jenkins needs xml reports to detect and display bugs.
-        spotbugsMain.reports.xml.enabled = true
-        spotbugsMain.reports.html.enabled = false
+        test {
+            testLogging { exceptionFormat = 'full' }
+            finalizedBy jenkinsTestFix
+        }
     }
 
     dependencies {
         compileOnly 'org.slf4j:slf4j-api'
         runtimeOnly 'ch.qos.logback:logback-classic'
     }
+
+    compileJava {
+        options.debugOptions.debugLevel = "source,lines,vars"
+    }
+    compileTestJava{
+        options.debugOptions.debugLevel = "source,lines,vars"
+    }
+
 }
 
 // Set PWS user and password:
@@ -167,6 +192,6 @@ cfConfig {
     space = "development"
     name = "veo-api"
 
-    filePath = "veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar"
+    filePath = project('veo-rest').jar.archivePath
     buildpack = "https://github.com/cloudfoundry/java-buildpack.git"
 }

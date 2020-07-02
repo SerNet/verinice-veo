@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -17,39 +17,54 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.Valid;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.asset.Asset;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-@Getter
-@Setter
-@ToString
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.transform.TransformEntityToTargetContext;
+import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
+import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
+import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
+import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "asset")
-@Table(name = "assets")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class AssetData extends EntityLayerSupertypeData {
 
-    private String name;
-
-    public static AssetData from(@Valid EntityLayerSupertype Asset) {
-        // TODO map fields
-        return new AssetData();
+    /**
+     * transform the given entity 'Asset' to the corresponding 'AssetData' with the
+     * DataEntityToTargetContext.getCompleteTransformationContext().
+     */
+    public static AssetData from(@Valid Asset asset) {
+        return from(asset, DataEntityToTargetContext.getCompleteTransformationContext());
     }
 
+    /**
+     * Transform the given data object 'AssetData' to the corresponding 'Asset'
+     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
+     */
     public Asset toAsset() {
-        return null;
-        // TODO map fields
+        return toAsset(DataTargetToEntityContext.getCompleteTransformationContext());
     }
+
+    public static AssetData from(@Valid Asset asset, TransformEntityToTargetContext tcontext) {
+        if (tcontext instanceof DataEntityToTargetContext) {
+            return DataEntityToTargetTransformer.transformAsset2Data((DataEntityToTargetContext) tcontext,
+                                                                     asset);
+        }
+        throw new IllegalArgumentException("Wrong context type");
+    }
+
+    public Asset toAsset(TransformTargetToEntityContext tcontext) {
+        if (tcontext instanceof DataTargetToEntityContext) {
+            return DataTargetToEntityTransformer.transformData2Asset((DataTargetToEntityContext) tcontext,
+                                                                     this);
+        }
+        throw new IllegalArgumentException("Wrong context type");
+    }
+
 }

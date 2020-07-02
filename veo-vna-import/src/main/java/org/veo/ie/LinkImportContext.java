@@ -20,8 +20,8 @@ import java.util.Properties;
 
 import de.sernet.sync.data.SyncLink;
 
-import org.veo.model.Element;
-import org.veo.model.Link;
+import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * A context to import one link from a VNA to database.
@@ -31,16 +31,17 @@ import org.veo.model.Link;
 public class LinkImportContext {
 
     private SyncLink syncLink;
-    private Element source;
-    private Element destination;
-    private Link link;
+    private EntityLayerSupertype source;
+    private EntityLayerSupertype destination;
+    private CustomLink link;
     private Properties missingMappingProperties;
 
     public LinkImportContext() {
         super();
     }
 
-    public LinkImportContext(SyncLink syncLink, Element source, Element destination) {
+    public LinkImportContext(SyncLink syncLink, EntityLayerSupertype source,
+            EntityLayerSupertype destination) {
         super();
         this.syncLink = syncLink;
         this.source = source;
@@ -48,11 +49,11 @@ public class LinkImportContext {
         this.missingMappingProperties = new Properties();
     }
 
-    public Link getLink() {
+    public CustomLink getLink() {
         return link;
     }
 
-    public void setLink(Link link) {
+    public void setLink(CustomLink link) {
         this.link = link;
     }
 
@@ -60,11 +61,11 @@ public class LinkImportContext {
         return syncLink;
     }
 
-    public Element getSource() {
+    public EntityLayerSupertype getSource() {
         return source;
     }
 
-    public Element getDestination() {
+    public EntityLayerSupertype getDestination() {
         return destination;
     }
 

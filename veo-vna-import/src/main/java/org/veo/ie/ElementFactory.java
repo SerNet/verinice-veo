@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.veo.ie;
 
-import org.veo.model.Element;
+import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * @author Daniel Murygin
@@ -95,10 +95,9 @@ public final class ElementFactory {
         // Do not instantiate this class, use final methods
     }
 
-    public static Element newInstance(String typeId) {
-        Element element = new Element();
-        element.setTypeId(typeId);
-        return element;
+    public static EntityLayerSupertype newInstance(String typeId) {
+        // TODO implement
+        return null;
     }
 
 }

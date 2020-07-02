@@ -17,9 +17,7 @@
 package org.veo.ie;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -33,13 +31,8 @@ import org.springframework.stereotype.Component;
 
 import de.sernet.sync.data.SyncAttribute;
 import de.sernet.sync.data.SyncObject;
-import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 
-import org.veo.model.Element;
-import org.veo.model.ElementProperty;
-import org.veo.model.Property;
-import org.veo.service.ElementService;
-import org.veo.util.time.TimeFormatter;
+import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * A callable task to import one element and its properties from a VNA to
@@ -66,9 +59,6 @@ public class ElementImportTask implements Callable<ElementImportContext> {
     private ElementImportContext context;
 
     private static final Pattern NUMBER = Pattern.compile("-?\\d+");
-
-    @Autowired
-    ElementService elementService;
 
     @Autowired
     @javax.annotation.Resource(name = "SchemaTypeIdMapper")
@@ -106,85 +96,30 @@ public class ElementImportTask implements Callable<ElementImportContext> {
         String veriniceTypeId = getSyncObject().getExtObjectType();
         String veoTypeId = getVeoElementTypeId(veriniceTypeId);
 
-        Element element = ElementFactory.newInstance(veoTypeId);
-        element.setTitle(TitleAdapter.getTitle(getSyncObject(), getMapObject()));
-        element.setParent(context.getParent());
-        if (context.getParent() == null) {
-            element.setScope(element);
-        } else {
-            element.setScope(context.getParent()
-                                    .getScope());
-        }
+        EntityLayerSupertype element = ElementFactory.newInstance(veoTypeId);
+        // TODO set element title, parent & scope
         importProperties(getSyncObject().getSyncAttribute(), element);
         if (isImported()) {
-            element = elementService.save(element);
+            // TODO persist
             context.setElement(element);
         }
-    }
-
-    private MapObjectType getMapObject() {
-        return getMapObject(context.getMapObjectTypeList(), context.getSyncObject()
-                                                                   .getExtObjectType());
     }
 
     private SyncObject getSyncObject() {
         return context.getSyncObject();
     }
 
-    private void importProperties(List<SyncAttribute> syncObjectList, Element element) {
+    private void importProperties(List<SyncAttribute> syncObjectList,
+            EntityLayerSupertype element) {
         for (SyncAttribute syncAttribute : syncObjectList) {
             importProperty(element, syncAttribute);
         }
     }
 
-    private void importProperty(Element element, SyncAttribute syncAttribute) {
+    private void importProperty(EntityLayerSupertype element, SyncAttribute syncAttribute) {
         if (isImported(syncAttribute)) {
-            String name = syncAttribute.getName();
-            String propertyId = getVeoPropertyTypeId(name);
-            element.getProperties()
-                   .addAll(createProperties(syncAttribute, propertyId));
+            // TODO add properties
         }
-    }
-
-    private List<ElementProperty> createProperties(SyncAttribute syncAttribute,
-            String propertyTypeId) {
-        List<String> valueList = syncAttribute.getValue();
-        List<ElementProperty> propertyList = new ArrayList<>(valueList.size());
-        boolean isMulti = valueList.size() > 1;
-        int i = 0;
-        for (String value : valueList) {
-            ElementProperty property = new ElementProperty();
-            property.setKey(propertyTypeId);
-            property.setIndex(i);
-            setPropertyValue(property, value, isMulti);
-            if (property.getValue() != null) {
-                propertyList.add(property);
-            } else {
-                LOG.warn("Not adding property with value null, key: {}", propertyTypeId);
-            }
-            i++;
-        }
-        return propertyList;
-    }
-
-    private void setPropertyValue(ElementProperty property, String value, boolean isMulti) {
-        Optional<Long> valueAsNumber = tryToParseAsNumber(value);
-        if (valueAsNumber.isPresent()) {
-            Long number = valueAsNumber.get();
-            if (isTimestamp(number)) {
-                property.setValue(TimeFormatter.getIso8601FromEpochMillis(number,
-                                                                          ZoneId.systemDefault()));
-                property.setType(Property.Type.DATE);
-            } else {
-                property.setValue(value);
-                property.setType(Property.Type.NUMBER);
-            }
-        } else {
-            property.setValue(value);
-            property.setType(Property.Type.TEXT);
-        }
-        property.setCardinality((isMulti) ? Property.Cardinality.MULTI
-                : Property.Cardinality.SINGLE);
     }
 
     private static Optional<Long> tryToParseAsNumber(String s) {
@@ -209,15 +144,6 @@ public class ElementImportTask implements Callable<ElementImportContext> {
      */
     private static boolean isTimestamp(Long s) {
         return (s > EPOCH_40_YEARS_AGO && s < EPOCH_20_YEARS_LATER);
-    }
-
-    private MapObjectType getMapObject(List<MapObjectType> mapObjects, String extId) {
-        for (MapObjectType mapObject : mapObjects) {
-            if (extId.equals(mapObject.getExtId())) {
-                return mapObject;
-            }
-        }
-        return null;
     }
 
     private boolean isImported() {

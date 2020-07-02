@@ -1,0 +1,162 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ProcessDsfaNeededGroup"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "processIsDsgvoBlacklisted": {
+          "title": "Verarbeitung ist auf Negativliste geführt",
+          "enum": [
+            "processIsDsgvoBlacklistedYes",
+            "processIsDsgvoBlacklistedNo"
+          ]
+        },
+        "processJoinedDataprocessing": {
+          "title": "Verarbeitung ist Teil eines gemeinsamen Verarbeitungsvorganges",
+          "enum": [
+            "processJoinedDataprocessingYes",
+            "processJoinedDataprocessingNo"
+          ]
+        },
+        "processJoinedDataprocessingComments": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processJoinedDataprocessingDocument": {
+          "title": "Dokument",
+          "type": "string"
+        },
+        "processOtherDataprocessing": {
+          "title": "Sonstiger Ausschlusstatbestand",
+          "enum": [
+            "processOtherDataprocessingYes",
+            "processOtherDataprocessingNo"
+          ]
+        },
+        "processOtherDataprocessingComments": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processWhitelistDataprocessing": {
+          "title": "Verarbeitung ist auf Positivliste geführt",
+          "enum": [
+            "processWhitelistDataprocessingYes",
+            "processWhitelistDataprocessingNo"
+          ]
+        },
+        "processWhitelistDataprocessingComments": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processWhitelistDataprocessingDocument": {
+          "title": "Dokument",
+          "type": "string"
+        },
+        "processDsfaCriteriaTest": {
+          "title": "Entspricht die Verarbeitung folgenden Kriterien",
+          "type": "array",
+          "items": {
+            "enum": [
+              "processDsfaCriteriaTest1",
+              "processDsfaCriteriaTest2",
+              "processDsfaCriteriaTest3",
+              "processDsfaCriteriaTest4",
+              "processDsfaCriteriaTest5",
+              "processDsfaCriteriaTest6",
+              "processDsfaCriteriaTest7",
+              "processDsfaCriteriaTest8",
+              "processDsfaCriteriaTest9",
+              "processDsfaCriteriaTest10",
+              "processDsfaCriteriaTest11"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "processDsfaCriteriaMatch": {
+          "title": "Zwei oder mehr o.g Kriterien zu",
+          "enum": [
+            "processDsfaCriteriaMatchYes",
+            "processDsfaCriteriaMatchNo"
+          ]
+        },
+        "processDsfaCriteriaMatchComments": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processDsfaCriteriaMatchDocument": {
+          "title": "Dokument",
+          "type": "string"
+        },
+        "processDsfaCriteriaOther": {
+          "title": "Erfordernis aus sonstigen Gründen",
+          "enum": [
+            "processDsfaCriteriaOtherYes",
+            "processDsfaCriteriaOtherNo"
+          ]
+        },
+        "processDsfaCriteriaOtherComments": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processDsfaCriteriaOtherDocument": {
+          "title": "Dokument",
+          "type": "string"
+        },
+        "processDsfaOversight": {
+          "title": "Konsultation der Aufsichtsbehörde erforderlich",
+          "enum": [
+            "processDsfaOversightYes",
+            "processDsfaOversightNo"
+          ]
+        },
+        "processDsfaOversightComments": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processDsfaOversightDocument": {
+          "title": "Dokument",
+          "type": "string"
+        },
+        "processDsfaClearance": {
+          "title": "Freigabe der Verarbeitung",
+          "enum": [
+            "processDsfaClearanceYes",
+            "processDsfaClearanceNo"
+          ]
+        },
+        "processDsfaClearanceComments": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processDsfaClearanceDocument": {
+          "title": "Dokument",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

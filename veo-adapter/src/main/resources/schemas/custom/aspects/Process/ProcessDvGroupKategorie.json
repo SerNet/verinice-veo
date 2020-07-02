@@ -1,0 +1,94 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ProcessDvGroupKategorie"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "processDvKategorieYesno": {
+          "title": "Besonders sensitive Daten",
+          "type": "boolean"
+        },
+        "processDvKategorie": {
+          "title": "Art besonders sensitiver Daten",
+          "type": "array",
+          "items": {
+            "enum": [
+              "processDvKategorie1",
+              "processDvKategorie2",
+              "processDvKategorie3",
+              "processDvKategorie4",
+              "processDvKategorie5",
+              "processDvKategorie6",
+              "processDvKategorie7",
+              "processDvKategorie8",
+              "processDvKategorie9",
+              "processDvKategorie10",
+              "processDvKategorie11",
+              "processDvKategorie12",
+              "processDvKategorie13"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "processDvSensRechtsgrundl": {
+          "title": "Rechtsgrundlage für die Datenverarbeitung sensitiver Daten",
+          "type": "array",
+          "items": {
+            "enum": [
+              "processDvSensRechtsgrundl7",
+              "processDvSensRechtsgrundl8",
+              "processDvSensRechtsgrundl2",
+              "processDvSensRechtsgrundl3",
+              "processDvSensRechtsgrundl5"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "processDvSensVorrvorschr": {
+          "title": "Vorrangige Rechtsvorschriften",
+          "type": "string"
+        },
+        "processDvSensRechtsgrundlageSonst": {
+          "title": "Sonstige Rechtsgrundlagen",
+          "type": "string"
+        },
+        "processDvKategorieSonst": {
+          "title": "Bemerkungen",
+          "type": "string"
+        },
+        "processDvKategorie42a": {
+          "title": "Meldeverfahren Art.33,34 DSGVO?",
+          "type": "boolean"
+        },
+        "processDvKategorie203": {
+          "title": "Schweigepflichtiger Personenkreis nach §203 StGB?",
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

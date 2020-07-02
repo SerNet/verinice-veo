@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import lombok.ToString;
+
 /**
  * <code>Key</code> stores one element as a key or multiple elements as a
  * compound key. Convenience methods are provided for simple keys. A key can
@@ -36,14 +38,14 @@ import java.util.stream.Collectors;
  *
  * For more information on the key pattern see the description in M.Fowler's
  * PoEAA.
- *
  */
+@ToString(onlyExplicitlyIncluded = true)
 public class Key<T> {
 
-    protected enum SPECIAL_KEYS {
-        KEY_UNDEFINED
-    }
+    private static final UUID NIL_UUID_STRING = UUID.fromString("00000000-0000-0000-0000-000000000000");
+    public static final Key<UUID> NIL_UUID = new Key<>(NIL_UUID_STRING);
 
+    @ToString.Include
     private List<T> fields;
 
     @SafeVarargs
@@ -72,7 +74,7 @@ public class Key<T> {
      * @return
      */
     public static Key<UUID> uuidFrom(String value) {
-        return new Key<>(UUID.fromString(value));
+        return value != null ? new Key<>(UUID.fromString(value)) : null;
     }
 
     /**
@@ -107,8 +109,8 @@ public class Key<T> {
      *
      * @return
      */
-    public static Key<SPECIAL_KEYS> undefined() {
-        return new Key<>(SPECIAL_KEYS.KEY_UNDEFINED);
+    public static Key<UUID> undefined() {
+        return NIL_UUID;
     }
 
     private void checkFieldsNotNull(List<T> fields) {
@@ -124,9 +126,6 @@ public class Key<T> {
         return Objects.hash(fields);
     }
 
-    /**
-     *
-     */
     @Override
     public boolean equals(Object obj) {
         if (this.fields == null)
@@ -154,7 +153,7 @@ public class Key<T> {
     public boolean isUndefined() {
         checkFieldsNotNull(this.fields);
         return fields.stream()
-                     .anyMatch(f -> f == SPECIAL_KEYS.KEY_UNDEFINED);
+                     .anyMatch(f -> f.equals(NIL_UUID_STRING));
     }
 
     /**

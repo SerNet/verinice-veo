@@ -1,0 +1,41 @@
+{
+  "definitions": {
+    
+  },
+  "$schema": "http://verinice.com/veo/draft-01/link-schema#",
+  "type": "object",
+  "description": "Schema for Links between assetrisk and unit defined by the reference owner.",
+  "title": "assetrisk_unit_owner",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "assetrisk_unit_owner"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "title": "The title of a link"
+    },
+    "source": {
+      "type": "string",
+      "title": "id of the assetrisk"
+    },
+    "target": {
+      "type": "string",
+      "title": "id of the unit"
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "source",
+    "target"
+  ],
+  "source.type": "assetrisk",
+  "target.type": "unit"
+}

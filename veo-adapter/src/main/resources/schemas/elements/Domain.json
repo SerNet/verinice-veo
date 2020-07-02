@@ -1,0 +1,42 @@
+{
+  "definitions": {
+    
+  },
+  "$schema": "http://verinice.com/veo/draft-01/schema#",
+  "type": "object",
+  "description": "Schema for Domain",
+  "title": "Domain",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "Domain"
+      ]
+    },
+    "name": {
+      "title": "name",
+      "type": "string"
+    },
+    "abbreviation": {
+      "title": "abbreviation",
+      "type": "string"
+    },
+    "description": {
+      "title": "description",
+      "type": "string"
+    },
+    "active": {
+      "title": "active",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "name"
+  ]
+}

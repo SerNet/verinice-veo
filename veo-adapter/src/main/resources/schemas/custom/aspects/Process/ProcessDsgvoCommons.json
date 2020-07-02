@@ -1,0 +1,52 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ProcessDsgvoCommons"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "processStellungnahmedsbPbdaten": {
+          "title": "Personenbezogene Daten?",
+          "enum": [
+            "processStellungnahmedsbPbdaten1",
+            "processStellungnahmedsbPbdaten2"
+          ]
+        },
+        "processPrivacyYesno": {
+          "title": "Aufnahme in das Verzeichnis der Verarbeitungstätigkeiten",
+          "type": "boolean"
+        },
+        "processType": {
+          "title": "Type of Process",
+          "enum": [
+            "processTypeCore",
+            "processTypeSupport"
+          ]
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

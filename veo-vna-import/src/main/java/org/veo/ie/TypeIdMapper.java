@@ -17,7 +17,6 @@
 package org.veo.ie;
 
 /**
- *
  * This interface provides methods for mapping IDs from verinice archives (VNA)
  * to IDs from veo.
  */

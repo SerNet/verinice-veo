@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,7 +26,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.cors.CorsConfiguration;
@@ -35,6 +38,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  */
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
+
+    @Value("${veo.cors.origins}")
+    private List<String> origins;
+
     private final PasswordEncoder passwordEncoder;
 
     public WebSecurity(PasswordEncoder passwordEncoder) {
@@ -43,23 +50,40 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors()
+        // @formatter:off
+        // Keep the formatter off or you will never understand what this does.
+        // #whitespacematters #pythonmeetsjava.
+        http.csrf()
+                .disable()
+            .cors()
+
+            // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled for
+            // swagger-ui. We cannot disable it.
+            // Make sure that no critical API can be accessed by an anonymous user!
+            // .anonymous()
+            //     .disable()
+
             .and()
-            .csrf()
-            .disable()
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+            .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/", "/v2/api-docs/**", "/v3/api-docs/**", "/swagger.json",
+                .antMatchers(HttpMethod.GET, "/", "/v2/api-docs/**", "/v3/api-docs/**", "/swagger.json",
                          "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
                          "/swagger-ui/**")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
+                    .permitAll()
+                .antMatchers("/units/**", "/assets/**", "/controls/**", "/groups/**", "persons/**",
+                             "/processes/**", "/schemas/**", "/translations/**")
+                    .hasAuthority("SCOPE_veo-user")
+                .anyRequest()
+                    .authenticated() // CAUTION: this includes anonymous users, see above
+
             .and()
-            .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-            .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-            // this disables session creation on Spring Security
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .oauth2ResourceServer()
+                .jwt();
+
+        // @formatter:on
     }
 
     @Override
@@ -72,25 +96,23 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        origins.forEach(corsConfig::addAllowedOrigin);
+        source.registerCorsConfiguration("/**", corsConfig);
         return source;
     }
 
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
-        inMemoryUserDetailsManager.createUser(User.withUsername("user")
-                                                  .password("password")
-                                                  .roles("USER")
-                                                  .build());
-        inMemoryUserDetailsManager.createUser(User.withUsername("app_client")
-                                                  .password("nopass")
-                                                  .roles("USER")
-                                                  .build());
-        inMemoryUserDetailsManager.createUser(User.withUsername("admin")
-                                                  .password("password")
-                                                  .roles("USER")
-                                                  .build());
-        return inMemoryUserDetailsManager;
+        final String NIL_UUID = "00000000-0000-0000-0000-000000000000";
+
+        ApplicationUser basicUser = ApplicationUser.authenticatedUser("user", NIL_UUID, "veo-user");
+        basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
+
+        ApplicationUser adminUser = ApplicationUser.authenticatedUser("admin", NIL_UUID,
+                                                                      "veo-admin");
+        adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
+
+        return new CustomUserDetailsManager(List.of(basicUser, adminUser));
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,65 +16,84 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * A client is the root element of the ownership structure and an access
- * barrier. Data from one client must never be visible to another client. Data
- * from one client must not be referenced by or linked to by data from another
- * client. No user-manageable configuration or settings must be shared between
- * clients.
- *
- * A client can be used to separate multiple completely disjunct users of the
- * system from each other.
- *
+ * A client is the root object of the organizational structure. Usually a client
+ * is a company or other large closed organizational entity. The client could be
+ * used for high level authorization.
  */
+public interface Client extends ModelObject {
 
-@Getter
-@Setter
-@EqualsAndHashCode
+    String getName();
 
-public final class Client {
+    void setName(String aName);
 
-    @NotNull
-    private final Key<UUID> id;
+    /**
+     * Add the given Unit to the collection units.
+     *
+     * @return true if added
+     */
+    boolean addToUnits(Unit aUnit);
 
-    @NotNull
-    @NotBlank(message = "The name of a client must not be blank.")
-    @Size(max = 255)
-    private String name;
+    /**
+     * Remove the given Unit from the collection units.
+     *
+     * @return true if removed
+     */
+    boolean removeFromUnits(Unit aUnit);
 
-    @NotNull
-    @Size(min = 1, max = 1000000, message = "A client must be working with at least one domain.")
-    private Set<Domain> domains;
+    Set<Unit> getUnits();
 
-    private Client(Key<UUID> id, String name) {
-        this.id = id;
-        this.name = name;
-        domains = new HashSet<Domain>();
-    }
+    void setUnits(Set<Unit> aUnits);
 
-    private Client(Key<UUID> id, String name, Set<Domain> domains) {
-        this.id = id;
-        this.name = name;
-        this.domains = domains;
-    }
+    /**
+     * Add the given Domain to the collection domains.
+     *
+     * @return true if added
+     */
+    boolean addToDomains(Domain aDomain);
 
-    public static Client newClient(String name) {
-        return new Client(Key.newUuid(), name);
-    }
+    /**
+     * Remove the given Domain from the collection domains.
+     *
+     * @return true if removed
+     */
+    boolean removeFromDomains(Domain aDomain);
 
-    public static Client existingClient(Key<UUID> id, String name, Set<Domain> domains) {
-        return new Client(id, name, domains);
-    }
+    Set<Domain> getDomains();
+
+    void setDomains(Set<Domain> aDomains);
+
+    /**
+     * Factory method to create a new unit in this client.
+     *
+     * @param name
+     *            The name of the new unit
+     * @return The newly created unit
+     */
+    public Unit createUnit(String name);
+
+    /**
+     * Returns a unit this client for the given id. Recurses into subunits,
+     * sub-sub-units etc. to find a match.
+     *
+     * @param id
+     *            The id of the unit to find
+     * @return
+     */
+    public Optional<Unit> getUnit(Key<UUID> id);
+
+    /**
+     * Remove a unit or subunit from this client. This method correctly updates the
+     * bidirectional relationship between the client and the unit. It will also
+     * disassociate the unit from its parent unit if it has one.
+     *
+     * @param unit
+     *            the unit or sub-unit to delete
+     */
+    public void removeUnit(Unit unit);
+
 }

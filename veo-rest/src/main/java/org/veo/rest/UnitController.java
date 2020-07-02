@@ -16,15 +16,26 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.veo.commons.VeoException.Error.NOT_IMPLEMENTED;
 import static org.veo.rest.ControllerConstants.PARENT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
-import org.springframework.core.io.Resource;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,27 +47,57 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
-import org.veo.adapter.presenter.api.dto.UnitDto;
-import org.veo.commons.VeoException;
+import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper;
+import org.veo.adapter.presenter.api.request.CreateUnitDto;
+import org.veo.adapter.presenter.api.response.UnitDto;
+import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
+import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
+import org.veo.core.entity.impl.UnitImpl;
+import org.veo.core.usecase.unit.ChangeUnitUseCase;
+import org.veo.core.usecase.unit.CreateUnitUseCase;
+import org.veo.core.usecase.unit.DeleteUnitUseCase;
+import org.veo.core.usecase.unit.GetUnitUseCase;
+import org.veo.core.usecase.unit.GetUnitsUseCase;
+import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.ParameterUuidParent;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.interactor.UseCaseInteractorImpl;
+import org.veo.rest.security.ApplicationUser;
 
 /**
  * REST service which provides methods to manage units.
+ *
+ * Uses async calls with {@code CompletableFuture} to parallelize long running
+ * operations (i.e. network calls to the database or to other HTTP services).
+ *
+ * @see <a href=
+ *      "https://spring.io/guides/gs/async-method">https://spring.io/guides/gs/async-method/</a>
  */
 @RestController
 @RequestMapping(UnitController.URL_BASE_PATH)
-public class UnitController {
+@RequiredArgsConstructor
+public class UnitController extends AbstractEntityController {
 
     public static final String URL_BASE_PATH = "/units";
+
+    private final UseCaseInteractorImpl useCaseInteractor;
+    private final CreateUnitUseCase createUnitUseCase;
+    private final GetUnitUseCase getUnitUseCase;
+    private final UpdateUnitUseCase putUnitUseCase;
+    private final DeleteUnitUseCase deleteUnitUseCase;
+    private final GetUnitsUseCase getUnitsUseCase;
 
     @GetMapping
     @Operation(summary = "Loads all units")
@@ -64,47 +105,104 @@ public class UnitController {
             @ApiResponse(responseCode = "200",
                          description = "Units loaded",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = UnitDto.class))) })
-    public @Valid Flux<UnitDto> getUnits(
+                                            array = @ArraySchema(schema = @Schema(implementation = UnitDto.class)))) })
+
+    public @Valid CompletableFuture<List<UnitDto>> getUnits(
+            @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
                                                required = false) String parentUuid) {
-        throw new VeoException(NOT_IMPLEMENTED, "Not implemented yet");
+        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+
+        return useCaseInteractor.execute(getUnitsUseCase, new GetUnitsUseCase.InputData(
+                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
+                    return output.getUnits()
+                                 .stream()
+                                 .map(u -> UnitDto.from(u, tcontext))
+                                 .collect(Collectors.toList());
+                });
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
-    @Operation(summary = "Loads an unit")
+    @Async
+    @GetMapping(value = "/{id}")
+    @Operation(summary = "Loads a unit")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                          description = "Unit loaded",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = UnitDto.class))),
             @ApiResponse(responseCode = "404", description = "Unit not found") })
-    public @Valid Mono<UnitDto> getUnit(@ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        throw new VeoException(NOT_IMPLEMENTED, "Not implemented yet");
+    public @Valid CompletableFuture<UnitDto> getUnit(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String id) {
+
+        return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
+                Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
+                    DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+                    tcontext.partialDomain();
+                    return UnitDto.from(output.getUnit(), tcontext);
+                });
     }
 
+    @Async
     @PostMapping()
-    @Operation(summary = "Creates an unit")
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Unit created") })
-    public Mono<Resource> createUnit(@Valid @RequestBody UnitDto unitData) {
-        throw new VeoException(NOT_IMPLEMENTED, "Not implemented yet");
+    @Operation(summary = "Creates a unit")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                         description = "Unit created",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = RestApiResponse.class))) })
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> createUnit(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @Valid @RequestBody CreateUnitDto createUnitDto) {
+
+        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+
+        return useCaseInteractor.execute(createUnitUseCase,
+                                         CreateUnitInputMapper.map(createUnitDto,
+                                                                   user.getClientId()),
+                                         output -> {
+                                             ApiResponseBody body = CreateUnitOutputMapper.map(output.getUnit());
+                                             return RestApiResponse.created(URL_BASE_PATH, body);
+                                         });
     }
 
-    @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
-    @Operation(summary = "Updates an unit")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Unit updated"),
-            @ApiResponse(responseCode = "404", description = "Unit not found") })
-    public Mono<Resource> updateUnit(@ParameterUuid @PathVariable(UUID_PARAM) String uuid,
-            @Valid @RequestBody UnitDto unitData) {
-        throw new VeoException(NOT_IMPLEMENTED, "Not implemented yet");
+    @Async
+    @Transactional(TxType.REQUIRED)
+    @PutMapping(value = "/{id}")
+    // @Operation(summary = "Updates a unit")
+    // @ApiResponses(value = { @ApiResponse(responseCode = "200", description =
+    // "Unit updated"),
+    // @ApiResponse(responseCode = "404", description = "Unit not found") })
+    public @Valid CompletableFuture<UnitDto> updateUnit(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String id, @Valid @RequestBody UnitDto unitDto) {
+
+        DtoTargetToEntityContext tcontext = configureDtoContext(getAuthenticatedClient(auth),
+                                                                Collections.emptyList());
+
+        return useCaseInteractor.execute(putUnitUseCase, new UpdateUnitUseCase.InputData(
+                unitDto.toUnit(tcontext), getAuthenticatedClient(auth)), output -> {
+                    UnitDto response = UnitDto.from(output.getUnit(),
+                                                    DtoEntityToTargetContext.getCompleteTransformationContext());
+                    return response;
+                });
     }
 
+    @Async
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
-    @Operation(summary = "Deletes an unit")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Unit deleted"),
+    @Operation(summary = "Deletes a unit")
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Unit deleted"),
             @ApiResponse(responseCode = "404", description = "Unit not found") })
-    public Mono<Resource> deleteUnit(@ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        throw new VeoException(NOT_IMPLEMENTED, "Not implemented yet");
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteUnit(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+
+        Unit unit = new UnitImpl(Key.uuidFrom(uuid), null, null);
+
+        return useCaseInteractor.execute(deleteUnitUseCase, new ChangeUnitUseCase.InputData(unit,
+                getAuthenticatedClient(auth)), output -> {
+                    return RestApiResponse.noContent();
+                });
     }
 
 }

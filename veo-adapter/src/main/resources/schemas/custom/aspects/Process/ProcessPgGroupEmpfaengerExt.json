@@ -1,0 +1,95 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ProcessPgGroupEmpfaengerExt"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "processEmpfExt": {
+          "title": "Externe Empfänger",
+          "type": "string"
+        },
+        "processEmpfExtArt": {
+          "title": "Art der Daten",
+          "type": "array",
+          "items": {
+            "enum": [
+              "processEmpfExtArt1",
+              "processEmpfExtArt2",
+              "processEmpfExtArt3",
+              "processEmpfExtArt4",
+              "processEmpfExtArt5",
+              "processEmpfExtArt6",
+              "processEmpfExtArt7",
+              "processEmpfExtArt8",
+              "processEmpfExtArt9",
+              "processEmpfExtArt10",
+              "processEmpfExtArt11",
+              "processEmpfExtArt12",
+              "processEmpfExtArt13",
+              "processEmpfExtArt14",
+              "processEmpfExtArt15",
+              "processEmpfExtArt16",
+              "processEmpfExtArt17",
+              "processEmpfExtArt18",
+              "processEmpfExtArt19",
+              "processEmpfExtArt20",
+              "processEmpfExtArt21",
+              "processEmpfExtArt22",
+              "processEmpfExtArt23",
+              "processEmpfExtArt24",
+              "processEmpfExtArt25",
+              "processEmpfExtArt27",
+              "processEmpfExtArt28",
+              "processEmpfExtArt29",
+              "processEmpfExtArt30",
+              "processEmpfExtArt31",
+              "processEmpfExtArt32",
+              "processEmpfExtArt24a"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "processEmpfExtArtSonst": {
+          "title": "Sonstige Datenart",
+          "type": "string"
+        },
+        "processEmpfExtZweck": {
+          "title": "Zweck des Datentransfers",
+          "type": "string"
+        },
+        "processEmpfExtErlaeuterung": {
+          "title": "Erläuterung",
+          "type": "string"
+        },
+        "empfaengerExtDokument": {
+          "title": "Dokument",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

@@ -19,6 +19,8 @@ package org.veo.core.usecase;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
+import javax.validation.Valid;
+
 /**
  * All use cases can be executed using this interface.
  *
@@ -29,7 +31,6 @@ import java.util.function.Function;
  * Use case execution is usually an expensive operation, involving long running
  * calculations and database queries. They are handled asynchronously to avoid
  * blocking the caller's thread until the result is ready.
- *
  */
 public interface UseCaseInteractor {
 
@@ -55,7 +56,7 @@ public interface UseCaseInteractor {
      * @return
      */
     public <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
-            UseCase<I, O> useCase, I input, Function<O, R> outputMapper);
+            UseCase<I, O> useCase, @Valid I input, Function<O, R> outputMapper);
 
     /**
      * The input data must be validated before it is passed to the use case. The

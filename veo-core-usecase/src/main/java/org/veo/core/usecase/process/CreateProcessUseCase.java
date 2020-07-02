@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -26,69 +24,56 @@ import javax.validation.Valid;
 
 import lombok.Value;
 
-import org.veo.core.entity.EntityLayerSupertype.Lifecycle;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.asset.AssetRepository;
-import org.veo.core.entity.process.Process;
-import org.veo.core.entity.process.ProcessRepository;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.impl.ProcessImpl;
+import org.veo.core.entity.transform.TransformContextProvider;
+import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.unit.GetUnitUseCase;
+import org.veo.core.usecase.repository.ProcessRepository;
+import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Creates a persistent new process object.
- *
- *
  */
 public class CreateProcessUseCase
         extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData> {
 
+    private final UnitRepository unitRepository;
+    private final TransformContextProvider transformContextProvider;
     private final ProcessRepository processRepository;
-    private final AssetRepository assetRepository;
-    private final GetUnitUseCase getUnitUseCase;
 
-    public CreateProcessUseCase(ProcessRepository processRepository,
-            AssetRepository assetRepository, GetUnitUseCase getUnitUseCase) {
+    public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository processRepository,
+            TransformContextProvider transformContextProvider) {
+        this.unitRepository = unitRepository;
         this.processRepository = processRepository;
-        this.assetRepository = assetRepository;
-        this.getUnitUseCase = getUnitUseCase;
-    }
-
-    @Override
-    public OutputData execute(InputData input) {
-        return new OutputData(createProcess(input, getUnit(input)));
+        this.transformContextProvider = transformContextProvider;
     }
 
     @Transactional(TxType.REQUIRED)
-    private Process createProcess(InputData input, Unit unit) {
-        Process process = Process.newProcess(unit, input.getName());
-        process.addAssets(assetRepository.getByIds(input.getAssetIds()));
-
-        // change state from CREATING to STORED_CURRENT:
-        process.setState(Lifecycle.STORED_CURRENT);
-
-        // process with STORED_CURRENT state will only be returned if could be
-        // persisted
-        // otherwise an exception is thrown and the object discarded.
-        return processRepository.save(process);
-    }
-
-    @Transactional(TxType.SUPPORTS)
-    private Unit getUnit(InputData input) {
-        GetUnitUseCase.InputData inputData = new GetUnitUseCase.InputData(input.getUnitId());
-        return getUnitUseCase.execute(inputData)
-                             .getUnit();
+    @Override
+    public OutputData execute(InputData input) {
+        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
+                                                                                           .partialClient()
+                                                                                           .partialDomain();
+        Unit unit = unitRepository.findById(input.getUnitId(), dataTargetToEntityContext)
+                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
+                                          input.getUnitId()
+                                               .uuidValue()));
+        checkSameClient(input.authenticatedClient, unit, unit);
+        Process process = new ProcessImpl(Key.newUuid(), input.getName(), unit);
+        return new OutputData(processRepository.save(process));
     }
 
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
-        private final Key<UUID> id;
         private final Key<UUID> unitId;
         private final String name;
-        private final Set<Key<UUID>> assetIds;
-        private final Date validUntil;
-        private final Date validFrom;
+        private final Client authenticatedClient;
     }
 
     @Valid

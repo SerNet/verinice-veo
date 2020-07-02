@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "ControlDataProtectionObjectivesEugdpr"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "controlDataProtectionObjectivesEugdprPseudonymization": {
+          "title": "Pseudonymization",
+          "type": "boolean"
+        },
+        "controlDataProtectionObjectivesEugdprEncryption": {
+          "title": "Encryption",
+          "type": "boolean"
+        },
+        "controlDataProtectionObjectivesEugdprConfidentiality": {
+          "title": "Ensure confidentiality",
+          "type": "boolean"
+        },
+        "controlDataProtectionObjectivesEugdprIntegrity": {
+          "title": "Ensure integrity",
+          "type": "boolean"
+        },
+        "controlDataProtectionObjectivesEugdprAvailability": {
+          "title": "Ensure availability",
+          "type": "boolean"
+        },
+        "controlDataProtectionObjectivesEugdprResilience": {
+          "title": "Ensure resilience",
+          "type": "boolean"
+        },
+        "controlDataProtectionObjectivesEugdprRecoverability": {
+          "title": "Recoverability",
+          "type": "boolean"
+        },
+        "controlDataProtectionObjectivesEugdprEffectiveness": {
+          "title": "Effectiveness of TOMs",
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}

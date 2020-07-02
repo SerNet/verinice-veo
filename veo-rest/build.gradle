@@ -3,13 +3,10 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import org.gradle.api.tasks.Internal
 
-plugins { id "net.foragerr.jmeter" version "1.1.0-4.0" }
-
 apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
 
 dependencies {
-    implementation project(":veo-core")
     implementation project(":veo-adapter")
     implementation project(":veo-persistence")
 
@@ -17,19 +14,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.jsonwebtoken:jjwt-api'
     implementation 'org.springdoc:springdoc-openapi-ui'
     implementation 'io.swagger.core.v3:swagger-core'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
 
-    testImplementation project(":veo-json-validation")
+    testImplementation project(":veo-test")
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 bootRun {
@@ -38,28 +38,9 @@ bootRun {
     System.properties.'spring.profiles.active'?.with { activeSpringProfiles = it }
     systemProperty 'spring.profiles.active', activeSpringProfiles
     systemProperty 'veo.basedir', "${System.getProperty("user.home")}/.local/share/veo"
-}
-
-def serverPortJMeter = System.properties.'jmeter.server.port' ?: 8071
-def serverHostJMeter = System.properties.'jmeter.server.host' ?: 'localhost'
-def testIterationsJMeter = System.properties.'jmeter.test.iterations' ?: 10
-def testThreadsJMeter = System.properties.'jmeter.test.threads' ?: 5
-
-
-
-jmeter {
-    reportXslt = file("src/test/jmeter/jmeter-results-detail-report_21.xsl")
-    jmLog = file("build/jmeter-report/jmeter.log")
-    jmUserProperties = [
-        "port=$serverPortJMeter",
-        "host=$serverHostJMeter",
-        "iterations=$testIterationsJMeter",
-        "threads=$testThreadsJMeter"
-    ]
-    reportPostfix = ''
-    enableReports = true
-    enableExtendedReports = true
-    csvLogFile=false
+    if ( project.hasProperty('jvmArgs') ) {
+        jvmArgs = (project.jvmArgs.split("\\s+") as List)
+    }
 }
 
 class StartSpringBootAsync extends DefaultTask {
@@ -67,73 +48,49 @@ class StartSpringBootAsync extends DefaultTask {
     ExecutorService es
 
     @Input
-    int serverPort
+    Map systemProperties
 
     @TaskAction
     def startAsync() {
         es = Executors.newSingleThreadExecutor()
+        Map props = systemProperties
         es.submit({
             project.javaexec {
                 main = 'org.veo.rest.RestApplication'
                 classpath = project.sourceSets.main.runtimeClasspath
-                systemProperty('server.port', serverPort)
-                systemProperty('logging.config', project.file('src/test/jmeter/logback.xml').absolutePath)
+                props.each {key, value ->
+                    systemProperty(key, value)
+                }
             }
         } as Callable)
-    }
-}
-
-task startSpringBoot(type: StartSpringBootAsync) {
-    description = 'Start Spring Boot in the background.'
-    group = 'Load Test'
-    serverPort = serverPortJMeter
-}
-startSpringBoot.dependsOn assemble
-
-task waitUntilSpringBootIsUp {
-    description = 'Call the /schemas/links endpoint and wait until it responds with 200.'
-    group = 'Load Test'
-    doLast {
-        String url = "http://$serverHostJMeter:$serverPortJMeter/schemas/links"
-        boolean success = false
-        int count = 0
-        while (count < 15 && !success) {
-            println 'Trying to connect to \'' + url + '\' : Attempt number=' + count
-            try {
-                count += 1
-                def connection = new URL(url).openConnection()
-                connection.requestMethod = 'GET'
-                connection.responseCode == 200
-                success = true
-            }
-            catch (all) {
-                sleep(5 * 1000) // wait for another 5 seconds until next retry
-            }
-        }
-        if (success) {
-            println 'SUCCESSFULLY connected to \'' + url + '\''
-        } else {
-            println 'FAILED to connect to \'' + url + '\''
-        }
-    }
-}
-waitUntilSpringBootIsUp.dependsOn startSpringBoot
-
-jmGui.dependsOn waitUntilSpringBootIsUp
-
-jmRun {
-    dependsOn waitUntilSpringBootIsUp
-    doLast {
-        fileTree('build/jmeter-report/'){ include '*.xml' }.visit { item ->
-            def fileName = item.name
-            def path = item.file.parent
-            def outputName = fileName.replaceAll(/-\d+-\d+/, '')
-            assert item.file.renameTo(new File(path, outputName))
+        project.gradle.buildFinished {
+            es.shutdownNow()
         }
     }
 }
 
-jmReport.dependsOn jmRun
+def waitUntilSpringBootIsUp(String url) {
+    boolean success = false
+    int count = 0
+    while (count < 15 && !success) {
+        println 'Trying to connect to \'' + url + '\' : Attempt number=' + count
+        try {
+            count += 1
+            def connection = new URL(url).openConnection()
+            connection.requestMethod = 'GET'
+            connection.responseCode == 200
+            success = true
+        }
+        catch (all) {
+            sleep(5 * 1000) // wait for another 5 seconds until next retry
+        }
+    }
+    if (success) {
+        println 'SUCCESSFULLY connected to \'' + url + '\''
+    } else {
+        println 'FAILED to connect to \'' + url + '\''
+    }
+}
 
 // Set PWS user and password:
 // $ export CF_CCUSER=NAME
@@ -150,7 +107,23 @@ cfConfig {
     buildpack = "https://github.com/cloudfoundry/java-buildpack.git"
 }
 
-gradle.buildFinished {
-    startSpringBoot.es?.shutdownNow()
+task generateTableCreateScript(type: StartSpringBootAsync) {
+    description = 'Write an SQL table create script for the JPA mapping'
+    group = 'Utility'
+    dependsOn assemble
+    def randomPort = new ServerSocket(0).withCloseable {
+        it.localPort
+    }
+    systemProperties = [
+        'spring.jpa.database-platform': 'org.hibernate.dialect.PostgreSQLDialect',
+        'spring.jpa.properties.javax.persistence.schema-generation.create-source': 'metadata',
+        'spring.jpa.properties.javax.persistence.schema-generation.scripts.action': 'create',
+        'spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target': 'create.sql',
+        'spring.datasource.url': 'jdbc:h2:mem:test;MODE=PostgreSQL',
+        'spring.datasource.driver-class-name': 'org.h2.Driver',
+        'server.port': randomPort
+    ]
+    doLast {
+        waitUntilSpringBootIsUp("http://localhost:$randomPort/schemas/links")
+    }
 }
-

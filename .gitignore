@@ -13,6 +13,7 @@ bin/
 lombok.config
 
 vna-type-mapping-missing.properties
-misc/private.der
-misc/private.pem
-misc/public.der
+application-local.properties
+application-local.yaml
+application-local.yml
+application-local.json

@@ -16,12 +16,10 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 /**
  * This class contains constants for the REST controllers.
  */
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
+// @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public final class ControllerConstants {
 
     static final String UUID_PARAM = "uuid";

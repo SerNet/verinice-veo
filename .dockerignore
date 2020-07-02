@@ -1,5 +1,3 @@
-.git
-.gitignore
-Jenkinsfile
-Jenkinsfile.docker
-Dockerfile
+*
+!misc
+!veo-rest/build/libs

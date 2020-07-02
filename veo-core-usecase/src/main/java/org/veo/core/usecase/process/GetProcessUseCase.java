@@ -24,15 +24,15 @@ import javax.validation.Valid;
 
 import lombok.Value;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.process.Process;
-import org.veo.core.entity.process.ProcessRepository;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.common.NotFoundException;
+import org.veo.core.usecase.repository.ProcessRepository;
 
 /**
  * Reinstantiate a persisted process object.
- *
  */
 public class GetProcessUseCase
         extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData> {
@@ -44,20 +44,20 @@ public class GetProcessUseCase
     }
 
     @Override
-    @Transactional(TxType.SUPPORTS)
+    @Transactional(TxType.REQUIRED)
     public OutputData execute(InputData input) {
-        // @formatter:off
-        return repository
-                .findById(input.getId())
-                .map(OutputData::new)
-                .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
-        // @formatter:on
+        Process process = repository.findById(input.getId(), null)
+                                    .orElseThrow(() -> new NotFoundException(input.getId()
+                                                                                  .uuidValue()));
+        checkSameClient(input.getAuthenticatedClient(), process);
+        return new OutputData(process);
     }
 
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
         private final Key<UUID> id;
+        private final Client authenticatedClient;
     }
 
     @Valid

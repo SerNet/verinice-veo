@@ -1,0 +1,661 @@
+{
+  "definitions": {
+    
+  },
+  "$schema": "http://verinice.com/veo/draft-01/schema#",
+  "type": "object",
+  "description": "Schema for Control",
+  "title": "Control",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "Control"
+      ]
+    },
+    "name": {
+      "title": "name",
+      "type": "string"
+    },
+    "abbreviation": {
+      "title": "abbreviation",
+      "type": "string"
+    },
+    "description": {
+      "title": "description",
+      "type": "string"
+    },
+    "domains": {
+      "type": "array",
+      "description": "The ids (UUID) of elements of the type domain.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "links": {
+      "type": "object",
+      "description": "The contained objects of the type customLink.",
+      "properties": {
+        "Control_implements_Person": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "Control_implements_Person"
+                ]
+              },
+              "name": {
+                "title": "name",
+                "type": "string"
+              },
+              "abbreviation": {
+                "title": "abbreviation",
+                "type": "string"
+              },
+              "description": {
+                "title": "description",
+                "type": "string"
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "source": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the source object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Person",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Person"
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "source",
+              "target"
+            ]
+          }
+        },
+        "Control_audits_Person": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "Control_audits_Person"
+                ]
+              },
+              "name": {
+                "title": "name",
+                "type": "string"
+              },
+              "abbreviation": {
+                "title": "abbreviation",
+                "type": "string"
+              },
+              "description": {
+                "title": "description",
+                "type": "string"
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "source": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the source object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Person",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Person"
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "source",
+              "target"
+            ]
+          }
+        },
+        "Control_maintains_Person": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "Control_maintains_Person"
+                ]
+              },
+              "name": {
+                "title": "name",
+                "type": "string"
+              },
+              "abbreviation": {
+                "title": "abbreviation",
+                "type": "string"
+              },
+              "description": {
+                "title": "description",
+                "type": "string"
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "source": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the source object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Person",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Person"
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "source",
+              "target"
+            ]
+          }
+        },
+        "Control_interviewed_Person": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "Control_interviewed_Person"
+                ]
+              },
+              "name": {
+                "title": "name",
+                "type": "string"
+              },
+              "abbreviation": {
+                "title": "abbreviation",
+                "type": "string"
+              },
+              "description": {
+                "title": "description",
+                "type": "string"
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "source": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the source object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Person",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Person"
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "source",
+              "target"
+            ]
+          }
+        },
+        "Control_assignee_Person": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "Control_assignee_Person"
+                ]
+              },
+              "name": {
+                "title": "name",
+                "type": "string"
+              },
+              "abbreviation": {
+                "title": "abbreviation",
+                "type": "string"
+              },
+              "description": {
+                "title": "description",
+                "type": "string"
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "source": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the source object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Person",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Person"
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "source",
+              "target"
+            ]
+          }
+        },
+        "Control_details_Control": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "Control_details_Control"
+                ]
+              },
+              "name": {
+                "title": "name",
+                "type": "string"
+              },
+              "abbreviation": {
+                "title": "abbreviation",
+                "type": "string"
+              },
+              "description": {
+                "title": "description",
+                "type": "string"
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "source": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the source object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "source",
+              "target"
+            ]
+          }
+        },
+        "Control_monitors_Person": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "Control_monitors_Person"
+                ]
+              },
+              "name": {
+                "title": "name",
+                "type": "string"
+              },
+              "abbreviation": {
+                "title": "abbreviation",
+                "type": "string"
+              },
+              "description": {
+                "title": "description",
+                "type": "string"
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "source": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the source object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Control"
+                    ]
+                  }
+                }
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Person",
+                "properties": {
+                  "href": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "Person"
+                    ]
+                  }
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "type",
+              "source",
+              "target"
+            ]
+          }
+        }
+      }
+    },
+    "customAspects": {
+      "type": "object",
+      "description": "The contained objects of the type customProperties.",
+      "properties": {
+        "ControlDataProtectionObjectivesEugdpr": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "title": "The UUID to identify the element"
+            },
+            "type": {
+              "description": "The name of the type described by this schema.",
+              "enum": [
+                "ControlDataProtectionObjectivesEugdpr"
+              ]
+            },
+            "domains": {
+              "type": "array",
+              "title": "The list of domains in which this element is present.",
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "controlDataProtectionObjectivesEugdprPseudonymization": {
+                  "title": "Pseudonymization",
+                  "type": "boolean"
+                },
+                "controlDataProtectionObjectivesEugdprEncryption": {
+                  "title": "Encryption",
+                  "type": "boolean"
+                },
+                "controlDataProtectionObjectivesEugdprConfidentiality": {
+                  "title": "Ensure confidentiality",
+                  "type": "boolean"
+                },
+                "controlDataProtectionObjectivesEugdprIntegrity": {
+                  "title": "Ensure integrity",
+                  "type": "boolean"
+                },
+                "controlDataProtectionObjectivesEugdprAvailability": {
+                  "title": "Ensure availability",
+                  "type": "boolean"
+                },
+                "controlDataProtectionObjectivesEugdprResilience": {
+                  "title": "Ensure resilience",
+                  "type": "boolean"
+                },
+                "controlDataProtectionObjectivesEugdprRecoverability": {
+                  "title": "Recoverability",
+                  "type": "boolean"
+                },
+                "controlDataProtectionObjectivesEugdprEffectiveness": {
+                  "title": "Effectiveness of TOMs",
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type"
+          ]
+        }
+      }
+    },
+    "owner": {
+      "type": "string",
+      "description": "The id (UUID) of an element of the type unit."
+    }
+  },
+  "required": [
+    "id",
+    "type",
+    "name",
+    "owner"
+  ]
+}

@@ -17,9 +17,6 @@
 package org.veo.ie;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
-
-import org.veo.core.VeoCoreConfiguration;
 
 /**
  * Spring Boot application class to run the import of a VNA file. You should
@@ -29,7 +26,6 @@ import org.veo.core.VeoCoreConfiguration;
  */
 
 @SpringBootApplication
-@Import(VeoCoreConfiguration.class)
 public class VnaImportConfiguration {
 
 }

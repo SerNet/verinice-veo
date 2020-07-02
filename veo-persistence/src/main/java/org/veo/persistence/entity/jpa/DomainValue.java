@@ -21,6 +21,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.With;
 
@@ -29,10 +30,18 @@ import lombok.With;
  * to other entities.
  */
 @Value
+@AllArgsConstructor
 @With
 
 @Embeddable
 public class DomainValue {
+
+    // Constructor for ModelMapper:
+    DomainValue() {
+        this.name = "";
+        this.authority = "";
+        this.version = "";
+    }
 
     @NotNull
     @NotBlank(message = "The name of a domain must not be blank.")
