@@ -80,14 +80,24 @@ public class AbstractEntityController {
         for (Domain d : client.getDomains()) {
             tcontext.addEntity(d);
         }
-
+        DataTargetToEntityContext referencesTransformContext = DataTargetToEntityContext.getCompleteTransformationContext()
+                                                                                        .noUnitDomains()
+                                                                                        .noUnitParent()
+                                                                                        .noUnitUnits()
+                                                                                        .partialClient()
+                                                                                        .partialAsset()
+                                                                                        .partialDocument()
+                                                                                        .partialControl()
+                                                                                        .partialPerson()
+                                                                                        .partialProcess();
         for (ModelObjectReference<? extends ModelObject> objectReference : collection) {
             if (objectReference.getType()
                                .equals(Domain.class)) {
                 continue;// skip domains as we get them from the client
             }
             Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(objectReference.getType());
-            ModelObject modelObject = entityRepository.findById(Key.uuidFrom(objectReference.getId()))
+            ModelObject modelObject = entityRepository.findById(Key.uuidFrom(objectReference.getId()),
+                                                                referencesTransformContext)
                                                       .orElseThrow(() -> new NotFoundException(
                                                               "ref not found %s %s",
                                                               objectReference.getId(),

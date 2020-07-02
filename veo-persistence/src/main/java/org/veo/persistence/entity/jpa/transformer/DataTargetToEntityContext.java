@@ -311,16 +311,31 @@ public class DataTargetToEntityContext implements TransformTargetToEntityContext
         return unitUnits;
     }
 
+    public DataTargetToEntityContext noUnitUnits() {
+        unitUnits = null;
+        return this;
+    }
+
     private TransformTargetToEntityMethod<UnitData, Unit, DataTargetToEntityContext> unitParent = DataTargetToEntityTransformer::transformData2Unit;
 
     public TransformTargetToEntityMethod<UnitData, Unit, DataTargetToEntityContext> getUnitParentFunction() {
         return unitParent;
     }
 
+    public DataTargetToEntityContext noUnitParent() {
+        unitParent = null;
+        return this;
+    }
+
     private TransformTargetToEntityMethod<DomainData, Domain, DataTargetToEntityContext> unitDomains = DataTargetToEntityTransformer::transformData2Domain;
 
     public TransformTargetToEntityMethod<DomainData, Domain, DataTargetToEntityContext> getUnitDomainsFunction() {
         return unitDomains;
+    }
+
+    public DataTargetToEntityContext noUnitDomains() {
+        unitDomains = null;
+        return this;
     }
 
     /**
