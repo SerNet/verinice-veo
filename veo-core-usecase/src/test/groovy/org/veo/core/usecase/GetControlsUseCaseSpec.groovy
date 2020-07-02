@@ -31,34 +31,32 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all controls for a client"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Control control = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def entities = usecase.execute(new InputData(existingClient, Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * controlRepository.findByClient(existingClient, false) >> [control]
-        output.entities*.id == [id]
+        entities*.id == [id]
     }
 
 
     def "retrieve all controls for a unit"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Control control = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def entities = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * controlRepository.findByUnit(existingUnit, false) >> [control]
-        output.entities*.id == [id]
+        entities*.id == [id]
     }
 }

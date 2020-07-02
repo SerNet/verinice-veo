@@ -39,7 +39,7 @@ import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
  * Reinstantiate persisted entity objects.
  */
 public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
-        extends UseCase<GetEntitiesUseCase.InputData, GetEntitiesUseCase.OutputData<T>> {
+        extends UseCase<GetEntitiesUseCase.InputData, List<T>> {
 
     private final EntityLayerSupertypeRepository<T> repository;
     private final ClientRepository clientRepository;
@@ -57,14 +57,14 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
      */
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData<T> execute(InputData input) {
+    public List<T> execute(InputData input) {
         Client client = clientRepository.findById(input.getAuthenticatedClient()
                                                        .getId())
                                         .orElseThrow(() -> new NotFoundException(
                                                 "Invalid client ID"));
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return new OutputData<>(repository.findByClient(client, false));
+            return repository.findByClient(client, false);
         } else {
             Key<UUID> parentId = Key.uuidFrom(input.getUnitUuid()
                                                    .get());
@@ -72,22 +72,15 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
                                .orElseThrow(() -> new NotFoundException("Invalid parent ID: %s",
                                        input.getUnitUuid()
                                             .get()));
-            return new OutputData<>(repository.findByUnit(owner, false));
+            return repository.findByUnit(owner, false);
         }
 
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Client authenticatedClient;
         private final Optional<String> unitUuid;
-    }
-
-    @Valid
-    @Value
-    public static final class OutputData<T> implements UseCase.OutputData {
-        @Valid
-        private final List<T> entities;
     }
 }

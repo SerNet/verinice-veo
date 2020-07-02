@@ -36,7 +36,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input).getUnit()
+        def newUnit = usecase.execute(input)
 
         then: "a client was first searched but not found"
         1 * clientRepository.findById(_) >> Optional.empty()
@@ -65,7 +65,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input).getUnit()
+        def newUnit = usecase.execute(input)
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)

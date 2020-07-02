@@ -35,14 +35,14 @@ public class UpdateControlUseCase extends ModifyEntityUseCase<Control> {
     }
 
     @Override
-    public OutputData<Control> performModification(InputData<Control> input) {
+    public Control performModification(InputData<Control> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
         Control control = input.getEntity();
         control.setVersion(control.getVersion() + 1);
         control.setValidFrom(Instant.now());
-        return new OutputData<>(controlRepository.save(control, null, dataTargetToEntityContext));
+        return controlRepository.save(control, null, dataTargetToEntityContext);
 
     }
 

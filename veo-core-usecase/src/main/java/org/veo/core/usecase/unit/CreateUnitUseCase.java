@@ -50,8 +50,7 @@ import org.veo.core.usecase.repository.ClientRepository;
  * @author akoderman
  */
 // @Log
-public class CreateUnitUseCase
-        extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
+public class CreateUnitUseCase extends UseCase<CreateUnitUseCase.InputData, Unit> {
 
     private final ClientRepository clientRepository;
 
@@ -61,8 +60,7 @@ public class CreateUnitUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
-
+    public Unit execute(InputData input) {
         Client client = clientRepository.findById(input.getClientId())
                                         .orElse(new ClientImpl(input.getClientId(),
                                                 input.getNameableInput()
@@ -92,25 +90,17 @@ public class CreateUnitUseCase
                                     .getDescription());
         newUnit.setState(Lifecycle.STORED_CURRENT);
 
-        return new OutputData(clientRepository.save(client)
-                                              .getUnit(newUnit.getId())
-                                              .orElseThrow(() -> new CreationFailedException(
-                                                      "Could not save unit %s",
-                                                      input.nameableInput.getName())));
+        return clientRepository.save(client)
+                               .getUnit(newUnit.getId())
+                               .orElseThrow(() -> new CreationFailedException(
+                                       "Could not save unit %s", input.nameableInput.getName()));
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final NameableInputData nameableInput;
         private final Key<UUID> clientId;
         private final Optional<Key<UUID>> parentUnitId;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Unit unit;
     }
 }

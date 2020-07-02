@@ -20,7 +20,6 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
 
 import lombok.Value;
 
@@ -33,8 +32,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class DeleteGroupUseCase
-        extends UseCase<DeleteGroupUseCase.InputData, DeleteGroupUseCase.OutputData> {
+public class DeleteGroupUseCase extends UseCase<DeleteGroupUseCase.InputData, Void> {
 
     private final RepositoryProvider repositoryProvider;
 
@@ -44,7 +42,7 @@ public class DeleteGroupUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Void execute(InputData input) {
 
         Repository<? extends EntityLayerSupertype, Key<UUID>> repository = repositoryProvider.getRepositoryFor(input.groupType.entityClass);
 
@@ -60,22 +58,15 @@ public class DeleteGroupUseCase
         // TODO VEO-161 also remove entity from links pointing to it
 
         repository.deleteById(group.getId());
-        return new OutputData(input.getId());
+        return null;
 
     }
 
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> id;
         private final GroupType groupType;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private Key<UUID> id;
     }
 
 }

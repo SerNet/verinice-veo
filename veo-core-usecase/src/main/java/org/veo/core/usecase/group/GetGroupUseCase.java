@@ -35,8 +35,7 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class GetGroupUseCase
-        extends UseCase<GetGroupUseCase.InputData, GetGroupUseCase.OutputData> {
+public class GetGroupUseCase extends UseCase<GetGroupUseCase.InputData, BaseModelGroup<?>> {
 
     private final RepositoryProvider repositoryProvider;
     private final TransformContextProvider transformContextProvider;
@@ -49,7 +48,7 @@ public class GetGroupUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public BaseModelGroup<?> execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
@@ -60,21 +59,14 @@ public class GetGroupUseCase
                                                                input.getId()
                                                                     .uuidValue()));
         checkSameClient(input.authenticatedClient, group);
-        return new OutputData((BaseModelGroup<?>) group);
+        return (BaseModelGroup<?>) group;
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> id;
         private final GroupType groupType;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final BaseModelGroup<?> group;
     }
 }

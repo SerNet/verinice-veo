@@ -149,7 +149,7 @@ public class ModuleConfiguration {
     @Bean
     public GetUnitsUseCase getUnitsUseCase(ClientRepository repository,
             TransformContextProvider transformContextProvider) {
-        return new GetUnitsUseCase(repository, transformContextProvider);
+        return new GetUnitsUseCase(repository);
     }
 
     @Bean

@@ -36,8 +36,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateAssetUseCase
-        extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
+public class CreateAssetUseCase extends UseCase<CreateAssetUseCase.InputData, Asset> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -52,7 +51,7 @@ public class CreateAssetUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Asset execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -64,21 +63,14 @@ public class CreateAssetUseCase
         checkSameClient(input.authenticatedClient, unit, unit);
 
         Asset asset = new AssetImpl(Key.newUuid(), input.getName(), unit);
-        return new OutputData(assetRepository.save(asset));
+        return assetRepository.save(asset);
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> unitId;
         private final String name;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Asset asset;
     }
 }

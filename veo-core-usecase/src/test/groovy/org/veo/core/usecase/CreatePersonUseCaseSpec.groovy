@@ -32,7 +32,7 @@ public class CreatePersonUseCaseSpec extends UseCaseSpec {
         TransformTargetToEntityContext targetToEntityContext = Mock()
 
         when:
-        def output = usecase.execute(new InputData(existingUnit.id, "John", existingClient))
+        def newPerson = usecase.execute(new InputData(existingUnit.id, "John", existingClient))
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialClient() >> targetToEntityContext
@@ -40,7 +40,7 @@ public class CreatePersonUseCaseSpec extends UseCaseSpec {
         1 * personRepository.save({
             it.name == "John"
         }) >> { it[0] }
-        output.person != null
-        output.person.name == "John"
+        newPerson != null
+        newPerson.name == "John"
     }
 }

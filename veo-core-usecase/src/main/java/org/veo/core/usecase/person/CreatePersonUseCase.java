@@ -36,8 +36,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreatePersonUseCase
-        extends UseCase<CreatePersonUseCase.InputData, CreatePersonUseCase.OutputData> {
+public class CreatePersonUseCase extends UseCase<CreatePersonUseCase.InputData, Person> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -52,7 +51,7 @@ public class CreatePersonUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Person execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -64,21 +63,14 @@ public class CreatePersonUseCase
         checkSameClient(input.authenticatedClient, unit, unit);
         Person person = new PersonImpl(Key.newUuid(), input.getName(), unit);
 
-        return new OutputData(personRepository.save(person));
+        return personRepository.save(person);
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> unitId;
         private final String name;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Person person;
     }
 }

@@ -33,7 +33,7 @@ class CreateGroupUseCaseSpec extends UseCaseSpec {
         def repository = Mock(Class.forName("org.veo.core.usecase.repository.${type}Repository"))
 
         when:
-        def output = usecase.execute(new InputData(existingUnit.id, "$type group 1", type, existingClient))
+        def newGroup = usecase.execute(new InputData(existingUnit.id, "$type group 1", type, existingClient))
 
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
@@ -43,12 +43,10 @@ class CreateGroupUseCaseSpec extends UseCaseSpec {
         1 * repository.save({
             it.name == "$type group 1"
         }) >> { it[0] }
-        when:
-        def group = output.group
         then:
-        group != null
-        group.name == "$type group 1"
-        group.getClass() == type.groupClass
+        newGroup != null
+        newGroup.name == "$type group 1"
+        newGroup.getClass() == type.groupClass
 
         where:
         type << GroupType.values()

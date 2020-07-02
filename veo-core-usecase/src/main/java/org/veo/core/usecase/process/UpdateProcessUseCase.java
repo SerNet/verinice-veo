@@ -38,14 +38,14 @@ public class UpdateProcessUseCase extends ModifyEntityUseCase<Process> {
     }
 
     @Override
-    public OutputData<Process> performModification(InputData<Process> input) {
+    public Process performModification(InputData<Process> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
         Process process = input.getEntity();
         process.setVersion(process.getVersion() + 1);
         process.setValidFrom(Instant.now());
-        return new OutputData<>(processRepository.save(process, null, dataTargetToEntityContext));
+        return processRepository.save(process, null, dataTargetToEntityContext);
 
     }
 }

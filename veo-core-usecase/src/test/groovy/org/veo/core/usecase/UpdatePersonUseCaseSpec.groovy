@@ -38,7 +38,7 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
             name = "Updated person"
         }
         when:
-        def output = usecase.execute(new InputData(person, existingClient))
+        def updatedPerson = usecase.execute(new InputData(person, existingClient))
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialDomain() >> targetToEntityContext
@@ -47,7 +47,7 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
         1 * personRepository.save({
             it.name == "Updated person"
         }, _, _) >> { it[0] }
-        output.entity != null
-        output.entity.name == "Updated person"
+        updatedPerson != null
+        updatedPerson.name == "Updated person"
     }
 }

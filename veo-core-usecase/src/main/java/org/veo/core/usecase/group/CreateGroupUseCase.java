@@ -40,8 +40,7 @@ import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateGroupUseCase
-        extends UseCase<CreateGroupUseCase.InputData, CreateGroupUseCase.OutputData> {
+public class CreateGroupUseCase extends UseCase<CreateGroupUseCase.InputData, BaseModelGroup<?>> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -56,7 +55,7 @@ public class CreateGroupUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public BaseModelGroup<?> execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -78,7 +77,7 @@ public class CreateGroupUseCase
 
             EntityLayerSupertypeRepository repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.groupType.entityClass);
 
-            return new OutputData((BaseModelGroup<?>) repository.save(group));
+            return (BaseModelGroup<?>) repository.save(group);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             throw new RuntimeModelException("Error creating group", e);
@@ -89,18 +88,11 @@ public class CreateGroupUseCase
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> unitId;
         private final String name;
         private final GroupType groupType;
         private final Client authenticatedClient;
 
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final BaseModelGroup<?> group;
     }
 }

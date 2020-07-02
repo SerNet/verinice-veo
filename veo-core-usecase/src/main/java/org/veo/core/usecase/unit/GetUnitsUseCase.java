@@ -30,23 +30,18 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 
 /**
  * Reinstantiate a persisted unit object.
  */
-public class GetUnitsUseCase
-        extends UseCase<GetUnitsUseCase.InputData, GetUnitsUseCase.OutputData> {
+public class GetUnitsUseCase extends UseCase<GetUnitsUseCase.InputData, Set<Unit>> {
 
     private final ClientRepository repository;
-    private final TransformContextProvider transformContextProvider;
 
-    public GetUnitsUseCase(ClientRepository repository,
-            TransformContextProvider transformContextProvider) {
+    public GetUnitsUseCase(ClientRepository repository) {
         this.repository = repository;
-        this.transformContextProvider = transformContextProvider;
     }
 
     /**
@@ -55,37 +50,29 @@ public class GetUnitsUseCase
      */
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Set<Unit> execute(InputData input) {
         Client client = repository.findById(input.getAuthenticatedClient()
                                                  .getId())
                                   .orElseThrow(() -> new NotFoundException("Invalid client-ID"));
 
         if (input.getParentUuid()
-                 .isEmpty())
-            return new OutputData(Unit.flatten(client.getUnits()));
-        else {
+                 .isEmpty()) {
+            return Unit.flatten(client.getUnits());
+        } else {
             Key<UUID> parentId = Key.uuidFrom(input.getParentUuid()
                                                    .get());
             Unit parentUnit = client.getUnit(parentId)
                                     .orElseThrow(() -> new NotFoundException(
                                             "Invalid parent ID: %s", input.getParentUuid()
                                                                           .get()));
-            return new OutputData(parentUnit.getUnits());
+            return parentUnit.getUnits();
         }
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Client authenticatedClient;
         private final Optional<String> parentUuid;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Set<Unit> units;
-
     }
 }

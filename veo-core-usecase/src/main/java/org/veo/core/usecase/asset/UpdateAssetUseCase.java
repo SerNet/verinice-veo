@@ -38,14 +38,14 @@ public class UpdateAssetUseCase extends ModifyEntityUseCase<Asset> {
     }
 
     @Override
-    protected OutputData<Asset> performModification(InputData<Asset> input) {
+    protected Asset performModification(InputData<Asset> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
         Asset asset = input.getEntity();
         asset.setVersion(asset.getVersion() + 1);
         asset.setValidFrom(Instant.now());
-        return new OutputData<>(assetRepository.save(asset, null, dataTargetToEntityContext));
+        return assetRepository.save(asset, null, dataTargetToEntityContext);
     }
 
 }

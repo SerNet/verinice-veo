@@ -20,17 +20,8 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.impl.ClientImpl
-import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.entity.transform.TransformContextProvider
-import org.veo.core.entity.transform.TransformTargetToEntityContext
-import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.repository.ClientRepository
-import org.veo.core.usecase.repository.UnitRepository
-import org.veo.core.usecase.unit.ChangeUnitUseCase
-import org.veo.core.usecase.unit.CreateUnitUseCase
-import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
 import org.veo.core.usecase.unit.GetUnitsUseCase
-import org.veo.core.usecase.unit.UpdateUnitUseCase
 import spock.lang.Specification
 
 public class GetUnitsUseCaseSpec extends Specification {
@@ -42,8 +33,8 @@ public class GetUnitsUseCaseSpec extends Specification {
     def setup() {
         existingClient = new ClientImpl(Key.newUuid(), "Existing client")
         existingUnit = existingClient.createUnit("Existing unit")
-        def subUnit1 = existingUnit.createSubUnit("Subunit 1")
-        def subUnit2 = existingUnit.createSubUnit("Subunit 2")
+        existingUnit.createSubUnit("Subunit 1")
+        existingUnit.createSubUnit("Subunit 2")
     }
 
     def "Find units by parent unit" () {
@@ -53,15 +44,15 @@ public class GetUnitsUseCaseSpec extends Specification {
         when: "a request is made with a parent-ID"
         def input = new GetUnitsUseCase.InputData(existingClient,
                 Optional.of(existingUnit.getId().uuidValue()))
-        def sot = new GetUnitsUseCase(clientRepo, null)
-        def output = sot.execute(input)
+        def sot = new GetUnitsUseCase(clientRepo)
+        def units = sot.execute(input)
 
         then: "the client was retrieved"
         then: "a client was retrieved"
         1 * clientRepo.findById(_) >> Optional.of(this.existingClient)
 
         and: "both subunits are returned"
-        output.units.size() == 2
-        output.units == existingUnit.units
+        units.size() == 2
+        units == existingUnit.units
     }
 }

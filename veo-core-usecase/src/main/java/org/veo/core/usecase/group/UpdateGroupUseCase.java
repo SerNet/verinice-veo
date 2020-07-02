@@ -39,7 +39,7 @@ import org.veo.core.usecase.repository.RepositoryProvider;
  * the repository.
  */
 public abstract class UpdateGroupUseCase
-        extends UseCase<UpdateGroupUseCase.InputData, UpdateGroupUseCase.OutputData> {
+        extends UseCase<UpdateGroupUseCase.InputData, BaseModelGroup<?>> {
 
     protected final RepositoryProvider repositoryProvider;
     protected final TransformContextProvider transformContextProvider;
@@ -52,26 +52,18 @@ public abstract class UpdateGroupUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
-        return new OutputData(update(input));
+    public BaseModelGroup<?> execute(InputData input) {
+        return update(input);
     }
 
     protected abstract BaseModelGroup<?> update(InputData input);
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         @Valid
         private final BaseModelGroup<?> group;
         private final Client authenticatedClient;
-
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final BaseModelGroup<?> group;
 
     }
 }

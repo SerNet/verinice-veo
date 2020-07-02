@@ -35,14 +35,14 @@ public class UpdatePersonUseCase extends ModifyEntityUseCase<Person> {
     }
 
     @Override
-    public OutputData<Person> performModification(InputData<Person> input) {
+    public Person performModification(InputData<Person> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
         Person person = input.getEntity();
         person.setVersion(person.getVersion() + 1);
         person.setValidFrom(Instant.now());
-        return new OutputData<>(personRepository.save(person, null, dataTargetToEntityContext));
+        return personRepository.save(person, null, dataTargetToEntityContext);
 
     }
 

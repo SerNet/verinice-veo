@@ -42,7 +42,7 @@ import org.veo.core.usecase.repository.RepositoryProvider;
  * Reinstantiate persisted group objects.
  */
 public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupertype>>
-        extends UseCase<GetGroupsUseCase.InputData, GetGroupsUseCase.OutputData<T>> {
+        extends UseCase<GetGroupsUseCase.InputData, List<T>> {
 
     private final RepositoryProvider repositoryProvider;
     private final ClientRepository clientRepository;
@@ -60,7 +60,7 @@ public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupe
      */
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData<T> execute(InputData input) {
+    public List<T> execute(InputData input) {
         Client client = clientRepository.findById(input.getAuthenticatedClient()
                                                        .getId())
                                         .orElseThrow(() -> new NotFoundException(
@@ -69,7 +69,7 @@ public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupe
 
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return new OutputData<>((List<T>) groupRepository.findGroupsByClient(client));
+            return (List<T>) groupRepository.findGroupsByClient(client);
         } else {
             Key<UUID> parentId = Key.uuidFrom(input.getUnitUuid()
                                                    .get());
@@ -77,22 +77,15 @@ public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupe
                                .orElseThrow(() -> new NotFoundException("Invalid parent ID: %s",
                                        input.getUnitUuid()
                                             .get()));
-            return new OutputData<>((List<T>) groupRepository.findGroupsByUnit(owner));
+            return (List<T>) groupRepository.findGroupsByUnit(owner);
         }
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Client authenticatedClient;
         private final GroupType groupType;
         private final Optional<String> unitUuid;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData<T> implements UseCase.OutputData {
-        @Valid
-        private final List<T> groups;
     }
 }

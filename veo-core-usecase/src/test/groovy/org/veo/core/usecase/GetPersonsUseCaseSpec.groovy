@@ -38,27 +38,26 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def entities = usecase.execute(new InputData(existingClient, Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * personRepository.findByClient(existingClient, false) >> [person]
-        output.entities*.id == [id]
+        entities*.id == [id]
     }
 
 
     def "retrieve all persons for a unit"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def persons = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * personRepository.findByUnit(existingUnit, false) >> [person]
-        output.entities*.id == [id]
+        persons*.id == [id]
     }
 }

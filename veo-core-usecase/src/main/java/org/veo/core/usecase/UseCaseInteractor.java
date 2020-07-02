@@ -55,8 +55,8 @@ public interface UseCaseInteractor {
      *            additional helper classes to do the mapping.
      * @return
      */
-    public <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
-            UseCase<I, O> useCase, @Valid I input, Function<O, R> outputMapper);
+    public <R, I, O> CompletableFuture<R> execute(UseCase<I, O> useCase, @Valid I input,
+            Function<O, R> outputMapper);
 
     /**
      * The input data must be validated before it is passed to the use case. The
@@ -71,5 +71,5 @@ public interface UseCaseInteractor {
      *            the input passed to the
      * @param input
      */
-    public <I extends UseCase.InputData> void validated(I input);
+    public <I> void validated(I input);
 }

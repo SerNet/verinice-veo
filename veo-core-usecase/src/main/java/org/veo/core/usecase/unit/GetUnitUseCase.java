@@ -36,7 +36,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 /**
  * Reinstantiate a persisted unit object.
  */
-public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
+public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, Unit> {
 
     private final UnitRepository repository;
     private final TransformContextProvider transformContextProvider;
@@ -53,7 +53,7 @@ public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, GetUnitUse
      */
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Unit execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
@@ -61,21 +61,13 @@ public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, GetUnitUse
                               .orElseThrow(() -> new NotFoundException(input.getUnitId()
                                                                             .uuidValue()));
         checkSameClient(input.authenticatedClient, unit, unit);
-        return new OutputData(unit);
+        return unit;
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> unitId;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Unit unit;
-
     }
 }

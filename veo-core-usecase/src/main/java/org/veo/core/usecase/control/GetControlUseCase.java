@@ -36,8 +36,7 @@ import org.veo.core.usecase.repository.ControlRepository;
 /**
  * Reinstantiate a persisted control object.
  */
-public class GetControlUseCase
-        extends UseCase<GetControlUseCase.InputData, GetControlUseCase.OutputData> {
+public class GetControlUseCase extends UseCase<GetControlUseCase.InputData, Control> {
 
     private final ControlRepository repository;
     private final TransformContextProvider transformContextProvider;
@@ -50,7 +49,7 @@ public class GetControlUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Control execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
@@ -62,20 +61,13 @@ public class GetControlUseCase
         // objects from other clients with our own clientID, thereby hijacking these
         // objects!
         checkSameClient(input.authenticatedClient, control);
-        return new OutputData(control);
+        return control;
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> id;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Control control;
     }
 }

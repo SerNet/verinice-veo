@@ -36,8 +36,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateControlUseCase
-        extends UseCase<CreateControlUseCase.InputData, CreateControlUseCase.OutputData> {
+public class CreateControlUseCase extends UseCase<CreateControlUseCase.InputData, Control> {
 
     private final UnitRepository unitRepository;
     private final ControlRepository controlRepository;
@@ -52,7 +51,7 @@ public class CreateControlUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Control execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -64,21 +63,14 @@ public class CreateControlUseCase
         checkSameClient(input.authenticatedClient, unit, unit);
         Control control = new ControlImpl(Key.newUuid(), input.getName(), unit);
 
-        return new OutputData(controlRepository.save(control));
+        return controlRepository.save(control);
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> unitId;
         private final String name;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Control control;
     }
 }

@@ -34,8 +34,7 @@ import org.veo.core.usecase.repository.ProcessRepository;
 /**
  * Reinstantiate a persisted process object.
  */
-public class GetProcessUseCase
-        extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData> {
+public class GetProcessUseCase extends UseCase<GetProcessUseCase.InputData, Process> {
 
     private final ProcessRepository repository;
 
@@ -45,25 +44,18 @@ public class GetProcessUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Process execute(InputData input) {
         Process process = repository.findById(input.getId(), null)
                                     .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                   .uuidValue()));
         checkSameClient(input.getAuthenticatedClient(), process);
-        return new OutputData(process);
+        return process;
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> id;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Process process;
     }
 }

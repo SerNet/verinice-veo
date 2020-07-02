@@ -110,11 +110,11 @@ public class ProcessController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
         return useCaseInteractor.execute(getProcessUseCase, new GetProcessUseCase.InputData(
-                Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
+                Key.uuidFrom(id), getAuthenticatedClient(auth)), process -> {
                     DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
                     tcontext.partialDomain()
                             .partialUnit();
-                    return ProcessDto.from(output.getProcess(), tcontext);
+                    return ProcessDto.from(process, tcontext);
                 });
     }
 
@@ -130,8 +130,8 @@ public class ProcessController extends AbstractEntityController {
                                                                      dto.getOwner()
                                                                         .getId(),
                                                                      dto.getName()),
-                                         output -> {
-                                             ApiResponseBody body = CreateProcessOutputMapper.map(output.getProcess());
+                                         process -> {
+                                             ApiResponseBody body = CreateProcessOutputMapper.map(process);
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }
@@ -148,15 +148,10 @@ public class ProcessController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
         DtoTargetToEntityContext tcontext = configureDtoContext(client, processDto.getReferences());
         Process p;
-        return useCaseInteractor.execute(updateProcessUseCase,
-                                         new ModifyEntityUseCase.InputData<Process>(
-                                                 processDto.toProcess(tcontext),
-                                                 getAuthenticatedClient(auth)),
-                                         output -> {
-                                             ProcessDto ret = ProcessDto.from(output.getEntity(),
-                                                                              DtoEntityToTargetContext.getCompleteTransformationContext());
-                                             return ret;
-                                         });
+        return useCaseInteractor.execute(updateProcessUseCase, new ModifyEntityUseCase.InputData<>(
+                processDto.toProcess(tcontext), getAuthenticatedClient(auth)),
+                                         process -> ProcessDto.from(process,
+                                                                    DtoEntityToTargetContext.getCompleteTransformationContext()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -182,12 +177,10 @@ public class ProcessController extends AbstractEntityController {
         DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
 
         return useCaseInteractor.execute(getProcessesUseCase, new GetProcessesUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
-                    return output.getEntities()
-                                 .stream()
-                                 .map(u -> ProcessDto.from(u, tcontext))
-                                 .collect(Collectors.toList());
-                });
+                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),
+                                         entities -> entities.stream()
+                                                             .map(u -> ProcessDto.from(u, tcontext))
+                                                             .collect(Collectors.toList()));
     }
 
 }

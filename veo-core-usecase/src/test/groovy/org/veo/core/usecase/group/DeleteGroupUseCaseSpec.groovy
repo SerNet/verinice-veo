@@ -37,12 +37,11 @@ class DeleteGroupUseCaseSpec extends UseCaseSpec {
             getId() >> groupId
         }
         when:
-        def output = usecase.execute(new InputData(groupId, type, existingClient))
+        usecase.execute(new InputData(groupId, type, existingClient))
         then:
         1 * repositoryProvider.getRepositoryFor(type.entityClass) >> repository
         1 * repository.findById(groupId) >> Optional.of(group)
         1 * repository.deleteById(groupId)
-        output.id == groupId
 
         where:
         type << GroupType.values()

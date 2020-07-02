@@ -38,12 +38,12 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(id,  existingClient))
+        def outputPerson = usecase.execute(new InputData(id,  existingClient))
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialDomain() >> targetToEntityContext
         1 * personRepository.findById(id,_) >> Optional.of(person)
-        output.person != null
-        output.person.id == id
+        outputPerson != null
+        outputPerson.id == id
     }
 }

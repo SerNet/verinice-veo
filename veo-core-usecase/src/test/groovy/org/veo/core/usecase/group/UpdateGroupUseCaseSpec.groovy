@@ -41,7 +41,7 @@ class UpdateGroupUseCaseSpec extends UseCaseSpec {
             it
         }
         when:
-        def output = usecase.execute(new InputData(group, existingClient))
+        def updatedGroup = usecase.execute(new InputData(group, existingClient))
         then:
         1 * repositoryProvider.getRepositoryFor(type.groupClass) >> repository
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
@@ -51,9 +51,9 @@ class UpdateGroupUseCaseSpec extends UseCaseSpec {
         1 * repository.save({
             it.name == "Updated $type group"
         }, _, _) >> { it[0] }
-        output.group != null
-        output.group.name == "Updated $type group"
-        output.group.getClass() == type.groupClass
+        updatedGroup != null
+        updatedGroup.name == "Updated $type group"
+        updatedGroup.getClass() == type.groupClass
         where:
         type << GroupType.values()
     }

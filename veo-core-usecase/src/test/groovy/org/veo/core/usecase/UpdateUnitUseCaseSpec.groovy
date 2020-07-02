@@ -43,12 +43,12 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input).getUnit()
+        def newUnit = usecase.execute(input)
 
         and: "the unit is changed and updated"
         newUnit.setName("Name changed")
         def usecase2 = new UpdateUnitUseCase(unitRepository, transformContextProvider)
-        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient))
+        def updatedUnit = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient))
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -68,9 +68,9 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         1 * unitRepository.save({
             it.name == "Name changed"
         }, _, _) >> { it[0] }
-        output.unit != null
-        output.unit.name == "Name changed"
-        output.unit.id == newUnit.id
+        updatedUnit != null
+        updatedUnit.name == "Name changed"
+        updatedUnit.id == newUnit.id
     }
 
     def "Prevent updating a unit from another client" () {
@@ -86,12 +86,12 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the use case to create a unit is executed"
         def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input).getUnit()
+        def newUnit = usecase.execute(input)
 
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
         def usecase2 = new UpdateUnitUseCase(unitRepository, transformContextProvider)
-        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient))
+        usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient))
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)

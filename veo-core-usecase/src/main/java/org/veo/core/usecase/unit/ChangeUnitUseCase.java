@@ -40,8 +40,7 @@ import org.veo.core.usecase.repository.UnitRepository;
  * changes to the asset.
  */
 @Slf4j
-public abstract class ChangeUnitUseCase
-        extends UseCase<UpdateUnitUseCase.InputData, UpdateUnitUseCase.OutputData> {
+public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputData, Unit> {
 
     private final UnitRepository unitRepository;
     protected final TransformContextProvider transformContextProvider;
@@ -58,7 +57,7 @@ public abstract class ChangeUnitUseCase
      */
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Unit execute(InputData input) {
         log.info("Updating unit with id {}", input.getChangedUnit()
                                                   .getId()
                                                   .uuidValue());
@@ -68,7 +67,6 @@ public abstract class ChangeUnitUseCase
                              .map(u -> checkSameClient(u, input))
                              .map(u -> update(u, input))
                              .map(u -> save(u, input))
-                             .map(this::output)
                              .orElseThrow(() -> new NotFoundException("Unit %s was not found.",
                                      input.getChangedUnit()
                                           .getId()
@@ -87,10 +85,6 @@ public abstract class ChangeUnitUseCase
         unit.setClient(input.getClient());
         ModelUtils.incrementVersion(unit);
         return this.unitRepository.save(unit, null, dataToEntityContext);
-    }
-
-    private OutputData output(Unit unit) {
-        return new OutputData(unit);
     }
 
     // TODO VEO-124 this check should always be done implicitly by UnitImpl or
@@ -116,16 +110,8 @@ public abstract class ChangeUnitUseCase
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Unit changedUnit;
         private final Client client;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Unit unit;
-
     }
 }

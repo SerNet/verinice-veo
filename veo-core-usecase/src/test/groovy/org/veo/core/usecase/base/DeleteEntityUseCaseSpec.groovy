@@ -38,7 +38,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(Process,id, existingClient))
+        usecase.execute(new InputData(Process,id, existingClient))
         then:
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processRepository
         1 * processRepository.findById(id) >> Optional.of(process)
@@ -52,7 +52,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(Person,id, existingClient))
+        usecase.execute(new InputData(Person,id, existingClient))
         then:
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personRepository
         1 * personRepository.findById(id) >> Optional.of(person)

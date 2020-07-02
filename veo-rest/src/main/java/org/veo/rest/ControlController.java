@@ -105,12 +105,10 @@ public class ControlController extends AbstractEntityController {
                                                required = false) String parentUuid) {
         DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getControlsUseCase, new GetControlsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
-                    return output.getEntities()
-                                 .stream()
-                                 .map(u -> ControlDto.from(u, tcontext))
-                                 .collect(Collectors.toList());
-                });
+                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),
+                                         controls -> controls.stream()
+                                                             .map(u -> ControlDto.from(u, tcontext))
+                                                             .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -127,13 +125,11 @@ public class ControlController extends AbstractEntityController {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
 
-        return useCaseInteractor.execute(getControlUseCase, new GetControlUseCase.InputData(
-                Key.uuidFrom(uuid), client), output -> {
-                    DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
-                    tcontext.partialDomain()
-                            .partialUnit();
-                    return ControlDto.from(output.getControl(), tcontext);
-                });
+        return useCaseInteractor.execute(getControlUseCase, new GetControlUseCase.InputData(Key
+                                                                                               .uuidFrom(uuid),
+                client), control -> ControlDto.from(control, DtoEntityToTargetContext.getCompleteTransformationContext()
+                                                                                     .partialDomain()
+                                                                                     .partialUnit()));
     }
 
     @PostMapping()
@@ -144,15 +140,12 @@ public class ControlController extends AbstractEntityController {
             @Valid @NotNull @RequestBody CreateControlDto controlDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(createControlUseCase,
-                                         new CreateControlUseCase.InputData(
-                                                 Key.uuidFrom(controlDto.getOwner()
-                                                                        .getId()),
-                                                 controlDto.getName(), client),
-                                         output -> {
-                                             ApiResponseBody body = CreateControlOutputMapper.map(output.getControl());
-                                             return RestApiResponse.created(URL_BASE_PATH, body);
-                                         });
+        return useCaseInteractor.execute(createControlUseCase, new CreateControlUseCase.InputData(
+                Key.uuidFrom(controlDto.getOwner()
+                                       .getId()),
+                controlDto.getName(), client),
+                                         control -> RestApiResponse.created(URL_BASE_PATH,
+                                                                            CreateControlOutputMapper.map(control)));
     }
 
     @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -167,10 +160,10 @@ public class ControlController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
         DtoTargetToEntityContext tcontext = configureDtoContext(client, controlDto.getReferences());
         return useCaseInteractor.execute(updateControlUseCase,
-                                         new ModifyEntityUseCase.InputData<Control>(
+                                         new ModifyEntityUseCase.InputData<>(
                                                  controlDto.toControl(tcontext), client),
-                                         output -> ControlDto.from(output.getEntity(),
-                                                                   DtoEntityToTargetContext.getCompleteTransformationContext()));
+                                         control -> ControlDto.from(control,
+                                                                    DtoEntityToTargetContext.getCompleteTransformationContext()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

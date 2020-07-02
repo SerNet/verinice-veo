@@ -32,7 +32,7 @@ public class CreateProcessUseCaseSpec extends UseCaseSpec {
         TransformTargetToEntityContext targetToEntityContext = Mock()
 
         when:
-        def output = usecase.execute(new InputData(existingUnit.id, "John's process", existingClient))
+        def newProcess = usecase.execute(new InputData(existingUnit.id, "John's process", existingClient))
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialClient() >> targetToEntityContext
@@ -40,7 +40,7 @@ public class CreateProcessUseCaseSpec extends UseCaseSpec {
         1 * processRepository.save({
             it.name == "John's process"
         }) >> { it[0] }
-        output.process != null
-        output.process.name == "John's process"
+        newProcess != null
+        newProcess.name == "John's process"
     }
 }

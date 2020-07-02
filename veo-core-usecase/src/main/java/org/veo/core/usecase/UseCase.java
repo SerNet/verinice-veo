@@ -32,7 +32,7 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * @param <I>
  * @param <O>
  */
-public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.OutputData> {
+public abstract class UseCase<I, O> {
 
     public abstract O execute(I input);
 
@@ -53,33 +53,6 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
                     + "violated by the attempted operation on element: "
                     + elementToBeModified.toString() + " from client "
                     + authenticatedClient.toString());
-        }
-    }
-
-    /**
-     * The input data structure that is particular to this use case.
-     *
-     * InputData should be an immutable value object.
-     */
-    public interface InputData {
-
-    }
-
-    /**
-     * The output data structure that is particular to this use case.
-     *
-     * OutputData should be an immutable value object.
-     */
-    public interface OutputData {
-
-    }
-
-    public static final class EmptyOutput implements OutputData {
-
-        public static final EmptyOutput INSTANCE = new EmptyOutput();
-
-        private EmptyOutput() {
-
         }
     }
 }

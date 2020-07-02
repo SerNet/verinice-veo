@@ -20,9 +20,6 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
-
-import lombok.Value;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -33,8 +30,7 @@ import org.veo.core.usecase.repository.ClientRepository;
 /**
  * Reinstantiate a persisted client object.
  */
-public class GetClientUseCase
-        extends UseCase<GetClientUseCase.InputData, GetClientUseCase.OutputData> {
+public class GetClientUseCase extends UseCase<Key<UUID>, Client> {
 
     private final ClientRepository repository;
 
@@ -48,23 +44,8 @@ public class GetClientUseCase
      */
     @Override
     @Transactional(TxType.SUPPORTS)
-    public OutputData execute(InputData input) {
-        return repository.findById(input.getClientId())
-                         .map(OutputData::new)
-                         .orElseThrow(() -> new NotFoundException(input.getClientId()
-                                                                       .uuidValue()));
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        private final Key<UUID> clientId;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Client client;
+    public Client execute(Key<UUID> id) {
+        return repository.findById(id)
+                         .orElseThrow(() -> new NotFoundException(id.uuidValue()));
     }
 }

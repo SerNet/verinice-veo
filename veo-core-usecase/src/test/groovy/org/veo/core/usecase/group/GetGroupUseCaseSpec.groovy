@@ -38,14 +38,14 @@ class GetGroupUseCaseSpec extends UseCaseSpec {
             getId() >> groupId
         }
         when:
-        def output = usecase.execute(new InputData(groupId, type, existingClient))
+        def outputGroup = usecase.execute(new InputData(groupId, type, existingClient))
         then:
         1 * repositoryProvider.getRepositoryFor(type.entityClass) >> repository
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialDomain() >> targetToEntityContext
         1 * repository.findById(groupId,_) >> Optional.of(group)
-        output.group != null
-        output.group.id == groupId
+        outputGroup != null
+        outputGroup.id == groupId
         where:
         type << GroupType.values()
     }

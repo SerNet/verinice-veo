@@ -28,11 +28,10 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.EmptyOutput;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, EmptyOutput> {
+public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, Void> {
 
     private final RepositoryProvider repositoryProvider;
 
@@ -42,22 +41,22 @@ public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, 
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public EmptyOutput execute(InputData input) {
+    public Void execute(InputData input) {
         EntityLayerSupertypeRepository<? extends EntityLayerSupertype> repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.entityClass);
-        EntityLayerSupertype entity = (EntityLayerSupertype) repository.findById(input.getId())
-                                                                       .orElseThrow(() -> new NotFoundException(
-                                                                               "%s %s was not found.",
-                                                                               input.entityClass.getSimpleName(),
-                                                                               input.getId()
-                                                                                    .uuidValue()));
+        EntityLayerSupertype entity = repository.findById(input.getId())
+                                                .orElseThrow(() -> new NotFoundException(
+                                                        "%s %s was not found.",
+                                                        input.entityClass.getSimpleName(),
+                                                        input.getId()
+                                                             .uuidValue()));
         checkSameClient(input.authenticatedClient, entity);
         // TODO VEO-161 also remove entity from links pointing to it
         repository.deleteById(entity.getId());
-        return EmptyOutput.INSTANCE;
+        return null;
     }
 
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private Class<? extends EntityLayerSupertype> entityClass;
         private final Key<UUID> id;
         private final Client authenticatedClient;

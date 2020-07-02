@@ -31,34 +31,32 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all assets for a client"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def entities = usecase.execute(new InputData(existingClient, Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * assetRepository.findByClient(existingClient, false) >> [asset]
-        output.entities*.id == [id]
+        entities*.id == [id]
     }
 
 
     def "retrieve all assets for a unit"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def entities = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * assetRepository.findByUnit(existingUnit, false) >> [asset]
-        output.entities*.id == [id]
+        entities*.id == [id]
     }
 }

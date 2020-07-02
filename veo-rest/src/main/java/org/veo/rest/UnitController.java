@@ -111,13 +111,12 @@ public class UnitController extends AbstractEntityController {
                                                required = false) String parentUuid) {
         DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
 
-        return useCaseInteractor.execute(getUnitsUseCase, new GetUnitsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
-                    return output.getUnits()
-                                 .stream()
-                                 .map(u -> UnitDto.from(u, tcontext))
-                                 .collect(Collectors.toList());
-                });
+        return useCaseInteractor.execute(getUnitsUseCase,
+                                         new GetUnitsUseCase.InputData(getAuthenticatedClient(auth),
+                                                 Optional.ofNullable(parentUuid)),
+                                         units -> units.stream()
+                                                       .map(u -> UnitDto.from(u, tcontext))
+                                                       .collect(Collectors.toList()));
     }
 
     @Async
@@ -134,10 +133,10 @@ public class UnitController extends AbstractEntityController {
             @PathVariable String id) {
 
         return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
-                Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
+                Key.uuidFrom(id), getAuthenticatedClient(auth)), unit -> {
                     DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
                     tcontext.partialDomain();
-                    return UnitDto.from(output.getUnit(), tcontext);
+                    return UnitDto.from(unit, tcontext);
                 });
     }
 
@@ -158,8 +157,8 @@ public class UnitController extends AbstractEntityController {
         return useCaseInteractor.execute(createUnitUseCase,
                                          CreateUnitInputMapper.map(createUnitDto,
                                                                    user.getClientId()),
-                                         output -> {
-                                             ApiResponseBody body = CreateUnitOutputMapper.map(output.getUnit());
+                                         unit -> {
+                                             ApiResponseBody body = CreateUnitOutputMapper.map(unit);
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }
@@ -177,12 +176,11 @@ public class UnitController extends AbstractEntityController {
         DtoTargetToEntityContext tcontext = configureDtoContext(getAuthenticatedClient(auth),
                                                                 Collections.emptyList());
 
-        return useCaseInteractor.execute(putUnitUseCase, new UpdateUnitUseCase.InputData(
-                unitDto.toUnit(tcontext), getAuthenticatedClient(auth)), output -> {
-                    UnitDto response = UnitDto.from(output.getUnit(),
-                                                    DtoEntityToTargetContext.getCompleteTransformationContext());
-                    return response;
-                });
+        return useCaseInteractor.execute(putUnitUseCase,
+                                         new UpdateUnitUseCase.InputData(unitDto.toUnit(tcontext),
+                                                 getAuthenticatedClient(auth)),
+                                         unit -> UnitDto.from(unit,
+                                                              DtoEntityToTargetContext.getCompleteTransformationContext()));
     }
 
     @Async

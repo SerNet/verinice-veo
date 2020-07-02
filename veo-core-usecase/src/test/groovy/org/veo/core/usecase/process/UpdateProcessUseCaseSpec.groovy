@@ -40,7 +40,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new InputData(process, existingClient))
+        def updatedProcess = usecase.execute(new InputData(process, existingClient))
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialDomain() >> targetToEntityContext
@@ -49,7 +49,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         1 * processRepository.save({
             it.name == "Updated process"
         }, _, _) >> { it[0] }
-        output.entity != null
-        output.entity.name == "Updated process"
+        updatedProcess != null
+        updatedProcess.name == "Updated process"
     }
 }

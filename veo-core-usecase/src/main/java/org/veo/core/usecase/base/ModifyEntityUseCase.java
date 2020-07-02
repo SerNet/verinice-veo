@@ -28,7 +28,7 @@ import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.usecase.UseCase;
 
 public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype>
-        extends UseCase<ModifyEntityUseCase.InputData<T>, ModifyEntityUseCase.OutputData<T>> {
+        extends UseCase<ModifyEntityUseCase.InputData<T>, T> {
     protected final TransformContextProvider transformContextProvider;
 
     protected ModifyEntityUseCase(TransformContextProvider transformContextProvider) {
@@ -37,33 +37,24 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype>
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData<T> execute(InputData<T> input) {
+    public T execute(InputData<T> input) {
         T entity = input.getEntity();
         Client authenticatedClient = input.getAuthenticatedClient();
         checkSameClient(authenticatedClient, entity);
         return performModification(input);
     }
 
-    protected abstract OutputData<T> performModification(InputData<T> input);
+    protected abstract T performModification(InputData<T> input);
 
     @Valid
     @Value
-    public static class InputData<T> implements UseCase.InputData {
+    public static class InputData<T> {
 
         @Valid
         private final T entity;
 
         @Valid
         private final Client authenticatedClient;
-
-    }
-
-    @Valid
-    @Value
-    public static class OutputData<T> implements UseCase.OutputData {
-
-        @Valid
-        private final T entity;
 
     }
 }

@@ -25,7 +25,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import org.veo.core.entity.Key;
-import org.veo.core.usecase.UseCase;
 
 @Data
 @AllArgsConstructor
@@ -33,7 +32,7 @@ import org.veo.core.usecase.UseCase;
 /**
  * Common record class to p[ass nameable attributes from a DTO into a use case.
  */
-public class NameableInputData implements UseCase.InputData {
+public class NameableInputData {
     private Optional<Key<UUID>> id;
 
     private long version;

@@ -36,8 +36,7 @@ import org.veo.core.usecase.repository.AssetRepository;
 /**
  * Reinstantiate a persisted process object.
  */
-public class GetAssetUseCase
-        extends UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
+public class GetAssetUseCase extends UseCase<GetAssetUseCase.InputData, Asset> {
 
     private final AssetRepository repository;
     private final TransformContextProvider transformContextProvider;
@@ -50,7 +49,7 @@ public class GetAssetUseCase
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public OutputData execute(InputData input) {
+    public Asset execute(InputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialDomain()
                                                                                            .partialClient();
@@ -58,20 +57,13 @@ public class GetAssetUseCase
                                 .orElseThrow(() -> new NotFoundException(input.getId()
                                                                               .uuidValue()));
         checkSameClient(input.authenticatedClient, asset);
-        return new OutputData(asset);
+        return asset;
     }
 
     @Valid
     @Value
-    public static class InputData implements UseCase.InputData {
+    public static class InputData {
         private final Key<UUID> id;
         private final Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        private final Asset asset;
     }
 }

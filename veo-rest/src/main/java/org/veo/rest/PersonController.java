@@ -105,12 +105,10 @@ public class PersonController extends AbstractEntityController {
                                                required = false) String parentUuid) {
         DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getPersonsUseCase, new GetPersonsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
-                    return output.getEntities()
-                                 .stream()
-                                 .map(u -> PersonDto.from(u, tcontext))
-                                 .collect(Collectors.toList());
-                });
+                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),
+                                         entities -> entities.stream()
+                                                             .map(u -> PersonDto.from(u, tcontext))
+                                                             .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -127,14 +125,11 @@ public class PersonController extends AbstractEntityController {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
 
-        return useCaseInteractor.execute(getPersonUseCase,
-                                         new GetPersonUseCase.InputData(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
-                                             tcontext.partialDomain()
-                                                     .partialUnit();
-                                             return PersonDto.from(output.getPerson(), tcontext);
-                                         });
+        return useCaseInteractor.execute(getPersonUseCase, new GetPersonUseCase.InputData(Key
+                                                                                             .uuidFrom(uuid),
+                client), person -> PersonDto.from(person, DtoEntityToTargetContext.getCompleteTransformationContext()
+                                                                                  .partialDomain()
+                                                                                  .partialUnit()));
     }
 
     @PostMapping()
@@ -145,15 +140,12 @@ public class PersonController extends AbstractEntityController {
             @Valid @NotNull @RequestBody CreatePersonDto personDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(createPersonUseCase,
-                                         new CreatePersonUseCase.InputData(
-                                                 Key.uuidFrom(personDto.getOwner()
-                                                                       .getId()),
-                                                 personDto.getName(), client),
-                                         output -> {
-                                             ApiResponseBody body = CreatePersonOutputMapper.map(output.getPerson());
-                                             return RestApiResponse.created(URL_BASE_PATH, body);
-                                         });
+        return useCaseInteractor.execute(createPersonUseCase, new CreatePersonUseCase.InputData(
+                Key.uuidFrom(personDto.getOwner()
+                                      .getId()),
+                personDto.getName(), client),
+                                         person -> RestApiResponse.created(URL_BASE_PATH,
+                                                                           CreatePersonOutputMapper.map(person)));
     }
 
     @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -168,9 +160,9 @@ public class PersonController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
         DtoTargetToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
         return useCaseInteractor.execute(updatePersonUseCase,
-                                         new ModifyEntityUseCase.InputData<Person>(
+                                         new ModifyEntityUseCase.InputData<>(
                                                  personDto.toPerson(tcontext), client),
-                                         output -> PersonDto.from(output.getEntity(),
+                                         entity -> PersonDto.from(entity,
                                                                   DtoEntityToTargetContext.getCompleteTransformationContext()));
     }
 
