@@ -27,6 +27,8 @@ import java.util.Set;
  */
 public interface CustomProperties extends ModelObject {
 
+    int MAXIMUM_STRING_LENGTH = 18000;
+
     String getType();
 
     void setType(String aType);

@@ -21,9 +21,9 @@ dependencies {
 
     api project(":veo-core-usecase")
 
-    compileOnly('org.projectlombok:lombok')
+    implementation 'javax.validation:validation-api'
 
-    compileOnly 'javax.validation:validation-api'
+    compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core'
 
     testImplementation 'org.spockframework:spock-spring'

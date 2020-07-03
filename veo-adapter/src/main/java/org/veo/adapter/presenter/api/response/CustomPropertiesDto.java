@@ -16,13 +16,17 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.validation.ValidationException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +36,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
+import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
 
@@ -69,9 +74,8 @@ public class CustomPropertiesDto extends BaseModelObjectDto {
     }
 
     // maybe this is the best way to handle this.
-    // we can use the map here and the transform function creates the properties in
-    // the entity
-    // so no need for dtoProperties
+    // we can use the map here and the transform function creates the properties
+    // in the entity so no need for dtoProperties
 
     @Schema(description = "The properties of the element described by the schema of the type attribute.",
             example = " name: 'value'",
@@ -83,7 +87,17 @@ public class CustomPropertiesDto extends BaseModelObjectDto {
     }
 
     public void setAttributes(Map<String, ?> attributes) {
+        attributes.forEach((key, value) -> {
+            // TODO: it doesn't seem right that we have to do this manually
+            if (value instanceof String
+                    && ((String) value).length() > CustomProperties.MAXIMUM_STRING_LENGTH) {
+                throw new ValidationException(
+                        "Property value for " + key + " exceeds maximum length of "
+                                + NumberFormat.getInstance(Locale.US)
+                                              .format(CustomProperties.MAXIMUM_STRING_LENGTH)
+                                + " characters.");
+            }
+        });
         this.attributes = attributes;
     }
-
 }

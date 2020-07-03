@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.jpa.AssetDataRepository
@@ -24,6 +27,9 @@ import org.veo.persistence.entity.jpa.custom.PropertyData
 class CustomPropertyJpaSpec extends AbstractJpaSpec {
     @Autowired
     AssetDataRepository assetRepository
+
+    @PersistenceContext
+    EntityManager entityManager
 
     def 'custom props are inserted'() {
         given:
@@ -107,5 +113,34 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
             it[0].type == PropertyData.Type.STRING
             it[0].stringValue == "due"
         }
+    }
+
+    def 'long custom property value is accepted'() {
+        given:
+        def stringLength = 18000
+        def longString = "X" * stringLength
+        def asset = new AssetData(
+                id: UUID.randomUUID().toString(),
+                customAspects: [
+                    new CustomPropertiesData(
+                    id: UUID.randomUUID().toString(),
+                    dataProperties: [
+                        new PropertyData("p", longString),
+                    ]
+                    )
+                ]
+                )
+        when:
+        assetRepository.save(asset)
+        entityManager.flush()
+        def retrievedAsset = assetRepository.findById(asset.id)
+        then:
+        retrievedAsset.present
+        when:
+        def savedProperty = retrievedAsset.get().customAspects.first().dataProperties.first()
+        def savedValue = savedProperty.stringValue
+        then:
+        savedValue.length() == stringLength
+        savedValue == longString
     }
 }

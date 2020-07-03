@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -351,6 +352,65 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.href == "/units/"+unit.id.uuidValue()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "put a control with a string property that is too long"() {
+        given: "a saved control"
+
+        CustomProperties cp = new SimpleProperties()
+        cp.setType("my.new.type")
+        cp.setApplicableTo(['Control'] as Set)
+        cp.setId(Key.newUuid())
+        Key<UUID> id = Key.newUuid()
+        def control = newControl unit, {
+            it.id = id
+            setCustomAspects([cp] as Set)
+            setDomains([domain1] as Set)
+        }
+
+        control = txTemplate.execute {
+            controlRepository.save(control)
+        }
+        Map request = [
+            id: id.uuidValue(),
+            name: 'New control-2',
+            abbreviation: 'u-2',
+            description: 'desc',
+            owner:
+            [
+                href: '/units/'+unit.id.uuidValue(),
+                displayName: 'test unit'
+            ], domains: [
+                [
+                    href: '/domains/'+domain.id.uuidValue(),
+                    displayName: 'test ddd'
+                ]
+            ], customAspects:
+            [
+                'my.aspect-test' :
+                [
+                    id: '00000000-0000-0000-0000-000000000000',
+                    type : 'my.aspect-test1',
+                    applicableTo: [
+                        "Control"
+                    ],
+                    domains: [],
+                    attributes:  [
+                        test: 'X' * 20000
+                    ]
+                ]
+            ]
+        ]
+
+        when: "a request is made to the server"
+        def results = put("/controls/${control.id.uuidValue()}", request, false)
+
+        then: "the data is rejected"
+        HttpMessageNotReadableException ex = thrown()
+
+        and: "the reason is given"
+        ex.message =~ /Property value for test exceeds maximum length of 18.000 characters./
     }
 
     @WithUserDetails("user@domain.example")
