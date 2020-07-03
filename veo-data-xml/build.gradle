@@ -5,3 +5,10 @@ xjcGenerate {
 }
 
 dependencies { compileOnly 'javax.xml.bind:jaxb-api' }
+
+plugins.withId('eclipse'){
+    eclipse {
+        synchronizationTasks xjcGenerate
+        autoBuildTasks xjcGenerate
+    }
+}
