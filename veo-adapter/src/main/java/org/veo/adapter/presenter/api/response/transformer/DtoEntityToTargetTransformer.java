@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.AbstractAspectDto;
 import org.veo.adapter.presenter.api.response.AssetDto;
 import org.veo.adapter.presenter.api.response.BaseModelObjectDto;
 import org.veo.adapter.presenter.api.response.ClientDto;
@@ -35,14 +34,12 @@ import org.veo.adapter.presenter.api.response.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.response.NameAbleDto;
 import org.veo.adapter.presenter.api.response.PersonDto;
 import org.veo.adapter.presenter.api.response.ProcessDto;
-import org.veo.adapter.presenter.api.response.TimeRangeDto;
 import org.veo.adapter.presenter.api.response.UnitDto;
 import org.veo.adapter.presenter.api.response.groups.AssetGroupDto;
 import org.veo.adapter.presenter.api.response.groups.ControlGroupDto;
 import org.veo.adapter.presenter.api.response.groups.DocumentGroupDto;
 import org.veo.adapter.presenter.api.response.groups.PersonGroupDto;
 import org.veo.adapter.presenter.api.response.groups.ProcessGroupDto;
-import org.veo.core.entity.AbstractAspect;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -56,7 +53,6 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.TimeRange;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
@@ -691,28 +687,6 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-    }
-
-    // AbstractAspect ->
-    // AbstractAspectDto
-    public static AbstractAspectDto transformAbstractAspect2Dto(DtoEntityToTargetContext tcontext,
-            AbstractAspect source) {
-
-        // TODO : implement this method 'transformAbstractAspect2Dto'
-        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
-                                                                                      .getSimpleName());
-
-    }
-
-    // TimeRange ->
-    // TimeRangeDto
-    public static TimeRangeDto transformTimeRange2Dto(DtoEntityToTargetContext tcontext,
-            TimeRange source) {
-
-        // TODO : implement this method 'transformTimeRange2Dto'
-        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
-                                                                                      .getSimpleName());
-
     }
 
     private static <TIn extends ModelObject, TOut> Set<TOut> map(Set<TIn> source,

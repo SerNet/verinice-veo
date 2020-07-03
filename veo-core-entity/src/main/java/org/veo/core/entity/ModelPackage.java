@@ -103,10 +103,5 @@ public interface ModelPackage {
     public static final String ELEMENT_CUSTOMPROPERTIES_TYPE = "element_CustomProperties_type";
     public static final String ELEMENT_CUSTOMPROPERTIES_APPLICABLETO = "element_CustomProperties_applicableTo";
     public static final String ELEMENT_CUSTOMPROPERTIES_DOMAINS = "element_CustomProperties_domains";
-    public static final String ELEMENT_ABSTRACTASPECT = "element_AbstractAspect";
-    public static final String ELEMENT_ABSTRACTASPECT_DOMAINS = "element_AbstractAspect_domains";
-    public static final String ELEMENT_TIMERANGE = "element_TimeRange";
-    public static final String ELEMENT_TIMERANGE_DOMAINS = "element_TimeRange_domains";
-    public static final String ELEMENT_TIMERANGE_VALUE = "element_TimeRange_value";
 
 }

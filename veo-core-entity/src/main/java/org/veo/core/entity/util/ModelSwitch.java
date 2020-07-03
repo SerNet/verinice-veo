@@ -18,7 +18,6 @@ package org.veo.core.entity.util;
 
 import java.util.Optional;
 
-import org.veo.core.entity.AbstractAspect;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -30,7 +29,6 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.TimeRange;
 import org.veo.core.entity.Unit;
 
 /**
@@ -106,16 +104,6 @@ public abstract class ModelSwitch<T> {
             if (object != null)
                 return object;
         }
-        if (o instanceof AbstractAspect) {
-            T object = caseAbstractAspect((AbstractAspect) o);
-            if (object != null)
-                return object;
-        }
-        if (o instanceof TimeRange) {
-            T object = caseTimeRange((TimeRange) o);
-            if (object != null)
-                return object;
-        }
         return null;
     }
 
@@ -164,14 +152,6 @@ public abstract class ModelSwitch<T> {
     }
 
     public T caseCustomProperties(CustomProperties object) {
-        return null;
-    }
-
-    public T caseAbstractAspect(AbstractAspect object) {
-        return null;
-    }
-
-    public T caseTimeRange(TimeRange object) {
         return null;
     }
 

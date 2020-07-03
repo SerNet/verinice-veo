@@ -19,7 +19,6 @@ package org.veo.core.entity.code;
 import java.time.Instant;
 import java.util.function.Predicate;
 
-import org.veo.core.entity.AbstractAspect;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
@@ -42,12 +41,6 @@ public final class ModelUtils {
         ModelSwitch<Boolean> modelSwitch = new ModelSwitch<Boolean>() {
             @Override
             public Boolean caseEntityLayerSupertype(EntityLayerSupertype object) {
-                return object.getDomains()
-                             .contains(domain);
-            }
-
-            @Override
-            public Boolean caseAbstractAspect(AbstractAspect object) {
                 return object.getDomains()
                              .contains(domain);
             }

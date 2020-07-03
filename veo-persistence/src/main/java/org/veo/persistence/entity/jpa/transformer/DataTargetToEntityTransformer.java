@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import org.hibernate.proxy.HibernateProxy;
 
-import org.veo.core.entity.AbstractAspect;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -38,7 +37,6 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.TimeRange;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.custom.LinkImpl;
 import org.veo.core.entity.custom.SimpleProperties;
@@ -57,7 +55,6 @@ import org.veo.core.entity.impl.ProcessImpl;
 import org.veo.core.entity.impl.UnitImpl;
 import org.veo.core.entity.transform.ClassKey;
 import org.veo.core.entity.transform.TransformTargetToEntityMethod;
-import org.veo.persistence.entity.jpa.AbstractAspectData;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.BaseModelObjectData;
 import org.veo.persistence.entity.jpa.ClientData;
@@ -70,7 +67,6 @@ import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.NameAbleData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
-import org.veo.persistence.entity.jpa.TimeRangeData;
 import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.groups.AssetGroupData;
 import org.veo.persistence.entity.jpa.groups.ControlGroupData;
@@ -536,26 +532,6 @@ public final class DataTargetToEntityTransformer {
         }
 
         return target;
-
-    }
-
-    // AbstractAspectData->AbstractAspect
-    public static AbstractAspect transformData2AbstractAspect(DataTargetToEntityContext tcontext,
-            AbstractAspectData source) {
-
-        // TODO : implement this method 'transformData2AbstractAspect'
-        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
-                                                                                      .getSimpleName());
-
-    }
-
-    // TimeRangeData->TimeRange
-    public static TimeRange transformData2TimeRange(DataTargetToEntityContext tcontext,
-            TimeRangeData source) {
-
-        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
-                                                                                      .getSimpleName());
-        // TODO : implement this method 'transformData2TimeRange'
 
     }
 
