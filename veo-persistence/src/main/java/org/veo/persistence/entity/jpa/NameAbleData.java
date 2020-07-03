@@ -22,4 +22,15 @@ package org.veo.persistence.entity.jpa;
  * Contains all information of the NameAble.
  */
 public interface NameAbleData {
+    String getName();
+
+    void setName(String aName);
+
+    String getAbbreviation();
+
+    void setAbbreviation(String aAbbreviation);
+
+    String getDescription();
+
+    void setDescription(String aDescription);
 }

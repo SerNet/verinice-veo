@@ -17,4 +17,15 @@
 package org.veo.adapter.presenter.api.response;
 
 public interface NameAbleDto {
+    String getName();
+
+    void setName(String aName);
+
+    String getAbbreviation();
+
+    void setAbbreviation(String aAbbreviation);
+
+    String getDescription();
+
+    void setDescription(String aDescription);
 }

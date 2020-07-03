@@ -106,9 +106,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getPersonDomainsFunction() != null) {
             Set<DomainData> domains = source.getDomains()
@@ -168,9 +166,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -227,9 +223,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getAssetDomainsFunction() != null) {
             Set<DomainData> domains = source.getDomains()
@@ -288,9 +282,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -347,9 +339,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getProcessDomainsFunction() != null) {
             Set<DomainData> domains = source.getDomains()
@@ -409,9 +399,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -468,9 +456,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getDocumentDomainsFunction() != null) {
             Set<DomainData> domains = source.getDomains()
@@ -530,9 +516,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -589,9 +573,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getControlDomainsFunction() != null) {
             Set<DomainData> domains = source.getDomains()
@@ -651,9 +633,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -755,9 +735,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -765,34 +743,6 @@ public final class DataEntityToTargetTransformer {
         }
 
         return target;
-    }
-
-    // NameAble -> NameAbleData
-    public static NameAbleData transformNameAble2Data(DataEntityToTargetContext tcontext,
-            NameAble source) {
-        if (source instanceof Person) {
-            return transformPerson2Data(tcontext, (Person) source);
-        }
-        if (source instanceof Asset) {
-            return transformAsset2Data(tcontext, (Asset) source);
-        }
-        if (source instanceof Process) {
-            return transformProcess2Data(tcontext, (Process) source);
-        }
-        if (source instanceof Document) {
-            return transformDocument2Data(tcontext, (Document) source);
-        }
-        if (source instanceof Control) {
-            return transformControl2Data(tcontext, (Control) source);
-        }
-        if (source instanceof Domain) {
-            return transformDomain2Data(tcontext, (Domain) source);
-        }
-        if (source instanceof Unit) {
-            return transformUnit2Data(tcontext, (Unit) source);
-        }
-        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
-                                                                                      .getSimpleName());
     }
 
     // Unit -> UnitData
@@ -811,9 +761,7 @@ public final class DataEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -870,9 +818,7 @@ public final class DataEntityToTargetTransformer {
         // target.setValidUntil(source.getValidUntil().toString());
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -942,6 +888,12 @@ public final class DataEntityToTargetTransformer {
         throw new IllegalArgumentException("No transform method defined for " + source.getClass()
                                                                                       .getSimpleName());
 
+    }
+
+    private static void mapNameAble(NameAble source, NameAbleData target) {
+        target.setName(source.getName());
+        target.setAbbreviation(source.getAbbreviation());
+        target.setDescription(source.getDescription());
     }
 
     private DataEntityToTargetTransformer() {

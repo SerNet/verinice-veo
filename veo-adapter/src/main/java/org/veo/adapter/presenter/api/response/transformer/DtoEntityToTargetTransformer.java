@@ -107,9 +107,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getPersonDomainsFunction() != null) {
             Set<ModelObjectReference<Domain>> domains = source.getDomains()
@@ -168,9 +166,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -226,9 +222,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getAssetDomainsFunction() != null) {
             Set<ModelObjectReference<Domain>> domains = source.getDomains()
@@ -286,9 +280,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -344,9 +336,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getProcessDomainsFunction() != null) {
             Set<ModelObjectReference<Domain>> domains = source.getDomains()
@@ -406,9 +396,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -464,9 +452,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getDocumentDomainsFunction() != null) {
             Set<ModelObjectReference<Domain>> domains = source.getDomains()
@@ -526,9 +512,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -584,9 +568,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getControlDomainsFunction() != null) {
             Set<ModelObjectReference<Domain>> domains = source.getDomains()
@@ -646,9 +628,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -749,9 +729,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -759,35 +737,6 @@ public final class DtoEntityToTargetTransformer {
         }
 
         return target;
-    }
-
-    // NameAble ->
-    // NameAbleDto
-    public static NameAbleDto transformNameAble2Dto(DtoEntityToTargetContext tcontext,
-            NameAble source) {
-        if (source instanceof Person) {
-            return transformPerson2Dto(tcontext, (Person) source);
-        }
-        if (source instanceof Asset) {
-            return transformAsset2Dto(tcontext, (Asset) source);
-        }
-        if (source instanceof Process) {
-            return transformProcess2Dto(tcontext, (Process) source);
-        }
-        if (source instanceof Document) {
-            return transformDocument2Dto(tcontext, (Document) source);
-        }
-        if (source instanceof Control) {
-            return transformControl2Dto(tcontext, (Control) source);
-        }
-        if (source instanceof Domain) {
-            return transformDomain2Dto(tcontext, (Domain) source);
-        }
-        if (source instanceof Unit) {
-            return transformUnit2Dto(tcontext, (Unit) source);
-        }
-        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
-                                                                                      .getSimpleName());
     }
 
     // Unit -> UnitDto
@@ -806,9 +755,7 @@ public final class DtoEntityToTargetTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -863,9 +810,7 @@ public final class DtoEntityToTargetTransformer {
         // target.setValidUntil(source.getValidUntil().toString());
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
-        target.setName(source.getName());
-        target.setAbbreviation(source.getAbbreviation());
-        target.setDescription(source.getDescription());
+        mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
             return target;
@@ -912,6 +857,12 @@ public final class DtoEntityToTargetTransformer {
         target.setAttributes(source.getAllProperties());
         return target;
 
+    }
+
+    private static void mapNameAble(NameAble source, NameAbleDto target) {
+        target.setName(source.getName());
+        target.setAbbreviation(source.getAbbreviation());
+        target.setDescription(source.getDescription());
     }
 
     // AbstractAspect ->
