@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.AbstractAspectDto;
 import org.veo.adapter.presenter.api.response.AssetDto;
+import org.veo.adapter.presenter.api.response.BaseModelObjectDto;
 import org.veo.adapter.presenter.api.response.ClientDto;
 import org.veo.adapter.presenter.api.response.ControlDto;
 import org.veo.adapter.presenter.api.response.CustomLinkDto;
@@ -53,7 +54,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelObject.Lifecycle;
 import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -121,9 +121,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new PersonImpl(key, source.getName(), null);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getPersonDomainsFunction() != null) {
@@ -167,11 +165,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new PersonGroup();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        target.setState(Lifecycle.CREATING);
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getPersonDomainsFunction() != null) {
@@ -223,9 +217,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new AssetImpl(key, source.getName(), null);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getAssetDomainsFunction() != null) {
@@ -269,11 +261,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new AssetGroup();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        target.setState(Lifecycle.CREATING);
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getAssetDomainsFunction() != null) {
@@ -326,9 +314,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new ProcessImpl(key, source.getName(), null);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getProcessDomainsFunction() != null) {
@@ -372,11 +358,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new ProcessGroup();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        target.setState(Lifecycle.CREATING);
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getProcessDomainsFunction() != null) {
@@ -429,9 +411,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new DocumentImpl(key, source.getName(), null);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getDocumentDomainsFunction() != null) {
@@ -475,11 +455,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new DocumentGroup();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        target.setState(Lifecycle.CREATING);
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getDocumentDomainsFunction() != null) {
@@ -532,9 +508,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new ControlImpl(key, source.getName(), null);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getControlDomainsFunction() != null) {
@@ -578,11 +552,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new ControlGroup();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        target.setState(Lifecycle.CREATING);
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getControlDomainsFunction() != null) {
@@ -631,9 +601,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new ClientImpl(key, source.getName());
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         target.setName(source.getName());
         context.put(classKey, target);
         if (tcontext.getClientUnitsFunction() != null) {
@@ -668,9 +636,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new DomainImpl(key, source.getName());
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
@@ -690,9 +656,7 @@ public final class DtoTargetToEntityTransformer {
         }
 
         target = new UnitImpl(key, source.getName(), null);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
 
@@ -808,6 +772,14 @@ public final class DtoTargetToEntityTransformer {
                                                                                       .getSimpleName());
         // TODO : implement this method 'transformDto2TimeRange'
 
+    }
+
+    private static void mapModelObject(BaseModelObjectDto source, ModelObject target,
+            Key<UUID> key) {
+        target.setId(key);
+        target.setVersion(source.getVersion());
+        // target.setValidFrom(Instant.parse(source.getValidFrom()));
+        // target.setValidUntil(Instant.parse(source.getValidUntil()));
     }
 
     private static void mapNameAble(NameAbleDto source, NameAble target) {

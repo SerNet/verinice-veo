@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.AbstractAspectDto;
 import org.veo.adapter.presenter.api.response.AssetDto;
+import org.veo.adapter.presenter.api.response.BaseModelObjectDto;
 import org.veo.adapter.presenter.api.response.ClientDto;
 import org.veo.adapter.presenter.api.response.ControlDto;
 import org.veo.adapter.presenter.api.response.CustomLinkDto;
@@ -50,6 +51,7 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
+import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -103,10 +105,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new PersonGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getPersonDomainsFunction() != null) {
@@ -162,10 +161,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new PersonDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -218,10 +214,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new AssetGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getAssetDomainsFunction() != null) {
@@ -276,10 +269,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new AssetDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -332,10 +322,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new ProcessGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getProcessDomainsFunction() != null) {
@@ -392,10 +379,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new ProcessDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -448,10 +432,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new DocumentGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getDocumentDomainsFunction() != null) {
@@ -508,10 +489,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new DocumentDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -564,10 +542,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new ControlGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (tcontext.getControlDomainsFunction() != null) {
@@ -624,10 +599,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new ControlDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -681,10 +653,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new ClientDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         target.setName(source.getName());
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -725,10 +694,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new DomainDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
@@ -751,10 +717,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new UnitDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         mapNameAble(source, target);
         context.put(classKey, target);
         if (source.isGhost()) {
@@ -804,10 +767,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new CustomLinkDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
         mapNameAble(source, target);
@@ -846,10 +806,7 @@ public final class DtoEntityToTargetTransformer {
         }
 
         target = new CustomPropertiesDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
+        mapModelObject(source, target, key);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
         context.put(classKey, target);
@@ -863,6 +820,13 @@ public final class DtoEntityToTargetTransformer {
         target.setName(source.getName());
         target.setAbbreviation(source.getAbbreviation());
         target.setDescription(source.getDescription());
+    }
+
+    private static void mapModelObject(ModelObject source, BaseModelObjectDto target, String key) {
+        target.setId(key);
+        target.setVersion(source.getVersion());
+        // target.setValidFrom(source.getValidFrom().toString());
+        // target.setValidUntil(source.getValidUntil().toString());
     }
 
     // AbstractAspect ->
