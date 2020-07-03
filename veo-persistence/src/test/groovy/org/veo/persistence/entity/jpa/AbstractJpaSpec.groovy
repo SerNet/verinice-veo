@@ -16,7 +16,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
+
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 import org.veo.persistence.VeoJpaConfiguration
@@ -24,5 +28,7 @@ import spock.lang.Specification
 
 @DataJpaTest
 @ContextConfiguration(classes = VeoJpaConfiguration)
+@AutoConfigureTestDatabase(replace = NONE)
+@ActiveProfiles("test")
 abstract class AbstractJpaSpec extends Specification {
 }

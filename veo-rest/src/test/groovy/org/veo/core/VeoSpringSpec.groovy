@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.veo.core
 
-import static org.springframework.boot.jdbc.EmbeddedDatabaseConnection.H2
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -38,7 +38,7 @@ import org.veo.test.VeoSpec
  */
 @SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase(connection = H2)
+@AutoConfigureTestDatabase(replace = NONE)
 abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired

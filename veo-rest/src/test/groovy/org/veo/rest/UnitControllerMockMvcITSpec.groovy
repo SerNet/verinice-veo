@@ -17,17 +17,14 @@
 package org.veo.rest
 
 import static org.hamcrest.Matchers.*
-import static org.springframework.boot.jdbc.EmbeddedDatabaseConnection.H2
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.context.TestPropertySource
 import org.springframework.transaction.support.TransactionTemplate
 
 import groovy.json.JsonSlurper
@@ -53,8 +50,6 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan("org.veo.rest")
-@AutoConfigureTestDatabase(connection = H2)
-@TestPropertySource(locations="classpath:application-test.properties")
 class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired

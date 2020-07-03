@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.veo.core
 
-import static org.springframework.boot.jdbc.EmbeddedDatabaseConnection.H2
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 
 import java.time.OffsetDateTime
 
@@ -40,7 +40,7 @@ import spock.lang.Specification
 )
 @Transactional()
 @ComponentScan("org.veo")
-@AutoConfigureTestDatabase(connection = H2)
+@AutoConfigureTestDatabase(replace = NONE)
 class CustomAspectPersistenceSpec extends Specification {
 
     @Autowired
