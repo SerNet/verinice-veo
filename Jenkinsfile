@@ -167,7 +167,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                build job: 'verinice-veo-deployment/master', parameters: [string(name: 'veoDockerTag', value: ":git-${env.GIT_COMMIT}")]
+                build job: 'verinice-veo-deployment/master'
             }
         }
     }
