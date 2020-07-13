@@ -16,24 +16,29 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.*;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
-import javax.validation.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.Data;
-import io.swagger.v3.oas.annotations.*;
-import io.swagger.v3.oas.annotations.enums.*;
-import io.swagger.v3.oas.annotations.media.*;
+import lombok.EqualsAndHashCode;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.adapter.presenter.api.common.*;
-import org.veo.adapter.presenter.api.openapi.*;
-import org.veo.adapter.presenter.api.response.*;
-import org.veo.core.entity.*;
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetOwner;
+import org.veo.adapter.presenter.api.response.CustomLinkDto;
+import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Unit;
 
 @Data
-public final class CreateAssetDto {
+@EqualsAndHashCode(callSuper = true)
+public final class CreateAssetDto extends CreateEntityLayerSupertypeDto {
 
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
              flags = Pattern.Flag.CASE_INSENSITIVE,
@@ -71,10 +76,13 @@ public final class CreateAssetDto {
     @Schema(description = "The links for the Asset.")
     private Set<CustomLinkDto> links = Collections.emptySet();
 
-    @Schema(description = "The customAspects for the Asset.")
-    private Set<CustomPropertiesDto> customAspects = Collections.emptySet();
-
     @NotNull(message = "A owner must be present.")
     @Schema(required = true, implementation = ModelObjectReferenceAssetOwner.class)
     private ModelObjectReference<Unit> owner;
+
+    @Schema(description = "The customAspects for the Asset.")
+    @Override
+    public Map<String, CustomPropertiesDto> getCustomAspectsIntern() {
+        return super.getCustomAspectsIntern();
+    }
 }

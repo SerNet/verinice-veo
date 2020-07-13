@@ -119,7 +119,48 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         resourceId != ''
         result.message == 'Control created successfully.'
     }
+    @WithUserDetails("user@domain.example")
+    def "create a control with custom properties"() {
+        given: "a request body"
 
+        Map request = [
+            name: 'New Control',
+            owner: [
+                displayName: 'test2',
+                href: '/units/' + unit.id.uuidValue()
+            ], customAspects:
+            [
+                'my.aspect-test' :
+                [
+                    id: '00000000-0000-0000-0000-000000000000',
+                    type : 'my.aspect-test1',
+                    applicableTo: [
+                        "Control"
+                    ],
+                    domains: [],
+                    attributes:  [
+                        test1:'value1',
+                        test2:'value2'
+                    ]
+                ]
+            ]
+        ]
+
+        when: "a request is made to the server"
+
+        def results = post('/controls', request)
+
+        then: "the control is created and a status code returned"
+        results.andExpect(status().isCreated())
+
+        and: "the location of the new control is returned"
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.success == true
+        def resourceId = result.resourceId
+        resourceId != null
+        resourceId != ''
+        result.message == 'Control created successfully.'
+    }
 
     @WithUserDetails("user@domain.example")
     def "retrieve a control"() {
@@ -311,7 +352,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.href == "/units/"+unit.id.uuidValue()
     }
-
 
     @WithUserDetails("user@domain.example")
     def "delete a control"() {
