@@ -16,24 +16,17 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
 import org.veo.core.entity.Document;
-import org.veo.core.entity.ModelObject;
 
 /**
  * Transfer object for complete Documents.
@@ -44,16 +37,6 @@ import org.veo.core.entity.ModelObject;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DocumentDto extends EntityLayerSupertypeDto {
-
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        list.addAll(getDomains());
-        list.add(getOwner());
-        list.addAll(getLinks().stream()
-                              .map(l -> l.getTarget())
-                              .collect(Collectors.toList()));
-        return list;
-    }
 
     public static DocumentDto from(@Valid Document document, DtoEntityToTargetContext tcontext) {
         return DtoEntityToTargetTransformer.transformDocument2Dto(tcontext, document);

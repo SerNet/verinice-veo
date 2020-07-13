@@ -16,11 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import lombok.Data;
@@ -28,13 +23,11 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.ModelObject;
 
 /**
  * Transfer object for complete Assets.
@@ -46,16 +39,6 @@ import org.veo.core.entity.ModelObject;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Asset", description = "Schema for Asset")
 public class AssetDto extends EntityLayerSupertypeDto {
-
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        list.addAll(getDomains());
-        list.add(getOwner());
-        list.addAll(getLinks().stream()
-                              .map(l -> l.getTarget())
-                              .collect(Collectors.toList()));
-        return list;
-    }
 
     public static AssetDto from(@Valid Asset asset, DtoEntityToTargetContext tcontext) {
         return DtoEntityToTargetTransformer.transformAsset2Dto(tcontext, asset);

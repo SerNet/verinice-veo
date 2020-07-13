@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -90,10 +90,10 @@ public class EntityLayerSupertypeDto extends BaseModelObjectDto implements NameA
     private ModelObjectReference<Unit> owner;
 
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        list.addAll(getDomains());
-        list.add(getOwner());
-        return list;
+        return Stream.concat(Stream.concat(getDomains().stream(), Stream.of(getOwner())),
+                             getLinks().stream()
+                                       .map(CustomLinkDto::getTarget))
+                     .collect(Collectors.toList());
     }
 
     @Schema(description = "A custom property which is determined by the requested entity schema - see '/schemas'",

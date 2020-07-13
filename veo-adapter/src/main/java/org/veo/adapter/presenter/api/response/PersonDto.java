@@ -16,11 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import lombok.Data;
@@ -28,12 +23,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 
 /**
@@ -46,16 +39,6 @@ import org.veo.core.entity.Person;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Person", description = "Schema for Person")
 public class PersonDto extends EntityLayerSupertypeDto {
-
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        list.addAll(getDomains());
-        list.add(getOwner());
-        list.addAll(getLinks().stream()
-                              .map(l -> l.getTarget())
-                              .collect(Collectors.toList()));
-        return list;
-    }
 
     public static PersonDto from(@Valid Person person, DtoEntityToTargetContext tcontext) {
         return DtoEntityToTargetTransformer.transformPerson2Dto(tcontext, person);
