@@ -16,12 +16,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,54 +36,47 @@ import org.veo.core.entity.Unit;
 @EqualsAndHashCode(callSuper = true)
 public final class CreateDocumentDto extends CreateEntityLayerSupertypeDto {
 
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-             flags = Pattern.Flag.CASE_INSENSITIVE,
-             message = "ID for new objects must either be null or a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b")
-    private String id;
+    @Override
+    @Schema(description = "The name for the Document.", example = "Bitcoin Price Predictions")
+    public String getName() {
+        return super.getName();
+    }
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validFrom;
+    @Override
+    @Schema(description = "The abbreviation for the Document.", example = "BTC Price")
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying the point in time when this version of the entity was superseded "
-            + "by a newer version or deleted. Empty if this is the current version.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validUntil;
-
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the Document.",
-            example = "Bitcoin Price Predictions",
-            required = true)
-    private String name;
-
-    @Schema(description = "The abbreviation for the Document.",
-            example = "BTC Price",
-            required = false)
-    private String abbreviation;
-
+    @Override
     @Schema(description = "The description for the Document.",
-            example = "All predictions regarding the price of Bitcoin.",
-            required = false)
-    private String description;
+            example = "All predictions regarding the price of Bitcoin.")
+    public String getDescription() {
+        return super.getDescription();
+    }
 
+    @Override
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDocumentDomains.class))
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
 
-    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
-
+    @Override
     @Schema(description = "The links for the Document.")
-    private Set<CustomLinkDto> links = Collections.emptySet();
-
-    @NotNull(message = "A owner must be present.")
-    @Schema(required = true, implementation = ModelObjectReferenceDocumentOwner.class)
-    private ModelObjectReference<Unit> owner;
+    public Set<CustomLinkDto> getLinks() {
+        return super.getLinks();
+    }
 
     @Schema(description = "The customAspects for the Document.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspectsIntern() {
         return super.getCustomAspectsIntern();
     }
+
+    @Override
+    @Schema(implementation = ModelObjectReferenceDocumentOwner.class)
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
+
 }

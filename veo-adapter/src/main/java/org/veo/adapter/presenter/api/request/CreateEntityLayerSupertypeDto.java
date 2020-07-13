@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 
@@ -33,10 +35,49 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.response.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Unit;
 
 @Data
 public class CreateEntityLayerSupertypeDto {
+
+    @NotNull(message = "A name must be present.")
+    @Schema(required = true)
+    private String name;
+
+    private String abbreviation;
+
+    private String description;
+
+    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+
+    private Set<CustomLinkDto> links = Collections.emptySet();
+
+    @NotNull(message = "An owner must be present.")
+    @Schema(required = true)
+    private ModelObjectReference<Unit> owner;
+
+    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+             flags = Pattern.Flag.CASE_INSENSITIVE,
+             message = "ID for new objects must either be null or a valid UUID string following RFC 4122.")
+    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
+            example = "adf037f1-0089-48ad-9177-92269918758b")
+    private String id;
+
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+            example = "1990-12-31T23:59:60Z")
+    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    private String validFrom;
+
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying the point in time when this version of the entity was superseded "
+            + "by a newer version or deleted. Empty if this is the current version.",
+            example = "1990-12-31T23:59:60Z")
+    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    private String validUntil;
+
     @JsonIgnore
     @Valid
     private Set<CustomPropertiesDto> customAspects = Collections.emptySet();

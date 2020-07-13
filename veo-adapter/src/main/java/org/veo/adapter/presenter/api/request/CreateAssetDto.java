@@ -16,12 +16,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,49 +36,46 @@ import org.veo.core.entity.Unit;
 @EqualsAndHashCode(callSuper = true)
 public final class CreateAssetDto extends CreateEntityLayerSupertypeDto {
 
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-             flags = Pattern.Flag.CASE_INSENSITIVE,
-             message = "ID for new objects must either be null or a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b")
-    private String id;
+    @Override
+    @Schema(description = "The name for the Asset.", example = "Mail Server")
+    public String getName() {
+        return super.getName();
+    }
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validFrom;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying the point in time when this version of the entity was superseded "
-            + "by a newer version or deleted. Empty if this is the current version.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validUntil;
-
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the Asset.", example = "Mail Server", required = true)
-    private String name;
-
+    @Override
     @Schema(description = "The abbreviation for the Asset.", example = "MS")
-    private String abbreviation;
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
 
-    @Schema(description = "The description for the Asset.",
-            example = "A server handling e-mail.",
-            required = false)
-    private String description;
+    @Override
+    @Schema(description = "The description for the Asset.", example = "A server handling e-mail.")
+    public String getDescription() {
+        return super.getDescription();
+    }
 
+    @Override
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceAssetDomains.class))
-    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
 
+    @Override
     @Schema(description = "The links for the Asset.")
-    private Set<CustomLinkDto> links = Collections.emptySet();
-
-    @NotNull(message = "A owner must be present.")
-    @Schema(required = true, implementation = ModelObjectReferenceAssetOwner.class)
-    private ModelObjectReference<Unit> owner;
+    public Set<CustomLinkDto> getLinks() {
+        return super.getLinks();
+    }
 
     @Schema(description = "The customAspects for the Asset.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspectsIntern() {
         return super.getCustomAspectsIntern();
     }
+
+    @Override
+    @Schema(implementation = ModelObjectReferenceAssetOwner.class)
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
+
 }
