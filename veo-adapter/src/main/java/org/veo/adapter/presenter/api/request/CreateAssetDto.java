@@ -27,14 +27,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetOwner;
+import org.veo.adapter.presenter.api.response.AssetDto;
 import org.veo.adapter.presenter.api.response.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateAssetDto extends CreateEntityLayerSupertypeDto {
+public final class CreateAssetDto extends AssetDto {
+
+    public CreateAssetDto() {
+        super();
+        setId(Key.NIL_UUID.uuidValue());
+    }
 
     @Override
     @Schema(description = "The name for the Asset.", example = "Mail Server")

@@ -27,14 +27,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceControlDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceControlOwner;
+import org.veo.adapter.presenter.api.response.ControlDto;
 import org.veo.adapter.presenter.api.response.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateControlDto extends CreateEntityLayerSupertypeDto {
+public final class CreateControlDto extends ControlDto {
+
+    public CreateControlDto() {
+        super();
+        setId(Key.NIL_UUID.uuidValue());
+    }
 
     @Override
     @Schema(description = "The name for the Control.", example = "Install sensors")

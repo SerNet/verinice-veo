@@ -29,12 +29,19 @@ import org.veo.adapter.presenter.api.openapi.ModelObjectReferencePersonDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferencePersonOwner;
 import org.veo.adapter.presenter.api.response.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
+import org.veo.adapter.presenter.api.response.PersonDto;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreatePersonDto extends CreateEntityLayerSupertypeDto {
+public final class CreatePersonDto extends PersonDto {
+
+    public CreatePersonDto() {
+        super();
+        setId(Key.NIL_UUID.uuidValue());
+    }
 
     @Override
     @Schema(description = "The name for the Person.", example = "Mia Musterfrau")

@@ -29,12 +29,19 @@ import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDocumentDomains
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDocumentOwner;
 import org.veo.adapter.presenter.api.response.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
+import org.veo.adapter.presenter.api.response.DocumentDto;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateDocumentDto extends CreateEntityLayerSupertypeDto {
+public final class CreateDocumentDto extends DocumentDto {
+
+    public CreateDocumentDto() {
+        super();
+        setId(Key.NIL_UUID.uuidValue());
+    }
 
     @Override
     @Schema(description = "The name for the Document.", example = "Bitcoin Price Predictions")

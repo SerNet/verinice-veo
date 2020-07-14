@@ -29,12 +29,19 @@ import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessOwner;
 import org.veo.adapter.presenter.api.response.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
+import org.veo.adapter.presenter.api.response.ProcessDto;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateProcessDto extends CreateEntityLayerSupertypeDto {
+public final class CreateProcessDto extends ProcessDto {
+
+    public CreateProcessDto() {
+        super();
+        setId(Key.NIL_UUID.uuidValue());
+    }
 
     @Override
     @Schema(description = "The name for the Process.", example = "Two-factor authentication")
