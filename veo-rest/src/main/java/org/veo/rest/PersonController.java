@@ -139,11 +139,12 @@ public class PersonController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createPerson(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreatePersonDto personDto) {
+        Client client = getAuthenticatedClient(auth);
+        DtoTargetToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
         return useCaseInteractor.execute(createPersonUseCase,
-                                         CreateEntityInputMapper.map(getAuthenticatedClient(auth),
-                                                                     personDto.getOwner()
-                                                                              .getId(),
-                                                                     personDto.getName()),
+                                         CreateEntityInputMapper.map(client, personDto.getOwner()
+                                                                                      .getId(),
+                                                                     personDto.toPerson(tcontext)),
                                          person -> RestApiResponse.created(URL_BASE_PATH,
                                                                            CreatePersonOutputMapper.map(person)));
     }

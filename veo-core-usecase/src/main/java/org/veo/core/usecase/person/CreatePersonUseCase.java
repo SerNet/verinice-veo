@@ -23,7 +23,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.PersonImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
@@ -31,7 +30,7 @@ import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreatePersonUseCase extends UseCase<CreateEntityInputData, Person> {
+public class CreatePersonUseCase extends UseCase<CreateEntityInputData<Person>, Person> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -46,7 +45,7 @@ public class CreatePersonUseCase extends UseCase<CreateEntityInputData, Person> 
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public Person execute(CreateEntityInputData input) {
+    public Person execute(CreateEntityInputData<Person> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -56,8 +55,9 @@ public class CreatePersonUseCase extends UseCase<CreateEntityInputData, Person> 
                                           input.getUnitId()
                                                .uuidValue()));
         checkSameClient(input.getAuthenticatedClient(), unit, unit);
-        Person person = new PersonImpl(Key.newUuid(), input.getName(), unit);
 
+        Person person = input.getEntity();
+        person.setId(Key.newUuid());
         return personRepository.save(person);
     }
 

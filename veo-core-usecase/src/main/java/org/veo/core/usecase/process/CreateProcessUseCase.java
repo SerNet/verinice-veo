@@ -23,7 +23,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.ProcessImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
@@ -34,7 +33,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 /**
  * Creates a persistent new process object.
  */
-public class CreateProcessUseCase extends UseCase<CreateEntityInputData, Process> {
+public class CreateProcessUseCase extends UseCase<CreateEntityInputData<Process>, Process> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -49,7 +48,7 @@ public class CreateProcessUseCase extends UseCase<CreateEntityInputData, Process
 
     @Transactional(TxType.REQUIRED)
     @Override
-    public Process execute(CreateEntityInputData input) {
+    public Process execute(CreateEntityInputData<Process> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -58,7 +57,9 @@ public class CreateProcessUseCase extends UseCase<CreateEntityInputData, Process
                                           input.getUnitId()
                                                .uuidValue()));
         checkSameClient(input.getAuthenticatedClient(), unit, unit);
-        Process process = new ProcessImpl(Key.newUuid(), input.getName(), unit);
+
+        Process process = input.getEntity();
+        process.setId(Key.newUuid());
         return processRepository.save(process);
     }
 

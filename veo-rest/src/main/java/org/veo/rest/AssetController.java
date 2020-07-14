@@ -137,11 +137,12 @@ public class AssetController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateAssetDto assetDto) {
+        Client client = getAuthenticatedClient(auth);
+        DtoTargetToEntityContext tcontext = configureDtoContext(client, assetDto.getReferences());
         return useCaseInteractor.execute(createAssetUseCase,
-                                         CreateEntityInputMapper.map(getAuthenticatedClient(auth),
-                                                                     assetDto.getOwner()
-                                                                             .getId(),
-                                                                     assetDto.getName()),
+                                         CreateEntityInputMapper.map(client, assetDto.getOwner()
+                                                                                     .getId(),
+                                                                     assetDto.toAsset(tcontext)),
                                          asset -> RestApiResponse.created(URL_BASE_PATH,
                                                                           CreateAssetOutputMapper.map(asset)));
     }

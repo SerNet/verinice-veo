@@ -139,11 +139,12 @@ public class ControlController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateControlDto controlDto) {
+        Client client = getAuthenticatedClient(auth);
+        DtoTargetToEntityContext tcontext = configureDtoContext(client, controlDto.getReferences());
         return useCaseInteractor.execute(createControlUseCase,
-                                         CreateEntityInputMapper.map(getAuthenticatedClient(auth),
-                                                                     controlDto.getOwner()
-                                                                               .getId(),
-                                                                     controlDto.getName()),
+                                         CreateEntityInputMapper.map(client, controlDto.getOwner()
+                                                                                       .getId(),
+                                                                     controlDto.toControl(tcontext)),
                                          control -> RestApiResponse.created(URL_BASE_PATH,
                                                                             CreateControlOutputMapper.map(control)));
     }

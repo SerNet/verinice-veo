@@ -23,7 +23,6 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.ControlImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
@@ -31,7 +30,7 @@ import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateControlUseCase extends UseCase<CreateEntityInputData, Control> {
+public class CreateControlUseCase extends UseCase<CreateEntityInputData<Control>, Control> {
 
     private final UnitRepository unitRepository;
     private final ControlRepository controlRepository;
@@ -46,7 +45,7 @@ public class CreateControlUseCase extends UseCase<CreateEntityInputData, Control
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public Control execute(CreateEntityInputData input) {
+    public Control execute(CreateEntityInputData<Control> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -56,8 +55,9 @@ public class CreateControlUseCase extends UseCase<CreateEntityInputData, Control
                                           input.getUnitId()
                                                .uuidValue()));
         checkSameClient(input.getAuthenticatedClient(), unit, unit);
-        Control control = new ControlImpl(Key.newUuid(), input.getName(), unit);
 
+        Control control = input.getEntity();
+        control.setId(Key.newUuid());
         return controlRepository.save(control);
     }
 

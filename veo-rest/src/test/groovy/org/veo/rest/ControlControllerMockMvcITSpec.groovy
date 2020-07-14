@@ -161,6 +161,12 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         resourceId != null
         resourceId != ''
         result.message == 'Control created successfully.'
+        and: 'the custom properties are saved'
+        def savedContol = txTemplate.execute {
+            controlRepository.findById(Key.uuidFrom(resourceId)).get()
+        }
+        savedContol.customAspects.size() == 1
+        savedContol.customAspects.first().type == 'my.aspect-test1'
     }
 
     @WithUserDetails("user@domain.example")

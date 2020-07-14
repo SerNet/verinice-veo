@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.entity.Key
+import org.veo.core.entity.impl.PersonImpl
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.CreateEntityInputData
 import org.veo.core.usecase.person.CreatePersonUseCase
@@ -30,9 +32,8 @@ public class CreatePersonUseCaseSpec extends UseCaseSpec {
     def "create a person"() {
         given:
         TransformTargetToEntityContext targetToEntityContext = Mock()
-
         when:
-        def newPerson = usecase.execute(new CreateEntityInputData(existingUnit.id, "John", existingClient))
+        def newPerson = usecase.execute(new CreateEntityInputData(existingUnit.id, new PersonImpl(Key.newUuid(), "John", existingUnit), existingClient))
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialClient() >> targetToEntityContext

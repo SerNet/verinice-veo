@@ -23,14 +23,15 @@ import javax.validation.Valid;
 import lombok.Value;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 
 @Valid
 @Value
-public class CreateEntityInputData {
+public class CreateEntityInputData<T extends EntityLayerSupertype> {
 
     Key<UUID> unitId;
-    String name;
+    T entity;
     Client authenticatedClient;
 
 }

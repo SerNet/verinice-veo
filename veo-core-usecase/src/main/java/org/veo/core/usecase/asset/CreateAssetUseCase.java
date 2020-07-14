@@ -23,7 +23,6 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.AssetImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
@@ -31,7 +30,7 @@ import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateAssetUseCase extends UseCase<CreateEntityInputData, Asset> {
+public class CreateAssetUseCase extends UseCase<CreateEntityInputData<Asset>, Asset> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -46,7 +45,7 @@ public class CreateAssetUseCase extends UseCase<CreateEntityInputData, Asset> {
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public Asset execute(CreateEntityInputData input) {
+    public Asset execute(CreateEntityInputData<Asset> input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -57,7 +56,8 @@ public class CreateAssetUseCase extends UseCase<CreateEntityInputData, Asset> {
                                                .uuidValue()));
         checkSameClient(input.getAuthenticatedClient(), unit, unit);
 
-        Asset asset = new AssetImpl(Key.newUuid(), input.getName(), unit);
+        Asset asset = input.getEntity();
+        asset.setId(Key.newUuid());
         return assetRepository.save(asset);
     }
 

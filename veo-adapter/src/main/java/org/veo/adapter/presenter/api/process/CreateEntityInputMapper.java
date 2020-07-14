@@ -17,6 +17,7 @@
 package org.veo.adapter.presenter.api.process;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.base.CreateEntityInputData;
 
@@ -29,8 +30,9 @@ import org.veo.core.usecase.base.CreateEntityInputData;
  */
 public final class CreateEntityInputMapper {
 
-    public static CreateEntityInputData map(Client client, String unitId, String name) {
-        return new CreateEntityInputData(Key.uuidFrom(unitId), name, client);
+    public static <T extends EntityLayerSupertype> CreateEntityInputData<T> map(Client client,
+            String unitId, T entity) {
+        return new CreateEntityInputData<>(Key.uuidFrom(unitId), entity, client);
     }
 
     private CreateEntityInputMapper() {
