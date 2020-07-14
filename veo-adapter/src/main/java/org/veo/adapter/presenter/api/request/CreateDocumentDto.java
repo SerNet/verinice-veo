@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,14 +71,14 @@ public final class CreateDocumentDto extends DocumentDto {
 
     @Override
     @Schema(description = "The links for the Document.")
-    public Set<CustomLinkDto> getLinks() {
+    public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
     @Schema(description = "The customAspects for the Document.")
     @Override
-    public Map<String, CustomPropertiesDto> getCustomAspectsIntern() {
-        return super.getCustomAspectsIntern();
+    public Map<String, CustomPropertiesDto> getCustomAspects() {
+        return super.getCustomAspects();
     }
 
     @Override
