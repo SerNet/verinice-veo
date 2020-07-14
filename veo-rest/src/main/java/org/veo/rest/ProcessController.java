@@ -124,7 +124,6 @@ public class ProcessController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateProcessDto dto) {
-
         return useCaseInteractor.execute(createProcessUseCase,
                                          CreateEntityInputMapper.map(getAuthenticatedClient(auth),
                                                                      dto.getOwner()
@@ -147,7 +146,6 @@ public class ProcessController extends AbstractEntityController {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
         DtoTargetToEntityContext tcontext = configureDtoContext(client, processDto.getReferences());
-        Process p;
         return useCaseInteractor.execute(updateProcessUseCase, new ModifyEntityUseCase.InputData<>(
                 processDto.toProcess(tcontext), getAuthenticatedClient(auth)),
                                          process -> ProcessDto.from(process,

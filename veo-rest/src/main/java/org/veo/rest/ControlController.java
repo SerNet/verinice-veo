@@ -50,6 +50,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.io.mapper.CreateControlOutputMapper;
+import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreateControlDto;
 import org.veo.adapter.presenter.api.response.ControlDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
@@ -138,12 +139,11 @@ public class ControlController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateControlDto controlDto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(createControlUseCase, new CreateControlUseCase.InputData(
-                Key.uuidFrom(controlDto.getOwner()
-                                       .getId()),
-                controlDto.getName(), client),
+        return useCaseInteractor.execute(createControlUseCase,
+                                         CreateEntityInputMapper.map(getAuthenticatedClient(auth),
+                                                                     controlDto.getOwner()
+                                                                               .getId(),
+                                                                     controlDto.getName()),
                                          control -> RestApiResponse.created(URL_BASE_PATH,
                                                                             CreateControlOutputMapper.map(control)));
     }

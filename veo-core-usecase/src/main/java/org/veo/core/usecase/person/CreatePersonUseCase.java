@@ -16,15 +16,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.person;
 
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
 
-import lombok.Value;
-
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Unit;
@@ -33,10 +27,11 @@ import org.veo.core.entity.impl.PersonImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreatePersonUseCase extends UseCase<CreatePersonUseCase.InputData, Person> {
+public class CreatePersonUseCase extends UseCase<CreateEntityInputData, Person> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -51,7 +46,7 @@ public class CreatePersonUseCase extends UseCase<CreatePersonUseCase.InputData, 
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public Person execute(InputData input) {
+    public Person execute(CreateEntityInputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -60,17 +55,10 @@ public class CreatePersonUseCase extends UseCase<CreatePersonUseCase.InputData, 
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
                                           input.getUnitId()
                                                .uuidValue()));
-        checkSameClient(input.authenticatedClient, unit, unit);
+        checkSameClient(input.getAuthenticatedClient(), unit, unit);
         Person person = new PersonImpl(Key.newUuid(), input.getName(), unit);
 
         return personRepository.save(person);
     }
 
-    @Valid
-    @Value
-    public static class InputData {
-        Key<UUID> unitId;
-        String name;
-        Client authenticatedClient;
-    }
 }

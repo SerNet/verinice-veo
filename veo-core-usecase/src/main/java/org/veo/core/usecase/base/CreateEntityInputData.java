@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2020 Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,26 +14,23 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.process;
+package org.veo.core.usecase.base;
+
+import java.util.UUID;
+
+import javax.validation.Valid;
+
+import lombok.Value;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.usecase.base.CreateEntityInputData;
 
-/**
- * Map between the request DTO received from a client and the input expected by
- * the data source. (This is not needed for simple input data.)
- *
- * The request DTO is not mapped to an entity in this case because a new entity
- * is created from the input values.
- */
-public final class CreateEntityInputMapper {
+@Valid
+@Value
+public class CreateEntityInputData {
 
-    public static CreateEntityInputData map(Client client, String unitId, String name) {
-        return new CreateEntityInputData(Key.uuidFrom(unitId), name, client);
-    }
-
-    private CreateEntityInputMapper() {
-    }
+    Key<UUID> unitId;
+    String name;
+    Client authenticatedClient;
 
 }

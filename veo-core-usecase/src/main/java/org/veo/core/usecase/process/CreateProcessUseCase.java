@@ -16,15 +16,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
 
-import lombok.Value;
-
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
@@ -33,13 +27,14 @@ import org.veo.core.entity.impl.ProcessImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Creates a persistent new process object.
  */
-public class CreateProcessUseCase extends UseCase<CreateProcessUseCase.InputData, Process> {
+public class CreateProcessUseCase extends UseCase<CreateEntityInputData, Process> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -54,7 +49,7 @@ public class CreateProcessUseCase extends UseCase<CreateProcessUseCase.InputData
 
     @Transactional(TxType.REQUIRED)
     @Override
-    public Process execute(InputData input) {
+    public Process execute(CreateEntityInputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -62,16 +57,9 @@ public class CreateProcessUseCase extends UseCase<CreateProcessUseCase.InputData
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
                                           input.getUnitId()
                                                .uuidValue()));
-        checkSameClient(input.authenticatedClient, unit, unit);
+        checkSameClient(input.getAuthenticatedClient(), unit, unit);
         Process process = new ProcessImpl(Key.newUuid(), input.getName(), unit);
         return processRepository.save(process);
     }
 
-    @Valid
-    @Value
-    public static class InputData {
-        Key<UUID> unitId;
-        String name;
-        Client authenticatedClient;
-    }
 }

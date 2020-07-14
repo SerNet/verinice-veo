@@ -18,7 +18,7 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.process.CreateProcessUseCase.InputData
+import org.veo.core.usecase.base.CreateEntityInputData
 import org.veo.core.usecase.repository.ProcessRepository
 
 public class CreateProcessUseCaseSpec extends UseCaseSpec {
@@ -32,7 +32,7 @@ public class CreateProcessUseCaseSpec extends UseCaseSpec {
         TransformTargetToEntityContext targetToEntityContext = Mock()
 
         when:
-        def newProcess = usecase.execute(new InputData(existingUnit.id, "John's process", existingClient))
+        def newProcess = usecase.execute(new CreateEntityInputData(existingUnit.id, "John's process", existingClient))
         then:
         1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
         1 * targetToEntityContext.partialClient() >> targetToEntityContext

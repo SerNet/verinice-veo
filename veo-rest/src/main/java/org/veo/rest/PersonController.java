@@ -50,6 +50,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.io.mapper.CreatePersonOutputMapper;
+import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreatePersonDto;
 import org.veo.adapter.presenter.api.response.PersonDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
@@ -138,12 +139,11 @@ public class PersonController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createPerson(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreatePersonDto personDto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(createPersonUseCase, new CreatePersonUseCase.InputData(
-                Key.uuidFrom(personDto.getOwner()
-                                      .getId()),
-                personDto.getName(), client),
+        return useCaseInteractor.execute(createPersonUseCase,
+                                         CreateEntityInputMapper.map(getAuthenticatedClient(auth),
+                                                                     personDto.getOwner()
+                                                                              .getId(),
+                                                                     personDto.getName()),
                                          person -> RestApiResponse.created(URL_BASE_PATH,
                                                                            CreatePersonOutputMapper.map(person)));
     }

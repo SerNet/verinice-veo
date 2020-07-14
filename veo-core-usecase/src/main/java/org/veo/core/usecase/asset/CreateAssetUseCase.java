@@ -16,16 +16,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
-
-import lombok.Value;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -33,10 +27,11 @@ import org.veo.core.entity.impl.AssetImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateAssetUseCase extends UseCase<CreateAssetUseCase.InputData, Asset> {
+public class CreateAssetUseCase extends UseCase<CreateEntityInputData, Asset> {
 
     private final UnitRepository unitRepository;
     private final TransformContextProvider transformContextProvider;
@@ -51,7 +46,7 @@ public class CreateAssetUseCase extends UseCase<CreateAssetUseCase.InputData, As
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public Asset execute(InputData input) {
+    public Asset execute(CreateEntityInputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -60,17 +55,10 @@ public class CreateAssetUseCase extends UseCase<CreateAssetUseCase.InputData, As
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
                                           input.getUnitId()
                                                .uuidValue()));
-        checkSameClient(input.authenticatedClient, unit, unit);
+        checkSameClient(input.getAuthenticatedClient(), unit, unit);
 
         Asset asset = new AssetImpl(Key.newUuid(), input.getName(), unit);
         return assetRepository.save(asset);
     }
 
-    @Valid
-    @Value
-    public static class InputData {
-        Key<UUID> unitId;
-        String name;
-        Client authenticatedClient;
-    }
 }

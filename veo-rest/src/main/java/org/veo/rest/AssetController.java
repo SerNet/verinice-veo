@@ -50,6 +50,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.io.mapper.CreateAssetOutputMapper;
+import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreateAssetDto;
 import org.veo.adapter.presenter.api.response.AssetDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
@@ -136,15 +137,11 @@ public class AssetController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateAssetDto assetDto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
         return useCaseInteractor.execute(createAssetUseCase,
-                                         new CreateAssetUseCase.InputData(
-                                                 Key.uuidFrom(assetDto.getOwner()
-                                                                      .getId()),
-                                                 assetDto.getName(), client),
-                                         // CreateAssetInputMapper.map(assetDto,
-                                         // user.getClientId()),
+                                         CreateEntityInputMapper.map(getAuthenticatedClient(auth),
+                                                                     assetDto.getOwner()
+                                                                             .getId(),
+                                                                     assetDto.getName()),
                                          asset -> RestApiResponse.created(URL_BASE_PATH,
                                                                           CreateAssetOutputMapper.map(asset)));
     }

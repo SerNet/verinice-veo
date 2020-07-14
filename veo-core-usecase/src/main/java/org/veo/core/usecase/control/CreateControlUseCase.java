@@ -16,15 +16,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
-import java.util.UUID;
-
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
-import javax.validation.Valid;
 
-import lombok.Value;
-
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -33,10 +27,11 @@ import org.veo.core.entity.impl.ControlImpl;
 import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateControlUseCase extends UseCase<CreateControlUseCase.InputData, Control> {
+public class CreateControlUseCase extends UseCase<CreateEntityInputData, Control> {
 
     private final UnitRepository unitRepository;
     private final ControlRepository controlRepository;
@@ -51,7 +46,7 @@ public class CreateControlUseCase extends UseCase<CreateControlUseCase.InputData
 
     @Override
     @Transactional(TxType.REQUIRED)
-    public Control execute(InputData input) {
+    public Control execute(CreateEntityInputData input) {
         TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
                                                                                            .partialClient()
                                                                                            .partialDomain();
@@ -60,17 +55,10 @@ public class CreateControlUseCase extends UseCase<CreateControlUseCase.InputData
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
                                           input.getUnitId()
                                                .uuidValue()));
-        checkSameClient(input.authenticatedClient, unit, unit);
+        checkSameClient(input.getAuthenticatedClient(), unit, unit);
         Control control = new ControlImpl(Key.newUuid(), input.getName(), unit);
 
         return controlRepository.save(control);
     }
 
-    @Valid
-    @Value
-    public static class InputData {
-        Key<UUID> unitId;
-        String name;
-        Client authenticatedClient;
-    }
 }
