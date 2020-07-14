@@ -22,41 +22,46 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.control.GetControlsUseCase
 import org.veo.core.usecase.repository.ControlRepository
+import org.veo.core.usecase.repository.UnitRepository
 
 class GetControlsUseCaseSpec extends UseCaseSpec {
 
     ControlRepository controlRepository = Mock()
+    UnitRepository unitRepository = Mock()
 
-    GetControlsUseCase usecase = new GetControlsUseCase(clientRepository, controlRepository)
+    GetControlsUseCase usecase = new GetControlsUseCase(clientRepository, controlRepository, unitRepository)
 
     def "retrieve all controls for a client"() {
         given:
+        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Control control = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def entities = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * controlRepository.findByClient(existingClient, false) >> [control]
-        entities*.id == [id]
+        output.entities*.id == [id]
     }
 
 
     def "retrieve all controls for a unit"() {
         given:
+        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Control control = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def entities = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
+        1 * unitRepository.findById(existingUnit.id) >> Optional.of(existingUnit)
         1 * controlRepository.findByUnit(existingUnit, false) >> [control]
-        entities*.id == [id]
+        output.entities*.id == [id]
     }
 }

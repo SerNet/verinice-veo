@@ -23,6 +23,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 
@@ -81,7 +82,7 @@ public class PropertyData {
     private Boolean booleanValue;
     private Integer integerValue;
     private OffsetDateTime offsetDateTimeValue;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> stringListValue;
 
     public void apply(CustomProperties target) {
@@ -119,5 +120,22 @@ public class PropertyData {
     static class PropertyId implements Serializable {
         private String key;
         private String parentId;
+    }
+
+    public Object getValue() {
+        switch (type) {
+        case STRING:
+            return getStringValue();
+        case STRING_LIST:
+            return getStringListValue();
+        case INTEGER:
+            return getIntegerValue();
+        case BOOLEAN:
+            return getBooleanValue();
+        case OFFSET_DATE_TIME:
+            return getOffsetDateTimeValue();
+        default:
+            throw new UnsupportedOperationException("Unhandled property type: " + type);
+        }
     }
 }

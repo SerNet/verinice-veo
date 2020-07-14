@@ -26,25 +26,31 @@ import org.veo.core.entity.CustomLink
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
-import org.veo.core.entity.custom.LinkImpl
-import org.veo.core.entity.impl.AssetImpl
-import org.veo.core.entity.impl.PersonImpl
+import org.veo.core.entity.transform.EntityFactory
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import spock.lang.Specification
 
 class CustomLinkTransformerSpec extends Specification {
 
-
     def "create an asset with a customLink and transform it"() {
         given: "a person and an asset"
 
-        Person person = new PersonImpl(Key.newUuid(), "P1", null)
+        def id1= Key.newUuid()
+        def id2 =Key.newUuid()
+        def id3 =Key.newUuid()
 
-        Asset asset = new AssetImpl(Key.newUuid(), "AssetName", null)
+        EntityFactory entityFactory = new EntityDataFactory()
+        Person person = entityFactory.createPerson(id1,"P1", null)
+        Asset asset = entityFactory.createAsset(id2,"AssetName",null)
 
-        CustomLink cp = new LinkImpl(Key.newUuid(), null, person, asset)
-        cp.setType('my.new.linktype')
-        cp.setApplicableTo(['Asset'] as Set)
-        asset.addToLinks(cp)
+        CustomLink cp = entityFactory.createCustomLink()
+        cp.source = person
+        cp.target = asset
+        cp.id = id3
+        cp.name = 'linkName'
+        cp.type = 'my.new.linktype'
+        cp.applicableTo = (['Asset'] as Set)
+        asset.links = [cp as Set]
 
 
         when: "add some properties"
@@ -53,10 +59,11 @@ class CustomLinkTransformerSpec extends Specification {
         cp.setProperty("my.key.2","my test value 2")
 
 
-        DtoToEntityContext tcontext = DtoToEntityContext.getCompleteTransformationContext()
+        DtoToEntityContext tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
-        Asset assetData = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)
+        Asset assetData = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext())
+                .toAsset(tcontext)
 
         then: "The properties are also transformed"
         assetData.getLinks().size() == 1
@@ -71,7 +78,7 @@ class CustomLinkTransformerSpec extends Specification {
         cp.setProperty("my.key.3", 10)
 
 
-        tcontext = DtoToEntityContext.getCompleteTransformationContext()
+        tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
         Asset savedAsset = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)
@@ -86,7 +93,7 @@ class CustomLinkTransformerSpec extends Specification {
         cp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00.000Z"))
 
 
-        tcontext = DtoToEntityContext.getCompleteTransformationContext()
+        tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
         savedAsset = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)

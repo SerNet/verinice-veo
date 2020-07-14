@@ -29,9 +29,10 @@ import groovy.json.JsonSlurper
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.*
-import org.veo.core.entity.custom.SimpleProperties
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -53,9 +54,13 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private PersonRepositoryImpl personRepository
+    @Autowired
+    private UnitRepositoryImpl unitRepository
 
     @Autowired
     TransactionTemplate txTemplate
+    @Autowired
+    private EntityDataFactory entityFactory
 
     private Unit unit
     private Domain domain
@@ -64,24 +69,30 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-            }
-            domain1 = newDomain {
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-            }
 
-            def client = newClient{
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
-            unit = newUnit client, {
-                name = "Test unit"
-            }
-            client.units << unit
-            clientRepository.save(client)
+            domain = entityFactory.createDomain()
+            domain.description = "ISO/IEC"
+            domain.abbreviation = "ISO"
+            domain.name = "ISO"
+            domain.id = Key.newUuid()
+
+            domain1 = entityFactory.createDomain()
+            domain1.description = "ISO/IEC2"
+            domain1.abbreviation = "ISO"
+            domain1.name = "ISO"
+            domain1.id = Key.newUuid()
+
+            def client= entityFactory.createClient()
+            client.id = clientId
+            client.domains = [domain, domain1] as Set
+
+            unit = entityFactory.createUnit()
+            unit.name = "Test unit"
+            unit.id = Key.newUuid()
+
+            unit.client = client
+            Client c = clientRepository.save(client)
+            unitRepository.save(unit)
         }
     }
 
@@ -113,14 +124,14 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         result.message == 'Person created successfully.'
     }
 
-
     @WithUserDetails("user@domain.example")
     def "retrieve a person"() {
         given: "a saved person"
 
-        def person = newPerson unit, {
-            name = 'Test person-1'
-        }
+        def person = entityFactory.createPerson()
+        person.id = Key.newUuid()
+        person.name = 'Test person-1'
+        person.owner = unit
 
         person = txTemplate.execute {
             personRepository.save(person)
@@ -136,18 +147,19 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         result.owner.href == "/units/"+unit.id.uuidValue()
     }
 
-
     @WithUserDetails("user@domain.example")
     def "retrieve all persons for a unit"() {
         given: "two saved persons"
 
-        def person = newPerson unit, {
-            name = 'Test person-1'
-        }
+        def person = entityFactory.createPerson()
+        person.id = Key.newUuid()
+        person.name = 'Test person-1'
+        person.owner = unit
 
-        def person2 = newPerson unit, {
-            name = 'Test person-2'
-        }
+        def person2 = entityFactory.createPerson()
+        person2.id = Key.newUuid()
+        person2.name = 'Test person-2'
+        person2.owner = unit
 
         (person, person2) = txTemplate.execute {
             [person, person2].collect(personRepository.&save)
@@ -169,15 +181,15 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         result.sort{it.name}[1].owner.href == "/units/"+unit.id.uuidValue()
     }
 
-
     @WithUserDetails("user@domain.example")
     def "put a person"() {
         given: "a saved person"
 
         Key<UUID> id = Key.newUuid()
-        def person = newPerson unit, {
-            it.id = id
-        }
+        def person = entityFactory.createPerson()
+        person.id = id
+        person.name = 'Test person-1'
+        person.owner = unit
         person.setDomains([domain1] as Set)
 
         person = txTemplate.execute {
@@ -218,16 +230,17 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a person with custom properties"() {
         given: "a saved person"
 
-        CustomProperties cp = new SimpleProperties()
+        CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Person'] as Set)
         cp.setId(Key.newUuid())
         Key<UUID> id = Key.newUuid()
-        def person = newPerson unit, {
-            it.id = id
-        }
-        person.setCustomAspects([cp] as Set)
+        def person = entityFactory.createPerson()
+        person.id = id
+        person.name = 'Test person-1'
+        person.owner = unit
         person.setDomains([domain1] as Set)
+        person.setCustomAspects([cp] as Set)
 
         person = txTemplate.execute {
             personRepository.save(person)
@@ -275,7 +288,16 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.href == "/units/"+unit.id.uuidValue()
-        def entity = txTemplate.execute { personRepository.findById(id).get() }
+
+        when:
+        def entity = txTemplate.execute {
+            personRepository.findById(id).get().tap() {
+                // resolve proxy:
+                customAspects.first()
+            }
+        }
+
+        then:
         entity.name == 'New person-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'my.aspect-test1'
@@ -289,9 +311,10 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
         given: "an existing person"
         Key<UUID> id = Key.newUuid()
-        def person = newPerson unit, {
-            it.id = id
-        }
+        def person = entityFactory.createPerson()
+        person.id = id
+        person.name = 'Test person-1'
+        person.owner = unit
         person.setDomains([domain1] as Set)
 
         person = txTemplate.execute {

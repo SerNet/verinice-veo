@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -29,10 +27,10 @@ import org.veo.core.entity.code.ModelUtils;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
+import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
 
 /**
  * Abstract superclass for all operations that change an asset. The
@@ -40,15 +38,13 @@ import org.veo.core.usecase.repository.UnitRepository;
  * changes to the asset.
  */
 @Slf4j
-public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputData, Unit> {
+public abstract class ChangeUnitUseCase<R>
+        extends UseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData, R> {
 
     private final UnitRepository unitRepository;
-    protected final TransformContextProvider transformContextProvider;
 
-    public ChangeUnitUseCase(UnitRepository repository,
-            TransformContextProvider transformContextProvider) {
+    public ChangeUnitUseCase(UnitRepository repository) {
         this.unitRepository = repository;
-        this.transformContextProvider = transformContextProvider;
     }
 
     /**
@@ -56,8 +52,7 @@ public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputD
      * if the requested unit object was not found in the repository.
      */
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Unit execute(InputData input) {
+    public OutputData execute(InputData input) {
         log.info("Updating unit with id {}", input.getChangedUnit()
                                                   .getId()
                                                   .uuidValue());
@@ -67,6 +62,7 @@ public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputD
                              .map(u -> checkSameClient(u, input))
                              .map(u -> update(u, input))
                              .map(u -> save(u, input))
+                             .map(this::output)
                              .orElseThrow(() -> new NotFoundException("Unit %s was not found.",
                                      input.getChangedUnit()
                                           .getId()
@@ -76,7 +72,6 @@ public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputD
     protected abstract Unit update(Unit storedUnit, InputData input);
 
     protected Unit save(Unit unit, InputData input) {
-        TransformTargetToEntityContext dataToEntityContext = transformContextProvider.createTargetToEntityContext();
         // Notice: by changing the context here it would be possible to change the view
         // of the entity that is being
         // returned after the save.
@@ -84,7 +79,11 @@ public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputD
         // "dataToEntityContext.partialUnit();"
         unit.setClient(input.getClient());
         ModelUtils.incrementVersion(unit);
-        return this.unitRepository.save(unit, null, dataToEntityContext);
+        return this.unitRepository.save(unit);
+    }
+
+    private OutputData output(Unit unit) {
+        return new OutputData(unit);
     }
 
     // TODO VEO-124 this check should always be done implicitly by UnitImpl or
@@ -110,8 +109,16 @@ public abstract class ChangeUnitUseCase extends UseCase<UpdateUnitUseCase.InputD
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Unit changedUnit;
         Client client;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Unit unit;
+
     }
 }

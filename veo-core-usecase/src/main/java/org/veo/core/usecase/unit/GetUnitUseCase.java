@@ -18,8 +18,6 @@ package org.veo.core.usecase.unit;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -28,23 +26,21 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
+import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
 
 /**
  * Reinstantiate a persisted unit object.
  */
-public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, Unit> {
+public class GetUnitUseCase<R>
+        extends UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData, R> {
 
     private final UnitRepository repository;
-    private final TransformContextProvider transformContextProvider;
 
-    public GetUnitUseCase(UnitRepository repository,
-            TransformContextProvider transformContextProvider) {
+    public GetUnitUseCase(UnitRepository repository) {
         this.repository = repository;
-        this.transformContextProvider = transformContextProvider;
     }
 
     /**
@@ -52,22 +48,26 @@ public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, Unit> {
      * if the requested unit object was not found in the repository.
      */
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Unit execute(InputData input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
-        Unit unit = repository.findById(input.getUnitId(), dataTargetToEntityContext)
+    public OutputData execute(InputData input) {
+        Unit unit = repository.findById(input.getUnitId())
                               .orElseThrow(() -> new NotFoundException(input.getUnitId()
                                                                             .uuidValue()));
         checkSameClient(input.authenticatedClient, unit, unit);
-        return unit;
+        return new OutputData(unit);
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Key<UUID> unitId;
         Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Unit unit;
+
     }
 }

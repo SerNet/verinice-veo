@@ -22,41 +22,46 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.asset.GetAssetsUseCase
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.repository.AssetRepository
+import org.veo.core.usecase.repository.UnitRepository
 
 class GetAssetsUseCaseSpec extends UseCaseSpec {
 
     AssetRepository assetRepository = Mock()
+    UnitRepository unitRepository = Mock()
 
-    GetAssetsUseCase usecase = new GetAssetsUseCase(clientRepository, assetRepository)
+    GetAssetsUseCase usecase = new GetAssetsUseCase(clientRepository, assetRepository, unitRepository)
 
     def "retrieve all assets for a client"() {
         given:
+        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def entities = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * assetRepository.findByClient(existingClient, false) >> [asset]
-        entities*.id == [id]
+        output.entities*.id == [id]
     }
 
 
     def "retrieve all assets for a unit"() {
         given:
+        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Asset asset = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def entities = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
+        1 * unitRepository.findById(existingUnit.id) >> Optional.of(existingUnit)
         1 * assetRepository.findByUnit(existingUnit, false) >> [asset]
-        entities*.id == [id]
+        output.entities*.id == [id]
     }
 }

@@ -17,56 +17,27 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import org.veo.core.entity.Document;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 
 @Entity(name = "document")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class DocumentData extends EntityLayerSupertypeData {
+public class DocumentData extends EntityLayerSupertypeData implements Document {
 
-    /**
-     * transform the given entity 'Document' to the corresponding 'DocumentData'
-     * with the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static DocumentData from(@Valid Document document) {
-        return from(document, DataEntityToTargetContext.getCompleteTransformationContext());
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Document.class;
     }
 
-    /**
-     * Transform the given data object 'DocumentData' to the corresponding
-     * 'Document' entity with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public Document toDocument() {
-        return toDocument(DataTargetToEntityContext.getCompleteTransformationContext());
-    }
-
-    public static DocumentData from(@Valid Document document,
-            TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformDocument2Data((DataEntityToTargetContext) tcontext,
-                                                                        document);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public Document toDocument(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Document((DataTargetToEntityContext) tcontext,
-                                                                        this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_DOCUMENT;
     }
 
 }

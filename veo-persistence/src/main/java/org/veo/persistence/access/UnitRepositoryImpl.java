@@ -20,62 +20,37 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.repository.UnitRepository;
 import org.veo.persistence.access.jpa.UnitDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.UnitData;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
 
 @Repository
 @AllArgsConstructor
 public class UnitRepositoryImpl implements UnitRepository {
-
-    // public Collection<UnitData> findByNameContainingIgnoreCase(String search);
 
     private UnitDataRepository dataRepository;
 
     private ModelObjectValidation validation;
 
     @Override
-    public Unit save(Unit unit, TransformEntityToTargetContext entityToDataContext,
-            TransformTargetToEntityContext dataToEntityContext) {
+    public Unit save(Unit unit) {
         validation.validateModelObject(unit);
-        return dataRepository.save(UnitData.from(unit, Optional.ofNullable(entityToDataContext)
-                                                               .orElseGet(DataEntityToTargetContext::getCompleteTransformationContext)))
-                             .toUnit(Optional.ofNullable(dataToEntityContext)
-                                             .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext));
+        return dataRepository.save((UnitData) unit);
     }
 
     @Override
     public Optional<Unit> findById(Key<UUID> id) {
-        return findById(id, null);
-    }
-
-    @Override
-    public Optional<Unit> findById(Key<UUID> id,
-            TransformTargetToEntityContext dataToEntityContext) {
-        TransformTargetToEntityContext context = Optional.ofNullable(dataToEntityContext)
-                                                         .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext);
-
-        boolean fetchClient = ((DataTargetToEntityContext) context).getUnitClientFunction() != null;
-        Optional<UnitData> dataObject;
-        if (fetchClient) {
-            dataObject = dataRepository.findByIdFetchClient(id.uuidValue());
-        } else {
-            dataObject = dataRepository.findById(id.uuidValue());
-        }
-        return dataObject.map(data -> data.toUnit(context));
-
+        return (Optional) dataRepository.findById(id.uuidValue());
     }
 
     @Override
@@ -86,7 +61,7 @@ public class UnitRepositoryImpl implements UnitRepository {
 
     @Override
     public void delete(Unit entity) {
-        dataRepository.delete(UnitData.from(entity));
+        dataRepository.delete((UnitData) entity);
     }
 
     @Override
@@ -103,6 +78,23 @@ public class UnitRepositoryImpl implements UnitRepository {
     public Set<Unit> getByIds(Set<Key<UUID>> ids) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public List<Unit> findByClient(Client client) {
+        return dataRepository.findByClient_DbId(client.getDbId())
+                             .stream()
+                             .map(e -> (Unit) e)
+                             .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<Unit> findByParent(Unit parent) {
+        return dataRepository.findByParent_DbId(parent.getDbId())
+                             .stream()
+                             .map(e -> (Unit) e)
+                             .collect(Collectors.toList());
     }
 
 }

@@ -24,6 +24,14 @@ import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.*
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.AssetData
+import org.veo.persistence.entity.jpa.ClientData
+import org.veo.persistence.entity.jpa.DocumentData
+import org.veo.persistence.entity.jpa.DomainData
+import org.veo.persistence.entity.jpa.PersonData
+import org.veo.persistence.entity.jpa.ProcessData
+import org.veo.persistence.entity.jpa.UnitData
 
 @SpringBootTest(classes = ClientRepositorySpec.class)
 @Transactional()
@@ -33,22 +41,23 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     @Autowired
     private ClientRepositoryImpl repository
+    @Autowired
+    private UnitRepositoryImpl unitRepository
 
 
     def "create a simple client and a domain together"() {
         given: "a domain and a client"
 
         Key clientId = Key.newUuid()
-        Domain domain = newDomain {
-            name = "27001"
-            description = "ISO/IEC"
-            abbreviation = "ISO"
-        }
+        Domain domain = new DomainData()
+        domain.name = "27001"
+        domain.description = "ISO/IEC"
+        domain.abbreviation = "ISO"
+        domain.id = Key.newUuid()
 
-        Client client = newClient {
-            id = clientId
-            name = "Demo Client"
-        }
+        Client client = new ClientData()
+        client.id = clientId
+        client.name = "Demo Client"
         client.setDomains([domain] as Set)
 
         repository.save(client)
@@ -88,15 +97,15 @@ class ClientRepositorySpec extends VeoSpringSpec {
         given: "a domain and a client"
 
         Key clientId = Key.newUuid()
-        Domain domain = newDomain {
-            name = "27001"
-            description = "ISO/IEC"
-            abbreviation = "ISO"
-        }
+        Domain domain = new DomainData()
+        domain.name = "27001"
+        domain.description = "ISO/IEC"
+        domain.abbreviation = "ISO"
+        domain.id = Key.newUuid()
 
-        Client client = newClient {
-            id = clientId
-        }
+        Client client = new ClientData()
+        client.id = clientId
+        client.setDomains([domain] as Set)
 
         client.setDomains(([domain] as Set))
 
@@ -108,13 +117,15 @@ class ClientRepositorySpec extends VeoSpringSpec {
         boolean isPresent = newClient.isPresent()
 
         Client c = newClient.get()
-        Unit unit = newUnit c, {
-            name = "new Unit"
-        }
+        Unit unit = new UnitData()
+        unit.name = "new Unit"
+        unit.id = Key.newUuid()
+        unit.client = c
 
-        c.addToUnits(unit)
-        repository.save(newClient.get())
+        unitRepository.save(unit)
+
         newClient = repository.findById(clientId)
+        def units = unitRepository.findByClient(c)
 
         isPresent = newClient.isPresent()
         c = newClient.get()
@@ -122,63 +133,72 @@ class ClientRepositorySpec extends VeoSpringSpec {
         then: "test"
 
         isPresent == true
-        c.units.size()==1
         c.domains.first().description == "ISO/IEC"
         c.domains.first().abbreviation == "ISO"
+        units.size == 1
     }
 
     def "create simple client, unit and some objects"() {
         given: "a domain and a client"
 
         Key clientId = Key.newUuid()
-        Domain domain = newDomain{
-            name = "27001"
-            description = "ISO/IEC"
-            abbreviation = "ISO"
-        }
+        Domain domain = new DomainData()
+        domain.name = "27001"
+        domain.description = "ISO/IEC"
+        domain.abbreviation = "ISO"
+        domain.id = Key.newUuid()
 
-        Client client = newClient {
-            id = clientId
-            domains = ([domain] as Set)
-        }
 
-        Unit unit = newUnit client, {
-            domains = [domain] as Set
-        }
-        client.addToUnits(unit)
+        Client client = new ClientData()
+        client.id = clientId
+        client.domains = ([domain] as Set)
 
-        Person person = newPerson unit, {
-            domains = [domain] as Set
-        }
+        Unit unit = new UnitData()
+        unit.id = Key.newUuid()
+        unit.name = "u1"
+        unit.client = client
+        unit.domains = [domain] as Set
 
-        Asset asset = newAsset unit, {
-            domains = [domain] as Set
-        }
 
-        Process process = newProcess unit, {
-            domains = [domain] as Set
-        }
+        Person person = new PersonData()
+        person.id = Key.newUuid()
+        person.owner = unit
+        person.domains = [domain] as Set
 
-        Document document = newDocument unit, {
-            domains = [domain] as Set
-        }
+        Asset asset = new AssetData()
+        asset.id = Key.newUuid()
+        asset.owner = unit
+        asset.domains = [domain] as Set
+
+        Process process = new ProcessData()
+        process.id = Key.newUuid()
+        process.owner = unit
+        process.domains = [domain] as Set
+
+        Document document = new DocumentData()
+        document.id = Key.newUuid()
+        document.owner = unit
+        document.domains = [domain] as Set
 
         when:"save and load the client"
 
         repository.save(client)
+        unitRepository.save(unit)
+
         Client newClient = repository.findById(clientId).get()
+        def units = unitRepository.findByClient(newClient)
 
         then:"all data is present"
 
         newClient.name == client.name
         newClient.domains == client.domains
-        newClient.units == client.units
+        //        newClient.units == client.units
         newClient.domains.first() == client.domains.first()
         newClient.domains.first().name == client.domains.first().name
         newClient.domains.first().abbreviation == client.domains.first().abbreviation
         newClient.domains.first().description == client.domains.first().description
-        newClient.units.first().name == client.units.first().name
-        newClient.units.first().description == client.units.first().description
-        newClient.units.first().abbreviation == client.units.first().abbreviation
+        units.first().name == unit.name
+        units.first().description == unit.description
+        //        newClient.units.first().abbreviation == client.units.first().abbreviation
     }
 }

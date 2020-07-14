@@ -31,15 +31,15 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
     def "retrieve a process"() {
         given:
         def id = Key.newUuid()
-        Process process = Mock() {
-            getOwner() >> existingUnit
-            getId() >> id
-        }
+        Process process = Mock()
+        process.getOwner() >> existingUnit
+        process.getId() >> id
+
         when:
-        def outputProcess = usecase.execute(new InputData(id,  existingClient))
+        def output = usecase.execute(new InputData(id,  existingClient))
         then:
-        1 * processRepository.findById(id,_) >> Optional.of(process)
-        outputProcess != null
-        outputProcess.id == id
+        1 * processRepository.findById(id) >> Optional.of(process)
+        output.process != null
+        output.process.id == id
     }
 }

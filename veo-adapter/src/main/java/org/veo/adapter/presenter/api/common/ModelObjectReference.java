@@ -18,8 +18,6 @@ package org.veo.adapter.presenter.api.common;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +28,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.ClassKey;
@@ -141,24 +138,20 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
      */
     @SuppressWarnings("unchecked")
     public static <T extends ModelObject> ModelObjectReference<T> from(T entity) {
-        Class<?>[] interfaces = Stream.of(entity.getClass()
-                                                .getInterfaces())
-                                      .filter(ModelObject.class::isAssignableFrom)
-                                      .filter(Predicate.isEqual(ModelGroup.class)
-                                                       .negate())
-                                      .toArray(Class[]::new);
-        if (interfaces.length == 1) {
+        Class<? extends ModelObject> modelInterface = entity.getModelInterface();
+        if (modelInterface != null) {
             ModelObjectReference<T> modelObjectReference = new ModelObjectReference<>(entity.getId()
                                                                                             .uuidValue(),
                     Switches.toDisplayNameSwitch()
                             .doSwitch(entity),
-                    (Class<T>) interfaces[0]);
+                    (Class<T>) modelInterface);
             modelObjectReference.setId(entity.getId()
                                              .uuidValue());
             return modelObjectReference;
         } else {
             throw new IllegalArgumentException(
-                    "The given entity implements more than one interface.");
+                    "The given entity does not return an entity interface. " + entity.getClass()
+                                                                                     .getSimpleName());
         }
     }
 

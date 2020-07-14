@@ -16,32 +16,31 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Key
-import org.veo.core.entity.impl.PersonImpl
+import org.veo.core.entity.Person
 import org.veo.core.entity.transform.TransformTargetToEntityContext
-import org.veo.core.usecase.base.CreateEntityInputData
 import org.veo.core.usecase.person.CreatePersonUseCase
+import org.veo.core.usecase.person.CreatePersonUseCase.InputData
 import org.veo.core.usecase.repository.PersonRepository
 
 public class CreatePersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
 
-    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository, transformContextProvider)
+    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository, entityFactory)
 
     def "create a person"() {
         given:
         TransformTargetToEntityContext targetToEntityContext = Mock()
+        Person p = Mock()
+        p.name >> "John"
+        p.owner >> existingUnit
+
         when:
-        def newPerson = usecase.execute(new CreateEntityInputData(existingUnit.id, new PersonImpl(Key.newUuid(), "John", existingUnit), existingClient))
+        def output = usecase.execute(new InputData(p, existingClient))
         then:
-        1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
-        1 * targetToEntityContext.partialClient() >> targetToEntityContext
-        1 * unitRepository.findById(_, _) >> Optional.of(existingUnit)
-        1 * personRepository.save({
-            it.name == "John"
-        }) >> { it[0] }
-        newPerson != null
-        newPerson.name == "John"
+        1 * unitRepository.findById(_) >> Optional.of(existingUnit)
+        1 * personRepository.save(p) >> p
+        output.person != null
+        output.person.name == "John"
     }
 }

@@ -16,49 +16,59 @@
  ******************************************************************************/
 package org.veo.core.usecase.person;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import javax.validation.Valid;
 
+import lombok.Value;
+
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreatePersonUseCase extends UseCase<CreateEntityInputData<Person>, Person> {
+public class CreatePersonUseCase<R>
+        extends UseCase<CreatePersonUseCase.InputData, CreatePersonUseCase.OutputData, R> {
 
     private final UnitRepository unitRepository;
-    private final TransformContextProvider transformContextProvider;
     private final PersonRepository personRepository;
+    private final EntityFactory entityFactory;
 
     public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository personRepository,
-            TransformContextProvider transformContextProvider) {
+            EntityFactory entityFactory) {
         this.unitRepository = unitRepository;
         this.personRepository = personRepository;
-        this.transformContextProvider = transformContextProvider;
+        this.entityFactory = entityFactory;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Person execute(CreateEntityInputData<Person> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialClient()
-                                                                                           .partialDomain();
-
-        Unit unit = unitRepository.findById(input.getUnitId(), dataTargetToEntityContext)
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          input.getUnitId()
-                                               .uuidValue()));
-        checkSameClient(input.getAuthenticatedClient(), unit, unit);
-
-        Person person = input.getEntity();
+    public OutputData execute(InputData input) {
+        Person person = input.newPerson;
         person.setId(Key.newUuid());
-        return personRepository.save(person);
+        Unit unit = unitRepository.findById(person.getOwner()
+                                                  .getId())
+                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
+                                          person.getOwner()
+                                                .getId()
+                                                .uuidValue()));// remove
+        checkSameClient(input.authenticatedClient, unit, unit);
+        return new OutputData(personRepository.save(person));
     }
 
+    @Valid
+    @Value
+    public static class InputData implements UseCase.InputData {
+        Person newPerson;
+        Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Person person;
+    }
 }

@@ -18,8 +18,7 @@ package org.veo.core.usecase.group;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import javax.validation.Valid;
 
 import lombok.Value;
 
@@ -32,7 +31,8 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class DeleteGroupUseCase extends UseCase<DeleteGroupUseCase.InputData, Void> {
+public class DeleteGroupUseCase<R>
+        extends UseCase<DeleteGroupUseCase.InputData, DeleteGroupUseCase.OutputData, R> {
 
     private final RepositoryProvider repositoryProvider;
 
@@ -41,8 +41,7 @@ public class DeleteGroupUseCase extends UseCase<DeleteGroupUseCase.InputData, Vo
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Void execute(InputData input) {
+    public OutputData execute(InputData input) {
 
         Repository<? extends EntityLayerSupertype, Key<UUID>> repository = repositoryProvider.getRepositoryFor(input.groupType.entityClass);
 
@@ -50,23 +49,31 @@ public class DeleteGroupUseCase extends UseCase<DeleteGroupUseCase.InputData, Vo
                                                .orElseThrow(() -> new NotFoundException(
                                                        "Group %s was not found.", input.getId()
                                                                                        .uuidValue()));
-        // TODO VEO-124 this check should always be done implicitly by UnitImpl
-        // or ModelValidator. Without this check, it would be possible to
-        // overwrite objects from other clients with our own clientID, thereby
-        // hijacking these objects!
+        // TODO VEO-124 this check should always be done implicitly by UnitImpl or
+        // ModelValidator. Without this check, it would be possible to overwrite
+        // objects from other clients with our own clientID, thereby hijacking these
+        // objects!
         checkSameClient(input.authenticatedClient, group);
-        // TODO VEO-161 also remove entity from links pointing to it
+        // TODO VEO-127 also remove entity from references in bidirectional
+        // relationships
 
         repository.deleteById(group.getId());
-        return null;
+        return new OutputData(input.getId());
 
     }
 
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Key<UUID> id;
         GroupType groupType;
         Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Key<UUID> id;
     }
 
 }

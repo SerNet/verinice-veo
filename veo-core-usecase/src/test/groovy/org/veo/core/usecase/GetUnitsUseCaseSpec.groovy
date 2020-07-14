@@ -19,8 +19,8 @@ package org.veo.core.usecase
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.entity.impl.ClientImpl
 import org.veo.core.usecase.repository.ClientRepository
+import org.veo.core.usecase.repository.UnitRepository
 import org.veo.core.usecase.unit.GetUnitsUseCase
 import spock.lang.Specification
 
@@ -31,28 +31,56 @@ public class GetUnitsUseCaseSpec extends Specification {
     Unit existingUnit
 
     def setup() {
-        existingClient = new ClientImpl(Key.newUuid(), "Existing client")
-        existingUnit = existingClient.createUnit("Existing unit")
-        existingUnit.createSubUnit("Subunit 1")
-        existingUnit.createSubUnit("Subunit 2")
+
+        existingClient = Mock()
+        existingClient.getId() >> Key.newUuid()
+        existingClient.getDomains >> []
+        existingClient.getName()>> "Existing client"
+
+        existingUnit = Mock()
+        existingUnit.getClient() >> existingClient
+        existingUnit.getDomains() >> []
+        existingUnit.getParent() >> null
+        existingUnit.getName() >> "Existing unit"
+        existingUnit.getId() >> Key.newUuid()
+
+        existingClient.getUnits >> [existingUnit]
+        existingClient.getUnit(_)>> new Optional(existingUnit)
+
+        existingClient.createUnit(_)>>existingUnit
     }
 
     def "Find units by parent unit" () {
+        Unit subUnit1 = Mock()
+        subUnit1.getDomains() >> []
+        subUnit1.getParent() >> existingUnit
+        subUnit1.getName() >> "Subunit 1"
+        subUnit1.getId() >> Key.newUuid()
+
+        Unit subUnit2 = Mock()
+        subUnit2.getDomains() >> []
+        subUnit2.getParent() >> existingUnit
+        subUnit2.getName() >> "Subunit 2"
+        subUnit2.getId() >> Key.newUuid()
+
+
         given: "fake repositories that record method calls"
         def clientRepo = Mock(ClientRepository)
+        def unitRepo = Mock(UnitRepository)
 
         when: "a request is made with a parent-ID"
         def input = new GetUnitsUseCase.InputData(existingClient,
                 Optional.of(existingUnit.getId().uuidValue()))
-        def sot = new GetUnitsUseCase(clientRepo)
-        def units = sot.execute(input)
+        def sot = new GetUnitsUseCase(clientRepo, unitRepo)
+        def output = sot.execute(input)
 
-        then: "the client was retrieved"
         then: "a client was retrieved"
-        1 * clientRepo.findById(_) >> Optional.of(this.existingClient)
+        1 * clientRepo.findById(_) >> Optional.of(existingClient)
+        1 * unitRepo.findById(_) >> Optional.of(existingUnit)
+        1 * unitRepo.findByParent(_) >> [subUnit1, subUnit2]
 
         and: "both subunits are returned"
-        units.size() == 2
-        units == existingUnit.units
+        output.units.size() == 2
+        output.units == [subUnit1, subUnit2]
     }
 }

@@ -22,12 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
-import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.ModelObject.Lifecycle
-import org.veo.core.entity.groups.PersonGroup
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.ClientData
+import org.veo.persistence.entity.jpa.UnitData
 
 @SpringBootTest(classes = GroupPersistenceSpec.class)
 @Transactional()
@@ -37,36 +39,42 @@ class GroupPersistenceSpec extends VeoSpringSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
+    @Autowired
+    private UnitRepositoryImpl unitRepository
 
     @Autowired
     private PersonRepositoryImpl personRepository
+
+    @Autowired
+    private EntityFactory factory
+
 
 
     def "save a person group"() {
         given: "a client and a unit"
         Key clientId = Key.newUuid()
 
-        Client client = newClient {
-            id = clientId
-        }
+        ClientData client = new ClientData()
+        client.dbId = clientId.uuidValue()
 
         def unitId = Key.newUuid()
 
-        def unit = newUnit(client)
-        client.addToUnits(unit)
-        clientRepository.save(client)
+        def unit = new UnitData()
+        unit.id = unitId
+        unit.name = "u-1"
+        unit.client = client
 
+        clientRepository.save(client)
+        unitRepository.save(unit)
         when:
         def personGroupId = Key.newUuid()
 
-        def john = newPerson unit, {
-            name = 'John'
-        }
-        def jane = newPerson unit, {
-            name = 'Jane'
-        }
+        def john = factory.createPerson(Key.newUuid(),'John',unit)
+        def jane = factory.createPerson(Key.newUuid(),'Jane',unit)
 
-        def personGroup = new PersonGroup().with {
+        def personGroup = factory.createPersonGroup()
+
+        personGroup.with {
             name = 'My person group'
             owner = unit
             id = personGroupId

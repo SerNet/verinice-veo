@@ -18,30 +18,25 @@ package org.veo.core.entity
 
 import org.veo.core.entity.code.ModelValidationException
 import org.veo.core.entity.code.ModelValidator
-import org.veo.core.entity.impl.AssetImpl
-import org.veo.core.entity.impl.ControlImpl
-import org.veo.core.entity.impl.DocumentImpl
-import org.veo.core.entity.impl.DomainImpl
-import org.veo.core.entity.impl.PersonImpl
-import org.veo.core.entity.impl.ProcessImpl
-import org.veo.core.entity.impl.UnitImpl
+import org.veo.core.entity.transform.EntityFactory
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import spock.lang.Specification
-
 
 // generateValidatorTest
 class ModelValidatorSpec extends Specification {
+    private EntityFactory entityFactory = new EntityDataFactory()
 
     def "a properly initialized Person instance passes validation"() {
         given : "a valid modelobject"
 
         String name = "model-name:Person"
 
-        Unit unit = new UnitImpl(Key.newUuid(), name, null)
+        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
 
 
         when : "model and validator is created"
 
-        Person person = new PersonImpl(null, name, null)
+        Person person = entityFactory.createPerson(null, name, null)
 
 
         person.setOwner(unit)
@@ -57,11 +52,11 @@ class ModelValidatorSpec extends Specification {
 
         String name = "model-name:Asset"
 
-        Unit unit = new UnitImpl(Key.newUuid(), name, null)
+        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
 
         when : "model and validator is created"
 
-        Asset asset = new AssetImpl(Key.newUuid(), name, null)
+        Asset asset = entityFactory.createAsset(Key.newUuid(), name, null)
 
         asset.setOwner(unit)
 
@@ -76,11 +71,11 @@ class ModelValidatorSpec extends Specification {
 
         String name = "model-name:Process"
 
-        Unit unit = new UnitImpl(Key.newUuid(), name, null)
+        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
 
         when : "model and validator is created"
 
-        Process process = new ProcessImpl(Key.newUuid(), name, null)
+        Process process = entityFactory.createProcess(Key.newUuid(), name, null)
 
         process.setOwner(unit)
 
@@ -95,11 +90,11 @@ class ModelValidatorSpec extends Specification {
 
         String name = "model-name:Document"
 
-        Unit unit = new UnitImpl(Key.newUuid(), name, null)
+        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
 
         when : "model and validator is created"
 
-        Document document = new DocumentImpl(Key.newUuid(), name, null)
+        Document document = entityFactory.createDocument(Key.newUuid(), name, null)
 
         document.setOwner(unit)
 
@@ -114,11 +109,11 @@ class ModelValidatorSpec extends Specification {
 
         String name = "model-name:Control"
 
-        Unit unit = new UnitImpl(Key.newUuid(), name, null)
+        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
 
         when : "model and validator is created"
 
-        Control control = new ControlImpl(Key.newUuid(), name, null)
+        Control control = entityFactory.createControl(Key.newUuid(), name, null)
 
         control.setOwner(unit)
 
@@ -137,7 +132,7 @@ class ModelValidatorSpec extends Specification {
 
         when : "model and validator is created"
 
-        Domain domain = new DomainImpl(Key.newUuid(), name)
+        Domain domain = entityFactory.createDomain(Key.newUuid(), name)
 
 
 
@@ -156,7 +151,7 @@ class ModelValidatorSpec extends Specification {
 
         when : "model and validator is created"
 
-        Unit unit = new UnitImpl(Key.newUuid(), name, null)
+        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
 
         unit.setParent(Mock(Unit))
         unit.setClient(Mock(Client))

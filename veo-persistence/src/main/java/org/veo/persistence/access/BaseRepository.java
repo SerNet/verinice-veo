@@ -16,12 +16,11 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -29,17 +28,12 @@ import lombok.RequiredArgsConstructor;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.impl.BaseModelGroup;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
-import org.veo.persistence.entity.jpa.groups.EntityLayerSupertypeGroupData;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
 
 @RequiredArgsConstructor
 public abstract class BaseRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>
@@ -49,36 +43,15 @@ public abstract class BaseRepository<T extends EntityLayerSupertype, S extends E
 
     protected final ModelObjectValidation validation;
 
-    private final BiFunction<T, TransformEntityToTargetContext, S> entityToDataMapper;
-    private final BiFunction<S, TransformTargetToEntityContext, T> dataToEntityMapper;
-    private final Function<EntityLayerSupertypeGroupData<S>, BaseModelGroup<T>> dataToGroupMapper;
-
-    // public Collection<S> findByNameContainingIgnoreCase(String search);
+    @Override
+    public T save(T entity) {
+        validation.validateModelObject(entity);
+        return (T) dataRepository.save((S) entity);
+    }
 
     @Override
     public Optional<T> findById(Key<UUID> id) {
-        return findById(id, null);
-    }
-
-    @Override
-    public T save(T entity, TransformEntityToTargetContext entityToDataContext,
-            TransformTargetToEntityContext dataToEntityContext) {
-        validation.validateModelObject(entity);
-        return dataToEntityMapper.apply(dataRepository.save(entityToDataMapper.apply(entity,
-                                                                                     Optional.ofNullable(entityToDataContext)
-                                                                                             .orElseGet(DataEntityToTargetContext::getCompleteTransformationContext))),
-                                        Optional.ofNullable(dataToEntityContext)
-                                                .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext));
-    }
-
-    @Override
-    public Optional<T> findById(Key<UUID> id, TransformTargetToEntityContext dataToEntityContext) {
-        TransformTargetToEntityContext context = Optional.ofNullable(dataToEntityContext)
-                                                         .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext);
-
-        return dataRepository.findById(id.uuidValue())
-                             .map(data -> dataToEntityMapper.apply(data, context));
-
+        return (Optional<T>) dataRepository.findById(id.uuidValue());
     }
 
     @Override
@@ -110,66 +83,55 @@ public abstract class BaseRepository<T extends EntityLayerSupertype, S extends E
 
     @Override
     public List<T> findByClient(Client client, boolean includeGroups) {
-        List<S> list;
+        List<S> list = Collections.emptyList();
         if (includeGroups) {
-            list = dataRepository.findByOwner_ClientId(client.getId()
-                                                             .uuidValue());
+            list = dataRepository.findByOwner_Client_DbId(client.getId()
+                                                                .uuidValue());
         } else {
-            list = dataRepository.findEntitiesByOwner_ClientId(client.getId()
-                                                                     .uuidValue());
+            list = dataRepository.findEntitiesByOwner_Client_DbId(client.getId()
+                                                                        .uuidValue());
         }
-        return list.stream()
-                   .map(data -> dataToEntityMapper.apply(data,
-                                                         DataTargetToEntityContext.getCompleteTransformationContext()))
-                   .collect(Collectors.toList());
+        return (List<T>) list;
     }
 
     @Override
     public List<T> findByUnit(Unit unit, boolean includeGroups) {
-        List<S> list;
+        List<S> list = Collections.emptyList();
         if (includeGroups) {
-            list = dataRepository.findByOwnerId(unit.getId()
-                                                    .uuidValue());
+            list = dataRepository.findByOwner_DbId(unit.getId()
+                                                       .uuidValue());
         } else {
-            list = dataRepository.findEntitiesByOwnerId(unit.getId()
-                                                            .uuidValue());
+            list = dataRepository.findEntitiesByOwner_DbId(unit.getId()
+                                                               .uuidValue());
         }
-        return list.stream()
-                   .map(data -> dataToEntityMapper.apply(data,
-                                                         DataTargetToEntityContext.getCompleteTransformationContext()))
-                   .collect(Collectors.toList());
+        return (List<T>) list;
     }
 
-    public List<T> findByLinkTarget(EntityLayerSupertype entity) {
-        TransformTargetToEntityContext context = DataTargetToEntityContext.getCompleteTransformationContext();
-        return dataRepository.findByLinks_TargetId(entity.getId()
-                                                         .uuidValue())
+    @Override
+    public List<ModelGroup<T>> findGroupsByClient(Client client) {
+        return dataRepository.findGroupsByOwner_Client_DbId(client.getDbId())
                              .stream()
-                             .map(data -> dataToEntityMapper.apply(data, context))
+                             .map(data -> (ModelGroup<T>) data)
                              .collect(Collectors.toList());
     }
 
     @Override
-    public List<BaseModelGroup<T>> findGroupsByClient(Client client) {
-        return dataRepository.findGroupsByOwner_ClientId(client.getId()
-                                                               .uuidValue())
+    public List<ModelGroup<T>> findGroupsByUnit(Unit unit) {
+        return dataRepository.findGroupsByOwner_DbId(unit.getDbId())
                              .stream()
-                             .map(data -> dataToGroupMapper.apply(data))
-                             .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<BaseModelGroup<T>> findGroupsByUnit(Unit unit) {
-        return dataRepository.findGroupsByOwnerId(unit.getId()
-                                                      .uuidValue())
-                             .stream()
-                             .map(data -> dataToGroupMapper.apply(data))
+                             .map(data -> (ModelGroup<T>) data)
                              .collect(Collectors.toList());
     }
 
     public void deleteByUnit(Unit owner) {
-        dataRepository.deleteByOwnerId(owner.getId()
-                                            .uuidValue());
+        dataRepository.deleteByOwner_DbId(owner.getDbId());
+    }
+
+    public List<T> findByLinkTarget(EntityLayerSupertype entity) {
+        return (List<T>) dataRepository.findByLinks_Target_DbId(entity.getId()
+                                                                      .uuidValue())
+                                       .stream()
+                                       .collect(Collectors.toList());
     }
 
 }

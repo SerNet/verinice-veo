@@ -29,12 +29,17 @@ import groovy.json.JsonSlurper
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.*
 import org.veo.core.entity.ModelObject.Lifecycle
-import org.veo.core.entity.custom.SimpleProperties
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.ProcessGroup
 import org.veo.persistence.access.*
+import org.veo.persistence.entity.jpa.ControlData
+import org.veo.persistence.entity.jpa.groups.AssetGroupData
+import org.veo.persistence.entity.jpa.groups.ControlGroupData
+import org.veo.persistence.entity.jpa.groups.DocumentGroupData
+import org.veo.persistence.entity.jpa.groups.ProcessGroupData
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -53,6 +58,8 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
+    @Autowired
+    private UnitRepositoryImpl unitRepository
 
     @Autowired
     private AssetRepositoryImpl assetRepository
@@ -74,37 +81,40 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    @Autowired
+    private EntityDataFactory entityFactory
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
-                name = "27001"
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-            }
+            domain = entityFactory.createDomain()
+            domain.description = "ISO/IEC"
+            domain.abbreviation = "ISO"
+            domain.name = "ISO"
+            domain.id = Key.newUuid()
 
-            domain1 = newDomain {
-                name = "27002"
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-            }
+            domain1 = entityFactory.createDomain()
+            domain1.description = "ISO/IEC2"
+            domain1.abbreviation = "ISO"
+            domain1.name = "ISO"
+            domain1.id = Key.newUuid()
 
-            def client = newClient {
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
-            unit = newUnit client, {
-                name = "Test unit"
-            }
-            client.units << unit
+            def client= entityFactory.createClient()
+            client.id = clientId
+            client.domains = [domain, domain1] as Set
+
+            unit = entityFactory.createUnit()
+            unit.name = "Test unit"
+            unit.id = Key.newUuid()
             unit.client = client
-            unit2 = newUnit client, {
-                name = "Test unit2"
-            }
-            client.units << unit2
+
+            unit2 = entityFactory.createUnit()
+            unit2.name = "Test unit"
+            unit2.id = Key.newUuid()
             unit2.client = client
 
             clientRepository.save(client)
+            unitRepository.save(unit)
+            unitRepository.save(unit2)
         }
     }
 
@@ -167,7 +177,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a document group"() {
         given: "a saved document group"
-        DocumentGroup documentGroup = new DocumentGroup().with{
+        DocumentGroup documentGroup = new DocumentGroupData().with{
             id = Key.newUuid()
             name = 'Test document group'
             owner = unit
@@ -193,15 +203,17 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve a control group with members"() {
         given: "a saved control group with two members"
 
-        Control c1 = newControl  unit, {
-            name = "c1"
-        }
+        Control c1 = new ControlData()
+        c1.id = Key.newUuid()
+        c1.name = "c1"
+        c1.owner = unit
 
-        Control c2 = newControl  unit, {
-            name = "c2"
-        }
+        Control c2 = new ControlData()
+        c2.id = Key.newUuid()
+        c2.name = "c2"
+        c2.owner = unit
 
-        ControlGroup controlGroup = new ControlGroup().with {
+        ControlGroup controlGroup = new ControlGroupData().with {
             id = Key.newUuid()
             name = 'Test control group'
             owner = unit
@@ -229,15 +241,17 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve a control group's members"() {
         given: "a saved control group with two members"
 
-        Control c1 = newControl  unit, {
-            name = 'c1'
-        }
+        Control c1 = new ControlData()
+        c1.id = Key.newUuid()
+        c1.name = "c1"
+        c1.owner = unit
 
-        Control c2 = newControl  unit, {
-            name = 'c2'
-        }
+        Control c2 = new ControlData()
+        c2.id = Key.newUuid()
+        c2.name = "c2"
+        c2.owner = unit
 
-        ControlGroup controlGroup = new ControlGroup().with {
+        ControlGroup controlGroup = new ControlGroupData().with {
             id = Key.newUuid()
             name = 'Test control group'
             owner = unit
@@ -265,14 +279,14 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all process groups for a client"() {
         given: "two saved process grousp"
-        ProcessGroup processGroup1 = new ProcessGroup().with{
+        ProcessGroup processGroup1 = new ProcessGroupData().with{
             id = Key.newUuid()
             name = 'Test process group 1'
             owner = unit
             state = Lifecycle.CREATING
             it
         }
-        ProcessGroup processGroup2 = new ProcessGroup().with{
+        ProcessGroup processGroup2 = new ProcessGroupData().with{
             id = Key.newUuid()
             name = 'Test process group 2'
             state = Lifecycle.CREATING
@@ -306,7 +320,8 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve all asset groups for a unit"() {
         given: "a saved asset"
 
-        def assetGroup1 = new AssetGroup().with {
+
+        def assetGroup1 = new AssetGroupData().with {
             id = Key.newUuid()
             name = 'Test asset group 1'
             owner = unit
@@ -314,7 +329,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
             it
         }
 
-        def assetGroup2 = new AssetGroup().with {
+        def assetGroup2 = new AssetGroupData().with {
             id = Key.newUuid()
             name = 'Test asset group 2'
             owner = unit2
@@ -356,8 +371,10 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieving groups works if there are also non-group entities"() {
         given: "a control and a control group"
-        Control control = newControl(unit)
-        ControlGroup controlGroup = new ControlGroup().tap{
+        Control control = entityFactory.createControl(Key.newUuid(), "c1", unit)
+
+        ControlGroup controlGroup = new ControlGroupData().tap{
+            id = Key.newUuid()
             name = 'Group 1'
             owner = unit
         }
@@ -382,13 +399,13 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     def "put an asset group with custom properties"() {
         given: "a saved asset group"
 
-        CustomProperties cp = new SimpleProperties()
+        CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Asset'] as Set)
         cp.setId(Key.newUuid())
 
         Key<UUID> id = Key.newUuid()
-        AssetGroup assetGroup = new AssetGroup().with {
+        AssetGroup assetGroup = new AssetGroupData().with {
             setId(id)
             name = 'Test asset group'
             setOwner(unit)
@@ -444,7 +461,16 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == "${domain.abbreviation} ${domain.name}"
         result.owner.href == "/units/${unit.id.uuidValue()}"
-        def entity = txTemplate.execute { assetRepository.findById(id).get() }
+
+        when:
+        def entity = txTemplate.execute {
+            assetRepository.findById(id).get().tap() {
+                // resolve proxy:
+                customAspects.first()
+            }
+        }
+
+        then:
         entity.name == 'New asset group-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'my.aspect-test1'
@@ -457,7 +483,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     def "delete an asset group"() {
 
         given: "an existing asset group"
-        AssetGroup assetGroup = new AssetGroup().with {
+        AssetGroup assetGroup = new AssetGroupData().with {
             setId(Key.newUuid())
             name = 'Test asset-delete'
             owner = unit

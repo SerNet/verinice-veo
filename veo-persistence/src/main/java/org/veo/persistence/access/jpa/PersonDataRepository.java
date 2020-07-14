@@ -23,7 +23,7 @@ import org.veo.persistence.entity.jpa.groups.PersonGroupData;
 
 public interface PersonDataRepository extends EntityLayerSupertypeDataRepository<PersonData> {
 
-    List<PersonGroupData> findGroupsByOwner_ClientId(String uuidValue);
+    List<PersonGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
 
-    List<PersonGroupData> findGroupsByOwnerId(String uuidValue);
+    List<PersonGroupData> findGroupsByOwner_DbId(String uuidValue);
 }

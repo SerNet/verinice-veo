@@ -62,7 +62,8 @@ import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.core.entity.transform.ClassKey;
 
 /**
- * A collection of transform functions to transform entities to DTOs.
+ * A collection of transform functions to transform entities to Dto back and
+ * forth.
  */
 public final class EntityToDtoTransformer {
 
@@ -101,19 +102,19 @@ public final class EntityToDtoTransformer {
         }
 
         target = new PersonGroupDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
         }
-        target.setMembers(map(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
         return target;
     }
 
@@ -133,17 +134,17 @@ public final class EntityToDtoTransformer {
         }
 
         target = new PersonDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -164,19 +165,19 @@ public final class EntityToDtoTransformer {
         }
 
         target = new AssetGroupDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
         }
-        target.setMembers(map(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
         return target;
     }
 
@@ -195,17 +196,17 @@ public final class EntityToDtoTransformer {
         }
 
         target = new AssetDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -226,19 +227,19 @@ public final class EntityToDtoTransformer {
         }
 
         target = new ProcessGroupDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
         }
-        target.setMembers(map(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
         return target;
     }
 
@@ -258,17 +259,17 @@ public final class EntityToDtoTransformer {
         }
 
         target = new ProcessDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -289,19 +290,19 @@ public final class EntityToDtoTransformer {
         }
 
         target = new DocumentGroupDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
         }
-        target.setMembers(map(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
         return target;
     }
 
@@ -321,17 +322,17 @@ public final class EntityToDtoTransformer {
         }
 
         target = new DocumentDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -352,19 +353,19 @@ public final class EntityToDtoTransformer {
         }
 
         target = new ControlGroupDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
         }
-        target.setMembers(map(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
         return target;
     }
 
@@ -384,17 +385,17 @@ public final class EntityToDtoTransformer {
         }
 
         target = new ControlDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
-        target.setCustomAspects(map(source.getCustomAspects(),
-                                    e -> transformCustomProperties2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setLinks(convertSet(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(convertSet(source.getCustomAspects(),
+                                           e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -416,17 +417,14 @@ public final class EntityToDtoTransformer {
         }
 
         target = new ClientDto();
-        mapProperties(source, target, key);
+        mapModelObjectProperties(source, target, key);
         target.setName(source.getName());
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
-        Set<UnitDto> units = map(source.getUnits(), e -> transformUnit2Dto(tcontext, e));
-        target.setUnits(units);
-
-        target.setDomains(map(source.getDomains(), e -> transformDomain2Dto(tcontext, e)));
+        target.setDomains(convertSet(source.getDomains(), e -> transformDomain2Dto(tcontext, e)));
 
         return target;
     }
@@ -444,13 +442,13 @@ public final class EntityToDtoTransformer {
         }
 
         target = new DomainDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
         return target;
     }
@@ -467,15 +465,14 @@ public final class EntityToDtoTransformer {
         }
 
         target = new UnitDto();
-        mapProperties(source, target, key);
-        mapProperties(source, target);
+        mapModelObjectProperties(source, target, key);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
-        target.setUnits(map(source.getUnits(), e -> transformUnit2Dto(tcontext, e)));
-        target.setDomains(map(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
 
         if (source.getClient() != null) {
             target.setClient(ModelObjectReference.from(source.getClient()));
@@ -502,20 +499,23 @@ public final class EntityToDtoTransformer {
         }
 
         target = new CustomLinkDto();
-        mapProperties(source, target, key);
+        mapModelObjectProperties(source, target, key);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
-        mapProperties(source, target);
+        mapNameAbleProperties(source, target);
         context.put(classKey, target);
-        if (source.isGhost()) {
-            return target;
-        }
+        // if (source.isGhost()) {
+        // return target;
+        // }
 
         target.setAttributes(source.getAllProperties());
 
         if (source.getTarget() != null) {
             target.setTarget(ModelObjectReference.from(source.getTarget()));
         }
+        // if (source.getSource() != null) {
+        // target.setSource(ModelObjectReference.from(source.getSource()));
+        // }
 
         return target;
 
@@ -538,7 +538,7 @@ public final class EntityToDtoTransformer {
         }
 
         target = new CustomPropertiesDto();
-        mapProperties(source, target, key);
+        mapModelObjectProperties(source, target, key);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
         context.put(classKey, target);
@@ -547,20 +547,21 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    private static void mapProperties(NameAble source, NameAbleDto target) {
+    private static void mapNameAbleProperties(NameAble source, NameAbleDto target) {
         target.setName(source.getName());
         target.setAbbreviation(source.getAbbreviation());
         target.setDescription(source.getDescription());
     }
 
-    private static void mapProperties(ModelObject source, BaseModelObjectDto target, String key) {
+    private static void mapModelObjectProperties(ModelObject source, BaseModelObjectDto target,
+            String key) {
         target.setId(key);
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
     }
 
-    private static <TIn, TOut> Set<TOut> map(Set<TIn> input, Function<TIn, TOut> mapper) {
+    private static <TIn, TOut> Set<TOut> convertSet(Set<TIn> input, Function<TIn, TOut> mapper) {
         return input.stream()
                     .map(mapper)
                     .collect(Collectors.toSet());

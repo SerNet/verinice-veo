@@ -17,59 +17,71 @@
 package org.veo.core.usecase.unit;
 
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import javax.validation.Valid;
+
+import lombok.Value;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.transform.TransformContextProvider;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.EmptyOutput;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class DeleteUnitUseCase extends ChangeUnitUseCase {
+public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, EmptyOutput, R> {
 
     private final ClientRepository clientRepository;
     private final RepositoryProvider repositoryProvider;
+    private final UnitRepository unitRepository;
 
     public DeleteUnitUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
-            TransformContextProvider transformContextProvider,
             RepositoryProvider repositoryProvider) {
-        super(unitRepository, transformContextProvider);
+        super();
         this.clientRepository = clientRepository;
         this.repositoryProvider = repositoryProvider;
+        this.unitRepository = unitRepository;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    protected Unit update(Unit unit, InputData input) {
-        removeUnitFromClient(unit);
-        return unit;
+    public EmptyOutput execute(InputData input) {
+        Client client = clientRepository.findById(input.getAuthenticatedClient()
+                                                       .getId())
+                                        .orElseThrow(() -> new NotFoundException(
+                                                "Invalid client ID"));
+
+        Unit unit = unitRepository.findById(input.unitId)
+                                  .orElseThrow(() -> new NotFoundException("Invalid unit ID"));
+        checkSameClient(client, unit, unit);
+
+        removeObjectsInUnit(unit);
+        unitRepository.delete(unit);
+        return EmptyOutput.INSTANCE;
     }
 
-    private void removeUnitFromClient(Unit unit) {
-        Set<Client> clients = clientRepository.findClientsContainingUnit(unit);
-        clients.stream()
-               .forEach(c -> c.removeUnit(unit));
-
+    private void removeObjectsInUnit(Unit unit) {
         List.of(Asset.class, Control.class, Document.class, Person.class, Process.class)
             .forEach(clazz -> {
                 repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
                                   .deleteByUnit(unit);
             });
 
-        // Note: calling save() is required to trigger transformation back to data
-        // entities which
-        // are at this point managed by JPA. The save would otherwise not be necessary.
-        clients.stream()
-               .forEach(clientRepository::save);
+    }
+
+    @Valid
+    @Value
+    public static class InputData implements UseCase.InputData {
+        Key<UUID> unitId;
+        Client authenticatedClient;
     }
 
 }

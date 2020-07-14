@@ -19,30 +19,24 @@ package org.veo.core.usecase.person;
 import java.time.Instant;
 
 import org.veo.core.entity.Person;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.PersonRepository;
 
-public class UpdatePersonUseCase extends ModifyEntityUseCase<Person> {
+public class UpdatePersonUseCase<R> extends ModifyEntityUseCase<Person, R> {
 
     private final PersonRepository personRepository;
 
-    public UpdatePersonUseCase(PersonRepository personRepository,
-            TransformContextProvider transformContextProvider) {
-        super(transformContextProvider);
+    public UpdatePersonUseCase(PersonRepository personRepository) {
+        super();
         this.personRepository = personRepository;
     }
 
     @Override
-    public Person performModification(InputData<Person> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
+    public OutputData<Person> performModification(InputData<Person> input) {
         Person person = input.getEntity();
         person.setVersion(person.getVersion() + 1);
         person.setValidFrom(Instant.now());
-        return personRepository.save(person, null, dataTargetToEntityContext);
+        return new OutputData<>(personRepository.save(person));
 
     }
 

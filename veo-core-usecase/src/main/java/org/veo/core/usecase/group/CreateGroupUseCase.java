@@ -16,11 +16,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.group;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -28,71 +25,65 @@ import lombok.Value;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject.Lifecycle;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.exception.RuntimeModelException;
-import org.veo.core.entity.impl.BaseModelGroup;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateGroupUseCase extends UseCase<CreateGroupUseCase.InputData, BaseModelGroup<?>> {
+public class CreateGroupUseCase<R>
+        extends UseCase<CreateGroupUseCase.InputData, CreateGroupUseCase.OutputData, R> {
 
     private final UnitRepository unitRepository;
-    private final TransformContextProvider transformContextProvider;
     private final RepositoryProvider repositoryProvider;
+    private final EntityFactory entityFactoty;
 
     public CreateGroupUseCase(UnitRepository unitRepository, RepositoryProvider repositoryProvider,
-            TransformContextProvider transformContextProvider) {
+            EntityFactory entityFactoty) {
         this.unitRepository = unitRepository;
         this.repositoryProvider = repositoryProvider;
-        this.transformContextProvider = transformContextProvider;
+        this.entityFactoty = entityFactoty;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public BaseModelGroup<?> execute(InputData input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialClient()
-                                                                                           .partialDomain();
-
-        Unit unit = unitRepository.findById(input.getUnitId(), dataTargetToEntityContext)
+    public OutputData execute(InputData input) {
+        Unit unit = unitRepository.findById(input.getUnitId())
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
                                           input.getUnitId()
                                                .uuidValue()));
         checkSameClient(input.authenticatedClient, unit, unit);
 
-        try {
-            BaseModelGroup group = input.groupType.groupClass.getDeclaredConstructor()
-                                                             .newInstance();
+        ModelGroup<?> group = entityFactoty.createGroup(input.groupType);
 
-            group.setId(Key.newUuid());
-            group.setName(input.getName());
-            group.setOwner(unit);
-            group.setState(Lifecycle.CREATING);
+        group.setId(Key.newUuid());
+        group.setName(input.getName());
+        group.setOwner(unit);
+        group.setState(Lifecycle.CREATING);
 
-            EntityLayerSupertypeRepository repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.groupType.entityClass);
+        EntityLayerSupertypeRepository repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.groupType.entityClass);
 
-            return (BaseModelGroup<?>) repository.save(group);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            throw new RuntimeModelException("Error creating group", e);
-
-        }
+        return new OutputData((ModelGroup<?>) repository.save(group));
 
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Key<UUID> unitId;
         String name;
         GroupType groupType;
         Client authenticatedClient;
 
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        ModelGroup<?> group;
     }
 }

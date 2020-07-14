@@ -17,54 +17,27 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 
 @Entity(name = "asset")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class AssetData extends EntityLayerSupertypeData {
+public class AssetData extends EntityLayerSupertypeData implements Asset {
 
-    /**
-     * transform the given entity 'Asset' to the corresponding 'AssetData' with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static AssetData from(@Valid Asset asset) {
-        return from(asset, DataEntityToTargetContext.getCompleteTransformationContext());
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Asset.class;
     }
 
-    /**
-     * Transform the given data object 'AssetData' to the corresponding 'Asset'
-     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public Asset toAsset() {
-        return toAsset(DataTargetToEntityContext.getCompleteTransformationContext());
-    }
-
-    public static AssetData from(@Valid Asset asset, TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformAsset2Data((DataEntityToTargetContext) tcontext,
-                                                                     asset);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public Asset toAsset(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Asset((DataTargetToEntityContext) tcontext,
-                                                                     this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_ASSET;
     }
 
 }

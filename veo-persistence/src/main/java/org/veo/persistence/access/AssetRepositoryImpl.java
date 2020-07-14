@@ -23,7 +23,6 @@ import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
-import org.veo.persistence.entity.jpa.groups.AssetGroupData;
 
 @Repository
 public class AssetRepositoryImpl extends BaseRepository<Asset, AssetData>
@@ -31,7 +30,7 @@ public class AssetRepositoryImpl extends BaseRepository<Asset, AssetData>
 
     public AssetRepositoryImpl(AssetDataRepository dataRepository,
             ModelObjectValidation validation) {
-        super(dataRepository, validation, AssetData::from, AssetData::toAsset,
-                groupData -> ((AssetGroupData) groupData).toAssetGroup());
+        super(dataRepository, validation);
     }
+
 }

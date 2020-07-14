@@ -16,32 +16,36 @@
  ******************************************************************************/
 package org.veo.core.usecase.process
 
-import org.veo.core.entity.Key
-import org.veo.core.entity.impl.ProcessImpl
+import org.veo.core.entity.Process
+import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.CreateEntityInputData
+import org.veo.core.usecase.process.CreateProcessUseCase.InputData
 import org.veo.core.usecase.repository.ProcessRepository
 
 public class CreateProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
+    Process process = Mock()
+    Process process1 = Mock()
+    Unit unit = Mock()
 
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,processRepository, transformContextProvider)
 
+    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,processRepository, entityFactory)
     def "create a process"() {
+        process1.owner >> unit
+        process1.name >> "John's process"
+
         given:
         TransformTargetToEntityContext targetToEntityContext = Mock()
+        process.getName() >> "John's process"
+
         when:
-        def newProcess = usecase.execute(new CreateEntityInputData(existingUnit.id, new ProcessImpl(Key.newUuid(), "John's process", existingUnit), existingClient))
+        def output = usecase.execute(new InputData(process1, existingClient))
         then:
-        1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
-        1 * targetToEntityContext.partialClient() >> targetToEntityContext
-        1 * unitRepository.findById(_, _) >> Optional.of(existingUnit)
-        1 * processRepository.save({
-            it.name == "John's process"
-        }) >> { it[0] }
-        newProcess != null
-        newProcess.name == "John's process"
+        1 * unitRepository.findById(_) >> Optional.of(existingUnit)
+        1 * processRepository.save(process1) >> process
+        output.process != null
+        output.process.name == "John's process"
     }
 }

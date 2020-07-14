@@ -56,7 +56,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        usecase.execute(new InputData(Process,id, existingClient))
+        def output = usecase.execute(new InputData(Process,id, existingClient))
         then:
         [
             assetRepository,
@@ -78,7 +78,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        usecase.execute(new InputData(Person,id, existingClient))
+        def output = usecase.execute(new InputData(Person,id, existingClient))
         then:
         [
             assetRepository,

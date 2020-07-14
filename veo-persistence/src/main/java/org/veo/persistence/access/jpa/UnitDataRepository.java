@@ -17,9 +17,8 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.UnitData;
@@ -28,7 +27,8 @@ public interface UnitDataRepository extends CrudRepository<UnitData, String> {
 
     Collection<UnitData> findByNameContainingIgnoreCase(String search);
 
-    @Query("select u from #{#entityName} u left join fetch u.client where u.id = ?1")
-    Optional<UnitData> findByIdFetchClient(String uuidValue);
+    List<UnitData> findByParent_DbId(String ownerId);
+
+    List<UnitData> findByClient_DbId(String ownerId);
 
 }

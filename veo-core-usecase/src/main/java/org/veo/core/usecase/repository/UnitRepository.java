@@ -16,8 +16,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
@@ -28,5 +30,9 @@ import org.veo.core.entity.Unit;
  * with more specific methods - i.e. queries based on particular fields.
  */
 public interface UnitRepository extends Repository<Unit, Key<UUID>> {
+
+    public List<Unit> findByClient(Client client);
+
+    public List<Unit> findByParent(Unit parent);
 
 }

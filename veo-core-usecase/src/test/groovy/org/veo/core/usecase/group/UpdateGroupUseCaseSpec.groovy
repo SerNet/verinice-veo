@@ -23,37 +23,33 @@ import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.group.UpdateGroupUseCase.InputData
 import spock.lang.Unroll
 
-
 class UpdateGroupUseCaseSpec extends UseCaseSpec {
 
-    PutGroupUseCase usecase = new PutGroupUseCase(repositoryProvider, transformContextProvider)
-
+    PutGroupUseCase usecase = new PutGroupUseCase(repositoryProvider)
     @Unroll
     def "update a #type group"() {
         given:
         TransformTargetToEntityContext targetToEntityContext = Mock()
         def repository = Mock(Class.forName("org.veo.core.usecase.repository.${type}Repository"))
         def groupId = Key.newUuid()
-        def group = type.groupClass.newInstance().with {
-            id = groupId
-            owner = existingUnit
-            name = "Updated $type group"
-            it
-        }
+        def group = Mock(type.groupClass)
+        group.getOwner() >> existingUnit
+        group.getId() >> groupId
+        group.name >> "Updated $type group"
+
+        repositoryProvider.getRepositoryFor(_) >> repository
+
         when:
-        def updatedGroup = usecase.execute(new InputData(group, existingClient))
+        def output = usecase.execute(new InputData(group, existingClient))
         then:
-        1 * repositoryProvider.getRepositoryFor(type.groupClass) >> repository
-        1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
-        1 * targetToEntityContext.partialDomain() >> targetToEntityContext
+
+        //        1 * targetToEntityContext.partialDomain() >> targetToEntityContext
         1 * repository.findById(groupId) >> Optional.of(group)
 
-        1 * repository.save({
-            it.name == "Updated $type group"
-        }, _, _) >> { it[0] }
-        updatedGroup != null
-        updatedGroup.name == "Updated $type group"
-        updatedGroup.getClass() == type.groupClass
+        1 * repository.save(_) >> group
+        output.group != null
+        output.group.name == "Updated $type group"
+        //        output.group.getClass() == type.groupClass // check removed as it is a mock
         where:
         type << GroupType.values()
     }

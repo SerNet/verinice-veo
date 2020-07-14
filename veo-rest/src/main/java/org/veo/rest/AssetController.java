@@ -23,6 +23,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -50,7 +51,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.io.mapper.CreateAssetOutputMapper;
-import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreateAssetDto;
 import org.veo.adapter.presenter.api.response.AssetDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
@@ -64,6 +64,7 @@ import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.ParameterUuidParent;
 import org.veo.rest.common.RestApiResponse;
@@ -91,10 +92,10 @@ public class AssetController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/assets";
 
     private final UseCaseInteractorImpl useCaseInteractor;
-    private final CreateAssetUseCase createAssetUseCase;
-    private final UpdateAssetUseCase updateAssetUseCase;
-    private final GetAssetUseCase getAssetUseCase;
-    private final GetAssetsUseCase getAssetsUseCase;
+    private final CreateAssetUseCase<ResponseEntity<ApiResponseBody>> createAssetUseCase;
+    private final UpdateAssetUseCase<AssetDto> updateAssetUseCase;
+    private final GetAssetUseCase<AssetDto> getAssetUseCase;
+    private final GetAssetsUseCase<List<AssetDto>> getAssetsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
 
     @GetMapping
@@ -105,10 +106,12 @@ public class AssetController extends AbstractEntityController {
                                                required = false) String parentUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getAssetsUseCase, new GetAssetsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),
-                                         entities -> entities.stream()
-                                                             .map(u -> AssetDto.from(u, tcontext))
-                                                             .collect(Collectors.toList()));
+                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
+                    return output.getEntities()
+                                 .stream()
+                                 .map(u -> AssetDto.from(u, tcontext))
+                                 .collect(Collectors.toList());
+                });
     }
 
     @GetMapping(value = "/{id}")
@@ -124,9 +127,12 @@ public class AssetController extends AbstractEntityController {
             @PathVariable String id) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(getAssetUseCase, new GetAssetUseCase.InputData(Key
-                                                                                           .uuidFrom(id),
-                client), asset -> AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()));
+        return useCaseInteractor.execute(getAssetUseCase,
+                                         new GetAssetUseCase.InputData(Key.uuidFrom(id), client),
+                                         output -> {
+                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                                             return AssetDto.from(output.getAsset(), tcontext);
+                                         });
     }
 
     @PostMapping()
@@ -134,15 +140,23 @@ public class AssetController extends AbstractEntityController {
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Asset created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @Valid @NotNull @RequestBody CreateAssetDto assetDto) {
-        Client client = getAuthenticatedClient(auth);
-        DtoToEntityContext tcontext = configureDtoContext(client, assetDto.getReferences());
+            @Valid @NotNull @RequestBody CreateAssetDto dto) {
+        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(createAssetUseCase,
-                                         CreateEntityInputMapper.map(client, assetDto.getOwner()
-                                                                                     .getId(),
-                                                                     assetDto.toAsset(tcontext)),
-                                         asset -> RestApiResponse.created(URL_BASE_PATH,
-                                                                          CreateAssetOutputMapper.map(asset)));
+                                         new Supplier<CreateAssetUseCase.InputData>() {
+
+                                             @Override
+                                             public org.veo.core.usecase.asset.CreateAssetUseCase.InputData get() {
+                                                 Client client = getClient(user.getClientId());
+                                                 DtoToEntityContext tcontext = configureDtoContext(client,
+                                                                                                   dto.getReferences());
+                                                 return new CreateAssetUseCase.InputData(
+                                                         dto.toAsset(tcontext), client);
+                                             }
+                                         }, output -> {
+                                             ApiResponseBody body = CreateAssetOutputMapper.map(output.getAsset());
+                                             return RestApiResponse.created(URL_BASE_PATH, body);
+                                         });
     }
 
     @PutMapping(value = "/{id}")
@@ -153,13 +167,23 @@ public class AssetController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id, @Valid @NotNull @RequestBody AssetDto assetDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        DtoToEntityContext tcontext = configureDtoContext(client, assetDto.getReferences());
         return useCaseInteractor.execute(updateAssetUseCase,
-                                         new ModifyEntityUseCase.InputData<Asset>(
-                                                 assetDto.toAsset(tcontext), client),
-                                         entity -> AssetDto.from(entity,
-                                                                 EntityToDtoContext.getCompleteTransformationContext()));
+                                         new Supplier<ModifyEntityUseCase.InputData<Asset>>() {
+
+                                             @Override
+                                             public InputData<Asset> get() {
+                                                 Client client = getClient(user.getClientId());
+                                                 DtoToEntityContext tcontext = configureDtoContext(client,
+                                                                                                   assetDto.getReferences());
+                                                 return new ModifyEntityUseCase.InputData<Asset>(
+                                                         assetDto.toAsset(tcontext), client);
+                                             }
+                                         }
+
+                                         , output -> {
+                                             return AssetDto.from(output.getEntity(),
+                                                                  EntityToDtoContext.getCompleteTransformationContext());
+                                         });
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

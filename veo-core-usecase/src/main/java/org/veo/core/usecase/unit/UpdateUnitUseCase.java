@@ -16,22 +16,16 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class UpdateUnitUseCase extends ChangeUnitUseCase {
+public class UpdateUnitUseCase<R> extends ChangeUnitUseCase<R> {
 
-    public UpdateUnitUseCase(UnitRepository repository,
-            TransformContextProvider transformContextProvider) {
-        super(repository, transformContextProvider);
+    public UpdateUnitUseCase(UnitRepository repository) {
+        super(repository);
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
     protected Unit update(Unit storedUnit, ChangeUnitUseCase.InputData input) {
         // replace stored unit with changed unit:
         return input.getChangedUnit();

@@ -18,32 +18,27 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "unit")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class UnitData extends BaseModelObjectData implements NameAbleData {
+public class UnitData extends BaseModelObjectData implements NameAbleData, Unit {
 
     @NotNull
     @Column(name = "name")
@@ -55,21 +50,17 @@ public class UnitData extends BaseModelObjectData implements NameAbleData {
     private String description;
     @NotNull
     // one to one unit-> client
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
     @JoinColumn(name = "client_id")
-    private ClientData client;
-    // many to one unit-> unit
-    @Column(name = "units")
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UnitData> units;
+    private Client client;
     // one to one unit-> unit
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
     @JoinColumn(name = "parent_id")
-    private UnitData parent;
+    private Unit parent;
     // many to one unit-> domain
     @Column(name = "domains")
-    @ManyToMany
-    private Set<DomainData> domains;
+    @ManyToMany(targetEntity = DomainData.class)
+    private Set<Domain> domains;
 
     public String getName() {
         return this.name;
@@ -95,68 +86,58 @@ public class UnitData extends BaseModelObjectData implements NameAbleData {
         this.description = aDescription;
     }
 
-    public ClientData getClient() {
+    public Client getClient() {
         return this.client;
     }
 
-    public void setClient(ClientData aClient) {
+    public void setClient(Client aClient) {
         this.client = aClient;
     }
 
-    public Set<UnitData> getUnits() {
-        return this.units;
-    }
-
-    public void setUnits(Set<UnitData> aUnits) {
-        this.units = aUnits;
-    }
-
-    public UnitData getParent() {
+    public Unit getParent() {
         return this.parent;
     }
 
-    public void setParent(UnitData aParent) {
+    public void setParent(Unit aParent) {
         this.parent = aParent;
     }
 
-    public Set<DomainData> getDomains() {
+    public Set<Domain> getDomains() {
         return this.domains;
     }
 
-    public void setDomains(Set<DomainData> aDomains) {
+    public void setDomains(Set<Domain> aDomains) {
         this.domains = aDomains;
     }
 
     /**
-     * transform the given entity 'Unit' to the corresponding 'UnitData' with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
+     * Add the given Domain to the collection domains.
+     *
+     * @return true if added
      */
-    public static UnitData from(@Valid Unit unit) {
-        return from(unit, DataEntityToTargetContext.getCompleteTransformationContext());
+    public boolean addToDomains(Domain aDomain) {
+        boolean add = this.domains.add(aDomain);
+        return add;
     }
 
     /**
-     * Transform the given data object 'UnitData' to the corresponding 'Unit' entity
-     * with the DataEntityToTargetContext.getCompleteTransformationContext().
+     * Remove the given Domain from the collection domains.
+     *
+     * @return true if removed
      */
-    public Unit toUnit() {
-        return toUnit(DataTargetToEntityContext.getCompleteTransformationContext());
+    public boolean removeFromDomains(Domain aDomain) {
+        boolean remove = this.domains.remove(aDomain);
+        return remove;
     }
 
-    public static UnitData from(@Valid Unit unit, TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformUnit2Data((DataEntityToTargetContext) tcontext,
-                                                                    unit);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Unit.class;
     }
 
-    public Unit toUnit(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Unit((DataTargetToEntityContext) tcontext,
-                                                                    this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_UNIT;
     }
 
 }

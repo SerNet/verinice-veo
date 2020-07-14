@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 
@@ -28,57 +27,29 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
-import org.veo.persistence.entity.jpa.UnitData;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
 
 @Repository
 @AllArgsConstructor
 public class ClientRepositoryImpl implements ClientRepository {
-
-    // public Collection<ClientData> findByNameContainingIgnoreCase(String search);
 
     private ClientDataRepository dataRepository;
 
     private ModelObjectValidation validation;
 
     @Override
-    public Client save(Client client, TransformEntityToTargetContext entityToDataContext,
-            TransformTargetToEntityContext dataToEntityContext) {
+    public Client save(Client client) {
         validation.validateModelObject(client);
-        return dataRepository.save(ClientData.from(client, Optional.ofNullable(entityToDataContext)
-                                                                   .orElseGet(DataEntityToTargetContext::getCompleteTransformationContext)))
-                             .toClient(Optional.ofNullable(dataToEntityContext)
-                                               .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext));
+        return dataRepository.save((ClientData) client);
     }
 
     @Override
     public Optional<Client> findById(Key<UUID> id) {
-        return findById(id, null);
-    }
-
-    @Override
-    public Optional<Client> findById(Key<UUID> id,
-            TransformTargetToEntityContext dataToEntityContext) {
-        TransformTargetToEntityContext context = Optional.ofNullable(dataToEntityContext)
-                                                         .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext);
-
-        boolean fetchUnits = ((DataTargetToEntityContext) context).getClientUnitsFunction() != null;
-        Optional<ClientData> dataObject;
-        if (fetchUnits) {
-            dataObject = dataRepository.findByIdFetchUnits(id.uuidValue());
-        } else {
-            dataObject = dataRepository.findById(id.uuidValue());
-        }
-        return dataObject.map(data -> data.toClient(context));
-
+        Optional<ClientData> optional = dataRepository.findById(id.uuidValue());
+        return optional.isPresent() ? Optional.of(optional.get()) : Optional.empty();
     }
 
     @Override
@@ -89,7 +60,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public void delete(Client entity) {
-        dataRepository.delete(ClientData.from(entity));
+        dataRepository.delete((ClientData) entity);
     }
 
     @Override
@@ -106,15 +77,6 @@ public class ClientRepositoryImpl implements ClientRepository {
     public Set<Client> getByIds(Set<Key<UUID>> ids) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public Set<Client> findClientsContainingUnit(Unit unit) {
-        DataTargetToEntityContext context = DataTargetToEntityContext.getCompleteTransformationContext();
-        return dataRepository.findDistinctByUnitsIn(Set.of(UnitData.from(unit)))
-                             .stream()
-                             .map(clientData -> clientData.toClient(context))
-                             .collect(Collectors.toSet());
     }
 
 }

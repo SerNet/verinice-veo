@@ -36,6 +36,8 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.UnitData
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -60,7 +62,8 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private TransactionTemplate txTemplate
-
+    @Autowired
+    private EntityDataFactory entityFactory
     private Client client
 
     private Domain domain
@@ -68,19 +71,19 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
-        domain = newDomain {
-            name = "27001"
-            description = "ISO/IEC"
-            abbreviation = "ISO"
-        }
 
-        client = txTemplate.execute {
-            repository.save(newClient {
-                id = clientId
-                name = "Demo Client"
-                domains = [domain] as Set
-            })
-        }
+        domain = entityFactory.createDomain()
+        domain.description = "ISO/IEC"
+        domain.abbreviation = "ISO"
+        domain.name = "27001"
+        domain.id = Key.newUuid()
+
+
+        def client= entityFactory.createClient()
+        client.id = clientId
+        client.name = "Demo Client"
+        client.domains = [domain] as Set
+        Client c = repository.save(client)
     }
 
     @WithUserDetails("user@domain.example")
@@ -111,13 +114,14 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             client = repository.findById(clientId).get()
         }
-        Unit unit = newUnit client, {
-            it.id = id
-            name = "Test unit"
-            setAbbreviation("u-1")
-            setDescription("description")
-            setDomains([client.domains.first()] as Set)
-        }
+        Unit unit = entityFactory.createUnit()
+        unit.id = id
+        unit.name = "Test unit"
+        unit.setAbbreviation("u-1")
+        unit.setDescription("description")
+        unit.setDomains([client.domains.first()] as Set)
+        unit.client = client
+
         txTemplate.execute {
             unit = urepository.save(unit)
         }
@@ -147,16 +151,17 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             client = repository.findById(clientId).get()
         }
-        Unit unit = newUnit client, {
-            it.id = id
-            name = "Test unit foo"
-            setAbbreviation("u-1")
-            setDescription("description")
-            setDomains([client.domains.first()] as Set)
-        }
+
+        Unit unit = entityFactory.createUnit()
+        unit.id = id
+        unit.name = "Test unit foo"
+        unit.setAbbreviation("u-1")
+        unit.setDescription("description")
+        unit.setDomains([client.domains.first()] as Set)
+        unit.setClient(client)
+
         txTemplate.execute {
             unit = urepository.save(unit)
-            client.addToUnits(unit)
             repository.save(client)
         }
 
@@ -176,16 +181,17 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         Unit unit
         Client c
         txTemplate.execute {
-            c = repository.findById(clientId, null).get()
+            c = repository.findById(clientId).get()
             // we do not use Client.createUnit() here because we want to specify the unit's ID:
-            unit = newUnit c, {
-                it.id = id
-                name = "Test unit-5"
-                setAbbreviation("u-1")
-                setDescription("description")
-            }
-            c.addToUnits(unit)
+            unit = entityFactory.createUnit()
+            unit.id = id
+            unit.name = "Test unit-5"
+            unit.setAbbreviation("u-1")
+            unit.setDescription("description")
+            unit.setClient(c)
+
             c = repository.save(c)
+            urepository.save(unit)
         }
         return c
     }
@@ -272,19 +278,19 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create sub unit for a unit"() {
 
-        //        def id = Key.newUuid();
-        //        Client c = null
-        //        Unit unit = null
-        //        txTemplate.execute {
-        //            c = repository.findById(clientId).get()
-        //            unit = newUnit c, {
-        //                    it.id = id
-        //                    name = "Test unit-2"
-        //                    setAbbreviation("u-3")
-        //                    setDescription("description")
-        //            }
-        //            unit = urepository.save(unit)
-        //        }
+        def id = Key.newUuid()
+        Client c = null
+        Unit unit = null
+        txTemplate.execute {
+            c = repository.findById(clientId).get()
+            unit = new UnitData()
+            unit.id = id
+            unit.name = "Test unit-2"
+            unit.setAbbreviation("u-3")
+            unit.setDescription("description")
+            unit.client = c
+            unit = urepository.save(unit)
+        }
 
         given: "a request body"
 
@@ -351,13 +357,14 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         when: "load the client"
 
         Client tclient = null
+        List units = null
         txTemplate.execute {
             tclient = repository.findById(clientId).get()
+            units = urepository.findByClient(tclient)
         }
 
         then: "the data is persistent"
-        tclient.units.find { it.id.uuidValue() == parent.resourceId }.units.first().name == "sub-unit-1"
-
+        units.size() == 3
     }
 
     @WithUserDetails("user@domain.example")
@@ -369,11 +376,14 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the client is loaded"
         Client tclient = txTemplate.execute {
-            repository.findById(clientId, null).get()
+            repository.findById(clientId).get()
+        }
+        Unit unit1 = txTemplate.execute {
+            urepository.findById(id).get()
         }
 
         then: "the unit is present"
-        tclient.getUnit(id).present
+        unit1.id == id
 
         when: "the unit is deleted"
         def results = delete("/units/${id.uuidValue()}")
@@ -381,19 +391,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the unit is removed and a status code returned"
         results.andExpect(status().isNoContent())
 
-
-        when: "the client is loaded again"
-        tclient = null
-        txTemplate.execute {
-            tclient = repository.findById(clientId, null).get()
-        }
-
-        then: "the unit was removed from the client"
-        tclient.getUnit(id).empty
-
         when: "the unit is loaded again"
         def unit = txTemplate.execute {
-            urepository.findById(id, null)
+            urepository.findById(id)
         }
 
         then: "the unit is no longer present"

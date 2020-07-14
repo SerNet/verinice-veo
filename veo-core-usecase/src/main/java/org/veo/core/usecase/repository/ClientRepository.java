@@ -16,12 +16,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
-import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 
 /**
  * A repository for <code>Client</code> entities.
@@ -30,10 +28,5 @@ import org.veo.core.entity.Unit;
  * with more specific methods - i.e. queries based on particular fields.
  */
 public interface ClientRepository extends Repository<Client, Key<UUID>> {
-
-    public Set<Client> findClientsContainingUnit(Unit unit);
-
-    // TODO: VEO-115 we need an interface in entity for the context and a service
-    // factory to get the right one
 
 }

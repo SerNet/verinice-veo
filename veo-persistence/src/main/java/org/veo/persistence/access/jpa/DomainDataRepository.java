@@ -20,11 +20,11 @@ import java.util.Collection;
 
 import org.springframework.data.repository.CrudRepository;
 
-import org.veo.core.entity.transform.*;
+import org.veo.core.entity.Domain;
 import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends CrudRepository<DomainData, String> {
 
-    Collection<DomainData> findByNameContainingIgnoreCase(String search);
+    Collection<Domain> findByNameContainingIgnoreCase(String search);
 
 }

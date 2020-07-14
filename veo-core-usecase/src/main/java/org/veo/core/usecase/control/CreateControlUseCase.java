@@ -16,49 +16,61 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import javax.validation.Valid;
 
+import lombok.Value;
+
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateControlUseCase extends UseCase<CreateEntityInputData<Control>, Control> {
+public class CreateControlUseCase<R>
+        extends UseCase<CreateControlUseCase.InputData, CreateControlUseCase.OutputData, R> {
 
     private final UnitRepository unitRepository;
     private final ControlRepository controlRepository;
-    private final TransformContextProvider transformContextProvider;
+    private final EntityFactory entityFactory;
 
     public CreateControlUseCase(UnitRepository unitRepository, ControlRepository controlRepository,
-            TransformContextProvider transformContextProvider) {
+            EntityFactory entityFactory) {
         this.unitRepository = unitRepository;
         this.controlRepository = controlRepository;
-        this.transformContextProvider = transformContextProvider;
+        this.entityFactory = entityFactory;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Control execute(CreateEntityInputData<Control> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialClient()
-                                                                                           .partialDomain();
-
-        Unit unit = unitRepository.findById(input.getUnitId(), dataTargetToEntityContext)
+    public OutputData execute(InputData input) {
+        Unit unit = unitRepository.findById(input.getControl()
+                                                 .getOwner()
+                                                 .getId())
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          input.getUnitId()
-                                               .uuidValue()));
-        checkSameClient(input.getAuthenticatedClient(), unit, unit);
-
-        Control control = input.getEntity();
-        control.setId(Key.newUuid());
-        return controlRepository.save(control);
+                                          input.getControl()
+                                               .getOwner()
+                                               .getId()
+                                               .uuidValue()));// the unit is already loaded
+        checkSameClient(input.authenticatedClient, unit, unit);
+        input.getControl()
+             .setId(Key.newUuid());
+        return new OutputData(controlRepository.save(input.getControl()));
     }
 
+    @Valid
+    @Value
+    public static class InputData implements UseCase.InputData {
+        Control control;
+        Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Control control;
+    }
 }

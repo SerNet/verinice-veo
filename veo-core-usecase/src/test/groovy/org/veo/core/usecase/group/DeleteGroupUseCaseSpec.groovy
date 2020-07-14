@@ -32,16 +32,17 @@ class DeleteGroupUseCaseSpec extends UseCaseSpec {
         given:
         def repository = Mock(Class.forName("org.veo.core.usecase.repository.${type}Repository"))
         def groupId = Key.newUuid()
-        EntityLayerSupertype group = Mock() {
-            getOwner() >> existingUnit
-            getId() >> groupId
-        }
+        EntityLayerSupertype group = Mock()
+        group.getOwner() >> existingUnit
+        group.getId() >> groupId
+
         when:
-        usecase.execute(new InputData(groupId, type, existingClient))
+        def output = usecase.execute(new InputData(groupId, type, existingClient))
         then:
         1 * repositoryProvider.getRepositoryFor(type.entityClass) >> repository
         1 * repository.findById(groupId) >> Optional.of(group)
         1 * repository.deleteById(groupId)
+        output.id == groupId
 
         where:
         type << GroupType.values()

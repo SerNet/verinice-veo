@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
-import org.veo.core.entity.transform.TransformContextProvider;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
@@ -59,6 +59,7 @@ import org.veo.persistence.access.ControlRepositoryImpl;
 import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 
 /**
  * This configuration takes care of wiring classes from core modules
@@ -70,63 +71,52 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateAssetUseCase createAssetUseCase(UnitRepositoryImpl unitRepository,
-            AssetRepositoryImpl assetRepository,
-            TransformContextProvider transformContextProvider) {
-        return new CreateAssetUseCase(unitRepository, assetRepository, transformContextProvider);
+            AssetRepositoryImpl assetRepository) {
+        return new CreateAssetUseCase(unitRepository, assetRepository, getEntityFactory());
     }
 
     @Bean
-    public GetAssetUseCase getAssetUseCase(AssetRepositoryImpl assetRepository,
-            TransformContextProvider transformContextProvider) {
-        return new GetAssetUseCase(assetRepository, transformContextProvider);
+    public GetAssetUseCase getAssetUseCase(AssetRepositoryImpl assetRepository) {
+        return new GetAssetUseCase(assetRepository);
     }
 
     @Bean
     public GetAssetsUseCase getAssetsUseCase(ClientRepositoryImpl clientRepository,
-            AssetRepositoryImpl assetRepository,
-            TransformContextProvider transformContextProvider) {
-        return new GetAssetsUseCase(clientRepository, assetRepository);
+            AssetRepositoryImpl assetRepository, UnitRepository unitRepository) {
+        return new GetAssetsUseCase(clientRepository, assetRepository, unitRepository);
     }
 
     @Bean
-    public UpdateAssetUseCase updateAssetUseCase(AssetRepositoryImpl assetRepository,
-            TransformContextProvider transformContextProvider) {
-        return new UpdateAssetUseCase(assetRepository, transformContextProvider);
+    public UpdateAssetUseCase updateAssetUseCase(AssetRepositoryImpl assetRepository) {
+        return new UpdateAssetUseCase(assetRepository);
     }
 
     @Bean
     public CreateControlUseCase createControlUseCase(UnitRepositoryImpl unitRepository,
-            ControlRepositoryImpl controlRepository,
-            TransformContextProvider transformContextProvider) {
-        return new CreateControlUseCase(unitRepository, controlRepository,
-                transformContextProvider);
+            ControlRepositoryImpl controlRepository) {
+        return new CreateControlUseCase(unitRepository, controlRepository, getEntityFactory());
     }
 
     @Bean
-    public GetControlUseCase getControlUseCase(ControlRepositoryImpl controlRepository,
-            TransformContextProvider transformContextProvider) {
-        return new GetControlUseCase(controlRepository, transformContextProvider);
+    public GetControlUseCase getControlUseCase(ControlRepositoryImpl controlRepository) {
+        return new GetControlUseCase(controlRepository);
     }
 
     @Bean
     public GetControlsUseCase getControlsUseCase(ClientRepositoryImpl clientRepository,
-            ControlRepositoryImpl controlRepository,
-            TransformContextProvider transformContextProvider) {
-        return new GetControlsUseCase(clientRepository, controlRepository);
+            ControlRepositoryImpl controlRepository, UnitRepository unitRepository) {
+        return new GetControlsUseCase(clientRepository, controlRepository, unitRepository);
     }
 
     @Bean
-    public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository,
-            TransformContextProvider transformContextProvider) {
-        return new UpdateControlUseCase(controlRepository, transformContextProvider);
+    public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository) {
+        return new UpdateControlUseCase(controlRepository);
     }
 
     @Bean
     public CreateProcessUseCase createProcessUseCase(UnitRepositoryImpl unitRepository,
-            ProcessRepositoryImpl processRepository,
-            TransformContextProvider transformContextProvider) {
-        return new CreateProcessUseCase(unitRepository, processRepository,
-                transformContextProvider);
+            ProcessRepositoryImpl processRepository) {
+        return new CreateProcessUseCase(unitRepository, processRepository, getEntityFactory());
     }
 
     @Bean
@@ -135,90 +125,82 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateProcessUseCase putProcessUseCase(ProcessRepositoryImpl processRepository,
-            TransformContextProvider transformContextProvider) {
-        return new UpdateProcessUseCase(processRepository, transformContextProvider);
+    public UpdateProcessUseCase putProcessUseCase(ProcessRepositoryImpl processRepository) {
+        return new UpdateProcessUseCase(processRepository);
     }
 
     @Bean
-    public GetUnitUseCase getUnitUseCase(UnitRepositoryImpl repository,
-            TransformContextProvider transformContextProvider) {
-        return new GetUnitUseCase(repository, transformContextProvider);
+    public GetUnitUseCase getUnitUseCase(UnitRepositoryImpl repository) {
+        return new GetUnitUseCase(repository);
     }
 
     @Bean
     public GetUnitsUseCase getUnitsUseCase(ClientRepository repository,
-            TransformContextProvider transformContextProvider) {
-        return new GetUnitsUseCase(repository);
+            UnitRepositoryImpl unitRepository) {
+        return new GetUnitsUseCase(repository, unitRepository);
     }
 
     @Bean
     public GetProcessesUseCase getProcessesUseCase(ClientRepository clientRepository,
-            ProcessRepository processRepository) {
-        return new GetProcessesUseCase(clientRepository, processRepository);
+            ProcessRepository processRepository, UnitRepository unitRepository) {
+        return new GetProcessesUseCase(clientRepository, processRepository, unitRepository);
     }
 
     @Bean
-    public UpdateUnitUseCase getPutUnitUseCase(UnitRepositoryImpl repository,
-            TransformContextProvider transformContextProvider) {
-        return new UpdateUnitUseCase(repository, transformContextProvider);
+    public UpdateUnitUseCase getPutUnitUseCase(UnitRepositoryImpl repository) {
+        return new UpdateUnitUseCase(repository);
     }
 
     @Bean
-    public CreateUnitUseCase getCreateUnitUseCase(ClientRepositoryImpl clientRepository) {
-        return new CreateUnitUseCase(clientRepository);
+    public CreateUnitUseCase getCreateUnitUseCase(ClientRepositoryImpl clientRepository,
+            UnitRepositoryImpl unitRepository) {
+        return new CreateUnitUseCase(clientRepository, unitRepository, getEntityFactory());
     }
 
     @Bean
     public DeleteUnitUseCase getDeleteUnitUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepositoryImpl unitRepository, TransformContextProvider transformContextProvider,
-            RepositoryProvider repositoryProvider) {
-        return new DeleteUnitUseCase(clientRepository, unitRepository, transformContextProvider,
-                repositoryProvider);
+            UnitRepositoryImpl unitRepository, RepositoryProvider repositoryProvider) {
+        return new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider);
     }
 
     @Bean
     public CreatePersonUseCase createPersonUseCase(UnitRepositoryImpl unitRepository,
-            PersonRepositoryImpl personRepository,
-            TransformContextProvider transformContextProvider) {
-        return new CreatePersonUseCase(unitRepository, personRepository, transformContextProvider);
+            PersonRepositoryImpl personRepository) {
+        return new CreatePersonUseCase(unitRepository, personRepository, getEntityFactory());
     }
 
     @Bean
-    public GetPersonUseCase getPersonUseCase(PersonRepositoryImpl personRepository,
-            TransformContextProvider transformContextProvider) {
-        return new GetPersonUseCase(personRepository, transformContextProvider);
+    public GetPersonUseCase getPersonUseCase(PersonRepositoryImpl personRepository) {
+        return new GetPersonUseCase(personRepository);
     }
 
     @Bean
     public GetPersonsUseCase getPersonsUseCase(ClientRepositoryImpl clientRepository,
-            PersonRepositoryImpl personRepository) {
-        return new GetPersonsUseCase(clientRepository, personRepository);
+            PersonRepositoryImpl personRepository, UnitRepository unitRepository) {
+        return new GetPersonsUseCase(clientRepository, personRepository, unitRepository);
     }
 
     @Bean
-    public UpdatePersonUseCase updatePersonUseCase(PersonRepositoryImpl personRepository,
-            TransformContextProvider transformContextProvider) {
-        return new UpdatePersonUseCase(personRepository, transformContextProvider);
+    public UpdatePersonUseCase updatePersonUseCase(PersonRepositoryImpl personRepository) {
+        return new UpdatePersonUseCase(personRepository);
     }
 
     @Bean
     public CreateGroupUseCase getCreateGroupUseCase(UnitRepository unitRepository,
-            RepositoryProvider repositoryProvider,
-            TransformContextProvider transformContextProvider) {
-        return new CreateGroupUseCase(unitRepository, repositoryProvider, transformContextProvider);
+            RepositoryProvider repositoryProvider) {
+        return new CreateGroupUseCase(unitRepository, repositoryProvider, getEntityFactory());
     }
 
     @Bean
     public GetGroupUseCase getGroupUseCase(RepositoryProvider repositoryProvider,
-            UnitRepository unitRepository, TransformContextProvider transformContextProvider) {
-        return new GetGroupUseCase(repositoryProvider, transformContextProvider);
+            UnitRepository unitRepository) {
+        return new GetGroupUseCase(repositoryProvider);
     }
 
     @Bean
     public GetGroupsUseCase getGroupsUseCase(ClientRepositoryImpl clientRepository,
-            RepositoryProvider repositoryProvider) {
-        return new GetGroupsUseCase(clientRepository, repositoryProvider);
+            UnitRepository unitRepository, RepositoryProvider repositoryProvider) {
+        return new GetGroupsUseCase(clientRepository, unitRepository, repositoryProvider);
     }
 
     @Bean
@@ -227,9 +209,8 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public PutGroupUseCase putGroupUseCase(RepositoryProvider repositoryProvider,
-            TransformContextProvider transformContextProvider) {
-        return new PutGroupUseCase(repositoryProvider, transformContextProvider);
+    public PutGroupUseCase putGroupUseCase(RepositoryProvider repositoryProvider) {
+        return new PutGroupUseCase(repositoryProvider);
     }
 
     @Bean
@@ -241,5 +222,10 @@ public class ModuleConfiguration {
     @Bean
     public EntitySchemaService getSchemaService() {
         return new EntitySchemaServiceClassPathImpl();
+    }
+
+    @Bean
+    public EntityFactory getEntityFactory() {
+        return new EntityDataFactory();
     }
 }

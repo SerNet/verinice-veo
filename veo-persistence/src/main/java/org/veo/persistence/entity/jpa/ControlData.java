@@ -17,55 +17,27 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 
 @Entity(name = "control")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ControlData extends EntityLayerSupertypeData {
+public class ControlData extends EntityLayerSupertypeData implements Control {
 
-    /**
-     * transform the given entity 'Control' to the corresponding 'ControlData' with
-     * the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static ControlData from(@Valid Control control) {
-        return from(control, DataEntityToTargetContext.getCompleteTransformationContext());
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Control.class;
     }
 
-    /**
-     * Transform the given data object 'ControlData' to the corresponding 'Control'
-     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public Control toControl() {
-        return toControl(DataTargetToEntityContext.getCompleteTransformationContext());
-    }
-
-    public static ControlData from(@Valid Control control,
-            TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformControl2Data((DataEntityToTargetContext) tcontext,
-                                                                       control);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public Control toControl(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Control((DataTargetToEntityContext) tcontext,
-                                                                       this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_CONTROL;
     }
 
 }

@@ -25,14 +25,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.*
-import org.veo.core.entity.custom.LinkImpl
-import org.veo.core.entity.impl.AssetImpl
-import org.veo.core.entity.impl.ClientImpl
-import org.veo.core.entity.impl.PersonImpl
-import org.veo.core.entity.impl.UnitImpl
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
 import spock.lang.Specification
 
 @SpringBootTest(classes = CustomLinkPersistenceSpec.class
@@ -48,30 +45,31 @@ class CustomLinkPersistenceSpec extends Specification {
     private AssetRepositoryImpl assetRepository
     @Autowired
     private PersonRepositoryImpl personRepository
+    @Autowired
+    private EntityFactory entityFactory
+    @Autowired
+    private UnitRepositoryImpl unitRepository
 
     def "create an asset with a customLink and save-load it"() {
         given: "a person and an asset"
 
         Key unitId = Key.newUuid()
+        Unit unit = entityFactory.createUnit(unitId, "unit", null)
+        Person person = entityFactory.createPerson(Key.newUuid(), "P1", unit)
+        Asset asset = entityFactory.createAsset(Key.newUuid(), "AssetName", unit)
 
-        Unit unit = new UnitImpl(unitId, "unit", null)
-
-        Person person = new PersonImpl(Key.newUuid(), "P1", unit)
-
-        Asset asset = new AssetImpl(Key.newUuid(), "AssetName", unit)
-
-        CustomLink cp = new LinkImpl(Key.newUuid(), null, person, asset)
+        CustomLink cp = entityFactory.createCustomLink(Key.newUuid(), "My link", person, asset)
 
         cp.setType('my.new.linktype')
         cp.setApplicableTo(['Asset'] as Set)
 
-        asset.addToLinks(cp)
+        asset.setLinks(cp as Set)
 
-        Client client = new ClientImpl(Key.newUuid(), "Demo client")
-        client.setUnits([unit] as Set)
+        Client client = entityFactory.createClient(Key.newUuid(), "Demo client")
         unit.setClient(client)
 
         clientRepository.save(client)
+        unitRepository.save(unit)
         personRepository.save(person)
         assetRepository.save(asset)
 

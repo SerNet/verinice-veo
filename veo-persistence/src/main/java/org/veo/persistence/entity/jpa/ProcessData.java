@@ -17,55 +17,27 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "process")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProcessData extends EntityLayerSupertypeData {
+public class ProcessData extends EntityLayerSupertypeData implements Process {
 
-    /**
-     * transform the given entity 'Process' to the corresponding 'ProcessData' with
-     * the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static ProcessData from(@Valid Process process) {
-        return from(process, DataEntityToTargetContext.getCompleteTransformationContext());
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Process.class;
     }
 
-    /**
-     * Transform the given data object 'ProcessData' to the corresponding 'Process'
-     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public Process toProcess() {
-        return toProcess(DataTargetToEntityContext.getCompleteTransformationContext());
-    }
-
-    public static ProcessData from(@Valid Process process,
-            TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformProcess2Data((DataEntityToTargetContext) tcontext,
-                                                                       process);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public Process toProcess(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Process((DataTargetToEntityContext) tcontext,
-                                                                       this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_PROCESS;
     }
 
 }

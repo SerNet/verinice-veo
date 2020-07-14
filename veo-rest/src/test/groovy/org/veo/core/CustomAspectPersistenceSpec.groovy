@@ -28,12 +28,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.*
-import org.veo.core.entity.custom.SimpleProperties
-import org.veo.core.entity.impl.AssetImpl
-import org.veo.core.entity.impl.ClientImpl
-import org.veo.core.entity.impl.UnitImpl
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import spock.lang.Specification
 
 @SpringBootTest(classes = CustomAspectPersistenceSpec.class
@@ -46,26 +44,30 @@ class CustomAspectPersistenceSpec extends Specification {
     @Autowired
     private ClientRepositoryImpl clientRepository
     @Autowired
+    private UnitRepositoryImpl unitRepository
+    @Autowired
     private AssetRepositoryImpl assetRepository
+    @Autowired
+    private EntityDataFactory entityFactory
 
     def "create an asset with a customAspect and save-load it"() {
         given: "a Unit and an asset"
 
         Key unitId = Key.newUuid()
 
-        CustomProperties cp = new SimpleProperties()
+        CustomProperties cp = entityFactory.createCustomProperties()
+        cp.setId(Key.newUuid())
         cp.setType('my.new.linktype')
         cp.setApplicableTo(['Asset'] as Set)
 
-        Unit unit = new UnitImpl(unitId, "unit", null)
-
-        Client client = new ClientImpl(Key.newUuid(), "Demo Client")
-        client.setUnits([unit] as Set)
+        Unit unit = entityFactory.createUnit(unitId, "unit", null)
+        Client client = entityFactory.createClient(Key.newUuid(), "Demo Client")
         unit.setClient(client)
-        Asset asset = new AssetImpl(Key.newUuid(), "AssetName", unit)
+        Asset asset = entityFactory.createAsset(Key.newUuid(), "AssetName", unit)
         asset.setCustomAspects([cp] as Set)
 
         clientRepository.save(client)
+        unitRepository.save(unit)
         assetRepository.save(asset)
 
         when: "loaded from db"
@@ -79,6 +81,7 @@ class CustomAspectPersistenceSpec extends Specification {
 
         cp.setProperty("my.key.1", "my test value 1")
         cp.setProperty("my.key.2", "my test value 2")
+
 
         assetRepository.save(asset)
 
@@ -99,7 +102,7 @@ class CustomAspectPersistenceSpec extends Specification {
 
         when: "add properties of type number"
 
-        cp.setProperty("my.key.3", 10)
+        cp.setProperty("my.key.3",(Integer) 10)
 
         assetRepository.save(asset)
 
@@ -131,7 +134,8 @@ class CustomAspectPersistenceSpec extends Specification {
 
         when: "add properties of type list string"
 
-        CustomProperties aspect = new SimpleProperties()
+        CustomProperties aspect = entityFactory.createCustomProperties()
+        aspect.setId(Key.newUuid())
         aspect.setType('my_new_asset_custom_aspect')
         aspect.setApplicableTo(['Asset'] as Set)
         aspect.setProperty('l1', ['e1', 'e2'])

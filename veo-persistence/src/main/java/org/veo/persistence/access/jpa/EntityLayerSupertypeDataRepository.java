@@ -22,39 +22,40 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.groups.EntityLayerSupertypeGroupData;
 
 public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSupertypeData>
         extends CrudRepository<T, String> {
 
-    Collection<AssetData> findByNameContainingIgnoreCase(String search);
+    Collection<T> findByNameContainingIgnoreCase(String search);
 
-    List<T> findByOwnerId(String ownerId);
+    List<T> findByOwner_DbId(String ownerId);
 
-    List<T> findByOwner_ClientId(String clientId); // NOPMD
+    List<T> findByOwner_Client_DbId(String clientId); // NOPMD
 
-    @Query("select e from #{#entityName} as e where e.owner.id = ?1 and type(e) = #{#entityName}")
+    @Query("select e from #{#entityName} as e where e.owner.dbId = ?1 and type(e) = #{#entityName}")
     @Deprecated
     // FIXME this method should be removed, it was only added because
-    // findByOwnerId also returns groups, which it shouldn't. We probably need
-    // to fix our JPA mapping in that regard
-    List<T> findEntitiesByOwnerId(String ownerId);
+    // findByOwnerId
+    // also returns groups, which it shouldn't. We probably need to fix our JPA
+    // mapping in that regard
+    List<T> findEntitiesByOwner_DbId(String ownerId);
 
-    @Query("select e from #{#entityName} as e where e.owner.client.id = ?1 and type(e) = #{#entityName}")
+    @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e) = #{#entityName}")
     @Deprecated
     // FIXME this method should be removed, it was only added because
-    // findByOwnerId also returns groups, which it shouldn't. We probably need
-    // to fix our JPA mapping in that regard
-    List<T> findEntitiesByOwner_ClientId(String uuidValue);
+    // findByOwnerId
+    // also returns groups, which it shouldn't. We probably need to fix our JPA
+    // mapping in that regard
+    List<T> findEntitiesByOwner_Client_DbId(String uuidValue);
 
-    List<T> findByLinks_TargetId(String uuidValue);
+    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(
+            String uuidValue);
 
-    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_ClientId(String uuidValue);
+    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_DbId(String uuidValue);
 
-    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwnerId(String uuidValue);
+    List<T> findByLinks_Target_DbId(String uuidValue);
 
-    void deleteByOwnerId(String uuidValue);
-
+    void deleteByOwner_DbId(String uuidValue);
 }

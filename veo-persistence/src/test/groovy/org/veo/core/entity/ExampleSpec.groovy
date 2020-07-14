@@ -16,13 +16,13 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import org.veo.core.entity.impl.ClientImpl
-import org.veo.core.entity.impl.DomainImpl
+import org.veo.core.entity.transform.EntityFactory
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import spock.lang.Specification
-
 
 class ExampleSpec extends Specification {
 
+    private EntityFactory entityFactory = new EntityDataFactory()
 
     def "Create a new Domain"() {
         given: "a domain name"
@@ -30,7 +30,7 @@ class ExampleSpec extends Specification {
 
         when : "Domain is created"
 
-        Domain domain = new DomainImpl(Key.newUuid(), name)
+        Domain domain = entityFactory.createDomain(Key.newUuid(), name)
 
         then: "domain is correct initatlized"
 
@@ -44,9 +44,9 @@ class ExampleSpec extends Specification {
 
         when : "Cient is created"
 
-        Domain domain = new DomainImpl(Key.newUuid(), domainname)
+        Domain domain = entityFactory.createDomain(Key.newUuid(), domainname)
 
-        Client client = new ClientImpl(Key.newUuid(), clientname)
+        Client client = entityFactory.createClient(Key.newUuid(), clientname)
         client.setDomains([domain] as Set)
         then: "domain is correct initatlized"
 

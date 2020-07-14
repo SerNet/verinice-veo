@@ -19,33 +19,37 @@ package org.veo.core.usecase.asset;
 import java.time.Instant;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.entity.Client;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
+import org.veo.core.usecase.base.ModifyEntityUseCase.OutputData;
 import org.veo.core.usecase.repository.AssetRepository;
 
 /**
  * @author urszeidler
  */
-public class UpdateAssetUseCase extends ModifyEntityUseCase<Asset> {
+public class UpdateAssetUseCase<R> extends ModifyEntityUseCase<Asset, R> {
 
     private final AssetRepository assetRepository;
 
-    public UpdateAssetUseCase(AssetRepository assetRepository,
-            TransformContextProvider transformContextProvider) {
-        super(transformContextProvider);
+    public UpdateAssetUseCase(AssetRepository assetRepository) {
         this.assetRepository = assetRepository;
     }
 
     @Override
-    protected Asset performModification(InputData<Asset> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
+    public OutputData<Asset> execute(InputData<Asset> input) {
+        Asset entity = input.getEntity();
+        Client authenticatedClient = input.getAuthenticatedClient();
+        checkSameClient(authenticatedClient, entity);
+        return performModification(input);
+    }
+
+    @Override
+    protected OutputData<Asset> performModification(InputData<Asset> input) {
         Asset asset = input.getEntity();
         asset.setVersion(asset.getVersion() + 1);
         asset.setValidFrom(Instant.now());
-        return assetRepository.save(asset, null, dataTargetToEntityContext);
+        return new OutputData<>(assetRepository.save(asset));
     }
 
 }

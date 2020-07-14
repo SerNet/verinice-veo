@@ -23,7 +23,6 @@ import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ProcessData;
-import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
 
 @Repository
 public class ProcessRepositoryImpl extends BaseRepository<Process, ProcessData>
@@ -31,7 +30,7 @@ public class ProcessRepositoryImpl extends BaseRepository<Process, ProcessData>
 
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository,
             ModelObjectValidation validation) {
-        super(dataRepository, validation, ProcessData::from, ProcessData::toProcess,
-                groupData -> ((ProcessGroupData) groupData).toProcessGroup());
+        super(dataRepository, validation);
     }
+
 }

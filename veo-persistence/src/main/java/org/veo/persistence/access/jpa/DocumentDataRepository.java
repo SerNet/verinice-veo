@@ -23,7 +23,7 @@ import org.veo.persistence.entity.jpa.groups.DocumentGroupData;
 
 public interface DocumentDataRepository extends EntityLayerSupertypeDataRepository<DocumentData> {
 
-    List<DocumentGroupData> findGroupsByOwner_ClientId(String uuidValue);
+    List<DocumentGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
 
-    List<DocumentGroupData> findGroupsByOwnerId(String uuidValue);
+    List<DocumentGroupData> findGroupsByOwner_DbId(String uuidValue);
 }

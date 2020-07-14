@@ -29,10 +29,10 @@ import groovy.json.JsonSlurper
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.*
-import org.veo.core.entity.custom.LinkImpl
-import org.veo.core.entity.custom.SimpleProperties
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -54,9 +54,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private AssetRepositoryImpl assetRepository
-
+    @Autowired
+    private UnitRepositoryImpl unitRepository
     @Autowired
     TransactionTemplate txTemplate
+    @Autowired
+    private EntityDataFactory entityFactory
 
     private Unit unit
     private Unit unit2
@@ -66,33 +69,33 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-            }
+            domain = entityFactory.createDomain()
+            domain.description = "ISO/IEC"
+            domain.abbreviation = "ISO"
+            domain.name = "ISO"
+            domain.id = Key.newUuid()
 
-            domain1 = newDomain {
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-            }
+            domain1 = entityFactory.createDomain()
+            domain1.description = "ISO/IEC2"
+            domain1.abbreviation = "ISO"
+            domain1.name = "ISO"
+            domain1.id = Key.newUuid()
 
-            def client = newClient{
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
-            unit = newUnit client, {
-                name = "Test unit"
-            }
-            client.units << unit
+            def client= entityFactory.createClient()
+            client.id = clientId
+            client.domains = [domain, domain1] as Set
+
+            unit = entityFactory.createUnit()
+            unit.name = "Test unit"
+            unit.id = Key.newUuid()
+
             unit.client = client
-
-            unit2 = newUnit client, {
-                name = "Test unit2"
-            }
-            client.units << unit2
+            unit2 = entityFactory.createUnit(Key.newUuid(),"Unit2",null)
             unit2.client = client
 
             clientRepository.save(client)
+            unitRepository.save(unit)
+            unitRepository.save(unit2)
         }
     }
 
@@ -128,15 +131,17 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve an asset"() {
         given: "a saved asset"
 
-        CustomProperties simpleProps = new SimpleProperties()
+        CustomProperties simpleProps = entityFactory.createCustomProperties()
         simpleProps.setType("simpleAspect")
         simpleProps.setId(Key.newUuid())
         simpleProps.setProperty("simpleProp", "simpleValue")
 
-        def asset = newAsset unit, {
-            name = 'Test asset-1'
-            setCustomAspects([simpleProps] as Set)
-        }
+        def asset = entityFactory.createAsset()
+        asset.id = Key.newUuid()
+        asset.name = 'Test asset-1'
+        asset.owner = unit
+        asset.setCustomAspects([simpleProps] as Set)
+
         asset = txTemplate.execute {
             assetRepository.save(asset)
         }
@@ -190,26 +195,25 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve an asset with a link"() {
         given: "a saved asset"
 
-        CustomProperties simpleProps = new SimpleProperties()
+        CustomProperties simpleProps = entityFactory.createCustomProperties()
         simpleProps.setType("simpleAspect")
         simpleProps.setId(Key.newUuid())
         simpleProps.setProperty("simpleProp", "simpleValue")
 
         def asset2 = txTemplate.execute {
-            assetRepository.save(newAsset(unit, {
-                domains = [domain1] as Set
-            }))
+            Asset newAsset = entityFactory.createAsset(Key.newUuid(),"Test asset", unit)
+            newAsset.domains = [domain1] as Set
+            assetRepository.save(newAsset)
         }
-        def asset = newAsset unit, {
-            name = 'Test asset-1'
-            setCustomAspects([simpleProps] as Set)
+        def asset = entityFactory.createAsset(Key.newUuid(),"Test asset-1", unit)
+        asset.setCustomAspects([simpleProps] as Set)
 
-            CustomLink link = new LinkImpl(Key.newUuid(), "requires", asset2, it)
-            link.setVersion(1L);
-            link.setType("mypreciouslink");
-            link.setApplicableTo(["Asset"] as Set);
-            addToLinks(link)
-        }
+        CustomLink link = entityFactory.createCustomLink(Key.newUuid(), "requires", asset2, asset)
+        link.setVersion(1L)
+        link.setType("mypreciouslink")
+        link.setApplicableTo(["Asset"] as Set)
+        asset.setLinks([link] as Set)
+
         asset = txTemplate.execute {
             assetRepository.save(asset)
         }
@@ -234,13 +238,17 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve all assets for a client"() {
         given: "a saved asset"
 
-        def asset = newAsset unit, {
-            name = "Test asset-1"
-        }
+        def asset = entityFactory.createAsset()
+        asset.id = Key.newUuid()
+        asset.name = "Test asset-1"
+        asset.owner = unit
+        asset.domains = [domain1] as Set
 
-        def asset2 = newAsset unit2, {
-            name = "Test asset-2"
-        }
+        def asset2 = entityFactory.createAsset()
+        asset2.id = Key.newUuid()
+        asset2.name = "Test asset-2"
+        asset2.owner = unit2
+        asset2.domains = [domain1] as Set
 
         (asset, asset2) = txTemplate.execute {
             [asset, asset2].collect(assetRepository.&save)
@@ -266,13 +274,16 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve all assets for a unit"() {
         given: "a saved asset"
 
-        def asset = newAsset unit, {
-            name = "Test asset-1"
-        }
+        def asset = entityFactory.createAsset()
+        asset.id = Key.newUuid()
+        asset.name = "Test asset-1"
+        asset.owner = unit
+        asset.domains = [domain1] as Set
 
-        def asset2 = newAsset unit2, {
-            name = "Test asset-2"
-        }
+        def asset2 = entityFactory.createAsset()
+        asset2.id = Key.newUuid()
+        asset2.name = "Test asset-2"
+        asset2.owner = unit2
 
         (asset, asset2) = txTemplate.execute {
             [asset, asset2].collect(assetRepository.&save)
@@ -310,11 +321,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved asset"
 
         Key<UUID> id = Key.newUuid()
-        def asset = newAsset unit, {
-            it.id = id
-            name = 'New asset-2'
-            domains = [domain1] as Set
-        }
+        def asset = entityFactory.createAsset()
+        asset.id = id
+        asset.name = 'New asset-2'
+        asset.owner = unit
+        asset.domains = [domain1] as Set
 
         asset = txTemplate.execute {
             assetRepository.save(asset)
@@ -353,16 +364,17 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "put an asset with custom properties"() {
         given: "a saved asset"
 
-        CustomProperties cp = new SimpleProperties()
+        CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Asset'] as Set)
         cp.setId(Key.newUuid())
         Key<UUID> id = Key.newUuid()
-        def asset = newAsset unit, {
-            it.id = id
-            customAspects = [cp] as Set
-            domains = [domain1] as Set
-        }
+        def asset = entityFactory.createAsset()
+        asset.id = id
+        asset.name = "Test asset-1"
+        asset.owner = unit
+        asset.domains = [domain1] as Set
+        asset.customAspects = [cp] as Set
 
         asset = txTemplate.execute {
             assetRepository.save(asset)
@@ -410,7 +422,16 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.href == "/units/"+unit.id.uuidValue()
-        def entity = txTemplate.execute { assetRepository.findById(id).get() }
+
+        when:
+        def entity = txTemplate.execute {
+            assetRepository.findById(id).get().tap {
+                // make sure that the proxy is resolved
+                customAspects.first()
+            }
+        }
+
+        then:
         entity.name == 'New asset-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'my.aspect-test1'
@@ -423,9 +444,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "delete an asset"() {
 
         given: "an existing asset"
-        def asset = newAsset unit, {
-            domains = [domain1] as Set
-        }
+        def asset = entityFactory.createAsset()
+        asset.id = Key.newUuid()
+        asset.name = 'New asset-2'
+        asset.owner = unit
+        asset.domains = [domain1] as Set
 
         asset = txTemplate.execute {
             assetRepository.save(asset)
@@ -444,18 +467,19 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         given: "two assets with a link between them"
 
+        Asset newAsset = entityFactory.createAsset(Key.newUuid(),"Test asset-1", unit)
+        newAsset.domains = [domain1] as Set
         def asset2 = txTemplate.execute {
-            assetRepository.save(newAsset(unit, {
-                domains = [domain1] as Set
-            }))
+            assetRepository.save(newAsset)
         }
 
+        newAsset = entityFactory.createAsset(Key.newUuid(),"Test asset-1", unit)
+        newAsset.domains = [domain1] as Set
+        CustomLink link = entityFactory.createCustomLink(Key.newUuid(), "requires", asset2, newAsset)
+        newAsset.links =[link] as Set
+
         def asset1 = txTemplate.execute {
-            assetRepository.save(newAsset(unit, {
-                domains = [domain1] as Set
-                CustomLink link = new LinkImpl(Key.newUuid(), "requires", asset2, it)
-                addToLinks(link)
-            }))
+            assetRepository.save(newAsset)
         }
 
         when: "a delete request is sent to the server for link target"

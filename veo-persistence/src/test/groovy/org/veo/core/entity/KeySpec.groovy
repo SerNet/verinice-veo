@@ -16,10 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-
-import org.veo.core.entity.Key
 import spock.lang.Specification
 
 public class KeySpec extends Specification {
@@ -45,7 +41,7 @@ public class KeySpec extends Specification {
         Key sameKey = new Key("TheValue")
 
         when: "a Key is based on a simple value"
-        Key key = new Key("TheValue");
+        Key key = new Key("TheValue")
 
         then: "the key compares correctly to other keys"
         key.isUndefined() == false
@@ -66,10 +62,10 @@ public class KeySpec extends Specification {
         Key otherSimpleKey = new Key("NotTheValue")
         Key otherCompoundKeyMultiType = new Key(["TheValue", 2, true])
         Key otherCompoundKeySameType = new Key(["One", "Two", "Three"])
-        Key sameKey = new Key("TheValue", 2, false);
+        Key sameKey = new Key("TheValue", 2, false)
 
         when: "a Key is based on a compound value"
-        Key key = new Key("TheValue", 2, false);
+        Key key = new Key("TheValue", 2, false)
 
         then: "the key compares correctly to other keys"
         key.isUndefined() == false
@@ -92,7 +88,7 @@ public class KeySpec extends Specification {
         Key otherCompoundKeySameType = new Key(["One", "Two", "Three"])
 
         when: "a UUID-based key is created"
-        Key key = Key.newUuid();
+        Key key = Key.newUuid()
 
         then: "the key compares correctly to other keys"
         !key.isUndefined()
@@ -101,9 +97,9 @@ public class KeySpec extends Specification {
         !key.equals(otherCompoundKeySameType)
 
         and: "the UUID can be read"
-        String uuid = key.uuidValue();
+        String uuid = key.uuidValue()
 
         and: "the key equals one created with the same UUID"
-        Key sameKey = new Key();
+        Key sameKey = new Key()
     }
 }

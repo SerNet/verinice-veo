@@ -21,31 +21,25 @@ import java.util.Optional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.BaseModelGroup;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class PutGroupUseCase extends UpdateGroupUseCase {
+public class PutGroupUseCase<R> extends UpdateGroupUseCase<R> {
 
-    public PutGroupUseCase(RepositoryProvider repositoryProvider,
-            TransformContextProvider transformContextProvider) {
-        super(repositoryProvider, transformContextProvider);
+    public PutGroupUseCase(RepositoryProvider repositoryProvider) {
+        super(repositoryProvider);
     }
 
     @Override
-    protected BaseModelGroup<?> update(InputData input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
-        BaseModelGroup group = input.getGroup();
+    protected ModelGroup<?> update(InputData input) {
+        ModelGroup<?> group = input.getGroup();
         group.setVersion(group.getVersion() + 1);
         group.setValidFrom(Instant.now());
         Repository repository = repositoryProvider.getRepositoryFor(input.getGroup()
                                                                          .getClass());
-        Optional existingGroup = repository.findById(group.getId());
+        Optional<ModelGroup<?>> existingGroup = repository.findById(group.getId());
         if (existingGroup.isEmpty()) {
             throw new NotFoundException("Group %s was not found.", group.getId()
                                                                         .uuidValue());
@@ -54,7 +48,7 @@ public class PutGroupUseCase extends UpdateGroupUseCase {
         Client authenticatedClient = input.getAuthenticatedClient();
         checkSameClient(authenticatedClient, (EntityLayerSupertype) existingGroup.get());
 
-        return (BaseModelGroup<?>) repository.save(group, null, dataTargetToEntityContext);
+        return (ModelGroup<?>) repository.save(group);
     }
 
 }

@@ -29,14 +29,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import groovy.json.JsonSlurper
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Client
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
-import org.veo.core.entity.custom.SimpleProperties
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -64,6 +66,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     TransactionTemplate txTemplate
+    @Autowired
+    private EntityDataFactory entityFactory
 
     private Unit unit
     private Unit unit2
@@ -73,35 +77,38 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-            }
+            domain = entityFactory.createDomain()
+            domain.description = "ISO/IEC"
+            domain.abbreviation = "ISO"
+            domain.name = "ISO"
+            domain.id = Key.newUuid()
 
-            domain1 = newDomain {
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-            }
+            domain1 = entityFactory.createDomain()
+            domain1.description = "ISO/IEC2"
+            domain1.abbreviation = "ISO"
+            domain1.name = "ISO"
+            domain1.id = Key.newUuid()
 
-            def client= newClient{
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
+            def client= entityFactory.createClient()
+            client.id = clientId
+            client.domains = [domain, domain1] as Set
 
-            unit = newUnit client, {
-                name = "Test unit"
-            }
-            client.units << unit
+            unit = entityFactory.createUnit()
+            unit.name = "Test unit"
+            unit.id = Key.newUuid()
+
             unit.client = client
-            clientRepository.save(client)
+            Client c = clientRepository.save(client)
 
-            unit2 = newUnit client, {
-                name = "Test unit2"
-            }
-            client.units << unit2
+            unit2 = entityFactory.createUnit()
+            unit2.name = "Test unit2"
+            unit2.id = Key.newUuid()
+
             unit2.client = client
 
             clientRepository.save(client)
+            unitRepository.save(unit)
+            unitRepository.save(unit2)
         }
     }
 
@@ -155,10 +162,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve a process"() {
         given: "a saved process"
         def id = Key.newUuid()
-        def process = newProcess unit, {
-            it.id = id
-            name = 'Test process'
-        }
+        def process = entityFactory.createProcess()
+        process.id = id
+        process.name = 'Test process'
+        process.owner = unit
 
         process = txTemplate.execute {
             processRepository.save(process)
@@ -179,11 +186,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved process"
 
         Key<UUID> id = Key.newUuid()
-        def process = newProcess unit, {
-            it.id = id
-            name = 'Test process-put-noname'
-            domains = [domain1] as Set
-        }
+        def process = entityFactory.createProcess()
+        process.id = id
+        process.owner = unit
+        process.name = 'Test process-put-noname'
+        process.domains = [domain1] as Set
 
         process = txTemplate.execute {
             processRepository.save(process)
@@ -224,11 +231,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved process"
 
         Key<UUID> id = Key.newUuid()
-        def process = newProcess unit, {
-            it.id = id
-            name = 'Test process-put'
-            domains = [domain1] as Set
-        }
+        def process = entityFactory.createProcess()
+        process.id = id
+        process.owner = unit
+        process.name = 'Test process-put'
+        process.domains = [domain1] as Set
 
         process = txTemplate.execute {
             processRepository.save(process)
@@ -270,11 +277,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         given: "an existing process"
         Key<UUID> id = Key.newUuid()
-        def process = newProcess unit, {
-            it.id = id
-            name = 'Test process-delete'
-            domains = [domain1] as Set
-        }
+        def process = entityFactory.createProcess()
+        process.id = id
+        process.owner = unit
+        process.name = 'Test process-delete'
+        process.domains = [domain1] as Set
+
         process = txTemplate.execute {
             processRepository.save(process)
         }
@@ -291,17 +299,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a process with custom aspect"() {
         given: "a saved process"
 
-        CustomProperties cp = new SimpleProperties()
+        CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Process'] as Set)
         cp.setId(Key.newUuid())
         Key<UUID> id = Key.newUuid()
-        def process = newProcess unit, {
-            it.id = id
-            name = 'Test process-put'
-            customAspects = [cp] as Set
-            domains = [domain1] as Set
-        }
+
+
+        def process = entityFactory.createProcess()
+        process.id = id
+        process.name = 'Test process-put'
+        process.owner = unit
+        process.domains = [domain1] as Set
+        process.customAspects = [cp] as Set
 
         process = txTemplate.execute {
             processRepository.save(process)
@@ -353,9 +363,16 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.href == "/units/"+unit.id.uuidValue()
+
+        when:
         def entity = txTemplate.execute {
-            processRepository.findById(id).get()
+            processRepository.findById(id).get().tap {
+                // make sure that the proxy is resolved
+                customAspects.first()
+            }
         }
+
+        then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'my.aspect-test1'
@@ -368,18 +385,18 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "overwrite a custom aspect attribute"() {
         given: "a saved process"
 
-        CustomProperties cp = new SimpleProperties()
+        CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Process'] as Set)
         cp.setId(Key.newUuid())
         cp.setProperty('test1', 'value1')
         Key<UUID> id = Key.newUuid()
-        def process = newProcess unit, {
-            it.id = id
-            name = 'Test process-put'
-            customAspects = [cp] as Set
-            domains = [domain1] as Set
-        }
+        def process = entityFactory.createProcess()
+        process.id = id
+        process.owner = unit
+        process.name = 'Test process-put'
+        process.domains = [domain1] as Set
+        process.customAspects = [cp] as Set
 
         process = txTemplate.execute {
             processRepository.save(process)
@@ -428,7 +445,16 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.href == "/units/"+unit.id.uuidValue()
-        def entity = txTemplate.execute { processRepository.findById(id).get() }
+
+        when:
+        def entity = txTemplate.execute {
+            processRepository.findById(id).get().tap {
+                // make sure that the proxy is resolved
+                customAspects.first()
+            }
+        }
+
+        then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'my.new.type'
@@ -440,17 +466,17 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "id is required in custom aspects"() {
         given: "a saved process"
 
-        CustomProperties cp = new SimpleProperties()
+        CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Process'] as Set)
         cp.setId(Key.newUuid())
         Key<UUID> id = Key.newUuid()
-        def process = newProcess unit, {
-            it.id = id
-            name = 'Test process-put'
-            customAspects = [cp] as Set
-            domains = [domain1] as Set
-        }
+        def process = entityFactory.createProcess()
+        process.id = id
+        process.owner = unit
+        process.name = 'Test process-put'
+        process.domains = [domain1] as Set
+        process.customAspects = [cp] as Set
 
         process = txTemplate.execute {
             processRepository.save(process)
@@ -620,30 +646,36 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]))
         def processId = result.resourceId
-        def process = txTemplate.execute{
-            processRepository.findById(Key.uuidFrom(processId))
+        def process1 = txTemplate.execute{
+            Process process = processRepository.findById(Key.uuidFrom(processId)).get()
+            with(process.links) {
+                //need to be in the open session
+                size() == 1
+                first().type == 'Process_depends_on_Asset'
+                first().name == 'requires'
+                first().target.id.uuidValue() == assetId
+            }
+            return process
         }
         then:
-        process.present
-        with(process.get().links) {
-            size() == 1
-            first().type == 'Process_depends_on_Asset'
-            first().name == 'requires'
-            first().target.id.uuidValue() == assetId
-        }
+        process1 != null
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all processes for a client"() {
         given: "a saved process"
 
-        def process = newProcess unit, {
-            name = 'Test process-1'
-        }
+        def process = entityFactory.createProcess()
+        process.id = Key.newUuid()
+        process.name = 'Test process-1'
+        process.owner = unit
 
-        def process2 = newProcess unit2, {
-            name = 'Test process-2'
-        }
+
+        def process2 = entityFactory.createProcess()
+        process2.id = Key.newUuid()
+        process2.name = 'Test process-2'
+        process2.owner = unit2
+
 
         (process, process2) = txTemplate.execute {
             [process, process2].collect(processRepository.&save)
@@ -671,13 +703,17 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve all processes for a unit"() {
         given: "a saved process"
 
-        def process = newProcess unit, {
-            name = 'Test process-1'
-        }
+        def process = entityFactory.createProcess()
+        process.id = Key.newUuid()
+        process.name = 'Test process-1'
+        process.owner = unit
 
-        def process2 = newProcess unit2, {
-            name = 'Test process-2'
-        }
+
+        def process2 = entityFactory.createProcess()
+        process2.id = Key.newUuid()
+        process2.name = 'Test process-2'
+        process2.owner = unit2
+
 
         (process, process2) = txTemplate.execute {
             [process, process2].collect(processRepository.&save)

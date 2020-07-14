@@ -19,30 +19,24 @@ package org.veo.core.usecase.control;
 import java.time.Instant;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 
-public class UpdateControlUseCase extends ModifyEntityUseCase<Control> {
+public class UpdateControlUseCase<R> extends ModifyEntityUseCase<Control, R> {
 
     private final ControlRepository controlRepository;
 
-    public UpdateControlUseCase(ControlRepository controlRepository,
-            TransformContextProvider transformContextProvider) {
-        super(transformContextProvider);
+    public UpdateControlUseCase(ControlRepository controlRepository) {
+        super();
         this.controlRepository = controlRepository;
     }
 
     @Override
-    public Control performModification(InputData<Control> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
+    public OutputData<Control> performModification(InputData<Control> input) {
         Control control = input.getEntity();
         control.setVersion(control.getVersion() + 1);
         control.setValidFrom(Instant.now());
-        return controlRepository.save(control, null, dataTargetToEntityContext);
+        return new OutputData<>(controlRepository.save(control));
 
     }
 

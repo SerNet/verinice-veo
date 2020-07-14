@@ -23,75 +23,35 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.veo.core.entity.Control;
 import org.veo.core.entity.groups.ControlGroup;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "control_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ControlGroupData extends ControlData
-        implements EntityLayerSupertypeGroupData<ControlData> {
+        implements ControlGroup, EntityLayerSupertypeGroupData<ControlData> {
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(targetEntity = ControlData.class,
+                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "control_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<ControlData> members;
+    private Set<Control> members;
 
     @Override
-    public Set<ControlData> getMembers() {
+    public Set<Control> getMembers() {
         return members;
     }
 
     @Override
-    public void setMembers(Set<ControlData> members) {
+    public void setMembers(Set<Control> members) {
         this.members = members;
-    }
-
-    /**
-     * transform the given entity 'ControlGroup' to the corresponding
-     * 'ControlGroupData' with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static ControlGroupData from(@Valid ControlGroup controlGroup) {
-        return from(controlGroup, DataEntityToTargetContext.getCompleteTransformationContext());
-    }
-
-    /**
-     * Transform the given data object 'ControlGroupData' to the corresponding
-     * 'ControlGroup' entity with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public ControlGroup toControlGroup() {
-        return toControlGroup(DataTargetToEntityContext.getCompleteTransformationContext());
-    }
-
-    public static ControlGroupData from(@Valid ControlGroup controlGroup,
-            TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformControlGroup2Data((DataEntityToTargetContext) tcontext,
-                                                                            controlGroup);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public ControlGroup toControlGroup(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2ControlGroup((DataTargetToEntityContext) tcontext,
-                                                                            this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
     }
 
 }

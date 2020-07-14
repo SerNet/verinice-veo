@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer.transformEntityLayerSupertype2Dto;
 import static org.veo.rest.ControllerConstants.PARENT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
@@ -67,10 +68,11 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.impl.BaseModelGroup;
 import org.veo.core.usecase.group.CreateGroupUseCase;
 import org.veo.core.usecase.group.DeleteGroupUseCase;
 import org.veo.core.usecase.group.GetGroupUseCase;
@@ -97,22 +99,24 @@ public class GroupController extends AbstractEntityController {
     private final UseCaseInteractorImpl useCaseInteractor;
     private final ObjectMapper objectMapper;
 
-    private final CreateGroupUseCase createGroupUseCase;
-    private final GetGroupUseCase getGroupUseCase;
-    private final GetGroupsUseCase<?> getGroupsUseCase;
-    private final PutGroupUseCase putGroupUseCase;
+    private final CreateGroupUseCase<ResponseEntity<ApiResponseBody>> createGroupUseCase;
+    private final GetGroupUseCase<EntityLayerSupertypeGroupDto<?>> getGroupUseCase;
+    private final GetGroupUseCase<List<EntityLayerSupertypeDto>> getGroupMemberUseCase;
+    private final GetGroupsUseCase<?, List<EntityLayerSupertypeGroupDto>> getGroupsUseCase;
+    private final PutGroupUseCase<EntityLayerSupertypeGroupDto<?>> putGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
 
     public GroupController(UseCaseInteractorImpl useCaseInteractor, ObjectMapper objectMapper,
             CreateGroupUseCase createGroupUseCase, GetGroupUseCase getGroupUseCase,
-            GetGroupsUseCase<?> getGroupsUseCase, PutGroupUseCase putGroupUseCase,
-            DeleteGroupUseCase deleteGroupUseCase) {
+            GetGroupsUseCase<?, List<EntityLayerSupertypeGroupDto>> getGroupsUseCase,
+            PutGroupUseCase putGroupUseCase, DeleteGroupUseCase deleteGroupUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createGroupUseCase = createGroupUseCase;
         this.getGroupUseCase = getGroupUseCase;
         this.getGroupsUseCase = getGroupsUseCase;
         this.putGroupUseCase = putGroupUseCase;
         this.deleteGroupUseCase = deleteGroupUseCase;
+        this.getGroupMemberUseCase = getGroupUseCase;
         this.objectMapper = objectMapper;
     }
 
@@ -131,11 +135,15 @@ public class GroupController extends AbstractEntityController {
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getGroupsUseCase, new GetGroupsUseCase.InputData(
-                getAuthenticatedClient(auth), type, Optional.ofNullable(parentUuid)),
-                                         groups -> groups.stream()
-                                                         .map(u -> EntityLayerSupertypeGroupDto.from(u,
-                                                                                                     tcontext))
-                                                         .collect(Collectors.toList()));
+                getAuthenticatedClient(auth), type, Optional.ofNullable(parentUuid)), output -> {
+
+                    List<EntityLayerSupertypeGroupDto> collect = output.getGroups()
+                                                                       .stream()
+                                                                       .map(u -> EntityLayerSupertypeGroupDto.from(u,
+                                                                                                                   tcontext))
+                                                                       .collect(Collectors.toList());
+                    return collect;
+                });
 
     }
 
@@ -153,11 +161,11 @@ public class GroupController extends AbstractEntityController {
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(getGroupUseCase,
-                                         new GetGroupUseCase.InputData(Key.uuidFrom(uuid), type,
-                                                 client),
-                                         group -> EntityLayerSupertypeGroupDto.from(group,
-                                                                                    EntityToDtoContext.getCompleteTransformationContext()));
+        return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
+                Key.uuidFrom(uuid), type, client), output -> {
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                    return EntityLayerSupertypeGroupDto.from(output.getGroup(), tcontext);
+                });
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
@@ -174,17 +182,19 @@ public class GroupController extends AbstractEntityController {
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
-                Key.uuidFrom(uuid), type, client), group -> {
-                    var tContext = EntityToDtoContext.getCompleteTransformationContext();
+        return useCaseInteractor.execute(getGroupMemberUseCase, new GetGroupUseCase.InputData(
+                Key.uuidFrom(uuid), type, client), output -> {
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                    ModelGroup<?> group = output.getGroup();
                     return group.getMembers()
                                 .stream()
-                                .map(member -> EntityToDtoTransformer.transformEntityLayerSupertype2Dto(tContext,
-                                                                                                        member))
+                                .map(member -> EntityToDtoTransformer.transformEntityLayerSupertype2Dto(tcontext,
+                                                                                                        (EntityLayerSupertype) member))
                                 .collect(Collectors.toList());
                 });
     }
 
+    // TODO: veo-281
     @PostMapping()
     @Operation(summary = "Creates a group")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Group created") })
@@ -196,19 +206,23 @@ public class GroupController extends AbstractEntityController {
         return useCaseInteractor.execute(createGroupUseCase, new CreateGroupUseCase.InputData(
                 Key.uuidFrom(createGroupDto.getOwner()
                                            .getId()),
-                createGroupDto.getName(), createGroupDto.getType(), client),
-                                         group -> RestApiResponse.created(URL_BASE_PATH,
-                                                                          new ApiResponseBody(true,
-                                                                                  Optional.ofNullable(group.getId())
-                                                                                          .map(Key::uuidValue),
-                                                                                  "Group created successfully.")));
+                createGroupDto.getName(), createGroupDto.getType(), client), output -> {
+                    ModelGroup<?> group = output.getGroup();
+                    Optional<String> groupId = group.getId() == null ? Optional.empty()
+                            : Optional.ofNullable(group.getId()
+                                                       .uuidValue());
+                    ApiResponseBody apiResponseBody = new ApiResponseBody(true, groupId,
+                            "Group created successfully.");
+                    return RestApiResponse.created(URL_BASE_PATH, apiResponseBody);
+                });
     }
 
+    // TODO: veo-281
     @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Updates a group")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Group updated"),
             @ApiResponse(responseCode = "404", description = "Group not found") })
-    public <T extends ModelObject> CompletableFuture<EntityLayerSupertypeGroupDto<T>> updateGroup(
+    public <T extends ModelObject> CompletableFuture<EntityLayerSupertypeGroupDto<?>> updateGroup(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @NotNull @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -222,10 +236,19 @@ public class GroupController extends AbstractEntityController {
                                                                                                       dtoClass);
         DtoToEntityContext fromDtoContext = configureDtoContext(client, groupDto.getReferences());
         EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext();
-        BaseModelGroup<?> group = (BaseModelGroup<?>) DtoToEntityTransformer.transformDto2EntityLayerSupertype(fromDtoContext,
-                                                                                                               (EntityLayerSupertypeDto) groupDto);
-        return useCaseInteractor.execute(putGroupUseCase, new UpdateGroupUseCase.InputData(group,
-                client), updatedGroup -> (EntityLayerSupertypeGroupDto<T>) EntityToDtoTransformer.transformEntityLayerSupertype2Dto(toDtoContext, updatedGroup));
+        ModelGroup<?> group = (ModelGroup<?>) DtoToEntityTransformer.transformDto2EntityLayerSupertype(fromDtoContext,
+                                                                                                       (EntityLayerSupertypeDto) groupDto);
+        return useCaseInteractor.execute(putGroupUseCase,
+                                         new UpdateGroupUseCase.InputData(group, client), output -> // TODO:
+                                                                                                    // do
+                                                                                                    // we
+                                                                                                    // need
+                                                                                                    // the
+                                                                                                    // transform
+                                                                                                    // group
+                                                                                                    // funtion
+                                         (EntityLayerSupertypeGroupDto) transformEntityLayerSupertype2Dto(toDtoContext,
+                                                                                                          (EntityLayerSupertype) output.getGroup()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

@@ -16,51 +16,71 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import javax.validation.Valid;
 
+import lombok.Value;
+
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Creates a persistent new process object.
  */
-public class CreateProcessUseCase extends UseCase<CreateEntityInputData<Process>, Process> {
+public class CreateProcessUseCase<R>
+        extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData, R> {
 
     private final UnitRepository unitRepository;
-    private final TransformContextProvider transformContextProvider;
     private final ProcessRepository processRepository;
+    private final EntityFactory entityFactory;
 
     public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository processRepository,
-            TransformContextProvider transformContextProvider) {
+            EntityFactory entityFactory) {
         this.unitRepository = unitRepository;
         this.processRepository = processRepository;
-        this.transformContextProvider = transformContextProvider;
+        this.entityFactory = entityFactory;
     }
 
-    @Transactional(TxType.REQUIRED)
     @Override
-    public Process execute(CreateEntityInputData<Process> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialClient()
-                                                                                           .partialDomain();
-        Unit unit = unitRepository.findById(input.getUnitId(), dataTargetToEntityContext)
+    public OutputData execute(InputData input) {
+        Unit unit = unitRepository.findById(input.getProcess()
+                                                 .getOwner()
+                                                 .getId())
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          input.getUnitId()
-                                               .uuidValue()));
-        checkSameClient(input.getAuthenticatedClient(), unit, unit);
-
-        Process process = input.getEntity();
-        process.setId(Key.newUuid());
-        return processRepository.save(process);
+                                          input.getProcess()
+                                               .getOwner()
+                                               .getId()));// the unit is already loaded
+        checkSameClient(input.authenticatedClient, unit, unit);
+        input.getProcess()
+             .setId(Key.newUuid());
+        verifyInput(input.getProcess());
+        return new OutputData(processRepository.save(input.getProcess()));
     }
 
+    private void verifyInput(Process process) {
+        // This needs to be done for all where we accecpt complete entities
+
+    }
+
+    @Valid
+    @Value
+    public static class InputData implements UseCase.InputData {
+        // private final Key<UUID> unitId;
+        // private final String name;
+        Process process;
+        Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Process process;
+    }
 }

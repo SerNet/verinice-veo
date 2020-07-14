@@ -19,9 +19,6 @@ package org.veo.core.usecase.base;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-
 import lombok.Value;
 
 import org.veo.core.entity.Asset;
@@ -34,10 +31,11 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.EmptyOutput;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, Void> {
+public class DeleteEntityUseCase<R> extends UseCase<DeleteEntityUseCase.InputData, EmptyOutput, R> {
 
     private final RepositoryProvider repositoryProvider;
 
@@ -46,8 +44,7 @@ public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, 
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Void execute(InputData input) {
+    public EmptyOutput execute(InputData input) {
         EntityLayerSupertypeRepository<? extends EntityLayerSupertype> repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.entityClass);
         EntityLayerSupertype entity = repository.findById(input.getId())
                                                 .orElseThrow(() -> new NotFoundException(
@@ -66,11 +63,11 @@ public class DeleteEntityUseCase extends UseCase<DeleteEntityUseCase.InputData, 
                                  ((EntityLayerSupertypeRepository) repository).save(entityWithLink);
                              }));
         repository.deleteById(entity.getId());
-        return null;
+        return EmptyOutput.INSTANCE;
     }
 
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Class<? extends EntityLayerSupertype> entityClass;
         Key<UUID> id;
         Client authenticatedClient;

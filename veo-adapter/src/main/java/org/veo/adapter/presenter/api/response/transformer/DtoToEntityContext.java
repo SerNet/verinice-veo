@@ -19,27 +19,34 @@ package org.veo.adapter.presenter.api.response.transformer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.transform.ClassKey;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.TransformContext;
 
 public class DtoToEntityContext implements TransformContext {
-    /**
-     * Returns a preconfigured transformationcontext to transform all elements.
-     */
-    public static DtoToEntityContext getCompleteTransformationContext() {
-        return new DtoToEntityContext();
-    }
 
     private Map<ClassKey<Key<UUID>>, ? super ModelObject> context = new HashMap<>();
 
+    public DtoToEntityContext(EntityFactory entityFactory) {
+        super();
+        this.factory = entityFactory;
+    }
+
     public Map<ClassKey<Key<UUID>>, ? super ModelObject> getContext() {
         return context;
+    }
+
+    private EntityFactory factory;
+
+    public EntityFactory getFactory() {
+        return factory;
+    }
+
+    public void setEntityFactory(EntityFactory factory) {
+        this.factory = factory;
     }
 
     /**
@@ -48,18 +55,9 @@ public class DtoToEntityContext implements TransformContext {
      * Match.
      */
     public void addEntity(ModelObject entity) {
-        Class<?>[] interfaces = Stream.of(entity.getClass()
-                                                .getInterfaces())
-                                      .filter(ModelObject.class::isAssignableFrom)
-                                      .filter(Predicate.isEqual(ModelGroup.class)
-                                                       .negate())
-                                      .toArray(Class[]::new);
-        if (interfaces.length == 1) {
-            ClassKey<Key<UUID>> classKey = new ClassKey<>(interfaces[0], entity.getId());
-            context.put(classKey, entity);
-        } else {
-            throw new IllegalArgumentException(
-                    "The given entity implements more than one interface.");
-        }
+        Class<? extends ModelObject> entityInterface = entity.getModelInterface();
+
+        ClassKey<Key<UUID>> classKey = new ClassKey<>(entityInterface, entity.getId());
+        context.put(classKey, entity);
     }
 }

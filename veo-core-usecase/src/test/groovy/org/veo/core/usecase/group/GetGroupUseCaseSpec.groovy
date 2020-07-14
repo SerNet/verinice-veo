@@ -25,27 +25,24 @@ import spock.lang.Unroll
 
 class GetGroupUseCaseSpec extends UseCaseSpec {
 
-    GetGroupUseCase usecase = new GetGroupUseCase(repositoryProvider, transformContextProvider)
-
+    GetGroupUseCase usecase = new GetGroupUseCase(repositoryProvider)
     @Unroll
     def "retrieve a #type group"() {
         given:
         TransformTargetToEntityContext targetToEntityContext = Mock()
         def repository = Mock(Class.forName("org.veo.core.usecase.repository.${type}Repository"))
         def groupId = Key.newUuid()
-        def group = Mock(type.groupClass) {
-            getOwner() >> existingUnit
-            getId() >> groupId
-        }
+        def group = Mock(type.groupClass)
+        group.getOwner() >> existingUnit
+        group.getId() >> groupId
+
         when:
-        def outputGroup = usecase.execute(new InputData(groupId, type, existingClient))
+        def output = usecase.execute(new InputData(groupId, type, existingClient))
         then:
         1 * repositoryProvider.getRepositoryFor(type.entityClass) >> repository
-        1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
-        1 * targetToEntityContext.partialDomain() >> targetToEntityContext
-        1 * repository.findById(groupId,_) >> Optional.of(group)
-        outputGroup != null
-        outputGroup.id == groupId
+        1 * repository.findById(groupId) >> Optional.of(group)
+        output.group != null
+        output.group.id == groupId
         where:
         type << GroupType.values()
     }

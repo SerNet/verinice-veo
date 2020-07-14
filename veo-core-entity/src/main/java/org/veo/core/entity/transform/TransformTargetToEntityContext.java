@@ -20,6 +20,10 @@ import org.veo.core.entity.ModelObject;
 
 public interface TransformTargetToEntityContext extends TransformContext {
 
+    EntityFactory getFactory();
+
+    void setEntityFactory(EntityFactory factory);
+
     void addEntity(ModelObject entity);
 
     // void addAllEntities(Collection<ModelObject> entity);

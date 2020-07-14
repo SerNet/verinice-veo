@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -52,12 +50,6 @@ public interface ModelObject {
     public enum Lifecycle {
         CREATING, STORED_CURRENT, STORED_ARCHIVED, STORED_DRAFT, STORED_DELETED, DELETING
     }
-
-    void addPropertyChangeListener(PropertyChangeListener listener);
-
-    void removePropertyChangeListener(PropertyChangeListener listener);
-
-    void firePropertyChangeEvent(PropertyChangeEvent event);
 
     /**
      * Map the type to a String.
@@ -121,11 +113,9 @@ public interface ModelObject {
 
     void setId(Key<UUID> id);
 
-    /**
-     * When this flag is set the object will has only the attributes loaded. All
-     * references are null or emptyLists.
-     */
-    boolean isGhost();
+    String getDbId();
 
-    void setGhost(boolean isGhost);
+    void setDbId(String id);
+
+    Class<? extends ModelObject> getModelInterface();
 }

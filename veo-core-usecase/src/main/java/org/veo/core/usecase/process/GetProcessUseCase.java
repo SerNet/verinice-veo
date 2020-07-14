@@ -18,8 +18,6 @@ package org.veo.core.usecase.process;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -34,7 +32,8 @@ import org.veo.core.usecase.repository.ProcessRepository;
 /**
  * Reinstantiate a persisted process object.
  */
-public class GetProcessUseCase extends UseCase<GetProcessUseCase.InputData, Process> {
+public class GetProcessUseCase<R>
+        extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData, R> {
 
     private final ProcessRepository repository;
 
@@ -43,19 +42,25 @@ public class GetProcessUseCase extends UseCase<GetProcessUseCase.InputData, Proc
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Process execute(InputData input) {
-        Process process = repository.findById(input.getId(), null)
+    public OutputData execute(InputData input) {
+        Process process = repository.findById(input.getId())
                                     .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                   .uuidValue()));
         checkSameClient(input.getAuthenticatedClient(), process);
-        return process;
+        return new OutputData(process);
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Key<UUID> id;
         Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Process process;
     }
 }

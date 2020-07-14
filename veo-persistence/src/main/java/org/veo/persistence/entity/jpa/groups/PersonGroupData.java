@@ -23,75 +23,35 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.veo.core.entity.Person;
 import org.veo.core.entity.groups.PersonGroup;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.persistence.entity.jpa.PersonData;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "person_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class PersonGroupData extends PersonData
-        implements EntityLayerSupertypeGroupData<PersonData> {
+        implements PersonGroup, EntityLayerSupertypeGroupData<PersonData> {
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(targetEntity = PersonData.class,
+                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "person_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<PersonData> members;
+    private Set<Person> members;
 
     @Override
-    public Set<PersonData> getMembers() {
+    public Set<Person> getMembers() {
         return members;
     }
 
     @Override
-    public void setMembers(Set<PersonData> members) {
+    public void setMembers(Set<Person> members) {
         this.members = members;
-    }
-
-    /**
-     * transform the given entity 'PersonGroup' to the corresponding
-     * 'PersonGroupData' with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static PersonGroupData from(@Valid PersonGroup personGroup) {
-        return from(personGroup, DataEntityToTargetContext.getCompleteTransformationContext());
-    }
-
-    /**
-     * Transform the given data object 'PersonGroupData' to the corresponding
-     * 'PersonGroup' entity with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public PersonGroup toPersonGroup() {
-        return toPersonGroup(DataTargetToEntityContext.getCompleteTransformationContext());
-    }
-
-    public static PersonGroupData from(@Valid PersonGroup personGroup,
-            TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformPersonGroup2Data((DataEntityToTargetContext) tcontext,
-                                                                           personGroup);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public PersonGroup toPersonGroup(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2PersonGroup((DataTargetToEntityContext) tcontext,
-                                                                           this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
     }
 
 }

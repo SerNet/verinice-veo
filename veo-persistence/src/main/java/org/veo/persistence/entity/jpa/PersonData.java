@@ -17,54 +17,26 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Person;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "person")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class PersonData extends EntityLayerSupertypeData {
+public class PersonData extends EntityLayerSupertypeData implements Person {
 
-    /**
-     * transform the given entity 'Person' to the corresponding 'PersonData' with
-     * the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static PersonData from(@Valid Person person) {
-        return from(person, DataEntityToTargetContext.getCompleteTransformationContext());
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Person.class;
     }
 
-    /**
-     * Transform the given data object 'PersonData' to the corresponding 'Person'
-     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public Person toPerson() {
-        return toPerson(DataTargetToEntityContext.getCompleteTransformationContext());
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_PERSON;
     }
-
-    public static PersonData from(@Valid Person person, TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformPerson2Data((DataEntityToTargetContext) tcontext,
-                                                                      person);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public Person toPerson(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Person((DataTargetToEntityContext) tcontext,
-                                                                      this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
 }

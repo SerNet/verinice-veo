@@ -18,23 +18,18 @@ package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 
 @Entity(name = "domain")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class DomainData extends BaseModelObjectData implements NameAbleData {
+public class DomainData extends BaseModelObjectData implements NameAbleData, Domain {
 
     @NotNull
     @Column(name = "name")
@@ -79,36 +74,13 @@ public class DomainData extends BaseModelObjectData implements NameAbleData {
         this.active = aActive;
     }
 
-    /**
-     * transform the given entity 'Domain' to the corresponding 'DomainData' with
-     * the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static DomainData from(@Valid Domain domain) {
-        return from(domain, DataEntityToTargetContext.getCompleteTransformationContext());
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Domain.class;
     }
 
-    /**
-     * Transform the given data object 'DomainData' to the corresponding 'Domain'
-     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public Domain toDomain() {
-        return toDomain(DataTargetToEntityContext.getCompleteTransformationContext());
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_DOMAIN;
     }
-
-    public static DomainData from(@Valid Domain domain, TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformDomain2Data((DataEntityToTargetContext) tcontext,
-                                                                      domain);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public Domain toDomain(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Domain((DataTargetToEntityContext) tcontext,
-                                                                      this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
 }

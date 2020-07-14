@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -30,27 +28,30 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.BaseModelGroup;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Reinstantiate persisted group objects.
  */
-public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupertype>>
-        extends UseCase<GetGroupsUseCase.InputData, List<T>> {
+public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertype>, R>
+        extends UseCase<GetGroupsUseCase.InputData, GetGroupsUseCase.OutputData<T>, R> {
 
     private final RepositoryProvider repositoryProvider;
     private final ClientRepository clientRepository;
+    private final UnitRepository unitRepository;
 
-    public GetGroupsUseCase(ClientRepository clientRepository,
+    public GetGroupsUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
             RepositoryProvider repositoryProvider) {
         this.clientRepository = clientRepository;
         this.repositoryProvider = repositoryProvider;
+        this.unitRepository = unitRepository;
     }
 
     /**
@@ -59,8 +60,7 @@ public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupe
      * repository.
      */
     @Override
-    @Transactional(TxType.REQUIRED)
-    public List<T> execute(InputData input) {
+    public OutputData<T> execute(InputData input) {
         Client client = clientRepository.findById(input.getAuthenticatedClient()
                                                        .getId())
                                         .orElseThrow(() -> new NotFoundException(
@@ -69,23 +69,30 @@ public class GetGroupsUseCase<T extends BaseModelGroup<? extends EntityLayerSupe
 
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return (List<T>) groupRepository.findGroupsByClient(client);
+            return new OutputData<T>((List<T>) groupRepository.findGroupsByClient(client));
         } else {
             Key<UUID> parentId = Key.uuidFrom(input.getUnitUuid()
                                                    .get());
-            Unit owner = client.getUnit(parentId)
-                               .orElseThrow(() -> new NotFoundException("Invalid parent ID: %s",
-                                       input.getUnitUuid()
-                                            .get()));
-            return (List<T>) groupRepository.findGroupsByUnit(owner);
+            Unit owner = unitRepository.findById(parentId)
+                                       .orElseThrow(() -> new NotFoundException(
+                                               "Invalid parent ID: %s", input.getUnitUuid()
+                                                                             .get()));
+            return new OutputData<T>((List<T>) groupRepository.findGroupsByUnit(owner));
         }
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
         GroupType groupType;
         Optional<String> unitUuid;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData<T> implements UseCase.OutputData {
+        @Valid
+        List<T> groups;
     }
 }

@@ -22,9 +22,6 @@ import java.util.Set;
  * @author urszeidler
  */
 public interface ModelGroup<T extends EntityLayerSupertype> extends EntityLayerSupertype {
-    T getInstance();
-
-    void setInstance(T instance);
 
     Set<T> getMembers();
 

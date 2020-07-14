@@ -22,41 +22,45 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.repository.ProcessRepository
+import org.veo.core.usecase.repository.UnitRepository
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
+    UnitRepository unitRepository = Mock()
 
-    GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository)
+    GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitRepository)
 
     def "retrieve all processes for a client"() {
         given:
         def id = Key.newUuid()
-        Process process = Mock() {
-            getOwner() >> existingUnit
-            getId() >> id
-        }
+        TransformTargetToEntityContext targetToEntityContext = Mock()
+        Process process = Mock()
+        process.getOwner() >> existingUnit
+        process.getId() >> id
         when:
-        def entities = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * processRepository.findByClient(existingClient, false) >> [process]
-        entities*.id == [id]
+        output.entities*.id == [id]
     }
 
 
     def "retrieve all processes for a unit"() {
         given:
+        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Process process = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def entities = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
+        1 * unitRepository.findById(existingUnit.id) >> Optional.of(existingUnit)
         1 * processRepository.findByUnit(existingUnit, false) >> [process]
-        entities*.id == [id]
+        output.entities*.id == [id]
     }
 }

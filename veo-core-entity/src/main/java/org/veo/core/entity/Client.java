@@ -16,9 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * A client is the root object of the organizational structure. Usually a client
@@ -30,24 +28,6 @@ public interface Client extends ModelObject {
     String getName();
 
     void setName(String aName);
-
-    /**
-     * Add the given Unit to the collection units.
-     *
-     * @return true if added
-     */
-    boolean addToUnits(Unit aUnit);
-
-    /**
-     * Remove the given Unit from the collection units.
-     *
-     * @return true if removed
-     */
-    boolean removeFromUnits(Unit aUnit);
-
-    Set<Unit> getUnits();
-
-    void setUnits(Set<Unit> aUnits);
 
     /**
      * Add the given Domain to the collection domains.
@@ -66,34 +46,5 @@ public interface Client extends ModelObject {
     Set<Domain> getDomains();
 
     void setDomains(Set<Domain> aDomains);
-
-    /**
-     * Factory method to create a new unit in this client.
-     *
-     * @param name
-     *            The name of the new unit
-     * @return The newly created unit
-     */
-    public Unit createUnit(String name);
-
-    /**
-     * Returns a unit this client for the given id. Recurses into subunits,
-     * sub-sub-units etc. to find a match.
-     *
-     * @param id
-     *            The id of the unit to find
-     * @return
-     */
-    public Optional<Unit> getUnit(Key<UUID> id);
-
-    /**
-     * Remove a unit or subunit from this client. This method correctly updates the
-     * bidirectional relationship between the client and the unit. It will also
-     * disassociate the unit from its parent unit if it has one.
-     *
-     * @param unit
-     *            the unit or sub-unit to delete
-     */
-    public void removeUnit(Unit unit);
 
 }

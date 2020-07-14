@@ -23,6 +23,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -50,7 +51,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.io.mapper.CreatePersonOutputMapper;
-import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreatePersonDto;
 import org.veo.adapter.presenter.api.response.PersonDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
@@ -61,6 +61,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.person.CreatePersonUseCase;
+import org.veo.core.usecase.person.CreatePersonUseCase.InputData;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
@@ -80,10 +81,10 @@ public class PersonController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/persons";
 
     private final UseCaseInteractorImpl useCaseInteractor;
-    private final CreatePersonUseCase createPersonUseCase;
-    private final GetPersonUseCase getPersonUseCase;
-    private final GetPersonsUseCase getPersonsUseCase;
-    private final UpdatePersonUseCase updatePersonUseCase;
+    private final CreatePersonUseCase<ResponseEntity<ApiResponseBody>> createPersonUseCase;
+    private final GetPersonUseCase<PersonDto> getPersonUseCase;
+    private final GetPersonsUseCase<List<PersonDto>> getPersonsUseCase;
+    private final UpdatePersonUseCase<PersonDto> updatePersonUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
 
     public PersonController(UseCaseInteractorImpl useCaseInteractor,
@@ -106,10 +107,12 @@ public class PersonController extends AbstractEntityController {
                                                required = false) String parentUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getPersonsUseCase, new GetPersonsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),
-                                         entities -> entities.stream()
-                                                             .map(u -> PersonDto.from(u, tcontext))
-                                                             .collect(Collectors.toList()));
+                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
+                    return output.getEntities()
+                                 .stream()
+                                 .map(u -> PersonDto.from(u, tcontext))
+                                 .collect(Collectors.toList());
+                });
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -126,9 +129,12 @@ public class PersonController extends AbstractEntityController {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
 
-        return useCaseInteractor.execute(getPersonUseCase, new GetPersonUseCase.InputData(Key
-                                                                                             .uuidFrom(uuid),
-                client), person -> PersonDto.from(person, EntityToDtoContext.getCompleteTransformationContext()));
+        return useCaseInteractor.execute(getPersonUseCase,
+                                         new GetPersonUseCase.InputData(Key.uuidFrom(uuid), client),
+                                         output -> {
+                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                                             return PersonDto.from(output.getPerson(), tcontext);
+                                         });
     }
 
     @PostMapping()
@@ -136,15 +142,23 @@ public class PersonController extends AbstractEntityController {
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Person created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createPerson(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @Valid @NotNull @RequestBody CreatePersonDto personDto) {
-        Client client = getAuthenticatedClient(auth);
-        DtoToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
+            @Valid @NotNull @RequestBody CreatePersonDto dto) {
+        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(createPersonUseCase,
-                                         CreateEntityInputMapper.map(client, personDto.getOwner()
-                                                                                      .getId(),
-                                                                     personDto.toPerson(tcontext)),
-                                         person -> RestApiResponse.created(URL_BASE_PATH,
-                                                                           CreatePersonOutputMapper.map(person)));
+                                         new Supplier<CreatePersonUseCase.InputData>() {
+
+                                             @Override
+                                             public InputData get() {
+                                                 Client client = getClient(user.getClientId());
+                                                 DtoToEntityContext tcontext = configureDtoContext(client,
+                                                                                                   dto.getReferences());
+                                                 return new CreatePersonUseCase.InputData(
+                                                         dto.toPerson(tcontext), client);
+                                             }
+                                         }, output -> {
+                                             ApiResponseBody body = CreatePersonOutputMapper.map(output.getPerson());
+                                             return RestApiResponse.created(URL_BASE_PATH, body);
+                                         });
     }
 
     @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -156,12 +170,20 @@ public class PersonController extends AbstractEntityController {
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody PersonDto personDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        DtoToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
         return useCaseInteractor.execute(updatePersonUseCase,
-                                         new ModifyEntityUseCase.InputData<>(
-                                                 personDto.toPerson(tcontext), client),
-                                         entity -> PersonDto.from(entity,
+                                         new Supplier<ModifyEntityUseCase.InputData<Person>>() {
+
+                                             @Override
+                                             public org.veo.core.usecase.base.ModifyEntityUseCase.InputData<Person> get() {
+                                                 Client client = getClient(user.getClientId());
+                                                 DtoToEntityContext tcontext = configureDtoContext(client,
+                                                                                                   personDto.getReferences());
+                                                 return new ModifyEntityUseCase.InputData<Person>(
+                                                         personDto.toPerson(tcontext), client);
+                                             }
+                                         },
+
+                                         output -> PersonDto.from(output.getEntity(),
                                                                   EntityToDtoContext.getCompleteTransformationContext()));
     }
 

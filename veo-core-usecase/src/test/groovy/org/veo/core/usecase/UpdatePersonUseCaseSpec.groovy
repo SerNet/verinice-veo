@@ -27,27 +27,23 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
 
-    UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository, transformContextProvider)
+    UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository)
 
     def "update a person"() {
         given:
         TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
-        Person person = newPerson existingUnit, {
-            it.id = id
-            name = "Updated person"
-        }
-        when:
-        def updatedPerson = usecase.execute(new InputData(person, existingClient))
-        then:
-        1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
-        1 * targetToEntityContext.partialDomain() >> targetToEntityContext
-        1 * targetToEntityContext.partialClient() >> targetToEntityContext
+        Person person = Mock()
+        person.id >> id
+        person.getOwner() >> existingUnit
+        person.name >> "Updated person"
 
-        1 * personRepository.save({
-            it.name == "Updated person"
-        }, _, _) >> { it[0] }
-        updatedPerson != null
-        updatedPerson.name == "Updated person"
+        when:
+        def output = usecase.execute(new InputData(person, existingClient))
+        then:
+
+        1 * personRepository.save(_) >> person
+        output.entity != null
+        output.entity.name == "Updated person"
     }
 }

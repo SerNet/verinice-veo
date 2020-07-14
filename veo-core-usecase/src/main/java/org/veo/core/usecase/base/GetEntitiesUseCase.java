@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -34,20 +32,23 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
+import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Reinstantiate persisted entity objects.
  */
-public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
-        extends UseCase<GetEntitiesUseCase.InputData, List<T>> {
+public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, R>
+        extends UseCase<GetEntitiesUseCase.InputData, GetEntitiesUseCase.OutputData<T>, R> {
 
     private final EntityLayerSupertypeRepository<T> repository;
     private final ClientRepository clientRepository;
+    private final UnitRepository unitRepository;
 
     public GetEntitiesUseCase(ClientRepository clientRepository,
-            EntityLayerSupertypeRepository<T> repository) {
+            EntityLayerSupertypeRepository<T> repository, UnitRepository unitRepository) {
         this.clientRepository = clientRepository;
         this.repository = repository;
+        this.unitRepository = unitRepository;
     }
 
     /**
@@ -56,31 +57,37 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
      * repository.
      */
     @Override
-    @Transactional(TxType.REQUIRED)
-    public List<T> execute(InputData input) {
+    public OutputData<T> execute(InputData input) {
         Client client = clientRepository.findById(input.getAuthenticatedClient()
                                                        .getId())
                                         .orElseThrow(() -> new NotFoundException(
                                                 "Invalid client ID"));
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return repository.findByClient(client, false);
+            return new OutputData<>(repository.findByClient(client, false));
         } else {
             Key<UUID> parentId = Key.uuidFrom(input.getUnitUuid()
                                                    .get());
-            Unit owner = client.getUnit(parentId)
-                               .orElseThrow(() -> new NotFoundException("Invalid parent ID: %s",
-                                       input.getUnitUuid()
-                                            .get()));
-            return repository.findByUnit(owner, false);
+            Unit owner = unitRepository.findById(parentId)
+                                       .orElseThrow(() -> new NotFoundException(
+                                               "Invalid parent ID: %s", input.getUnitUuid()
+                                                                             .get()));
+            return new OutputData<>(repository.findByUnit(owner, false));
         }
 
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
         Optional<String> unitUuid;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData<T> implements UseCase.OutputData {
+        @Valid
+        List<T> entities;
     }
 }

@@ -23,7 +23,6 @@ import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.PersonData;
-import org.veo.persistence.entity.jpa.groups.PersonGroupData;
 
 @Repository
 public class PersonRepositoryImpl extends BaseRepository<Person, PersonData>
@@ -31,7 +30,7 @@ public class PersonRepositoryImpl extends BaseRepository<Person, PersonData>
 
     public PersonRepositoryImpl(PersonDataRepository dataRepository,
             ModelObjectValidation validation) {
-        super(dataRepository, validation, PersonData::from, PersonData::toPerson,
-                groupData -> ((PersonGroupData) groupData).toPersonGroup());
+        super(dataRepository, validation);
     }
+
 }

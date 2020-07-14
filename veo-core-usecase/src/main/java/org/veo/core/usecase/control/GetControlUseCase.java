@@ -18,8 +18,6 @@ package org.veo.core.usecase.control;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -28,32 +26,24 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 
 /**
  * Reinstantiate a persisted control object.
  */
-public class GetControlUseCase extends UseCase<GetControlUseCase.InputData, Control> {
+public class GetControlUseCase<R>
+        extends UseCase<GetControlUseCase.InputData, GetControlUseCase.OutputData, R> {
 
     private final ControlRepository repository;
-    private final TransformContextProvider transformContextProvider;
 
-    public GetControlUseCase(ControlRepository repository,
-            TransformContextProvider transformContextProvider) {
+    public GetControlUseCase(ControlRepository repository) {
         this.repository = repository;
-        this.transformContextProvider = transformContextProvider;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Control execute(InputData input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
-        Control control = repository.findById(input.getId(), dataTargetToEntityContext)
+    public OutputData execute(InputData input) {
+        Control control = repository.findById(input.getId())
                                     .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                   .uuidValue()));
         // TODO VEO-124 this check should always be done implicitly by UnitImpl or
@@ -61,13 +51,20 @@ public class GetControlUseCase extends UseCase<GetControlUseCase.InputData, Cont
         // objects from other clients with our own clientID, thereby hijacking these
         // objects!
         checkSameClient(input.authenticatedClient, control);
-        return control;
+        return new OutputData(control);
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Key<UUID> id;
         Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Control control;
     }
 }

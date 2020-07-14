@@ -34,10 +34,10 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
     def 'custom props are inserted'() {
         given:
         def asset = new AssetData(
-                id: UUID.randomUUID().toString(),
+                dbId: UUID.randomUUID().toString(),
                 customAspects: [
                     new CustomPropertiesData(
-                    id: UUID.randomUUID().toString(),
+                    dbId: UUID.randomUUID().toString(),
                     dataProperties: [
                         new PropertyData("k1", "uno"),
                         new PropertyData("k2", 2)
@@ -47,7 +47,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
                 )
         when:
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.id)
+        def retrievedAsset = assetRepository.findById(asset.dbId)
         then:
         retrievedAsset.present
         with(retrievedAsset.get().customAspects[0].dataProperties) {
@@ -60,10 +60,10 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
     def 'property type can be changed'() {
         given: 'a saved asset with a string prop'
         def asset = new AssetData(
-                id: UUID.randomUUID().toString(),
+                dbId: UUID.randomUUID().toString(),
                 customAspects: [
                     new CustomPropertiesData(
-                    id: UUID.randomUUID().toString(),
+                    dbId: UUID.randomUUID().toString(),
                     dataProperties: [
                         new PropertyData("k1", "uno")
                     ]
@@ -76,7 +76,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
             new PropertyData("k1", 1)
         ]
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.id)
+        def retrievedAsset = assetRepository.findById(asset.dbId)
         then: 'the change has been applied'
         with(retrievedAsset.get().customAspects[0].dataProperties) {
             size() == 1
@@ -88,10 +88,10 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
     def 'property can be removed'() {
         given: 'a saved asset with two props'
         def asset = new AssetData(
-                id: UUID.randomUUID().toString(),
+                dbId: UUID.randomUUID().toString(),
                 customAspects: [
                     new CustomPropertiesData(
-                    id: UUID.randomUUID().toString(),
+                    dbId: UUID.randomUUID().toString(),
                     dataProperties: [
                         new PropertyData("k1", "uno"),
                         new PropertyData("k2", "due")
@@ -105,7 +105,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
             new PropertyData("k2", "due")
         ]
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.id)
+        def retrievedAsset = assetRepository.findById(asset.dbId)
         then: 'only the second prop remains'
         with(retrievedAsset.get().customAspects[0].dataProperties) {
             size() == 1
@@ -119,21 +119,19 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given:
         def stringLength = 18000
         def longString = "X" * stringLength
-        def asset = new AssetData(
-                id: UUID.randomUUID().toString(),
-                customAspects: [
-                    new CustomPropertiesData(
-                    id: UUID.randomUUID().toString(),
-                    dataProperties: [
-                        new PropertyData("p", longString),
-                    ]
-                    )
-                ]
-                )
+        def asset = new AssetData()
+        asset.dbId = UUID.randomUUID().toString()
+        asset.customAspects= [
+            new CustomPropertiesData(
+            dbId: UUID.randomUUID().toString(),
+            dataProperties: [
+                new PropertyData("p", longString),
+            ]
+            )
+        ]
         when:
         assetRepository.save(asset)
-        entityManager.flush()
-        def retrievedAsset = assetRepository.findById(asset.id)
+        def retrievedAsset = assetRepository.findById(asset.getId().uuidValue())
         then:
         retrievedAsset.present
         when:

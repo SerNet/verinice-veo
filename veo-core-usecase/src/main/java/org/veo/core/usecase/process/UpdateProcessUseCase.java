@@ -19,33 +19,27 @@ package org.veo.core.usecase.process;
 import java.time.Instant;
 
 import org.veo.core.entity.Process;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.ProcessRepository;
 
 /**
  * Update a persisted process object.
  */
-public class UpdateProcessUseCase extends ModifyEntityUseCase<Process> {
+public class UpdateProcessUseCase<R> extends ModifyEntityUseCase<Process, R> {
 
     private final ProcessRepository processRepository;
 
-    public UpdateProcessUseCase(ProcessRepository processRepository,
-            TransformContextProvider transformContextProvider) {
-        super(transformContextProvider);
+    public UpdateProcessUseCase(ProcessRepository processRepository) {
+        super();
         this.processRepository = processRepository;
     }
 
     @Override
-    public Process performModification(InputData<Process> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
+    public OutputData<Process> performModification(InputData<Process> input) {
         Process process = input.getEntity();
         process.setVersion(process.getVersion() + 1);
         process.setValidFrom(Instant.now());
-        return processRepository.save(process, null, dataTargetToEntityContext);
+        return new OutputData<>(processRepository.save(process));
 
     }
 }

@@ -17,25 +17,30 @@
 package org.veo.persistence.entity.jpa;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelObject;
 
 /**
  * @author urszeidler
  */
 @MappedSuperclass
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "dbId")
 @ToString(onlyExplicitlyIncluded = true)
-public class BaseModelObjectData {
+public abstract class BaseModelObjectData implements ModelObject {
 
     @Id
     @ToString.Include
-    private String id;
+    private String dbId;
 
     @ToString.Include
     private long version;
@@ -43,27 +48,13 @@ public class BaseModelObjectData {
     // @Enumerated(EnumType.STRING)
     // @Column(nullable = false)
     // Lifecycle state;
+    private @NotNull Lifecycle state = Lifecycle.CREATING;
 
     @Column(name = "valid_from", nullable = false)
     private Instant validFrom = Instant.now();
 
     @Column(name = "valid_until", nullable = true)
     private Instant validUntil;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getIdAsString() {
-        if (id == null) {
-            return null;
-        }
-        return id;
-    }
 
     /**
      * @return the version
@@ -109,4 +100,39 @@ public class BaseModelObjectData {
     public void setValidUntil(Instant validUntil) {
         this.validUntil = validUntil;
     }
+
+    @Override
+    public Lifecycle getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(Lifecycle state) {
+        this.state = state;
+    }
+
+    @Override
+    public Key<UUID> getId() {
+        return Key.uuidFrom(dbId);
+    }
+
+    @Override
+    public void setId(Key<UUID> id) {
+        if (id == null) {
+            this.dbId = Key.NIL_UUID.uuidValue();
+        } else {
+            this.dbId = id.uuidValue();
+        }
+    }
+
+    @Override
+    public String getDbId() {
+        return dbId;
+    }
+
+    @Override
+    public void setDbId(String id) {
+        this.dbId = id;
+    }
+
 }

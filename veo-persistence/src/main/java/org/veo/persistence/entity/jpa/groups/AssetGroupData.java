@@ -23,73 +23,35 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.groups.AssetGroup;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
 
 @Entity(name = "asset_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class AssetGroupData extends AssetData implements EntityLayerSupertypeGroupData<AssetData> {
+public class AssetGroupData extends AssetData
+        implements AssetGroup, EntityLayerSupertypeGroupData<AssetData> {
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(targetEntity = AssetData.class,
+                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "asset_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<AssetData> members;
+    private Set<Asset> members;
 
     @Override
-    public Set<AssetData> getMembers() {
+    public Set<Asset> getMembers() {
         return members;
     }
 
     @Override
-    public void setMembers(Set<AssetData> members) {
+    public void setMembers(Set<Asset> members) {
         this.members = members;
-    }
-
-    /**
-     * transform the given entity 'AssetGroup' to the corresponding 'AssetGroupData'
-     * with the DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public static AssetGroupData from(@Valid AssetGroup assetGroup) {
-        return from(assetGroup, DataEntityToTargetContext.getCompleteTransformationContext());
-    }
-
-    /**
-     * Transform the given data object 'AssetGroupData' to the corresponding
-     * 'AssetGroup' entity with the
-     * DataEntityToTargetContext.getCompleteTransformationContext().
-     */
-    public AssetGroup toAssetGroup() {
-        return toAssetGroup(DataTargetToEntityContext.getCompleteTransformationContext());
-    }
-
-    public static AssetGroupData from(@Valid AssetGroup assetGroup,
-            TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformAssetGroup2Data((DataEntityToTargetContext) tcontext,
-                                                                          assetGroup);
-        }
-        throw new IllegalArgumentException("Wrong context type");
-    }
-
-    public AssetGroup toAssetGroup(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2AssetGroup((DataTargetToEntityContext) tcontext,
-                                                                          this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
     }
 
 }

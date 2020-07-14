@@ -23,7 +23,6 @@ import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
-import org.veo.persistence.entity.jpa.groups.ControlGroupData;
 
 @Repository
 public class ControlRepositoryImpl extends BaseRepository<Control, ControlData>
@@ -31,7 +30,7 @@ public class ControlRepositoryImpl extends BaseRepository<Control, ControlData>
 
     public ControlRepositoryImpl(ControlDataRepository dataRepository,
             ModelObjectValidation validation) {
-        super(dataRepository, validation, ControlData::from, ControlData::toControl,
-                groupData -> ((ControlGroupData) groupData).toControlGroup());
+        super(dataRepository, validation);
     }
+
 }

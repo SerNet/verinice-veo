@@ -19,8 +19,6 @@ package org.veo.core.usecase.unit;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -30,11 +28,13 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject.Lifecycle;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.ClientImpl;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.common.CreationFailedException;
 import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.repository.ClientRepository;
+import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
+import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
 
 /**
  * Create a new unit for a client. If a parentId is given, the unit will be
@@ -50,21 +50,25 @@ import org.veo.core.usecase.repository.ClientRepository;
  * @author akoderman
  */
 // @Log
-public class CreateUnitUseCase extends UseCase<CreateUnitUseCase.InputData, Unit> {
+public class CreateUnitUseCase<R>
+        extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData, R> {
 
     private final ClientRepository clientRepository;
+    private final UnitRepository unitRepository;
+    private final EntityFactory entityFactory;
 
-    public CreateUnitUseCase(ClientRepository clientRepository) {
+    public CreateUnitUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
+            EntityFactory entityFactory) {
         this.clientRepository = clientRepository;
+        this.unitRepository = unitRepository;
+        this.entityFactory = entityFactory;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Unit execute(InputData input) {
-        Client client = clientRepository.findById(input.getClientId())
-                                        .orElse(new ClientImpl(input.getClientId(),
-                                                input.getNameableInput()
-                                                     .getName()));
+    public OutputData execute(InputData input) {
+
+        Optional<Client> optional = clientRepository.findById(input.getClientId());
+        Client client = optional.isPresent() ? optional.get() : createNewClient(input);
 
         // Note: the new client will get the name of the new unit by default.
         // If we want to get a client name we would have to do a REST call to get it
@@ -73,34 +77,55 @@ public class CreateUnitUseCase extends UseCase<CreateUnitUseCase.InputData, Unit
         Unit newUnit;
         if (input.getParentUnitId()
                  .isEmpty()) {
-            newUnit = client.createUnit(input.getNameableInput()
-                                             .getName());
+            newUnit = entityFactory.createUnit(Key.newUuid(), input.getNameableInput()
+                                                                   .getName(),
+                                               null);
         } else {
-            newUnit = client.getUnit(input.getParentUnitId()
-                                          .get())
-                            .orElseThrow(() -> new NotFoundException("Parent unit %s was not found",
-                                    input.getParentUnitId()
-                                         .get()))
-                            .createSubUnit(input.getNameableInput()
-                                                .getName());
+            Unit parentUnit = unitRepository.findById(input.getParentUnitId()
+                                                           .get())
+                                            .orElseThrow(() -> new NotFoundException(
+                                                    "Parent unit %s was not found",
+                                                    input.getParentUnitId()
+                                                         .get()));
+            newUnit = entityFactory.createUnit(Key.newUuid(), input.getNameableInput()
+                                                                   .getName(),
+                                               parentUnit);
         }
         newUnit.setAbbreviation(input.getNameableInput()
                                      .getAbbreviation());
         newUnit.setDescription(input.getNameableInput()
                                     .getDescription());
         newUnit.setState(Lifecycle.STORED_CURRENT);
+        newUnit.setClient(client);
+        Unit save = unitRepository.save(newUnit);
+        return new OutputData(save);
+    }
 
-        return clientRepository.save(client)
-                               .getUnit(newUnit.getId())
-                               .orElseThrow(() -> new CreationFailedException(
-                                       "Could not save unit %s", input.nameableInput.getName()));
+    private Client createNewClient(InputData input) {
+        Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()// These
+                                                                                                // are
+                                                                                                // the
+                                                                                                // input
+                                                                                                // of
+                                                                                                // the
+                                                                                                // unit
+                                                                                                // createtion
+                                                                             .getName());
+        return clientRepository.save(client);
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         NameableInputData nameableInput;
         Key<UUID> clientId;
         Optional<Key<UUID>> parentUnitId;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Unit unit;
     }
 }

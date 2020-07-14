@@ -16,49 +16,60 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import javax.validation.Valid;
+
+import lombok.Value;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.base.CreateEntityInputData;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class CreateAssetUseCase extends UseCase<CreateEntityInputData<Asset>, Asset> {
+public class CreateAssetUseCase<R>
+        extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData, R> {
 
     private final UnitRepository unitRepository;
-    private final TransformContextProvider transformContextProvider;
     private final AssetRepository assetRepository;
+    private final EntityFactory entityFactory;
 
     public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository assetRepository,
-            TransformContextProvider transformContextProvider) {
+            EntityFactory entityFactory) {
         this.unitRepository = unitRepository;
         this.assetRepository = assetRepository;
-        this.transformContextProvider = transformContextProvider;
+        this.entityFactory = entityFactory;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public Asset execute(CreateEntityInputData<Asset> input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialClient()
-                                                                                           .partialDomain();
-
-        Unit unit = unitRepository.findById(input.getUnitId(), dataTargetToEntityContext)
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          input.getUnitId()
-                                               .uuidValue()));
-        checkSameClient(input.getAuthenticatedClient(), unit, unit);
-
-        Asset asset = input.getEntity();
+    public OutputData execute(InputData input) {
+        Asset asset = input.getNewAsset();
         asset.setId(Key.newUuid());
-        return assetRepository.save(asset);
+        Unit unit = unitRepository.findById(asset.getOwner()
+                                                 .getId())
+                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
+                                          asset.getOwner()
+                                               .getId()
+                                               .uuidValue()));
+        checkSameClient(input.authenticatedClient, unit, unit);
+
+        return new OutputData(assetRepository.save(asset));
     }
 
+    @Valid
+    @Value
+    public static class InputData implements UseCase.InputData {
+        Asset newAsset;
+        Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Asset asset;
+    }
 }

@@ -20,14 +20,15 @@ import org.veo.core.entity.Control;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.ControlRepository;
+import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Reinstantiate persisted control objects.
  */
-public class GetControlsUseCase extends GetEntitiesUseCase<Control> {
+public class GetControlsUseCase<R> extends GetEntitiesUseCase<Control, R> {
 
     public GetControlsUseCase(ClientRepository clientRepository,
-            ControlRepository controlRepository) {
-        super(clientRepository, controlRepository);
+            ControlRepository controlRepository, UnitRepository unitRepository) {
+        super(clientRepository, controlRepository, unitRepository);
     }
 }

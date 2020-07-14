@@ -18,8 +18,6 @@ package org.veo.core.usecase.group;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -28,45 +26,43 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.impl.BaseModelGroup;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class GetGroupUseCase extends UseCase<GetGroupUseCase.InputData, BaseModelGroup<?>> {
+public class GetGroupUseCase<R>
+        extends UseCase<GetGroupUseCase.InputData, GetGroupUseCase.OutputData, R> {
 
     private final RepositoryProvider repositoryProvider;
-    private final TransformContextProvider transformContextProvider;
 
-    public GetGroupUseCase(RepositoryProvider repositoryProvider,
-            TransformContextProvider transformContextProvider) {
+    public GetGroupUseCase(RepositoryProvider repositoryProvider) {
         this.repositoryProvider = repositoryProvider;
-        this.transformContextProvider = transformContextProvider;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public BaseModelGroup<?> execute(InputData input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
+    public OutputData execute(InputData input) {
         EntityLayerSupertype group = repositoryProvider.getRepositoryFor(input.groupType.entityClass)
-                                                       .findById(input.getId(),
-                                                                 dataTargetToEntityContext)
+                                                       .findById(input.getId())
                                                        .orElseThrow(() -> new NotFoundException(
                                                                input.getId()
                                                                     .uuidValue()));
         checkSameClient(input.authenticatedClient, group);
-        return (BaseModelGroup<?>) group;
+        return new OutputData((ModelGroup<?>) group);
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Key<UUID> id;
         GroupType groupType;
         Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        ModelGroup<?> group;
     }
 }

@@ -17,8 +17,6 @@
 package org.veo.core.entity;
 
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A unit is high level group of elements defined by organizational structure.
@@ -43,26 +41,6 @@ public interface Unit extends NameAble, ModelObject {
 
     void setClient(Client aClient);
 
-    /**
-     * Add the given Unit to the collection units. Adding will set the parent to
-     * this.
-     *
-     * @return true if added
-     */
-    boolean addToUnits(Unit aUnit);
-
-    /**
-     * Remove the given Unit from the collection units. Removing will set the parent
-     * to null.
-     *
-     * @return true if removed
-     */
-    boolean removeFromUnits(Unit aUnit);
-
-    Set<Unit> getUnits();
-
-    void setUnits(Set<Unit> aUnits);
-
     Unit getParent();
 
     void setParent(Unit aParent);
@@ -84,32 +62,5 @@ public interface Unit extends NameAble, ModelObject {
     Set<Domain> getDomains();
 
     void setDomains(Set<Domain> aDomains);
-
-    /**
-     * Returns flat list of all units and their subunits recursively.
-     *
-     * @param units
-     * @return
-     */
-    public static Set<Unit> flatten(Set<Unit> units) {
-        return units.stream()
-                    .flatMap(u -> Stream.concat(Stream.of(u), flatten(u.getUnits()).stream()))
-                    .collect(Collectors.toSet());
-    }
-
-    /**
-     * Creates a new unit as a sub-unit of this one.
-     *
-     * @param name
-     *            The name for the new unit
-     * @return The newly created unit
-     */
-    public Unit createSubUnit(String name);
-
-    /**
-     * Removes the unit. Disassociates it from a parent collection if it is a
-     * sub-unit.
-     */
-    void remove();
 
 }

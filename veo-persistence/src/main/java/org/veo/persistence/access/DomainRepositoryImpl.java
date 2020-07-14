@@ -27,48 +27,28 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.repository.DomainRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
 
 @Repository
 @AllArgsConstructor
 public class DomainRepositoryImpl implements DomainRepository {
-
-    // public Collection<DomainData> findByNameContainingIgnoreCase(String search);
 
     private DomainDataRepository dataRepository;
 
     private ModelObjectValidation validation;
 
     @Override
-    public Domain save(Domain domain, TransformEntityToTargetContext entityToDataContext,
-            TransformTargetToEntityContext dataToEntityContext) {
+    public Domain save(Domain domain) {
         validation.validateModelObject(domain);
-        return dataRepository.save(DomainData.from(domain, Optional.ofNullable(entityToDataContext)
-                                                                   .orElseGet(DataEntityToTargetContext::getCompleteTransformationContext)))
-                             .toDomain(Optional.ofNullable(dataToEntityContext)
-                                               .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext));
+        return dataRepository.save((DomainData) domain);
     }
 
     @Override
     public Optional<Domain> findById(Key<UUID> id) {
-        return findById(id, null);
-    }
-
-    @Override
-    public Optional<Domain> findById(Key<UUID> id,
-            TransformTargetToEntityContext dataToEntityContext) {
-        TransformTargetToEntityContext context = Optional.ofNullable(dataToEntityContext)
-                                                         .orElseGet(DataTargetToEntityContext::getCompleteTransformationContext);
-
-        return dataRepository.findById(id.uuidValue())
-                             .map(data -> data.toDomain(context));
+        return (Optional) dataRepository.findById(id.uuidValue());
 
     }
 
@@ -80,7 +60,7 @@ public class DomainRepositoryImpl implements DomainRepository {
 
     @Override
     public void delete(Domain entity) {
-        dataRepository.delete(DomainData.from(entity));
+        dataRepository.delete((DomainData) entity);
     }
 
     @Override

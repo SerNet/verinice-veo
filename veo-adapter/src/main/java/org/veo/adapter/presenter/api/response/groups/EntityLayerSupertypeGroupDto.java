@@ -22,8 +22,8 @@ import java.util.Set;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.impl.BaseModelGroup;
 
 /**
  * @author urszeidler
@@ -36,10 +36,10 @@ public interface EntityLayerSupertypeGroupDto<T extends ModelObject> {
 
     public abstract Collection<ModelObjectReference<? extends ModelObject>> getReferences();
 
-    public static EntityLayerSupertypeGroupDto from(BaseModelGroup<?> group,
+    public static EntityLayerSupertypeGroupDto<?> from(ModelGroup<?> group,
             EntityToDtoContext tcontext) {
-        return (EntityLayerSupertypeGroupDto) EntityToDtoTransformer.transformEntityLayerSupertype2Dto(tcontext,
-                                                                                                       group);
+        return (EntityLayerSupertypeGroupDto<?>) EntityToDtoTransformer.transformEntityLayerSupertype2Dto(tcontext,
+                                                                                                          group);
     }
 
 }

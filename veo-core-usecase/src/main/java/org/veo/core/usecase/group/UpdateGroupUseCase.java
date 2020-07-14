@@ -16,15 +16,12 @@
  ******************************************************************************/
 package org.veo.core.usecase.group;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.impl.BaseModelGroup;
-import org.veo.core.entity.transform.TransformContextProvider;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
@@ -38,32 +35,36 @@ import org.veo.core.usecase.repository.RepositoryProvider;
  * the UUID. In almost all cases changing the version number should be left to
  * the repository.
  */
-public abstract class UpdateGroupUseCase
-        extends UseCase<UpdateGroupUseCase.InputData, BaseModelGroup<?>> {
+public abstract class UpdateGroupUseCase<R>
+        extends UseCase<UpdateGroupUseCase.InputData, UpdateGroupUseCase.OutputData, R> {
 
     protected final RepositoryProvider repositoryProvider;
-    protected final TransformContextProvider transformContextProvider;
 
-    public UpdateGroupUseCase(RepositoryProvider repositoryProvider,
-            TransformContextProvider transformContextProvider) {
+    public UpdateGroupUseCase(RepositoryProvider repositoryProvider) {
         this.repositoryProvider = repositoryProvider;
-        this.transformContextProvider = transformContextProvider;
     }
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public BaseModelGroup<?> execute(InputData input) {
-        return update(input);
+    public OutputData execute(InputData input) {
+        return new OutputData(update(input));
     }
 
-    protected abstract BaseModelGroup<?> update(InputData input);
+    protected abstract ModelGroup<?> update(InputData input);
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         @Valid
-        BaseModelGroup<?> group;
+        ModelGroup<?> group;
         Client authenticatedClient;
+
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        ModelGroup<?> group;
 
     }
 }

@@ -19,15 +19,13 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionTemplate
-
-import groovy.json.JsonSlurper
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WebMvcSecurityConfiguration])
@@ -35,6 +33,8 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
+    @Autowired
+    private EntityDataFactory entityFactory
 
     @Autowired
     TransactionTemplate txTemplate
@@ -45,9 +45,10 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
     def setup() {
         client = txTemplate.execute {
-            clientRepository.save(newClient {
-                id = clientId
-            })
+            Client client = entityFactory.createClient()
+            client.id = clientId
+
+            clientRepository.save(client)
         }
     }
 

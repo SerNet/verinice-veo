@@ -18,8 +18,6 @@ package org.veo.core.usecase.asset;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
@@ -28,42 +26,40 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.TransformContextProvider;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 
 /**
  * Reinstantiate a persisted process object.
  */
-public class GetAssetUseCase extends UseCase<GetAssetUseCase.InputData, Asset> {
+public class GetAssetUseCase<R>
+        extends UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData, R> {
 
     private final AssetRepository repository;
-    private final TransformContextProvider transformContextProvider;
 
-    public GetAssetUseCase(AssetRepository repository,
-            TransformContextProvider transformContextProvider) {
+    public GetAssetUseCase(AssetRepository repository) {
         this.repository = repository;
-        this.transformContextProvider = transformContextProvider;
     }
 
-    @Override
-    @Transactional(TxType.REQUIRED)
-    public Asset execute(InputData input) {
-        TransformTargetToEntityContext dataTargetToEntityContext = transformContextProvider.createTargetToEntityContext()
-                                                                                           .partialDomain()
-                                                                                           .partialClient();
-        Asset asset = repository.findById(input.getId(), dataTargetToEntityContext)
+    public OutputData execute(InputData input) {
+        Asset asset = repository.findById(input.getId())
                                 .orElseThrow(() -> new NotFoundException(input.getId()
                                                                               .uuidValue()));
         checkSameClient(input.authenticatedClient, asset);
-        return asset;
+        return new OutputData(asset);
     }
 
     @Valid
     @Value
-    public static class InputData {
+    public static class InputData implements UseCase.InputData {
         Key<UUID> id;
         Client authenticatedClient;
+    }
+
+    @Valid
+    @Value
+    public static class OutputData implements UseCase.OutputData {
+        @Valid
+        Asset asset;
     }
 }

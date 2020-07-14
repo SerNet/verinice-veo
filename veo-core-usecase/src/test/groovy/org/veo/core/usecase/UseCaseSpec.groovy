@@ -17,17 +17,19 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.TransformContextProvider
 import org.veo.core.usecase.repository.ClientRepository
 import org.veo.core.usecase.repository.RepositoryProvider
 import org.veo.core.usecase.repository.UnitRepository
-import org.veo.test.VeoSpec
+import spock.lang.Specification
 
 /**
  * Base class for use-case unit tests
  */
-abstract class UseCaseSpec extends VeoSpec {
+abstract class UseCaseSpec extends Specification {
 
     Client existingClient
     Unit existingUnit
@@ -35,11 +37,23 @@ abstract class UseCaseSpec extends VeoSpec {
     UnitRepository unitRepository = Mock()
     TransformContextProvider transformContextProvider = Mock()
     RepositoryProvider repositoryProvider = Mock()
+    EntityFactory entityFactory = Mock()
 
     def setup() {
-        existingClient = newClient{
-            name = "Existing client"
-        }
-        existingUnit = existingClient.createUnit("Existing unit")
+
+        Client client = Mock()
+        client.getId() >> Key.newUuid()
+        client.getDomains >> []
+        client.getName()>> "Existing client"
+        existingClient = client
+
+        existingUnit = Mock()
+        existingUnit.getClient() >> client
+        existingUnit.getDomains() >> []
+        existingUnit.getParent() >> null
+        existingUnit.getName() >> "Existing unit"
+        existingUnit.getId() >> Key.newUuid()
+
+        client.createUnit(_)>>existingUnit
     }
 }

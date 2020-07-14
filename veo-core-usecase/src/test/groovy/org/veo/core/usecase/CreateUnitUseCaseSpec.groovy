@@ -16,16 +16,24 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Client
 import org.veo.core.entity.Key
+import org.veo.core.entity.Unit
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
 
 public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
-
     def "Create new unit in a new client" () {
+        EntityFactory entityFactory = Mock()
+        entityFactory.createUnit() >> existingUnit
+
+        Unit newUnit1 = Mock()
+        newUnit1.id >> Key.newUuid()
+        newUnit1.name >> "New unit"
+
+
         given: "starting values for a unit"
         def namedInput = new NameableInputData()
         namedInput.setName("New unit")
@@ -35,19 +43,18 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, newClientId, Optional.empty())
 
         when: "the use case to create a unit is executed"
-        def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input)
+        def usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
+        def newUnit = usecase.execute(input).getUnit()
 
         then: "a client was first searched but not found"
         1 * clientRepository.findById(_) >> Optional.empty()
+        1 * entityFactory.createClient(_,_) >> existingClient
+        1 * entityFactory.createUnit(_,_,_) >> newUnit1
 
         and: "a new client was then correctly created and stored"
-        1 * clientRepository.save(_) >> { Client client ->
-            client
-            assert client.getId() == newClientId
-            assert client.getName() == "New unit" // Note: client gets the unit's name by default
-            client
-        }
+        1 * unitRepository.save(_) >> newUnit1
+
+        //        existingClient.getUnit(_) >> Optional.of(newUnit1)
 
         and: "a new unit was created and stored"
         newUnit != null
@@ -60,23 +67,27 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def namedInput = new NameableInputData()
         namedInput.setName("New unit")
 
+        Unit newUnit1 = Mock()
+        newUnit1.id >> Key.newUuid()
+        newUnit1.name >> "New unit"
+        newUnit1.parent >> existingUnit
+
+        EntityFactory entityFactory = Mock()
+        entityFactory.createUnit(_,_,_) >> newUnit1
+
         and: "a parent unit in an existing client"
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
 
         when: "the use case to create a unit is executed"
-        def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input)
+        def usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
+        def newUnit = usecase.execute(input).getUnit()
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "a new client was then correctly created and stored"
-        1 * clientRepository.save(_) >> { Client client ->
-            client
-            assert client.getId() == this.existingClient.getId()
-            assert client.getName() == "Existing client"
-            client
-        }
+        1 * unitRepository.save(_) >> newUnit1
+        1 * unitRepository.findById(_) >> Optional.of(existingUnit)
 
         and: "a new unit was created and stored"
         newUnit != null

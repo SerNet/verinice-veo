@@ -31,10 +31,17 @@ import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.CustomProperties;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Unit;
+
 @Entity(name = "entitylayersupertype")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class EntityLayerSupertypeData extends BaseModelObjectData implements NameAbleData {
+public abstract class EntityLayerSupertypeData extends BaseModelObjectData
+        implements NameAbleData, EntityLayerSupertype {
 
     @NotNull
     @Column(name = "name")
@@ -46,21 +53,27 @@ public class EntityLayerSupertypeData extends BaseModelObjectData implements Nam
     private String description;
     // many to one entitylayersupertype-> domain
     @Column(name = "domains")
-    @ManyToMany
-    private Set<DomainData> domains;
+    @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
+    private Set<Domain> domains;
     // many to one entitylayersupertype-> customlink
     @Column(name = "links")
-    @OneToMany(mappedBy = "source", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CustomLinkData> links;
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = CustomLinkData.class,
+               fetch = FetchType.LAZY)
+    private Set<CustomLink> links;
     // many to one entitylayersupertype-> customproperties
     @Column(name = "customaspects")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CustomPropertiesData> customAspects;
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = CustomPropertiesData.class,
+               fetch = FetchType.LAZY)
+    private Set<CustomProperties> customAspects;
     @NotNull
     // one to one entitylayersupertype-> unit
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
     @JoinColumn(name = "owner_id")
-    private UnitData owner;
+    private Unit owner;
 
     public String getName() {
         return this.name;
@@ -86,36 +99,98 @@ public class EntityLayerSupertypeData extends BaseModelObjectData implements Nam
         this.description = aDescription;
     }
 
-    public Set<DomainData> getDomains() {
+    public Set<Domain> getDomains() {
         return this.domains;
     }
 
-    public void setDomains(Set<DomainData> aDomains) {
+    public void setDomains(Set<Domain> aDomains) {
         this.domains = aDomains;
     }
 
-    public Set<CustomLinkData> getLinks() {
+    public Set<CustomLink> getLinks() {
         return this.links;
     }
 
-    public void setLinks(Set<CustomLinkData> aLinks) {
+    public void setLinks(Set<CustomLink> aLinks) {
         this.links = aLinks;
     }
 
-    public Set<CustomPropertiesData> getCustomAspects() {
+    public Set<CustomProperties> getCustomAspects() {
         return this.customAspects;
     }
 
-    public void setCustomAspects(Set<CustomPropertiesData> aCustomAspects) {
+    public void setCustomAspects(Set<CustomProperties> aCustomAspects) {
         this.customAspects = aCustomAspects;
     }
 
-    public UnitData getOwner() {
+    public Unit getOwner() {
         return this.owner;
     }
 
-    public void setOwner(UnitData aOwner) {
+    public void setOwner(Unit aOwner) {
         this.owner = aOwner;
+    }
+
+    /**
+     * Add the given Domain to the collection domains.
+     *
+     * @return true if added
+     */
+    public boolean addToDomains(Domain aDomain) {
+        boolean add = this.domains.add(aDomain);
+        return add;
+    }
+
+    /**
+     * Remove the given Domain from the collection domains.
+     *
+     * @return true if removed
+     */
+    public boolean removeFromDomains(Domain aDomain) {
+        boolean remove = this.domains.remove(aDomain);
+        return remove;
+    }
+
+    /**
+     * Add the given CustomLink to the collection links. opposite of
+     * EntityLayerSupertype.source
+     *
+     * @return true if added
+     */
+    public boolean addToLinks(CustomLink aCustomLink) {
+        boolean add = this.links.add(aCustomLink);
+        return add;
+    }
+
+    /**
+     * Remove the given CustomLink from the collection links. opposite of
+     * EntityLayerSupertype.source
+     *
+     * @return true if removed
+     */
+    public boolean removeFromLinks(CustomLink aCustomLink) {
+        boolean remove = this.links.remove(aCustomLink);
+        return remove;
+    }
+
+    /**
+     * Add the given CustomProperties to the collection customAspects.
+     *
+     * @return true if added
+     */
+    public boolean addToCustomAspects(CustomProperties aCustomProperties) {
+        boolean add = this.customAspects.add(aCustomProperties);
+        return add;
+    }
+
+    /**
+     * Remove the given CustomProperties from the collection customAspects.
+     *
+     * @return true if removed
+     */
+    public boolean removeFromCustomAspects(CustomProperties aCustomProperties) {
+        boolean remove = this.customAspects.remove(aCustomProperties);
+        return remove;
     }
 
 }

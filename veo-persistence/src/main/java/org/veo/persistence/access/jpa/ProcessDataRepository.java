@@ -23,7 +23,7 @@ import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
 
 public interface ProcessDataRepository extends EntityLayerSupertypeDataRepository<ProcessData> {
 
-    List<ProcessGroupData> findGroupsByOwner_ClientId(String uuidValue);
+    List<ProcessGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
 
-    List<ProcessGroupData> findGroupsByOwnerId(String uuidValue);
+    List<ProcessGroupData> findGroupsByOwner_DbId(String uuidValue);
 }

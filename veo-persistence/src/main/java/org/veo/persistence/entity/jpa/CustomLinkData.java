@@ -25,9 +25,14 @@ import javax.validation.constraints.NotNull;
 
 import lombok.EqualsAndHashCode;
 
+import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.ModelObject;
+
 @Entity(name = "customlink")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomLinkData extends CustomPropertiesData implements NameAbleData {
+public class CustomLinkData extends CustomPropertiesData implements NameAbleData, CustomLink {
 
     @NotNull
     @Column(name = "name")
@@ -38,14 +43,14 @@ public class CustomLinkData extends CustomPropertiesData implements NameAbleData
     private String description;
     @NotNull
     // one to one customlink-> entitylayersupertype
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = EntityLayerSupertypeData.class)
     @JoinColumn(name = "target_id")
-    private EntityLayerSupertypeData target;
+    private EntityLayerSupertype target;
     @NotNull
     // one to one customlink-> entitylayersupertype
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = EntityLayerSupertypeData.class)
     @JoinColumn(name = "source_id")
-    private EntityLayerSupertypeData source;
+    private EntityLayerSupertype source;
 
     public String getName() {
         return this.name;
@@ -71,36 +76,45 @@ public class CustomLinkData extends CustomPropertiesData implements NameAbleData
         this.description = aDescription;
     }
 
-    public EntityLayerSupertypeData getTarget() {
+    public EntityLayerSupertype getTarget() {
         return this.target;
     }
 
-    public void setTarget(EntityLayerSupertypeData aTarget) {
+    public void setTarget(EntityLayerSupertype aTarget) {
         this.target = aTarget;
     }
 
-    public EntityLayerSupertypeData getSource() {
+    public EntityLayerSupertype getSource() {
         return this.source;
     }
 
-    public void setSource(EntityLayerSupertypeData aSource) {
+    public void setSource(EntityLayerSupertype aSource) {
         this.source = aSource;
     }
 
-    // @ElementCollection(targetClass =
-    // org.veo.persistence.entity.jpa.custom.PropertyData.class)
-    // private java.util.List<org.veo.persistence.entity.jpa.custom.PropertyData>
-    // dataProperties = new java.util.LinkedList<>();
-    //
-    // public java.util.List<org.veo.persistence.entity.jpa.custom.PropertyData>
-    // getDataProperties() {
-    // return dataProperties;
-    // }
-    //
-    // public void
-    // setDataProperties(java.util.List<org.veo.persistence.entity.jpa.custom.PropertyData>
-    // dataProperties) {
-    // this.dataProperties = dataProperties;
-    // };
+    /**
+     * Add the given Domain to the collection domains.
+     *
+     * @return true if added
+     */
+    public boolean addToDomains(Domain aDomain) {
+        boolean add = this.domains.add(aDomain);
+        return add;
+    }
+
+    /**
+     * Remove the given Domain from the collection domains.
+     *
+     * @return true if removed
+     */
+    public boolean removeFromDomains(Domain aDomain) {
+        boolean remove = this.domains.remove(aDomain);
+        return remove;
+    }
+
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return CustomLink.class;
+    }
 
 }

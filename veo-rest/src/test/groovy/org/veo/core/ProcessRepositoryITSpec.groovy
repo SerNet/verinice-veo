@@ -74,7 +74,8 @@ class ProcessRepositoryITSpec extends VeoMvcSpec {
 
     def "try to persist an invalid process entity"() {
         given: "an invalid process object"
-        def process = newProcess null
+        def process = new ProcessData()
+        process.name = "Test name"
 
         when: "the process is saved using the repository"
         txTemplate.execute {

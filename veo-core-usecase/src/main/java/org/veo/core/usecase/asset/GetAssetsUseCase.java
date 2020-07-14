@@ -20,13 +20,15 @@ import org.veo.core.entity.Asset;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.ClientRepository;
+import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Reinstantiate persisted asset objects.
  */
-public class GetAssetsUseCase extends GetEntitiesUseCase<Asset> {
+public class GetAssetsUseCase<R> extends GetEntitiesUseCase<Asset, R> {
 
-    public GetAssetsUseCase(ClientRepository clientRepository, AssetRepository assetRepository) {
-        super(clientRepository, assetRepository);
+    public GetAssetsUseCase(ClientRepository clientRepository, AssetRepository assetRepository,
+            UnitRepository unitRepository) {
+        super(clientRepository, assetRepository, unitRepository);
     }
 }

@@ -12,7 +12,6 @@ dependencies {
     // These would support readonly transactions among other additional features.
     implementation 'javax.transaction:javax.transaction-api'
 
-    testImplementation project(":veo-test")
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.github.javafaker:javafaker'

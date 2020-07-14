@@ -16,29 +16,18 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import org.veo.core.entity.groups.AssetGroup;
-import org.veo.core.entity.groups.ControlGroup;
-import org.veo.core.entity.groups.DocumentGroup;
-import org.veo.core.entity.groups.PersonGroup;
-import org.veo.core.entity.groups.ProcessGroup;
-import org.veo.core.entity.impl.AssetImpl;
-import org.veo.core.entity.impl.BaseModelGroup;
-import org.veo.core.entity.impl.ControlImpl;
-import org.veo.core.entity.impl.DocumentImpl;
-import org.veo.core.entity.impl.PersonImpl;
-import org.veo.core.entity.impl.ProcessImpl;
+import org.veo.core.entity.groups.*;
 
 public enum GroupType {
-    Asset(AssetImpl.class, AssetGroup.class), Control(ControlImpl.class,
-            ControlGroup.class), Document(DocumentImpl.class, DocumentGroup.class), Person(
-                    PersonImpl.class,
-                    PersonGroup.class), Process(ProcessImpl.class, ProcessGroup.class);
+    Asset(Asset.class, AssetGroup.class), Control(Control.class, ControlGroup.class), Document(
+            Document.class, DocumentGroup.class), Person(Person.class,
+                    PersonGroup.class), Process(Process.class, ProcessGroup.class);
 
     public final Class<? extends EntityLayerSupertype> entityClass;
-    public final Class<? extends BaseModelGroup> groupClass;
+    public final Class<? extends ModelGroup<?>> groupClass;
 
     GroupType(Class<? extends EntityLayerSupertype> entityClass,
-            Class<? extends BaseModelGroup> groupClass) {
+            Class<? extends ModelGroup<?>> groupClass) {
         this.entityClass = entityClass;
         this.groupClass = groupClass;
     }

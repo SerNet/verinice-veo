@@ -22,35 +22,27 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.validation.Valid;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetContext;
-import org.veo.persistence.entity.jpa.transformer.DataEntityToTargetTransformer;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityTransformer;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 
 @Entity(name = "client")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ClientData extends BaseModelObjectData {
+public class ClientData extends BaseModelObjectData implements Client {
 
     @Column(name = "name")
     @ToString.Include
     private String name;
-    // many to one client-> unit
-    @Column(name = "units")
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UnitData> units;
     // many to one client-> domain
     @Column(name = "domains")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DomainData> domains;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = DomainData.class)
+    private Set<Domain> domains;
 
     public String getName() {
         return this.name;
@@ -60,52 +52,41 @@ public class ClientData extends BaseModelObjectData {
         this.name = aName;
     }
 
-    public Set<UnitData> getUnits() {
-        return this.units;
-    }
-
-    public void setUnits(Set<UnitData> aUnits) {
-        this.units = aUnits;
-    }
-
-    public Set<DomainData> getDomains() {
+    public Set<Domain> getDomains() {
         return this.domains;
     }
 
-    public void setDomains(Set<DomainData> aDomains) {
+    public void setDomains(Set<Domain> aDomains) {
         this.domains = aDomains;
     }
 
     /**
-     * transform the given entity 'Client' to the corresponding 'ClientData' with
-     * the DataEntityToTargetContext.getCompleteTransformationContext().
+     * Add the given Domain to the collection domains.
+     *
+     * @return true if added
      */
-    public static ClientData from(@Valid Client client) {
-        return from(client, DataEntityToTargetContext.getCompleteTransformationContext());
+    public boolean addToDomains(Domain aDomain) {
+        boolean add = this.domains.add(aDomain);
+        return add;
     }
 
     /**
-     * Transform the given data object 'ClientData' to the corresponding 'Client'
-     * entity with the DataEntityToTargetContext.getCompleteTransformationContext().
+     * Remove the given Domain from the collection domains.
+     *
+     * @return true if removed
      */
-    public Client toClient() {
-        return toClient(DataTargetToEntityContext.getCompleteTransformationContext());
+    public boolean removeFromDomains(Domain aDomain) {
+        boolean remove = this.domains.remove(aDomain);
+        return remove;
     }
 
-    public static ClientData from(@Valid Client client, TransformEntityToTargetContext tcontext) {
-        if (tcontext instanceof DataEntityToTargetContext) {
-            return DataEntityToTargetTransformer.transformClient2Data((DataEntityToTargetContext) tcontext,
-                                                                      client);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Client.class;
     }
 
-    public Client toClient(TransformTargetToEntityContext tcontext) {
-        if (tcontext instanceof DataTargetToEntityContext) {
-            return DataTargetToEntityTransformer.transformData2Client((DataTargetToEntityContext) tcontext,
-                                                                      this);
-        }
-        throw new IllegalArgumentException("Wrong context type");
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_CLIENT;
     }
-
 }

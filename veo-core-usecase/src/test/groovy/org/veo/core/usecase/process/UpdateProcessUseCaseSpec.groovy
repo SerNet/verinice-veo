@@ -18,38 +18,29 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData
-import org.veo.core.usecase.process.UpdateProcessUseCase
 import org.veo.core.usecase.repository.ProcessRepository
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
 
-    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository, transformContextProvider)
-
+    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository)
     def "update a process"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
-        Process process = newProcess existingUnit, {
-            it.id = id
-            name = "Updated process"
-        }
+        Process process = Mock()
+        process.getId() >> id
+        process.getName()>> "Updated process"
+        process.getOwner() >> existingUnit
 
         when:
-        def updatedProcess = usecase.execute(new InputData(process, existingClient))
+        def output = usecase.execute(new InputData(process, existingClient))
         then:
-        1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
-        1 * targetToEntityContext.partialDomain() >> targetToEntityContext
-        1 * targetToEntityContext.partialClient() >> targetToEntityContext
 
-        1 * processRepository.save({
-            it.name == "Updated process"
-        }, _, _) >> { it[0] }
-        updatedProcess != null
-        updatedProcess.name == "Updated process"
+        1 * processRepository.save( _) >> process
+        output.entity != null
+        output.entity.name == "Updated process"
     }
 }

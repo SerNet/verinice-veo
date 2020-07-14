@@ -18,6 +18,7 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.person.GetPersonUseCase
 import org.veo.core.usecase.person.GetPersonUseCase.InputData
@@ -27,23 +28,26 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
 
-    GetPersonUseCase usecase = new GetPersonUseCase(personRepository, transformContextProvider)
+    GetPersonUseCase usecase = new GetPersonUseCase(personRepository)
 
     def "retrieve a person"() {
         given:
+        EntityFactory factory = Mock()
+        factory.createPerson()>> Mock(Person.class)
+
         TransformTargetToEntityContext targetToEntityContext = Mock()
+        targetToEntityContext.entityFactory >> factory
+
         def id = Key.newUuid()
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def outputPerson = usecase.execute(new InputData(id,  existingClient))
+        def output = usecase.execute(new InputData(id,  existingClient))
         then:
-        1 * transformContextProvider.createTargetToEntityContext() >> targetToEntityContext
-        1 * targetToEntityContext.partialDomain() >> targetToEntityContext
-        1 * personRepository.findById(id,_) >> Optional.of(person)
-        outputPerson != null
-        outputPerson.id == id
+        1 * personRepository.findById(id) >> Optional.of(person)
+        output.person != null
+        output.person.id == id
     }
 }

@@ -17,6 +17,7 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.transform.TransformTargetToEntityContext
@@ -29,11 +30,28 @@ import org.veo.core.usecase.unit.UpdateUnitUseCase
 public class UpdateUnitUseCaseSpec extends UseCaseSpec {
 
 
-
     def "Update an existing unit" () {
         given: "starting values for a unit"
         def namedInput = new NameableInputData()
         namedInput.setName("New unit")
+
+        def id = Key.newUuid()
+
+        Unit nUnit = Mock()
+        //        nUnit.getClient() >> existingClient
+        nUnit.getDomains() >> []
+        nUnit.getParent() >> existingUnit
+        nUnit.getName() >> "New unit"
+        nUnit.getId() >> id
+
+        Unit cUnit = Mock()
+        //        cUnit.getClient() >> existingClient
+        cUnit.getDomains() >> []
+        cUnit.getParent() >> existingUnit
+        cUnit.getName() >>  "Name changed"
+        cUnit.getId() >> id
+
+
 
         and: "a parent unit in an existing client"
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
@@ -42,35 +60,29 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         def data2EntityContext = Stub(TransformTargetToEntityContext)
 
         when: "the use case to create a unit is executed"
-        def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input)
+        def usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
+        def newUnit = usecase.execute(input).getUnit()
 
         and: "the unit is changed and updated"
         newUnit.setName("Name changed")
-        def usecase2 = new UpdateUnitUseCase(unitRepository, transformContextProvider)
-        def updatedUnit = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient))
+        def usecase2 = new UpdateUnitUseCase(unitRepository)
+        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient))
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
+        entityFactory.createUnit(_,_,_) >> nUnit
 
         and: "the client was then saved with the new unit"
-        1 * clientRepository.save(_) >> { Client client ->
-            assert client.getId() == this.existingClient.getId()
-            assert client.getName() == "Existing client"
-            client
-        }
+        1 * unitRepository.save(_) >> nUnit
 
         and: "a unit was retrieved"
-        1 * unitRepository.findById(_) >> Optional.of(this.existingUnit)
-        1 * transformContextProvider.createTargetToEntityContext() >> data2EntityContext
+        2 * unitRepository.findById(_) >> Optional.of(this.existingUnit)
 
         and: "the changed unit was stored"
-        1 * unitRepository.save({
-            it.name == "Name changed"
-        }, _, _) >> { it[0] }
-        updatedUnit != null
-        updatedUnit.name == "Name changed"
-        updatedUnit.id == newUnit.id
+        1 * unitRepository.save(_) >> cUnit
+        output.unit != null
+        output.unit.name == "Name changed"
+        output.unit.id == nUnit.id
     }
 
     def "Prevent updating a unit from another client" () {
@@ -82,30 +94,30 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
 
         and: "a malicious client"
-        def  maliciousClient = newClient()
+        Client maliciousClient = Mock()
+        maliciousClient.getId() >> Key.newUuid()
+        maliciousClient.getDomains >> []
+        maliciousClient.getName()>> "Existing client"
 
         when: "the use case to create a unit is executed"
-        def usecase = new CreateUnitUseCase(clientRepository)
-        def newUnit = usecase.execute(input)
+        def usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
+        def newUnit = usecase.execute(input).getUnit()
 
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
-        def usecase2 = new UpdateUnitUseCase(unitRepository, transformContextProvider)
-        usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient))
+        def usecase2 = new UpdateUnitUseCase(unitRepository)
+        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient))
 
-        then: "a client was retrieved"
-        1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
+        then: "a unit was retrieved"
+        clientRepository.findById(_) >> Optional.of(this.existingClient)
+        unitRepository.findById(_) >> Optional.of(this.existingUnit)
+        entityFactory.createUnit(_,_,_)>> Mock(Unit)
 
         and: "the client was then saved with the new unit"
-        1 * clientRepository.save(_) >> { Client client ->
-            client
-            assert client.getId() == this.existingClient.getId()
-            assert client.getName() == "Existing client"
-            client
-        }
+        unitRepository.save(_) >> existingUnit
 
         and: "a unit was retrieved"
-        1 * unitRepository.findById(_) >> Optional.of(this.existingUnit)
+        unitRepository.findById(_) >> Optional.of(this.existingUnit)
 
         and: "the security violation was prevented"
         thrown ClientBoundaryViolationException

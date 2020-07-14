@@ -18,6 +18,7 @@ package org.veo.rest.interactor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.validation.Valid;
 
@@ -25,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.InputData;
+import org.veo.core.usecase.UseCase.OutputData;
 import org.veo.core.usecase.UseCaseInteractor;
 
 /**
@@ -42,21 +45,19 @@ import org.veo.core.usecase.UseCaseInteractor;
 public class UseCaseInteractorImpl implements UseCaseInteractor {
 
     @Override
-    public <R, I, O> CompletableFuture<R> execute(UseCase<I, O> useCase, @Valid I input, // TODO
-                                                                                         // implement
-                                                                                         // test to
-                                                                                         // make
-                                                                                         // sure all
-                                                                                         // marked
-                                                                                         // complex
-                                                                                         // types in
-                                                                                         // fields
-                                                                                         // are
-                                                                                         // validated
+    public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
+            UseCase<I, O, R> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper) {
+        return CompletableFuture.supplyAsync(() -> useCase.executeAndTransformResult(inputSupplier,
+                                                                                     outputMapper));
+    }
+
+    @Override
+    public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
+            UseCase<I, O, R> useCase, @Valid I input, // TODO implement test to make sure all marked
+                                                      // complex types in fields are validated
             Function<O, R> outputMapper) {
-        return CompletableFuture.supplyAsync(() -> input)
-                                .thenApplyAsync(useCase::execute)
-                                .thenApplyAsync(outputMapper);
+        return CompletableFuture.supplyAsync(() -> useCase.executeAndTransformResult(input,
+                                                                                     outputMapper));
     }
 
     @Override
@@ -68,7 +69,7 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
      * passing "validated(input)" we annotate the method parameter: "@Valid I
      * input".
      */
-    public <I> void validated(I input) {
+    public <I extends InputData> void validated(I input) {
         // implementation not required, see JavaDoc
     }
 

@@ -23,7 +23,6 @@ import org.veo.core.usecase.repository.DocumentRepository;
 import org.veo.persistence.access.jpa.DocumentDataRepository;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
-import org.veo.persistence.entity.jpa.groups.DocumentGroupData;
 
 @Repository
 public class DocumentRepositoryImpl extends BaseRepository<Document, DocumentData>
@@ -31,7 +30,7 @@ public class DocumentRepositoryImpl extends BaseRepository<Document, DocumentDat
 
     public DocumentRepositoryImpl(DocumentDataRepository dataRepository,
             ModelObjectValidation validation) {
-        super(dataRepository, validation, DocumentData::from, DocumentData::toDocument,
-                groupData -> ((DocumentGroupData) groupData).toDocumentGroup());
+        super(dataRepository, validation);
     }
+
 }

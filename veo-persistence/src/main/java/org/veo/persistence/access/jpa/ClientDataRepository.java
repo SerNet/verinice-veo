@@ -17,23 +17,19 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import org.veo.core.entity.transform.*;
+import org.veo.core.entity.Client;
 import org.veo.persistence.entity.jpa.ClientData;
-import org.veo.persistence.entity.jpa.UnitData;
 
 public interface ClientDataRepository extends CrudRepository<ClientData, String> {
 
-    Set<ClientData> findDistinctByUnitsIn(Set<UnitData> units);
-
-    @Query("select c from #{#entityName} c left join fetch c.domains where c.id = ?1")
+    @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
     Optional<ClientData> findById(String id);
 
-    @Query("select c from #{#entityName} c left join fetch c.domains left join fetch c.units where c.id = ?1")
-    Optional<ClientData> findByIdFetchUnits(String id);
+    @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
+    Optional<Client> findByIdFetchUnits(String id);
 
 }

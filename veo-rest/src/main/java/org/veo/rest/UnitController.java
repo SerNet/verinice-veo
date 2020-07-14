@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -60,13 +61,12 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.impl.UnitImpl;
-import org.veo.core.usecase.unit.ChangeUnitUseCase;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
+import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.ParameterUuidParent;
@@ -91,11 +91,12 @@ public class UnitController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/units";
 
     private final UseCaseInteractorImpl useCaseInteractor;
-    private final CreateUnitUseCase createUnitUseCase;
-    private final GetUnitUseCase getUnitUseCase;
-    private final UpdateUnitUseCase putUnitUseCase;
-    private final DeleteUnitUseCase deleteUnitUseCase;
-    private final GetUnitsUseCase getUnitsUseCase;
+    private final CreateUnitUseCase<ResponseEntity<ApiResponseBody>> createUnitUseCase;
+    private final GetUnitUseCase<UnitDto> getUnitUseCase;
+    private final UpdateUnitUseCase<UnitDto> putUnitUseCase;
+    private final DeleteUnitUseCase<ResponseEntity<ApiResponseBody>> deleteUnitUseCase;
+    private final GetUnitsUseCase<List<UnitDto>> getUnitsUseCase;
+    private final EntityFactory entityFactory;
 
     @GetMapping
     @Operation(summary = "Loads all units")
@@ -112,11 +113,20 @@ public class UnitController extends AbstractEntityController {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
         return useCaseInteractor.execute(getUnitsUseCase,
-                                         new GetUnitsUseCase.InputData(getAuthenticatedClient(auth),
-                                                 Optional.ofNullable(parentUuid)),
-                                         units -> units.stream()
-                                                       .map(u -> UnitDto.from(u, tcontext))
-                                                       .collect(Collectors.toList()));
+                                         new Supplier<GetUnitsUseCase.InputData>() {
+
+                                             @Override
+                                             public InputData get() {
+                                                 return new GetUnitsUseCase.InputData(
+                                                         getAuthenticatedClient(auth),
+                                                         Optional.ofNullable(parentUuid));
+                                             }
+                                         }, output -> {
+                                             return output.getUnits()
+                                                          .stream()
+                                                          .map(u -> UnitDto.from(u, tcontext))
+                                                          .collect(Collectors.toList());
+                                         });
     }
 
     @Async
@@ -133,12 +143,13 @@ public class UnitController extends AbstractEntityController {
             @PathVariable String id) {
 
         return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
-                Key.uuidFrom(id), getAuthenticatedClient(auth)), unit -> {
+                Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-                    return UnitDto.from(unit, tcontext);
+                    return UnitDto.from(output.getUnit(), tcontext);
                 });
     }
 
+    // TODO: veo-279 use the complete dto
     @Async
     @PostMapping()
     @Operation(summary = "Creates a unit")
@@ -156,12 +167,13 @@ public class UnitController extends AbstractEntityController {
         return useCaseInteractor.execute(createUnitUseCase,
                                          CreateUnitInputMapper.map(createUnitDto,
                                                                    user.getClientId()),
-                                         unit -> {
-                                             ApiResponseBody body = CreateUnitOutputMapper.map(unit);
+                                         output -> {
+                                             ApiResponseBody body = CreateUnitOutputMapper.map(output.getUnit());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }
 
+    // TODO: veo-280 include subunits
     @Async
     @PutMapping(value = "/{id}")
     // @Operation(summary = "Updates a unit")
@@ -175,11 +187,12 @@ public class UnitController extends AbstractEntityController {
         DtoToEntityContext tcontext = configureDtoContext(getAuthenticatedClient(auth),
                                                           Collections.emptyList());
 
-        return useCaseInteractor.execute(putUnitUseCase,
-                                         new UpdateUnitUseCase.InputData(unitDto.toUnit(tcontext),
-                                                 getAuthenticatedClient(auth)),
-                                         unit -> UnitDto.from(unit,
-                                                              EntityToDtoContext.getCompleteTransformationContext()));
+        return useCaseInteractor.execute(putUnitUseCase, new UpdateUnitUseCase.InputData(
+                unitDto.toUnit(tcontext), getAuthenticatedClient(auth)), output -> {
+                    UnitDto response = UnitDto.from(output.getUnit(),
+                                                    EntityToDtoContext.getCompleteTransformationContext());
+                    return response;
+                });
     }
 
     @Async
@@ -191,10 +204,8 @@ public class UnitController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
 
-        Unit unit = new UnitImpl(Key.uuidFrom(uuid), null, null);
-
-        return useCaseInteractor.execute(deleteUnitUseCase, new ChangeUnitUseCase.InputData(unit,
-                getAuthenticatedClient(auth)), output -> {
+        return useCaseInteractor.execute(deleteUnitUseCase, new DeleteUnitUseCase.InputData(
+                Key.uuidFrom(uuid), getAuthenticatedClient(auth)), output -> {
                     return RestApiResponse.noContent();
                 });
     }

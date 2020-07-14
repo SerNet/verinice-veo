@@ -38,10 +38,10 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
-import org.veo.persistence.entity.jpa.transformer.DataTargetToEntityContext;
 import org.veo.rest.security.ApplicationUser;
 
 // TODO: VEO-115 this class (which is not abstract) is extended by controllers. Instead it should be a separate service.
@@ -56,15 +56,16 @@ public class AbstractEntityController {
     @Autowired
     private RepositoryProvider repositoryProvider;
 
+    @Autowired
+    private EntityFactory entityFactory;
+
     public AbstractEntityController() {
         super();
     }
 
     protected Client getClient(String clientId) {
         Key<UUID> id = Key.uuidFrom(clientId);
-        DataTargetToEntityContext dataToEntityContext = DataTargetToEntityContext.getCompleteTransformationContext();
-        dataToEntityContext.partialUnit();
-        return clientRepository.findById(id, dataToEntityContext)
+        return clientRepository.findById(id)
                                .orElseThrow();
     }
 
@@ -73,31 +74,21 @@ public class AbstractEntityController {
         return getClient(user.getClientId());
     }
 
+    // this need to be executed in the usecase
     protected DtoToEntityContext configureDtoContext(Client client,
             Collection<ModelObjectReference<? extends ModelObject>> collection) {
-        DtoToEntityContext tcontext = DtoToEntityContext.getCompleteTransformationContext();
+        DtoToEntityContext tcontext = new DtoToEntityContext(entityFactory);
 
         for (Domain d : client.getDomains()) {
             tcontext.addEntity(d);
         }
-        DataTargetToEntityContext referencesTransformContext = DataTargetToEntityContext.getCompleteTransformationContext()
-                                                                                        .noUnitDomains()
-                                                                                        .noUnitParent()
-                                                                                        .noUnitUnits()
-                                                                                        .partialClient()
-                                                                                        .partialAsset()
-                                                                                        .partialDocument()
-                                                                                        .partialControl()
-                                                                                        .partialPerson()
-                                                                                        .partialProcess();
         for (ModelObjectReference<? extends ModelObject> objectReference : collection) {
             if (objectReference.getType()
                                .equals(Domain.class)) {
                 continue;// skip domains as we get them from the client
             }
             Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(objectReference.getType());
-            ModelObject modelObject = entityRepository.findById(Key.uuidFrom(objectReference.getId()),
-                                                                referencesTransformContext)
+            ModelObject modelObject = entityRepository.findById(Key.uuidFrom(objectReference.getId()))
                                                       .orElseThrow(() -> new NotFoundException(
                                                               "ref not found %s %s",
                                                               objectReference.getId(),

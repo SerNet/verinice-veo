@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2020 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,148 +16,12 @@
  ******************************************************************************/
 package org.veo.core.entity.groups;
 
-import java.util.Collections;
-import java.util.Set;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelGroup;
-import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.impl.BaseModelGroup;
-import org.veo.core.entity.impl.ProcessImpl;
 
 /**
- * The group for Process objects.
+ * @author urszeidler
  */
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProcessGroup extends BaseModelGroup<Process> implements Process, ModelGroup<Process> {
-    private Set<Process> members = Collections.emptySet();
-    @ToString.Include
-    private Process instance = new ProcessImpl(null, null, null);
-
-    @Override
-    public Process getInstance() {
-        return instance;
-    }
-
-    @Override
-    public void setInstance(Process instance) {
-        this.instance = instance;
-    }
-
-    @Override
-    public Set<Process> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<Process> members) {
-        this.members = members;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_PROCESS + "_GROUP";
-    }
-
-    @Override
-    public String getName() {
-        return instance.getName();
-    }
-
-    public void setName(String aName) {
-        instance.setName(aName);
-    }
-
-    @Override
-    public String getAbbreviation() {
-        return instance.getAbbreviation();
-    }
-
-    public void setAbbreviation(String aAbbreviation) {
-        instance.setAbbreviation(aAbbreviation);
-    }
-
-    @Override
-    public String getDescription() {
-        return instance.getDescription();
-    }
-
-    public void setDescription(String aDescription) {
-        instance.setDescription(aDescription);
-    }
-
-    @Override
-    public boolean addToDomains(Domain aDomain) {
-        return instance.addToDomains(aDomain);
-    }
-
-    @Override
-    public boolean removeFromDomains(Domain aDomain) {
-        return instance.removeFromDomains(aDomain);
-    }
-
-    @Override
-    public Set<Domain> getDomains() {
-        return instance.getDomains();
-    }
-
-    public void setDomains(Set<Domain> aDomains) {
-        instance.setDomains(aDomains);
-    }
-
-    @Override
-    public boolean addToLinks(CustomLink aCustomLink) {
-        return instance.addToLinks(aCustomLink);
-    }
-
-    @Override
-    public boolean removeFromLinks(CustomLink aCustomLink) {
-        return instance.removeFromLinks(aCustomLink);
-    }
-
-    @Override
-    public Set<CustomLink> getLinks() {
-        return instance.getLinks();
-    }
-
-    public void setLinks(Set<CustomLink> aLinks) {
-        instance.setLinks(aLinks);
-    }
-
-    @Override
-    public boolean addToCustomAspects(CustomProperties aCustomProperties) {
-        return instance.addToCustomAspects(aCustomProperties);
-    }
-
-    @Override
-    public boolean removeFromCustomAspects(CustomProperties aCustomProperties) {
-        return instance.removeFromCustomAspects(aCustomProperties);
-    }
-
-    @Override
-    public Set<CustomProperties> getCustomAspects() {
-        return instance.getCustomAspects();
-    }
-
-    public void setCustomAspects(Set<CustomProperties> aCustomAspects) {
-        instance.setCustomAspects(aCustomAspects);
-    }
-
-    @Override
-    public Unit getOwner() {
-        return instance.getOwner();
-    }
-
-    public void setOwner(Unit aOwner) {
-        instance.setOwner(aOwner);
-    }
+public interface ProcessGroup extends ModelGroup<Process>, Process {
 
 }

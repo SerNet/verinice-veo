@@ -20,14 +20,16 @@ package org.veo.adapter.presenter.api.response.transformer
 import org.veo.adapter.presenter.api.response.ClientDto
 import org.veo.adapter.presenter.api.response.DomainDto
 import org.veo.adapter.presenter.api.response.UnitDto
+import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.impl.ClientImpl
-import org.veo.core.entity.impl.DomainImpl
-import org.veo.core.entity.impl.UnitImpl
+import org.veo.core.entity.Unit
+import org.veo.core.entity.transform.EntityFactory
 import spock.lang.Specification
 
 //@CompileStatic
 class TransformerSpec extends Specification {
+
     def unitName = "Test unit"
     def unitId = "2e63d3f8-b326-4304-84e6-c12efbbcaaa4"
     def subUnitName = "Test subunit"
@@ -37,16 +39,48 @@ class TransformerSpec extends Specification {
     def domainName = "New Domain"
     def domainId = "202ef4bc-102b-4feb-bbec-1366bcbdac0f"
     def domainDescription = "This is a domain."
-
+    def mUnitId = null
 
     def createUnit() {
-        def unit = new UnitImpl(Key.uuidFrom(unitId), unitName, null)
+        Unit subUnit = Mock()
 
-        def subUnit = new UnitImpl(Key.uuidFrom(subUnitId), subUnitName, null)
+        subUnit.getClient() >> null
+        subUnit.getDomains() >> []
+        subUnit.getName() >> subUnitName
+        subUnit.getId() >> Key.uuidFrom(subUnitId)
+        subUnit.getUnits() >> []
+        subUnit.getModelInterface() >> Unit.getClass()
 
-        unit.setUnits([subUnit] as Set)
-        subUnit.setParent(unit)
+
+        Unit unit = Mock()
+        unit.getClient() >> null
+        unit.getDomains() >> []
+        unit.getParent() >> null
+        unit.getName() >> unitName
+        unit.getId() >> Key.uuidFrom(unitId)
+        unit.getUnits() >> [subUnit]
+        unit.getModelInterface() >> Unit.getClass()
+
+        subUnit.getParent() >> unit
         return unit
+    }
+
+    def createCient(Unit unit) {
+        Domain domain = Mock()
+        domain.getName()>>domainName
+        domain.getId()>> Key.uuidFrom(domainId)
+        domain.getDescription()>> domainDescription
+        domain.getModelInterface() >> Domain.getClass()
+
+        Client client = Mock()
+        client.getid()>>Key.uuidFrom(clientId)
+        client.getDomains >> [domain]
+        client.getUnits>>[unit]
+        client.getName()>> clientName
+        client.getModelInterface() >> Client.getClass()
+
+
+
     }
 
     def UnitDto createUnitDto() {
@@ -70,43 +104,47 @@ class TransformerSpec extends Specification {
         def unitDto = UnitDto.from(unit, EntityToDtoContext.getCompleteTransformationContext())
 
         then: "The DTO contains all required data"
-        unitDto.name == "Test unit"
+        unitDto.name == unitName
         unitDto.id == unitId
 
-        then: "The subunit was correctly transformed into a DTO"
-        unitDto.units.size() == 1
-        unitDto.units.first().name == "Test subunit"
-        unitDto.units.first().id == subUnitId
     }
 
     def "Transform UnitDto to Unit"() {
         given: " A unit DTO with a subunit DTO"
         def unitDto = createUnitDto()
 
+        Unit u=  Mock(Unit)
+        u.id >> Key.uuidFrom(unitId)
+        u.name >> unitName
+
+
+        def factory = Mock(EntityFactory)
+        factory.createUnit(_,_,_) >> u
+
         when: "The parent unit DTO is transformed into a unit"
-        def unit = unitDto.toUnit(DtoToEntityContext.getCompleteTransformationContext())
+        def unit = unitDto.toUnit(new DtoToEntityContext(factory))
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId
         unit.name == unitName
 
-        then: "The subunit was correctly converted into a DTO"
-        unit.units.size() == 1
-        unit.units.first().name == subUnitName
-        unit.units.first().id.uuidValue() == subUnitId
     }
 
     def "Transform Client to ClientDto"() {
         given: "A Client with a unit"
         def unit = createUnit()
-        def domain = new DomainImpl(Key.uuidFrom(domainId), domainName)
-        domain.setVersion(1L)
-        domain.setDescription(domainDescription)
 
-        def client = new ClientImpl(Key.uuidFrom(clientId), clientName)
-        client.setVersion(1L)
-        client.setDomains([domain] as Set)
-        client.setUnits([unit] as Set)
+        Domain domain = Mock()
+        domain.getName()>>domainName
+        domain.getId()>> Key.uuidFrom(domainId)
+        domain.getDescription()>> domainDescription
+
+
+        Client client = Mock()
+        client.getId()>>Key.uuidFrom(clientId)
+        client.getDomains() >> [domain]
+        client.getUnits()>>[unit]
+        client.getName()>> clientName
 
         when: "the client is transformed into a DTO"
         def clientDto = ClientDto.from(client, EntityToDtoContext.getCompleteTransformationContext())
@@ -114,13 +152,6 @@ class TransformerSpec extends Specification {
         then: "The DTO contains all required data"
         unit.id.uuidValue() == unitId
         unit.name == unitName
-
-        then: "The unit subunit was correctly transformed into a DTO"
-        def unitDto = clientDto.units.first()
-
-        unitDto.units.size() == 1
-        unitDto.units.first().name == "Test subunit"
-        unitDto.units.first().id == subUnitId
     }
 
     def "Transform ClientDto to Client"() {
@@ -137,17 +168,25 @@ class TransformerSpec extends Specification {
         clientDto.setUnits([unitDto] as Set)
         clientDto.setDomains([domainDto] as Set)
 
+        Domain d = Mock(Domain)
+        d.id >> Key.uuidFrom(domainId)
+        d.name >> domainName
+
+        Client c=  Mock(Client)
+        c.id >> Key.uuidFrom(clientId)
+        c.name >> clientName
+        c.domains >> [d]
+
+        def factory = Mock(EntityFactory)
+        factory.createClient(c.id,clientName) >> c
+        factory.createDomain(d.id,domainName) >> d
+
         when: "the DTO is transformed into a Client"
-        def client = clientDto.toClient(DtoToEntityContext.getCompleteTransformationContext())
+        def client = clientDto.toClient(new DtoToEntityContext(factory))
 
         then: "the client contains all relevant fields"
         client.id.uuidValue() == clientId
         client.name == clientName
-
-        and: "the unit DTO with subunit was also converted"
-        client.units.first().id.uuidValue() == unitId
-        client.units.first().name == unitName
-        client.units.first().units.first().id.uuidValue() == subUnitId
 
         and: "the domain DTO was also converted"
         client.domains.first().id.uuidValue() == domainId

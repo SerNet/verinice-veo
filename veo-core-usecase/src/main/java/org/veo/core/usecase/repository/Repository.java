@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.veo.core.entity.transform.TransformEntityToTargetContext;
-import org.veo.core.entity.transform.TransformTargetToEntityContext;
-
 /*
 * The repository provides access to business entities through a well-known interface.
 *
@@ -36,16 +33,9 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext;
 * */
 public interface Repository<T, K> {
 
-    public default T save(T entity) {
-        return save(entity, null, null);
-    }
-
-    public T save(T entity, TransformEntityToTargetContext dataEntityToTargetContext,
-            TransformTargetToEntityContext dataTargetToEntityContext);
+    public T save(T entity);
 
     public Optional<T> findById(K id);
-
-    public Optional<T> findById(K id, TransformTargetToEntityContext dataTargetToEntityContext);
 
     public List<T> findByName(String search);
 

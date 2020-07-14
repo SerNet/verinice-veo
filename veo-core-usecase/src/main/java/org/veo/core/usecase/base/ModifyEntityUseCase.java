@@ -16,45 +16,45 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
 import lombok.Value;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.transform.TransformContextProvider;
 import org.veo.core.usecase.UseCase;
 
-public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype>
-        extends UseCase<ModifyEntityUseCase.InputData<T>, T> {
-    protected final TransformContextProvider transformContextProvider;
-
-    protected ModifyEntityUseCase(TransformContextProvider transformContextProvider) {
-        this.transformContextProvider = transformContextProvider;
-    }
+public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
+        extends UseCase<ModifyEntityUseCase.InputData<T>, ModifyEntityUseCase.OutputData<T>, R> {
 
     @Override
-    @Transactional(TxType.REQUIRED)
-    public T execute(InputData<T> input) {
+    public OutputData<T> execute(InputData<T> input) {
         T entity = input.getEntity();
         Client authenticatedClient = input.getAuthenticatedClient();
         checkSameClient(authenticatedClient, entity);
         return performModification(input);
     }
 
-    protected abstract T performModification(InputData<T> input);
+    protected abstract OutputData<T> performModification(InputData<T> input);
 
     @Valid
     @Value
-    public static class InputData<T> {
+    public static class InputData<T> implements UseCase.InputData {
 
         @Valid
         T entity;
 
         @Valid
         Client authenticatedClient;
+
+    }
+
+    @Valid
+    @Value
+    public static class OutputData<T> implements UseCase.OutputData {
+
+        @Valid
+        T entity;
 
     }
 }

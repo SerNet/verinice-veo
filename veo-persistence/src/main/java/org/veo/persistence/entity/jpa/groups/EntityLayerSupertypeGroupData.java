@@ -16,17 +16,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.Set;
-
 import org.veo.persistence.entity.jpa.NameAbleData;
 
 /**
  * @author urszeidler
  */
 public interface EntityLayerSupertypeGroupData<T> extends NameAbleData {
-
-    public abstract Set<T> getMembers();
-
-    public abstract void setMembers(Set<T> members);
 
 }

@@ -16,20 +16,12 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-
-import org.veo.adapter.presenter.api.response.AssetDto
 import org.veo.adapter.presenter.api.response.DocumentDto
-import org.veo.adapter.presenter.api.response.PersonDto
 import org.veo.adapter.presenter.api.response.UnitDto
-import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
-import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
-import org.veo.core.entity.impl.AssetImpl
-import org.veo.core.entity.impl.DocumentImpl
-import org.veo.core.entity.impl.PersonImpl
-import org.veo.core.entity.impl.UnitImpl
+import org.veo.core.entity.transform.EntityFactory
 import spock.lang.Specification
 
 //@CompileStatic
@@ -38,13 +30,30 @@ class DtoTransformerContextSpec extends Specification {
     def unitId = "2e63d3f8-b326-4304-84e6-c12efbbcaaa4"
     def subUnitName = "Test subunit"
     def subUnitId = "fb329c3e-b87b-44d2-a680-e2d12539f3f7"
+    def personName = "new Person"
+    def assetName = "new Asset"
+    def docName = "new Document"
 
     def createUnit() {
-        def unit = new UnitImpl(Key.uuidFrom(unitId), unitName, null);
-        def subUnit = new UnitImpl(Key.uuidFrom(subUnitId), subUnitName, null);
+        Unit subUnit = Mock()
 
-        unit.setUnits([subUnit] as Set)
-        subUnit.setParent(unit)
+        subUnit.getClient() >> null
+        subUnit.getDomains() >> []
+        subUnit.getName() >> unitName
+        subUnit.getId() >> Key.uuidFrom(unitId)
+        subUnit.getModelInterface() >> Unit.class
+
+
+        Unit unit = Mock()
+        unit.getClient() >> null
+        unit.getDomains() >> []
+        unit.getParent() >> null
+        unit.getName() >> unitName
+        unit.getId() >> Key.uuidFrom(unitId)
+        unit.getUnits() >> [subUnit]
+        unit.getModelInterface() >> Unit.class
+
+        subUnit.getParent() >> unit
         return unit
     }
 
@@ -65,8 +74,29 @@ class DtoTransformerContextSpec extends Specification {
         given: "A person in a unit"
         Unit unit = createUnit()
 
-        Document doc = new DocumentImpl(Key.newUuid(), "new document", unit)
+        Document doc = Mock()
+        doc.getName() >> docName
+        doc.getId() >> Key.newUuid()
+        doc.getDomains() >> []
+        doc.getLinks() >> []
+        doc.getLinks() >> []
+        doc.getCustomAspects() >> []
+        doc.getOwner() >> unit
+        doc.getModelInterface() >> Document.class
 
+        def newDoc = Mock(Document)
+
+        EntityFactory factory = Mock() {
+            createDocument(_,_,_) >> newDoc
+        }
+
+        Unit replacementUnit = Mock()
+
+        replacementUnit.getClient() >> null
+        replacementUnit.getDomains() >> []
+        replacementUnit.getName() >> "replaced unit"
+        replacementUnit.getId() >> Key.uuidFrom(unitId)
+        replacementUnit.getModelInterface() >> Unit.class
 
         when: "the document is transformed into a DTO"
 
@@ -74,24 +104,19 @@ class DtoTransformerContextSpec extends Specification {
 
         then: "Test the Dto"
         docDto.id == doc.id.uuidValue()
-        docDto.name == "new document"
+        docDto.name == docName
         docDto.owner.id == unitId
         docDto.owner.displayName == unitName
 
         when: "replace the unit in context"
 
-        Unit replacementUnit = new UnitImpl(Key.uuidFrom(unitId), "replaced unit", null)
-
-        DtoToEntityContext tcontext = DtoToEntityContext.getCompleteTransformationContext()
+        DtoToEntityContext tcontext = new DtoToEntityContext(factory)
         tcontext.addEntity(replacementUnit)
 
         doc = docDto.toDocument(tcontext)
 
         then: "the unit is replaced by the context unit"
-
-        doc.name == "new document"
-        doc.owner.id.uuidValue() == unitId
-        doc.owner.name == "replaced unit"
-        doc.owner.units.size() == 0
+        1 * newDoc.setOwner(replacementUnit)
+        1 * newDoc.setName(docName)
     }
 }
