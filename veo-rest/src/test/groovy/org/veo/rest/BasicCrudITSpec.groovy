@@ -25,6 +25,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
@@ -35,6 +36,10 @@ class BasicCrudITSpec extends VeoMvcSpec {
     private ClientRepositoryImpl clientRepository
     @Autowired
     private EntityDataFactory entityFactory
+
+    @Autowired
+    private ProcessRepositoryImpl processRepository
+
 
     @Autowired
     TransactionTemplate txTemplate
@@ -75,12 +80,42 @@ class BasicCrudITSpec extends VeoMvcSpec {
             name : 'My CRUD process',
             owner: [
                 href: "/units/$unitId"
+            ],
+            links: [
+                'Process_depends_on_Asset':[
+                    [
+                        id: '00000000-0000-0000-0000-000000000000',
+                        type: 'Process_depends_on_Asset',
+                        name : 'requires',
+                        target:
+                        [
+                            href: "/assets/$assetId"
+                        ]
+                    ]
+                ]
             ]
         ]))
         then:
         result != null
         when:
         def processId = result.resourceId
+        def process = txTemplate.execute{
+            processRepository.findById(Key.uuidFrom(processId)).tap {
+                // initialize links proxy
+                it.ifPresent(it.get().getLinks())
+            }
+        }
+        then:
+        process.present
+        when:
+        def links = process.get().links
+        then:
+        links.size() == 1
+        links.first().type == 'Process_depends_on_Asset'
+        links.first().name == 'requires'
+        links.first().target.id.uuidValue() == assetId
+        when:
+
         result = parseJson(post('/groups', [
             name : 'My CRUD group',
             type : 'Asset',
@@ -91,7 +126,9 @@ class BasicCrudITSpec extends VeoMvcSpec {
         then:
         result != null
         when:
-        result = delete("/units/$unitId")
+        // FIXME VEO-242: remove the need to delete the process before deleting the unit
+        delete("/processes/$processId")
+        delete("/units/$unitId")
         then:
         notThrown(Exception)
     }
