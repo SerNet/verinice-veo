@@ -131,7 +131,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 href: '/units/' + unit.id.uuidValue()
             ], customAspects:
             [
-                'my.aspect-test' :
                 [
                     id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
@@ -332,7 +331,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ], customAspects:
             [
-                'my.aspect-test' :
                 [
                     id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
@@ -394,7 +392,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ], customAspects:
             [
-                'my.aspect-test' :
                 [
                     id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',

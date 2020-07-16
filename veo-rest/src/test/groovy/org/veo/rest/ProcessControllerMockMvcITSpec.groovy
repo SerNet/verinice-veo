@@ -326,7 +326,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             customAspects:
             [
-                'my.aspect-test' :
                 [
                     id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
@@ -405,7 +404,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             customAspects:
             [
-                'my.new.type' :
                 [
                     id: cp.id.uuidValue(),
                     type : 'my.new.type',
@@ -475,7 +473,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             customAspects:
             [
-                'my.aspect-test' :
                 [
                     type : 'my.aspect-test1',
                     applicableTo: [
@@ -548,30 +545,29 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             links:
             [
-                'my.link-test' : [
+                [
+                    id: '00000000-0000-0000-0000-000000000000',
+                    type : 'my.link-test',
+                    applicableTo: [
+                        "Process"
+                    ],
+                    name:'test link prcess->asset',
+                    domains: [],
+                    attributes: [
+                        test1:'value1',
+                        test2:'value2'
+                    ],
+                    source:
                     [
-                        id: '00000000-0000-0000-0000-000000000000',
-                        type : 'my.link-test',
-                        applicableTo: [
-                            "Process"
-                        ],
-                        name:'test link prcess->asset',
-                        domains: [],
-                        attributes: [
-                            test1:'value1',
-                            test2:'value2'
-                        ],
-                        source:
-                        [
-                            href: '/processs/'+createProcessResult.resourceId,
-                            displayName: 'test ddd'
-                        ],
-                        target:
-                        [
-                            href: '/assets/'+createAssetResult.resourceId,
-                            displayName: 'test ddd'
-                        ]
-                    ] ]
+                        href: '/processs/'+createProcessResult.resourceId,
+                        displayName: 'test ddd'
+                    ],
+                    target:
+                    [
+                        href: '/assets/'+createAssetResult.resourceId,
+                        displayName: 'test ddd'
+                    ]
+                ]
             ]
         ]
 
@@ -585,14 +581,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.href == "/units/"+unit.id.uuidValue()
-        and: 'there is one type of links'
+        and: 'there is one link'
         def links = result.links
         links.size() == 1
-        and: 'there is one link of the expected type'
-        def linksOfExpectedType = links.'my.link-test'
-        linksOfExpectedType.size() == 1
         and: 'the expected link is present'
-        linksOfExpectedType.first().name == 'test link prcess->asset'
+        links.first().name == 'test link prcess->asset'
     }
 
     @WithUserDetails("user@domain.example")

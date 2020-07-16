@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.Map;
 import java.util.Set;
 
 import lombok.Data;
@@ -75,8 +74,8 @@ public final class CreateAssetDto extends AssetDto {
 
     @Schema(description = "The customAspects for the Asset.")
     @Override
-    public Map<String, CustomPropertiesDto> getCustomAspectsIntern() {
-        return super.getCustomAspectsIntern();
+    public Set<CustomPropertiesDto> getCustomAspects() {
+        return super.getCustomAspects();
     }
 
     @Override
