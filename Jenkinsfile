@@ -112,7 +112,7 @@ pipeline {
                         dockerImage.push("git-${env.GIT_COMMIT}")
                         if (env.GIT_BRANCH == 'master') {
                             dockerImage.push("latest")
-                            dockerImage.push(env.BUILD_NUMBER)
+                            dockerImage.push("build-${env.BUILD_NUMBER}")
                         } else if (env.GIT_BRANCH ==~ /PR-\d+/) { // we only want to build pull requests
                             // Note that '/' is not allowed in docker tags.
                             def dockertag = env.GIT_BRANCH.replace("/","-")
