@@ -16,93 +16,18 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.Collections;
-import java.util.List;
+import org.veo.adapter.presenter.api.response.GroupDto;
+import org.veo.core.entity.Key;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetOwner;
-import org.veo.adapter.presenter.api.response.CustomLinkDto;
-import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.GroupType;
-import org.veo.core.entity.Unit;
-
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public final class CreateGroupDto {
+@EqualsAndHashCode(callSuper = true)
+public final class CreateGroupDto extends GroupDto {
 
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-             flags = Pattern.Flag.CASE_INSENSITIVE,
-             message = "ID for new objects must either be null or a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b")
-    private String id;
-
-    // TODO Add an example for the API documentation for field name.
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validFrom;
-
-    // TODO Add an example for the API documentation for field name.
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying the point in time when this version of the entity was superseded "
-            + "by a newer version or deleted. Empty if this is the current version.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validUntil;
-
-    @NotNull(message = "A name must be present.")
-    // TODO Add an example for the API documentation for field name.
-    @Schema(description = "The name for the Asset.",
-            example = "<add example here>",
-            required = true)
-    private String name;
-
-    // TODO Add an example for the API documentation for field abbreviation.
-    @Schema(description = "The abbreviation for the Asset.",
-            example = "<add example here>",
-            required = false)
-    private String abbreviation;
-
-    // TODO Add an example for the API documentation for field description.
-    @Schema(description = "The description for the Asset.",
-            example = "<add example here>",
-            required = false)
-    private String description;
-
-    @NotNull(message = "A type must be present.")
-    // TODO Add an example for the API documentation for field type in Asset.
-    @Schema(description = "The type for the group.",
-            example = "<add example here>",
-            required = true)
-    public GroupType type;
-
-    // TODO Add an example for the API documentation for field domains in Asset.
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceAssetDomains.class))
-    private List<ModelObjectReference<Domain>> domains = Collections.emptyList();
-
-    // TODO Add an example for the API documentation for field links.
-    @Schema(description = "The links for the Asset.",
-            example = "<add example here>",
-            required = false)
-    private List<CustomLinkDto> links = Collections.emptyList();
-
-    // TODO Add an example for the API documentation for field customAspects.
-    @Schema(description = "The customAspects for the Asset.",
-            example = "<add example here>",
-            required = false)
-    private List<CustomPropertiesDto> customAspects = Collections.emptyList();
-
-    @NotNull(message = "A owner must be present.")
-    // TODO Add an example for the API documentation for field owner in Asset.
-    @Schema(required = true, implementation = ModelObjectReferenceAssetOwner.class)
-    private ModelObjectReference<Unit> owner;
-
+    public CreateGroupDto() {
+        super();
+        setId(Key.NIL_UUID.uuidValue());
+    }
 }

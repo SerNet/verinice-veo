@@ -16,14 +16,22 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceControlDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceControlOwner;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Unit;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +47,37 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Control", description = "Schema for Control")
 public class ControlDto extends EntityLayerSupertypeDto {
+
+    @Override
+    @Schema(description = "The name for the Control.", example = "Install sensors")
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    @Schema(description = "The abbreviation for the Control.", example = "Sensors")
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
+
+    @Override
+    @Schema(description = "The description for the Control.",
+            example = "Install sensors. Sensors must be installed correctly.")
+    public String getDescription() {
+        return super.getDescription();
+    }
+
+    @Override
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceControlDomains.class))
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
+
+    @Override
+    @Schema(implementation = ModelObjectReferenceControlOwner.class)
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
 
     public static ControlDto from(@Valid Control control, EntityToDtoContext tcontext) {
         return EntityToDtoTransformer.transformControl2Dto(tcontext, control);

@@ -16,14 +16,22 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetOwner;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Unit;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +47,36 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Asset", description = "Schema for Asset")
 public class AssetDto extends EntityLayerSupertypeDto {
+
+    @Override
+    @Schema(description = "The name for the Asset.", example = "Mail Server")
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    @Schema(description = "The abbreviation for the Asset.", example = "MS")
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
+
+    @Override
+    @Schema(description = "The description for the Asset.", example = "A server handling e-mail.")
+    public String getDescription() {
+        return super.getDescription();
+    }
+
+    @Override
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceAssetDomains.class))
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
+
+    @Override
+    @Schema(implementation = ModelObjectReferenceAssetOwner.class)
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
 
     public static AssetDto from(@Valid Asset asset, EntityToDtoContext tcontext) {
         return EntityToDtoTransformer.transformAsset2Dto(tcontext, asset);

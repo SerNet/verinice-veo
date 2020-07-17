@@ -16,22 +16,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessOwner;
-import org.veo.adapter.presenter.api.response.CustomLinkDto;
-import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.response.ProcessDto;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -42,48 +29,5 @@ public final class CreateProcessDto extends ProcessDto {
     public CreateProcessDto() {
         super();
         setId(Key.NIL_UUID.uuidValue());
-    }
-
-    @Override
-    @Schema(description = "The name for the Process.", example = "Two-factor authentication")
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    @Schema(description = "The abbreviation for the Process.", example = "2FA")
-    public String getAbbreviation() {
-        return super.getAbbreviation();
-    }
-
-    @Override
-    @Schema(description = "The description for the Process.",
-            example = "Implement 2FA where possible.")
-    public String getDescription() {
-        return super.getDescription();
-    }
-
-    @Override
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceProcessDomains.class))
-    public Set<ModelObjectReference<Domain>> getDomains() {
-        return super.getDomains();
-    }
-
-    @Override
-    @Schema(description = "The links for the Process.")
-    public Map<String, List<CustomLinkDto>> getLinks() {
-        return super.getLinks();
-    }
-
-    @Schema(description = "The customAspects for the Process.")
-    @Override
-    public Map<String, CustomPropertiesDto> getCustomAspects() {
-        return super.getCustomAspects();
-    }
-
-    @Override
-    @Schema(implementation = ModelObjectReferenceProcessOwner.class)
-    public ModelObjectReference<Unit> getOwner() {
-        return super.getOwner();
     }
 }

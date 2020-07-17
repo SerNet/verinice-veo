@@ -18,16 +18,74 @@ package org.veo.adapter.presenter.api.response;
 
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.groups.EntityLayerSupertypeGroupDto;
-import org.veo.core.entity.EntityLayerSupertype;
+import javax.validation.constraints.NotNull;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetOwner;
+import org.veo.adapter.presenter.api.response.groups.EntityLayerSupertypeGroupDto;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.GroupType;
+import org.veo.core.entity.Unit;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class GroupDto extends EntityLayerSupertypeDto
         implements EntityLayerSupertypeGroupDto<EntityLayerSupertype> {
+
+    @NotNull(message = "A name must be present.")
+    // TODO Add an example for the API documentation for field name.
+    @Schema(description = "The name for the Asset.",
+            example = "<add example here>",
+            required = true)
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
+    // TODO Add an example for the API documentation for field abbreviation.
+    @Schema(description = "The abbreviation for the Asset.", example = "<add example here>")
+    @Override
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
+
+    // TODO Add an example for the API documentation for field description.
+    @Schema(description = "The description for the Asset.", example = "<add example here>")
+    @Override
+    public String getDescription() {
+        return super.getDescription();
+    }
+
+    @NotNull(message = "A type must be present.")
+    // TODO Add an example for the API documentation for field type in Asset.
+    @Schema(description = "The type for the group.",
+            example = "<add example here>",
+            required = true)
+    private GroupType type;
+
+    // TODO Add an example for the API documentation for field domains in Asset.
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceAssetDomains.class))
+    @Override
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
+
+    @NotNull(message = "A owner must be present.")
+    // TODO Add an example for the API documentation for field owner in Asset.
+    @Schema(required = true, implementation = ModelObjectReferenceAssetOwner.class)
+    @Override
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
 
     @Override
     @Schema(required = true, description = "The group's members")

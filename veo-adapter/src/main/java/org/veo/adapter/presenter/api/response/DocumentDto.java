@@ -16,14 +16,23 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDocumentDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDocumentOwner;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Unit;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -37,6 +46,37 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DocumentDto extends EntityLayerSupertypeDto {
+
+    @Override
+    @Schema(description = "The name for the Document.", example = "Bitcoin Price Predictions")
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    @Schema(description = "The abbreviation for the Document.", example = "BTC Price")
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
+
+    @Override
+    @Schema(description = "The description for the Document.",
+            example = "All predictions regarding the price of Bitcoin.")
+    public String getDescription() {
+        return super.getDescription();
+    }
+
+    @Override
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDocumentDomains.class))
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
+
+    @Override
+    @Schema(implementation = ModelObjectReferenceDocumentOwner.class)
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
 
     public static DocumentDto from(@Valid Document document, EntityToDtoContext tcontext) {
         return EntityToDtoTransformer.transformDocument2Dto(tcontext, document);

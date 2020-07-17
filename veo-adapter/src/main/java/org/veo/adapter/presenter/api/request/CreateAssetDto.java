@@ -16,22 +16,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetOwner;
 import org.veo.adapter.presenter.api.response.AssetDto;
-import org.veo.adapter.presenter.api.response.CustomLinkDto;
-import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,47 +30,4 @@ public final class CreateAssetDto extends AssetDto {
         super();
         setId(Key.NIL_UUID.uuidValue());
     }
-
-    @Override
-    @Schema(description = "The name for the Asset.", example = "Mail Server")
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    @Schema(description = "The abbreviation for the Asset.", example = "MS")
-    public String getAbbreviation() {
-        return super.getAbbreviation();
-    }
-
-    @Override
-    @Schema(description = "The description for the Asset.", example = "A server handling e-mail.")
-    public String getDescription() {
-        return super.getDescription();
-    }
-
-    @Override
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceAssetDomains.class))
-    public Set<ModelObjectReference<Domain>> getDomains() {
-        return super.getDomains();
-    }
-
-    @Override
-    @Schema(description = "The links for the Asset.")
-    public Map<String, List<CustomLinkDto>> getLinks() {
-        return super.getLinks();
-    }
-
-    @Schema(description = "The customAspects for the Asset.")
-    @Override
-    public Map<String, CustomPropertiesDto> getCustomAspects() {
-        return super.getCustomAspects();
-    }
-
-    @Override
-    @Schema(implementation = ModelObjectReferenceAssetOwner.class)
-    public ModelObjectReference<Unit> getOwner() {
-        return super.getOwner();
-    }
-
 }

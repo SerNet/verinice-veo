@@ -60,8 +60,7 @@ public class UnitDto extends BaseModelObjectDto implements NameAbleDto {
     private String abbreviation;
 
     @Schema(description = "The description for the Unit.",
-            example = "This is currently the main and only unit for our organization.",
-            required = false)
+            example = "This is currently the main and only unit for our organization.")
     private String description;
 
     @com.fasterxml.jackson.annotation.JsonIgnore
@@ -74,7 +73,6 @@ public class UnitDto extends BaseModelObjectDto implements NameAbleDto {
     private ModelObjectReference<Unit> parent;
 
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceUnitDomains.class))
-
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {

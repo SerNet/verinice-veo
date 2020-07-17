@@ -16,14 +16,22 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessOwner;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Unit;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +47,36 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Process", description = "Schema for Process")
 public class ProcessDto extends EntityLayerSupertypeDto {
+    @Override
+    @Schema(description = "The name for the Process.", example = "Two-factor authentication")
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    @Schema(description = "The abbreviation for the Process.", example = "2FA")
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
+
+    @Override
+    @Schema(description = "The description for the Process.",
+            example = "Implement 2FA where possible.")
+    public String getDescription() {
+        return super.getDescription();
+    }
+
+    @Override
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceProcessDomains.class))
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
+
+    @Override
+    @Schema(implementation = ModelObjectReferenceProcessOwner.class)
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
 
     public static ProcessDto from(@Valid Process process, EntityToDtoContext tcontext) {
         return EntityToDtoTransformer.transformProcess2Dto(tcontext, process);

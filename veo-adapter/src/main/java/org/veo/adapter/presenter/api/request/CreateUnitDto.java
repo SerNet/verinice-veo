@@ -16,66 +16,18 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
-import java.util.Collections;
-import java.util.Set;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
 import org.veo.adapter.presenter.api.response.UnitDto;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Unit;
+import org.veo.core.entity.Key;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateUnitDto {
+public final class CreateUnitDto extends UnitDto {
 
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-             flags = Pattern.Flag.CASE_INSENSITIVE,
-             message = "ID for new objects must either be null or a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b")
-    private String id;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validFrom;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying the point in time when this version of the entity was superseded "
-            + "by a newer version or deleted. Empty if this is the current version.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validUntil;
-
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the unit.", example = "My unit", required = true)
-    private String name;
-
-    @Schema(description = "The abbreviation for the unit.", example = "U-96")
-    private String abbreviation;
-
-    @Schema(description = "The description for the unit.",
-            example = "This is currently the main and only unit for our organization.",
-            required = false)
-    private String description;
-
-    @Schema(description = "The units for the Unit.",
-            example = "Subunits of the Unit",
-            required = false)
-    private Set<UnitDto> units = Collections.emptySet();
-
-    @Schema(implementation = ModelObjectReferenceUnitParent.class)
-    private ModelObjectReference<Unit> parent;
-
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceUnitDomains.class))
-
-    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
-
+    public CreateUnitDto() {
+        super();
+        setId(Key.NIL_UUID.uuidValue());
+    }
 }

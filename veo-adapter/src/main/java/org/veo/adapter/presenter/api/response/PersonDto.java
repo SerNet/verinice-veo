@@ -16,14 +16,22 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferencePersonDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferencePersonOwner;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.Unit;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +47,37 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Person", description = "Schema for Person")
 public class PersonDto extends EntityLayerSupertypeDto {
+
+    @Override
+    @Schema(description = "The name for the Person.", example = "Mia Musterfrau")
+    public String getName() {
+        return super.getName();
+    }
+
+    @Override
+    @Schema(description = "The abbreviation for the Person.", example = "Mrs. M.M.")
+    public String getAbbreviation() {
+        return super.getAbbreviation();
+    }
+
+    @Override
+    @Schema(description = "The description for the Person.",
+            example = "Mia Musterfrau is a fictional character and is not related to any real person with that name.")
+    public String getDescription() {
+        return super.getDescription();
+    }
+
+    @Override
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferencePersonDomains.class))
+    public Set<ModelObjectReference<Domain>> getDomains() {
+        return super.getDomains();
+    }
+
+    @Override
+    @Schema(implementation = ModelObjectReferencePersonOwner.class)
+    public ModelObjectReference<Unit> getOwner() {
+        return super.getOwner();
+    }
 
     public static PersonDto from(@Valid Person person, EntityToDtoContext tcontext) {
         return EntityToDtoTransformer.transformPerson2Dto(tcontext, person);
