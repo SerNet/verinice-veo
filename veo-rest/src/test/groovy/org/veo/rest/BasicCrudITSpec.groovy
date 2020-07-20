@@ -94,8 +94,4 @@ class BasicCrudITSpec extends VeoMvcSpec {
         then:
         notThrown(Exception)
     }
-
-    def parseJson(ResultActions resultActions) {
-        new JsonSlurper().parseText(resultActions.andReturn().response.contentAsString)
-    }
 }

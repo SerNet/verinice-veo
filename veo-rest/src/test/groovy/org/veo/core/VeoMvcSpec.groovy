@@ -29,6 +29,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
+import groovy.json.JsonSlurper
+
 /**
  * Base class for veo specifications that use MockMvc
  */
@@ -91,5 +93,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         MvcResult asyncResult = asyncActions.andReturn()
         assert asyncResult.resolvedException == null
         asyncActions.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+    }
+
+    def parseJson(ResultActions resultActions) {
+        new JsonSlurper().parseText(resultActions.andReturn().response.contentAsString)
     }
 }
