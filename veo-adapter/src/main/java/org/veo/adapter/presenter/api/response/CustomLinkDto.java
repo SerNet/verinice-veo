@@ -28,7 +28,6 @@ import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkSource;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelObject;
@@ -64,18 +63,11 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameAbleDto {
     @ToString.Include
     @Schema(required = true, implementation = ModelObjectReferenceCustomLinkTarget.class)
     private ModelObjectReference<EntityLayerSupertype> target;
-    @ToString.Include
-    @NotNull(message = "A source must be present.")
-    @Schema(required = true,
-            implementation = ModelObjectReferenceCustomLinkSource.class,
-            example = "The source entity")
-    private ModelObjectReference<EntityLayerSupertype> source;
 
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
         list.addAll(getDomains());
         list.add(getTarget());
-        list.add(getSource());
         return list;
     }
 

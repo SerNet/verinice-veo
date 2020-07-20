@@ -561,17 +561,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                             test1:'value1',
                             test2:'value2'
                         ],
-                        source:
-                        [
-                            href: '/processs/'+createProcessResult.resourceId,
-                            displayName: 'test ddd'
-                        ],
                         target:
                         [
                             href: '/assets/'+createAssetResult.resourceId,
                             displayName: 'test ddd'
                         ]
-                    ] ]
+                    ]]
             ]
         ]
 
@@ -593,6 +588,49 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         linksOfExpectedType.size() == 1
         and: 'the expected link is present'
         linksOfExpectedType.first().name == 'test link prcess->asset'
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "post a process with link"() {
+        when:
+        def result = parseJson(post('/assets', [
+            name : 'My asset',
+            owner: [
+                href: '/units/'+unit.id.uuidValue()
+            ]
+        ]))
+        def assetId = result.resourceId
+        result = parseJson(post('/processes', [
+            name : 'My process',
+            owner: [
+                href: '/units/'+unit.id.uuidValue()
+            ],
+            links: [
+                'Process_depends_on_Asset': [
+                    [
+                        id    : '00000000-0000-0000-0000-000000000000',
+                        type  : 'Process_depends_on_Asset',
+                        name  : 'requires',
+                        target:
+                        [
+                            href: "/assets/$assetId"
+                        ]
+                    ]
+                ]
+            ]
+        ]))
+        def processId = result.resourceId
+        def process = txTemplate.execute{
+            processRepository.findById(Key.uuidFrom(processId))
+        }
+        then:
+        process.present
+        with(process.get().links) {
+            size() == 1
+            first().type == 'Process_depends_on_Asset'
+            first().name == 'requires'
+            first().target.id.uuidValue() == assetId
+        }
     }
 
     @WithUserDetails("user@domain.example")

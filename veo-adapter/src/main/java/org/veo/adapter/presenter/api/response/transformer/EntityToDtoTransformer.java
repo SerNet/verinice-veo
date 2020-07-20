@@ -516,9 +516,6 @@ public final class EntityToDtoTransformer {
         if (source.getTarget() != null) {
             target.setTarget(ModelObjectReference.from(source.getTarget()));
         }
-        if (source.getSource() != null) {
-            target.setSource(ModelObjectReference.from(source.getSource()));
-        }
 
         return target;
 
