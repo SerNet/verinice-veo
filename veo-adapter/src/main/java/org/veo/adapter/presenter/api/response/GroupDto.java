@@ -66,13 +66,9 @@ public class GroupDto extends EntityLayerSupertypeDto
     }
 
     @NotNull(message = "A type must be present.")
-    // TODO Add an example for the API documentation for field type in Asset.
-    @Schema(description = "The type for the group.",
-            example = "<add example here>",
-            required = true)
+    @Schema(description = "The type for the group.", required = true)
     private GroupType type;
 
-    // TODO Add an example for the API documentation for field domains in Asset.
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceAssetDomains.class))
     @Override
     public Set<ModelObjectReference<Domain>> getDomains() {
@@ -80,7 +76,6 @@ public class GroupDto extends EntityLayerSupertypeDto
     }
 
     @NotNull(message = "A owner must be present.")
-    // TODO Add an example for the API documentation for field owner in Asset.
     @Schema(required = true, implementation = ModelObjectReferenceAssetOwner.class)
     @Override
     public ModelObjectReference<Unit> getOwner() {
