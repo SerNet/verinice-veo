@@ -23,10 +23,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 
 /**
@@ -40,11 +40,11 @@ import org.veo.core.entity.Control;
 @Schema(title = "Control", description = "Schema for Control")
 public class ControlDto extends EntityLayerSupertypeDto {
 
-    public static ControlDto from(@Valid Control control, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformControl2Dto(tcontext, control);
+    public static ControlDto from(@Valid Control control, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformControl2Dto(tcontext, control);
     }
 
-    public Control toControl(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Control(tcontext, this);
+    public Control toControl(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Control(tcontext, this);
     }
 }

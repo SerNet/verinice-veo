@@ -34,10 +34,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
@@ -86,11 +86,11 @@ public class UnitDto extends BaseModelObjectDto implements NameAbleDto {
         return list;
     }
 
-    public static UnitDto from(@Valid Unit unit, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformUnit2Dto(tcontext, unit);
+    public static UnitDto from(@Valid Unit unit, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformUnit2Dto(tcontext, unit);
     }
 
-    public Unit toUnit(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Unit(tcontext, this);
+    public Unit toUnit(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Unit(tcontext, this);
     }
 }

@@ -53,8 +53,8 @@ import org.veo.adapter.presenter.api.io.mapper.CreateAssetOutputMapper;
 import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreateAssetDto;
 import org.veo.adapter.presenter.api.response.AssetDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -103,7 +103,7 @@ public class AssetController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
                                                required = false) String parentUuid) {
-        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getAssetsUseCase, new GetAssetsUseCase.InputData(
                 getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),
                                          entities -> entities.stream()
@@ -126,9 +126,9 @@ public class AssetController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
         return useCaseInteractor.execute(getAssetUseCase, new GetAssetUseCase.InputData(Key
                                                                                            .uuidFrom(id),
-                client), asset -> AssetDto.from(asset, DtoEntityToTargetContext.getCompleteTransformationContext()
-                                                                               .partialDomain()
-                                                                               .partialUnit()));
+                client), asset -> AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()
+                                                                         .partialDomain()
+                                                                         .partialUnit()));
     }
 
     @PostMapping()
@@ -138,7 +138,7 @@ public class AssetController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateAssetDto assetDto) {
         Client client = getAuthenticatedClient(auth);
-        DtoTargetToEntityContext tcontext = configureDtoContext(client, assetDto.getReferences());
+        DtoToEntityContext tcontext = configureDtoContext(client, assetDto.getReferences());
         return useCaseInteractor.execute(createAssetUseCase,
                                          CreateEntityInputMapper.map(client, assetDto.getOwner()
                                                                                      .getId(),
@@ -156,12 +156,12 @@ public class AssetController extends AbstractEntityController {
             @PathVariable String id, @Valid @NotNull @RequestBody AssetDto assetDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        DtoTargetToEntityContext tcontext = configureDtoContext(client, assetDto.getReferences());
+        DtoToEntityContext tcontext = configureDtoContext(client, assetDto.getReferences());
         return useCaseInteractor.execute(updateAssetUseCase,
                                          new ModifyEntityUseCase.InputData<Asset>(
                                                  assetDto.toAsset(tcontext), client),
                                          entity -> AssetDto.from(entity,
-                                                                 DtoEntityToTargetContext.getCompleteTransformationContext()));
+                                                                 EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

@@ -23,10 +23,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Person;
 
 /**
@@ -40,11 +40,11 @@ import org.veo.core.entity.Person;
 @Schema(title = "Person", description = "Schema for Person")
 public class PersonDto extends EntityLayerSupertypeDto {
 
-    public static PersonDto from(@Valid Person person, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformPerson2Dto(tcontext, person);
+    public static PersonDto from(@Valid Person person, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformPerson2Dto(tcontext, person);
     }
 
-    public Person toPerson(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Person(tcontext, this);
+    public Person toPerson(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Person(tcontext, this);
     }
 }

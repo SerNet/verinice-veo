@@ -56,8 +56,8 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper;
 import org.veo.adapter.presenter.api.request.CreateUnitDto;
 import org.veo.adapter.presenter.api.response.UnitDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -109,7 +109,7 @@ public class UnitController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
                                                required = false) String parentUuid) {
-        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
         return useCaseInteractor.execute(getUnitsUseCase,
                                          new GetUnitsUseCase.InputData(getAuthenticatedClient(auth),
@@ -134,7 +134,7 @@ public class UnitController extends AbstractEntityController {
 
         return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
                 Key.uuidFrom(id), getAuthenticatedClient(auth)), unit -> {
-                    DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
                     tcontext.partialDomain();
                     return UnitDto.from(unit, tcontext);
                 });
@@ -173,14 +173,14 @@ public class UnitController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id, @Valid @RequestBody UnitDto unitDto) {
 
-        DtoTargetToEntityContext tcontext = configureDtoContext(getAuthenticatedClient(auth),
-                                                                Collections.emptyList());
+        DtoToEntityContext tcontext = configureDtoContext(getAuthenticatedClient(auth),
+                                                          Collections.emptyList());
 
         return useCaseInteractor.execute(putUnitUseCase,
                                          new UpdateUnitUseCase.InputData(unitDto.toUnit(tcontext),
                                                  getAuthenticatedClient(auth)),
                                          unit -> UnitDto.from(unit,
-                                                              DtoEntityToTargetContext.getCompleteTransformationContext()));
+                                                              EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @Async

@@ -22,9 +22,9 @@ import org.veo.adapter.presenter.api.response.groups.AssetGroupDto
 import org.veo.adapter.presenter.api.response.groups.DocumentGroupDto
 import org.veo.adapter.presenter.api.response.groups.EntityLayerSupertypeGroupDto
 import org.veo.adapter.presenter.api.response.groups.ProcessGroupDto
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
 import org.veo.core.entity.*
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.DocumentGroup
@@ -67,16 +67,16 @@ class GroupDtoTransformerSpec extends Specification {
         assetGroup.setInstance(asset)
 
         when: "the group is transformed into a DTO"
-        def dto = EntityLayerSupertypeGroupDto.from(assetGroup, DtoEntityToTargetContext.completeTransformationContext)
+        def dto = EntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
 
         then: "The DTO contains all required data"
         dto.name == assetGroup.name
         dto.owner.displayName == unitName
 
         when: "the DTO is tranformed into the entity"
-        def context = DtoTargetToEntityContext.completeTransformationContext
+        def context = DtoToEntityContext.completeTransformationContext
         context.addEntity(unit)
-        def group = DtoTargetToEntityTransformer.transformDto2EntityLayerSupertype(context, dto)
+        def group = DtoToEntityTransformer.transformDto2EntityLayerSupertype(context, dto)
 
         then: "The Unit contains all required data"
         group.name == assetGroup.name
@@ -107,8 +107,8 @@ class GroupDtoTransformerSpec extends Specification {
 
 
         when: "the groups are transformed to DTOs"
-        AssetGroupDto ag = EntityLayerSupertypeGroupDto.from(assetGroup, DtoEntityToTargetContext.completeTransformationContext)
-        ProcessGroupDto pg =EntityLayerSupertypeGroupDto.from(processGroup, DtoEntityToTargetContext.completeTransformationContext)
+        AssetGroupDto ag = EntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
+        ProcessGroupDto pg =EntityLayerSupertypeGroupDto.from(processGroup, EntityToDtoContext.completeTransformationContext)
         then: "the two assets and the group are also transformed with members"
         ag.members.size()==2
         ag.members*.displayName as Set == [asset1.name, asset2.name] as Set
@@ -118,13 +118,13 @@ class GroupDtoTransformerSpec extends Specification {
 
 
         when: "the DTOs are transformed back into entities"
-        def context = DtoTargetToEntityContext.completeTransformationContext
+        def context = DtoToEntityContext.completeTransformationContext
         context.addEntity(asset)
         context.addEntity(asset1)
         context.addEntity(asset2)
         context.addEntity(process)
-        AssetGroup eag = DtoTargetToEntityTransformer.transformDto2EntityLayerSupertype(context, ag)
-        ProcessGroup epg = DtoTargetToEntityTransformer.transformDto2EntityLayerSupertype(context, pg)
+        AssetGroup eag = DtoToEntityTransformer.transformDto2EntityLayerSupertype(context, ag)
+        ProcessGroup epg = DtoToEntityTransformer.transformDto2EntityLayerSupertype(context, pg)
 
         then: "the two assets and the group are also transformed with members"
 
@@ -156,9 +156,9 @@ class GroupDtoTransformerSpec extends Specification {
         documentGroup3.setMembers([documentGroup1] as Set)
 
         and: "the groups are transformed"
-        DocumentGroupDto dtoDG1 = EntityLayerSupertypeGroupDto.from(documentGroup1, DtoEntityToTargetContext.completeTransformationContext)
-        DocumentGroupDto dtoDG2 = EntityLayerSupertypeGroupDto.from(documentGroup2, DtoEntityToTargetContext.completeTransformationContext)
-        DocumentGroupDto dtoDG3 = EntityLayerSupertypeGroupDto.from(documentGroup3, DtoEntityToTargetContext.completeTransformationContext)
+        DocumentGroupDto dtoDG1 = EntityLayerSupertypeGroupDto.from(documentGroup1, EntityToDtoContext.completeTransformationContext)
+        DocumentGroupDto dtoDG2 = EntityLayerSupertypeGroupDto.from(documentGroup2, EntityToDtoContext.completeTransformationContext)
+        DocumentGroupDto dtoDG3 = EntityLayerSupertypeGroupDto.from(documentGroup3, EntityToDtoContext.completeTransformationContext)
 
         then: "all members are set"
         dtoDG1.members == [
@@ -173,16 +173,16 @@ class GroupDtoTransformerSpec extends Specification {
 
 
         when: "A transformation context is prepared"
-        def transformationContext = DtoTargetToEntityContext.completeTransformationContext
+        def transformationContext = DtoToEntityContext.completeTransformationContext
         [
             documentGroup1,
             documentGroup2,
             documentGroup3
         ].forEach(transformationContext.&addEntity)
         and: "The DTOs are tranformed back"
-        DocumentGroup dG1 = DtoTargetToEntityTransformer.transformDto2EntityLayerSupertype(transformationContext, dtoDG1)
-        DocumentGroup dG2 = DtoTargetToEntityTransformer.transformDto2EntityLayerSupertype(transformationContext, dtoDG2)
-        DocumentGroup dG3 = DtoTargetToEntityTransformer.transformDto2EntityLayerSupertype(transformationContext, dtoDG3)
+        DocumentGroup dG1 = DtoToEntityTransformer.transformDto2EntityLayerSupertype(transformationContext, dtoDG1)
+        DocumentGroup dG2 = DtoToEntityTransformer.transformDto2EntityLayerSupertype(transformationContext, dtoDG2)
+        DocumentGroup dG3 = DtoToEntityTransformer.transformDto2EntityLayerSupertype(transformationContext, dtoDG3)
 
         then: "all members are set"
         dG1.members == [dG2] as Set
@@ -200,7 +200,7 @@ class GroupDtoTransformerSpec extends Specification {
 
         assetGroup.setMembers([assetGroup] as Set)
         when: "the group is transformed"
-        AssetGroupDto ag = EntityLayerSupertypeGroupDto.from(assetGroup, DtoEntityToTargetContext.completeTransformationContext)
+        AssetGroupDto ag = EntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
 
         then: "The group contains it self as it is not forbidden"
         ag.members == [

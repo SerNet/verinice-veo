@@ -29,10 +29,10 @@ import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
 
@@ -73,11 +73,11 @@ public class DomainDto extends BaseModelObjectDto implements NameAbleDto {
         return active;
     }
 
-    public static DomainDto from(@Valid Domain domain, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformDomain2Dto(tcontext, domain);
+    public static DomainDto from(@Valid Domain domain, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformDomain2Dto(tcontext, domain);
     }
 
-    public Domain toDomain(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Domain(tcontext, this);
+    public Domain toDomain(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Domain(tcontext, this);
     }
 }

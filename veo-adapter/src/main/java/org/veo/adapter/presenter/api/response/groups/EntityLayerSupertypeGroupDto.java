@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.impl.BaseModelGroup;
 
@@ -37,9 +37,9 @@ public interface EntityLayerSupertypeGroupDto<T extends ModelObject> {
     public abstract Collection<ModelObjectReference<? extends ModelObject>> getReferences();
 
     public static EntityLayerSupertypeGroupDto from(BaseModelGroup<?> group,
-            DtoEntityToTargetContext tcontext) {
-        return (EntityLayerSupertypeGroupDto) DtoEntityToTargetTransformer.transformEntityLayerSupertype2Dto(tcontext,
-                                                                                                             group);
+            EntityToDtoContext tcontext) {
+        return (EntityLayerSupertypeGroupDto) EntityToDtoTransformer.transformEntityLayerSupertype2Dto(tcontext,
+                                                                                                       group);
     }
 
 }

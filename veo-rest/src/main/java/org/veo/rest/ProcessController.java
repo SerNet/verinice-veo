@@ -50,8 +50,8 @@ import org.veo.adapter.presenter.api.io.mapper.CreateProcessOutputMapper;
 import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreateProcessDto;
 import org.veo.adapter.presenter.api.response.ProcessDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
@@ -111,7 +111,7 @@ public class ProcessController extends AbstractEntityController {
             @PathVariable String id) {
         return useCaseInteractor.execute(getProcessUseCase, new GetProcessUseCase.InputData(
                 Key.uuidFrom(id), getAuthenticatedClient(auth)), process -> {
-                    DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
                     tcontext.partialDomain()
                             .partialUnit();
                     return ProcessDto.from(process, tcontext);
@@ -125,7 +125,7 @@ public class ProcessController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateProcessDto dto) {
         Client client = getAuthenticatedClient(auth);
-        DtoTargetToEntityContext tcontext = configureDtoContext(client, dto.getReferences());
+        DtoToEntityContext tcontext = configureDtoContext(client, dto.getReferences());
         return useCaseInteractor.execute(createProcessUseCase,
                                          CreateEntityInputMapper.map(client, dto.getOwner()
                                                                                 .getId(),
@@ -146,11 +146,11 @@ public class ProcessController extends AbstractEntityController {
 
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        DtoTargetToEntityContext tcontext = configureDtoContext(client, processDto.getReferences());
+        DtoToEntityContext tcontext = configureDtoContext(client, processDto.getReferences());
         return useCaseInteractor.execute(updateProcessUseCase, new ModifyEntityUseCase.InputData<>(
                 processDto.toProcess(tcontext), getAuthenticatedClient(auth)),
                                          process -> ProcessDto.from(process,
-                                                                    DtoEntityToTargetContext.getCompleteTransformationContext()));
+                                                                    EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -173,7 +173,7 @@ public class ProcessController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
                                                required = false) String parentUuid) {
-        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
         return useCaseInteractor.execute(getProcessesUseCase, new GetProcessesUseCase.InputData(
                 getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),

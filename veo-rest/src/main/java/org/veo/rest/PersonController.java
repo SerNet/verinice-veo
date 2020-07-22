@@ -53,8 +53,8 @@ import org.veo.adapter.presenter.api.io.mapper.CreatePersonOutputMapper;
 import org.veo.adapter.presenter.api.process.CreateEntityInputMapper;
 import org.veo.adapter.presenter.api.request.CreatePersonDto;
 import org.veo.adapter.presenter.api.response.PersonDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
@@ -104,7 +104,7 @@ public class PersonController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
                                                required = false) String parentUuid) {
-        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext();
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getPersonsUseCase, new GetPersonsUseCase.InputData(
                 getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)),
                                          entities -> entities.stream()
@@ -128,9 +128,9 @@ public class PersonController extends AbstractEntityController {
 
         return useCaseInteractor.execute(getPersonUseCase, new GetPersonUseCase.InputData(Key
                                                                                              .uuidFrom(uuid),
-                client), person -> PersonDto.from(person, DtoEntityToTargetContext.getCompleteTransformationContext()
-                                                                                  .partialDomain()
-                                                                                  .partialUnit()));
+                client), person -> PersonDto.from(person, EntityToDtoContext.getCompleteTransformationContext()
+                                                                            .partialDomain()
+                                                                            .partialUnit()));
     }
 
     @PostMapping()
@@ -140,7 +140,7 @@ public class PersonController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreatePersonDto personDto) {
         Client client = getAuthenticatedClient(auth);
-        DtoTargetToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
+        DtoToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
         return useCaseInteractor.execute(createPersonUseCase,
                                          CreateEntityInputMapper.map(client, personDto.getOwner()
                                                                                       .getId(),
@@ -159,12 +159,12 @@ public class PersonController extends AbstractEntityController {
             @Valid @NotNull @RequestBody PersonDto personDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        DtoTargetToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
+        DtoToEntityContext tcontext = configureDtoContext(client, personDto.getReferences());
         return useCaseInteractor.execute(updatePersonUseCase,
                                          new ModifyEntityUseCase.InputData<>(
                                                  personDto.toPerson(tcontext), client),
                                          entity -> PersonDto.from(entity,
-                                                                  DtoEntityToTargetContext.getCompleteTransformationContext()));
+                                                                  EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

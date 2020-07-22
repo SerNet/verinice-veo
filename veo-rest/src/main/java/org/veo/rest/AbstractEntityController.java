@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
@@ -73,9 +73,9 @@ public class AbstractEntityController {
         return getClient(user.getClientId());
     }
 
-    protected DtoTargetToEntityContext configureDtoContext(Client client,
+    protected DtoToEntityContext configureDtoContext(Client client,
             Collection<ModelObjectReference<? extends ModelObject>> collection) {
-        DtoTargetToEntityContext tcontext = DtoTargetToEntityContext.getCompleteTransformationContext();
+        DtoToEntityContext tcontext = DtoToEntityContext.getCompleteTransformationContext();
 
         for (Domain d : client.getDomains()) {
             tcontext.addEntity(d);

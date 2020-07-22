@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.response.code
 import java.time.OffsetDateTime
 
 import org.veo.adapter.presenter.api.response.*
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.CustomProperties
@@ -53,10 +53,10 @@ class CustomLinkTransformerSpec extends Specification {
         cp.setProperty("my.key.2","my test value 2")
 
 
-        DtoTargetToEntityContext tcontext = DtoTargetToEntityContext.getCompleteTransformationContext()
+        DtoToEntityContext tcontext = DtoToEntityContext.getCompleteTransformationContext()
         tcontext.addEntity(person)
 
-        Asset assetData = AssetDto.from(asset, DtoEntityToTargetContext.getCompleteTransformationContext()).toAsset(tcontext)
+        Asset assetData = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)
 
         then: "The properties are also transformed"
         assetData.getLinks().size() == 1
@@ -71,10 +71,10 @@ class CustomLinkTransformerSpec extends Specification {
         cp.setProperty("my.key.3", 10)
 
 
-        tcontext = DtoTargetToEntityContext.getCompleteTransformationContext()
+        tcontext = DtoToEntityContext.getCompleteTransformationContext()
         tcontext.addEntity(person)
 
-        Asset savedAsset = AssetDto.from(asset, DtoEntityToTargetContext.getCompleteTransformationContext()).toAsset(tcontext)
+        Asset savedAsset = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)
         CustomProperties savedCp = savedAsset.getLinks().first()
 
         then: "numbers also"
@@ -86,10 +86,10 @@ class CustomLinkTransformerSpec extends Specification {
         cp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00.000Z"))
 
 
-        tcontext = DtoTargetToEntityContext.getCompleteTransformationContext()
+        tcontext = DtoToEntityContext.getCompleteTransformationContext()
         tcontext.addEntity(person)
 
-        savedAsset = AssetDto.from(asset, DtoEntityToTargetContext.getCompleteTransformationContext()).toAsset(tcontext)
+        savedAsset = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)
         savedCp = savedAsset.getLinks().first()
 
         then: "date also"

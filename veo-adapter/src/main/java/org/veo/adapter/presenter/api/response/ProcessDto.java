@@ -23,10 +23,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Process;
 
 /**
@@ -40,11 +40,11 @@ import org.veo.core.entity.Process;
 @Schema(title = "Process", description = "Schema for Process")
 public class ProcessDto extends EntityLayerSupertypeDto {
 
-    public static ProcessDto from(@Valid Process process, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformProcess2Dto(tcontext, process);
+    public static ProcessDto from(@Valid Process process, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformProcess2Dto(tcontext, process);
     }
 
-    public Process toProcess(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Process(tcontext, this);
+    public Process toProcess(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Process(tcontext, this);
     }
 }

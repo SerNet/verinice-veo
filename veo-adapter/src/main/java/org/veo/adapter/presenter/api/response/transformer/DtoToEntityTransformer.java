@@ -75,14 +75,13 @@ import org.veo.core.entity.transform.ClassKey;
 import org.veo.core.entity.transform.TransformTargetToEntityMethod;
 
 /**
- * A collection of transform functions to transform entities to Dto back and
- * forth.
+ * A collection of transform functions to transform DTOs to entities.
  */
-public final class DtoTargetToEntityTransformer {
+public final class DtoToEntityTransformer {
 
     // EntityLayerSupertypeDto->EntityLayerSupertype
     public static EntityLayerSupertype transformDto2EntityLayerSupertype(
-            DtoTargetToEntityContext tcontext, EntityLayerSupertypeDto source) {
+            DtoToEntityContext tcontext, EntityLayerSupertypeDto source) {
         EntityLayerSupertypeDto src = source;
 
         if (src instanceof PersonDto) {
@@ -105,7 +104,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // PersonDto->Person
-    public static Person transformDto2Person(DtoTargetToEntityContext tcontext, PersonDto source) {
+    public static Person transformDto2Person(DtoToEntityContext tcontext, PersonDto source) {
         if (source instanceof EntityLayerSupertypeGroupDto<?>) {
             return transformDto2PersonGroup(tcontext, (PersonGroupDto) source);
         }
@@ -139,7 +138,7 @@ public final class DtoTargetToEntityTransformer {
         return target;
     }
 
-    public static PersonGroup transformDto2PersonGroup(DtoTargetToEntityContext tcontext,
+    public static PersonGroup transformDto2PersonGroup(DtoToEntityContext tcontext,
             PersonGroupDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(PersonGroupDto.class, key);
@@ -175,7 +174,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // AssetDto->Asset
-    public static Asset transformDto2Asset(DtoTargetToEntityContext tcontext, AssetDto source) {
+    public static Asset transformDto2Asset(DtoToEntityContext tcontext, AssetDto source) {
         if (source instanceof EntityLayerSupertypeGroupDto<?>) {
             return transformDto2AssetGroup(tcontext, (AssetGroupDto) source);
         }
@@ -209,7 +208,7 @@ public final class DtoTargetToEntityTransformer {
         return target;
     }
 
-    public static AssetGroup transformDto2AssetGroup(DtoTargetToEntityContext tcontext,
+    public static AssetGroup transformDto2AssetGroup(DtoToEntityContext tcontext,
             AssetGroupDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(AssetGroupDto.class, key);
@@ -245,8 +244,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // ProcessDto->Process
-    public static Process transformDto2Process(DtoTargetToEntityContext tcontext,
-            ProcessDto source) {
+    public static Process transformDto2Process(DtoToEntityContext tcontext, ProcessDto source) {
         if (source instanceof EntityLayerSupertypeGroupDto<?>) {
             return transformDto2ProcessGroup(tcontext, (ProcessGroupDto) source);
         }
@@ -280,7 +278,7 @@ public final class DtoTargetToEntityTransformer {
         return target;
     }
 
-    public static ProcessGroup transformDto2ProcessGroup(DtoTargetToEntityContext tcontext,
+    public static ProcessGroup transformDto2ProcessGroup(DtoToEntityContext tcontext,
             ProcessGroupDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(ProcessGroupDto.class, key);
@@ -316,8 +314,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // DocumentDto->Document
-    public static Document transformDto2Document(DtoTargetToEntityContext tcontext,
-            DocumentDto source) {
+    public static Document transformDto2Document(DtoToEntityContext tcontext, DocumentDto source) {
         if (source instanceof EntityLayerSupertypeGroupDto<?>) {
             return transformDto2DocumentGroup(tcontext, (DocumentGroupDto) source);
         }
@@ -351,7 +348,7 @@ public final class DtoTargetToEntityTransformer {
         return target;
     }
 
-    public static DocumentGroup transformDto2DocumentGroup(DtoTargetToEntityContext tcontext,
+    public static DocumentGroup transformDto2DocumentGroup(DtoToEntityContext tcontext,
             DocumentGroupDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(DocumentGroupDto.class, key);
@@ -387,8 +384,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // ControlDto->Control
-    public static Control transformDto2Control(DtoTargetToEntityContext tcontext,
-            ControlDto source) {
+    public static Control transformDto2Control(DtoToEntityContext tcontext, ControlDto source) {
         if (source instanceof EntityLayerSupertypeGroupDto<?>) {
             return transformDto2ControlGroup(tcontext, (ControlGroupDto) source);
         }
@@ -422,7 +418,7 @@ public final class DtoTargetToEntityTransformer {
         return target;
     }
 
-    public static ControlGroup transformDto2ControlGroup(DtoTargetToEntityContext tcontext,
+    public static ControlGroup transformDto2ControlGroup(DtoToEntityContext tcontext,
             ControlGroupDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(ControlGroupDto.class, key);
@@ -458,7 +454,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // ClientDto->Client
-    public static Client transformDto2Client(DtoTargetToEntityContext tcontext, ClientDto source) {
+    public static Client transformDto2Client(DtoToEntityContext tcontext, ClientDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Client.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
@@ -486,7 +482,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // DomainDto->Domain
-    public static Domain transformDto2Domain(DtoTargetToEntityContext tcontext, DomainDto source) {
+    public static Domain transformDto2Domain(DtoToEntityContext tcontext, DomainDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Domain.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
@@ -506,7 +502,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // UnitDto->Unit
-    public static Unit transformDto2Unit(DtoTargetToEntityContext tcontext, UnitDto source) {
+    public static Unit transformDto2Unit(DtoToEntityContext tcontext, UnitDto source) {
         Key<UUID> key = Key.uuidFrom(source.getId());
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Unit.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
@@ -547,7 +543,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // CustomLinkDto->CustomLink
-    public static CustomLink transformDto2CustomLink(DtoTargetToEntityContext tcontext,
+    public static CustomLink transformDto2CustomLink(DtoToEntityContext tcontext,
             CustomLinkDto source) {
 
         Key<UUID> key = source.getId()
@@ -587,7 +583,7 @@ public final class DtoTargetToEntityTransformer {
     }
 
     // CustomPropertiesDto->CustomProperties
-    public static CustomProperties transformDto2CustomProperties(DtoTargetToEntityContext tcontext,
+    public static CustomProperties transformDto2CustomProperties(DtoToEntityContext tcontext,
             CustomPropertiesDto source) {
 
         Key<UUID> key = source.getId()
@@ -630,8 +626,8 @@ public final class DtoTargetToEntityTransformer {
     }
 
     private static <TIn, TOut extends ModelObject> Set<TOut> map(Set<TIn> source,
-            DtoTargetToEntityContext tContext,
-            TransformTargetToEntityMethod<TIn, TOut, DtoTargetToEntityContext> mapper) {
+            DtoToEntityContext tContext,
+            TransformTargetToEntityMethod<TIn, TOut, DtoToEntityContext> mapper) {
         if (mapper != null) {
             return source.stream()
                          .map(e -> mapper.map(tContext, e))
@@ -644,6 +640,6 @@ public final class DtoTargetToEntityTransformer {
         return new PropertyTransformer();
     }
 
-    private DtoTargetToEntityTransformer() {
+    private DtoToEntityTransformer() {
     }
 }

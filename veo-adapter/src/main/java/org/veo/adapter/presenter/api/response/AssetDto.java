@@ -23,10 +23,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 
 /**
@@ -40,11 +40,11 @@ import org.veo.core.entity.Asset;
 @Schema(title = "Asset", description = "Schema for Asset")
 public class AssetDto extends EntityLayerSupertypeDto {
 
-    public static AssetDto from(@Valid Asset asset, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformAsset2Dto(tcontext, asset);
+    public static AssetDto from(@Valid Asset asset, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformAsset2Dto(tcontext, asset);
     }
 
-    public Asset toAsset(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Asset(tcontext, this);
+    public Asset toAsset(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Asset(tcontext, this);
     }
 }

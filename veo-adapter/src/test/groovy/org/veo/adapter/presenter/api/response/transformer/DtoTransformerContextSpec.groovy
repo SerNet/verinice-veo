@@ -67,7 +67,7 @@ class DtoTransformerContextSpec extends Specification {
 
         Person person = new PersonImpl(Key.newUuid(), "new person", unit)
 
-        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext()
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext()
         tcontext.partialUnit()
 
         when: "the person is transformed into a DTO"
@@ -89,7 +89,7 @@ class DtoTransformerContextSpec extends Specification {
         Asset asset = new AssetImpl(Key.newUuid(), "new Asset", unit)
 
 
-        DtoEntityToTargetContext tcontext = DtoEntityToTargetContext.getCompleteTransformationContext()
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext()
         tcontext.partialUnit()
 
         when: "the person is transformed into a DTO"
@@ -120,7 +120,7 @@ class DtoTransformerContextSpec extends Specification {
 
         when: "the document is transformed into a DTO"
 
-        DocumentDto docDto = DocumentDto.from(doc, DtoEntityToTargetContext.getCompleteTransformationContext())
+        DocumentDto docDto = DocumentDto.from(doc, EntityToDtoContext.getCompleteTransformationContext())
 
         then: "Test the Dto"
         docDto.id == doc.id.uuidValue()
@@ -132,7 +132,7 @@ class DtoTransformerContextSpec extends Specification {
 
         Unit replacementUnit = new UnitImpl(Key.uuidFrom(unitId), "replaced unit", null)
 
-        DtoTargetToEntityContext tcontext = DtoTargetToEntityContext.getCompleteTransformationContext()
+        DtoToEntityContext tcontext = DtoToEntityContext.getCompleteTransformationContext()
         tcontext.addEntity(replacementUnit)
 
         doc = docDto.toDocument(tcontext)

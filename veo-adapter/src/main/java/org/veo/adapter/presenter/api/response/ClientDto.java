@@ -30,10 +30,10 @@ import lombok.ToString;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ModelObject;
 
@@ -62,11 +62,11 @@ public class ClientDto extends BaseModelObjectDto {
         return list;
     }
 
-    public static ClientDto from(@Valid Client client, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformClient2Dto(tcontext, client);
+    public static ClientDto from(@Valid Client client, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformClient2Dto(tcontext, client);
     }
 
-    public Client toClient(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Client(tcontext, this);
+    public Client toClient(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Client(tcontext, this);
     }
 }

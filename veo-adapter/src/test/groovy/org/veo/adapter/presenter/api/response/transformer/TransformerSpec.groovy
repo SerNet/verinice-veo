@@ -67,7 +67,7 @@ class TransformerSpec extends Specification {
         def unit = createUnit()
 
         when: "the parent unit is transformed into a DTO"
-        def unitDto = UnitDto.from(unit, DtoEntityToTargetContext.getCompleteTransformationContext())
+        def unitDto = UnitDto.from(unit, EntityToDtoContext.getCompleteTransformationContext())
 
         then: "The DTO contains all required data"
         unitDto.name == "Test unit"
@@ -84,7 +84,7 @@ class TransformerSpec extends Specification {
         def unitDto = createUnitDto()
 
         when: "The parent unit DTO is transformed into a unit"
-        def unit = unitDto.toUnit(DtoTargetToEntityContext.getCompleteTransformationContext())
+        def unit = unitDto.toUnit(DtoToEntityContext.getCompleteTransformationContext())
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId
@@ -109,7 +109,7 @@ class TransformerSpec extends Specification {
         client.setUnits([unit] as Set)
 
         when: "the client is transformed into a DTO"
-        def clientDto = ClientDto.from(client, DtoEntityToTargetContext.getCompleteTransformationContext())
+        def clientDto = ClientDto.from(client, EntityToDtoContext.getCompleteTransformationContext())
 
         then: "The DTO contains all required data"
         unit.id.uuidValue() == unitId
@@ -138,7 +138,7 @@ class TransformerSpec extends Specification {
         clientDto.setDomains([domainDto] as Set)
 
         when: "the DTO is transformed into a Client"
-        def client = clientDto.toClient(DtoTargetToEntityContext.getCompleteTransformationContext())
+        def client = clientDto.toClient(DtoToEntityContext.getCompleteTransformationContext())
 
         then: "the client contains all relevant fields"
         client.id.uuidValue() == clientId

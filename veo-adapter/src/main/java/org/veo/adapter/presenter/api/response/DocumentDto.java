@@ -22,10 +22,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoEntityToTargetTransformer;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoTargetToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
 
 /**
@@ -38,11 +38,11 @@ import org.veo.core.entity.Document;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DocumentDto extends EntityLayerSupertypeDto {
 
-    public static DocumentDto from(@Valid Document document, DtoEntityToTargetContext tcontext) {
-        return DtoEntityToTargetTransformer.transformDocument2Dto(tcontext, document);
+    public static DocumentDto from(@Valid Document document, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformDocument2Dto(tcontext, document);
     }
 
-    public Document toDocument(DtoTargetToEntityContext tcontext) {
-        return DtoTargetToEntityTransformer.transformDto2Document(tcontext, this);
+    public Document toDocument(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Document(tcontext, this);
     }
 }
