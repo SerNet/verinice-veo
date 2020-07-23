@@ -135,7 +135,6 @@ public class UnitController extends AbstractEntityController {
         return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
                 Key.uuidFrom(id), getAuthenticatedClient(auth)), unit -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-                    tcontext.partialDomain();
                     return UnitDto.from(unit, tcontext);
                 });
     }

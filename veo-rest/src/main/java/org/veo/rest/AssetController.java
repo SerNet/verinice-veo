@@ -126,9 +126,7 @@ public class AssetController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
         return useCaseInteractor.execute(getAssetUseCase, new GetAssetUseCase.InputData(Key
                                                                                            .uuidFrom(id),
-                client), asset -> AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()
-                                                                         .partialDomain()
-                                                                         .partialUnit()));
+                client), asset -> AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @PostMapping()

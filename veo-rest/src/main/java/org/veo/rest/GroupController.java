@@ -157,9 +157,7 @@ public class GroupController extends AbstractEntityController {
                                          new GetGroupUseCase.InputData(Key.uuidFrom(uuid), type,
                                                  client),
                                          group -> EntityLayerSupertypeGroupDto.from(group,
-                                                                                    EntityToDtoContext.getCompleteTransformationContext()
-                                                                                                      .partialDomain()
-                                                                                                      .partialUnit()));
+                                                                                    EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
@@ -178,9 +176,7 @@ public class GroupController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
         return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), group -> {
-                    var tContext = EntityToDtoContext.getCompleteTransformationContext()
-                                                     .partialDomain()
-                                                     .partialUnit();
+                    var tContext = EntityToDtoContext.getCompleteTransformationContext();
                     return group.getMembers()
                                 .stream()
                                 .map(member -> EntityToDtoTransformer.transformEntityLayerSupertype2Dto(tContext,
@@ -226,8 +222,6 @@ public class GroupController extends AbstractEntityController {
                                                                                                       dtoClass);
         DtoToEntityContext fromDtoContext = configureDtoContext(client, groupDto.getReferences());
         EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext();
-        fromDtoContext.partialDomain()
-                      .partialUnit();
         BaseModelGroup<?> group = (BaseModelGroup<?>) DtoToEntityTransformer.transformDto2EntityLayerSupertype(fromDtoContext,
                                                                                                                (EntityLayerSupertypeDto) groupDto);
         return useCaseInteractor.execute(putGroupUseCase, new UpdateGroupUseCase.InputData(group,

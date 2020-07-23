@@ -128,9 +128,7 @@ public class ControlController extends AbstractEntityController {
 
         return useCaseInteractor.execute(getControlUseCase, new GetControlUseCase.InputData(Key
                                                                                                .uuidFrom(uuid),
-                client), control -> ControlDto.from(control, EntityToDtoContext.getCompleteTransformationContext()
-                                                                               .partialDomain()
-                                                                               .partialUnit()));
+                client), control -> ControlDto.from(control, EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @PostMapping()

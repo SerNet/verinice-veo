@@ -112,8 +112,6 @@ public class ProcessController extends AbstractEntityController {
         return useCaseInteractor.execute(getProcessUseCase, new GetProcessUseCase.InputData(
                 Key.uuidFrom(id), getAuthenticatedClient(auth)), process -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-                    tcontext.partialDomain()
-                            .partialUnit();
                     return ProcessDto.from(process, tcontext);
                 });
     }

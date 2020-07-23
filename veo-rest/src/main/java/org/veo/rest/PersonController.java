@@ -128,9 +128,7 @@ public class PersonController extends AbstractEntityController {
 
         return useCaseInteractor.execute(getPersonUseCase, new GetPersonUseCase.InputData(Key
                                                                                              .uuidFrom(uuid),
-                client), person -> PersonDto.from(person, EntityToDtoContext.getCompleteTransformationContext()
-                                                                            .partialDomain()
-                                                                            .partialUnit()));
+                client), person -> PersonDto.from(person, EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @PostMapping()

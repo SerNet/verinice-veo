@@ -61,56 +61,6 @@ class DtoTransformerContextSpec extends Specification {
         return unitDto
     }
 
-    def "Transform Person to PersonDto with unit partial"() {
-        given: "A person in a unit"
-        Unit unit = createUnit()
-
-        Person person = new PersonImpl(Key.newUuid(), "new person", unit)
-
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext()
-        tcontext.partialUnit()
-
-        when: "the person is transformed into a DTO"
-        PersonDto personDto = PersonDto.from(person, tcontext)
-
-        then: "The the unit has only attributes"
-        personDto.name == "new person"
-        personDto.owner.id == unitId
-        personDto.owner.displayName == unitName
-        personDto.owner.type == Unit.class
-    }
-
-    def "Transform several to Dto with unit partial"() {
-        given: "A person in a unit"
-        Unit unit = createUnit()
-
-        Person person = new PersonImpl(Key.newUuid(), "new person", unit)
-
-        Asset asset = new AssetImpl(Key.newUuid(), "new Asset", unit)
-
-
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext()
-        tcontext.partialUnit()
-
-        when: "the person is transformed into a DTO"
-        PersonDto personDto = PersonDto.from(person, tcontext)
-
-        then: "The the unit has only attributes"
-        personDto.name == "new person"
-        personDto.owner.id == unitId
-        personDto.owner.displayName == unitName
-        personDto.owner.type == Unit.class
-
-        when: "the asset is transformed into a DTO"
-        AssetDto assetDto = AssetDto.from(asset, tcontext)
-
-        then: "The the unit has only attributes"
-        assetDto.name == "new Asset"
-        assetDto.owner.id == unitId
-        assetDto.owner.displayName == unitName
-        assetDto.owner.type == Unit.class
-    }
-
     def "Transform DocumentDto to document with unit recplaced by context"() {
         given: "A person in a unit"
         Unit unit = createUnit()
