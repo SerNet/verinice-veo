@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
@@ -121,17 +122,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getPersonDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getPersonLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getPersonCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getPersonOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
 
@@ -152,17 +149,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getPersonDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getPersonLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getPersonCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getPersonOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
         target.setMembers(source.getMembers()
@@ -191,17 +184,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getAssetDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getAssetLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getAssetCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getAssetOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
 
@@ -222,17 +211,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getAssetDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getAssetLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getAssetCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getAssetOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
         target.setMembers(source.getMembers()
@@ -261,17 +246,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getProcessDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getProcessLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getProcessCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getProcessOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
 
@@ -292,17 +273,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getProcessDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getProcessLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getProcessCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getProcessOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
         target.setMembers(source.getMembers()
@@ -331,17 +308,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getDocumentDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getDocumentLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getDocumentCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getDocumentOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
 
@@ -362,17 +335,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getDocumentDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getDocumentLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e1 -> ModelObjectReference.mapToEntity(context, e1)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getDocumentCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getDocumentOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
         target.setMembers(source.getMembers()
@@ -401,17 +370,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getControlDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getControlLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getControlCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getControlOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
 
@@ -432,17 +397,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         mapProperties(source, target);
         context.put(classKey, target);
-        if (tcontext.getControlDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        target.setLinks(map(source.getLinks(), tcontext, tcontext.getControlLinksFunction()));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        target.setLinks(map(source.getLinks(), tcontext,
+                            DtoToEntityTransformer::transformDto2CustomLink));
         target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    tcontext.getControlCustomAspectsFunction()));
-        if (source.getOwner() != null && tcontext.getControlOwnerFunction() != null) {
+                                    DtoToEntityTransformer::transformDto2CustomProperties));
+        if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.mapToEntity(context, source.getOwner()));
         }
         target.setMembers(source.getMembers()
@@ -468,15 +429,10 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target, key);
         target.setName(source.getName());
         context.put(classKey, target);
-        if (tcontext.getClientUnitsFunction() != null) {
-            Set<Unit> units = source.getUnits()
-                                    .stream()
-                                    .map(e -> tcontext.getClientUnitsFunction()
-                                                      .map(tcontext, e))
-                                    .collect(Collectors.toSet());
-            target.setUnits(units);
-        }
-        target.setDomains(map(source.getDomains(), tcontext, tcontext.getClientDomainsFunction()));
+        Set<Unit> units = map(source.getUnits(), e -> transformDto2Unit(tcontext, e));
+        target.setUnits(units);
+        target.setDomains(map(source.getDomains(), tcontext,
+                              DtoToEntityTransformer::transformDto2Domain));
 
         return target;
     }
@@ -517,25 +473,13 @@ public final class DtoToEntityTransformer {
         mapProperties(source, target);
         context.put(classKey, target);
 
-        if (tcontext.getUnitUnitsFunction() != null) {
-            Set<Unit> units = source.getUnits()
-                                    .stream()
-                                    .map(e -> tcontext.getUnitUnitsFunction()
-                                                      .map(tcontext, e))
-                                    .collect(Collectors.toSet());
-            target.setUnits(units);
-        }
-        if (tcontext.getUnitDomainsFunction() != null) {
-            Set<Domain> domains = source.getDomains()
-                                        .stream()
-                                        .map(e -> ModelObjectReference.mapToEntity(context, e))
-                                        .collect(Collectors.toSet());
-            target.setDomains(domains);
-        }
-        if (source.getClient() != null && tcontext.getUnitClientFunction() != null) {
+        target.setUnits(map(source.getUnits(), e -> transformDto2Unit(tcontext, e)));
+        target.setDomains(map(source.getDomains(),
+                              e -> ModelObjectReference.mapToEntity(context, e)));
+        if (source.getClient() != null) {
             target.setClient(ModelObjectReference.mapToEntity(context, source.getClient()));
         }
-        if (source.getParent() != null && tcontext.getUnitParentFunction() != null) {
+        if (source.getParent() != null) {
             target.setParent(ModelObjectReference.mapToEntity(context, source.getParent()));
         }
 
@@ -561,10 +505,10 @@ public final class DtoToEntityTransformer {
 
         EntityLayerSupertype linkSource = null;
         EntityLayerSupertype linkTarget = null;
-        if (source.getTarget() != null && tcontext.getCustomLinkTargetFunction() != null) {
+        if (source.getTarget() != null) {
             linkTarget = ModelObjectReference.mapToEntity(context, source.getTarget());
         }
-        if (source.getSource() != null && tcontext.getCustomLinkSourceFunction() != null) {
+        if (source.getSource() != null) {
             linkSource = ModelObjectReference.mapToEntity(context, source.getSource());
         }
 
@@ -629,11 +573,15 @@ public final class DtoToEntityTransformer {
             DtoToEntityContext tContext,
             TransformTargetToEntityMethod<TIn, TOut, DtoToEntityContext> mapper) {
         if (mapper != null) {
-            return source.stream()
-                         .map(e -> mapper.map(tContext, e))
-                         .collect(Collectors.toSet());
+            return map(source, e -> mapper.map(tContext, e));
         }
         return new HashSet<>();
+    }
+
+    private static <TIn, TOut> Set<TOut> map(Set<TIn> input, Function<TIn, TOut> mapper) {
+        return input.stream()
+                    .map(mapper)
+                    .collect(Collectors.toSet());
     }
 
     private static PropertyTransformer getPropertyTransformer() {
