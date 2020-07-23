@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -61,7 +60,6 @@ import org.veo.core.entity.groups.DocumentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.core.entity.transform.ClassKey;
-import org.veo.core.entity.transform.TransformEntityToTargetMethod;
 
 /**
  * A collection of transform functions to transform entities to DTOs.
@@ -108,10 +106,9 @@ public final class EntityToDtoTransformer {
         context.put(classKey, target);
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -144,10 +141,9 @@ public final class EntityToDtoTransformer {
         }
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -173,10 +169,9 @@ public final class EntityToDtoTransformer {
         context.put(classKey, target);
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -208,10 +203,9 @@ public final class EntityToDtoTransformer {
         }
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -237,10 +231,9 @@ public final class EntityToDtoTransformer {
         context.put(classKey, target);
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -273,10 +266,9 @@ public final class EntityToDtoTransformer {
         }
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -302,10 +294,9 @@ public final class EntityToDtoTransformer {
         context.put(classKey, target);
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -338,10 +329,9 @@ public final class EntityToDtoTransformer {
         }
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -367,10 +357,9 @@ public final class EntityToDtoTransformer {
         context.put(classKey, target);
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -403,10 +392,9 @@ public final class EntityToDtoTransformer {
         }
 
         target.setDomains(map(source.getDomains(), ModelObjectReference::from));
-        target.setLinks(map(source.getLinks(), tcontext,
-                            EntityToDtoTransformer::transformCustomLink2Dto));
-        target.setCustomAspects(map(source.getCustomAspects(), tcontext,
-                                    EntityToDtoTransformer::transformCustomProperties2Dto));
+        target.setLinks(map(source.getLinks(), e -> transformCustomLink2Dto(tcontext, e)));
+        target.setCustomAspects(map(source.getCustomAspects(),
+                                    e -> transformCustomProperties2Dto(tcontext, e)));
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner()));
@@ -438,8 +426,7 @@ public final class EntityToDtoTransformer {
         Set<UnitDto> units = map(source.getUnits(), e -> transformUnit2Dto(tcontext, e));
         target.setUnits(units);
 
-        target.setDomains(map(source.getDomains(), tcontext,
-                              EntityToDtoTransformer::transformDomain2Dto));
+        target.setDomains(map(source.getDomains(), e -> transformDomain2Dto(tcontext, e)));
 
         return target;
     }
@@ -574,15 +561,6 @@ public final class EntityToDtoTransformer {
         target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
         // target.setValidUntil(source.getValidUntil().toString());
-    }
-
-    private static <TIn extends ModelObject, TOut> Set<TOut> map(Set<TIn> source,
-            EntityToDtoContext tContext,
-            TransformEntityToTargetMethod<TIn, TOut, EntityToDtoContext> mapper) {
-        if (mapper != null) {
-            return map(source, e -> mapper.map(tContext, e));
-        }
-        return new HashSet<>();
     }
 
     private static <TIn, TOut> Set<TOut> map(Set<TIn> input, Function<TIn, TOut> mapper) {
