@@ -18,6 +18,10 @@ package org.veo.adapter.presenter.api.response;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +32,10 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -69,15 +77,11 @@ public class EntityLayerSupertypeDto extends BaseModelObjectDto implements NameA
     @Valid
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
-    @Schema(name = "links",
-            description = "Custom relations which do not affect the behavior.",
-            title = "CustomLink")
+    @JsonIgnore
     @Valid
     private Set<CustomLinkDto> links = Collections.emptySet();
 
-    @Schema(description = "A custom property which is determined by the requested entity schema - see '/schemas'",
-            name = "customAspects",
-            title = "CustomAspect")
+    @JsonIgnore
     @Valid
     private Set<CustomPropertiesDto> customAspects = Collections.emptySet();
 
@@ -90,6 +94,49 @@ public class EntityLayerSupertypeDto extends BaseModelObjectDto implements NameA
                              getLinks().stream()
                                        .map(CustomLinkDto::getTarget))
                      .collect(Collectors.toList());
+    }
+
+    @Schema(description = "A custom property which is determined by the requested entity schema - see '/schemas'",
+            name = "customAspects",
+            required = false,
+            title = "CustomAspect")
+    @JsonProperty("customAspects")
+    public Map<String, CustomPropertiesDto> getCustomAspectsIntern() {
+        Map<String, List<CustomPropertiesDto>> collect = getCustomAspects().stream()
+                                                                           .collect(Collectors.groupingBy(cp -> cp.getType()));
+        Map<String, CustomPropertiesDto> r = new HashMap<>(collect.size());
+        for (Entry<String, List<CustomPropertiesDto>> e : collect.entrySet()) {
+            List<CustomPropertiesDto> value = e.getValue();
+            if (value.size() != 1) {
+                throw new IllegalArgumentException("wrong");
+            }
+            r.put(e.getKey(), value.get(0));
+        }
+        return r;
+    }
+
+    public void setCustomAspectsIntern(Map<String, CustomPropertiesDto> customAspects) {
+        setCustomAspects(customAspects.entrySet()
+                                      .stream()
+                                      .map(Entry<String, CustomPropertiesDto>::getValue)
+                                      .collect(Collectors.toSet()));
+    }
+
+    @Schema(name = "links",
+            description = "Custom relations which do not affect the behavior.",
+            required = false,
+            title = "CustomLink")
+    @JsonProperty("links")
+    public Map<String, List<CustomLinkDto>> getCustomLinks() {
+        return getLinks().stream()
+                         .collect(Collectors.groupingBy(l -> l.getType()));
+    }
+
+    public void setCustomLinks(Map<String, List<CustomLinkDto>> links) {
+        setLinks((links.entrySet()
+                       .stream()
+                       .flatMap(e -> e.getValue()
+                                      .stream())).collect(Collectors.toSet()));
     }
 
 }

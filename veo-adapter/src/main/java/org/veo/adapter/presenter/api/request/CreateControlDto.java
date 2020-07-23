@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.request;
 
+import java.util.Map;
 import java.util.Set;
 
 import lombok.Data;
@@ -75,8 +76,8 @@ public final class CreateControlDto extends ControlDto {
 
     @Schema(description = "The customAspects for the Control.")
     @Override
-    public Set<CustomPropertiesDto> getCustomAspects() {
-        return super.getCustomAspects();
+    public Map<String, CustomPropertiesDto> getCustomAspectsIntern() {
+        return super.getCustomAspectsIntern();
     }
 
     @Override

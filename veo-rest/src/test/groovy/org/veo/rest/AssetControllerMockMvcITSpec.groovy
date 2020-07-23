@@ -151,7 +151,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result == [
             abbreviation:null,
             customAspects:[
-                [
+                simpleAspect:[
                     applicableTo:[],
                     attributes:[
                         simpleProp:'simpleValue'
@@ -168,7 +168,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             description:null,
             domains:[],
             id: asset.id.uuidValue(),
-            links:[],
+            links:[:],
             name:'Test asset-1',
             owner:[
                 displayName:'Test unit',
@@ -340,6 +340,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ], customAspects:
             [
+                'my.aspect-test' :
                 [
                     id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
