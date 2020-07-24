@@ -39,9 +39,11 @@ public class CustomPropertiesData extends BaseModelObjectData {
     @Column(name = "type")
     @ToString.Include
     private String type;
-    @ElementCollection
+
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "applicableto")
     private Set<String> applicableTo;
+
     // many to one customproperties-> domain
     @Column(name = "domains")
     @ManyToMany

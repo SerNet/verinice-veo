@@ -187,6 +187,50 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "retrieve an asset with a link"() {
+        given: "a saved asset"
+
+        CustomProperties simpleProps = new SimpleProperties()
+        simpleProps.setType("simpleAspect")
+        simpleProps.setId(Key.newUuid())
+        simpleProps.setProperty("simpleProp", "simpleValue")
+
+        def asset2 = txTemplate.execute {
+            assetRepository.save(newAsset(unit, {
+                domains = [domain1] as Set
+            }))
+        }
+        def asset = newAsset unit, {
+            name = 'Test asset-1'
+            setCustomAspects([simpleProps] as Set)
+
+            CustomLink link = new LinkImpl(Key.newUuid(), "requires", asset2, it)
+            link.setVersion(1L);
+            link.setType("mypreciouslink");
+            link.setApplicableTo(["Asset"] as Set);
+            addToLinks(link)
+        }
+        asset = txTemplate.execute {
+            assetRepository.save(asset)
+        }
+
+        when: "a request is made to the server"
+        def results = get("/assets/${asset.id.uuidValue()}")
+
+        then: "the asset is found"
+        results.andExpect(status().isOk())
+        and: "the response contains the expected link"
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.name == 'Test asset-1'
+        result.links.size() == 1
+        result.links.mypreciouslink.id[0] ==~ /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+        result.links.mypreciouslink.target.href == [
+            "/assets/${asset2.id.uuidValue()}"
+        ]
+        result.links.mypreciouslink.applicableTo[0] == ['Asset']
+    }
+
+    @WithUserDetails("user@domain.example")
     def "retrieve all assets for a client"() {
         given: "a saved asset"
 
