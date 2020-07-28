@@ -77,6 +77,29 @@ pipeline {
                 junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
             }
         }
+        stage('Validate Schemas') {
+            agent {
+                dockerfile {
+                    filename 'Dockerfile.ajv'
+                }
+            }
+            steps {
+                // It would be better to make veo-adapter:generateEntitySchemas validate the schemas.
+                // For now an external tool suffices.
+                sh '''
+                    find veo-adapter/build/generated_entity_schemas/schemas/entity -type f | {
+                        while read schemaFile
+                        do
+                            if ! ajv compile -s $schemaFile
+                            then
+                               failure=1
+                            fi
+                        done
+                        [ -z "$failure" ]
+                    }
+                '''
+            }
+        }
         stage('Artifacts') {
             agent {
                 docker {
