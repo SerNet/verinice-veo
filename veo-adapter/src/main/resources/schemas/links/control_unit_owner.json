@@ -2,7 +2,6 @@
   "definitions": {
     
   },
-  "$schema": "http://verinice.com/veo/draft-01/link-schema#",
   "type": "object",
   "description": "Schema for Links between control and unit defined by the reference owner.",
   "title": "control_unit_owner",
