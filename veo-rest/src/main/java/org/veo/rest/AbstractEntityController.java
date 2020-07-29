@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -108,4 +109,12 @@ public class AbstractEntityController {
                  .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
+    protected void applyId(String resourceId, IdentifiableDto dto) {
+        var dtoId = dto.getId();
+        if (dtoId != null && !dtoId.equals(resourceId)) {
+            throw new DeviatingIdException(
+                    String.format("DTO ID %s does not match resource ID %s", dtoId, resourceId));
+        }
+        dto.setId(resourceId);
+    }
 }

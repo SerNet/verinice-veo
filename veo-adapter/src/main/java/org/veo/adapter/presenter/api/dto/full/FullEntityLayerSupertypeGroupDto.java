@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Urs Zeidler.
+ * Copyright (c) 2020 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,27 +14,21 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.adapter.presenter.api.dto.full;
 
-import java.util.Set;
-
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+public interface FullEntityLayerSupertypeGroupDto<T extends EntityLayerSupertype>
+        extends EntityLayerSupertypeGroupDto<T, FullCustomPropertiesDto, FullCustomLinkDto>,
+        IdentifiableDto {
 
-/**
- * @author urszeidler
- */
-public interface EntityLayerSupertypeGroupDto<T extends EntityLayerSupertype, TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto>
-        extends EntityLayerSupertypeDto<TProps, TLink> {
-
-    @Schema(required = true, description = "The group's members")
-    Set<ModelObjectReference<T>> getMembers();
-
-    void setMembers(Set<ModelObjectReference<T>> members);
-
-    ModelGroup<T> toEntity(DtoToEntityContext context);
+    static FullEntityLayerSupertypeGroupDto<?> from(ModelGroup<?> group,
+            EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformGroup2Dto(tcontext, group);
+    }
 }

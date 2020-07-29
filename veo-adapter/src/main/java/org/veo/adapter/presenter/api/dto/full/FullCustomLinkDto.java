@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.dto.AbstractCustomLinkDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
@@ -39,7 +40,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCustomLinkDto extends AbstractCustomLinkDto {
+public class FullCustomLinkDto extends AbstractCustomLinkDto implements IdentifiableDto {
 
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
              flags = Pattern.Flag.CASE_INSENSITIVE,

@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.dto.AbstractCustomPropertiesDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
@@ -35,7 +36,8 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCustomPropertiesDto extends AbstractCustomPropertiesDto {
+public class FullCustomPropertiesDto extends AbstractCustomPropertiesDto
+        implements IdentifiableDto {
 
     @NotNull
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",

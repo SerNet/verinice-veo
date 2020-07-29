@@ -23,7 +23,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
@@ -40,7 +39,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class FullAssetGroupDto extends FullAssetDto
-        implements EntityLayerSupertypeGroupDto<Asset, FullCustomPropertiesDto, FullCustomLinkDto> {
+        implements FullEntityLayerSupertypeGroupDto<Asset> {
 
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
              flags = Pattern.Flag.CASE_INSENSITIVE,

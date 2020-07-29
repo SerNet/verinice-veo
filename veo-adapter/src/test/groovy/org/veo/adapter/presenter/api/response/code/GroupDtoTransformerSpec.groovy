@@ -18,9 +18,8 @@ package org.veo.adapter.presenter.api.response.code
 
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto
+import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
 import org.veo.core.entity.*
 import org.veo.core.entity.groups.AssetGroup
@@ -88,7 +87,7 @@ class GroupDtoTransformerSpec extends Specification {
 
 
         when: "the group is transformed into a DTO"
-        def dto = EntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
+        def dto = FullEntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
 
         then: "The DTO contains all required data"
         dto.name == assetGroup.name
@@ -165,8 +164,8 @@ class GroupDtoTransformerSpec extends Specification {
         factory.createProcessGroup() >> processGroup
 
         when: "the groups are transformed to DTOs"
-        def ag = EntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
-        def pg = EntityLayerSupertypeGroupDto.from(processGroup, EntityToDtoContext.completeTransformationContext)
+        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
+        def pg = FullEntityLayerSupertypeGroupDto.from(processGroup, EntityToDtoContext.completeTransformationContext)
         then: "the two assets and the group are also transformed with members"
         ag.members.size()==2
         ag.members*.displayName as Set == [asset1.name, asset2.name] as Set
@@ -228,9 +227,9 @@ class GroupDtoTransformerSpec extends Specification {
         documentGroup2.members >> ([documentGroup3] as Set)
 
         when: "the groups are transformed"
-        def dtoDG1 = EntityLayerSupertypeGroupDto.from(documentGroup1, EntityToDtoContext.completeTransformationContext)
-        def dtoDG2 = EntityLayerSupertypeGroupDto.from(documentGroup2, EntityToDtoContext.completeTransformationContext)
-        def dtoDG3 = EntityLayerSupertypeGroupDto.from(documentGroup3, EntityToDtoContext.completeTransformationContext)
+        def dtoDG1 = FullEntityLayerSupertypeGroupDto.from(documentGroup1, EntityToDtoContext.completeTransformationContext)
+        def dtoDG2 = FullEntityLayerSupertypeGroupDto.from(documentGroup2, EntityToDtoContext.completeTransformationContext)
+        def dtoDG3 = FullEntityLayerSupertypeGroupDto.from(documentGroup3, EntityToDtoContext.completeTransformationContext)
 
         then: "all members are set"
         dtoDG1.members == [
@@ -284,7 +283,7 @@ class GroupDtoTransformerSpec extends Specification {
 
         assetGroup.members>> ([assetGroup] as Set)
         when: "the group is transformed"
-        def ag = EntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
+        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
 
         then: "The group contains it self as it is not forbidden"
         ag.members == [

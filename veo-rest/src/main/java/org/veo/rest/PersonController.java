@@ -176,6 +176,7 @@ public class PersonController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullPersonDto personDto) {
+        applyId(uuid, personDto);
         return useCaseInteractor.execute(updatePersonUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Person>>() {
 

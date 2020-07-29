@@ -57,7 +57,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan("org.veo.rest")
-class ControlControllerMockMvcITSpec extends VeoMvcSpec {
+class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -288,7 +288,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             name: 'New control-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -338,7 +337,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             controlRepository.save(control)
         }
         Map request = [
-            id: id.uuidValue(),
             name: 'New control-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -401,7 +399,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             controlRepository.save(control)
         }
         Map request = [
-            id: id.uuidValue(),
             name: 'New control-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -466,5 +463,28 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the control is deleted"
         results.andExpect(status().isOk())
         controlRepository.findById(id).empty
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can't put a control with another control's ID"() {
+        given: "two controls"
+        def control1 = txTemplate.execute({
+            controlRepository.save(newControl(unit, {
+                name = "old name 1"
+            }))
+        })
+        def control2 = txTemplate.execute({
+            controlRepository.save(newControl(unit, {
+                name = "old name 2"
+            }))
+        })
+        when: "a put request tries to update control 1 using the ID of control 2"
+        put("/controls/${control2.id.uuidValue()}", [
+            id: control1.id.uuidValue(),
+            name: "new name 1",
+            owner: [href: '/units/' + unit.id.uuidValue()]
+        ], false)
+        then: "an exception is thrown"
+        thrown(DeviatingIdException)
     }
 }

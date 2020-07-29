@@ -26,7 +26,6 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.AbstractCustomLinkDto;
 import org.veo.adapter.presenter.api.dto.AbstractCustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.NameAbleDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
@@ -39,6 +38,7 @@ import org.veo.adapter.presenter.api.dto.full.FullCustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
@@ -95,7 +95,7 @@ public final class EntityToDtoTransformer {
                                                                                       .getSimpleName());
     }
 
-    public static EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto> transformGroup2Dto(
+    public static FullEntityLayerSupertypeGroupDto<?> transformGroup2Dto(
             EntityToDtoContext tcontext, ModelGroup<?> source) {
         if (source instanceof PersonGroup) {
             return transformPersonGroup2Dto(tcontext, (PersonGroup) source);

@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
@@ -34,8 +35,8 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullDocumentDto
-        extends AbstractDocumentDto<FullCustomPropertiesDto, FullCustomLinkDto> {
+public class FullDocumentDto extends AbstractDocumentDto<FullCustomPropertiesDto, FullCustomLinkDto>
+        implements IdentifiableDto {
 
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
              flags = Pattern.Flag.CASE_INSENSITIVE,

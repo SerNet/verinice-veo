@@ -23,6 +23,7 @@ import javax.validation.constraints.Pattern;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.full.FullCustomLinkDto;
 import org.veo.adapter.presenter.api.dto.full.FullCustomPropertiesDto;
+import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
 import org.veo.core.entity.EntityLayerSupertype;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +36,7 @@ import lombok.ToString;
  */
 abstract public class FullGroupDto<T extends EntityLayerSupertype>
         extends AbstractEntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>
-        implements EntityLayerSupertypeGroupDto<T, FullCustomPropertiesDto, FullCustomLinkDto> {
+        implements FullEntityLayerSupertypeGroupDto<T> {
 
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
              flags = Pattern.Flag.CASE_INSENSITIVE,

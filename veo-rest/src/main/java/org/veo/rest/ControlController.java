@@ -176,6 +176,7 @@ public class ControlController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullControlDto controlDto) {
+        applyId(uuid, controlDto);
         return useCaseInteractor.execute(updateControlUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Control>>() {
 

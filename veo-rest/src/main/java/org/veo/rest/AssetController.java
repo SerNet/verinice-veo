@@ -174,6 +174,7 @@ public class AssetController extends AbstractEntityController {
     public CompletableFuture<FullAssetDto> updateAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
+        applyId(id, assetDto);
         return useCaseInteractor.execute(updateAssetUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Asset>>() {
 

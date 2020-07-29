@@ -25,8 +25,11 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.*
+import org.veo.core.entity.Client
+import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -47,7 +50,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan("org.veo.rest")
-class PersonControllerMockMvcITSpec extends VeoMvcSpec {
+class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -197,7 +200,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             name: 'New person-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -247,7 +249,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             name: 'New person-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -328,5 +329,28 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the person is deleted"
         results.andExpect(status().isOk())
         !personRepository.exists(id)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can't put a person with another person's ID"() {
+        given: "two persons"
+        def person1 = txTemplate.execute({
+            personRepository.save(newPerson(unit, {
+                name = "old name 1"
+            }))
+        })
+        def person2 = txTemplate.execute({
+            personRepository.save(newPerson(unit, {
+                name = "old name 2"
+            }))
+        })
+        when: "a put request tries to update person 1 using the ID of person 2"
+        put("/persons/${person2.id.uuidValue()}", [
+            id: person1.id.uuidValue(),
+            name: "new name 1",
+            owner: [href: '/units/' + unit.id.uuidValue()]
+        ], false)
+        then: "an exception is thrown"
+        thrown(DeviatingIdException)
     }
 }

@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.rest.DeviatingIdException;
 
 @ControllerAdvice
 public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
@@ -39,6 +40,11 @@ public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({ IllegalArgumentException.class })
     protected ResponseEntity<ApiResponseBody> handle(IllegalArgumentException exception) {
+        return handle(exception, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ DeviatingIdException.class })
+    protected ResponseEntity<ApiResponseBody> handle(DeviatingIdException exception) {
         return handle(exception, HttpStatus.BAD_REQUEST);
     }
 

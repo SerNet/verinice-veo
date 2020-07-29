@@ -24,14 +24,22 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.*
+import org.veo.core.entity.Control
+import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.ModelObject.Lifecycle
+import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.ProcessGroup
-import org.veo.persistence.access.*
+import org.veo.persistence.access.AssetRepositoryImpl
+import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.ControlRepositoryImpl
+import org.veo.persistence.access.DocumentRepositoryImpl
+import org.veo.persistence.access.ProcessRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.groups.AssetGroupData
 import org.veo.persistence.entity.jpa.groups.ControlGroupData
@@ -54,7 +62,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 
 @ComponentScan("org.veo.rest")
-class GroupControllerMockMvcITSpec extends VeoMvcSpec {
+class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -420,7 +428,6 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             name: 'New asset group-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -503,5 +510,32 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the asset group is deleted"
         results.andExpect(status().isOk())
         assetRepository.findById(assetGroup.id).empty
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can't put a group with another group's ID"() {
+        given: "two groups"
+        def group1 = txTemplate.execute({
+            assetRepository.save(new AssetGroupData().tap {
+                id = Key.newUuid()
+                owner = unit
+                name = "old name 1"
+            })
+        })
+        def group2 = txTemplate.execute({
+            assetRepository.save(new AssetGroupData().tap {
+                id = Key.newUuid()
+                owner = unit
+                name = "old name 2"
+            })
+        })
+        when: "a put request tries to update group 1 using the ID of group 2"
+        put("/groups/${group2.id.uuidValue()}?type=Asset", [
+            id: group1.id.uuidValue(),
+            name: "new name 1",
+            owner: [href: '/units/' + unit.id.uuidValue()]
+        ], false)
+        then: "an exception is thrown"
+        thrown(DeviatingIdException)
     }
 }

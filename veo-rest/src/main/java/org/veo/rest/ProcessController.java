@@ -163,6 +163,7 @@ public class ProcessController extends AbstractEntityController {
     public @Valid CompletableFuture<FullProcessDto> updateProcess(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id, @Valid @RequestBody FullProcessDto processDto) {
+        applyId(id, processDto);
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updateProcessUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Process>>() {

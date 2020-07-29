@@ -49,7 +49,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.FullGroupDto;
 import org.veo.adapter.presenter.api.dto.create.CreateGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto;
@@ -57,6 +56,7 @@ import org.veo.adapter.presenter.api.dto.full.FullControlGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullCustomLinkDto;
 import org.veo.adapter.presenter.api.dto.full.FullCustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentGroupDto;
+import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
@@ -101,16 +101,16 @@ public class GroupController extends AbstractEntityController {
     private final ObjectMapper objectMapper;
 
     private final CreateGroupUseCase<ResponseEntity<ApiResponseBody>> createGroupUseCase;
-    private final GetGroupUseCase<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>> getGroupUseCase;
-    private final GetGroupsUseCase<?, List<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupsUseCase;
+    private final GetGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> getGroupUseCase;
+    private final GetGroupsUseCase<?, List<FullEntityLayerSupertypeGroupDto<?>>> getGroupsUseCase;
     private final GetGroupUseCase<List<EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupMemberUseCase;
-    private final PutGroupUseCase<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>> putGroupUseCase;
+    private final PutGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> putGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
 
     public GroupController(UseCaseInteractorImpl useCaseInteractor, ObjectMapper objectMapper,
             CreateGroupUseCase createGroupUseCase,
-            GetGroupUseCase<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>> getGroupUseCase,
-            GetGroupsUseCase<?, List<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupsUseCase,
+            GetGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> getGroupUseCase,
+            GetGroupsUseCase<?, List<FullEntityLayerSupertypeGroupDto<?>>> getGroupsUseCase,
             GetGroupUseCase<List<EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupMemberUseCase,
             PutGroupUseCase putGroupUseCase, DeleteGroupUseCase deleteGroupUseCase) {
         this.useCaseInteractor = useCaseInteractor;
@@ -131,7 +131,7 @@ public class GroupController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullGroupDto.class)))),
             @ApiResponse(responseCode = "404", description = "Group not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>>> getGroups(
+    public @Valid CompletableFuture<List<FullEntityLayerSupertypeGroupDto<?>>> getGroups(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
@@ -147,8 +147,8 @@ public class GroupController extends AbstractEntityController {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getGroupsUseCase, inputData, output -> output.getGroups()
                                                                                       .stream()
-                                                                                      .map(u -> EntityLayerSupertypeGroupDto.from(u,
-                                                                                                                                  tcontext))
+                                                                                      .map(u -> FullEntityLayerSupertypeGroupDto.from(u,
+                                                                                                                                      tcontext))
                                                                                       .collect(Collectors.toList()));
 
     }
@@ -161,7 +161,7 @@ public class GroupController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullGroupDto.class))),
             @ApiResponse(responseCode = "404", description = "Group not found") })
-    public @Valid CompletableFuture<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>> getGroup(
+    public @Valid CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> getGroup(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
@@ -169,7 +169,7 @@ public class GroupController extends AbstractEntityController {
         return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), output -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-                    return EntityLayerSupertypeGroupDto.from(output.getGroup(), tcontext);
+                    return FullEntityLayerSupertypeGroupDto.from(output.getGroup(), tcontext);
                 });
     }
 
@@ -225,7 +225,7 @@ public class GroupController extends AbstractEntityController {
     @Operation(summary = "Updates a group")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Group updated"),
             @ApiResponse(responseCode = "404", description = "Group not found") })
-    public <T extends ModelObject> CompletableFuture<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>> updateGroup(
+    public <T extends ModelObject> CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> updateGroup(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @NotNull @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -234,8 +234,9 @@ public class GroupController extends AbstractEntityController {
             throws JsonProcessingException {
         Client client = getAuthenticatedClient(auth);
         Class dtoClass = getFullDtoClass(type);
-        var groupDto = (EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>) objectMapper.readValue(requestBody,
-                                                                                                                            dtoClass);
+        var groupDto = (FullEntityLayerSupertypeGroupDto<?>) objectMapper.readValue(requestBody,
+                                                                                    dtoClass);
+        applyId(uuid, groupDto);
         DtoToEntityContext fromDtoContext = configureDtoContext(client, groupDto.getReferences());
         EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext();
         ModelGroup<?> group = groupDto.toEntity(fromDtoContext);

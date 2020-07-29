@@ -53,7 +53,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan("org.veo.rest")
-class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
+class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -197,7 +197,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             // note that currently the name must not be null but it can be empty ("")
             abbreviation: 'u-2',
             description: 'desc',
@@ -242,7 +241,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             name: 'New Process-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -318,7 +316,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             name: 'New Process-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -404,7 +401,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map request = [
-            id: id.uuidValue(),
             name: 'New Process-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -483,7 +479,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         Map request = [
-            id: id.uuidValue(),
             name: 'New Process-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -556,7 +551,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def processId = createProcessResult.resourceId
 
         Map putProcessRequest = [
-            id: processId,
             name: 'New Process-2',
             abbreviation: 'u-2',
             description: 'desc',
@@ -745,5 +739,29 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.size == 1
         result.first().name == 'Test process-2'
         result.first().owner.href == "/units/"+unit2.id.uuidValue()
+    }
+
+
+    @WithUserDetails("user@domain.example")
+    def "can't put a process with another process's ID"() {
+        given: "two processes"
+        def process1 = txTemplate.execute({
+            processRepository.save(newProcess(unit, {
+                name = "old name 1"
+            }))
+        })
+        def process2 = txTemplate.execute({
+            processRepository.save(newProcess(unit, {
+                name = "old name 2"
+            }))
+        })
+        when: "a put request tries to update process 1 using the ID of process 2"
+        put("/processes/${process2.id.uuidValue()}", [
+            id: process1.id.uuidValue(),
+            name: "new name 1",
+            owner: [href: '/units/' + unit.id.uuidValue()]
+        ], false)
+        then: "an exception is thrown"
+        thrown(DeviatingIdException)
     }
 }
