@@ -1,0 +1,87 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "title": "The UUID to identify the element"
+      },
+      "type": {
+        "description": "The name of the type described by this schema.",
+        "enum": [
+          "process_jointResponsiblePersons"
+        ]
+      },
+      "domains": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "displayName": {
+              "type": "string",
+              "description": "A friendly human readable title of the referenced domain."
+            },
+            "href": {
+              "type": "string",
+              "description": "The resource URL of the referenced domain."
+            }
+          },
+          "required": [
+            "href"
+          ],
+          "description": "The domains this entity is being used in."
+        }
+      },
+      "abbreviation": {
+        "type": "string",
+        "description": "The abbreviation for this custom link."
+      },
+      "description": {
+        "type": "string",
+        "description": "The description for this custom link."
+      },
+      "name": {
+        "type": "string",
+        "description": "The name for this custom link."
+      },
+      "source": {
+        "type": "object",
+        "title": "id of the Process",
+        "properties": {
+          "href": {
+            "type": "string",
+            "title": "The id of the source object."
+          },
+          "type": {
+            "enum": [
+              "Process"
+            ]
+          }
+        }
+      },
+      "target": {
+        "type": "object",
+        "title": "id of the Person",
+        "properties": {
+          "href": {
+            "type": "string",
+            "title": "The id of the target object."
+          },
+          "type": {
+            "enum": [
+              "Person"
+            ]
+          }
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "type",
+      "source",
+      "target"
+    ]
+  }
+}

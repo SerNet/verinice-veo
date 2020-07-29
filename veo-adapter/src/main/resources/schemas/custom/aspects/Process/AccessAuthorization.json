@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element",
+      "format": "regex",
+      "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "process_AccessAuthorization"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
+      "description": "The ids of elements of the type domain.",
+      "uniqueItems": true
+    },
+    "attributes": {
+      "type": "object",
+      "process_AccessAuthorization_authorizationConcept": {
+        "title": "Authorization concept?",
+        "type": "boolean"
+      },
+      "process_AccessAuthorization_description": {
+        "title": "Description of the authorization concept",
+        "type": "string"
+      },
+      "process_AccessAuthorization_Document": {
+        "title": "Document",
+        "type": "string",
+        "format": "uri"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type"
+  ]
+}
