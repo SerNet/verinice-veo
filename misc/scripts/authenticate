@@ -2,12 +2,12 @@
 
 username=${VEO_USER:-veo-testuser1}
 password=$VEO_USER_PASSWORD
-realm=veo-staging
+realm=verinice-veo
 clientId=veo-development-client
 # comma separated list?
 scopes=profile
 clientSecret=
-oicUrl=https://auth-staging.verinice.com
+oicUrl=https://keycloak.staging.verinice.com
 pass_prompt=
 tmpDir=`mktemp -d /tmp/veo-auth-XXXX`
 trap "rm -rf \"$tmpDir\"" 1 2 3 6
