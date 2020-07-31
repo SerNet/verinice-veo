@@ -88,7 +88,7 @@ fi
 cookieFile="$tmpDir/cookies"
 authEndpoint=`curl -sS $CURL_VERBOSE \
 	-b "$cookieFile" -c "$cookieFile" \
-	"$oicUrl/auth/realms/$realm/protocol/openid-connect/auth?response_type=code&client_id=$clientId&scope=$scopes&redirect_uri=localhost:3000" \
+	"$oicUrl/auth/realms/$realm/protocol/openid-connect/auth?response_type=code&client_id=$clientId&scope=$scopes&redirect_uri=http://localhost:3000/" \
 | gawk '/id="kc-form-login"/ {
 	match($0, /action="([^"]*)"/, matches);
 	print matches[1]
@@ -120,7 +120,7 @@ authResponse=`curl -sS $CURL_VERBOSE \
 	--data-urlencode  "client_id=$clientId" \
 	--data-urlencode  "client_secret=$clientSecret" \
 	--data-urlencode  "code=$authCode" \
-	--data-urlencode  "redirect_uri=localhost:3000" \
+	--data-urlencode  "redirect_uri=http://localhost:3000/" \
 	"$oicUrl/auth/realms/$realm/protocol/openid-connect/token"`
 
 authToken=`echo "$authResponse" | jq -Mr .access_token`
