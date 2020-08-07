@@ -1,3 +1,13 @@
+# DEPRECATION WARNING
+
+The metaschema was removed in the course of other changes to the model. The file "meta.json" mentioned below no longer exists.
+
+It can be argued that it would make sense to reintroduce it, so I'm leaving this documentation here.
+
+
+
+
+
 # veo-schemas
 veo supports dynamic modeling. Hence very few assumption on the structure on elements stored and edited
 can be made.
