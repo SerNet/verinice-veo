@@ -2841,6 +2841,174 @@
               "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
+        },
+        {
+          "name": "Create a process VEO-271",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "dc01878c-0724-4de8-b776-bb679f75b025",
+                "exec": [
+                  "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "fe7d5165-c92e-4ca1-8ff4-a4c063895b51",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"processIdveo271\", resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Verarbeitungstätigkeit 1\",\n    \"customAspects\": {\n        \"ProcessDvGroupRechtsgrundlage\": {\n            \"attributes\": {\n                \"processDvRechtsgrundlage\": [\n                    \"processDvRechtsgrundlage1\",\n                    \"processDvRechtsgrundlage5\",\n                    \"processDvRechtsgrundlage2\",\n                    \"processDvRechtsgrundlage3\",\n                    \"processDvRechtsgrundlage4\"\n                ]\n            },\n            \"id\": \"00000000-0000-0000-0000-000000000000\",\n            \"type\": \"ProcessDvGroupRechtsgrundlage\"\n        }\n    },\n    \"owner\": {\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/processes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "processes"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/processes",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "processes"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load the process VEO-271",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ffdac461-d62c-414b-90ea-9e09ef032e1f",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returned process has the correct values\", function () {",
+                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"processIdveo271\"));",
+                  "    pm.expect(jsonData.name).to.equal(\"Verarbeitungstätigkeit 1\")",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/processes/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "processes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{processIdveo271}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/processes/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "processes",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         }
       ],
       "description": "Basic CRUD operations",
@@ -2958,6 +3126,11 @@
       "key": "controlName",
       "value": "",
       "type": "string"
+    },
+    {
+      "id": "0b76ae19-931e-41b4-929a-627da8313eb9",
+      "key": "processIdveo271",
+      "value": ""
     }
   ],
   "protocolProfileBehavior": {
