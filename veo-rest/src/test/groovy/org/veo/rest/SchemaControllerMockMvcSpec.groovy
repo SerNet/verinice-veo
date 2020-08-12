@@ -75,15 +75,15 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
 
         and: "the custom links are present"
         results.andExpect(
-                jsonPath('$..enum[*]', hasItem("Process_data_protection_control_objectives_Control"))
+                jsonPath('$..enum[*]', hasItem("process_LegalBasisForProcessingSensitiveData"))
                 )
 
         and: "the custom aspects are present"
         results.andExpect(
-                jsonPath('$..enum[*]', hasItem("ProcessDvGroupBenachrichtigung"))
+                jsonPath('$..enum[*]', hasItem("process_InformationObligations_informationObligations_done"))
                 )
                 .andExpect(
-                jsonPath('$..enum[*]', hasItem("processBgBenachrichtigungErfolgt"))
+                jsonPath('$..enum[*]', hasItem("process_DataCategories"))
                 )
     }
 
