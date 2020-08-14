@@ -43,9 +43,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
+import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.CreatePersonOutputMapper;
-import org.veo.adapter.presenter.api.request.CreatePersonDto;
-import org.veo.adapter.presenter.api.response.PersonDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
@@ -82,9 +82,9 @@ public class PersonController extends AbstractEntityController {
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreatePersonUseCase<ResponseEntity<ApiResponseBody>> createPersonUseCase;
-    private final GetPersonUseCase<PersonDto> getPersonUseCase;
-    private final GetPersonsUseCase<List<PersonDto>> getPersonsUseCase;
-    private final UpdatePersonUseCase<PersonDto> updatePersonUseCase;
+    private final GetPersonUseCase<FullPersonDto> getPersonUseCase;
+    private final GetPersonsUseCase<List<FullPersonDto>> getPersonsUseCase;
+    private final UpdatePersonUseCase<FullPersonDto> updatePersonUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
 
     public PersonController(UseCaseInteractorImpl useCaseInteractor,
@@ -101,7 +101,7 @@ public class PersonController extends AbstractEntityController {
 
     @GetMapping
     @Operation(summary = "Loads all persons")
-    public @Valid CompletableFuture<List<PersonDto>> getPersons(
+    public @Valid CompletableFuture<List<FullPersonDto>> getPersons(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
                                                required = false) String unitUuid) {
@@ -110,7 +110,7 @@ public class PersonController extends AbstractEntityController {
                 getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {
                     return output.getEntities()
                                  .stream()
-                                 .map(u -> PersonDto.from(u, tcontext))
+                                 .map(u -> FullPersonDto.from(u, tcontext))
                                  .collect(Collectors.toList());
                 });
     }
@@ -121,9 +121,9 @@ public class PersonController extends AbstractEntityController {
             @ApiResponse(responseCode = "200",
                          description = "Person loaded",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = PersonDto.class))),
+                                            schema = @Schema(implementation = FullPersonDto.class))),
             @ApiResponse(responseCode = "404", description = "Person not found") })
-    public @Valid CompletableFuture<PersonDto> getPerson(
+    public @Valid CompletableFuture<FullPersonDto> getPerson(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
@@ -133,7 +133,8 @@ public class PersonController extends AbstractEntityController {
                                          new GetPersonUseCase.InputData(Key.uuidFrom(uuid), client),
                                          output -> {
                                              EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-                                             return PersonDto.from(output.getPerson(), tcontext);
+                                             return FullPersonDto.from(output.getPerson(),
+                                                                       tcontext);
                                          });
     }
 
@@ -153,7 +154,7 @@ public class PersonController extends AbstractEntityController {
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    dto.getReferences());
                                                  return new CreatePersonUseCase.InputData(
-                                                         dto.toPerson(tcontext), client);
+                                                         dto.toEntity(tcontext), client);
                                              }
                                          }, output -> {
                                              ApiResponseBody body = CreatePersonOutputMapper.map(output.getPerson());
@@ -165,10 +166,10 @@ public class PersonController extends AbstractEntityController {
     @Operation(summary = "Updates a person")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Person updated"),
             @ApiResponse(responseCode = "404", description = "Person not found") })
-    public CompletableFuture<PersonDto> updatePerson(
+    public CompletableFuture<FullPersonDto> updatePerson(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
-            @Valid @NotNull @RequestBody PersonDto personDto) {
+            @Valid @NotNull @RequestBody FullPersonDto personDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updatePersonUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Person>>() {
@@ -179,12 +180,12 @@ public class PersonController extends AbstractEntityController {
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    personDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Person>(
-                                                         personDto.toPerson(tcontext), client);
+                                                         personDto.toEntity(tcontext), client);
                                              }
                                          },
 
-                                         output -> PersonDto.from(output.getEntity(),
-                                                                  EntityToDtoContext.getCompleteTransformationContext()));
+                                         output -> FullPersonDto.from(output.getEntity(),
+                                                                      EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

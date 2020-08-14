@@ -59,9 +59,9 @@ class SwaggerSpec extends VeoSpringSpec {
     def "response DTO contains links property"() {
         when:
         def response = new JsonSlurper().parseText(mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString)
-        def assetDtoSchema = response.components.schemas.AssetDto
+        def assetDtoSchema = response.components.schemas.FullAssetDto
         then:
         assetDtoSchema.properties.links != null
-        assetDtoSchema.properties.links.description == 'Custom relations which do not affect the behavior.'
+        assetDtoSchema.properties.links.description == 'The links for the Asset.'
     }
 }

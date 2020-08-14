@@ -14,18 +14,18 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.adapter.presenter.api.dto.create;
 
-public interface NameAbleData {
-    String getName();
+import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 
-    void setName(String aName);
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-    String getAbbreviation();
+/**
+ * The CreateUnitDto is a special snowflake (it can have an ID).
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+public final class CreateUnitDto extends FullUnitDto {
 
-    void setAbbreviation(String aAbbreviation);
-
-    String getDescription();
-
-    void setDescription(String aDescription);
 }

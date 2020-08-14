@@ -17,9 +17,12 @@
 package org.veo.adapter.presenter.api.response.transformer
 
 
-import org.veo.adapter.presenter.api.response.ClientDto
-import org.veo.adapter.presenter.api.response.DomainDto
-import org.veo.adapter.presenter.api.response.UnitDto
+import org.veo.adapter.presenter.api.dto.AbstractClientDto
+import org.veo.adapter.presenter.api.dto.AbstractDomainDto
+import org.veo.adapter.presenter.api.dto.AbstractUnitDto
+import org.veo.adapter.presenter.api.dto.full.FullClientDto
+import org.veo.adapter.presenter.api.dto.full.FullDomainDto
+import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
@@ -84,12 +87,12 @@ class TransformerSpec extends Specification {
 
     }
 
-    def UnitDto createUnitDto() {
-        def subUnitDto = new UnitDto()
+    def AbstractUnitDto createUnitDto() {
+        def subUnitDto = new FullUnitDto()
         subUnitDto.setId(subUnitId)
         subUnitDto.setName(subUnitName)
 
-        def unitDto = new UnitDto()
+        def unitDto = new FullUnitDto()
         unitDto.setId(unitId)
         unitDto.setName(unitName)
         unitDto.setUnits([subUnitDto] as Set)
@@ -102,7 +105,7 @@ class TransformerSpec extends Specification {
         def unit = createUnit()
 
         when: "the parent unit is transformed into a DTO"
-        def unitDto = UnitDto.from(unit, EntityToDtoContext.getCompleteTransformationContext())
+        def unitDto = FullUnitDto.from(unit, EntityToDtoContext.getCompleteTransformationContext())
 
         then: "The DTO contains all required data"
         unitDto.name == unitName
@@ -123,7 +126,7 @@ class TransformerSpec extends Specification {
         factory.createUnit(_,_,_) >> u
 
         when: "The parent unit DTO is transformed into a unit"
-        def unit = unitDto.toUnit(new DtoToEntityContext(factory))
+        def unit = unitDto.toEntity(new DtoToEntityContext(factory))
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId
@@ -148,7 +151,7 @@ class TransformerSpec extends Specification {
         client.getName()>> clientName
 
         when: "the client is transformed into a DTO"
-        def clientDto = ClientDto.from(client, EntityToDtoContext.getCompleteTransformationContext())
+        def clientDto = FullClientDto.from(client, EntityToDtoContext.getCompleteTransformationContext())
 
         then: "The DTO contains all required data"
         unit.id.uuidValue() == unitId
@@ -159,11 +162,11 @@ class TransformerSpec extends Specification {
         given: "A client DTO with a unit and a domain"
         def unitDto = createUnitDto()
 
-        def domainDto = new DomainDto()
+        def domainDto = new FullDomainDto()
         domainDto.setId(domainId)
         domainDto.setName(domainName)
 
-        def clientDto = new ClientDto()
+        def clientDto = new FullClientDto()
         clientDto.setId(clientId)
         clientDto.setName(clientName)
         clientDto.setUnits([unitDto] as Set)
@@ -183,7 +186,7 @@ class TransformerSpec extends Specification {
         factory.createDomain(d.id,domainName) >> d
 
         when: "the DTO is transformed into a Client"
-        def client = clientDto.toClient(new DtoToEntityContext(factory))
+        def client = clientDto.toEntity(new DtoToEntityContext(factory))
 
         then: "the client contains all relevant fields"
         client.id.uuidValue() == clientId

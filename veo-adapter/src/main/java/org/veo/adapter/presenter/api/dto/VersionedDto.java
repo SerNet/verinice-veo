@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2020 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,18 +14,10 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.adapter.presenter.api.dto;
 
-public interface NameAbleData {
-    String getName();
+public interface VersionedDto {
+    String getValidFrom();
 
-    void setName(String aName);
-
-    String getAbbreviation();
-
-    void setAbbreviation(String aAbbreviation);
-
-    String getDescription();
-
-    void setDescription(String aDescription);
+    void setValidFrom(String validFrom);
 }

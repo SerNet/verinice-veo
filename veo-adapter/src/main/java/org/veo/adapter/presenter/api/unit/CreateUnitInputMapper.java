@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.request.CreateUnitDto;
+import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.unit.CreateUnitUseCase;

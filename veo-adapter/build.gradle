@@ -52,7 +52,7 @@ task generateEntitySchemas(type: JavaExec) {
     args = [
         targetDirectory.absolutePath,
         schemaSnippetDir.absolutePath,
-        'org.veo.adapter.presenter.api.response',
+        'org.veo.adapter.presenter.api.dto.full',
         'Asset',
         'Control',
         'Person',

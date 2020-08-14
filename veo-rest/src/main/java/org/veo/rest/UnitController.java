@@ -44,9 +44,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
+import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper;
-import org.veo.adapter.presenter.api.request.CreateUnitDto;
-import org.veo.adapter.presenter.api.response.UnitDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
@@ -91,10 +91,10 @@ public class UnitController extends AbstractEntityController {
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreateUnitUseCase<ResponseEntity<ApiResponseBody>> createUnitUseCase;
-    private final GetUnitUseCase<UnitDto> getUnitUseCase;
-    private final UpdateUnitUseCase<UnitDto> putUnitUseCase;
+    private final GetUnitUseCase<FullUnitDto> getUnitUseCase;
+    private final UpdateUnitUseCase<FullUnitDto> putUnitUseCase;
     private final DeleteUnitUseCase<ResponseEntity<ApiResponseBody>> deleteUnitUseCase;
-    private final GetUnitsUseCase<List<UnitDto>> getUnitsUseCase;
+    private final GetUnitsUseCase<List<FullUnitDto>> getUnitsUseCase;
     private final EntityFactory entityFactory;
 
     @GetMapping
@@ -103,9 +103,9 @@ public class UnitController extends AbstractEntityController {
             @ApiResponse(responseCode = "200",
                          description = "Units loaded",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = UnitDto.class)))) })
+                                            array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class)))) })
 
-    public @Valid CompletableFuture<List<UnitDto>> getUnits(
+    public @Valid CompletableFuture<List<FullUnitDto>> getUnits(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
                                                required = false) String parentUuid) {
@@ -123,7 +123,7 @@ public class UnitController extends AbstractEntityController {
                                          }, output -> {
                                              return output.getUnits()
                                                           .stream()
-                                                          .map(u -> UnitDto.from(u, tcontext))
+                                                          .map(u -> FullUnitDto.from(u, tcontext))
                                                           .collect(Collectors.toList());
                                          });
     }
@@ -135,16 +135,16 @@ public class UnitController extends AbstractEntityController {
             @ApiResponse(responseCode = "200",
                          description = "Unit loaded",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = UnitDto.class))),
+                                            schema = @Schema(implementation = FullUnitDto.class))),
             @ApiResponse(responseCode = "404", description = "Unit not found") })
-    public @Valid CompletableFuture<UnitDto> getUnit(
+    public @Valid CompletableFuture<FullUnitDto> getUnit(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
 
         return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
                 Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-                    return UnitDto.from(output.getUnit(), tcontext);
+                    return FullUnitDto.from(output.getUnit(), tcontext);
                 });
     }
 
@@ -179,19 +179,18 @@ public class UnitController extends AbstractEntityController {
     // @ApiResponses(value = { @ApiResponse(responseCode = "200", description =
     // "Unit updated"),
     // @ApiResponse(responseCode = "404", description = "Unit not found") })
-    public @Valid CompletableFuture<UnitDto> updateUnit(
+    public CompletableFuture<FullUnitDto> updateUnit(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id, @Valid @RequestBody UnitDto unitDto) {
+            @PathVariable String id, @Valid @RequestBody FullUnitDto unitDto) {
 
         DtoToEntityContext tcontext = configureDtoContext(getAuthenticatedClient(auth),
                                                           Collections.emptyList());
 
-        return useCaseInteractor.execute(putUnitUseCase, new UpdateUnitUseCase.InputData(
-                unitDto.toUnit(tcontext), getAuthenticatedClient(auth)), output -> {
-                    UnitDto response = UnitDto.from(output.getUnit(),
-                                                    EntityToDtoContext.getCompleteTransformationContext());
-                    return response;
-                });
+        return useCaseInteractor.execute(putUnitUseCase,
+                                         new UpdateUnitUseCase.InputData(unitDto.toEntity(tcontext),
+                                                 getAuthenticatedClient(auth)),
+                                         output -> FullUnitDto.from(output.getUnit(),
+                                                                    EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @Async

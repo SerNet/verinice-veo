@@ -55,7 +55,7 @@ public class GenerateEntitySchema {
 
         for (int i = 3; i < args.length; i++) {
             String baseName = args[i];
-            Class<?> clazz = Class.forName(packageName + "." + baseName + "Dto");
+            Class<?> clazz = Class.forName(packageName + ".Full" + baseName + "Dto");
 
             JsonNode jsonSchema = generator.generateSchema(clazz);
 

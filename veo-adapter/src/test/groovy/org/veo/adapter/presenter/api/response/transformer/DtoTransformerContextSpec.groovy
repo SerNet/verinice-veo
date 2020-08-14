@@ -16,8 +16,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-import org.veo.adapter.presenter.api.response.DocumentDto
-import org.veo.adapter.presenter.api.response.UnitDto
+import org.veo.adapter.presenter.api.dto.AbstractDocumentDto
+import org.veo.adapter.presenter.api.dto.AbstractUnitDto
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
+import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -58,12 +60,12 @@ class DtoTransformerContextSpec extends Specification {
         return unit
     }
 
-    def UnitDto createUnitDto() {
-        def subUnitDto = new UnitDto()
+    def AbstractUnitDto createUnitDto() {
+        def subUnitDto = new FullUnitDto()
         subUnitDto.setId(subUnitId)
         subUnitDto.setName(subUnitName)
 
-        def unitDto = new UnitDto()
+        def unitDto = new FullUnitDto()
         unitDto.setId(unitId)
         unitDto.setName(unitName)
         unitDto.setUnits([subUnitDto])
@@ -101,7 +103,7 @@ class DtoTransformerContextSpec extends Specification {
 
         when: "the document is transformed into a DTO"
 
-        DocumentDto docDto = DocumentDto.from(doc, EntityToDtoContext.getCompleteTransformationContext())
+        def docDto = FullDocumentDto.from(doc, EntityToDtoContext.getCompleteTransformationContext())
 
         then: "Test the Dto"
         docDto.id == doc.id.uuidValue()
@@ -114,7 +116,7 @@ class DtoTransformerContextSpec extends Specification {
         DtoToEntityContext tcontext = new DtoToEntityContext(factory)
         tcontext.addEntity(replacementUnit)
 
-        doc = docDto.toDocument(tcontext)
+        doc = docDto.toEntity(tcontext)
 
         then: "the unit is replaced by the context unit"
         1 * newDoc.setOwner(replacementUnit)

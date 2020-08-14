@@ -18,7 +18,7 @@ package org.veo.adapter.presenter.api.response.code
 
 import java.time.OffsetDateTime
 
-import org.veo.adapter.presenter.api.response.*
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
 import org.veo.core.entity.Asset
@@ -63,8 +63,8 @@ class CustomLinkTransformerSpec extends Specification {
         DtoToEntityContext tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
-        Asset assetData = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext())
-                .toAsset(tcontext)
+        Asset assetData = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext())
+                .toEntity(tcontext)
 
         then: "The properties are also transformed"
         assetData.getLinks().size() == 1
@@ -82,7 +82,7 @@ class CustomLinkTransformerSpec extends Specification {
         tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
-        Asset savedAsset = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)
+        Asset savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toEntity(tcontext)
         CustomProperties savedCp = savedAsset.getLinks().first()
 
         then: "numbers also"
@@ -97,7 +97,7 @@ class CustomLinkTransformerSpec extends Specification {
         tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
-        savedAsset = AssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toAsset(tcontext)
+        savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toEntity(tcontext)
         savedCp = savedAsset.getLinks().first()
 
         then: "date also"

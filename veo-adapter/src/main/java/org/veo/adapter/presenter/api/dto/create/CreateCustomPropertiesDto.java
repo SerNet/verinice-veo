@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2020 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,18 +14,21 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.adapter.presenter.api.dto.create;
 
-public interface NameAbleData {
-    String getName();
+import org.veo.adapter.presenter.api.dto.AbstractCustomPropertiesDto;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.core.entity.CustomProperties;
+import org.veo.core.entity.Key;
 
-    void setName(String aName);
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-    String getAbbreviation();
-
-    void setAbbreviation(String aAbbreviation);
-
-    String getDescription();
-
-    void setDescription(String aDescription);
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class CreateCustomPropertiesDto extends AbstractCustomPropertiesDto {
+    public CustomProperties toEntity(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2CustomProperties(tcontext, this, Key.newUuid());
+    }
 }

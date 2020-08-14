@@ -42,9 +42,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateProcessOutputMapper;
-import org.veo.adapter.presenter.api.request.CreateProcessDto;
-import org.veo.adapter.presenter.api.response.ProcessDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
@@ -81,10 +81,10 @@ public class ProcessController extends AbstractEntityController {
 
     private UseCaseInteractorImpl useCaseInteractor;
     private CreateProcessUseCase<ResponseEntity<ApiResponseBody>> createProcessUseCase;
-    private GetProcessUseCase<ProcessDto> getProcessUseCase;
-    private UpdateProcessUseCase<ProcessDto> updateProcessUseCase;
+    private GetProcessUseCase<FullProcessDto> getProcessUseCase;
+    private UpdateProcessUseCase<FullProcessDto> updateProcessUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private GetProcessesUseCase<List<ProcessDto>> getProcessesUseCase;
+    private GetProcessesUseCase<List<FullProcessDto>> getProcessesUseCase;
 
     public ProcessController(UseCaseInteractorImpl useCaseInteractor,
             CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
@@ -107,7 +107,7 @@ public class ProcessController extends AbstractEntityController {
      * @return the process for the given ID if one was found. Null otherwise.
      */
     @GetMapping("/{id}")
-    public CompletableFuture<ProcessDto> getProcessById(
+    public CompletableFuture<FullProcessDto> getProcessById(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
         return useCaseInteractor.execute(getProcessUseCase,
@@ -123,7 +123,8 @@ public class ProcessController extends AbstractEntityController {
                                          , output -> {
                                              EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
-                                             return ProcessDto.from(output.getProcess(), tcontext);
+                                             return FullProcessDto.from(output.getProcess(),
+                                                                        tcontext);
                                          });
     }
 
@@ -143,7 +144,7 @@ public class ProcessController extends AbstractEntityController {
                                                  Client client = getClient(user.getClientId());
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    dto.getReferences());
-                                                 return new InputData(dto.toProcess(tcontext),
+                                                 return new InputData(dto.toEntity(tcontext),
                                                          client);
                                              }
                                          }
@@ -158,9 +159,9 @@ public class ProcessController extends AbstractEntityController {
     @Operation(summary = "Updates a process")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Process updated"),
             @ApiResponse(responseCode = "404", description = "Process not found") })
-    public @Valid CompletableFuture<ProcessDto> updateProcess(
+    public @Valid CompletableFuture<FullProcessDto> updateProcess(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id, @Valid @RequestBody ProcessDto processDto) {
+            @PathVariable String id, @Valid @RequestBody FullProcessDto processDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updateProcessUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Process>>() {
@@ -172,16 +173,14 @@ public class ProcessController extends AbstractEntityController {
                                                                                                    processDto.getReferences());
 
                                                  return new ModifyEntityUseCase.InputData<Process>(
-                                                         processDto.toProcess(tcontext),
+                                                         processDto.toEntity(tcontext),
                                                          getAuthenticatedClient(auth));
                                              }
                                          }
 
-                                         , output -> {
-                                             ProcessDto ret = ProcessDto.from(output.getEntity(),
-                                                                              EntityToDtoContext.getCompleteTransformationContext());
-                                             return ret;
-                                         });
+                                         ,
+                                         output -> FullProcessDto.from(output.getEntity(),
+                                                                       EntityToDtoContext.getCompleteTransformationContext()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -200,7 +199,7 @@ public class ProcessController extends AbstractEntityController {
 
     @GetMapping
     @Operation(summary = "Loads all processs")
-    public @Valid CompletableFuture<List<ProcessDto>> getProcesses(
+    public @Valid CompletableFuture<List<FullProcessDto>> getProcesses(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
                                                required = false) String unitUuid) {
@@ -210,7 +209,7 @@ public class ProcessController extends AbstractEntityController {
                 getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {
                     return output.getEntities()
                                  .stream()
-                                 .map(u -> ProcessDto.from(u, tcontext))
+                                 .map(u -> FullProcessDto.from(u, tcontext))
                                  .collect(Collectors.toList());
                 });
     }

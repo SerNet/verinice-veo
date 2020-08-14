@@ -43,9 +43,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateAssetOutputMapper;
-import org.veo.adapter.presenter.api.request.CreateAssetDto;
-import org.veo.adapter.presenter.api.response.AssetDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Asset;
@@ -93,14 +93,14 @@ public class AssetController extends AbstractEntityController {
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreateAssetUseCase<ResponseEntity<ApiResponseBody>> createAssetUseCase;
-    private final UpdateAssetUseCase<AssetDto> updateAssetUseCase;
-    private final GetAssetUseCase<AssetDto> getAssetUseCase;
-    private final GetAssetsUseCase<List<AssetDto>> getAssetsUseCase;
+    private final UpdateAssetUseCase<FullAssetDto> updateAssetUseCase;
+    private final GetAssetUseCase<FullAssetDto> getAssetUseCase;
+    private final GetAssetsUseCase<List<FullAssetDto>> getAssetsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
 
     @GetMapping
     @Operation(summary = "Loads all assets")
-    public @Valid CompletableFuture<List<AssetDto>> getAssets(
+    public @Valid CompletableFuture<List<FullAssetDto>> getAssets(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
                                                required = false) String unitUuid) {
@@ -109,7 +109,7 @@ public class AssetController extends AbstractEntityController {
                 getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {
                     return output.getEntities()
                                  .stream()
-                                 .map(u -> AssetDto.from(u, tcontext))
+                                 .map(u -> FullAssetDto.from(u, tcontext))
                                  .collect(Collectors.toList());
                 });
     }
@@ -120,9 +120,9 @@ public class AssetController extends AbstractEntityController {
             @ApiResponse(responseCode = "200",
                          description = "Asset loaded",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = AssetDto.class))),
+                                            schema = @Schema(implementation = FullAssetDto.class))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public @Valid CompletableFuture<AssetDto> getAsset(
+    public @Valid CompletableFuture<FullAssetDto> getAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
@@ -131,7 +131,7 @@ public class AssetController extends AbstractEntityController {
                                          new GetAssetUseCase.InputData(Key.uuidFrom(id), client),
                                          output -> {
                                              EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-                                             return AssetDto.from(output.getAsset(), tcontext);
+                                             return FullAssetDto.from(output.getAsset(), tcontext);
                                          });
     }
 
@@ -151,7 +151,7 @@ public class AssetController extends AbstractEntityController {
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    dto.getReferences());
                                                  return new CreateAssetUseCase.InputData(
-                                                         dto.toAsset(tcontext), client);
+                                                         dto.toEntity(tcontext), client);
                                              }
                                          }, output -> {
                                              ApiResponseBody body = CreateAssetOutputMapper.map(output.getAsset());
@@ -163,9 +163,9 @@ public class AssetController extends AbstractEntityController {
     @Operation(summary = "Updates an asset")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Asset updated"),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public CompletableFuture<AssetDto> updateAsset(
+    public CompletableFuture<FullAssetDto> updateAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id, @Valid @NotNull @RequestBody AssetDto assetDto) {
+            @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updateAssetUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Asset>>() {
@@ -176,13 +176,13 @@ public class AssetController extends AbstractEntityController {
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    assetDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Asset>(
-                                                         assetDto.toAsset(tcontext), client);
+                                                         assetDto.toEntity(tcontext), client);
                                              }
                                          }
 
                                          , output -> {
-                                             return AssetDto.from(output.getEntity(),
-                                                                  EntityToDtoContext.getCompleteTransformationContext());
+                                             return FullAssetDto.from(output.getEntity(),
+                                                                      EntityToDtoContext.getCompleteTransformationContext());
                                          });
     }
 

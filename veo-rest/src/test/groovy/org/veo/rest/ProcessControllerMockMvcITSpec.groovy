@@ -634,7 +634,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             links: [
                 'Process_depends_on_Asset': [
                     [
-                        id    : '00000000-0000-0000-0000-000000000000',
                         type  : 'Process_depends_on_Asset',
                         name  : 'requires',
                         target:

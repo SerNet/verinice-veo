@@ -14,18 +14,22 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.adapter.presenter.api.dto.create;
 
-public interface NameAbleData {
-    String getName();
+import org.veo.adapter.presenter.api.dto.AbstractControlDto;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.core.entity.Control;
 
-    void setName(String aName);
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-    String getAbbreviation();
+@Data
+@EqualsAndHashCode(callSuper = true)
+public final class CreateControlDto
+        extends AbstractControlDto<CreateCustomPropertiesDto, CreateCustomLinkDto> {
 
-    void setAbbreviation(String aAbbreviation);
-
-    String getDescription();
-
-    void setDescription(String aDescription);
+    public Control toEntity(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2Control(tcontext, this, null);
+    }
 }
