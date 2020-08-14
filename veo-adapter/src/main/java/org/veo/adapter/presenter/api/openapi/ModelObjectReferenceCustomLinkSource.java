@@ -16,9 +16,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.IModelObjectReference;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * This class is for documentation only. It specifies type-specific comments and

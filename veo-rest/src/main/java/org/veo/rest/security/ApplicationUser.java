@@ -23,13 +23,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * ApplicationUser describes an authenticated user received from the user

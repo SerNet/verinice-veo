@@ -30,6 +30,7 @@ import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.ProcessGroup
 import org.veo.core.entity.transform.EntityFactory
+
 import spock.lang.Specification
 
 class GroupDtoTransformerSpec extends Specification {

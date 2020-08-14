@@ -18,11 +18,11 @@ package org.veo.core.usecase.base;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.usecase.UseCase;
+
+import lombok.Value;
 
 public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
         extends UseCase<ModifyEntityUseCase.InputData<T>, ModifyEntityUseCase.OutputData<T>, R> {

@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.Pattern;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.core.entity.Key;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class KeyDto {
 

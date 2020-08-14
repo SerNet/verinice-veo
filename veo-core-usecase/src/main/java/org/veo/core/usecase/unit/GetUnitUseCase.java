@@ -20,8 +20,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -30,6 +28,8 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.UnitRepository;
 import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
 import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
+
+import lombok.Value;
 
 /**
  * Reinstantiate a persisted unit object.

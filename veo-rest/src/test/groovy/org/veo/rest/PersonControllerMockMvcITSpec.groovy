@@ -25,8 +25,6 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import groovy.json.JsonSlurper
-
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.*
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -34,6 +32,8 @@ import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+
+import groovy.json.JsonSlurper
 
 /**
  * Integration test for the unit personler. Uses mocked spring MVC environment.

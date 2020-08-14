@@ -21,8 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
@@ -31,6 +29,8 @@ import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
+
+import lombok.AllArgsConstructor;
 
 @Repository
 @AllArgsConstructor

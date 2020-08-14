@@ -18,8 +18,6 @@ package org.veo.core.usecase.person;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
@@ -29,6 +27,8 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.UnitRepository;
+
+import lombok.Value;
 
 public class CreatePersonUseCase<R>
         extends UseCase<CreatePersonUseCase.InputData, CreatePersonUseCase.OutputData, R> {

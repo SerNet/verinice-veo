@@ -22,10 +22,6 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import lombok.Data;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceAssetOwner;
@@ -34,6 +30,10 @@ import org.veo.adapter.presenter.api.response.CustomPropertiesDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Unit;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 @Data
 public final class CreateGroupDto {

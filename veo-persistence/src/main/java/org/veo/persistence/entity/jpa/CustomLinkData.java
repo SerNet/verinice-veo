@@ -23,12 +23,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import lombok.EqualsAndHashCode;
-
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelObject;
+
+import lombok.EqualsAndHashCode;
 
 @Entity(name = "customlink")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

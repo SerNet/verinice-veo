@@ -22,13 +22,13 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
+
+import lombok.Value;
 
 /**
  * Reinstantiate a persisted client object.

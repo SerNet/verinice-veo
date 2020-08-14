@@ -24,11 +24,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
@@ -36,6 +31,11 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ModelObject;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Transfer object for complete Clients.

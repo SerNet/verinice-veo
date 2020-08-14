@@ -18,8 +18,6 @@ package org.veo.rest.schemas.controller;
 
 import java.util.Set;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -27,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.schemas.resource.TranslationsResource;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * REST service which provides methods to UI translations in JSON format.

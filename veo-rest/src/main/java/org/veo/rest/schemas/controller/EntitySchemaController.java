@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -32,6 +30,8 @@ import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.SchemaIdentifiersDTO;
 import org.veo.rest.schemas.resource.EntitySchemaResource;
 import org.veo.rest.security.ApplicationUser;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * REST service which provides methods to query schemas for business entities.

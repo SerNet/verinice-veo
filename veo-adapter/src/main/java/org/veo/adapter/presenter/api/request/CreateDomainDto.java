@@ -21,15 +21,15 @@ import java.util.*;
 import javax.validation.*;
 import javax.validation.constraints.*;
 
-import lombok.Data;
-import io.swagger.v3.oas.annotations.*;
-import io.swagger.v3.oas.annotations.enums.*;
-import io.swagger.v3.oas.annotations.media.*;
-
 import org.veo.adapter.presenter.api.common.*;
 import org.veo.adapter.presenter.api.openapi.*;
 import org.veo.adapter.presenter.api.response.*;
 import org.veo.core.entity.*;
+
+import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.enums.*;
+import io.swagger.v3.oas.annotations.media.*;
+import lombok.Data;
 
 @Data
 public final class CreateDomainDto {

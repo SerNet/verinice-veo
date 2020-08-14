@@ -31,6 +31,7 @@ import org.veo.persistence.access.jpa.DocumentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
+
 import spock.lang.Specification
 
 /**

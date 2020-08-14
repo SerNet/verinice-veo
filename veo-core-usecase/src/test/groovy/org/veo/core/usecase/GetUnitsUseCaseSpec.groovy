@@ -22,6 +22,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.repository.ClientRepository
 import org.veo.core.usecase.repository.UnitRepository
 import org.veo.core.usecase.unit.GetUnitsUseCase
+
 import spock.lang.Specification
 
 public class GetUnitsUseCaseSpec extends Specification {

@@ -18,8 +18,6 @@ package org.veo.core.usecase.asset;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -29,6 +27,8 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.UnitRepository;
+
+import lombok.Value;
 
 public class CreateAssetUseCase<R>
         extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData, R> {

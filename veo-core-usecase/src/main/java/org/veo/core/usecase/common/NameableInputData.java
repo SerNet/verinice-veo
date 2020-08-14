@@ -20,11 +20,11 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.veo.core.entity.Key;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import org.veo.core.entity.Key;
 
 @Data
 @AllArgsConstructor

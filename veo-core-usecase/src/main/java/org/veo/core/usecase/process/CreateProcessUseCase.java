@@ -18,8 +18,6 @@ package org.veo.core.usecase.process;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
@@ -29,6 +27,8 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.UnitRepository;
+
+import lombok.Value;
 
 /**
  * Creates a persistent new process object.

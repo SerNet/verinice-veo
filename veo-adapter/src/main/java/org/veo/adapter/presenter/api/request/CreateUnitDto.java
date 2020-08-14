@@ -22,16 +22,16 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import lombok.Data;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
 import org.veo.adapter.presenter.api.response.UnitDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 @Data
 public final class CreateUnitDto {

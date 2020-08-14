@@ -19,10 +19,10 @@ package org.veo.ie;
 import java.util.List;
 import java.util.Properties;
 
+import org.veo.core.entity.EntityLayerSupertype;
+
 import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
-
-import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * Context for importing an element from a VNA file.

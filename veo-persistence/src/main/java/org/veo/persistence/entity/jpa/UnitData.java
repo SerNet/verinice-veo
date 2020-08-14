@@ -26,14 +26,14 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Unit;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "unit")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

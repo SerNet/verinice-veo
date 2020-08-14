@@ -32,6 +32,7 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
+
 import spock.lang.Specification
 
 @SpringBootTest(classes = CustomAspectPersistenceSpec.class

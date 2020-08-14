@@ -16,9 +16,9 @@
  ******************************************************************************/
 package org.veo.core.service
 
-import groovy.json.JsonSlurper
-
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl
+
+import groovy.json.JsonSlurper
 import spock.lang.Specification
 
 class EntitySchemaServiceSpec extends Specification {

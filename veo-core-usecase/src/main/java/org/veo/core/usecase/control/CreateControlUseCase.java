@@ -18,8 +18,6 @@ package org.veo.core.usecase.control;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
@@ -29,6 +27,8 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.UnitRepository;
+
+import lombok.Value;
 
 public class CreateControlUseCase<R>
         extends UseCase<CreateControlUseCase.InputData, CreateControlUseCase.OutputData, R> {

@@ -23,8 +23,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
-import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.EntityLayerSupertype;
@@ -32,6 +30,8 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.code.ModelValidationException;
 import org.veo.core.entity.code.ModelValidator;
 import org.veo.core.entity.code.ModelValidator.AbstractModelValidator;
+
+import lombok.AllArgsConstructor;
 
 /**
  * Validation Service that uses an injected JSR380 validator to check all

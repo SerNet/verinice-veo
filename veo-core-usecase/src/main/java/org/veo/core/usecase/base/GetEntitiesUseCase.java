@@ -22,8 +22,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
@@ -33,6 +31,8 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.UnitRepository;
+
+import lombok.Value;
 
 /**
  * Reinstantiate persisted entity objects.

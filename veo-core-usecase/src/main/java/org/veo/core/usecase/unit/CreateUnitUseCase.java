@@ -21,8 +21,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject.Lifecycle;
@@ -35,6 +33,8 @@ import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
 import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
+
+import lombok.Value;
 
 /**
  * Create a new unit for a client. If a parentId is given, the unit will be

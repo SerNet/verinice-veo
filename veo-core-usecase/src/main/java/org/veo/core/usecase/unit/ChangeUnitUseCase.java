@@ -18,9 +18,6 @@ package org.veo.core.usecase.unit;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.code.ModelUtils;
@@ -31,6 +28,9 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.UnitRepository;
 import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
 import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
+
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Abstract superclass for all operations that change an asset. The

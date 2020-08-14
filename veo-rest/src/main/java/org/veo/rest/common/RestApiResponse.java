@@ -21,9 +21,9 @@ import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestApiResponse {
 

@@ -24,11 +24,11 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * @author urszeidler

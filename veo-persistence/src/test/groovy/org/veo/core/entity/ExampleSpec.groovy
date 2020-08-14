@@ -18,6 +18,7 @@ package org.veo.core.entity
 
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
+
 import spock.lang.Specification
 
 class ExampleSpec extends Specification {

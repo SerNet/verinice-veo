@@ -24,12 +24,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Document;
 import org.veo.core.entity.groups.DocumentGroup;
 import org.veo.persistence.entity.jpa.DocumentData;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "document_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

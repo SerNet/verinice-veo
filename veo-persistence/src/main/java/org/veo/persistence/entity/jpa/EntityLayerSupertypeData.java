@@ -28,14 +28,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "entitylayersupertype")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

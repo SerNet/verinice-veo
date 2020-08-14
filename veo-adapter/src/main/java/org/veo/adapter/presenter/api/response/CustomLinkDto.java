@@ -22,15 +22,15 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelObject;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Transfer object for complete CustomLinks.

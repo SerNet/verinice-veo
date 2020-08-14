@@ -17,6 +17,7 @@
 package org.veo.adapter.presenter.api.response.transformer
 
 import org.veo.core.entity.CustomProperties
+
 import spock.lang.Specification
 
 class PropertyTransformerSpec extends Specification {

@@ -24,12 +24,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Person;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.persistence.entity.jpa.PersonData;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "person_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

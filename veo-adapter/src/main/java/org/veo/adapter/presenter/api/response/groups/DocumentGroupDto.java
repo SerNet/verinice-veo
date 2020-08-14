@@ -19,12 +19,12 @@ package org.veo.adapter.presenter.api.response.groups;
 import java.util.Collections;
 import java.util.Set;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.DocumentDto;
 import org.veo.core.entity.Document;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Transfer object for complete DocumentGroup.

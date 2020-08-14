@@ -21,6 +21,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.group.GetGroupUseCase.InputData
+
 import spock.lang.Unroll
 
 class GetGroupUseCaseSpec extends UseCaseSpec {

@@ -29,10 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import org.veo.core.entity.EntityLayerSupertype;
+
 import de.sernet.sync.data.SyncAttribute;
 import de.sernet.sync.data.SyncObject;
-
-import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * A callable task to import one element and its properties from a VNA to

@@ -28,6 +28,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
+
 import spock.lang.Specification
 
 class CustomLinkTransformerSpec extends Specification {

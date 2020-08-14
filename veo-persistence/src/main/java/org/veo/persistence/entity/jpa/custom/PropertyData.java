@@ -27,11 +27,11 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 
+import org.veo.core.entity.CustomProperties;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import org.veo.core.entity.CustomProperties;
 
 @Entity
 @IdClass(PropertyData.PropertyId.class)

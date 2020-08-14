@@ -30,6 +30,7 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+
 import spock.lang.Specification
 
 @SpringBootTest(classes = CustomLinkPersistenceSpec.class

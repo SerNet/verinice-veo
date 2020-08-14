@@ -21,8 +21,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -37,6 +35,8 @@ import org.veo.core.usecase.UseCase.EmptyOutput;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.core.usecase.repository.UnitRepository;
+
+import lombok.Value;
 
 public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, EmptyOutput, R> {
 

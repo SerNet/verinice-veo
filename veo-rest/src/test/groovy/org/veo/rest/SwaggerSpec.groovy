@@ -24,10 +24,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.web.servlet.MockMvc
 
-import groovy.json.JsonSlurper
-
 import org.veo.core.VeoSpringSpec
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+
+import groovy.json.JsonSlurper
 
 @SpringBootTest(
 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,

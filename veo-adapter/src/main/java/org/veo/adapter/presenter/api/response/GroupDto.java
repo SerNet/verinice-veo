@@ -18,12 +18,12 @@ package org.veo.adapter.presenter.api.response;
 
 import java.util.Set;
 
-import lombok.ToString;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.groups.EntityLayerSupertypeGroupDto;
 import org.veo.core.entity.EntityLayerSupertype;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.ToString;
 
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class GroupDto extends EntityLayerSupertypeDto

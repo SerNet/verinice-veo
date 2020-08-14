@@ -18,12 +18,12 @@ package org.veo.core.usecase.group;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.RepositoryProvider;
+
+import lombok.Value;
 
 /**
  * Abstract superclass for all operations that change a group. The

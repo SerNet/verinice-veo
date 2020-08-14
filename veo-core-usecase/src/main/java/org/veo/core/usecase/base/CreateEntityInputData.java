@@ -20,11 +20,11 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
+
+import lombok.Value;
 
 @Valid
 @Value

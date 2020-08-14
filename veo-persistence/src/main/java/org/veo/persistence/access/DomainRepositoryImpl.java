@@ -21,8 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Domain;
@@ -31,6 +29,8 @@ import org.veo.core.usecase.repository.DomainRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
+
+import lombok.AllArgsConstructor;
 
 @Repository
 @AllArgsConstructor

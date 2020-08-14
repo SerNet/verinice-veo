@@ -20,12 +20,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.ModelPackage;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "domain")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

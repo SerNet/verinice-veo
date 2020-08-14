@@ -24,12 +24,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Process;
 import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.persistence.entity.jpa.ProcessData;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "process_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

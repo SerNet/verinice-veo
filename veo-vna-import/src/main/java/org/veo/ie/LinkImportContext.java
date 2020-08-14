@@ -18,10 +18,10 @@ package org.veo.ie;
 
 import java.util.Properties;
 
-import de.sernet.sync.data.SyncLink;
-
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.EntityLayerSupertype;
+
+import de.sernet.sync.data.SyncLink;
 
 /**
  * A context to import one link from a VNA to database.

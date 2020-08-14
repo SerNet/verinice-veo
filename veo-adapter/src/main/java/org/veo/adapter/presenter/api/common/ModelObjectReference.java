@@ -19,10 +19,6 @@ package org.veo.adapter.presenter.api.common;
 import java.util.Map;
 import java.util.UUID;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,6 +27,10 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.ClassKey;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * A reference to another model object

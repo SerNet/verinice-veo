@@ -21,6 +21,7 @@ import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.group.DeleteGroupUseCase.InputData
+
 import spock.lang.Unroll
 
 class DeleteGroupUseCaseSpec extends UseCaseSpec {

@@ -19,8 +19,6 @@ package org.veo.core.usecase.base;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import lombok.Value;
-
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -34,6 +32,8 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
+
+import lombok.Value;
 
 public class DeleteEntityUseCase<R> extends UseCase<DeleteEntityUseCase.InputData, EmptyOutput, R> {
 

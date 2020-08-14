@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 import org.veo.persistence.VeoJpaConfiguration
+
 import spock.lang.Specification
 
 @DataJpaTest

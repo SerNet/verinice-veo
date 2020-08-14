@@ -28,17 +28,17 @@ import java.util.Set;
 
 import javax.validation.ValidationException;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Transfer object for complete CustomPropertiess.

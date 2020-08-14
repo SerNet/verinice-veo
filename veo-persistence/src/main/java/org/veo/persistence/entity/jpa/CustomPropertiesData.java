@@ -32,14 +32,14 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.ModelPackage;
 import org.veo.persistence.entity.jpa.custom.PropertyData;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "customproperties")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

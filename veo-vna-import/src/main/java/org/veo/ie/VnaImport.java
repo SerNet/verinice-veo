@@ -39,14 +39,14 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.EntityLayerSupertype;
+
 import de.sernet.sync.data.SyncData;
 import de.sernet.sync.data.SyncLink;
 import de.sernet.sync.data.SyncObject;
 import de.sernet.sync.mapping.SyncMapping;
 import de.sernet.sync.mapping.SyncMapping.MapObjectType;
 import de.sernet.sync.sync.SyncRequest;
-
-import org.veo.core.entity.EntityLayerSupertype;
 
 /**
  * This service imports a verinice archive (VNA).

@@ -20,8 +20,6 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
-import lombok.Value;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.GroupType;
@@ -30,6 +28,8 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
+
+import lombok.Value;
 
 public class DeleteGroupUseCase<R>
         extends UseCase<DeleteGroupUseCase.InputData, DeleteGroupUseCase.OutputData, R> {

@@ -20,11 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessOwner;
@@ -34,6 +29,11 @@ import org.veo.adapter.presenter.api.response.ProcessDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

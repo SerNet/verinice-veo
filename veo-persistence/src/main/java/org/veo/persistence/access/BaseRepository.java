@@ -23,8 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import lombok.RequiredArgsConstructor;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
@@ -34,6 +32,8 @@ import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public abstract class BaseRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>

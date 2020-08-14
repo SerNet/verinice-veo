@@ -18,12 +18,12 @@ package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Person;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "person")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

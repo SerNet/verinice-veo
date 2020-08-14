@@ -16,9 +16,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import org.veo.adapter.presenter.api.common.IModelObjectReference;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Swagger documentation for the reference 'owner' of 'Process':

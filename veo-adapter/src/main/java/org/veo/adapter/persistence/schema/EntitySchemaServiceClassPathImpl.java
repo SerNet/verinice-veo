@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.SchemaIdentifiersDTO;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Returns a static JSON file of the full entity from classpath. Ignores the

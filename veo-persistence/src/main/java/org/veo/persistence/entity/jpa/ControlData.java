@@ -18,12 +18,12 @@ package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.ModelPackage;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "control")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)

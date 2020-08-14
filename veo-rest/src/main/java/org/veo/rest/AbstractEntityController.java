@@ -29,8 +29,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
@@ -43,6 +41,8 @@ import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.rest.security.ApplicationUser;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 // TODO: VEO-115 this class (which is not abstract) is extended by controllers. Instead it should be a separate service.
 // Having this here also forces the controllers to start their own transaction. That means we are back to the OSIV-pattern

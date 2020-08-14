@@ -24,12 +24,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.persistence.entity.jpa.AssetData;
+
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "asset_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
