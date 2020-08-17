@@ -3,3 +3,6 @@ FROM alpine:latest
 RUN apk update
 RUN apk add npm
 RUN npm install -g ajv-cli
+
+# required to support strict keyword checking:
+COPY ./misc/ajv/options.js /usr/lib/node_modules/ajv-cli/commands/options.js

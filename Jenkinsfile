@@ -89,7 +89,7 @@ pipeline {
                     find veo-adapter/build/generated_entity_schemas/schemas/entity -type f | {
                         while read schemaFile
                         do
-                            if ! ajv compile -s $schemaFile
+                            if ! ajv compile --all-errors --json-pointers --strict-keywords -s $schemaFile
                             then
                                failure=1
                             fi
