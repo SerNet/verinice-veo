@@ -60,6 +60,16 @@ task generateEntitySchemas(type: JavaExec) {
     ]
 }
 
+task validateEntitySchemas(type: Exec) {
+    workingDir rootProject.projectDir
+    commandLine 'docker', 'build', '-t', 'verinice-veo:ajv', '-f', 'Dockerfile.ajv', '.'
+    commandLine 'bash', '-e', '-c', """
+        docker run --rm -v `pwd`:/mnt verinice-veo:ajv \
+        sh -e -c 'find /mnt/veo-adapter/build/generated_entity_schemas/schemas/entity -type f \
+        -exec ajv compile --all-errors --json-pointers --strict-keywords -s {} \\;'
+    """
+}
+
 plugins.withId('eclipse'){
     eclipse {
         synchronizationTasks generateEntitySchemas
