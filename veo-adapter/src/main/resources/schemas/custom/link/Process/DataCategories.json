@@ -47,21 +47,23 @@
       },
       "attributes": {
         "type": "object",
-        "process_DataCategories_dataOrigin": {
-          "title": "Data Origin",
-          "enum": [
-            "process_DataCategories_dataOrigin_direct",
-            "process_DataCategories_dataOrigin_transmission",
-            "process_DataCategories_dataOrigin_other"
-          ]
-        },
-        "process_DataCategories_otherOrigin": {
-          "title": "Other Origin",
-          "type": "string"
-        },
-        "process_DataCategories_comment": {
-          "title": "Comment",
-          "type": "string"
+        "properties": {
+          "process_DataCategories_dataOrigin": {
+            "title": "Data Origin",
+            "enum": [
+              "process_DataCategories_dataOrigin_direct",
+              "process_DataCategories_dataOrigin_transmission",
+              "process_DataCategories_dataOrigin_other"
+            ]
+          },
+          "process_DataCategories_otherOrigin": {
+            "title": "Other Origin",
+            "type": "string"
+          },
+          "process_DataCategories_comment": {
+            "title": "Comment",
+            "type": "string"
+          }
         }
       },
       "source": {

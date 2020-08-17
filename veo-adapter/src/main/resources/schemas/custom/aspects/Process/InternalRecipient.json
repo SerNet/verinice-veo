@@ -21,8 +21,8 @@
     },
     "attributes": {
       "type": "object",
-      "process_InternalRecipient_InternalRecipient": {
-        "tags": {
+      "properties": {
+        "process_InternalRecipient_InternalRecipient": {
           "title": "Internal Recipient?",
           "type": "boolean"
         }

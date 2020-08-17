@@ -21,8 +21,8 @@
     },
     "attributes": {
       "type": "object",
-      "process_JointControllership_jointResponsiblePersons": {
-        "tags": {
+      "properties": {
+        "process_JointControllership_jointResponsiblePersons": {
           "title": "Joint Responsible Persons?",
           "type": "boolean"
         }

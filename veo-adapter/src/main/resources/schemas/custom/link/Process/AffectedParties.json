@@ -47,9 +47,11 @@
       },
       "attributes": {
         "type": "object",
-        "process_AffectedParties_supplementaryInformation": {
-          "title": "Supplementary information",
-          "type": "string"
+        "properties": {
+          "process_AffectedParties_supplementaryInformation": {
+            "title": "Supplementary information",
+            "type": "string"
+          }
         }
       },
       "source": {

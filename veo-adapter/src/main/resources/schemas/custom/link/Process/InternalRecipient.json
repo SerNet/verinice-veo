@@ -15,18 +15,20 @@
       },
       "attributes": {
         "type": "object",
-        "process_InternalRecipient_purpose": {
-          "title": "Purpose of the internal data transfer",
-          "type": "string"
-        },
-        "process_InternalRecipient_explanation": {
-          "title": "Explanation",
-          "type": "string"
-        },
-        "process_InternalRecipient_document": {
-          "title": "Document",
-          "type": "string",
-          "format": "uri"
+        "properties": {
+          "process_InternalRecipient_purpose": {
+            "title": "Purpose of the internal data transfer",
+            "type": "string"
+          },
+          "process_InternalRecipient_explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "process_InternalRecipient_document": {
+            "title": "Document",
+            "type": "string",
+            "format": "uri"
+          }
         }
       },
       "domains": {

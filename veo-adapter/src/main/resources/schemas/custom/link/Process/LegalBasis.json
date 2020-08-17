@@ -15,14 +15,16 @@
       },
       "attributes": {
         "type": "object",
-        "process_LegalBasis_explanation": {
-          "title": "Explanation",
-          "type": "string"
-        },
-        "process_LegalBasis_document": {
-          "title": "Document",
-          "type": "string",
-          "format": "uri"
+        "properties": {
+          "process_LegalBasis_explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "process_LegalBasis_document": {
+            "title": "Document",
+            "type": "string",
+            "format": "uri"
+          }
         }
       },
       "domains": {
