@@ -44,8 +44,8 @@ public class UnitHierarchyProvider {
      */
     public Set<Unit> findAllInRoot(Key<UUID> rootUnitId) {
         Unit root = unitRepository.findById(rootUnitId)
-                                  .orElseThrow(() -> new NotFoundException("Invalid parent ID: %s",
-                                          rootUnitId));
+                                  .orElseThrow(() -> new NotFoundException(
+                                          "No Unit found with ID %s", rootUnitId));
         var units = new HashSet<Unit>();
         addUnitHierarchyToSet(root, units);
         return units;

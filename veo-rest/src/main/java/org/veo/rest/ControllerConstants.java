@@ -22,9 +22,10 @@ package org.veo.rest;
 // @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public final class ControllerConstants {
 
+    static final String PARENT_PARAM = "parent";
     static final String UUID_PARAM = "uuid";
     static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";
-    static final String PARENT_PARAM = "parent";
+    static final String UNIT_PARAM = "unit";
 
     static final String UUID_DEFINITION = "This is the normalized UUID representation:\n"
             + "* a block of 8 HEX chars followed by\n* 3 blocks of 4 HEX chars followed by\n"

@@ -342,7 +342,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
                     [assetGroup1, assetGroup2].collect(assetRepository.&save)
                 }
         when: "a request is made to the server for all assets groups of a unit"
-        def results = get("/groups?parent=${unit.id.uuidValue()}&type=Asset")
+        def results = get("/groups?unit=${unit.id.uuidValue()}&type=Asset")
 
         then: "the respective asset group is returned"
         results.andExpect(status().isOk())
@@ -355,7 +355,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         result.first().owner.href == "/units/${unit.id.uuidValue()}"
 
         when: "a request is made to the server for all assets groups of another unit"
-        results = get("/groups?parent=${unit2.id.uuidValue()}&type=Asset")
+        results = get("/groups?unit=${unit2.id.uuidValue()}&type=Asset")
 
         then: "the respective asset group is returned"
         results.andExpect(status().isOk())

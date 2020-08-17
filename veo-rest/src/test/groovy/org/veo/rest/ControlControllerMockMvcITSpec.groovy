@@ -231,7 +231,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/controls?parent=${unit.id.uuidValue()}")
+        def results = get("/controls?unit=${unit.id.uuidValue()}")
 
         then: "the controls are returned"
         results.andExpect(status().isOk())
@@ -262,7 +262,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/controls?parent=${unit.id.uuidValue()}")
+        def results = get("/controls?unit=${unit.id.uuidValue()}")
 
         then: "the controls are returned"
         results.andExpect(status().isOk())

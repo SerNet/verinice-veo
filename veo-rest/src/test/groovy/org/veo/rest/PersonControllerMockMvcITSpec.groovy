@@ -166,7 +166,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/persons?parent=${unit.id.uuidValue()}")
+        def results = get("/persons?unit=${unit.id.uuidValue()}")
 
         then: "the persons are returned"
         results.andExpect(status().isOk())

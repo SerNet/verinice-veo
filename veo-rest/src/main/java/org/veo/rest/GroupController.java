@@ -17,7 +17,7 @@
 package org.veo.rest;
 
 import static org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer.transformEntityLayerSupertype2Dto;
-import static org.veo.rest.ControllerConstants.PARENT_PARAM;
+import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
@@ -130,12 +130,12 @@ public class GroupController extends AbstractEntityController {
             @ApiResponse(responseCode = "404", description = "Group not found") })
     public @Valid CompletableFuture<List<EntityLayerSupertypeGroupDto>> getGroups(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
-                                               required = false) String parentUuid,
+            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
+                                               required = false) String unitUuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getGroupsUseCase, new GetGroupsUseCase.InputData(
-                getAuthenticatedClient(auth), type, Optional.ofNullable(parentUuid)), output -> {
+                getAuthenticatedClient(auth), type, Optional.ofNullable(unitUuid)), output -> {
 
                     List<EntityLayerSupertypeGroupDto> collect = output.getGroups()
                                                                        .stream()

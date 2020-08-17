@@ -720,7 +720,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/processes?parent=${unit.id.uuidValue()}")
+        def results = get("/processes?unit=${unit.id.uuidValue()}")
 
         then: "the processes are returned"
         results.andExpect(status().isOk())
@@ -734,7 +734,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.first().owner.href == "/units/"+unit.id.uuidValue()
 
         when: "a request is made to the server"
-        results = get("/processes?parent=${unit2.id.uuidValue()}")
+        results = get("/processes?unit=${unit2.id.uuidValue()}")
 
         then: "the processes are returned"
         results.andExpect(status().isOk())

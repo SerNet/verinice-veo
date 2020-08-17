@@ -512,7 +512,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/assets?parent={{unitId}}",
+              "raw": "{{baseUrl}}/assets?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -534,7 +534,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "raw": "{{baseUrl}}/assets?unit=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -759,7 +759,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/processes?parent={{unitId}}",
+              "raw": "{{baseUrl}}/processes?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -781,7 +781,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "raw": "{{baseUrl}}/assets?unit=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -926,7 +926,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/persons?parent={{unitId}}",
+              "raw": "{{baseUrl}}/persons?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -948,7 +948,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "raw": "{{baseUrl}}/assets?unit=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -1208,7 +1208,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/controls?parent={{unitId}}",
+              "raw": "{{baseUrl}}/controls?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1230,7 +1230,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "raw": "{{baseUrl}}/assets?unit=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],

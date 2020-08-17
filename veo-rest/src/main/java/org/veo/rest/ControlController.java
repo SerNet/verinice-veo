@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.veo.rest.ControllerConstants.PARENT_PARAM;
+import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
@@ -103,11 +103,11 @@ public class ControlController extends AbstractEntityController {
     @Operation(summary = "Loads all controls")
     public @Valid CompletableFuture<List<ControlDto>> getControls(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
-                                               required = false) String parentUuid) {
+            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
+                                               required = false) String unitUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getControlsUseCase, new GetControlsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
+                getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {
                     return output.getEntities()
                                  .stream()
                                  .map(u -> ControlDto.from(u, tcontext))

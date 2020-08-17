@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import static org.veo.rest.ControllerConstants.PARENT_PARAM;
+import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
@@ -102,11 +102,11 @@ public class AssetController extends AbstractEntityController {
     @Operation(summary = "Loads all assets")
     public @Valid CompletableFuture<List<AssetDto>> getAssets(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
-                                               required = false) String parentUuid) {
+            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
+                                               required = false) String unitUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getAssetsUseCase, new GetAssetsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(parentUuid)), output -> {
+                getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {
                     return output.getEntities()
                                  .stream()
                                  .map(u -> AssetDto.from(u, tcontext))

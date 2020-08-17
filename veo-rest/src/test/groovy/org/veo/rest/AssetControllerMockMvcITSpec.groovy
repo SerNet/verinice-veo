@@ -290,7 +290,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/assets?parent=${unit.id.uuidValue()}")
+        def results = get("/assets?unit=${unit.id.uuidValue()}")
 
         then: "the assets are returned"
         results.andExpect(status().isOk())
@@ -303,7 +303,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.first().owner.href == "/units/"+unit.id.uuidValue()
 
         when: "a request is made to the server"
-        results = get("/assets?parent=${unit2.id.uuidValue()}")
+        results = get("/assets?unit=${unit2.id.uuidValue()}")
 
         then: "the assets are returned"
         results.andExpect(status().isOk())
@@ -330,7 +330,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         assetRepository.save(entityFactory.createAsset(Key.newUuid(), "asset 1", subSubUnit))
 
         when: "all assets for the root unit are queried"
-        def results = get("/assets?parent=${unit.id.uuidValue()}")
+        def results = get("/assets?unit=${unit.id.uuidValue()}")
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         then: "both assets from the unit's hierarchy are returned"
         with(result.sort{it.name}) {
