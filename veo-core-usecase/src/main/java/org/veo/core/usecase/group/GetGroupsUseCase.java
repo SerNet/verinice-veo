@@ -18,7 +18,6 @@ package org.veo.core.usecase.group;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -27,13 +26,12 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
-import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
-import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
@@ -45,13 +43,13 @@ public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertyp
 
     private final RepositoryProvider repositoryProvider;
     private final ClientRepository clientRepository;
-    private final UnitRepository unitRepository;
+    private final UnitHierarchyProvider unitHierarchyProvider;
 
-    public GetGroupsUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
-            RepositoryProvider repositoryProvider) {
+    public GetGroupsUseCase(ClientRepository clientRepository,
+            RepositoryProvider repositoryProvider, UnitHierarchyProvider unitHierarchyProvider) {
         this.clientRepository = clientRepository;
         this.repositoryProvider = repositoryProvider;
-        this.unitRepository = unitRepository;
+        this.unitHierarchyProvider = unitHierarchyProvider;
     }
 
     /**
@@ -71,13 +69,9 @@ public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertyp
                  .isEmpty()) {
             return new OutputData<T>((List<T>) groupRepository.findGroupsByClient(client));
         } else {
-            Key<UUID> parentId = Key.uuidFrom(input.getUnitUuid()
-                                                   .get());
-            Unit owner = unitRepository.findById(parentId)
-                                       .orElseThrow(() -> new NotFoundException(
-                                               "Invalid parent ID: %s", input.getUnitUuid()
-                                                                             .get()));
-            return new OutputData<T>((List<T>) groupRepository.findGroupsByUnit(owner));
+            var units = unitHierarchyProvider.findAllInRoot(Key.uuidFrom(input.getUnitUuid()
+                                                                              .get()));
+            return new OutputData<T>((List<T>) groupRepository.findGroupsByUnits(units));
         }
     }
 

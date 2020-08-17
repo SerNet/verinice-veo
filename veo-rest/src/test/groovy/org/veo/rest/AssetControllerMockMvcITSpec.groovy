@@ -317,6 +317,30 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "retrieve all assets for a unit recursively"() {
+        given: "A sub unit and a sub sub unit with one asset each"
+
+        def subUnit = entityFactory.createUnit(Key.newUuid(), "Sub unit", unit)
+        unitRepository.save(subUnit)
+
+        def subSubUnit = entityFactory.createUnit(Key.newUuid(), "Sub sub unit", subUnit)
+        unitRepository.save(subSubUnit)
+
+        assetRepository.save(entityFactory.createAsset(Key.newUuid(), "asset 0", subUnit))
+        assetRepository.save(entityFactory.createAsset(Key.newUuid(), "asset 1", subSubUnit))
+
+        when: "all assets for the root unit are queried"
+        def results = get("/assets?parent=${unit.id.uuidValue()}")
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "both assets from the unit's hierarchy are returned"
+        with(result.sort{it.name}) {
+            size == 2
+            it[0].name == "asset 0"
+            it[1].name == "asset 1"
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
     def "put an asset"() {
         given: "a saved asset"
 

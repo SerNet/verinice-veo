@@ -22,14 +22,12 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.control.GetControlsUseCase
 import org.veo.core.usecase.repository.ControlRepository
-import org.veo.core.usecase.repository.UnitRepository
 
 class GetControlsUseCaseSpec extends UseCaseSpec {
 
     ControlRepository controlRepository = Mock()
-    UnitRepository unitRepository = Mock()
 
-    GetControlsUseCase usecase = new GetControlsUseCase(clientRepository, controlRepository, unitRepository)
+    GetControlsUseCase usecase = new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider)
 
     def "retrieve all controls for a client"() {
         given:
@@ -60,8 +58,8 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * unitRepository.findById(existingUnit.id) >> Optional.of(existingUnit)
-        1 * controlRepository.findByUnit(existingUnit, false) >> [control]
+        1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
+        1 * controlRepository.findByUnits(existingUnitHierarchyMembers) >> [control]
         output.entities*.id == [id]
     }
 }

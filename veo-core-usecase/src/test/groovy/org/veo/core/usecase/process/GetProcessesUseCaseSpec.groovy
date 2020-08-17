@@ -27,9 +27,8 @@ import org.veo.core.usecase.repository.UnitRepository
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
-    UnitRepository unitRepository = Mock()
 
-    GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitRepository)
+    GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider)
 
     def "retrieve all processes for a client"() {
         given:
@@ -49,7 +48,6 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all processes for a unit"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Process process = Mock() {
             getOwner() >> existingUnit
@@ -59,8 +57,8 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * unitRepository.findById(existingUnit.id) >> Optional.of(existingUnit)
-        1 * processRepository.findByUnit(existingUnit, false) >> [process]
+        1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
+        1 * processRepository.findByUnits(existingUnitHierarchyMembers) >> [process]
         output.entities*.id == [id]
     }
 }

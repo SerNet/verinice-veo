@@ -23,14 +23,12 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.person.GetPersonsUseCase
 import org.veo.core.usecase.repository.PersonRepository
-import org.veo.core.usecase.repository.UnitRepository
 
 class GetPersonsUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
-    UnitRepository unitRepository = Mock()
 
-    GetPersonsUseCase usecase = new GetPersonsUseCase(clientRepository, personRepository, unitRepository)
+    GetPersonsUseCase usecase = new GetPersonsUseCase(clientRepository, personRepository, unitHierarchyProvider)
 
     def "retrieve all persons for a client"() {
         given:
@@ -56,15 +54,7 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
     def "retrieve all persons for a unit"() {
         given:
         def id = Key.newUuid()
-        Person p = Mock()
-        p.getId() >> id
-        p.getOwner >> existingUnit
 
-        EntityFactory factory = Mock()
-        factory.createPerson()>> p
-
-        TransformTargetToEntityContext targetToEntityContext = Mock()
-        targetToEntityContext.entityFactory >> factory
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
@@ -74,8 +64,8 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
         then:
 
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * unitRepository.findById(existingUnit.id) >> Optional.of(existingUnit)
-        1 * personRepository.findByUnit(existingUnit, false) >> [person]
+        1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
+        1 * personRepository.findByUnits(existingUnitHierarchyMembers) >> [person]
         output.entities*.id == [id]
     }
 }

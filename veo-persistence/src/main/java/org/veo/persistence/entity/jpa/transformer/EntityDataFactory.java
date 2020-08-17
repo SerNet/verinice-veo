@@ -155,6 +155,9 @@ public class EntityDataFactory implements EntityFactory {
         unit.setId(id);
         unit.setName(name);
         unit.setParent(parent);
+        if (parent != null) {
+            unit.setClient(parent.getClient());
+        }
         unit.setDomains(new HashSet<Domain>());
         return unit;
     }

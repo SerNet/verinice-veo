@@ -18,22 +18,18 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Key
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.asset.GetAssetsUseCase
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.repository.AssetRepository
-import org.veo.core.usecase.repository.UnitRepository
 
 class GetAssetsUseCaseSpec extends UseCaseSpec {
 
     AssetRepository assetRepository = Mock()
-    UnitRepository unitRepository = Mock()
 
-    GetAssetsUseCase usecase = new GetAssetsUseCase(clientRepository, assetRepository, unitRepository)
+    GetAssetsUseCase usecase = new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider)
 
     def "retrieve all assets for a client"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Asset asset = Mock() {
             getOwner() >> existingUnit
@@ -50,7 +46,6 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all assets for a unit"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Asset asset = Mock() {
             getOwner() >> existingUnit
@@ -60,8 +55,8 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * unitRepository.findById(existingUnit.id) >> Optional.of(existingUnit)
-        1 * assetRepository.findByUnit(existingUnit, false) >> [asset]
+        1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
+        1 * assetRepository.findByUnits(existingUnitHierarchyMembers) >> [asset]
         output.entities*.id == [id]
     }
 }

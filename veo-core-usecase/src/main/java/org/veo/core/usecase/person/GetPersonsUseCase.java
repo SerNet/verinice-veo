@@ -18,9 +18,9 @@ package org.veo.core.usecase.person;
 
 import org.veo.core.entity.Person;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
+import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.PersonRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Reinstantiate persisted person objects.
@@ -28,7 +28,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 public class GetPersonsUseCase<R> extends GetEntitiesUseCase<Person, R> {
 
     public GetPersonsUseCase(ClientRepository clientRepository, PersonRepository personRepository,
-            UnitRepository unitRepository) {
-        super(clientRepository, personRepository, unitRepository);
+            UnitHierarchyProvider unitHierarchyProvider) {
+        super(clientRepository, personRepository, unitHierarchyProvider);
     }
 }

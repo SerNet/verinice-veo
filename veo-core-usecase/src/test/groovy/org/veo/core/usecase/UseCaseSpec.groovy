@@ -21,6 +21,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.TransformContextProvider
+import org.veo.core.usecase.base.UnitHierarchyProvider
 import org.veo.core.usecase.repository.ClientRepository
 import org.veo.core.usecase.repository.RepositoryProvider
 import org.veo.core.usecase.repository.UnitRepository
@@ -34,9 +35,10 @@ abstract class UseCaseSpec extends Specification {
 
     Client existingClient
     Unit existingUnit
+    Set<Unit> existingUnitHierarchyMembers
     ClientRepository clientRepository = Mock()
+    UnitHierarchyProvider unitHierarchyProvider = Mock()
     UnitRepository unitRepository = Mock()
-    TransformContextProvider transformContextProvider = Mock()
     RepositoryProvider repositoryProvider = Mock()
     EntityFactory entityFactory = Mock()
 
@@ -54,6 +56,12 @@ abstract class UseCaseSpec extends Specification {
         existingUnit.getParent() >> null
         existingUnit.getName() >> "Existing unit"
         existingUnit.getId() >> Key.newUuid()
+
+        existingUnitHierarchyMembers = [
+            existingUnit,
+            Mock(Unit),
+            Mock(Unit)
+        ]
 
         client.createUnit(_)>>existingUnit
     }

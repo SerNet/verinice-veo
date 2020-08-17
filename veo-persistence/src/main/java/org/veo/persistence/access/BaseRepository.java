@@ -95,29 +95,29 @@ public abstract class BaseRepository<T extends EntityLayerSupertype, S extends E
     }
 
     @Override
-    public List<T> findByUnit(Unit unit, boolean includeGroups) {
-        List<S> list = Collections.emptyList();
-        if (includeGroups) {
-            list = dataRepository.findByOwner_DbId(unit.getId()
-                                                       .uuidValue());
-        } else {
-            list = dataRepository.findEntitiesByOwner_DbId(unit.getId()
-                                                               .uuidValue());
-        }
-        return (List<T>) list;
+    public List<T> findByUnits(Set<Unit> units) {
+        var unitIdSet = units.stream()
+                             .map(unit -> unit.getId()
+                                              .uuidValue())
+                             .collect(Collectors.toSet());
+        return (List<T>) dataRepository.findByUnits(unitIdSet);
     }
 
     @Override
-    public List<ModelGroup<T>> findGroupsByClient(Client client) {
-        return dataRepository.findGroupsByOwner_Client_DbId(client.getDbId())
+    public List<ModelGroup<T>> findGroupsByUnits(Set<Unit> units) {
+        var unitIdSet = units.stream()
+                             .map(unit -> unit.getId()
+                                              .uuidValue())
+                             .collect(Collectors.toSet());
+        return dataRepository.findGroupsByUnits(unitIdSet)
                              .stream()
                              .map(data -> (ModelGroup<T>) data)
                              .collect(Collectors.toList());
     }
 
     @Override
-    public List<ModelGroup<T>> findGroupsByUnit(Unit unit) {
-        return dataRepository.findGroupsByOwner_DbId(unit.getDbId())
+    public List<ModelGroup<T>> findGroupsByClient(Client client) {
+        return dataRepository.findGroupsByOwner_Client_DbId(client.getDbId())
                              .stream()
                              .map(data -> (ModelGroup<T>) data)
                              .collect(Collectors.toList());

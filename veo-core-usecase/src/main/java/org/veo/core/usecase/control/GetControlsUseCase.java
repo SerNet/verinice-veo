@@ -18,9 +18,9 @@ package org.veo.core.usecase.control;
 
 import org.veo.core.entity.Control;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
+import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.ControlRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 /**
  * Reinstantiate persisted control objects.
@@ -28,7 +28,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 public class GetControlsUseCase<R> extends GetEntitiesUseCase<Control, R> {
 
     public GetControlsUseCase(ClientRepository clientRepository,
-            ControlRepository controlRepository, UnitRepository unitRepository) {
-        super(clientRepository, controlRepository, unitRepository);
+            ControlRepository controlRepository, UnitHierarchyProvider unitHierarchyProvider) {
+        super(clientRepository, controlRepository, unitHierarchyProvider);
     }
 }

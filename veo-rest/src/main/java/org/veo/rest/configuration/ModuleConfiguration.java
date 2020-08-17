@@ -27,6 +27,7 @@ import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
@@ -82,8 +83,8 @@ public class ModuleConfiguration {
 
     @Bean
     public GetAssetsUseCase getAssetsUseCase(ClientRepositoryImpl clientRepository,
-            AssetRepositoryImpl assetRepository, UnitRepository unitRepository) {
-        return new GetAssetsUseCase(clientRepository, assetRepository, unitRepository);
+            AssetRepositoryImpl assetRepository, UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider);
     }
 
     @Bean
@@ -104,8 +105,8 @@ public class ModuleConfiguration {
 
     @Bean
     public GetControlsUseCase getControlsUseCase(ClientRepositoryImpl clientRepository,
-            ControlRepositoryImpl controlRepository, UnitRepository unitRepository) {
-        return new GetControlsUseCase(clientRepository, controlRepository, unitRepository);
+            ControlRepositoryImpl controlRepository, UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider);
     }
 
     @Bean
@@ -142,8 +143,8 @@ public class ModuleConfiguration {
 
     @Bean
     public GetProcessesUseCase getProcessesUseCase(ClientRepository clientRepository,
-            ProcessRepository processRepository, UnitRepository unitRepository) {
-        return new GetProcessesUseCase(clientRepository, processRepository, unitRepository);
+            ProcessRepository processRepository, UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider);
     }
 
     @Bean
@@ -176,8 +177,8 @@ public class ModuleConfiguration {
 
     @Bean
     public GetPersonsUseCase getPersonsUseCase(ClientRepositoryImpl clientRepository,
-            PersonRepositoryImpl personRepository, UnitRepository unitRepository) {
-        return new GetPersonsUseCase(clientRepository, personRepository, unitRepository);
+            PersonRepositoryImpl personRepository, UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetPersonsUseCase(clientRepository, personRepository, unitHierarchyProvider);
     }
 
     @Bean
@@ -199,8 +200,8 @@ public class ModuleConfiguration {
 
     @Bean
     public GetGroupsUseCase getGroupsUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepository unitRepository, RepositoryProvider repositoryProvider) {
-        return new GetGroupsUseCase(clientRepository, unitRepository, repositoryProvider);
+            UnitHierarchyProvider unitHierarchyProvider, RepositoryProvider repositoryProvider) {
+        return new GetGroupsUseCase(clientRepository, repositoryProvider, unitHierarchyProvider);
     }
 
     @Bean
@@ -227,5 +228,10 @@ public class ModuleConfiguration {
     @Bean
     public EntityFactory getEntityFactory() {
         return new EntityDataFactory();
+    }
+
+    @Bean
+    public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
+        return new UnitHierarchyProvider(unitRepository);
     }
 }

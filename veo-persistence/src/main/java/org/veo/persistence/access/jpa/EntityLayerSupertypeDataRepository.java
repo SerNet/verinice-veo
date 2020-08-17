@@ -18,6 +18,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -30,9 +31,13 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
 
     Collection<T> findByNameContainingIgnoreCase(String search);
 
-    List<T> findByOwner_DbId(String ownerId);
-
     List<T> findByOwner_Client_DbId(String clientId); // NOPMD
+
+    @Query("select e from #{#entityName} as e where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
+    List<T> findByUnits(Set<String> unitIds);
+
+    @Query("select e from #{#entityName} as e where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
+    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
 
     @Query("select e from #{#entityName} as e where e.owner.dbId = ?1 and type(e) = #{#entityName}")
     @Deprecated
@@ -52,8 +57,6 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
 
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(
             String uuidValue);
-
-    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_DbId(String uuidValue);
 
     List<T> findByLinks_Target_DbId(String uuidValue);
 

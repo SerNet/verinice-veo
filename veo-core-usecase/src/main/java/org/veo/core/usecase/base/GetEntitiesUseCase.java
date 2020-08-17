@@ -18,19 +18,16 @@ package org.veo.core.usecase.base;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
@@ -42,13 +39,14 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, R>
 
     private final EntityLayerSupertypeRepository<T> repository;
     private final ClientRepository clientRepository;
-    private final UnitRepository unitRepository;
+    private final UnitHierarchyProvider unitHierarchyProvider;
 
     public GetEntitiesUseCase(ClientRepository clientRepository,
-            EntityLayerSupertypeRepository<T> repository, UnitRepository unitRepository) {
+            EntityLayerSupertypeRepository<T> repository,
+            UnitHierarchyProvider unitHierarchyProvider) {
         this.clientRepository = clientRepository;
         this.repository = repository;
-        this.unitRepository = unitRepository;
+        this.unitHierarchyProvider = unitHierarchyProvider;
     }
 
     /**
@@ -66,15 +64,10 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, R>
                  .isEmpty()) {
             return new OutputData<>(repository.findByClient(client, false));
         } else {
-            Key<UUID> parentId = Key.uuidFrom(input.getUnitUuid()
-                                                   .get());
-            Unit owner = unitRepository.findById(parentId)
-                                       .orElseThrow(() -> new NotFoundException(
-                                               "Invalid parent ID: %s", input.getUnitUuid()
-                                                                             .get()));
-            return new OutputData<>(repository.findByUnit(owner, false));
+            var units = unitHierarchyProvider.findAllInRoot(Key.uuidFrom(input.getUnitUuid()
+                                                                              .get()));
+            return new OutputData<>(repository.findByUnits(units));
         }
-
     }
 
     @Valid
