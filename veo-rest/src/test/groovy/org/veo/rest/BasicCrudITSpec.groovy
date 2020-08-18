@@ -101,8 +101,8 @@ class BasicCrudITSpec extends VeoMvcSpec {
         def processId = result.resourceId
         def process = txTemplate.execute{
             processRepository.findById(Key.uuidFrom(processId)).tap {
-                // initialize links proxy
-                it.ifPresent(it.get().getLinks())
+                // initialize hibernate proxies
+                it.ifPresent{ it.links.first().target.id }
             }
         }
         then:
