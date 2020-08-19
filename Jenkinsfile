@@ -71,8 +71,7 @@ pipeline {
                 }
             }
             steps {
-                // Don't fail the build here, let the junit step decide what to do if there are test failures.
-                sh script: './gradlew --no-daemon test', returnStatus: true
+                sh './gradlew --no-daemon test'
                 jacoco classPattern: '**/build/classes/java/main'
                 junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
             }
