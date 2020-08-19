@@ -31,11 +31,11 @@ dependencies {
 
     testRuntimeOnly 'com.h2database:h2'
 
-    generateSchemas 'com.github.victools:jsonschema-generator:4.13.0'
+    generateSchemas 'com.github.victools:jsonschema-generator:4.14.0'
     generateSchemas 'com.github.victools:jsonschema-module-jackson:[4.10.0,5.0.0)'
     generateSchemas 'com.github.victools:jsonschema-module-javax-validation:[4.10.0,5.0.0)'
     generateSchemas 'com.github.victools:jsonschema-module-swagger-2:[4.10.0,5.0.0)'
-    generateSchemas 'io.swagger.core.v3:swagger-annotations:2.1.2'
+    generateSchemas 'io.swagger.core.v3:swagger-annotations:2.1.4'
 }
 
 task generateEntitySchemas(type: JavaExec) {
