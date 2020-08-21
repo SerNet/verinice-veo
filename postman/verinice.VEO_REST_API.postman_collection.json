@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "43fd2c3c-86d7-4ee0-ad0c-9190ac9c3586",
+    "_postman_id": "88a33d35-115f-4c91-a9e3-bc3219bfed98",
     "name": "verinice.VEO REST API",
     "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -15,7 +15,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "03ef7120-a768-4a27-b524-069fe363188d",
+                "id": "42469543-d9ee-4182-8154-8fba27a680a7",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -33,7 +33,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "d75440e2-c84b-4f9a-b684-e36d30245d86",
+                "id": "4a83b7ae-c9bf-4aa3-9a5c-c05b9a1fcc4c",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -103,7 +103,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3ce82dbc-4e6e-47a4-af3a-1c6e98aba1e8",
+                "id": "9c30c61d-afb3-4e88-b93e-3603061986b4",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -214,7 +214,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "225b7d96-d067-49cc-924c-5cbcf1e3fe91",
+                "id": "a0f87628-735e-4b84-b3b9-49f03958bea5",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -287,7 +287,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "a82145c8-84ad-46b0-a9de-24447a71f394",
+                "id": "98355369-7dad-4dc3-95e7-caec6dc80dfd",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -297,7 +297,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "443ed031-d5f5-4191-979f-9349e4ce45af",
+                "id": "de42c5c6-6c98-4707-a66d-81810dcbf015",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -375,7 +375,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f331f30e-a848-432f-8a7c-8fd49a8a2a3e",
+                "id": "11a8a8ce-c93a-4a2b-9634-b93d068232f2",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -408,47 +408,14 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
           },
           "response": [
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
             {
               "name": "Asset not found",
               "originalRequest": {
@@ -481,6 +448,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Asset loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
         },
@@ -490,7 +490,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "5774c3ae-2cf0-4781-821c-10192ca284c9",
+                "id": "89ca6f81-ac76-4050-b2c0-720842d9f8e0",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -521,7 +521,7 @@
               ],
               "query": [
                 {
-                  "key": "parent",
+                  "key": "unit",
                   "value": "{{unitId}}"
                 }
               ]
@@ -534,7 +534,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?unit=<string>",
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -569,7 +569,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "7295f751-db09-43ba-89d8-3f1068f74b1d",
+                "id": "1b236d3b-2e9e-4e9f-9e35-f633dcb19824",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -579,7 +579,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "98282c37-2ba5-45eb-8be1-f6e91c463829",
+                "id": "5f9b9d9d-b810-4ac6-ab3f-738161cf8737",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -657,7 +657,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "7dcbc2a6-12c7-4d9c-9512-a8d764a99cfe",
+                "id": "ffcffac4-dd85-453f-a53e-d37f72a60da6",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -737,7 +737,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9e006e16-82b7-473b-b9ea-f8d2984ba428",
+                "id": "c509ae41-563f-4f26-8ec4-94755aa14408",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -768,7 +768,7 @@
               ],
               "query": [
                 {
-                  "key": "parent",
+                  "key": "unit",
                   "value": "{{unitId}}"
                 }
               ]
@@ -781,7 +781,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?unit=<string>",
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -816,7 +816,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "c3d9bc04-7720-4fb6-9700-4e7567fe58b9",
+                "id": "49d45c26-d23f-4d1b-b30c-4e48c2b77c95",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -826,7 +826,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "5ac75978-4fb6-4d0c-9f92-261f1205ff0e",
+                "id": "0f5d90e1-3cb7-494b-976d-27b8990151dd",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -904,7 +904,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3e8c8f4d-cdc6-435e-b9ee-80772d57e44f",
+                "id": "70056bb2-9f8a-4420-a24a-8c656adf2ed3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -935,7 +935,7 @@
               ],
               "query": [
                 {
-                  "key": "parent",
+                  "key": "unit",
                   "value": "{{unitId}}"
                 }
               ]
@@ -948,7 +948,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?unit=<string>",
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -983,7 +983,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "17bd1b75-5c47-41f7-9858-2006c3c4c716",
+                "id": "d52df1e3-f0eb-44f8-a489-548c793d9372",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1016,9 +1016,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1098,7 +1098,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "ba11b58b-1c26-44c4-8cc7-5938e4135d9d",
+                "id": "f5c3e903-0a2f-454f-829f-94594b77e341",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -1108,7 +1108,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "53ef32aa-6641-4d08-beed-f9665a5c3745",
+                "id": "0f9f9b85-dbc5-4928-aca7-8a55b07e9446",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1186,7 +1186,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "44c6de96-0384-465a-9907-df90ef359307",
+                "id": "128affcf-3ac0-4c93-a968-a81296b371f5",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1217,7 +1217,7 @@
               ],
               "query": [
                 {
-                  "key": "parent",
+                  "key": "unit",
                   "value": "{{unitId}}"
                 }
               ]
@@ -1230,7 +1230,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{baseUrl}}/assets?unit=<string>",
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
@@ -1265,7 +1265,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f607a725-8c73-4342-baea-464b034e9487",
+                "id": "70088ed3-f040-451b-9a0f-9be353deda69",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1298,9 +1298,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1380,7 +1380,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "40ffbf28-3930-4dfb-b1d6-32a8e31c2f47",
+                "id": "d0e21139-b2e4-43a7-b512-c85fa1b11144",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1405,9 +1405,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{processId}}"
+                  "value": "{{processId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1487,7 +1487,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "481a1aca-a2a4-49c7-a43d-76b41ef7e53b",
+                "id": "3da96a07-b51b-4dee-8b13-fbc5f700a03e",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1521,39 +1521,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -1585,6 +1552,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -1594,7 +1594,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "39636913-1649-4250-9199-203876e0d596",
+                "id": "642ed8d3-8f36-4770-847a-2be21283180c",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1628,39 +1628,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -1692,6 +1659,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -1701,7 +1701,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "7917caf2-6e89-46da-a070-8de3b6d9961a",
+                "id": "a8f22a46-8548-4b35-a5e6-aa83bb627bc1",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1726,9 +1726,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1808,7 +1808,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "04848b40-7d2a-446a-9dd1-03992365c870",
+                "id": "6ea8e6e4-1dc4-4115-970a-72aab2833b91",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -1842,39 +1842,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -1906,6 +1873,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -1915,7 +1915,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "632ab1e1-71c8-4a26-87e4-020897e14a0e",
+                "id": "c7944a78-2796-4ef0-bea5-d6e231d4e99a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1933,7 +1933,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "db5b4acd-2346-4049-b364-d32262f768a1",
+                "id": "5eb22ce2-ce75-44ed-ab81-6e1428fe86df",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -2003,7 +2003,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "53a9f51f-877a-4d41-9688-e5077529f7c7",
+                "id": "ce1c32f1-600d-467c-8726-280632cd17a8",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -2013,7 +2013,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a2176c13-b203-4843-8b9a-e1d1665236ca",
+                "id": "586ff073-1226-4102-a0dc-09f36bf8e48d",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2091,7 +2091,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "6b6cb97d-96e0-413f-9750-42f8e8ab0861",
+                "id": "21d55069-5e86-4e91-8dca-adf8c6bdd137",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -2101,7 +2101,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4d425ab0-6866-4b07-8c8e-8dd6910e8f4b",
+                "id": "54373fee-ec1a-4540-b837-d6f19e063947",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2179,7 +2179,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "da926765-ddce-49d1-930b-94a32a6b6b56",
+                "id": "235c9af2-45a5-4607-9401-5dfbe6b75ca2",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2213,9 +2213,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{processId}}"
+                  "value": "{{processId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2262,7 +2262,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "2aab2642-d2eb-44b5-b752-232c27116bbc",
+                "id": "0c84ac33-758b-49c1-870a-1ce5ec597119",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -2272,7 +2272,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "53dc60f3-5f32-4dcb-b1ff-e240bf6c94c0",
+                "id": "72161f91-8a8f-4874-b640-c489d2caf535",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2350,7 +2350,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0ac72982-e0db-47d5-82d6-75558ff97239",
+                "id": "3a868238-ce83-4b18-824a-d7b31f9e16ad",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2467,7 +2467,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "2aebefea-0684-4ab6-9aaf-91d1fa623158",
+                "id": "a2c1470a-79ba-4ab2-a835-abaebd0fcba0",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -2477,7 +2477,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4cf717df-a5f5-45d0-a419-12c44dbb1fb7",
+                "id": "00561db8-fb48-4519-b8dc-df5bc3335f4c",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2560,7 +2560,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "18fe9988-1e6d-461a-a6ad-83ecc5108921",
+                "id": "03f171cf-0fea-481b-a756-4195b2ab375e",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2595,9 +2595,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2677,7 +2677,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "49f99085-6797-4d38-81ff-b122d7022fec",
+                "id": "3d9ffaf5-dc69-48c1-acfe-da3fd359ecb8",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -2687,7 +2687,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "954edfb0-1469-4990-9319-ae97667e1e87",
+                "id": "bf9da7cf-efba-45bc-b93f-5c3c3d4348ef",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2765,7 +2765,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "2b5ca7b0-7e5f-4102-9f89-c064d20c81b0",
+                "id": "db22b5a1-768c-473e-b73e-5eac8b9f1843",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2848,7 +2848,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "dc01878c-0724-4de8-b776-bb679f75b025",
+                "id": "5fc2835d-d0a5-4d78-a17a-99338fe4f15b",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -2858,7 +2858,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "fe7d5165-c92e-4ca1-8ff4-a4c063895b51",
+                "id": "3564984b-56d5-4fd1-ac88-0f6de3a794c3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2936,7 +2936,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ffdac461-d62c-414b-90ea-9e09ef032e1f",
+                "id": "49313f83-2181-4fb5-933b-9ca8ae1d4179",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3015,6 +3015,1762 @@
       "protocolProfileBehavior": {
         
       }
+    },
+    {
+      "name": "Filter functions",
+      "item": [
+        {
+          "name": "Create a unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "71e075fd-1cd9-48e5-bada-03ccb58078cd",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"unitId\", resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "e5ecc8c4-bbc3-46fa-b858-27a8b00bc5f6",
+                "exec": [
+                  "pm.collectionVariables.set('unitName', 'CRUD test unit');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/units",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/units",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "\"<object>\""
+            }
+          ]
+        },
+        {
+          "name": "Create a sub-unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "a4354ae9-48fa-46ac-8dcd-6132e2398042",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"subUnitId\", resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "36c662d1-5589-4b78-a093-5b493798a814",
+                "exec": [
+                  "pm.collectionVariables.set('subUnitName', 'CRUD test sub-unit');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"sub-unit\",\n    \"parent\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/units",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/units",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "\"<object>\""
+            }
+          ]
+        },
+        {
+          "name": "Create an asset inside the sub-unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "94a6ba82-2a91-454d-8e5b-7f18afe01091",
+                "exec": [
+                  "pm.collectionVariables.set('assetName', 'filter test asset');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "23082771-cc62-4f6b-a542-92ec425b0506",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('assetId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a process inside the sub-unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "4f3ee06a-900a-4d90-b1de-9222dc8f4347",
+                "exec": [
+                  "pm.collectionVariables.set('processName', 'filter test process');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "88884cfe-ec97-4d11-80fe-550988707514",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('processId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/processes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "processes"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a person inside the sub-unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "1e35301e-6873-4250-91f9-78a35da1ef9d",
+                "exec": [
+                  "pm.collectionVariables.set('personName', 'filter test person');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "4fc3490d-d814-40d7-92f9-f27ab6085a59",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('personId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a control inside the sub-unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "44470152-c774-4cb2-b7bb-2712f424abdc",
+                "exec": [
+                  "pm.collectionVariables.set('controlName', 'filter test control');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "cf1f6127-0bb9-433c-be3a-7000574622c7",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('controlId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/controls",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "controls"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "4df7dfff-c588-47f6-9763-ca789f1d8bc6",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returned unit has the correct values\", function () {",
+                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"unitName\"));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/units/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load all assets in the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "02ed4317-6ef0-4c09-82a9-41a312cd1a5c",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"One asset is available\", function () {",
+                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "});",
+                  "pm.test(\"The created asset is returned\", function () {",
+                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('assetId'))",
+                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('assetName'))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/assets?unit={{unitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "unit",
+                  "value": "{{unitId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "parent",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load all processes in the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "7fb8c044-3b23-4ece-b2a1-e2da72609ce4",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"One process is available\", function () {",
+                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "});",
+                  "pm.test(\"The created process is returned\", function () {",
+                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('processId'))",
+                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('processName'))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/processes?unit={{unitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "processes"
+              ],
+              "query": [
+                {
+                  "key": "unit",
+                  "value": "{{unitId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "parent",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load all persons in the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "5cd052cd-0577-4e68-a32c-804e09a92b19",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"One person is available\", function () {",
+                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "});",
+                  "pm.test(\"The created person is returned\", function () {",
+                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('personId'))",
+                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('personName'))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons?unit={{unitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ],
+              "query": [
+                {
+                  "key": "unit",
+                  "value": "{{unitId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "parent",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load all controls in the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "afd79c9b-4075-4321-94c4-db7db07a503b",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"One control is available\", function () {",
+                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "});",
+                  "pm.test(\"The created control is returned\", function () {",
+                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('controlId'))",
+                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('controlName'))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/controls?unit={{unitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "controls"
+              ],
+              "query": [
+                {
+                  "key": "unit",
+                  "value": "{{unitId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "parent",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load all assets in the sub-unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "34244328-abbe-4f0b-bdb0-0030df31c852",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"One asset is available\", function () {",
+                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "});",
+                  "pm.test(\"The created asset is returned\", function () {",
+                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('assetId'))",
+                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('assetName'))",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/assets?unit={{subUnitId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "unit",
+                  "value": "{{subUnitId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "parent",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Loading assets with invalid unit fails",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "392c25a1-275b-44d1-bcaa-c114d3b6434e",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/assets?unit=12aae97e-e0b1-4900-a961-96a19b972f72",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "unit",
+                  "value": "12aae97e-e0b1-4900-a961-96a19b972f72"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets?parent=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ],
+                  "query": [
+                    {
+                      "key": "parent",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the asset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "438dd3ca-6509-4607-a93b-45eacf50872c",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/assets/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the process",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "0b7e529b-8ed5-41e3-89d6-035d834ba92f",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/processes/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "processes",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "description": "(Required) ",
+                  "key": "uuid",
+                  "value": "{{processId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the person",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "9a9f91c1-0361-483d-b5bf-e5c4af5cd182",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/persons/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "description": "(Required) ",
+                  "key": "uuid",
+                  "value": "{{personId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the control",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "654a32be-7125-4e03-a99c-f089f0f6ea9a",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/controls/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "controls",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "description": "(Required) ",
+                  "key": "uuid",
+                  "value": "{{controlId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the sub-unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "f045985e-f550-4a13-97d5-fbdcb31fa6d4",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "description": "(Required) ",
+                  "key": "uuid",
+                  "value": "{{subUnitId}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "bec3a414-6692-4521-9eea-cd9bfa94b84b",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ],
+      "protocolProfileBehavior": {
+        
+      }
     }
   ],
   "auth": {
@@ -3023,6 +4779,11 @@
       {
         "key": "accessToken",
         "value": "{{accessToken}}",
+        "type": "string"
+      },
+      {
+        "key": "tokenType",
+        "value": "bearer",
         "type": "string"
       },
       {
@@ -3036,7 +4797,7 @@
     {
       "listen": "prerequest",
       "script": {
-        "id": "fe2e287c-c760-4f65-ae75-ed8c05500614",
+        "id": "6e725219-2aa7-496c-aa44-ed046324809b",
         "type": "text/javascript",
         "exec": [
           ""
@@ -3046,7 +4807,7 @@
     {
       "listen": "test",
       "script": {
-        "id": "d9102e42-7ff8-4777-bc8d-cb26a3e96b42",
+        "id": "b94e4c5e-21be-4bfb-b7d7-139ec04fdd23",
         "type": "text/javascript",
         "exec": [
           ""
@@ -3056,80 +4817,78 @@
   ],
   "variable": [
     {
-      "id": "09cbf297-abcd-4609-b3d1-47f108274d1c",
+      "id": "06a3746e-ada7-4580-bf27-139e0d6ed6e4",
       "key": "baseUrl",
-      "value": "http://localhost:8070",
-      "type": "string"
+      "value": "http://localhost:8070"
     },
     {
-      "id": "e27745bb-ab64-4ef3-9a91-994dc1fde099",
+      "id": "0b6fa56c-49dd-45c1-9369-c8aec808a6ba",
       "key": "unitId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "226d3f5b-5912-405e-bdaa-53b4f942b9e1",
+      "id": "8fe37044-3580-451a-beb5-68c92d8ed82c",
       "key": "processId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "b6d34539-ec9d-4fe3-b019-e95913fa8bf0",
+      "id": "722c6de0-bbbd-4211-ba5c-e2e3812adad9",
       "key": "processName",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "7eb6f19d-91cc-4998-a8e6-3262b9d37267",
+      "id": "9580e049-d029-4781-9a43-0b2e1b9a6ec5",
       "key": "unitName",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "ef7c6385-81ff-4ef1-9724-5f12773f1f7e",
+      "id": "adaa4444-848e-4e6f-9130-e47230c49ea8",
       "key": "accessToken",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "e1151980-4edb-4ac1-826b-74f7d34e221b",
+      "id": "981052cd-09b4-4a24-952e-61c6b5e84a7d",
       "key": "assetId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "63e11ed0-7fa5-4cf1-8d5c-23f26365f8b6",
+      "id": "d5638496-4243-44d7-9058-8f33c154772d",
       "key": "assetName",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "1f8f91d2-ec2a-4134-b71d-9ceceee7e635",
+      "id": "1b9dbcbb-de1b-4e40-8650-1d3604e089bb",
       "key": "personId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "a856bd3c-183c-4173-ad0d-3031e2e99e0e",
+      "id": "e0041921-a8f8-4146-b925-159f33ebbfae",
       "key": "personName",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "1266c6dc-1ca2-40c0-9f8d-0b1cfec0e50a",
+      "id": "68d2c1c5-1617-4da3-ba61-e214dad10a34",
       "key": "controlId",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "87cf3de2-e7f2-4eb6-9bdb-888c6eec19c5",
+      "id": "81954790-416b-4f31-9570-066cc1ad340b",
       "key": "controlName",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
-      "id": "0b76ae19-931e-41b4-929a-627da8313eb9",
+      "id": "36deb10b-393f-4965-b8d6-9c1e75bd5f94",
       "key": "processIdveo271",
+      "value": ""
+    },
+    {
+      "id": "95b33f61-b5e4-4acb-83b4-0844d80e315b",
+      "key": "subUnitName",
+      "value": ""
+    },
+    {
+      "id": "35d3197c-cbb3-42fc-a967-867c1b2e7a28",
+      "key": "subUnitId",
       "value": ""
     }
   ],
