@@ -18,7 +18,6 @@ package org.veo.adapter.presenter.api.response;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -42,23 +41,10 @@ public class BaseModelObjectDto {
     @ToString.Include
     private String id;
 
-    @NotNull
-    @PositiveOrZero
-    @Schema(description = "The version is an integer that is automatically incremented by the server whenever the entity is saved.",
-            example = "2")
-    @ToString.Include
-    private long version;
-
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
             example = "1990-12-31T23:59:60Z")
     @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
     private String validFrom;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying the point in time when this version of the entity was superseded "
-            + "by a newer version or deleted. Empty if this is the current version.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validUntil;
 
     protected BaseModelObjectDto() {
 

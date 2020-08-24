@@ -165,9 +165,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                     id: simpleProps.id.uuidValue(),
                     references:[],
                     type: 'simpleAspect',
-                    validFrom:null,
-                    validUntil:null,
-                    version:0
+                    validFrom:null
                 ]
             ],
             description:null,
@@ -185,9 +183,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                     href:"/units/${unit.id.uuidValue()}"
                 ]
             ],
-            validFrom:null,
-            validUntil:null,
-            version:0
+            validFrom:null
         ]
     }
 

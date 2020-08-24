@@ -490,7 +490,6 @@ public final class DtoToEntityTransformer {
 
         target = tcontext.getFactory()
                          .createCustomLink(key, source.getName(), linkTarget, null);
-        target.setVersion(source.getVersion());
 
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
@@ -523,7 +522,6 @@ public final class DtoToEntityTransformer {
 
         target = tcontext.getFactory()
                          .createCustomProperties(key);
-        target.setVersion(source.getVersion());
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
         context.put(classKey, target);
@@ -551,9 +549,7 @@ public final class DtoToEntityTransformer {
     private static void mapModelObjectProperties(BaseModelObjectDto source, ModelObject target,
             Key<UUID> key) {
         target.setId(key);
-        target.setVersion(source.getVersion());
         // target.setValidFrom(Instant.parse(source.getValidFrom()));
-        // target.setValidUntil(Instant.parse(source.getValidUntil()));
     }
 
     private static void mapNameAbleProperties(NameAbleDto source, NameAble target) {

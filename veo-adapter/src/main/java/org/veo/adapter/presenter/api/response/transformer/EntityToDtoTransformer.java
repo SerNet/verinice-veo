@@ -547,9 +547,7 @@ public final class EntityToDtoTransformer {
     private static void mapModelObjectProperties(ModelObject source, BaseModelObjectDto target,
             String key) {
         target.setId(key);
-        target.setVersion(source.getVersion());
         // target.setValidFrom(source.getValidFrom().toString());
-        // target.setValidUntil(source.getValidUntil().toString());
     }
 
     private static <TIn, TOut> Set<TOut> convertSet(Set<TIn> input, Function<TIn, TOut> mapper) {
