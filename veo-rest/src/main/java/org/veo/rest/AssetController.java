@@ -59,7 +59,7 @@ import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.rest.annotations.ParameterUuid;
-import org.veo.rest.annotations.ParameterUuidParent;
+import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -102,8 +102,7 @@ public class AssetController extends AbstractEntityController {
     @Operation(summary = "Loads all assets")
     public @Valid CompletableFuture<List<FullAssetDto>> getAssets(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
-                                               required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getAssetsUseCase, new GetAssetsUseCase.InputData(
                 getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {

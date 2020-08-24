@@ -60,7 +60,7 @@ import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
 import org.veo.rest.annotations.ParameterUuid;
-import org.veo.rest.annotations.ParameterUuidParent;
+import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -104,8 +104,7 @@ public class ControlController extends AbstractEntityController {
     @Operation(summary = "Loads all controls")
     public @Valid CompletableFuture<List<FullControlDto>> getControls(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
-                                               required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getControlsUseCase, new GetControlsUseCase.InputData(
                 getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {

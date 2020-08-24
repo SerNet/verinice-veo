@@ -58,8 +58,8 @@ import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
+import org.veo.rest.annotations.Labels;
 import org.veo.rest.annotations.ParameterUuid;
-import org.veo.rest.annotations.ParameterUuidParent;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -107,8 +107,9 @@ public class UnitController extends AbstractEntityController {
 
     public @Valid CompletableFuture<List<FullUnitDto>> getUnits(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = PARENT_PARAM,
-                                               required = false) String parentUuid) {
+            @Parameter(description = "UUID of the parent unit\n\n" + Labels.UUID_DEFINITION,
+                       example = Labels.UUID_EXAMPLE) @RequestParam(value = PARENT_PARAM,
+                                                                    required = false) String parentUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
         return useCaseInteractor.execute(getUnitsUseCase,

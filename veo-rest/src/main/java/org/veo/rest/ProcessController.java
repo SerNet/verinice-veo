@@ -58,7 +58,7 @@ import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.rest.annotations.ParameterUuid;
-import org.veo.rest.annotations.ParameterUuidParent;
+import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -201,8 +201,7 @@ public class ProcessController extends AbstractEntityController {
     @Operation(summary = "Loads all processs")
     public @Valid CompletableFuture<List<FullProcessDto>> getProcesses(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
-                                               required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
         return useCaseInteractor.execute(getProcessesUseCase, new GetProcessesUseCase.InputData(

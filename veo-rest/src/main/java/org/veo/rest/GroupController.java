@@ -72,7 +72,7 @@ import org.veo.core.usecase.group.GetGroupsUseCase;
 import org.veo.core.usecase.group.PutGroupUseCase;
 import org.veo.core.usecase.group.UpdateGroupUseCase;
 import org.veo.rest.annotations.ParameterUuid;
-import org.veo.rest.annotations.ParameterUuidParent;
+import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -132,8 +132,7 @@ public class GroupController extends AbstractEntityController {
             @ApiResponse(responseCode = "404", description = "Group not found") })
     public @Valid CompletableFuture<List<EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>>> getGroups(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
-                                               required = false) String unitUuid,
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getGroupsUseCase, new GetGroupsUseCase.InputData(

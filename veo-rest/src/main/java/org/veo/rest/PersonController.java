@@ -59,7 +59,7 @@ import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.rest.annotations.ParameterUuid;
-import org.veo.rest.annotations.ParameterUuidParent;
+import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -103,8 +103,7 @@ public class PersonController extends AbstractEntityController {
     @Operation(summary = "Loads all persons")
     public @Valid CompletableFuture<List<FullPersonDto>> getPersons(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuidParent @RequestParam(value = UNIT_PARAM,
-                                               required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
         return useCaseInteractor.execute(getPersonsUseCase, new GetPersonsUseCase.InputData(
                 getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {

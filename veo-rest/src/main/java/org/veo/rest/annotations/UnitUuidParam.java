@@ -16,9 +16,6 @@
  ******************************************************************************/
 package org.veo.rest.annotations;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 
 import java.lang.annotation.Retention;
@@ -27,11 +24,9 @@ import java.lang.annotation.Target;
 
 import io.swagger.v3.oas.annotations.Parameter;
 
-@Parameter(name = "parent",
-           description = "UUID of the parent\n\n" + Labels.UUID_DEFINITION,
-           example = Labels.UUID_EXAMPLE,
-           required = false)
+@Parameter(description = "UUID of the containing unit\n\n" + Labels.UUID_DEFINITION,
+           example = Labels.UUID_EXAMPLE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ PARAMETER, METHOD, FIELD, ANNOTATION_TYPE })
-public @interface ParameterUuidParent {
+@Target({ PARAMETER })
+public @interface UnitUuidParam {
 }
