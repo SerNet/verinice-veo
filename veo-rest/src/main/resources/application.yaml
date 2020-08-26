@@ -12,6 +12,8 @@ spring:
   data:
     rest:
       detection-strategy: annotated
+  jackson:
+    default-property-inclusion: non_null
   jpa:
     hibernate:
       ddl-auto: update

@@ -158,7 +158,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         and: "the response contains the expected data"
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result == [
-            abbreviation:null,
             customAspects:[
                 simpleAspect:[
                     applicableTo:[],
@@ -168,11 +167,9 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
                     domains:[],
                     id: simpleProps.id.uuidValue(),
                     references:[],
-                    type: 'simpleAspect',
-                    validFrom:null
+                    type: 'simpleAspect'
                 ]
             ],
-            description:null,
             domains:[],
             id: asset.id.uuidValue(),
             links:[:],
@@ -186,8 +183,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
                     displayName:'Test unit',
                     href:"/units/${unit.id.uuidValue()}"
                 ]
-            ],
-            validFrom:null
+            ]
         ]
     }
 
