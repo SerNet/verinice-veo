@@ -140,13 +140,12 @@ public class AssetController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateAssetDto dto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(createAssetUseCase,
                                          new Supplier<CreateAssetUseCase.InputData>() {
 
                                              @Override
                                              public org.veo.core.usecase.asset.CreateAssetUseCase.InputData get() {
-                                                 Client client = getClient(user.getClientId());
+                                                 Client client = getAuthenticatedClient(auth);
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    dto.getReferences());
                                                  return new CreateAssetUseCase.InputData(
@@ -165,13 +164,12 @@ public class AssetController extends AbstractEntityController {
     public CompletableFuture<FullAssetDto> updateAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updateAssetUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Asset>>() {
 
                                              @Override
                                              public InputData<Asset> get() {
-                                                 Client client = getClient(user.getClientId());
+                                                 Client client = getAuthenticatedClient(auth);
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    assetDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Asset>(

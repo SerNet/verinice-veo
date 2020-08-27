@@ -75,7 +75,6 @@ import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -157,8 +156,7 @@ public class GroupController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), output -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
@@ -178,8 +176,7 @@ public class GroupController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getGroupMemberUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), output -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
@@ -199,8 +196,7 @@ public class GroupController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createGroup(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateGroupDto createGroupDto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(createGroupUseCase, new CreateGroupUseCase.InputData(
                 Key.uuidFrom(createGroupDto.getOwner()
                                            .getId()),
@@ -227,8 +223,7 @@ public class GroupController extends AbstractEntityController {
                                                                                                            schema = @Schema(implementation = FullGroupDto.class))) String requestBody,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type)
             throws JsonProcessingException {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
         Class dtoClass = getFullDtoClass(type);
         var groupDto = (EntityLayerSupertypeGroupDto<?, FullCustomPropertiesDto, FullCustomLinkDto>) objectMapper.readValue(requestBody,
                                                                                                                             dtoClass);
@@ -255,8 +250,7 @@ public class GroupController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
 
         return useCaseInteractor.execute(deleteGroupUseCase,
                                          new DeleteGroupUseCase.InputData(Key.uuidFrom(uuid), type,

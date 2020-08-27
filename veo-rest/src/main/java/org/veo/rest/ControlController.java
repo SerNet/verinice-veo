@@ -63,7 +63,6 @@ import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -126,8 +125,7 @@ public class ControlController extends AbstractEntityController {
     public @Valid CompletableFuture<FullControlDto> getControl(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
 
         return useCaseInteractor.execute(getControlUseCase, new GetControlUseCase.InputData(
                 Key.uuidFrom(uuid), client), output -> {
@@ -142,14 +140,13 @@ public class ControlController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreateControlDto dto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(createControlUseCase,
                                          new Supplier<CreateControlUseCase.InputData>() {
 
                                              @Override
                                              public CreateControlUseCase.InputData get() {
 
-                                                 Client client = getClient(user.getClientId());
+                                                 Client client = getAuthenticatedClient(auth);
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    dto.getReferences());
                                                  return new CreateControlUseCase.InputData(
@@ -169,13 +166,12 @@ public class ControlController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullControlDto controlDto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updateControlUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Control>>() {
 
                                              @Override
                                              public InputData<Control> get() {
-                                                 Client client = getClient(user.getClientId());
+                                                 Client client = getAuthenticatedClient(auth);
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    controlDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Control>(
@@ -195,8 +191,7 @@ public class ControlController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteControl(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Control.class,
                                                  Key.uuidFrom(uuid), client),

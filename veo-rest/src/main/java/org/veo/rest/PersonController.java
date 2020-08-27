@@ -62,7 +62,6 @@ import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
-import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -125,8 +124,7 @@ public class PersonController extends AbstractEntityController {
     public @Valid CompletableFuture<FullPersonDto> getPerson(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
 
         return useCaseInteractor.execute(getPersonUseCase,
                                          new GetPersonUseCase.InputData(Key.uuidFrom(uuid), client),
@@ -143,13 +141,12 @@ public class PersonController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createPerson(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @NotNull @RequestBody CreatePersonDto dto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(createPersonUseCase,
                                          new Supplier<CreatePersonUseCase.InputData>() {
 
                                              @Override
                                              public InputData get() {
-                                                 Client client = getClient(user.getClientId());
+                                                 Client client = getAuthenticatedClient(auth);
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    dto.getReferences());
                                                  return new CreatePersonUseCase.InputData(
@@ -169,13 +166,12 @@ public class PersonController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullPersonDto personDto) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updatePersonUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Person>>() {
 
                                              @Override
                                              public org.veo.core.usecase.base.ModifyEntityUseCase.InputData<Person> get() {
-                                                 Client client = getClient(user.getClientId());
+                                                 Client client = getAuthenticatedClient(auth);
                                                  DtoToEntityContext tcontext = configureDtoContext(client,
                                                                                                    personDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Person>(
@@ -194,8 +190,7 @@ public class PersonController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deletePerson(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
+        Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Person.class,
                                                  Key.uuidFrom(uuid), client),
