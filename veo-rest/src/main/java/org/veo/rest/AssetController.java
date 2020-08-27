@@ -20,7 +20,9 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -103,14 +105,22 @@ public class AssetController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullAssetDto>> getAssets(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
+        Client client = null;
+        try {
+            client = getAuthenticatedClient(auth);
+        } catch (NoSuchElementException e) {
+            return CompletableFuture.supplyAsync(Collections::emptyList);
+        }
+
+        final GetAssetsUseCase.InputData inputData = new GetAssetsUseCase.InputData(client,
+                Optional.ofNullable(unitUuid));
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-        return useCaseInteractor.execute(getAssetsUseCase, new GetAssetsUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {
-                    return output.getEntities()
-                                 .stream()
-                                 .map(u -> FullAssetDto.from(u, tcontext))
-                                 .collect(Collectors.toList());
-                });
+        return useCaseInteractor.execute(getAssetsUseCase, inputData, output -> {
+            return output.getEntities()
+                         .stream()
+                         .map(u -> FullAssetDto.from(u, tcontext))
+                         .collect(Collectors.toList());
+        });
     }
 
     @GetMapping(value = "/{id}")

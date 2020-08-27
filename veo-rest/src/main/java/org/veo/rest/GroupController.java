@@ -21,7 +21,9 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -133,14 +135,21 @@ public class GroupController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
+        Client client = null;
+        try {
+            client = getAuthenticatedClient(auth);
+        } catch (NoSuchElementException e) {
+            return CompletableFuture.supplyAsync(Collections::emptyList);
+        }
+
+        final GetGroupsUseCase.InputData inputData = new GetGroupsUseCase.InputData(client, type,
+                Optional.ofNullable(unitUuid));
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
-        return useCaseInteractor.execute(getGroupsUseCase, new GetGroupsUseCase.InputData(
-                getAuthenticatedClient(auth), type, Optional.ofNullable(unitUuid)),
-                                         output -> output.getGroups()
-                                                         .stream()
-                                                         .map(u -> EntityLayerSupertypeGroupDto.from(u,
-                                                                                                     tcontext))
-                                                         .collect(Collectors.toList()));
+        return useCaseInteractor.execute(getGroupsUseCase, inputData, output -> output.getGroups()
+                                                                                      .stream()
+                                                                                      .map(u -> EntityLayerSupertypeGroupDto.from(u,
+                                                                                                                                  tcontext))
+                                                                                      .collect(Collectors.toList()));
 
     }
 

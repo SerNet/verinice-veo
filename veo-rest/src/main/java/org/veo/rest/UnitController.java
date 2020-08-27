@@ -22,9 +22,9 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -50,16 +50,16 @@ import org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
-import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
-import org.veo.rest.annotations.Labels;
 import org.veo.rest.annotations.ParameterUuid;
+import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -107,26 +107,26 @@ public class UnitController extends AbstractEntityController {
 
     public @Valid CompletableFuture<List<FullUnitDto>> getUnits(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(description = "UUID of the parent unit\n\n" + Labels.UUID_DEFINITION,
-                       example = Labels.UUID_EXAMPLE) @RequestParam(value = PARENT_PARAM,
-                                                                    required = false) String parentUuid) {
+            @UnitUuidParam @RequestParam(value = PARENT_PARAM,
+                                         required = false) String parentUuid) {
+        Client client = null;
+        try {
+            client = getAuthenticatedClient(auth);
+        } catch (NoSuchElementException e) {
+            return CompletableFuture.supplyAsync(Collections::emptyList);
+        }
+
+        final GetUnitsUseCase.InputData inputData = new GetUnitsUseCase.InputData(client,
+                Optional.ofNullable(parentUuid));
+
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
-        return useCaseInteractor.execute(getUnitsUseCase,
-                                         new Supplier<GetUnitsUseCase.InputData>() {
-
-                                             @Override
-                                             public InputData get() {
-                                                 return new GetUnitsUseCase.InputData(
-                                                         getAuthenticatedClient(auth),
-                                                         Optional.ofNullable(parentUuid));
-                                             }
-                                         }, output -> {
-                                             return output.getUnits()
-                                                          .stream()
-                                                          .map(u -> FullUnitDto.from(u, tcontext))
-                                                          .collect(Collectors.toList());
-                                         });
+        return useCaseInteractor.execute(getUnitsUseCase, inputData, output -> {
+            return output.getUnits()
+                         .stream()
+                         .map(u -> FullUnitDto.from(u, tcontext))
+                         .collect(Collectors.toList());
+        });
     }
 
     @Async

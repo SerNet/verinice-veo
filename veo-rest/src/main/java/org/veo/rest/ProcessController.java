@@ -20,7 +20,9 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -200,16 +202,25 @@ public class ProcessController extends AbstractEntityController {
     @Operation(summary = "Loads all processs")
     public @Valid CompletableFuture<List<FullProcessDto>> getProcesses(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid) {
+        Client client = null;
+        try {
+            client = getAuthenticatedClient(auth);
+        } catch (NoSuchElementException e) {
+            return CompletableFuture.supplyAsync(Collections::emptyList);
+        }
+
+        final GetProcessesUseCase.InputData inputData = new GetProcessesUseCase.InputData(client,
+                Optional.ofNullable(parentUuid));
+
         EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
 
-        return useCaseInteractor.execute(getProcessesUseCase, new GetProcessesUseCase.InputData(
-                getAuthenticatedClient(auth), Optional.ofNullable(unitUuid)), output -> {
-                    return output.getEntities()
-                                 .stream()
-                                 .map(u -> FullProcessDto.from(u, tcontext))
-                                 .collect(Collectors.toList());
-                });
+        return useCaseInteractor.execute(getProcessesUseCase, inputData, output -> {
+            return output.getEntities()
+                         .stream()
+                         .map(u -> FullProcessDto.from(u, tcontext))
+                         .collect(Collectors.toList());
+        });
     }
 
 }
