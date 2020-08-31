@@ -16,10 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -50,18 +46,6 @@ public class FullCustomLinkDto extends AbstractCustomLinkDto implements Identifi
     @ToString.Include
     @NotNull
     private String id;
-
-    @Schema(description = "A custom property which is determined by the requested entity schema - see '/schemas'",
-            name = "customAspects",
-            title = "CustomAspect")
-    @Valid
-    private Map<String, FullCustomPropertiesDto> customAspects = Collections.emptyMap();
-
-    @Schema(name = "links",
-            description = "Custom relations which do not affect the behavior.",
-            title = "CustomLink")
-    @Valid
-    private Map<String, List<FullCustomLinkDto>> links = Collections.emptyMap();
 
     public static FullCustomLinkDto from(@Valid CustomLink customLink,
             EntityToDtoContext tcontext) {
