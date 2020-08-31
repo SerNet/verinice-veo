@@ -33,7 +33,6 @@ public final class ModelUtils {
     public static final Predicate<Domain> IS_ACTIVE_DOMAIN = Domain::isActive;
 
     public static void incrementVersion(ModelObject object) {
-        object.setVersion(object.getVersion() + 1);
         object.setValidFrom(Instant.now());
     }
 

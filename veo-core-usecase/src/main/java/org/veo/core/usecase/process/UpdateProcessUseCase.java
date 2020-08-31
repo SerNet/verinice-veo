@@ -37,7 +37,6 @@ public class UpdateProcessUseCase<R> extends ModifyEntityUseCase<Process, R> {
     @Override
     public OutputData<Process> performModification(InputData<Process> input) {
         Process process = input.getEntity();
-        process.setVersion(process.getVersion() + 1);
         process.setValidFrom(Instant.now());
         return new OutputData<>(processRepository.save(process));
 

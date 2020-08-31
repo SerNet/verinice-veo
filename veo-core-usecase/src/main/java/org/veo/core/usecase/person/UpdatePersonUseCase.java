@@ -34,7 +34,6 @@ public class UpdatePersonUseCase<R> extends ModifyEntityUseCase<Person, R> {
     @Override
     public OutputData<Person> performModification(InputData<Person> input) {
         Person person = input.getEntity();
-        person.setVersion(person.getVersion() + 1);
         person.setValidFrom(Instant.now());
         return new OutputData<>(personRepository.save(person));
 

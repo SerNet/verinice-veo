@@ -21,8 +21,6 @@ import java.time.Instant;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
-import org.veo.core.usecase.base.ModifyEntityUseCase.OutputData;
 import org.veo.core.usecase.repository.AssetRepository;
 
 /**
@@ -47,7 +45,6 @@ public class UpdateAssetUseCase<R> extends ModifyEntityUseCase<Asset, R> {
     @Override
     protected OutputData<Asset> performModification(InputData<Asset> input) {
         Asset asset = input.getEntity();
-        asset.setVersion(asset.getVersion() + 1);
         asset.setValidFrom(Instant.now());
         return new OutputData<>(assetRepository.save(asset));
     }

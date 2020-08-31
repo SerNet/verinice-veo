@@ -35,7 +35,6 @@ public class PutGroupUseCase<R> extends UpdateGroupUseCase<R> {
     @Override
     protected ModelGroup<?> update(InputData input) {
         ModelGroup<?> group = input.getGroup();
-        group.setVersion(group.getVersion() + 1);
         group.setValidFrom(Instant.now());
         Repository repository = repositoryProvider.getRepositoryFor(input.getGroup()
                                                                          .getClass());

@@ -34,7 +34,6 @@ public class UpdateControlUseCase<R> extends ModifyEntityUseCase<Control, R> {
     @Override
     public OutputData<Control> performModification(InputData<Control> input) {
         Control control = input.getEntity();
-        control.setVersion(control.getVersion() + 1);
         control.setValidFrom(Instant.now());
         return new OutputData<>(controlRepository.save(control));
 
