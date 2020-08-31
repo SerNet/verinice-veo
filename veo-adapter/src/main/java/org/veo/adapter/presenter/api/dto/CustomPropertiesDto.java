@@ -28,7 +28,6 @@ import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
@@ -50,7 +49,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomPropertiesDto implements VersionedDto {
+public class CustomPropertiesDto {
 
     // TODO Add an example for the API documentation for field type.
     @Schema(description = "The type for the CustomProperties.",
@@ -58,11 +57,6 @@ public class CustomPropertiesDto implements VersionedDto {
             required = false)
     @ToString.Include
     private String type;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validFrom;
 
     // TODO Add an example for the API documentation for field applicableTo.
     @Schema(description = "The applicableTo for the CustomProperties.",

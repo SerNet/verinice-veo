@@ -20,6 +20,7 @@ import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Versioned;
@@ -33,6 +34,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 public abstract class VersionedData implements Versioned {
     @ToString.Include
+    @Version
     private long version;
 
     // @Enumerated(EnumType.STRING)

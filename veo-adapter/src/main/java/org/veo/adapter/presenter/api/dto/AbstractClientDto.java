@@ -47,6 +47,9 @@ abstract public class AbstractClientDto implements VersionedDto {
     @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
     private String validFrom;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private long version;
+
     @Schema(description = "The units for the Client.")
     private Set<AbstractUnitDto> units = Collections.emptySet();
 

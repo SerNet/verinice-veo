@@ -25,7 +25,7 @@ import java.util.Set;
  * The base for all the custom aspects. This class should be extensible by
  * clients.
  */
-public interface CustomProperties extends Versioned {
+public interface CustomProperties {
 
     int MAXIMUM_STRING_LENGTH = 18000;
 

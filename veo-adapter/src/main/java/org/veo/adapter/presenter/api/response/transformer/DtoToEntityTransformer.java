@@ -139,6 +139,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createAsset(key, source.getName(), null);
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -223,6 +224,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createProcessGroup();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -255,6 +257,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDocument(key, source.getName(), null);
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -281,6 +284,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDocumentGroup();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -313,6 +317,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createControl(key, source.getName(), null);
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -339,6 +344,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createControlGroup();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -371,6 +377,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createClient(key, source.getName());
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         target.setName(source.getName());
         context.put(classKey, target);
@@ -393,6 +400,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDomain(key, source.getName());
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         target.setActive(source.isActive());
@@ -415,6 +423,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createUnit(key, source.getName(), null);
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -459,7 +468,6 @@ public final class DtoToEntityTransformer {
         var target = tcontext.getFactory()
                              .createCustomProperties(source.getType());
         target.setApplicableTo(source.getApplicableTo());
-
         getPropertyTransformer().applyDtoPropertiesToEntity(source.getAttributes(), target);
         return target;
 

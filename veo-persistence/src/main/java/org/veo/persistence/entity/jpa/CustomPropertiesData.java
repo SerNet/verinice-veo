@@ -36,16 +36,15 @@ import javax.persistence.OneToMany;
 
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelPackage;
 import org.veo.persistence.entity.jpa.custom.PropertyData;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "customproperties")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomPropertiesData extends VersionedData implements CustomProperties {
+public class CustomPropertiesData implements CustomProperties {
 
     @Id
     @ToString.Include
@@ -193,11 +192,6 @@ public class CustomPropertiesData extends VersionedData implements CustomPropert
     public boolean removeFromDomains(Domain aDomain) {
         boolean remove = this.domains.remove(aDomain);
         return remove;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_CUSTOMPROPERTIES;
     }
 
     public String getDbId() {

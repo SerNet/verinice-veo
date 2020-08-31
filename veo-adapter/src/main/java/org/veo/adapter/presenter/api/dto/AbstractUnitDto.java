@@ -73,6 +73,9 @@ abstract public class AbstractUnitDto implements NameAbleDto, VersionedDto {
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceUnitDomains.class))
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private long version;
+
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
         list.add(getClient());

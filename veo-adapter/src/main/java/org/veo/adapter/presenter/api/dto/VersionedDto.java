@@ -20,4 +20,8 @@ public interface VersionedDto {
     String getValidFrom();
 
     void setValidFrom(String validFrom);
+
+    long getVersion();
+
+    void setVersion(long version);
 }

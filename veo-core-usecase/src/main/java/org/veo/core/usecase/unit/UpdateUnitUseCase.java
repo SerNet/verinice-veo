@@ -27,6 +27,8 @@ public class UpdateUnitUseCase<R> extends ChangeUnitUseCase<R> {
 
     @Override
     protected Unit update(Unit storedUnit, ChangeUnitUseCase.InputData input) {
+        input.getChangedUnit()
+             .setVersion(storedUnit.getVersion());
         // replace stored unit with changed unit:
         return input.getChangedUnit();
     }

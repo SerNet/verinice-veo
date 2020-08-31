@@ -129,6 +129,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullPersonGroupDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -164,6 +165,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullPersonDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -197,6 +199,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullAssetGroupDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -231,6 +234,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullAssetDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -264,6 +268,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullProcessGroupDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -296,6 +301,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullProcessDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -329,6 +335,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullDocumentGroupDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -362,6 +369,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullDocumentDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -395,6 +403,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullControlGroupDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -430,6 +439,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullControlDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -464,6 +474,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullClientDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         target.setName(source.getName());
         context.put(classKey, target);
         // if (source.isGhost()) {
@@ -489,6 +500,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullDomainDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         target.setActive(source.isActive());
@@ -513,6 +525,7 @@ public final class EntityToDtoTransformer {
 
         target = new FullUnitDto();
         target.setId(key);
+        target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
@@ -539,7 +552,6 @@ public final class EntityToDtoTransformer {
     public static CustomLinkDto transformCustomLink2Dto(EntityToDtoContext tcontext,
             CustomLink source) {
         var target = new CustomLinkDto();
-        mapVersionedProperties(source, target);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
         mapNameAbleProperties(source, target);
@@ -566,7 +578,6 @@ public final class EntityToDtoTransformer {
     public static CustomPropertiesDto transformCustomProperties2Dto(EntityToDtoContext tcontext,
             CustomProperties source) {
         var target = new CustomPropertiesDto();
-        mapVersionedProperties(source, target);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
 
