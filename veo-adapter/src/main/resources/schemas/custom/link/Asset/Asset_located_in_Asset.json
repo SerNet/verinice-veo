@@ -5,7 +5,15 @@
     "properties": {
       "id": {
         "type": "string",
-        "title": "The UUID to identify the element"
+        "title": "The UUID to identify the element",
+        "format": "regex",
+        "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      },
+      "applicableTo": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       },
       "type": {
         "description": "The name of the type described by this schema.",
@@ -30,30 +38,46 @@
         "title": "The list of domains in which this element is present.",
         "description": "The ids of elements of the type domain.",
         "items": {
-          "type": "string"
+          "type": "object",
+          "properties": {
+            "displayName": {
+              "type": "string",
+              "description": "A friendly human readable title of the referenced domain."
+            },
+            "targetUri": {
+              "type": "string",
+              "description": "The resource URL of the referenced domain."
+            }
+          },
+          "required": [
+            "targetUri"
+          ]
         },
         "uniqueItems": true
       },
-      "source": {
-        "type": "object",
-        "title": "id of the Asset",
-        "properties": {
-          "href": {
-            "type": "string",
-            "title": "The id of the source object."
+      "references": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "displayName": {
+              "type": "string",
+              "description": "A friendly human readable title of the referenced object."
+            },
+            "targetUri": {
+              "type": "string",
+              "description": "The resource URL of the referenced object."
+            }
           },
-          "type": {
-            "enum": [
-              "Asset"
-            ]
-          }
+          "required": [
+            "targetUri"
+          ]
         }
       },
       "target": {
         "type": "object",
         "title": "id of the Asset",
         "properties": {
-          "href": {
+          "targetUri": {
             "type": "string",
             "title": "The id of the target object."
           },
@@ -63,13 +87,17 @@
             ]
           }
         }
+      },
+      "attributes": {
+        "type": "object",
+        "properties": {
+          
+        }
       }
     },
     "additionalProperties": false,
     "required": [
-      "id",
       "type",
-      "source",
       "target"
     ]
   }

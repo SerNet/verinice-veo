@@ -5,7 +5,15 @@
     "properties": {
       "id": {
         "type": "string",
-        "title": "The UUID to identify the element"
+        "title": "The UUID to identify the element",
+        "format": "regex",
+        "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      },
+      "applicableTo": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
       },
       "type": {
         "description": "The name of the type described by this schema.",
@@ -15,6 +23,8 @@
       },
       "domains": {
         "type": "array",
+        "title": "The list of domains in which this element is present.",
+        "description": "The ids of elements of the type domain.",
         "items": {
           "type": "object",
           "properties": {
@@ -22,49 +32,55 @@
               "type": "string",
               "description": "A friendly human readable title of the referenced domain."
             },
-            "href": {
+            "targetUri": {
               "type": "string",
               "description": "The resource URL of the referenced domain."
             }
           },
           "required": [
-            "href"
-          ],
-          "description": "The domains this entity is being used in."
+            "targetUri"
+          ]
+        },
+        "uniqueItems": true
+      },
+      "references": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "displayName": {
+              "type": "string",
+              "description": "A friendly human readable title of the referenced object."
+            },
+            "targetUri": {
+              "type": "string",
+              "description": "The resource URL of the referenced object."
+            }
+          },
+          "required": [
+            "targetUri"
+          ]
         }
       },
       "abbreviation": {
         "type": "string",
+        "title": "Abbreviation",
         "description": "The abbreviation for this custom link."
       },
       "description": {
         "type": "string",
+        "title": "Description",
         "description": "The description for this custom link."
       },
       "name": {
         "type": "string",
+        "title": "Name",
         "description": "The name for this custom link."
-      },
-      "source": {
-        "type": "object",
-        "title": "id of the Process",
-        "properties": {
-          "href": {
-            "type": "string",
-            "title": "The id of the source object."
-          },
-          "type": {
-            "enum": [
-              "Process"
-            ]
-          }
-        }
       },
       "target": {
         "type": "object",
         "title": "id of the Control",
         "properties": {
-          "href": {
+          "targetUri": {
             "type": "string",
             "title": "The id of the target object."
           },
@@ -74,13 +90,17 @@
             ]
           }
         }
+      },
+      "attributes": {
+        "type": "object",
+        "properties": {
+          
+        }
       }
     },
     "additionalProperties": false,
     "required": [
-      "id",
       "type",
-      "source",
       "target"
     ]
   }

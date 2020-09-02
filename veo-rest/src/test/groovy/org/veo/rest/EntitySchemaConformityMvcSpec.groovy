@@ -59,7 +59,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "created asset conforms to schema"() {
+    def "created minimalist asset conforms to schema"() {
         given: "the asset schema and a newly created asset"
         def schema = getSchema("asset")
         def assetId = (String)parseJson(post("/assets", [
@@ -71,6 +71,52 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
         when: "validating the asset JSON"
         def validationMessages = schema.validate(createdAssetJson)
+
+        then:
+        validationMessages.empty
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "created process with props & links conforms to schema"() {
+        given: "the asset schema and a newly created asset"
+        def processSchema = getSchema("process")
+        def personId = (String)parseJson(post("/persons", [
+            name: "person",
+            owner: [
+                href: "/units/"+unitId
+            ]])).resourceId
+        def processId = (String)parseJson(post("/processes", [
+            name: "asset",
+            owner: [
+                href: "/units/"+unitId
+            ],
+            links: [
+                process_AffectedParties: [
+                    [
+                        attributes: [
+                            process_AffectedParties_supplementaryInformation: "strongly affected"
+                        ],
+                        name: "first affected party",
+                        type: "process_AffectedParties",
+                        target: [
+                            href: "/persons/$personId"
+                        ]
+                    ]
+                ]
+            ],
+            customAspects: [
+                process_InternalRecipient: [
+                    type: "process_InternalRecipient",
+                    attributes: [
+                        process_InternalRecipient_InternalRecipient: true
+                    ]
+                ]
+            ]
+        ])).resourceId
+        def createdProcessJson = new ObjectMapper().readTree(get("/processes/$processId").andReturn().response.contentAsString)
+
+        when: "validating the asset JSON"
+        def validationMessages = processSchema.validate(createdProcessJson)
 
         then:
         validationMessages.empty
