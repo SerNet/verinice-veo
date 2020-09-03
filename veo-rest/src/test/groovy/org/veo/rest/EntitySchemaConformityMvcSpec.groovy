@@ -78,17 +78,17 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "created process with props & links conforms to schema"() {
-        given: "the asset schema and a newly created asset"
+        given: "the process schema and a newly created process"
         def processSchema = getSchema("process")
         def personId = (String)parseJson(post("/persons", [
             name: "person",
             owner: [
-                href: "/units/"+unitId
+                targetUri: "/units/"+unitId
             ]])).resourceId
         def processId = (String)parseJson(post("/processes", [
-            name: "asset",
+            name: "process",
             owner: [
-                href: "/units/"+unitId
+                targetUri: "/units/"+unitId
             ],
             links: [
                 process_AffectedParties: [
@@ -99,7 +99,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                         name: "first affected party",
                         type: "process_AffectedParties",
                         target: [
-                            href: "/persons/$personId"
+                            targetUri: "/persons/$personId"
                         ]
                     ]
                 ]
@@ -115,7 +115,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ])).resourceId
         def createdProcessJson = new ObjectMapper().readTree(get("/processes/$processId").andReturn().response.contentAsString)
 
-        when: "validating the asset JSON"
+        when: "validating the process JSON"
         def validationMessages = processSchema.validate(createdProcessJson)
 
         then:
