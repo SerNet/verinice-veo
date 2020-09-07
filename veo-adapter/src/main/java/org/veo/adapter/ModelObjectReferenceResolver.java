@@ -21,23 +21,23 @@ import java.util.UUID;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
 public class ModelObjectReferenceResolver {
-    private final EntityFactory entityFactory;
     private final RepositoryProvider repositoryProvider;
+    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
-    public ModelObjectReferenceResolver(EntityFactory entityFactory,
-            RepositoryProvider repositoryProvider) {
-        this.entityFactory = entityFactory;
+    public ModelObjectReferenceResolver(RepositoryProvider repositoryProvider,
+            DtoToEntityContextFactory dtoToEntityContextFactory) {
         this.repositoryProvider = repositoryProvider;
+        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     /**
@@ -52,7 +52,7 @@ public class ModelObjectReferenceResolver {
      */
     public DtoToEntityContext loadIntoContext(Client client,
             Collection<ModelObjectReference<? extends ModelObject>> references) {
-        DtoToEntityContext context = new DtoToEntityContext(entityFactory);
+        DtoToEntityContext context = dtoToEntityContextFactory.create();
 
         for (Domain d : client.getDomains()) {
             context.addEntity(d);
