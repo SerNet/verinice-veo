@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
@@ -82,13 +83,15 @@ public class AssetController extends AbstractEntityController {
 
     public AssetController(UseCaseInteractorImpl useCaseInteractor, GetAssetUseCase getAssetUseCase,
             GetAssetsUseCase getAssetsUseCase, CreateAssetUseCase createAssetUseCase,
-            UpdateAssetUseCase updateAssetUseCase, DeleteEntityUseCase deleteEntityUseCase) {
+            UpdateAssetUseCase updateAssetUseCase, DeleteEntityUseCase deleteEntityUseCase,
+            ModelObjectReferenceResolver referenceResolver) {
         this.useCaseInteractor = useCaseInteractor;
         this.getAssetUseCase = getAssetUseCase;
         this.getAssetsUseCase = getAssetsUseCase;
         this.createAssetUseCase = createAssetUseCase;
         this.updateAssetUseCase = updateAssetUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
+        this.referenceResolver = referenceResolver;
     }
 
     public static final String URL_BASE_PATH = "/assets";
@@ -99,6 +102,7 @@ public class AssetController extends AbstractEntityController {
     private final GetAssetUseCase<FullAssetDto> getAssetUseCase;
     private final GetAssetsUseCase<List<FullAssetDto>> getAssetsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
+    private final ModelObjectReferenceResolver referenceResolver;
 
     @GetMapping
     @Operation(summary = "Loads all assets")
@@ -156,8 +160,8 @@ public class AssetController extends AbstractEntityController {
                                              @Override
                                              public org.veo.core.usecase.asset.CreateAssetUseCase.InputData get() {
                                                  Client client = getAuthenticatedClient(auth);
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   dto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 dto.getReferences());
                                                  return new CreateAssetUseCase.InputData(
                                                          dto.toEntity(tcontext), client);
                                              }
@@ -181,8 +185,8 @@ public class AssetController extends AbstractEntityController {
                                              @Override
                                              public InputData<Asset> get() {
                                                  Client client = getAuthenticatedClient(auth);
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   assetDto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 assetDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Asset>(
                                                          assetDto.toEntity(tcontext), client);
                                              }

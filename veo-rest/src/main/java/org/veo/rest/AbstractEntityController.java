@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,40 +28,19 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.Repository;
-import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-// TODO: VEO-115 this class (which is not abstract) is extended by controllers. Instead it should be a separate service.
-// Having this here also forces the controllers to start their own transaction. That means we are back to the OSIV-pattern
-// (open-session-view) that we explicitely disabled in the application.properties.
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
-public class AbstractEntityController {
+abstract class AbstractEntityController {
 
     @Autowired
     private ClientRepository clientRepository;
-
-    @Autowired
-    private RepositoryProvider repositoryProvider;
-
-    @Autowired
-    private EntityFactory entityFactory;
-
-    public AbstractEntityController() {
-        super();
-    }
 
     protected Client getClient(String clientId) {
         Key<UUID> id = Key.uuidFrom(clientId);
@@ -73,30 +51,6 @@ public class AbstractEntityController {
     protected Client getAuthenticatedClient(Authentication auth) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return getClient(user.getClientId());
-    }
-
-    // this need to be executed in the usecase
-    protected DtoToEntityContext configureDtoContext(Client client,
-            Collection<ModelObjectReference<? extends ModelObject>> collection) {
-        DtoToEntityContext tcontext = new DtoToEntityContext(entityFactory);
-
-        for (Domain d : client.getDomains()) {
-            tcontext.addEntity(d);
-        }
-        for (ModelObjectReference<? extends ModelObject> objectReference : collection) {
-            if (objectReference.getType()
-                               .equals(Domain.class)) {
-                continue;// skip domains as we get them from the client
-            }
-            Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(objectReference.getType());
-            ModelObject modelObject = entityRepository.findById(Key.uuidFrom(objectReference.getId()))
-                                                      .orElseThrow(() -> new NotFoundException(
-                                                              "ref not found %s %s",
-                                                              objectReference.getId(),
-                                                              objectReference.getType()));
-            tcontext.addEntity(modelObject);
-        }
-        return tcontext;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

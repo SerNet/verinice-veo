@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.FullGroupDto;
@@ -106,13 +107,15 @@ public class GroupController extends AbstractEntityController {
     private final GetGroupUseCase<List<EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupMemberUseCase;
     private final PutGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> putGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
+    private final ModelObjectReferenceResolver referenceResolver;
 
     public GroupController(UseCaseInteractorImpl useCaseInteractor, ObjectMapper objectMapper,
             CreateGroupUseCase createGroupUseCase,
             GetGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> getGroupUseCase,
             GetGroupsUseCase<?, List<FullEntityLayerSupertypeGroupDto<?>>> getGroupsUseCase,
             GetGroupUseCase<List<EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupMemberUseCase,
-            PutGroupUseCase putGroupUseCase, DeleteGroupUseCase deleteGroupUseCase) {
+            PutGroupUseCase putGroupUseCase, DeleteGroupUseCase deleteGroupUseCase,
+            ModelObjectReferenceResolver referenceResolver) {
         this.useCaseInteractor = useCaseInteractor;
         this.createGroupUseCase = createGroupUseCase;
         this.getGroupUseCase = getGroupUseCase;
@@ -121,6 +124,7 @@ public class GroupController extends AbstractEntityController {
         this.putGroupUseCase = putGroupUseCase;
         this.deleteGroupUseCase = deleteGroupUseCase;
         this.objectMapper = objectMapper;
+        this.referenceResolver = referenceResolver;
     }
 
     @GetMapping
@@ -237,7 +241,8 @@ public class GroupController extends AbstractEntityController {
         var groupDto = (FullEntityLayerSupertypeGroupDto<?>) objectMapper.readValue(requestBody,
                                                                                     dtoClass);
         applyId(uuid, groupDto);
-        DtoToEntityContext fromDtoContext = configureDtoContext(client, groupDto.getReferences());
+        DtoToEntityContext fromDtoContext = referenceResolver.loadIntoContext(client,
+                                                                              groupDto.getReferences());
         EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext();
         ModelGroup<?> group = groupDto.toEntity(fromDtoContext);
         return useCaseInteractor.execute(putGroupUseCase,

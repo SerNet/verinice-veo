@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
@@ -52,7 +53,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -95,7 +95,7 @@ public class UnitController extends AbstractEntityController {
     private final UpdateUnitUseCase<FullUnitDto> putUnitUseCase;
     private final DeleteUnitUseCase<ResponseEntity<ApiResponseBody>> deleteUnitUseCase;
     private final GetUnitsUseCase<List<FullUnitDto>> getUnitsUseCase;
-    private final EntityFactory entityFactory;
+    private final ModelObjectReferenceResolver referenceResolver;
 
     @GetMapping
     @Operation(summary = "Loads all units")
@@ -184,8 +184,8 @@ public class UnitController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id, @Valid @RequestBody FullUnitDto unitDto) {
 
-        DtoToEntityContext tcontext = configureDtoContext(getAuthenticatedClient(auth),
-                                                          Collections.emptyList());
+        DtoToEntityContext tcontext = referenceResolver.loadIntoContext(getAuthenticatedClient(auth),
+                                                                        Collections.emptyList());
 
         return useCaseInteractor.execute(putUnitUseCase,
                                          new UpdateUnitUseCase.InputData(unitDto.toEntity(tcontext),

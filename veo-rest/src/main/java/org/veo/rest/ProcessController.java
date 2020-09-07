@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
@@ -87,17 +88,20 @@ public class ProcessController extends AbstractEntityController {
     private UpdateProcessUseCase<FullProcessDto> updateProcessUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
     private GetProcessesUseCase<List<FullProcessDto>> getProcessesUseCase;
+    private final ModelObjectReferenceResolver referenceResolver;
 
     public ProcessController(UseCaseInteractorImpl useCaseInteractor,
             CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
             UpdateProcessUseCase putProcessUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            GetProcessesUseCase getProcessesUseCase) {
+            GetProcessesUseCase getProcessesUseCase,
+            ModelObjectReferenceResolver referenceResolver) {
         this.useCaseInteractor = useCaseInteractor;
         this.createProcessUseCase = createProcessUseCase;
         this.getProcessUseCase = getProcessUseCase;
         this.updateProcessUseCase = putProcessUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
         this.getProcessesUseCase = getProcessesUseCase;
+        this.referenceResolver = referenceResolver;
     }
 
     /**
@@ -143,8 +147,8 @@ public class ProcessController extends AbstractEntityController {
                                              public InputData get() {
 
                                                  Client client = getAuthenticatedClient(auth);
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   dto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 dto.getReferences());
                                                  return new InputData(dto.toEntity(tcontext),
                                                          client);
                                              }
@@ -171,8 +175,8 @@ public class ProcessController extends AbstractEntityController {
                                              @Override
                                              public ModifyEntityUseCase.InputData<Process> get() {
                                                  Client client = getClient(user.getClientId());
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   processDto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 processDto.getReferences());
 
                                                  return new ModifyEntityUseCase.InputData<Process>(
                                                          processDto.toEntity(tcontext),

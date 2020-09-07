@@ -19,6 +19,7 @@ package org.veo.rest.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EntitySchemaService;
@@ -233,5 +234,11 @@ public class ModuleConfiguration {
     @Bean
     public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
         return new UnitHierarchyProvider(unitRepository);
+    }
+
+    @Bean
+    public ModelObjectReferenceResolver modelObjectReferenceResolver(
+            RepositoryProvider repositoryProvider, EntityFactory entityFactory) {
+        return new ModelObjectReferenceResolver(entityFactory, repositoryProvider);
     }
 }

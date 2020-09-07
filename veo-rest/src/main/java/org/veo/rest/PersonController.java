@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
@@ -87,17 +88,20 @@ public class PersonController extends AbstractEntityController {
     private final GetPersonsUseCase<List<FullPersonDto>> getPersonsUseCase;
     private final UpdatePersonUseCase<FullPersonDto> updatePersonUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
+    private final ModelObjectReferenceResolver referenceResolver;
 
     public PersonController(UseCaseInteractorImpl useCaseInteractor,
             CreatePersonUseCase createPersonUseCase, GetPersonUseCase getPersonUseCase,
             GetPersonsUseCase getPersonsUseCase, UpdatePersonUseCase updatePersonUseCase,
-            DeleteEntityUseCase deleteEntityUseCase) {
+            DeleteEntityUseCase deleteEntityUseCase,
+            ModelObjectReferenceResolver referenceResolver) {
         this.useCaseInteractor = useCaseInteractor;
         this.createPersonUseCase = createPersonUseCase;
         this.getPersonUseCase = getPersonUseCase;
         this.getPersonsUseCase = getPersonsUseCase;
         this.updatePersonUseCase = updatePersonUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
+        this.referenceResolver = referenceResolver;
     }
 
     @GetMapping
@@ -157,8 +161,8 @@ public class PersonController extends AbstractEntityController {
                                              @Override
                                              public InputData get() {
                                                  Client client = getAuthenticatedClient(auth);
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   dto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 dto.getReferences());
                                                  return new CreatePersonUseCase.InputData(
                                                          dto.toEntity(tcontext), client);
                                              }
@@ -183,8 +187,8 @@ public class PersonController extends AbstractEntityController {
                                              @Override
                                              public org.veo.core.usecase.base.ModifyEntityUseCase.InputData<Person> get() {
                                                  Client client = getAuthenticatedClient(auth);
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   personDto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 personDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Person>(
                                                          personDto.toEntity(tcontext), client);
                                              }

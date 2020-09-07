@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
@@ -88,17 +89,20 @@ public class ControlController extends AbstractEntityController {
     private final GetControlsUseCase<List<FullControlDto>> getControlsUseCase;
     private final UpdateControlUseCase<FullControlDto> updateControlUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
+    private final ModelObjectReferenceResolver referenceResolver;
 
     public ControlController(UseCaseInteractorImpl useCaseInteractor,
             CreateControlUseCase createControlUseCase, GetControlUseCase getControlUseCase,
             GetControlsUseCase getControlsUseCase, UpdateControlUseCase updateControlUseCase,
-            DeleteEntityUseCase deleteEntityUseCase) {
+            DeleteEntityUseCase deleteEntityUseCase,
+            ModelObjectReferenceResolver referenceResolver) {
         this.useCaseInteractor = useCaseInteractor;
         this.createControlUseCase = createControlUseCase;
         this.getControlUseCase = getControlUseCase;
         this.getControlsUseCase = getControlsUseCase;
         this.updateControlUseCase = updateControlUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
+        this.referenceResolver = referenceResolver;
     }
 
     @GetMapping
@@ -157,8 +161,8 @@ public class ControlController extends AbstractEntityController {
                                              public CreateControlUseCase.InputData get() {
 
                                                  Client client = getAuthenticatedClient(auth);
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   dto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 dto.getReferences());
                                                  return new CreateControlUseCase.InputData(
                                                          dto.toEntity(tcontext), client);
                                              }
@@ -183,8 +187,8 @@ public class ControlController extends AbstractEntityController {
                                              @Override
                                              public InputData<Control> get() {
                                                  Client client = getAuthenticatedClient(auth);
-                                                 DtoToEntityContext tcontext = configureDtoContext(client,
-                                                                                                   controlDto.getReferences());
+                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                                 controlDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Control>(
                                                          controlDto.toEntity(tcontext), client);
                                              }
