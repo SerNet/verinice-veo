@@ -64,6 +64,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
             //     .disable()
 
             .and()
+            .authorizeRequests()
+            .antMatchers("/actuator/**")
+            .permitAll()
+
+            .and()
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
