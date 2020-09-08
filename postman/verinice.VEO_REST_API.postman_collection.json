@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "88a33d35-115f-4c91-a9e3-bc3219bfed98",
+    "_postman_id": "efe690e0-4fcc-4148-9a30-7fb21dadcdf0",
     "name": "verinice.VEO REST API",
     "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -15,7 +15,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "42469543-d9ee-4182-8154-8fba27a680a7",
+                "id": "30466623-88f1-412c-b365-c1c551bc7d64",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -33,7 +33,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "4a83b7ae-c9bf-4aa3-9a5c-c05b9a1fcc4c",
+                "id": "4c33ee0a-6092-41fb-ba2f-45e1f31550ee",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -71,7 +71,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/units",
@@ -103,7 +103,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9c30c61d-afb3-4e88-b93e-3603061986b4",
+                "id": "7cd86330-1dd0-456c-a548-42f2f57b961c",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -171,7 +171,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
             },
             {
               "name": "Unit not found",
@@ -214,7 +214,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a0f87628-735e-4b84-b3b9-49f03958bea5",
+                "id": "4d5cdc95-1466-4f6c-bd09-4a46c146a539",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -277,7 +277,7 @@
                 }
               ],
               "cookie": [],
-              "body": "[\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n },\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n }\n]"
+              "body": "[\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n },\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n }\n]"
             }
           ]
         },
@@ -287,7 +287,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "98355369-7dad-4dc3-95e7-caec6dc80dfd",
+                "id": "575e3c9b-21d6-42ef-bbeb-2db6db3a5fb8",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -297,7 +297,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "de42c5c6-6c98-4707-a66d-81810dcbf015",
+                "id": "9cc57228-faf9-402e-b472-0815c447cd9a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -323,7 +323,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -343,7 +343,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -375,7 +375,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "11a8a8ce-c93a-4a2b-9634-b93d068232f2",
+                "id": "3917088f-dd5f-411d-b459-6b848426a3f4",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -385,7 +385,7 @@
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"assetId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"assetName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.href).to.equal('/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "",
                   "});",
                   ""
@@ -416,6 +416,39 @@
             }
           },
           "response": [
+            {
+              "name": "Asset loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+            },
             {
               "name": "Asset not found",
               "originalRequest": {
@@ -448,39 +481,6 @@
               ],
               "cookie": [],
               "body": ""
-            },
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
         },
@@ -490,7 +490,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "89ca6f81-ac76-4050-b2c0-720842d9f8e0",
+                "id": "42899245-9c65-430c-b617-a97fb8d75c22",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -569,7 +569,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "1b236d3b-2e9e-4e9f-9e35-f633dcb19824",
+                "id": "7c101a3d-9e96-4f07-bdc9-7050b1f09ec1",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -579,7 +579,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "5f9b9d9d-b810-4ac6-ab3f-738161cf8737",
+                "id": "7052f7d0-f12e-42ea-8063-63a6fa245a18",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -605,7 +605,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    },\n    \"assets\": [\n    \t{\n\t        \"displayName\": \"{{assetName}}\",\n\t\t    \"href\": \"/assets/{{assetId}}\"\n    \t}\t\n\t]\n}"
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"assets\": [\n    \t{\n\t        \"displayName\": \"{{assetName}}\",\n\t\t    \"targetUri\": \"/assets/{{assetId}}\"\n    \t}\t\n\t]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -625,7 +625,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/processes",
@@ -657,7 +657,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ffcffac4-dd85-453f-a53e-d37f72a60da6",
+                "id": "cacf14f0-e9ff-4396-9348-650aac8b1b64",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -737,7 +737,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "c509ae41-563f-4f26-8ec4-94755aa14408",
+                "id": "91751ea4-9edc-4bfa-a101-098305b85f54",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -816,7 +816,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "49d45c26-d23f-4d1b-b30c-4e48c2b77c95",
+                "id": "0da17238-8cea-4a27-bf6f-92912060a0e3",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -826,7 +826,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0f5d90e1-3cb7-494b-976d-27b8990151dd",
+                "id": "0da8db7e-0c83-4a64-9433-64fb4c97e88f",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -852,7 +852,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/persons",
@@ -872,7 +872,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -904,7 +904,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "70056bb2-9f8a-4420-a24a-8c656adf2ed3",
+                "id": "10df2f47-5413-4d27-bd17-759cbf2d0c02",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -983,7 +983,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d52df1e3-f0eb-44f8-a489-548c793d9372",
+                "id": "de3dbd0b-ca6c-4912-8a98-d1b32dc3fba4",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -993,7 +993,7 @@
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"personId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"personName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.href).to.equal('/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "",
                   "});",
                   ""
@@ -1055,7 +1055,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             },
             {
               "name": "Asset not found",
@@ -1098,7 +1098,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "f5c3e903-0a2f-454f-829f-94594b77e341",
+                "id": "ca70a8b8-89fa-4b46-b709-f3bce700e54b",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -1108,7 +1108,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0f9f9b85-dbc5-4928-aca7-8a55b07e9446",
+                "id": "36ed0df2-918b-4864-906c-a80c03882669",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1134,7 +1134,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -1154,7 +1154,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -1186,7 +1186,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "128affcf-3ac0-4c93-a968-a81296b371f5",
+                "id": "abaf77fb-10af-47be-add6-486bc3b64e65",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1265,7 +1265,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "70088ed3-f040-451b-9a0f-9be353deda69",
+                "id": "bb6d56c0-8a74-41cf-acfb-23a9b309e6ba",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1275,7 +1275,7 @@
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"controlId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"controlName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.href).to.equal('/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "",
                   "});",
                   ""
@@ -1306,39 +1306,6 @@
             }
           },
           "response": [
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
             {
               "name": "Asset not found",
               "originalRequest": {
@@ -1371,6 +1338,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Asset loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
         },
@@ -1380,7 +1380,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d0e21139-b2e4-43a7-b512-c85fa1b11144",
+                "id": "a2907fc3-a40b-43bc-957d-ed2285b81b0b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1414,39 +1414,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -1478,6 +1445,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -1487,7 +1487,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3da96a07-b51b-4dee-8b13-fbc5f700a03e",
+                "id": "0f88b1c5-3fa6-4875-bbc1-0f950096f472",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1594,7 +1594,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "642ed8d3-8f36-4770-847a-2be21283180c",
+                "id": "202fbff5-10b6-42e5-bf2f-517f04410c19",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1628,39 +1628,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -1692,6 +1659,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -1701,7 +1701,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a8f22a46-8548-4b35-a5e6-aa83bb627bc1",
+                "id": "b0953982-49e2-4565-bc6f-2922cea8e7af",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1735,39 +1735,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -1799,6 +1766,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -1808,7 +1808,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "6ea8e6e4-1dc4-4115-970a-72aab2833b91",
+                "id": "5175dd2c-0494-498b-9b29-be258dd9895e",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -1842,39 +1842,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -1906,6 +1873,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -1915,7 +1915,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "c7944a78-2796-4ef0-bea5-d6e231d4e99a",
+                "id": "e39215a8-7620-4ed6-8ad7-92e471cc6fb6",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1933,7 +1933,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "5eb22ce2-ce75-44ed-ab81-6e1428fe86df",
+                "id": "91e66de1-c84a-4a83-baf5-49c14be2e77a",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -1971,7 +1971,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/units",
@@ -2003,7 +2003,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "ce1c32f1-600d-467c-8726-280632cd17a8",
+                "id": "db2bcb72-405e-471c-add4-a87680d2c171",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -2013,7 +2013,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "586ff073-1226-4102-a0dc-09f36bf8e48d",
+                "id": "039b9bcf-a948-4a11-90e0-586fa8ee4776",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2039,7 +2039,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -2059,7 +2059,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -2091,7 +2091,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "21d55069-5e86-4e91-8dca-adf8c6bdd137",
+                "id": "5855f923-934d-4285-a778-19cf852db1eb",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -2101,7 +2101,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "54373fee-ec1a-4540-b837-d6f19e063947",
+                "id": "3a2586ec-aca0-4992-924e-976120238533",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2127,7 +2127,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"href\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -2147,7 +2147,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/processes",
@@ -2179,7 +2179,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "235c9af2-45a5-4607-9401-5dfbe6b75ca2",
+                "id": "1c0f3675-872c-45fa-962d-136a1268f819",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2262,7 +2262,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "0c84ac33-758b-49c1-870a-1ce5ec597119",
+                "id": "c24d7471-635d-4131-8c64-478c367ebc23",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -2272,7 +2272,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "72161f91-8a8f-4874-b640-c489d2caf535",
+                "id": "7bf960a7-5103-469d-bf5f-cc48dc135b62",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2298,7 +2298,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"href\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -2318,7 +2318,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -2350,7 +2350,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3a868238-ce83-4b18-824a-d7b31f9e16ad",
+                "id": "923f74e8-eab1-41c2-bbdd-6ed95bb76302",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2360,7 +2360,7 @@
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"controlId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"controlName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.href).to.equal('/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "    pm.expect(jsonData.customAspects.myaspecttest1.type).to.equal('myaspecttest1');",
                   "    pm.expect(jsonData.links.A1[0].type).to.equal('A1');",
                   "",
@@ -2457,7 +2457,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
         },
@@ -2467,7 +2467,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "a2c1470a-79ba-4ab2-a835-abaebd0fcba0",
+                "id": "c8c906c0-8042-4cd4-969c-45f9464fb9d1",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -2477,7 +2477,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "00561db8-fb48-4519-b8dc-df5bc3335f4c",
+                "id": "842b1d14-a092-4feb-8fd7-629f159cf326",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2503,7 +2503,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    },\"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"href\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2528,7 +2528,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -2560,7 +2560,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "03f171cf-0fea-481b-a756-4195b2ab375e",
+                "id": "75abbda7-3eb1-4a95-92de-aadc397eda93",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2570,7 +2570,7 @@
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"personId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"personName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.href).to.equal('/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "    pm.expect(jsonData.customAspects.myaspecttest1.type).to.equal('myaspecttest1');",
                   "    pm.expect(jsonData.links.A1[0].type).to.equal('A1');",
                   "",
@@ -2634,7 +2634,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             },
             {
               "name": "Asset not found",
@@ -2677,7 +2677,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "3d9ffaf5-dc69-48c1-acfe-da3fd359ecb8",
+                "id": "ddedb131-9d5f-4dc4-a6c6-613df97b18e6",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -2687,7 +2687,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "bf9da7cf-efba-45bc-b93f-5c3c3d4348ef",
+                "id": "f3085a7e-3a89-4ffa-ab46-7b7ca9978aee",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2713,7 +2713,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    }\n    ,\"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"href\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n    ,\"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -2733,7 +2733,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -2765,7 +2765,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "db22b5a1-768c-473e-b73e-5eac8b9f1843",
+                "id": "ab1d0ca4-f1d4-4dc9-9d2b-d228a0c25c89",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2775,7 +2775,7 @@
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"assetId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"assetName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.href).to.equal('/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "    pm.expect(jsonData.customAspects.myaspecttest1.type).to.equal('myaspecttest1');",
                   "    pm.expect(jsonData.links.A1[0].type).to.equal('A1');",
                   "});",
@@ -2838,7 +2838,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
         },
@@ -2848,7 +2848,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "5fc2835d-d0a5-4d78-a17a-99338fe4f15b",
+                "id": "48d849e1-347f-4410-a016-62f00cb53578",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -2858,7 +2858,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3564984b-56d5-4fd1-ac88-0f6de3a794c3",
+                "id": "c5592463-deff-420e-b41c-3aa3e4ea754d",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2884,7 +2884,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Verarbeitungstätigkeit 1\",\n    \"customAspects\": {\n        \"ProcessDvGroupRechtsgrundlage\": {\n            \"attributes\": {\n                \"processDvRechtsgrundlage\": [\n                    \"processDvRechtsgrundlage1\",\n                    \"processDvRechtsgrundlage5\",\n                    \"processDvRechtsgrundlage2\",\n                    \"processDvRechtsgrundlage3\",\n                    \"processDvRechtsgrundlage4\"\n                ]\n            },\n            \"type\": \"ProcessDvGroupRechtsgrundlage\"\n        }\n    },\n    \"owner\": {\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"Verarbeitungstätigkeit 1\",\n    \"customAspects\": {\n        \"ProcessDvGroupRechtsgrundlage\": {\n            \"attributes\": {\n                \"processDvRechtsgrundlage\": [\n                    \"processDvRechtsgrundlage1\",\n                    \"processDvRechtsgrundlage5\",\n                    \"processDvRechtsgrundlage2\",\n                    \"processDvRechtsgrundlage3\",\n                    \"processDvRechtsgrundlage4\"\n                ]\n            },\n            \"type\": \"ProcessDvGroupRechtsgrundlage\"\n        }\n    },\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -2904,7 +2904,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/processes",
@@ -2936,7 +2936,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "49313f83-2181-4fb5-933b-9ca8ae1d4179",
+                "id": "c784218a-e694-4df2-82de-9b09b7d69253",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3025,7 +3025,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "71e075fd-1cd9-48e5-bada-03ccb58078cd",
+                "id": "e429047e-e879-48c9-a2e3-39702da82cda",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3043,7 +3043,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "e5ecc8c4-bbc3-46fa-b858-27a8b00bc5f6",
+                "id": "0d60ba77-82ed-4b4f-a741-9c0a2315967a",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -3081,7 +3081,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/units",
@@ -3113,7 +3113,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a4354ae9-48fa-46ac-8dcd-6132e2398042",
+                "id": "4c87ef6d-5395-4682-9a15-a1ab43646a16",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3131,7 +3131,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "36c662d1-5589-4b78-a093-5b493798a814",
+                "id": "1b9b3c5c-6a7b-4493-b6eb-5a2ebcbdaf1d",
                 "exec": [
                   "pm.collectionVariables.set('subUnitName', 'CRUD test sub-unit');"
                 ],
@@ -3149,7 +3149,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"sub-unit\",\n    \"parent\": {\n        \"displayName\": \"{{unitName}}\",\n        \"href\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"sub-unit\",\n    \"parent\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/units",
@@ -3169,7 +3169,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/units",
@@ -3201,7 +3201,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "94a6ba82-2a91-454d-8e5b-7f18afe01091",
+                "id": "b89b50af-8613-4eec-92d4-befb2c6ee2f2",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'filter test asset');"
                 ],
@@ -3211,7 +3211,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "23082771-cc62-4f6b-a542-92ec425b0506",
+                "id": "b29560d1-08fe-415a-b70c-abb4bc81ecfe",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3237,7 +3237,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -3257,7 +3257,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -3289,7 +3289,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "4f3ee06a-900a-4d90-b1de-9222dc8f4347",
+                "id": "0817e59d-9844-4af3-92bd-7f736477619d",
                 "exec": [
                   "pm.collectionVariables.set('processName', 'filter test process');"
                 ],
@@ -3299,7 +3299,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "88884cfe-ec97-4d11-80fe-550988707514",
+                "id": "11adb8c2-76ea-4966-bef2-e31069d07ec0",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3325,7 +3325,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -3345,7 +3345,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -3377,7 +3377,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "1e35301e-6873-4250-91f9-78a35da1ef9d",
+                "id": "44182403-3129-4eb7-8ce3-9105c88f8236",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'filter test person');"
                 ],
@@ -3387,7 +3387,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4fc3490d-d814-40d7-92f9-f27ab6085a59",
+                "id": "6cbda63d-c796-42d3-b0ac-f48509f2e2a6",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3413,7 +3413,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/persons",
@@ -3433,7 +3433,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -3465,7 +3465,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "44470152-c774-4cb2-b7bb-2712f424abdc",
+                "id": "536407c8-8079-4513-bbec-947bd405f85f",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'filter test control');"
                 ],
@@ -3475,7 +3475,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "cf1f6127-0bb9-433c-be3a-7000574622c7",
+                "id": "78f457fa-189d-4a66-af66-bd2c980afc40",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3501,7 +3501,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"href\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -3521,7 +3521,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/assets",
@@ -3553,7 +3553,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4df7dfff-c588-47f6-9763-ca789f1d8bc6",
+                "id": "345d3180-24e8-4d2e-990d-97160edca69c",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3591,39 +3591,6 @@
           },
           "response": [
             {
-              "name": "Unit loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "GET",
@@ -3655,6 +3622,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
             }
           ]
         },
@@ -3664,7 +3664,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "02ed4317-6ef0-4c09-82a9-41a312cd1a5c",
+                "id": "66871e9d-3c9a-40a4-a5d2-6a9affe7ef61",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3743,7 +3743,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "7fb8c044-3b23-4ece-b2a1-e2da72609ce4",
+                "id": "ec3e75aa-f9ce-4519-bc0d-95bdb9ff61f9",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3822,7 +3822,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "5cd052cd-0577-4e68-a32c-804e09a92b19",
+                "id": "228dc588-e136-4da4-97f0-b5c4fdefa95b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3901,7 +3901,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "afd79c9b-4075-4321-94c4-db7db07a503b",
+                "id": "1614ea0c-b319-4dd9-af28-7e19da5e98fa",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3980,7 +3980,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "34244328-abbe-4f0b-bdb0-0030df31c852",
+                "id": "ffcfbfb0-a7a6-4d6c-b21f-f93c464efc25",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4059,7 +4059,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "392c25a1-275b-44d1-bcaa-c114d3b6434e",
+                "id": "a463bf72-84ba-4d48-bcc6-8dfb5a5ae891",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(404);",
@@ -4131,7 +4131,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "438dd3ca-6509-4607-a93b-45eacf50872c",
+                "id": "6eb75fef-c0e3-42a9-ac27-bb8682fc3a27",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4165,39 +4165,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -4229,6 +4196,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -4238,7 +4238,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0b7e529b-8ed5-41e3-89d6-035d834ba92f",
+                "id": "cc00b98e-8d8f-44bb-a145-810d8deeca9b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4263,47 +4263,14 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{processId}}"
+                  "value": "{{processId}}",
+                  "description": "(Required) "
                 }
               ]
             }
           },
           "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
             {
               "name": "Unit not found",
               "originalRequest": {
@@ -4336,6 +4303,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -4345,7 +4345,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9a9f91c1-0361-483d-b5bf-e5c4af5cd182",
+                "id": "eea5dfa3-0f0c-4f8c-8a20-84aa34c947fb",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4370,9 +4370,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -4452,7 +4452,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "654a32be-7125-4e03-a99c-f089f0f6ea9a",
+                "id": "fb5602bb-fe83-4ec7-8bb3-8e540b82dff2",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4477,9 +4477,9 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -4559,7 +4559,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f045985e-f550-4a13-97d5-fbdcb31fa6d4",
+                "id": "e6f5cb37-e0f9-4c6d-8123-5892fa80c887",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -4584,47 +4584,14 @@
               ],
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{subUnitId}}"
+                  "value": "{{subUnitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
           },
           "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
             {
               "name": "Unit not found",
               "originalRequest": {
@@ -4657,6 +4624,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -4666,7 +4666,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "bec3a414-6692-4521-9eea-cd9bfa94b84b",
+                "id": "23a9ef34-e332-44e7-a62e-c1aa71cde421",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -4771,6 +4771,79 @@
       "protocolProfileBehavior": {
         
       }
+    },
+    {
+      "name": "Search functions",
+      "item": [
+        {
+          "name": "http://localhost:8070/units/searches",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "f07913e2-eb80-4fae-9e1b-d9d13837e6da",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.searchUrl;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"searchId\", resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"unitId\": \"{{unitId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8070/assets/searches",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8070",
+              "path": [
+                "assets",
+                "searches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "http://localhost:8070/assets/searches/q1YqzcssCS3NTFGyUjJLM7S0NDUy101LMzTUNUkxMNS1MLFM1U1OMzSwTElNTTG2TFbSUUovyi8tCKksSFWyyivNyakFAA==",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8070{{searchId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8070{{searchId}}"
+            }
+          },
+          "response": []
+        }
+      ],
+      "protocolProfileBehavior": {
+        
+      }
     }
   ],
   "auth": {
@@ -4797,7 +4870,7 @@
     {
       "listen": "prerequest",
       "script": {
-        "id": "6e725219-2aa7-496c-aa44-ed046324809b",
+        "id": "603fecd8-2c97-4c7e-a5ce-2216abcbd7d6",
         "type": "text/javascript",
         "exec": [
           ""
@@ -4807,7 +4880,7 @@
     {
       "listen": "test",
       "script": {
-        "id": "b94e4c5e-21be-4bfb-b7d7-139ec04fdd23",
+        "id": "bf778038-0989-499b-9b75-2f8ac1d6ee26",
         "type": "text/javascript",
         "exec": [
           ""
@@ -4817,78 +4890,83 @@
   ],
   "variable": [
     {
-      "id": "06a3746e-ada7-4580-bf27-139e0d6ed6e4",
+      "id": "76b7ffb8-f2d5-49c5-a123-0bd6666ad349",
       "key": "baseUrl",
       "value": "http://localhost:8070"
     },
     {
-      "id": "0b6fa56c-49dd-45c1-9369-c8aec808a6ba",
+      "id": "9fe74e4b-f97e-4e06-8f6b-3cfadcdf3829",
       "key": "unitId",
       "value": ""
     },
     {
-      "id": "8fe37044-3580-451a-beb5-68c92d8ed82c",
+      "id": "e5e54c10-5867-453e-9a12-73f08734a64b",
       "key": "processId",
       "value": ""
     },
     {
-      "id": "722c6de0-bbbd-4211-ba5c-e2e3812adad9",
+      "id": "c912ebef-5b3c-4bcf-85d5-cbb5c6b8a825",
       "key": "processName",
       "value": ""
     },
     {
-      "id": "9580e049-d029-4781-9a43-0b2e1b9a6ec5",
+      "id": "f3b587bd-f198-46e3-84d3-5470297e5080",
       "key": "unitName",
       "value": ""
     },
     {
-      "id": "adaa4444-848e-4e6f-9130-e47230c49ea8",
+      "id": "64f66872-9b06-4780-9734-f15501b82261",
       "key": "accessToken",
       "value": ""
     },
     {
-      "id": "981052cd-09b4-4a24-952e-61c6b5e84a7d",
+      "id": "e22fc8e2-42cc-4ca7-97bc-e008c62cae76",
       "key": "assetId",
       "value": ""
     },
     {
-      "id": "d5638496-4243-44d7-9058-8f33c154772d",
+      "id": "1ef6b8f7-ef6f-417c-8561-862d8e180d2d",
       "key": "assetName",
       "value": ""
     },
     {
-      "id": "1b9dbcbb-de1b-4e40-8650-1d3604e089bb",
+      "id": "467c63e9-1088-4258-a631-2a37ba17dc3a",
       "key": "personId",
       "value": ""
     },
     {
-      "id": "e0041921-a8f8-4146-b925-159f33ebbfae",
+      "id": "2902b51d-922a-41c8-a672-1fa40b1c8f7a",
       "key": "personName",
       "value": ""
     },
     {
-      "id": "68d2c1c5-1617-4da3-ba61-e214dad10a34",
+      "id": "f565d8e6-3a35-41bb-a297-3a83057a2349",
       "key": "controlId",
       "value": ""
     },
     {
-      "id": "81954790-416b-4f31-9570-066cc1ad340b",
+      "id": "14f792c3-1b6e-4e52-b757-c2d74c2f843d",
       "key": "controlName",
       "value": ""
     },
     {
-      "id": "36deb10b-393f-4965-b8d6-9c1e75bd5f94",
+      "id": "ef56c5c6-75a6-4ab4-8ed5-e60a24367c97",
       "key": "processIdveo271",
       "value": ""
     },
     {
-      "id": "95b33f61-b5e4-4acb-83b4-0844d80e315b",
+      "id": "d419510e-2147-4839-aae4-0ce61ca2438d",
       "key": "subUnitName",
       "value": ""
     },
     {
-      "id": "35d3197c-cbb3-42fc-a967-867c1b2e7a28",
+      "id": "5b755b60-6901-463e-852d-f3c4cd912047",
       "key": "subUnitId",
+      "value": ""
+    },
+    {
+      "id": "d2104548-de54-4314-b555-1317d65e516a",
+      "key": "searchId",
       "value": ""
     }
   ],
