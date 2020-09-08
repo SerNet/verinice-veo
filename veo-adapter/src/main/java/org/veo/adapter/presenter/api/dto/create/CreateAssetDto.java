@@ -26,8 +26,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateAssetDto
-        extends AbstractAssetDto<CreateCustomPropertiesDto, CreateCustomLinkDto> {
+public final class CreateAssetDto extends AbstractAssetDto {
 
     public Asset toEntity(DtoToEntityContext tcontext) {
         return DtoToEntityTransformer.transformDto2Asset(tcontext, this, null);

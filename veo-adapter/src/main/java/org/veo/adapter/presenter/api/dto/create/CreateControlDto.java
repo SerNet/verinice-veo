@@ -26,8 +26,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateControlDto
-        extends AbstractControlDto<CreateCustomPropertiesDto, CreateCustomLinkDto> {
+public final class CreateControlDto extends AbstractControlDto {
 
     public Control toEntity(DtoToEntityContext tcontext) {
         return DtoToEntityTransformer.transformDto2Control(tcontext, this, null);

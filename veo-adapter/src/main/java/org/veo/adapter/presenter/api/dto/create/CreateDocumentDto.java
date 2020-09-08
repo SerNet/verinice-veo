@@ -26,8 +26,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateDocumentDto
-        extends AbstractDocumentDto<CreateCustomPropertiesDto, CreateCustomLinkDto> {
+public final class CreateDocumentDto extends AbstractDocumentDto {
 
     @Override
     public Document toEntity(DtoToEntityContext context) {

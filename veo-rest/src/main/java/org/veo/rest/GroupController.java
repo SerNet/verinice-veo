@@ -54,8 +54,6 @@ import org.veo.adapter.presenter.api.dto.FullGroupDto;
 import org.veo.adapter.presenter.api.dto.create.CreateGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlGroupDto;
-import org.veo.adapter.presenter.api.dto.full.FullCustomLinkDto;
-import org.veo.adapter.presenter.api.dto.full.FullCustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
@@ -104,7 +102,7 @@ public class GroupController extends AbstractEntityController {
     private final CreateGroupUseCase<ResponseEntity<ApiResponseBody>> createGroupUseCase;
     private final GetGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> getGroupUseCase;
     private final GetGroupsUseCase<?, List<FullEntityLayerSupertypeGroupDto<?>>> getGroupsUseCase;
-    private final GetGroupUseCase<List<EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupMemberUseCase;
+    private final GetGroupUseCase<List<EntityLayerSupertypeDto>> getGroupMemberUseCase;
     private final PutGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> putGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
@@ -113,7 +111,7 @@ public class GroupController extends AbstractEntityController {
             CreateGroupUseCase createGroupUseCase,
             GetGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> getGroupUseCase,
             GetGroupsUseCase<?, List<FullEntityLayerSupertypeGroupDto<?>>> getGroupsUseCase,
-            GetGroupUseCase<List<EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>>> getGroupMemberUseCase,
+            GetGroupUseCase<List<EntityLayerSupertypeDto>> getGroupMemberUseCase,
             PutGroupUseCase putGroupUseCase, DeleteGroupUseCase deleteGroupUseCase,
             ModelObjectReferenceResolver referenceResolver) {
         this.useCaseInteractor = useCaseInteractor;
@@ -185,7 +183,7 @@ public class GroupController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullGroupDto.class)))),
             @ApiResponse(responseCode = "404", description = "Group not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto>>> getMembers(
+    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getMembers(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {

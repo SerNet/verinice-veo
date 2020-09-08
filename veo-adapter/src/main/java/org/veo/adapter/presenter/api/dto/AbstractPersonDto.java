@@ -41,8 +41,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Person", description = "Schema for Person")
-abstract public class AbstractPersonDto<TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto>
-        extends AbstractEntityLayerSupertypeDto<TProps, TLink> {
+abstract public class AbstractPersonDto extends AbstractEntityLayerSupertypeDto {
 
     @Override
     @Schema(description = "The name for the Person.", example = "Mia Musterfrau")
@@ -71,13 +70,13 @@ abstract public class AbstractPersonDto<TProps extends AbstractCustomPropertiesD
 
     @Override
     @Schema(description = "The links for the Person.")
-    public Map<String, List<TLink>> getLinks() {
+    public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
     @Schema(description = "The customAspects for the Person.")
     @Override
-    public Map<String, TProps> getCustomAspects() {
+    public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();
     }
 

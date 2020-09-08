@@ -28,8 +28,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * @author urszeidler
  */
-public interface EntityLayerSupertypeGroupDto<T extends EntityLayerSupertype, TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto>
-        extends EntityLayerSupertypeDto<TProps, TLink> {
+public interface EntityLayerSupertypeGroupDto<T extends EntityLayerSupertype>
+        extends EntityLayerSupertypeDto {
 
     @Schema(required = true, description = "The group's members")
     Set<ModelObjectReference<T>> getMembers();

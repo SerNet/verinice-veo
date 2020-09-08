@@ -20,11 +20,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelObject;
@@ -35,14 +39,12 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Base transfer object for CustomLinks. Contains common data for all CustomLink
- * DTOs.
+ * Transfer object for CustomLinks.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-abstract public class AbstractCustomLinkDto extends AbstractCustomPropertiesDto
-        implements NameAbleDto {
+public class CustomLinkDto extends CustomPropertiesDto implements NameAbleDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the CustomLink.",
@@ -66,6 +68,10 @@ abstract public class AbstractCustomLinkDto extends AbstractCustomPropertiesDto
     @Schema(required = true, implementation = ModelObjectReferenceCustomLinkTarget.class)
     private ModelObjectReference<EntityLayerSupertype> target;
 
+    public static CustomLinkDto from(@Valid CustomLink customLink, EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformCustomLink2Dto(tcontext, customLink);
+    }
+
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
         list.addAll(getDomains());
@@ -73,5 +79,7 @@ abstract public class AbstractCustomLinkDto extends AbstractCustomPropertiesDto
         return list;
     }
 
-    abstract public CustomLink toEntity(DtoToEntityContext context);
+    public CustomLink toEntity(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this);
+    }
 }

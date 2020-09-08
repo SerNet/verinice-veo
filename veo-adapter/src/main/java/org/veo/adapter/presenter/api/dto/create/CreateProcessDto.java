@@ -26,8 +26,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateProcessDto
-        extends AbstractProcessDto<CreateCustomPropertiesDto, CreateCustomLinkDto> {
+public final class CreateProcessDto extends AbstractProcessDto {
 
     @Override
     public Process toEntity(DtoToEntityContext context) {

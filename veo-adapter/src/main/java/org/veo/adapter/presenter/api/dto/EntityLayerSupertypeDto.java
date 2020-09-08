@@ -28,8 +28,7 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 
-public interface EntityLayerSupertypeDto<TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto>
-        extends NameAbleDto, VersionedDto {
+public interface EntityLayerSupertypeDto extends NameAbleDto, VersionedDto {
 
     Collection<ModelObjectReference<? extends ModelObject>> getReferences();
 
@@ -41,13 +40,13 @@ public interface EntityLayerSupertypeDto<TProps extends AbstractCustomProperties
 
     void setOwner(ModelObjectReference<Unit> owner);
 
-    Map<String, List<TLink>> getLinks();
+    Map<String, List<CustomLinkDto>> getLinks();
 
-    void setLinks(Map<String, List<TLink>> links);
+    void setLinks(Map<String, List<CustomLinkDto>> links);
 
-    Map<String, TProps> getCustomAspects();
+    Map<String, CustomPropertiesDto> getCustomAspects();
 
-    void setCustomAspects(Map<String, TProps> customAspects);
+    void setCustomAspects(Map<String, CustomPropertiesDto> customAspects);
 
     EntityLayerSupertype toEntity(DtoToEntityContext context);
 }

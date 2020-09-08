@@ -27,9 +27,9 @@ public interface ModelObject extends Versioned {
 
     void setId(Key<UUID> id);
 
-    Class<? extends ModelObject> getModelInterface();
-
     String getDbId();
 
     void setDbId(String id);
+
+    Class<? extends ModelObject> getModelInterface();
 }

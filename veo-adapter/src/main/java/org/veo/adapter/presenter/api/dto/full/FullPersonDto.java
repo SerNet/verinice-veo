@@ -35,8 +35,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullPersonDto extends AbstractPersonDto<FullCustomPropertiesDto, FullCustomLinkDto>
-        implements IdentifiableDto {
+public class FullPersonDto extends AbstractPersonDto implements IdentifiableDto {
 
     @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
              flags = Pattern.Flag.CASE_INSENSITIVE,

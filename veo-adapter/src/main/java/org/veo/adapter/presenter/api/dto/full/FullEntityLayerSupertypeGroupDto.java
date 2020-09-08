@@ -24,8 +24,7 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
 
 public interface FullEntityLayerSupertypeGroupDto<T extends EntityLayerSupertype>
-        extends EntityLayerSupertypeGroupDto<T, FullCustomPropertiesDto, FullCustomLinkDto>,
-        IdentifiableDto {
+        extends EntityLayerSupertypeGroupDto<T>, IdentifiableDto {
 
     static FullEntityLayerSupertypeGroupDto<?> from(ModelGroup<?> group,
             EntityToDtoContext tcontext) {

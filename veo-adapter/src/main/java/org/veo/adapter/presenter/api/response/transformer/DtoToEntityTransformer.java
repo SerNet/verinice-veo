@@ -28,13 +28,13 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractClientDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
-import org.veo.adapter.presenter.api.dto.AbstractCustomLinkDto;
-import org.veo.adapter.presenter.api.dto.AbstractCustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
+import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.NameAbleDto;
@@ -68,8 +68,8 @@ import org.veo.core.entity.transform.ClassKey;
 public final class DtoToEntityTransformer {
 
     // PersonDto->Person
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> Person transformDto2Person(
-            DtoToEntityContext tcontext, AbstractPersonDto<TProps, TLink> source, Key<UUID> key) {
+    public static Person transformDto2Person(DtoToEntityContext tcontext, AbstractPersonDto source,
+            Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Person.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
 
@@ -95,9 +95,8 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> PersonGroup transformDto2PersonGroup(
-            DtoToEntityContext tcontext, EntityLayerSupertypeGroupDto<Person, TProps, TLink> source,
-            Key<UUID> key) {
+    public static PersonGroup transformDto2PersonGroup(DtoToEntityContext tcontext,
+            EntityLayerSupertypeGroupDto<Person> source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(PersonGroup.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
         PersonGroup target = (PersonGroup) context.get(classKey);
@@ -127,8 +126,8 @@ public final class DtoToEntityTransformer {
     }
 
     // AssetDto->Asset
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> Asset transformDto2Asset(
-            DtoToEntityContext tcontext, AbstractAssetDto<TProps, TLink> source, Key<UUID> key) {
+    public static Asset transformDto2Asset(DtoToEntityContext tcontext, AbstractAssetDto source,
+            Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Asset.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
 
@@ -154,9 +153,8 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> AssetGroup transformDto2AssetGroup(
-            DtoToEntityContext tcontext, EntityLayerSupertypeGroupDto<Asset, TProps, TLink> source,
-            Key<UUID> key) {
+    public static AssetGroup transformDto2AssetGroup(DtoToEntityContext tcontext,
+            EntityLayerSupertypeGroupDto<Asset> source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(AssetGroup.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
         AssetGroup target = (AssetGroup) context.get(classKey);
@@ -186,8 +184,8 @@ public final class DtoToEntityTransformer {
     }
 
     // ProcessDto->Process
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> Process transformDto2Process(
-            DtoToEntityContext tcontext, AbstractProcessDto<TProps, TLink> source, Key<UUID> key) {
+    public static Process transformDto2Process(DtoToEntityContext tcontext,
+            AbstractProcessDto source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Process.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
 
@@ -213,9 +211,8 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> ProcessGroup transformDto2ProcessGroup(
-            DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Process, TProps, TLink> source, Key<UUID> key) {
+    public static ProcessGroup transformDto2ProcessGroup(DtoToEntityContext tcontext,
+            EntityLayerSupertypeGroupDto<Process> source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(EntityLayerSupertypeGroupDto.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
         ProcessGroup target = (ProcessGroup) context.get(classKey);
@@ -245,8 +242,8 @@ public final class DtoToEntityTransformer {
     }
 
     // DocumentDto->Document
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> Document transformDto2Document(
-            DtoToEntityContext tcontext, AbstractDocumentDto<TProps, TLink> source, Key<UUID> key) {
+    public static Document transformDto2Document(DtoToEntityContext tcontext,
+            AbstractDocumentDto source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Document.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
 
@@ -272,9 +269,8 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> DocumentGroup transformDto2DocumentGroup(
-            DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Document, TProps, TLink> source, Key<UUID> key) {
+    public static DocumentGroup transformDto2DocumentGroup(DtoToEntityContext tcontext,
+            EntityLayerSupertypeGroupDto<Document> source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(DocumentGroup.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
         DocumentGroup target = (DocumentGroup) context.get(classKey);
@@ -304,8 +300,8 @@ public final class DtoToEntityTransformer {
     }
 
     // ControlDto->Control
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> Control transformDto2Control(
-            DtoToEntityContext tcontext, AbstractControlDto<TProps, TLink> source, Key<UUID> key) {
+    public static Control transformDto2Control(DtoToEntityContext tcontext,
+            AbstractControlDto source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(Control.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
 
@@ -331,9 +327,8 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> ControlGroup transformDto2ControlGroup(
-            DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Control, TProps, TLink> source, Key<UUID> key) {
+    public static ControlGroup transformDto2ControlGroup(DtoToEntityContext tcontext,
+            EntityLayerSupertypeGroupDto<Control> source, Key<UUID> key) {
         ClassKey<Key<UUID>> classKey = new ClassKey<>(ControlGroup.class, key);
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
         ControlGroup target = (ControlGroup) context.get(classKey);
@@ -438,7 +433,7 @@ public final class DtoToEntityTransformer {
 
     // CustomLinkDto->CustomLink
     public static CustomLink transformDto2CustomLink(DtoToEntityContext tcontext,
-            AbstractCustomLinkDto source) {
+            CustomLinkDto source) {
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
 
         EntityLayerSupertype linkTarget = null;
@@ -460,7 +455,7 @@ public final class DtoToEntityTransformer {
 
     // CustomPropertiesDto->CustomProperties
     public static CustomProperties transformDto2CustomProperties(DtoToEntityContext tcontext,
-            AbstractCustomPropertiesDto source) {
+            CustomPropertiesDto source) {
         var target = tcontext.getFactory()
                              .createCustomProperties(source.getType());
         target.setApplicableTo(source.getApplicableTo());
@@ -470,9 +465,8 @@ public final class DtoToEntityTransformer {
 
     }
 
-    private static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> Set<CustomLink> mapLinks(
-            DtoToEntityContext context, EntityLayerSupertype entity,
-            EntityLayerSupertypeDto<TProps, TLink> dto) {
+    private static Set<CustomLink> mapLinks(DtoToEntityContext context, EntityLayerSupertype entity,
+            EntityLayerSupertypeDto dto) {
         return dto.getLinks()
                   .entrySet()
                   .stream()
@@ -507,12 +501,12 @@ public final class DtoToEntityTransformer {
         return new HashSet<>();
     }
 
-    private static <TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto> Set<CustomProperties> mapCustomAspects(
-            EntityLayerSupertypeDto<TProps, TLink> dto, DtoToEntityContext tcontext) {
+    private static Set<CustomProperties> mapCustomAspects(EntityLayerSupertypeDto dto,
+            DtoToEntityContext tcontext) {
         return dto.getCustomAspects()
                   .entrySet()
                   .stream()
-                  .map(Entry<String, TProps>::getValue)
+                  .map(Entry<String, CustomPropertiesDto>::getValue)
                   .map(customAspectDto -> customAspectDto.toEntity(tcontext))
                   .collect(Collectors.toSet());
     }

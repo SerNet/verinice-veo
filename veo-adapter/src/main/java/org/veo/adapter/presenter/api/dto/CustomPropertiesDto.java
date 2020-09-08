@@ -26,12 +26,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
@@ -42,12 +46,11 @@ import lombok.Data;
 import lombok.ToString;
 
 /**
- * Base transfer object for CustomPropertiess. Contains common data for all
- * CustomProperties DTOs.
+ * Transfer object for CustomProperties.
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-abstract public class AbstractCustomPropertiesDto implements VersionedDto {
+public class CustomPropertiesDto implements VersionedDto {
 
     // TODO Add an example for the API documentation for field type.
     @Schema(description = "The type for the CustomProperties.",
@@ -70,6 +73,11 @@ abstract public class AbstractCustomPropertiesDto implements VersionedDto {
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceCustomPropertiesDomains.class))
 
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+
+    public static CustomPropertiesDto from(@Valid CustomProperties control,
+            EntityToDtoContext tcontext) {
+        return EntityToDtoTransformer.transformCustomProperties2Dto(tcontext, control);
+    }
 
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
@@ -105,5 +113,7 @@ abstract public class AbstractCustomPropertiesDto implements VersionedDto {
         this.attributes = attributes;
     }
 
-    public abstract CustomProperties toEntity(DtoToEntityContext context);
+    public CustomProperties toEntity(DtoToEntityContext tcontext) {
+        return DtoToEntityTransformer.transformDto2CustomProperties(tcontext, this);
+    }
 }

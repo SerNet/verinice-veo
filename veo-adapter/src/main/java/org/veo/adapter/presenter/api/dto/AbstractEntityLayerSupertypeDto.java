@@ -46,8 +46,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-abstract public class AbstractEntityLayerSupertypeDto<TProps extends AbstractCustomPropertiesDto, TLink extends AbstractCustomLinkDto>
-        implements EntityLayerSupertypeDto<TProps, TLink> {
+abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupertypeDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the EntityLayerSupertype.",
@@ -82,19 +81,19 @@ abstract public class AbstractEntityLayerSupertypeDto<TProps extends AbstractCus
     @Valid
     @Schema(description = "Custom relations which do not affect the behavior.",
             title = "CustomLink")
-    private Map<String, List<TLink>> links = Collections.emptyMap();
+    private Map<String, List<CustomLinkDto>> links = Collections.emptyMap();
 
     @Valid
     @Schema(description = "A custom property which is determined by the requested entity schema - see '/schemas'",
             title = "CustomAspect")
-    private Map<String, TProps> customAspects = Collections.emptyMap();
+    private Map<String, CustomPropertiesDto> customAspects = Collections.emptyMap();
 
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         return Stream.concat(Stream.concat(getDomains().stream(), Stream.of(getOwner())),
                              getLinks().values()
                                        .stream()
                                        .flatMap(list -> list.stream()
-                                                            .map(AbstractCustomLinkDto::getTarget)))
+                                                            .map(CustomLinkDto::getTarget)))
                      .collect(Collectors.toList());
     }
 }

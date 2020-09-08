@@ -23,8 +23,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.dto.AbstractCustomLinkDto;
-import org.veo.adapter.presenter.api.dto.AbstractCustomPropertiesDto;
+import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameAbleDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
@@ -33,8 +33,6 @@ import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullClientDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlGroupDto;
-import org.veo.adapter.presenter.api.dto.full.FullCustomLinkDto;
-import org.veo.adapter.presenter.api.dto.full.FullCustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
@@ -71,8 +69,8 @@ import org.veo.core.entity.transform.ClassKey;
  */
 public final class EntityToDtoTransformer {
 
-    public static EntityLayerSupertypeDto<FullCustomPropertiesDto, FullCustomLinkDto> transform2Dto(
-            EntityToDtoContext context, EntityLayerSupertype source) {
+    public static EntityLayerSupertypeDto transform2Dto(EntityToDtoContext context,
+            EntityLayerSupertype source) {
         if (source instanceof ModelGroup) {
             return transformGroup2Dto(context, (ModelGroup<?>) source);
         }
@@ -509,9 +507,9 @@ public final class EntityToDtoTransformer {
 
     // CustomLink ->
     // CustomLinkDto
-    public static FullCustomLinkDto transformCustomLink2Dto(EntityToDtoContext tcontext,
+    public static CustomLinkDto transformCustomLink2Dto(EntityToDtoContext tcontext,
             CustomLink source) {
-        var target = new FullCustomLinkDto();
+        var target = new CustomLinkDto();
         mapVersionedProperties(source, target);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
@@ -535,9 +533,9 @@ public final class EntityToDtoTransformer {
 
     // CustomProperties ->
     // CustomPropertiesDto
-    public static FullCustomPropertiesDto transformCustomProperties2Dto(EntityToDtoContext tcontext,
+    public static CustomPropertiesDto transformCustomProperties2Dto(EntityToDtoContext tcontext,
             CustomProperties source) {
-        var target = new FullCustomPropertiesDto();
+        var target = new CustomPropertiesDto();
         mapVersionedProperties(source, target);
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
@@ -562,19 +560,19 @@ public final class EntityToDtoTransformer {
                     .collect(Collectors.toSet());
     }
 
-    private static Map<String, List<FullCustomLinkDto>> mapLinks(Set<CustomLink> links,
+    private static Map<String, List<CustomLinkDto>> mapLinks(Set<CustomLink> links,
             EntityToDtoContext tcontext) {
         return links.stream()
                     .map(link -> transformCustomLink2Dto(tcontext, link))
-                    .collect(Collectors.groupingBy(AbstractCustomLinkDto::getType));
+                    .collect(Collectors.groupingBy(CustomLinkDto::getType));
     }
 
-    private static Map<String, FullCustomPropertiesDto> mapCustomAspects(
+    private static Map<String, CustomPropertiesDto> mapCustomAspects(
             Set<CustomProperties> customAspects, EntityToDtoContext tcontext) {
         return customAspects.stream()
                             .map(customAspect -> transformCustomProperties2Dto(tcontext,
                                                                                customAspect))
-                            .collect(Collectors.toMap(AbstractCustomPropertiesDto::getType,
+                            .collect(Collectors.toMap(CustomPropertiesDto::getType,
                                                       Function.identity()));
     }
 
