@@ -39,5 +39,11 @@ public interface ModelObjectReferenceCustomLinkTarget extends IModelObjectRefere
             description = "The resource URL of the referenced domain.",
             example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>")
     @Override
-    String getHref();
+    String getTargetUri();
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    String getSearchesUri();
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    String getResourcesUri();
 }
