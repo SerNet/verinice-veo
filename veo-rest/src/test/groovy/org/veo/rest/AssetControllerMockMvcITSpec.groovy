@@ -111,7 +111,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'New Asset',
             owner: [
                 displayName: 'test2',
-                href: '/units/' + unit.id.uuidValue()
+                targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -174,12 +174,86 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
             name:'Test asset-1',
             owner:[
                 displayName:'Test unit',
-                href:"/units/${unit.id.uuidValue()}"
+                targetUri   : "http://localhost/units/${unit.id.uuidValue()}",
+                searchesUri : "http://localhost/units/searches",
+                resourcesUri: "http://localhost/units{?parent,displayName}"
             ],
             references:[
                 [
                     displayName:'Test unit',
-                    href:"/units/${unit.id.uuidValue()}"
+                    targetUri   : "http://localhost/units/${unit.id.uuidValue()}",
+                    searchesUri : "http://localhost/units/searches",
+                    resourcesUri: "http://localhost/units{?parent,displayName}"
+                ]
+            ]
+        ]
+    }
+
+
+    @WithUserDetails("user@domain.example")
+    def "search an asset"() {
+        given: "a search request body"
+        Map search = [
+            unitId: unit.id.uuidValue(),
+        ]
+
+        and: "a saved asset"
+        CustomProperties simpleProps = entityFactory.createCustomProperties()
+        simpleProps.setType("simpleAspect")
+        simpleProps.setProperty("simpleProp", "simpleValue")
+
+        def asset = entityFactory.createAsset()
+        asset.id = Key.newUuid()
+        asset.name = 'Test asset-1'
+        asset.owner = unit
+        asset.setCustomAspects([simpleProps] as Set)
+
+        asset = txTemplate.execute {
+            assetRepository.save(asset)
+        }
+
+        when: "a search request is made to the server"
+        def postSearchResult = post('http://localhost/assets/searches', search)
+
+        then: "the server redirects to the created search resource"
+        postSearchResult.andExpect(status().isCreated())
+        def postSearchResponse = parseJson(postSearchResult)
+
+        when: "the search is run"
+        def getSearchResult = get(postSearchResponse.searchUrl)
+
+        then: "the response contains the expected data"
+        def getSearchResponse = parseJson(getSearchResult)
+        getSearchResponse == [
+            [
+                customAspects:[
+                    simpleAspect:[
+                        applicableTo:[],
+                        attributes:[
+                            simpleProp:'simpleValue'
+                        ],
+                        domains:[],
+                        references:[],
+                        type: 'simpleAspect'
+                    ]
+                ],
+                domains:[],
+                id: asset.id.uuidValue(),
+                links:[:],
+                name:'Test asset-1',
+                owner:[
+                    displayName:'Test unit',
+                    targetUri: "http://localhost/units/${unit.id.uuidValue()}",
+                    searchesUri: "http://localhost/units/searches",
+                    resourcesUri: "http://localhost/units{?parent,displayName}"
+                ],
+                references:[
+                    [
+                        displayName:'Test unit',
+                        targetUri: "http://localhost/units/${unit.id.uuidValue()}",
+                        searchesUri: "http://localhost/units/searches",
+                        resourcesUri: "http://localhost/units{?parent,displayName}"
+                    ]
                 ]
             ]
         ]
@@ -220,8 +294,8 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test asset-1'
         result.links.size() == 1
-        result.links.mypreciouslink.target.href == [
-            "/assets/${asset2.id.uuidValue()}"
+        result.links.mypreciouslink.target.targetUri == [
+            "http://localhost/assets/${asset2.id.uuidValue()}"
         ]
         result.links.mypreciouslink.applicableTo[0] == ['Asset']
     }
@@ -256,10 +330,10 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         then:
         result.size == 2
         result.sort{it.name}.first().name == 'Test asset-1'
-        result.sort{it.name}.first().owner.href == "/units/"+unit.id.uuidValue()
+        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         result.sort{it.name}[1].name == 'Test asset-2'
-        result.sort{it.name}[1].owner.href == "/units/"+unit2.id.uuidValue()
+        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -292,7 +366,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.size == 1
 
         result.first().name == 'Test asset-1'
-        result.first().owner.href == "/units/"+unit.id.uuidValue()
+        result.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when: "a request is made to the server"
         results = get("/assets?unit=${unit2.id.uuidValue()}")
@@ -305,7 +379,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.size == 1
 
         result.first().name == 'Test asset-2'
-        result.first().owner.href == "/units/"+unit2.id.uuidValue()
+        result.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -333,6 +407,28 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "retrieve all assets for a unit filtering by displayName"() {
+        given: "A sub unit and a sub sub unit with one asset each"
+
+        def subUnit = entityFactory.createUnit(Key.newUuid(), "Sub unit", unit)
+        unitRepository.save(subUnit)
+
+        def subSubUnit = entityFactory.createUnit(Key.newUuid(), "Sub sub unit", subUnit)
+        unitRepository.save(subSubUnit)
+
+        assetRepository.save(entityFactory.createAsset(Key.newUuid(), "asset 0", subUnit))
+        assetRepository.save(entityFactory.createAsset(Key.newUuid(), "asset 1", subSubUnit))
+
+        when: "all assets for the root unit matching the filter"
+        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=sset 1"))
+        then: "only the matching asset from the unit's hierarchy is returned"
+        with(result) {
+            size == 1
+            it[0].name == "asset 1"
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
     def "put an asset"() {
         given: "a saved asset"
 
@@ -353,11 +449,11 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -372,7 +468,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -400,11 +496,11 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ], customAspects:
@@ -433,7 +529,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
         def entity = txTemplate.execute {
@@ -519,7 +615,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         put("/assets/${asset2.id.uuidValue()}", [
             id: asset1.id.uuidValue(),
             name: "new name 1",
-            owner: [href: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: '/units/' + unit.id.uuidValue()]
         ], false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)

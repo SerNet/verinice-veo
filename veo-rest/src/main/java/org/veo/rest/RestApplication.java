@@ -52,7 +52,8 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
  * Supports asynchronous method execution by the Spring environment. The
  * taskExecutor bean allows configuring the thread pool that is being used.
  *
- * @see https://spring.io/guides/gs/async-method/
+ * @see <a href=
+ *      "https://spring.io/guides/gs/async-method/">https://spring.io/guides/gs/async-method/</a>
  */
 @SpringBootApplication()
 @EnableAsync
@@ -97,6 +98,7 @@ public class RestApplication {
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
+    // TODO VEO-291 remove old password encoder
 
     public static void main(String[] args) {
         SpringApplication.run(RestApplication.class, args);

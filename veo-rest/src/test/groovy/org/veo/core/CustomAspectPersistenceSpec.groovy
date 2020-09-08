@@ -27,7 +27,11 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
-import org.veo.core.entity.*
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
+import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.Key
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl

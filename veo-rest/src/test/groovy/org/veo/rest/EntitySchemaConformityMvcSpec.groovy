@@ -65,8 +65,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def assetId = (String)parseJson(post("/assets", [
             name: "asset",
             owner: [
-                href: "/units/"+unitId,
-
+                targetUri: "/units/"+unitId,
             ]])).resourceId
         def createdAssetJson = new ObjectMapper().readTree(get("/assets/$assetId").andReturn().response.contentAsString)
 

@@ -107,7 +107,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'New Person',
             owner: [
                 displayName: 'test2',
-                href: '/units/' + unit.id.uuidValue()
+                targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -147,7 +147,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test person-1'
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -179,9 +179,9 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.size == 2
 
         result.sort{it.name}.first().name == 'Test person-1'
-        result.sort{it.name}.first().owner.href == "/units/"+unit.id.uuidValue()
+        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
         result.sort{it.name}[1].name == 'Test person-2'
-        result.sort{it.name}[1].owner.href == "/units/"+unit.id.uuidValue()
+        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -205,11 +205,11 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -225,7 +225,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -254,11 +254,11 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ], customAspects:
@@ -287,7 +287,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
         def entity = txTemplate.execute {
@@ -347,7 +347,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         put("/persons/${person2.id.uuidValue()}", [
             id: person1.id.uuidValue(),
             name: "new name 1",
-            owner: [href: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: '/units/' + unit.id.uuidValue()]
         ], false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)

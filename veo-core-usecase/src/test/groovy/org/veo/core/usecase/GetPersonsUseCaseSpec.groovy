@@ -33,7 +33,7 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
     def "retrieve all persons for a client"() {
         given:
         EntityFactory factory = Mock()
-        factory.createPerson()>> Mock(Person.class)
+        factory.createPerson() >> Mock(Person.class)
 
         TransformTargetToEntityContext targetToEntityContext = Mock()
         targetToEntityContext.entityFactory >> factory
@@ -43,7 +43,7 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * personRepository.findByClient(existingClient, false) >> [person]
@@ -60,7 +60,9 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def output = usecase.execute(new InputData(existingClient,
+                Optional.of(existingUnit.id.uuidValue()),
+                Optional.empty()))
         then:
 
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)

@@ -16,10 +16,15 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -47,6 +52,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateControlOutputMapper;
@@ -64,6 +70,7 @@ import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 
@@ -73,15 +80,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage controls.
  */
 @RestController
 @RequestMapping(ControlController.URL_BASE_PATH)
+@Slf4j
 public class ControlController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/controls";
+    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.CONTROLS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreateControlUseCase<ResponseEntity<ApiResponseBody>> createControlUseCase;
@@ -109,7 +118,9 @@ public class ControlController extends AbstractEntityController {
     @Operation(summary = "Loads all controls")
     public @Valid CompletableFuture<List<FullControlDto>> getControls(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
+                                         required = false) String displayName) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);
@@ -118,8 +129,8 @@ public class ControlController extends AbstractEntityController {
         }
 
         final GetControlsUseCase.InputData inputData = new GetControlsUseCase.InputData(client,
-                Optional.ofNullable(unitUuid));
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         return useCaseInteractor.execute(getControlsUseCase, inputData, output -> {
             return output.getEntities()
                          .stream()
@@ -143,7 +154,7 @@ public class ControlController extends AbstractEntityController {
 
         return useCaseInteractor.execute(getControlUseCase, new GetControlUseCase.InputData(
                 Key.uuidFrom(uuid), client), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                     return FullControlDto.from(output.getControl(), tcontext);
                 });
     }
@@ -196,7 +207,7 @@ public class ControlController extends AbstractEntityController {
                                          },
 
                                          output -> FullControlDto.from(output.getEntity(),
-                                                                       EntityToDtoContext.getCompleteTransformationContext()));
+                                                                       EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -212,5 +223,26 @@ public class ControlController extends AbstractEntityController {
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.ok()
                                                                  .build());
+    }
+
+    @Override
+    protected String buildSearchUri(String id) {
+        return linkTo(methodOn(ControlController.class).runSearch(ANY_AUTH, id)).withSelfRel()
+                                                                                .getHref();
+    }
+
+    @GetMapping(value = "/searches/{searchId}")
+    @Operation(summary = "Finds controls for the search.")
+    public @Valid CompletableFuture<List<FullControlDto>> runSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String searchId) {
+        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        try {
+            var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
+            return getControls(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());
+        } catch (IOException e) {
+            log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
+            return null;
+        }
     }
 }

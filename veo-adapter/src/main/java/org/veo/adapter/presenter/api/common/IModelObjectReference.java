@@ -21,8 +21,25 @@ package org.veo.adapter.presenter.api.common;
  */
 public interface IModelObjectReference {
 
-    public String getHref();
+    /**
+     * A user friendly name of the target object.
+     */
+    String getDisplayName();
 
-    public String getDisplayName();
+    /**
+     * Returns a URI of the target object which may be a URL.
+     */
+    String getTargetUri();
 
+    /**
+     * Returns a URI of searches for the target type that can be used for discovery.
+     * It may be a URL.
+     */
+    String getSearchesUri();
+
+    /**
+     * Returns a URI of a collection of objects for the target type that may be used
+     * for discovery. It may be a URL.
+     */
+    String getResourcesUri();
 }

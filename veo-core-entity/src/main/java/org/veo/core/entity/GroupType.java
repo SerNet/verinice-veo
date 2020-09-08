@@ -16,7 +16,11 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import org.veo.core.entity.groups.*;
+import org.veo.core.entity.groups.AssetGroup;
+import org.veo.core.entity.groups.ControlGroup;
+import org.veo.core.entity.groups.DocumentGroup;
+import org.veo.core.entity.groups.PersonGroup;
+import org.veo.core.entity.groups.ProcessGroup;
 
 public enum GroupType {
     Asset(Asset.class, AssetGroup.class), Control(Control.class, ControlGroup.class), Document(

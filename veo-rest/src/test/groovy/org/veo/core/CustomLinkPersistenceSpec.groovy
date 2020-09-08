@@ -24,7 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
-import org.veo.core.entity.*
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
+import org.veo.core.entity.CustomLink
+import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.Key
+import org.veo.core.entity.Person
+import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl

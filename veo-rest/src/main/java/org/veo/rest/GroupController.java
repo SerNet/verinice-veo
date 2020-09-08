@@ -16,11 +16,15 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer.transformGroup2Dto;
+import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -51,6 +55,7 @@ import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.FullGroupDto;
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlGroupDto;
@@ -74,9 +79,11 @@ import org.veo.core.usecase.group.PutGroupUseCase;
 import org.veo.core.usecase.group.UpdateGroupUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -84,15 +91,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage groups.
  */
 @RestController
 @RequestMapping(GroupController.URL_BASE_PATH)
+@Slf4j
 public class GroupController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/groups";
+    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.GROUPS;
 
     protected static final String TYPE_PARAM = "type";
 
@@ -146,7 +155,7 @@ public class GroupController extends AbstractEntityController {
 
         final GetGroupsUseCase.InputData inputData = new GetGroupsUseCase.InputData(client, type,
                 Optional.ofNullable(unitUuid));
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         return useCaseInteractor.execute(getGroupsUseCase, inputData, output -> output.getGroups()
                                                                                       .stream()
                                                                                       .map(u -> FullEntityLayerSupertypeGroupDto.from(u,
@@ -170,7 +179,7 @@ public class GroupController extends AbstractEntityController {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                     return FullEntityLayerSupertypeGroupDto.from(output.getGroup(), tcontext);
                 });
     }
@@ -190,7 +199,7 @@ public class GroupController extends AbstractEntityController {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getGroupMemberUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                     ModelGroup<?> group = output.getGroup();
                     return group.getMembers()
                                 .stream()
@@ -241,7 +250,7 @@ public class GroupController extends AbstractEntityController {
         applyId(uuid, groupDto);
         DtoToEntityContext fromDtoContext = referenceResolver.loadIntoContext(client,
                                                                               groupDto.getReferences());
-        EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext();
+        EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         ModelGroup<?> group = groupDto.toEntity(fromDtoContext);
         return useCaseInteractor.execute(putGroupUseCase,
                                          new UpdateGroupUseCase.InputData(group, client), output -> // TODO:
@@ -286,6 +295,28 @@ public class GroupController extends AbstractEntityController {
             return FullProcessGroupDto.class;
         default:
             throw new IllegalArgumentException("Unsupported type " + type);
+        }
+    }
+
+    @Override
+    @SuppressFBWarnings // ignore warning on call to method proxy factory
+    protected String buildSearchUri(String id) {
+        return linkTo(methodOn(GroupController.class).runSearch(ANY_AUTH, id)).withSelfRel()
+                                                                              .getHref();
+    }
+
+    @GetMapping(value = "/searches/{searchId}")
+    @Operation(summary = "Finds groups for the search.")
+    public @Valid CompletableFuture<List<FullEntityLayerSupertypeGroupDto<?>>> runSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String searchId) {
+        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        try {
+            var query = SearchQueryDto.decodeFromSearchId(searchId);
+            return getGroups(auth, query.getUnitId(), query.getGroupType());
+        } catch (IOException e) {
+            log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
+            return null;
         }
     }
 }

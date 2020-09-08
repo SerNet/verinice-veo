@@ -18,6 +18,7 @@ package org.veo.core.usecase.base;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -62,12 +63,29 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, R>
                                                 "Invalid client ID"));
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return new OutputData<>(repository.findByClient(client, false));
+            return new OutputData<>(filterByDisplayName(repository.findByClient(client, false),
+                                                        input.getDisplayName()));
         } else {
             var units = unitHierarchyProvider.findAllInRoot(Key.uuidFrom(input.getUnitUuid()
                                                                               .get()));
-            return new OutputData<>(repository.findByUnits(units));
+            return new OutputData<>(
+                    filterByDisplayName(repository.findByUnits(units), input.getDisplayName()));
         }
+    }
+
+    private List<T> filterByDisplayName(List<T> modelObjects, Optional<String> displayName) {
+        if (displayName.isEmpty())
+            return modelObjects;
+        return modelObjects.stream()
+                           .filter(t -> matchesDisplayName(t, displayName))
+                           .collect(Collectors.toList());
+    }
+
+    private boolean matchesDisplayName(T t, Optional<String> displayName) {
+        return t.getDisplayName()
+                .toUpperCase()
+                .contains(displayName.get()
+                                     .toUpperCase());
     }
 
     @Valid
@@ -75,6 +93,7 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, R>
     public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
         Optional<String> unitUuid;
+        Optional<String> displayName;
     }
 
     @Valid

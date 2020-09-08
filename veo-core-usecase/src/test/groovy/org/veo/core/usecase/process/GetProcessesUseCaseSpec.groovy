@@ -38,7 +38,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.getId() >> id
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * processRepository.findByClient(existingClient, false) >> [process]
@@ -54,7 +54,8 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue())))
+        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue()),
+                Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers

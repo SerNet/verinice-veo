@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
@@ -51,6 +52,7 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
+import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -131,14 +133,17 @@ public final class EntityToDtoTransformer {
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
-        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertReferenceSet(source.getMembers(),
+                                              tcontext.getReferenceAssembler()));
         return target;
     }
 
@@ -166,12 +171,14 @@ public final class EntityToDtoTransformer {
         // return target;
         // }
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
 
         return target;
@@ -194,14 +201,17 @@ public final class EntityToDtoTransformer {
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
-        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertReferenceSet(source.getMembers(),
+                                              tcontext.getReferenceAssembler()));
         return target;
     }
 
@@ -228,12 +238,14 @@ public final class EntityToDtoTransformer {
         // return target;
         // }
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
 
         return target;
@@ -256,14 +268,17 @@ public final class EntityToDtoTransformer {
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
-        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertReferenceSet(source.getMembers(),
+                                              tcontext.getReferenceAssembler()));
         return target;
     }
 
@@ -288,12 +303,14 @@ public final class EntityToDtoTransformer {
         // return target;
         // }
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
 
         return target;
@@ -316,14 +333,17 @@ public final class EntityToDtoTransformer {
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
-        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertReferenceSet(source.getMembers(),
+                                              tcontext.getReferenceAssembler()));
         return target;
     }
 
@@ -349,12 +369,14 @@ public final class EntityToDtoTransformer {
         // return target;
         // }
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
 
         return target;
@@ -377,14 +399,17 @@ public final class EntityToDtoTransformer {
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
-        target.setMembers(convertSet(source.getMembers(), ModelObjectReference::from));
+        target.setMembers(convertReferenceSet(source.getMembers(),
+                                              tcontext.getReferenceAssembler()));
         return target;
     }
 
@@ -412,12 +437,14 @@ public final class EntityToDtoTransformer {
         // return target;
         // }
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         target.setLinks(mapLinks(source.getLinks(), tcontext));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner()));
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
         }
 
         return target;
@@ -493,13 +520,15 @@ public final class EntityToDtoTransformer {
         // return target;
         // }
 
-        target.setDomains(convertSet(source.getDomains(), ModelObjectReference::from));
-
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
         if (source.getClient() != null) {
-            target.setClient(ModelObjectReference.from(source.getClient()));
+            target.setClient(ModelObjectReference.from(source.getClient(),
+                                                       tcontext.getReferenceAssembler()));
         }
         if (source.getParent() != null) {
-            target.setParent(ModelObjectReference.from(source.getParent()));
+            target.setParent(ModelObjectReference.from(source.getParent(),
+                                                       tcontext.getReferenceAssembler()));
         }
 
         return target;
@@ -521,7 +550,8 @@ public final class EntityToDtoTransformer {
         target.setAttributes(source.getAllProperties());
 
         if (source.getTarget() != null) {
-            target.setTarget(ModelObjectReference.from(source.getTarget()));
+            target.setTarget(ModelObjectReference.from(source.getTarget(),
+                                                       tcontext.getReferenceAssembler()));
         }
         // if (source.getSource() != null) {
         // target.setSource(ModelObjectReference.from(source.getSource()));
@@ -558,6 +588,13 @@ public final class EntityToDtoTransformer {
         return input.stream()
                     .map(mapper)
                     .collect(Collectors.toSet());
+    }
+
+    private static <T extends ModelObject> Set<ModelObjectReference<T>> convertReferenceSet(
+            Set<T> domains, ReferenceAssembler referenceAssembler) {
+        return domains.stream()
+                      .map(o -> ModelObjectReference.from(o, referenceAssembler))
+                      .collect(Collectors.toSet());
     }
 
     private static Map<String, List<CustomLinkDto>> mapLinks(Set<CustomLink> links,

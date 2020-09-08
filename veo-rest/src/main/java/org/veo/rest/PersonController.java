@@ -16,10 +16,15 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -46,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.CreatePersonOutputMapper;
@@ -63,6 +69,7 @@ import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 
@@ -72,15 +79,17 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage persons.
  */
 @RestController
 @RequestMapping(PersonController.URL_BASE_PATH)
+@Slf4j
 public class PersonController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/persons";
+    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.PERSONS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreatePersonUseCase<ResponseEntity<ApiResponseBody>> createPersonUseCase;
@@ -108,7 +117,9 @@ public class PersonController extends AbstractEntityController {
     @Operation(summary = "Loads all persons")
     public @Valid CompletableFuture<List<FullPersonDto>> getPersons(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
+                                         required = false) String displayName) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);
@@ -117,8 +128,8 @@ public class PersonController extends AbstractEntityController {
         }
 
         final GetPersonsUseCase.InputData inputData = new GetPersonsUseCase.InputData(client,
-                Optional.ofNullable(unitUuid));
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         return useCaseInteractor.execute(getPersonsUseCase, inputData, output -> {
             return output.getEntities()
                          .stream()
@@ -143,7 +154,7 @@ public class PersonController extends AbstractEntityController {
         return useCaseInteractor.execute(getPersonUseCase,
                                          new GetPersonUseCase.InputData(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                                              return FullPersonDto.from(output.getPerson(),
                                                                        tcontext);
                                          });
@@ -195,7 +206,7 @@ public class PersonController extends AbstractEntityController {
                                          },
 
                                          output -> FullPersonDto.from(output.getEntity(),
-                                                                      EntityToDtoContext.getCompleteTransformationContext()));
+                                                                      EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -211,5 +222,26 @@ public class PersonController extends AbstractEntityController {
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.ok()
                                                                  .build());
+    }
+
+    @Override
+    protected String buildSearchUri(String id) {
+        return linkTo(methodOn(PersonController.class).runSearch(ANY_AUTH, id)).withSelfRel()
+                                                                               .getHref();
+    }
+
+    @GetMapping(value = "/searches/{searchId}")
+    @Operation(summary = "Finds persons for the search.")
+    public @Valid CompletableFuture<List<FullPersonDto>> runSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String searchId) {
+        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        try {
+            var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
+            return getPersons(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());
+        } catch (IOException e) {
+            log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
+            return null;
+        }
     }
 }

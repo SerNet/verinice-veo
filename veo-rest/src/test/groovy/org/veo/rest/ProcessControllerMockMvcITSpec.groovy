@@ -120,7 +120,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                href: '/units/' + unit.id.uuidValue()
+                targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -178,7 +178,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test process'
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -202,13 +202,13 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
             domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -246,13 +246,13 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
             domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -267,7 +267,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -320,13 +320,13 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
             domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ],
@@ -357,7 +357,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
         def entity = txTemplate.execute {
@@ -403,13 +403,13 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
             domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ],
@@ -436,7 +436,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
         def entity = txTemplate.execute {
@@ -462,7 +462,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'New Asset',
             owner: [
                 displayName: 'test2',
-                href: '/units/' + unit.id.uuidValue()
+                targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -474,7 +474,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                href: '/units/' + unit.id.uuidValue()
+                targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -488,13 +488,13 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
             domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ],
@@ -514,7 +514,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
                         ],
                         target:
                         [
-                            href: '/assets/'+createAssetResult.resourceId,
+                            targetUri: '/assets/'+createAssetResult.resourceId,
                             displayName: 'test ddd'
                         ]
                     ]]
@@ -530,7 +530,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
         and: 'there is one type of links'
         def links = result.links
         links.size() == 1
@@ -547,14 +547,14 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         def result = parseJson(post('/assets', [
             name : 'My asset',
             owner: [
-                href: '/units/'+unit.id.uuidValue()
+                targetUri: '/units/'+unit.id.uuidValue()
             ]
         ]))
         def assetId = result.resourceId
         result = parseJson(post('/processes', [
             name : 'My process',
             owner: [
-                href: '/units/'+unit.id.uuidValue()
+                targetUri: '/units/'+unit.id.uuidValue()
             ],
             links: [
                 'Process_depends_on_Asset': [
@@ -563,7 +563,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
                         name  : 'requires',
                         target:
                         [
-                            href: "/assets/$assetId"
+                            targetUri: "/assets/$assetId"
                         ]
                     ]
                 ]
@@ -618,9 +618,9 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         def sortedResult = result.sort{ it.name }
         then:
         sortedResult.first().name == 'Test process-1'
-        sortedResult.first().owner.href == "/units/${unit.id.uuidValue()}"
+        sortedResult.first().owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         sortedResult[1].name == 'Test process-2'
-        sortedResult[1].owner.href == "/units/${unit2.id.uuidValue()}"
+        sortedResult[1].owner.targetUri == "http://localhost/units/${unit2.id.uuidValue()}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -655,7 +655,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         then:
         result.size == 1
         result.first().name == 'Test process-1'
-        result.first().owner.href == "/units/"+unit.id.uuidValue()
+        result.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when: "a request is made to the server"
         results = get("/processes?unit=${unit2.id.uuidValue()}")
@@ -669,7 +669,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         then:
         result.size == 1
         result.first().name == 'Test process-2'
-        result.first().owner.href == "/units/"+unit2.id.uuidValue()
+        result.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
     }
 
 
@@ -690,7 +690,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         put("/processes/${process2.id.uuidValue()}", [
             id: process1.id.uuidValue(),
             name: "new name 1",
-            owner: [href: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: '/units/' + unit.id.uuidValue()]
         ], false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)

@@ -16,10 +16,15 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -46,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateAssetOutputMapper;
@@ -63,22 +69,26 @@ import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage assets.
  */
 @RestController
 @RequestMapping(AssetController.URL_BASE_PATH)
+@Slf4j
 public class AssetController extends AbstractEntityController {
 
     public AssetController(UseCaseInteractorImpl useCaseInteractor, GetAssetUseCase getAssetUseCase,
@@ -94,7 +104,7 @@ public class AssetController extends AbstractEntityController {
         this.referenceResolver = referenceResolver;
     }
 
-    public static final String URL_BASE_PATH = "/assets";
+    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.ASSETS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreateAssetUseCase<ResponseEntity<ApiResponseBody>> createAssetUseCase;
@@ -108,7 +118,9 @@ public class AssetController extends AbstractEntityController {
     @Operation(summary = "Loads all assets")
     public @Valid CompletableFuture<List<FullAssetDto>> getAssets(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
+                                         required = false) String displayName) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);
@@ -117,12 +129,12 @@ public class AssetController extends AbstractEntityController {
         }
 
         final GetAssetsUseCase.InputData inputData = new GetAssetsUseCase.InputData(client,
-                Optional.ofNullable(unitUuid));
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         return useCaseInteractor.execute(getAssetsUseCase, inputData, output -> {
             return output.getEntities()
                          .stream()
-                         .map(u -> FullAssetDto.from(u, tcontext))
+                         .map(a -> FullAssetDto.from(a, tcontext))
                          .collect(Collectors.toList());
         });
     }
@@ -140,10 +152,11 @@ public class AssetController extends AbstractEntityController {
             @PathVariable String id) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
+
         return useCaseInteractor.execute(getAssetUseCase,
                                          new GetAssetUseCase.InputData(Key.uuidFrom(id), client),
                                          output -> {
-                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                                              return FullAssetDto.from(output.getAsset(), tcontext);
                                          });
     }
@@ -194,7 +207,7 @@ public class AssetController extends AbstractEntityController {
 
                                          , output -> {
                                              return FullAssetDto.from(output.getEntity(),
-                                                                      EntityToDtoContext.getCompleteTransformationContext());
+                                                                      EntityToDtoContext.getCompleteTransformationContext(referenceAssembler));
                                          });
     }
 
@@ -214,4 +227,27 @@ public class AssetController extends AbstractEntityController {
                                                                  .build());
     }
 
+    @Override
+    @SuppressFBWarnings // ignore warning on call to method proxy factory
+    protected String buildSearchUri(String id) {
+        return linkTo(methodOn(AssetController.class).runSearch(ANY_AUTH, id)).withSelfRel()
+                                                                              .getHref();
+    }
+
+    @GetMapping(value = "/searches/{searchId}")
+    @Operation(summary = "Finds assets for the search.")
+    public @Valid CompletableFuture<List<FullAssetDto>> runSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String searchId) {
+        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        try {
+            return getAssets(auth, SearchQueryDto.decodeFromSearchId(searchId)
+                                                 .getUnitId(),
+                             SearchQueryDto.decodeFromSearchId(searchId)
+                                           .getDisplayName());
+        } catch (IOException e) {
+            log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
+            return null;
+        }
+    }
 }

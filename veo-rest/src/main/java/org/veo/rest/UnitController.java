@@ -16,10 +16,15 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PARENT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -45,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper;
@@ -60,10 +66,12 @@ import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -72,6 +80,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage units.
@@ -85,9 +94,10 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(UnitController.URL_BASE_PATH)
 @RequiredArgsConstructor
+@Slf4j
 public class UnitController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/units";
+    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.UNITS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreateUnitUseCase<ResponseEntity<ApiResponseBody>> createUnitUseCase;
@@ -107,8 +117,9 @@ public class UnitController extends AbstractEntityController {
 
     public @Valid CompletableFuture<List<FullUnitDto>> getUnits(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = PARENT_PARAM,
-                                         required = false) String parentUuid) {
+            @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) String parentUuid,
+            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
+                                         required = false) String displayName) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);
@@ -119,7 +130,7 @@ public class UnitController extends AbstractEntityController {
         final GetUnitsUseCase.InputData inputData = new GetUnitsUseCase.InputData(client,
                 Optional.ofNullable(parentUuid));
 
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
 
         return useCaseInteractor.execute(getUnitsUseCase, inputData, output -> {
             return output.getUnits()
@@ -144,7 +155,7 @@ public class UnitController extends AbstractEntityController {
 
         return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
                 Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                     return FullUnitDto.from(output.getUnit(), tcontext);
                 });
     }
@@ -191,7 +202,7 @@ public class UnitController extends AbstractEntityController {
                                          new UpdateUnitUseCase.InputData(unitDto.toEntity(tcontext),
                                                  getAuthenticatedClient(auth)),
                                          output -> FullUnitDto.from(output.getUnit(),
-                                                                    EntityToDtoContext.getCompleteTransformationContext()));
+                                                                    EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
     }
 
     @Async
@@ -209,4 +220,25 @@ public class UnitController extends AbstractEntityController {
                 });
     }
 
+    @Override
+    @SuppressFBWarnings // ignore warning on call to method proxy factory
+    protected String buildSearchUri(String id) {
+        return linkTo(methodOn(UnitController.class).runSearch(ANY_AUTH, id)).withSelfRel()
+                                                                             .getHref();
+    }
+
+    @GetMapping(value = "/searches/{searchId}")
+    @Operation(summary = "Finds units for the search.")
+    public @Valid CompletableFuture<List<FullUnitDto>> runSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String searchId) {
+        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        try {
+            var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
+            return getUnits(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());
+        } catch (IOException e) {
+            log.error("Could not decode search URL.", e.getLocalizedMessage());
+            throw new IllegalArgumentException("Could not decode search URL.");
+        }
+    }
 }

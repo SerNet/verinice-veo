@@ -27,7 +27,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestApiResponse {
 
-    @Schema(description = "A response body that corresponds to the performed API call. Will include the 'Location'-header for POST requests but may be empty for other methods. ")
+    @Schema(description = "A response body that corresponds to the performed API call. "
+            + "Will include the 'Location'-header for POST requests but may be empty for other methods. ")
     public static ResponseEntity<ApiResponseBody> created(String urlBasePath,
             ApiResponseBody body) {
         String resourceId = body.getResourceId()

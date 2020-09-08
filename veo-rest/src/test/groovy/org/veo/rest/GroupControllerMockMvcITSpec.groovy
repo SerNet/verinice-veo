@@ -134,7 +134,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'My Assets',
             type: 'Asset',
             owner: [
-                href: "/units/${unit.id.uuidValue()}"
+                targetUri: "/units/${unit.id.uuidValue()}"
             ]
         ]
 
@@ -162,7 +162,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'My Processes',
             type: 'Process',
             owner: [
-                href: "/units/${unit.id.uuidValue()}"
+                targetUri: "/units/${unit.id.uuidValue()}"
             ]
         ]
 
@@ -204,7 +204,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test document group'
-        result.owner.href == "/units/${unit.id.uuidValue()}"
+        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -240,7 +240,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test control group'
-        result.owner.href == "/units/${unit.id.uuidValue()}"
+        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         result.members.size() == 2
         result.members*.displayName as Set == ['c1', 'c2'] as Set
     }
@@ -318,10 +318,10 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.size == 2
 
         result.sort{it.name}.first().name == 'Test process group 1'
-        result.sort{it.name}.first().owner.href == "/units/${unit.id.uuidValue()}"
+        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 
         result.sort{it.name}[1].name == 'Test process group 2'
-        result.sort{it.name}[1].owner.href == "/units/${unit.id.uuidValue()}"
+        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -360,7 +360,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.size == 1
 
         result.first().name == 'Test asset group 1'
-        result.first().owner.href == "/units/${unit.id.uuidValue()}"
+        result.first().owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 
         when: "a request is made to the server for all assets groups of another unit"
         results = get("/groups?unit=${unit2.id.uuidValue()}&type=Asset")
@@ -373,7 +373,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.size == 1
 
         result.first().name == 'Test asset group 2'
-        result.first().owner.href == "/units/${unit2.id.uuidValue()}"
+        result.first().owner.targetUri == "http://localhost/units/${unit2.id.uuidValue()}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -432,11 +432,11 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: "/units/${unit.id.uuidValue()}",
+                targetUri: "/units/${unit.id.uuidValue()}",
                 displayName: 'test unit'
             ], domains: [
                 [
-                    href: "/domains/${domain.id.uuidValue()}",
+                    targetUri: "/domains/${domain.id.uuidValue()}",
                     displayName: 'test ddd'
                 ]
             ], customAspects:
@@ -465,7 +465,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New asset group-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == "${domain.abbreviation} ${domain.name}"
-        result.owner.href == "/units/${unit.id.uuidValue()}"
+        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 
         when:
         def entity = txTemplate.execute {
@@ -531,7 +531,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         put("/groups/${group2.id.uuidValue()}?type=Asset", [
             id: group1.id.uuidValue(),
             name: "new name 1",
-            owner: [href: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: '/units/' + unit.id.uuidValue()]
         ], false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)

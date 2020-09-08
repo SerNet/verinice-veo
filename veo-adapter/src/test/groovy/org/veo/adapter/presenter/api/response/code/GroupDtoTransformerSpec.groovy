@@ -16,12 +16,16 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
-import org.veo.core.entity.*
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Document
+import org.veo.core.entity.Key
+import org.veo.core.entity.Process
+import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.ProcessGroup
@@ -50,6 +54,7 @@ class GroupDtoTransformerSpec extends Specification {
         subUnit.getId() >> Key.uuidFrom(subUnitId)
         subUnit.getUnits() >> []
         subUnit.getModelInterface() >> Unit.class
+        subUnit.getDisplayName() >> subUnitName
 
 
         Unit unit = Mock()
@@ -60,6 +65,7 @@ class GroupDtoTransformerSpec extends Specification {
         unit.getId() >> Key.uuidFrom(unitId)
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.class
+        unit.getDisplayName() >> unitName
 
         subUnit.getParent() >> unit
         return unit
@@ -70,6 +76,7 @@ class GroupDtoTransformerSpec extends Specification {
         Unit unit = createUnit()
 
         AssetGroup assetGroup = Mock()
+        ReferenceAssembler assembler = Mock()
 
         //        assetGroup.setId(Key.newUuid())
 
@@ -87,7 +94,8 @@ class GroupDtoTransformerSpec extends Specification {
 
 
         when: "the group is transformed into a DTO"
-        def dto = FullEntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
+        def context = EntityToDtoContext.getCompleteTransformationContext(assembler)
+        def dto = FullEntityLayerSupertypeGroupDto.from(assetGroup, context)
 
         then: "The DTO contains all required data"
         dto.name == assetGroup.name
@@ -131,13 +139,14 @@ class GroupDtoTransformerSpec extends Specification {
         asset2.clientName >> "AssetName2"
         asset2.modelInterface >> Asset.class
 
-        Process process = Mock(Process)
+        def process = Mock(Process)
         process.id >> pid
         process.domains >> []
         process.links >> []
         process.customAspects >> []
         process.name >> "Process"
         process.modelInterface >> Process.class
+        process.displayName >> "Process"
 
 
         AssetGroup assetGroup = Mock(AssetGroup)
@@ -163,9 +172,12 @@ class GroupDtoTransformerSpec extends Specification {
         factory.createAssetGroup() >> assetGroup
         factory.createProcessGroup() >> processGroup
 
+        ReferenceAssembler assembler = Mock()
+
         when: "the groups are transformed to DTOs"
-        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
-        def pg = FullEntityLayerSupertypeGroupDto.from(processGroup, EntityToDtoContext.completeTransformationContext)
+        def e2DtoContext = EntityToDtoContext.getCompleteTransformationContext(assembler)
+        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, e2DtoContext)
+        def pg = FullEntityLayerSupertypeGroupDto.from(processGroup, e2DtoContext)
         then: "the two assets and the group are also transformed with members"
         ag.members.size()==2
         ag.members*.displayName as Set == [asset1.name, asset2.name] as Set
@@ -212,7 +224,6 @@ class GroupDtoTransformerSpec extends Specification {
         documentGroup2.customAspects >> []
         documentGroup2.modelInterface >> Document.class
 
-
         DocumentGroup documentGroup3 = Mock()
         documentGroup3.id >> Key.newUuid()
         documentGroup3.name>>"DocumentGroup1"
@@ -226,20 +237,24 @@ class GroupDtoTransformerSpec extends Specification {
 
         documentGroup2.members >> ([documentGroup3] as Set)
 
+        ReferenceAssembler assembler = Mock()
+
         when: "the groups are transformed"
-        def dtoDG1 = FullEntityLayerSupertypeGroupDto.from(documentGroup1, EntityToDtoContext.completeTransformationContext)
-        def dtoDG2 = FullEntityLayerSupertypeGroupDto.from(documentGroup2, EntityToDtoContext.completeTransformationContext)
-        def dtoDG3 = FullEntityLayerSupertypeGroupDto.from(documentGroup3, EntityToDtoContext.completeTransformationContext)
+        def context = EntityToDtoContext.getCompleteTransformationContext(assembler)
+        def dtoDG1 = FullEntityLayerSupertypeGroupDto.from(documentGroup1, context)
+        def dtoDG2 = FullEntityLayerSupertypeGroupDto.from(documentGroup2, context)
+        def dtoDG3 = FullEntityLayerSupertypeGroupDto.from(documentGroup3, context)
 
         then: "all members are set"
+        def refAssembler = Mock(ReferenceAssembler)
         dtoDG1.members == [
-            ModelObjectReference.from(documentGroup2)
+            ModelObjectReference.from(documentGroup2, refAssembler)
         ] as Set
         dtoDG2.members == [
-            ModelObjectReference.from(documentGroup3)
+            ModelObjectReference.from(documentGroup3, refAssembler)
         ] as Set
         dtoDG3.members == [
-            ModelObjectReference.from(documentGroup1)
+            ModelObjectReference.from(documentGroup1, refAssembler)
         ] as Set
 
 
@@ -261,13 +276,14 @@ class GroupDtoTransformerSpec extends Specification {
             documentGroup2,
             documentGroup3
         ].forEach(transformationContext.&addEntity)
-        and: "The DTOs are tranformed back"
+
+        and: "The DTOs are transformed back"
         DocumentGroup dG1 = dtoDG1.toEntity(transformationContext)
         DocumentGroup dG2 = dtoDG2.toEntity(transformationContext)
         DocumentGroup dG3 = dtoDG3.toEntity(transformationContext)
 
         then: "all members are set"
-
+        // TODO VEO-288 This test is missing some conditions here.
     }
 
     def "Transform group that contains itself"() {
@@ -280,14 +296,17 @@ class GroupDtoTransformerSpec extends Specification {
         assetGroup.links >> []
         assetGroup.customAspects >> []
         assetGroup.modelInterface >> Document.class
-
         assetGroup.members>> ([assetGroup] as Set)
+
+        def refAssembler = Mock(ReferenceAssembler)
+
         when: "the group is transformed"
-        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, EntityToDtoContext.completeTransformationContext)
+        def context = EntityToDtoContext.getCompleteTransformationContext(refAssembler)
+        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, context)
 
         then: "The group contains it self as it is not forbidden"
         ag.members == [
-            ModelObjectReference.from(assetGroup)
+            ModelObjectReference.from(assetGroup, refAssembler)
         ] as Set
     }
 }

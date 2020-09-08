@@ -17,7 +17,7 @@
 package org.veo.core.entity;
 
 /**
- * Defines the basic properties of all model elements.
+ * Defines the basic properties of nameable elements.
  */
 public interface NameAble {
 
@@ -32,5 +32,28 @@ public interface NameAble {
     String getDescription();
 
     void setDescription(String aDescription);
+
+    /**
+     * A default implementation to render a user friendly display name that can be
+     * overridden if more complicated parameters need to be taken into account.
+     * <p>
+     * I.e. for a person the title, middle initial et al might have to be included
+     * in the display name, the nationality of the person and the UI locale might
+     * need to be considered etc.
+     * <p>
+     * This is why more complicated implementations of this method should be placed
+     * in the adapter layer.
+     * <p>
+     * See also:
+     * <p>
+     * {@code org.veo.adapter.presenter.api.common.ToDisplayNameSwitch}
+     */
+    default String getDisplayName() {
+        return String.join("",
+                           (getAbbreviation() != null && !getAbbreviation().isEmpty())
+                                   ? getAbbreviation() + " "
+                                   : "",
+                           getName());
+    }
 
 }

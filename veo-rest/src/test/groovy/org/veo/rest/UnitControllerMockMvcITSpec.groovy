@@ -212,7 +212,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             domains: [
                 [
-                    href: '/domains/'+c.domains.first().id.uuidValue(),
+                    targetUri: '/domains/'+c.domains.first().id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -242,7 +242,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             domains: [
                 [
-                    href: '/domains/'+c.domains.first().id.uuidValue(),
+                    targetUri: '/domains/'+c.domains.first().id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -305,7 +305,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'sub-unit-1',
             parent: [
-                href: '/units/'+parent.resourceId,
+                targetUri: '/units/'+parent.resourceId,
                 displayName: 'test ddd'
             ]
         ]
@@ -328,12 +328,12 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         results = get("/units/${su.resourceId}")
 
-        then: "sub unit has parent"
+        then: "the sub unit has the right parent"
 
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == "sub-unit-1"
-        result.parent.href == "/units/"+parent.resourceId
+        result.parent.targetUri == "http://localhost/units/"+parent.resourceId
 
         and: "sub unit refrences contain parent"
         def references = result.references

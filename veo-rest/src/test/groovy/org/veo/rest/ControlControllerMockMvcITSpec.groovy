@@ -114,7 +114,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'New Control',
             owner: [
                 displayName: 'test2',
-                href: '/units/' + unit.id.uuidValue()
+                targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -142,7 +142,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             name: 'New Control',
             owner: [
                 displayName: 'test2',
-                href: '/units/' + unit.id.uuidValue()
+                targetUri: '/units/' + unit.id.uuidValue()
             ], customAspects:
             [
                 'my.aspect-test' :
@@ -208,7 +208,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test control-1'
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -240,9 +240,9 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.size == 2
 
         result.sort{it.name}.first().name == 'Test control-1'
-        result.sort{it.name}.first().owner.href == "/units/"+unit.id.uuidValue()
+        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
         result.sort{it.name}[1].name == 'Test control-2'
-        result.sort{it.name}[1].owner.href == "/units/"+unit.id.uuidValue()
+        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -293,11 +293,11 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -313,7 +313,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -342,11 +342,11 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ], customAspects:
@@ -375,7 +375,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
-        result.owner.href == "/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -403,11 +403,11 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             description: 'desc',
             owner:
             [
-                href: '/units/'+unit.id.uuidValue(),
+                targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
                 [
-                    href: '/domains/'+domain.id.uuidValue(),
+                    targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ], customAspects:
@@ -480,7 +480,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         put("/controls/${control2.id.uuidValue()}", [
             id: control1.id.uuidValue(),
             name: "new name 1",
-            owner: [href: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: '/units/' + unit.id.uuidValue()]
         ], false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)

@@ -16,10 +16,15 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -45,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateProcessOutputMapper;
@@ -62,6 +68,7 @@ import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -70,6 +77,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller for the resource API of "Process" entities.
@@ -78,15 +86,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
  */
 @RestController
 @RequestMapping(ProcessController.URL_BASE_PATH)
+@Slf4j
 public class ProcessController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/processes";
+    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.PROCESSES;
 
     private UseCaseInteractorImpl useCaseInteractor;
+
     private CreateProcessUseCase<ResponseEntity<ApiResponseBody>> createProcessUseCase;
+
     private GetProcessUseCase<FullProcessDto> getProcessUseCase;
+
     private UpdateProcessUseCase<FullProcessDto> updateProcessUseCase;
+
     private final DeleteEntityUseCase deleteEntityUseCase;
+
     private GetProcessesUseCase<List<FullProcessDto>> getProcessesUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
 
@@ -127,7 +141,7 @@ public class ProcessController extends AbstractEntityController {
                                          }
 
                                          , output -> {
-                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
 
                                              return FullProcessDto.from(output.getProcess(),
                                                                         tcontext);
@@ -186,7 +200,7 @@ public class ProcessController extends AbstractEntityController {
 
                                          ,
                                          output -> FullProcessDto.from(output.getEntity(),
-                                                                       EntityToDtoContext.getCompleteTransformationContext()));
+                                                                       EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -207,7 +221,9 @@ public class ProcessController extends AbstractEntityController {
     @Operation(summary = "Loads all processs")
     public @Valid CompletableFuture<List<FullProcessDto>> getProcesses(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid) {
+            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid,
+            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
+                                         required = false) String displayName) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);
@@ -216,9 +232,9 @@ public class ProcessController extends AbstractEntityController {
         }
 
         final GetProcessesUseCase.InputData inputData = new GetProcessesUseCase.InputData(client,
-                Optional.ofNullable(parentUuid));
+                Optional.ofNullable(parentUuid), Optional.ofNullable(displayName));
 
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext();
+        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
 
         return useCaseInteractor.execute(getProcessesUseCase, inputData, output -> {
             return output.getEntities()
@@ -228,4 +244,24 @@ public class ProcessController extends AbstractEntityController {
         });
     }
 
+    @Override
+    protected String buildSearchUri(String id) {
+        return linkTo(methodOn(ProcessController.class).runSearch(ANY_AUTH, id)).withSelfRel()
+                                                                                .getHref();
+    }
+
+    @GetMapping(value = "/searches/{searchId}")
+    @Operation(summary = "Finds controls for the search.")
+    public @Valid CompletableFuture<List<FullProcessDto>> runSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String searchId) {
+        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        try {
+            var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
+            return getProcesses(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());
+        } catch (IOException e) {
+            log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
+            return null;
+        }
+    }
 }

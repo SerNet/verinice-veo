@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
@@ -45,13 +46,14 @@ class DtoTransformerContextSpec extends Specification {
         subUnit.getName() >> unitName
         subUnit.getId() >> Key.uuidFrom(unitId)
         subUnit.getModelInterface() >> Unit.class
-
+        subUnit.getDisplayName() >> unitName
 
         Unit unit = Mock()
         unit.getClient() >> null
         unit.getDomains() >> []
         unit.getParent() >> null
         unit.getName() >> unitName
+        unit.getDisplayName() >> unitName
         unit.getId() >> Key.uuidFrom(unitId)
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.class
@@ -94,6 +96,7 @@ class DtoTransformerContextSpec extends Specification {
         }
 
         Unit replacementUnit = Mock()
+        ReferenceAssembler assembler = Mock()
 
         replacementUnit.getClient() >> null
         replacementUnit.getDomains() >> []
@@ -103,7 +106,7 @@ class DtoTransformerContextSpec extends Specification {
 
         when: "the document is transformed into a DTO"
 
-        def docDto = FullDocumentDto.from(doc, EntityToDtoContext.getCompleteTransformationContext())
+        def docDto = FullDocumentDto.from(doc, EntityToDtoContext.getCompleteTransformationContext(assembler))
 
         then: "Test the Dto"
         docDto.id == doc.id.uuidValue()

@@ -16,16 +16,26 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import org.springframework.security.core.Authentication;
+
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
+
 /**
  * This class contains constants for the REST controllers.
  */
 // @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_BEARER_AUTH)
 public final class ControllerConstants {
 
+    // Placeholder objects to generate method proxies for HATEOAS URLs:
+    public static final Authentication ANY_AUTH = null;
+    public static final SearchQueryDto ANY_SEARCH = null;
+    public static final String ANY_STRING = null;
+
     static final String PARENT_PARAM = "parent";
     static final String UUID_PARAM = "uuid";
     static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";
     static final String UNIT_PARAM = "unit";
+    static final String DISPLAY_NAME_PARAM = "displayName";
 
     static final String UUID_DEFINITION = "This is the normalized UUID representation:\n"
             + "* a block of 8 HEX chars followed by\n* 3 blocks of 4 HEX chars followed by\n"

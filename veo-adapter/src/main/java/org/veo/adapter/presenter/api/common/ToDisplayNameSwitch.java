@@ -24,10 +24,7 @@ public class ToDisplayNameSwitch extends ModelSwitch<String> {
 
     @Override
     public String caseNameAble(NameAble object) {
-        if (object.getAbbreviation() == null) {
-            return object.getName();
-        }
-        return object.getAbbreviation() + " " + object.getName();
+        return object.getDisplayName();
     }
 
     @Override

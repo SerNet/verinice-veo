@@ -18,6 +18,7 @@ package org.veo.adapter.presenter.api.response.code
 
 import java.time.OffsetDateTime
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
@@ -43,6 +44,7 @@ class CustomLinkTransformerSpec extends Specification {
         EntityFactory entityFactory = new EntityDataFactory()
         Person person = entityFactory.createPerson(id1,"P1", null)
         Asset asset = entityFactory.createAsset(id2,"AssetName",null)
+        def refAssembler = Mock(ReferenceAssembler)
 
         CustomLink cp = entityFactory.createCustomLink()
         cp.source = person
@@ -62,7 +64,7 @@ class CustomLinkTransformerSpec extends Specification {
         DtoToEntityContext tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
-        Asset assetData = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext())
+        Asset assetData = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext(refAssembler))
                 .toEntity(tcontext)
 
         then: "The properties are also transformed"
@@ -80,7 +82,7 @@ class CustomLinkTransformerSpec extends Specification {
         tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
-        Asset savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toEntity(tcontext)
+        Asset savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext(refAssembler)).toEntity(tcontext)
         CustomProperties savedCp = savedAsset.getLinks().first()
 
         then: "numbers also"
@@ -95,7 +97,7 @@ class CustomLinkTransformerSpec extends Specification {
         tcontext = new DtoToEntityContext(entityFactory)
         tcontext.addEntity(person)
 
-        savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext()).toEntity(tcontext)
+        savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext(refAssembler)).toEntity(tcontext)
         savedCp = savedAsset.getLinks().first()
 
         then: "date also"

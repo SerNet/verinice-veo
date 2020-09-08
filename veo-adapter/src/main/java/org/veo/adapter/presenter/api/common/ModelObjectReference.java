@@ -19,9 +19,8 @@ package org.veo.adapter.presenter.api.common;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
@@ -29,83 +28,76 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.ClassKey;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A reference to another model object
  */
 @Data
-@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
+@Slf4j
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class ModelObjectReference<T extends ModelObject> implements IModelObjectReference {
 
     @JsonIgnore
     @ToString.Include
+    @EqualsAndHashCode.Include
     private String id;
+
     @ToString.Include
     private String displayName;
+
     @JsonIgnore
+    @EqualsAndHashCode.Include
     private Class<T> type;
+
     @JsonIgnore
-    private String basePath = "";
+    private ReferenceAssembler urlAssembler;
 
-    public ModelObjectReference(String href) {
-        this(StringUtils.EMPTY, href);
-    }
-
-    public ModelObjectReference(String displayName, String href) {
-        this.displayName = displayName;
-        type = (Class<T>) ModelObject.class;
-        setHref(href);
-    }
-
-    public ModelObjectReference(String id, String displayName, Class<T> type) {
+    private ModelObjectReference(String id, String displayName, Class<T> type,
+            ReferenceAssembler referenceAssembler) {
         super();
         this.id = id;
         this.displayName = displayName;
         this.type = type;
+        this.urlAssembler = referenceAssembler;
     }
 
-    public String getHref() {
-        return basePath + "/" + type.getSimpleName()
-                                    .toLowerCase()
-                + "s/" + id;
-    }
-
-    @SuppressWarnings("unchecked")
-    public final void setHref(String href) {
-        // FIXME VEO-118 This code needs love
-        if (href != null) {
-            String[] parts = href.split("/");
-            id = parts[2];
-            String simpleName = parts[1].substring(0, 1)
-                                        .toUpperCase()
-                    + parts[1].substring(1, parts[1].length() - 1); // FIXME VEO-118 removes the 's"
-                                                                    // - needs
-                                                                    // to be done by controller
-            String className = "org.veo.core.entity." + simpleName;
-            try {
-                type = (Class<T>) Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                throw new NotFoundException("", parts[0], parts[1], parts[2]);
-            }
-        }
+    private ModelObjectReference(String id, Class<T> type, ReferenceAssembler referenceAssembler) {
+        super();
+        this.id = id;
+        this.type = type;
+        this.urlAssembler = referenceAssembler;
     }
 
     /**
-     * Uses the resource URL from a received reference (i.e. during a PUT request)
-     * to create a reference object to the correct type.
-     *
-     * @param href
-     * @return
+     * Create a ModelObjectReference for the given entity.
      */
-    public static ModelObjectReference<?> fromReference(String href, String baseURL) {
-        // TODO cut the baseURL and parse the following of the href and split into type
-        // and id.
-        // Must strictly match the REST endpoint defined in the controller for security
-        // reasons.
-        return null;
+    public static <T extends ModelObject> ModelObjectReference<T> from(T entity,
+            @NonNull ReferenceAssembler urlAssembler) {
+        Class<? extends ModelObject> modelInterface = entity.getModelInterface();
+        if (modelInterface != null) {
+            return new ModelObjectReference<T>(entity.getId()
+                                                     .uuidValue(),
+                    Switches.toDisplayNameSwitch()
+                            .doSwitch(entity),
+                    (Class<T>) modelInterface, urlAssembler);
+        } else {
+            throw new IllegalArgumentException(
+                    "The given entity does not return an entity interface. " + entity.getClass()
+                                                                                     .getSimpleName());
+        }
+    }
+
+    public static <T extends ModelObject> ModelObjectReference<T> fromUri(String uri,
+            @NonNull ReferenceAssembler urlAssembler) {
+
+        return new ModelObjectReference<T>(urlAssembler.parseId(uri),
+                (Class<T>) urlAssembler.parseType(uri), urlAssembler);
     }
 
     /**
@@ -133,26 +125,21 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
         return object;
     }
 
-    /**
-     * Create a ModelObjectReference for the given entity.
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends ModelObject> ModelObjectReference<T> from(T entity) {
-        Class<? extends ModelObject> modelInterface = entity.getModelInterface();
-        if (modelInterface != null) {
-            ModelObjectReference<T> modelObjectReference = new ModelObjectReference<>(entity.getId()
-                                                                                            .uuidValue(),
-                    Switches.toDisplayNameSwitch()
-                            .doSwitch(entity),
-                    (Class<T>) modelInterface);
-            modelObjectReference.setId(entity.getId()
-                                             .uuidValue());
-            return modelObjectReference;
-        } else {
-            throw new IllegalArgumentException(
-                    "The given entity does not return an entity interface. " + entity.getClass()
-                                                                                     .getSimpleName());
-        }
+    @Override
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getTargetUri() {
+        return urlAssembler.targetReferenceOf(type, id);
     }
 
+    @Override
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getSearchesUri() {
+        return urlAssembler.searchesReferenceOf(type);
+    }
+
+    @Override
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getResourcesUri() {
+        return urlAssembler.resourcesReferenceOf(type);
+    }
 }

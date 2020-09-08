@@ -16,41 +16,62 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.repository.ClientRepository;
+import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.rest.common.ReferenceAssemblerImpl;
+import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
 
+// TODO: see VEO-115
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
-abstract class AbstractEntityController {
+@Slf4j
+public abstract class AbstractEntityController {
 
     @Autowired
     private ClientRepository clientRepository;
 
-    protected Client getClient(String clientId) {
-        Key<UUID> id = Key.uuidFrom(clientId);
-        return clientRepository.findById(id)
-                               .orElseThrow();
-    }
+    @Autowired
+    private RepositoryProvider repositoryProvider;
 
-    protected Client getAuthenticatedClient(Authentication auth) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        return getClient(user.getClientId());
+    @Autowired
+    private EntityFactory entityFactory;
+
+    @Autowired
+    ReferenceAssemblerImpl referenceAssembler;
+
+    public AbstractEntityController() {
+        super();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -63,6 +84,14 @@ abstract class AbstractEntityController {
                  .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
+    @PostMapping(value = "/searches")
+    @Operation(summary = "Creates a new search with the given search criteria.")
+    public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @Valid @RequestBody SearchQueryDto search) {
+        return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
+    }
+
     protected void applyId(String resourceId, IdentifiableDto dto) {
         var dtoId = dto.getId();
         if (dtoId != null && !dtoId.equals(resourceId)) {
@@ -70,5 +99,28 @@ abstract class AbstractEntityController {
                     String.format("DTO ID %s does not match resource ID %s", dtoId, resourceId));
         }
         dto.setId(resourceId);
+    }
+
+    protected Client getClient(String clientId) {
+        Key<UUID> id = Key.uuidFrom(clientId);
+        return clientRepository.findById(id)
+                               .orElseThrow();
+    }
+
+    protected Client getAuthenticatedClient(Authentication auth) {
+        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+        return getClient(user.getClientId());
+    }
+
+    protected abstract String buildSearchUri(String searchId);
+
+    private ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
+        try {
+            return ResponseEntity.created(new URI(buildSearchUri(search.getSearchId())))
+                                 .body(new SearchResponse(buildSearchUri(search.getSearchId())));
+        } catch (IOException | URISyntaxException e) {
+            log.error("Could not create search.", e);
+            throw new IllegalArgumentException(String.format("Could not create search %s", search));
+        }
     }
 }

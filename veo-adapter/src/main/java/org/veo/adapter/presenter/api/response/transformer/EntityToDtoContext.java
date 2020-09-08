@@ -19,16 +19,28 @@ package org.veo.adapter.presenter.api.response.transformer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.transform.ClassKey;
 import org.veo.core.entity.transform.TransformContext;
 
+import lombok.Getter;
+
 public class EntityToDtoContext implements TransformContext {
-    /**
-     * Returns a preconfigured transformationcontext to transform all elements.
-     */
-    public static EntityToDtoContext getCompleteTransformationContext() {
-        return new EntityToDtoContext();
+
+    public EntityToDtoContext(ReferenceAssembler assembler) {
+        referenceAssembler = assembler;
     }
+
+    /**
+     * Returns a preconfigured transformation context to transform all elements.
+     */
+    public static EntityToDtoContext getCompleteTransformationContext(
+            ReferenceAssembler assembler) {
+        return new EntityToDtoContext(assembler);
+    }
+
+    @Getter
+    private final ReferenceAssembler referenceAssembler;
 
     private Map<ClassKey<String>, Object> context = new HashMap<>();
 
