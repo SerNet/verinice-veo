@@ -323,7 +323,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Control'] as Set)
-        cp.setId(Key.newUuid())
+
         Key<UUID> id = Key.newUuid()
         def control = entityFactory.createControl()
         control.id = id
@@ -353,7 +353,6 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.aspect-test' :
                 [
-                    id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
                     applicableTo: [
                         "Control"
@@ -386,7 +385,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = new CustomPropertiesData()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Control'] as Set)
-        cp.setId(Key.newUuid())
+
         Key<UUID> id = Key.newUuid()
         def control = new ControlData()
         control.id = id
@@ -415,7 +414,6 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.aspect-test' :
                 [
-                    id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
                     applicableTo: [
                         "Control"

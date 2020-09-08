@@ -20,7 +20,6 @@ import org.veo.adapter.presenter.api.dto.AbstractCustomPropertiesDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.core.entity.CustomProperties;
-import org.veo.core.entity.Key;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +28,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CreateCustomPropertiesDto extends AbstractCustomPropertiesDto {
     public CustomProperties toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2CustomProperties(tcontext, this, Key.newUuid());
+        return DtoToEntityTransformer.transformDto2CustomProperties(tcontext, this);
     }
 }

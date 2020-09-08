@@ -53,6 +53,7 @@ import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.Versioned;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
 import org.veo.core.entity.groups.DocumentGroup;
@@ -437,29 +438,21 @@ public final class DtoToEntityTransformer {
 
     // CustomLinkDto->CustomLink
     public static CustomLink transformDto2CustomLink(DtoToEntityContext tcontext,
-            AbstractCustomLinkDto source, Key<UUID> key) {
-        ClassKey<Key<UUID>> classKey = new ClassKey<>(CustomLink.class, key);
+            AbstractCustomLinkDto source) {
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
-
-        CustomLink target = (CustomLink) context.get(classKey);
-        if (target != null) {
-            return target;
-        }
 
         EntityLayerSupertype linkTarget = null;
         if (source.getTarget() != null) {
             linkTarget = ModelObjectReference.mapToEntity(context, source.getTarget());
         }
 
-        target = tcontext.getFactory()
-                         .createCustomLink(key, source.getName(), linkTarget, null);
+        var target = tcontext.getFactory()
+                             .createCustomLink(source.getName(), linkTarget, null);
 
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
         mapNameAbleProperties(source, target);
         getPropertyTransformer().applyDtoPropertiesToEntity(source.getAttributes(), target);
-
-        context.put(classKey, target);
 
         return target;
 
@@ -467,20 +460,10 @@ public final class DtoToEntityTransformer {
 
     // CustomPropertiesDto->CustomProperties
     public static CustomProperties transformDto2CustomProperties(DtoToEntityContext tcontext,
-            AbstractCustomPropertiesDto source, Key<UUID> key) {
-        ClassKey<Key<UUID>> classKey = new ClassKey<>(CustomProperties.class, key);
-        Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
-
-        CustomProperties target = (CustomProperties) context.get(classKey);
-        if (target != null) {
-            return target;
-        }
-
-        target = tcontext.getFactory()
-                         .createCustomProperties(key);
-        target.setType(source.getType());
+            AbstractCustomPropertiesDto source) {
+        var target = tcontext.getFactory()
+                             .createCustomProperties(source.getType());
         target.setApplicableTo(source.getApplicableTo());
-        context.put(classKey, target);
 
         getPropertyTransformer().applyDtoPropertiesToEntity(source.getAttributes(), target);
         return target;
@@ -503,7 +486,7 @@ public final class DtoToEntityTransformer {
                   .collect(Collectors.toSet());
     }
 
-    private static void mapVersionedProperties(VersionedDto source, ModelObject target,
+    private static void mapVersionedProperties(VersionedDto source, Versioned target,
             Key<UUID> key) {
         // target.setValidFrom(Instant.parse(source.getValidFrom()));
     }

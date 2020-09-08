@@ -47,7 +47,6 @@ class CustomLinkTransformerSpec extends Specification {
         CustomLink cp = entityFactory.createCustomLink()
         cp.source = person
         cp.target = asset
-        cp.id = id3
         cp.name = 'linkName'
         cp.type = 'my.new.linktype'
         cp.applicableTo = (['Asset'] as Set)
@@ -68,7 +67,6 @@ class CustomLinkTransformerSpec extends Specification {
 
         then: "The properties are also transformed"
         assetData.getLinks().size() == 1
-        assetData.getLinks().first().getId().equals(cp.getId())
         assetData.getLinks().first().getType().equals(cp.getType())
 
         assetData.getLinks().first().stringProperties.size() == 2

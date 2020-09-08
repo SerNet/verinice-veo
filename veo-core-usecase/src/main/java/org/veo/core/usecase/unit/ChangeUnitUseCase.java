@@ -26,8 +26,6 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.UnitRepository;
-import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
-import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;

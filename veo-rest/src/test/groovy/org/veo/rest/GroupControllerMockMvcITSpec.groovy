@@ -28,8 +28,8 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelObject.Lifecycle
 import org.veo.core.entity.Unit
+import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.entity.groups.DocumentGroup
@@ -410,7 +410,6 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Asset'] as Set)
-        cp.setId(Key.newUuid())
 
         Key<UUID> id = Key.newUuid()
         AssetGroup assetGroup = new AssetGroupData().with {
@@ -444,7 +443,6 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.aspect-test' :
                 [
-                    id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
                     applicableTo: [
                         "Asset"

@@ -137,7 +137,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         CustomProperties simpleProps = entityFactory.createCustomProperties()
         simpleProps.setType("simpleAspect")
-        simpleProps.setId(Key.newUuid())
         simpleProps.setProperty("simpleProp", "simpleValue")
 
         def asset = entityFactory.createAsset()
@@ -165,7 +164,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
                         simpleProp:'simpleValue'
                     ],
                     domains:[],
-                    id: simpleProps.id.uuidValue(),
                     references:[],
                     type: 'simpleAspect'
                 ]
@@ -193,7 +191,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         CustomProperties simpleProps = entityFactory.createCustomProperties()
         simpleProps.setType("simpleAspect")
-        simpleProps.setId(Key.newUuid())
         simpleProps.setProperty("simpleProp", "simpleValue")
 
         def asset2 = txTemplate.execute {
@@ -204,7 +201,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         def asset = entityFactory.createAsset(Key.newUuid(),"Test asset-1", unit)
         asset.setCustomAspects([simpleProps] as Set)
 
-        CustomLink link = entityFactory.createCustomLink(Key.newUuid(), "requires", asset2, asset)
+        CustomLink link = entityFactory.createCustomLink("requires", asset2, asset)
         link.setVersion(1L)
         link.setType("mypreciouslink")
         link.setApplicableTo(["Asset"] as Set)
@@ -223,7 +220,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test asset-1'
         result.links.size() == 1
-        result.links.mypreciouslink.id[0] ==~ /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
         result.links.mypreciouslink.target.href == [
             "/assets/${asset2.id.uuidValue()}"
         ]
@@ -386,7 +382,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Asset'] as Set)
-        cp.setId(Key.newUuid())
         Key<UUID> id = Key.newUuid()
         def asset = entityFactory.createAsset()
         asset.id = id
@@ -416,7 +411,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.aspect-test' :
                 [
-                    id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
                     applicableTo: [
                         "Asset"
@@ -493,7 +487,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         newAsset = entityFactory.createAsset(Key.newUuid(),"Test asset-1", unit)
         newAsset.domains = [domain1] as Set
-        CustomLink link = entityFactory.createCustomLink(Key.newUuid(), "requires", asset2, newAsset)
+        CustomLink link = entityFactory.createCustomLink("requires", asset2, newAsset)
         newAsset.links =[link] as Set
 
         def asset1 = txTemplate.execute {

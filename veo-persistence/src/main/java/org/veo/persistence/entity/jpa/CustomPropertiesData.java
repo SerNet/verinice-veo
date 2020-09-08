@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,12 +30,12 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.ModelPackage;
 import org.veo.persistence.entity.jpa.custom.PropertyData;
 
@@ -44,7 +45,12 @@ import lombok.ToString;
 @Entity(name = "customproperties")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomPropertiesData extends BaseModelObjectData implements CustomProperties {
+public class CustomPropertiesData extends VersionedData implements CustomProperties {
+
+    @Id
+    @ToString.Include
+    private String dbId = UUID.randomUUID()
+                              .toString();
 
     @Column(name = "type")
     @ToString.Include
@@ -194,9 +200,11 @@ public class CustomPropertiesData extends BaseModelObjectData implements CustomP
         return ModelPackage.ELEMENT_CUSTOMPROPERTIES;
     }
 
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return CustomProperties.class;
+    public String getDbId() {
+        return dbId;
     }
 
+    public void setDbId(String id) {
+        this.dbId = id;
+    }
 }

@@ -19,7 +19,7 @@ package org.veo.core.entity;
 /**
  * Defines the basic properties of all model elements.
  */
-public interface NameAble extends ModelObject {
+public interface NameAble {
 
     String getName();
 

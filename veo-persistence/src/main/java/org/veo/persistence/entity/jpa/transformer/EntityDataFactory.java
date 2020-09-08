@@ -178,10 +178,9 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CustomLink createCustomLink(Key<UUID> id, String name, EntityLayerSupertype linkTarget,
+    public CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource) {
         CustomLink link = createCustomLink();
-        link.setId(id);
         link.setName(name);
         link.setTarget(linkTarget);
         link.setSource(linkSource);
@@ -189,9 +188,9 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CustomProperties createCustomProperties(Key<UUID> id) {
+    public CustomProperties createCustomProperties(String type) {
         CustomProperties properties = createCustomProperties();
-        properties.setId(id);
+        properties.setType(type);
         return properties;
     }
 

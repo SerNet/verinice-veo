@@ -23,7 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelObject.Lifecycle
+import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl

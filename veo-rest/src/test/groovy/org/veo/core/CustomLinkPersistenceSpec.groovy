@@ -59,7 +59,7 @@ class CustomLinkPersistenceSpec extends Specification {
         Person person = entityFactory.createPerson(Key.newUuid(), "P1", unit)
         Asset asset = entityFactory.createAsset(Key.newUuid(), "AssetName", unit)
 
-        CustomLink cp = entityFactory.createCustomLink(Key.newUuid(), "My link", person, asset)
+        CustomLink cp = entityFactory.createCustomLink("My link", person, asset)
 
         cp.setType('my.new.linktype')
         cp.setApplicableTo(['Asset'] as Set)
@@ -93,7 +93,6 @@ class CustomLinkPersistenceSpec extends Specification {
 
         assetData.getLinks().size() == 1
         with(assetData.getLinks().first()) {
-            getId() == cp.getId()
             getType() == cp.getType()
 
             stringProperties["my.key.1"] == "my test value 1"

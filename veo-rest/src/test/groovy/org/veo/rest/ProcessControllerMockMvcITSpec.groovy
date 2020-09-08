@@ -300,7 +300,6 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Process'] as Set)
-        cp.setId(Key.newUuid())
         Key<UUID> id = Key.newUuid()
 
 
@@ -335,7 +334,6 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.aspect-test' :
                 [
-                    id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
                     applicableTo: [
                         "Process"
@@ -385,7 +383,6 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Process'] as Set)
-        cp.setId(Key.newUuid())
         cp.setProperty('test1', 'value1')
         Key<UUID> id = Key.newUuid()
         def process = entityFactory.createProcess()
@@ -420,7 +417,6 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.new.type' :
                 [
-                    id: cp.id.uuidValue(),
                     type : 'my.new.type',
                     applicableTo: [
                         "Process"
@@ -456,70 +452,6 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         entity.customAspects.first().type == 'my.new.type'
         entity.customAspects.first().applicableTo == ['Process'] as Set
         entity.customAspects.first().stringProperties.test1 == 'value2'
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "id is required in custom aspects"() {
-        given: "a saved process"
-
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("my.new.type")
-        cp.setApplicableTo(['Process'] as Set)
-        cp.setId(Key.newUuid())
-        Key<UUID> id = Key.newUuid()
-        def process = entityFactory.createProcess()
-        process.id = id
-        process.owner = unit
-        process.name = 'Test process-put'
-        process.domains = [domain1] as Set
-        process.customAspects = [cp] as Set
-
-        process = txTemplate.execute {
-            processRepository.save(process)
-        }
-
-        Map request = [
-            name: 'New Process-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                href: '/units/'+unit.id.uuidValue(),
-                displayName: 'test unit'
-            ]
-            ,
-            domains: [
-                [
-                    href: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
-            ],
-            customAspects:
-            [
-                'my.aspect-test' :
-                [
-                    type : 'my.aspect-test1',
-                    applicableTo: [
-                        "Process"
-                    ],
-                    domains: [],
-                    attributes: [
-                        test1:'value1',
-                        test2:'value2'
-                    ]
-                ]
-
-            ]
-        ]
-
-        when: "a request is made to the server"
-        def results = put("/processes/${process.id.uuidValue()}", request, false)
-
-        then: "the process is not updated"
-        MethodArgumentNotValidException ex = thrown()
-
-        and: "the reason is given"
-        ex.message ==~ /.*Validation failed for argument.*must not be null.*/
     }
 
     @WithUserDetails("user@domain.example")
@@ -570,7 +502,6 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.link-test' : [
                     [
-                        id: '00000000-0000-0000-0000-000000000000',
                         type : 'my.link-test',
                         applicableTo: [
                             "Process"

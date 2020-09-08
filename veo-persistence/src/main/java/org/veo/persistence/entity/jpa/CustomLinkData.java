@@ -26,7 +26,6 @@ import javax.validation.constraints.NotNull;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.ModelObject;
 
 import lombok.EqualsAndHashCode;
 
@@ -111,10 +110,4 @@ public class CustomLinkData extends CustomPropertiesData implements NameAbleData
         boolean remove = this.domains.remove(aDomain);
         return remove;
     }
-
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return CustomLink.class;
-    }
-
 }

@@ -16,13 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.time.Instant;
 import java.util.UUID;
 
-import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
@@ -34,82 +31,13 @@ import lombok.ToString;
  * @author urszeidler
  */
 @MappedSuperclass
-@EqualsAndHashCode(of = "dbId")
+@EqualsAndHashCode(of = "dbId", callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
-public abstract class BaseModelObjectData implements ModelObject {
+public abstract class BaseModelObjectData extends VersionedData implements ModelObject {
 
     @Id
     @ToString.Include
     private String dbId;
-
-    @ToString.Include
-    private long version;
-
-    // @Enumerated(EnumType.STRING)
-    // @Column(nullable = false)
-    // Lifecycle state;
-    private @NotNull Lifecycle state = Lifecycle.CREATING;
-
-    @Column(name = "valid_from", nullable = false)
-    private Instant validFrom = Instant.now();
-
-    @Column(name = "valid_until", nullable = true)
-    private Instant validUntil;
-
-    /**
-     * @return the version
-     */
-    public long getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version
-     *            the version to set
-     */
-    public void setVersion(long version) {
-        this.version = version;
-    }
-
-    /**
-     * @return the validFrom
-     */
-    public Instant getValidFrom() {
-        return validFrom;
-    }
-
-    /**
-     * @param validFrom
-     *            the validFrom to set
-     */
-    public void setValidFrom(Instant validFrom) {
-        this.validFrom = validFrom;
-    }
-
-    /**
-     * @return the validUntil
-     */
-    public Instant getValidUntil() {
-        return validUntil;
-    }
-
-    /**
-     * @param validUntil
-     *            the validUntil to set
-     */
-    public void setValidUntil(Instant validUntil) {
-        this.validUntil = validUntil;
-    }
-
-    @Override
-    public Lifecycle getState() {
-        return state;
-    }
-
-    @Override
-    public void setState(Lifecycle state) {
-        this.state = state;
-    }
 
     @Override
     public Key<UUID> getId() {
@@ -125,14 +53,11 @@ public abstract class BaseModelObjectData implements ModelObject {
         }
     }
 
-    @Override
     public String getDbId() {
         return dbId;
     }
 
-    @Override
     public void setDbId(String id) {
         this.dbId = id;
     }
-
 }

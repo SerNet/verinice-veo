@@ -235,7 +235,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Person'] as Set)
-        cp.setId(Key.newUuid())
+
         Key<UUID> id = Key.newUuid()
         def person = entityFactory.createPerson()
         person.id = id
@@ -265,7 +265,6 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
             [
                 'my.aspect-test' :
                 [
-                    id: '00000000-0000-0000-0000-000000000000',
                     type : 'my.aspect-test1',
                     applicableTo: [
                         "Person"

@@ -23,16 +23,14 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject.Lifecycle;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.Versioned.Lifecycle;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.UnitRepository;
-import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
-import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
 
 import lombok.Value;
 

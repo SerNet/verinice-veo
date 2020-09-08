@@ -20,7 +20,6 @@ import org.veo.adapter.presenter.api.dto.AbstractCustomLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.Key;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +28,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CreateCustomLinkDto extends AbstractCustomLinkDto {
     public CustomLink toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this, Key.newUuid());
+        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this);
     }
 }

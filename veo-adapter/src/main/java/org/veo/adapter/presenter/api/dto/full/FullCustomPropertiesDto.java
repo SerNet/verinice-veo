@@ -17,36 +17,20 @@
 package org.veo.adapter.presenter.api.dto.full;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.dto.AbstractCustomPropertiesDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomProperties;
-import org.veo.core.entity.Key;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCustomPropertiesDto extends AbstractCustomPropertiesDto
-        implements IdentifiableDto {
-
-    @NotNull
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-             flags = Pattern.Flag.CASE_INSENSITIVE,
-             message = "ID must be a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b")
-    @ToString.Include
-    private String id;
+public class FullCustomPropertiesDto extends AbstractCustomPropertiesDto {
 
     public static FullCustomPropertiesDto from(@Valid CustomProperties control,
             EntityToDtoContext tcontext) {
@@ -54,7 +38,6 @@ public class FullCustomPropertiesDto extends AbstractCustomPropertiesDto
     }
 
     public CustomProperties toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2CustomProperties(tcontext, this,
-                                                                    Key.uuidFrom(id));
+        return DtoToEntityTransformer.transformDto2CustomProperties(tcontext, this);
     }
 }

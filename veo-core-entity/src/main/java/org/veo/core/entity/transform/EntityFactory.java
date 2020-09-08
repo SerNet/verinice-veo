@@ -78,10 +78,10 @@ public interface EntityFactory {
 
     Domain createDomain(Key<UUID> id, String name);
 
-    CustomLink createCustomLink(Key<UUID> id, String name, EntityLayerSupertype linkTarget,
+    CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource);
 
-    CustomProperties createCustomProperties(Key<UUID> id);
+    CustomProperties createCustomProperties(String type);
 
     ModelGroup<?> createGroup(GroupType groupType);
 

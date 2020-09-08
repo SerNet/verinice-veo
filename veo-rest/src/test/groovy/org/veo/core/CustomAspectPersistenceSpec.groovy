@@ -57,7 +57,6 @@ class CustomAspectPersistenceSpec extends Specification {
         Key unitId = Key.newUuid()
 
         CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setId(Key.newUuid())
         cp.setType('my.new.linktype')
         cp.setApplicableTo(['Asset'] as Set)
 
@@ -94,7 +93,6 @@ class CustomAspectPersistenceSpec extends Specification {
         then: "The properties are also transformed"
 
         assetData.getCustomAspects().size() == 1
-        assetData.getCustomAspects().first().getId().equals(cp.getId())
         assetData.getCustomAspects().first().getType().equals(cp.getType())
 
         assetData.getCustomAspects().first().stringProperties.size() == 2
@@ -136,7 +134,6 @@ class CustomAspectPersistenceSpec extends Specification {
         when: "add properties of type list string"
 
         CustomProperties aspect = entityFactory.createCustomProperties()
-        aspect.setId(Key.newUuid())
         aspect.setType('my_new_asset_custom_aspect')
         aspect.setApplicableTo(['Asset'] as Set)
         aspect.setProperty('l1', ['e1', 'e2'])
