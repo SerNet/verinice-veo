@@ -85,28 +85,6 @@ public class PropertyData {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> stringListValue;
 
-    public void apply(CustomProperties target) {
-        switch (type) {
-        case STRING:
-            target.setProperty(key, stringValue);
-            break;
-        case STRING_LIST:
-            target.setProperty(key, stringListValue);
-            break;
-        case INTEGER:
-            target.setProperty(key, integerValue);
-            break;
-        case BOOLEAN:
-            target.setProperty(key, booleanValue);
-            break;
-        case OFFSET_DATE_TIME:
-            target.setProperty(key, offsetDateTimeValue);
-            break;
-        default:
-            throw new UnsupportedOperationException("Unhandled property type: " + type);
-        }
-    }
-
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
