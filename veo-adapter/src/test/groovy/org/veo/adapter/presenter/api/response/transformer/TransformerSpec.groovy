@@ -17,8 +17,6 @@
 package org.veo.adapter.presenter.api.response.transformer
 
 
-import org.veo.adapter.presenter.api.dto.AbstractClientDto
-import org.veo.adapter.presenter.api.dto.AbstractDomainDto
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullClientDto
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto
@@ -126,7 +124,11 @@ class TransformerSpec extends Specification {
         factory.createUnit(_,_,_) >> u
 
         when: "The parent unit DTO is transformed into a unit"
-        def unit = unitDto.toEntity(new DtoToEntityContext(factory))
+        def context = Mock(DtoToEntityContext) {
+            it.context >> new HashMap<>()
+            it.factory >> factory
+        }
+        def unit = unitDto.toEntity(context)
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId
@@ -186,7 +188,11 @@ class TransformerSpec extends Specification {
         factory.createDomain(d.id,domainName) >> d
 
         when: "the DTO is transformed into a Client"
-        def client = clientDto.toEntity(new DtoToEntityContext(factory))
+        def context = Mock(DtoToEntityContext) {
+            it.context >> new HashMap<>()
+            it.factory >> factory
+        }
+        def client = clientDto.toEntity(context)
 
         then: "the client contains all relevant fields"
         client.id.uuidValue() == clientId

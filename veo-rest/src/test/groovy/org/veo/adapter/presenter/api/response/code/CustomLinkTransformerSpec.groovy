@@ -16,92 +16,88 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
-import java.time.OffsetDateTime
-
+import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
-import org.veo.adapter.presenter.api.dto.full.FullAssetDto
+import org.veo.adapter.presenter.api.dto.CustomLinkDto
+import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
-import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Key
-import org.veo.core.entity.Person
+import org.veo.core.entity.transform.ClassKey
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
 import spock.lang.Specification
 
 class CustomLinkTransformerSpec extends Specification {
 
-    def "create an asset with a customLink and transform it"() {
-        given: "a person and an asset"
+    def "transform custom link entity to DTO"() {
+        given: "a custom link"
+        def targetAsset = Mock(Asset) {
+            it.id >> Key.newUuid()
+            it.modelInterface >> Asset
+        }
+        def link = Mock(CustomLink) {
+            it.type >> "good type"
+            it.applicableTo >> ["asset", "process"]
+            it.name >> "good name"
+            it.target >> targetAsset
+            it.getAllProperties() >> [
+                "foo": "bar"
+            ]
+        }
 
-        def id1= Key.newUuid()
-        def id2 =Key.newUuid()
-        def id3 =Key.newUuid()
+        when: "transforming it to a DTO"
+        def context = Mock(EntityToDtoContext) {
+            it.referenceAssembler >> Mock(ReferenceAssembler)
+        }
+        def dto = CustomLinkDto.from(link, context)
 
-        EntityFactory entityFactory = new EntityDataFactory()
-        Person person = entityFactory.createPerson(id1,"P1", null)
-        Asset asset = entityFactory.createAsset(id2,"AssetName",null)
-        def refAssembler = Mock(ReferenceAssembler)
+        then: "all properties are transformed"
+        with(dto) {
+            type == "good type"
+            applicableTo == Set.of("asset", "process")
+            name == "good name"
+            target == ModelObjectReference.from(targetAsset, context.referenceAssembler)
+            with(attributes) {
+                get("foo") == "bar"
+            }
+        }
+    }
 
-        CustomLink cp = entityFactory.createCustomLink()
-        cp.source = person
-        cp.target = asset
-        cp.name = 'linkName'
-        cp.type = 'my.new.linktype'
-        cp.applicableTo = (['Asset'] as Set)
-        asset.links = [cp as Set]
+    def "transform custom link DTO to entity"() {
+        given: "a custom link"
+        def targetAsset = Mock(Asset) {
+            it.id >> Key.newUuid()
+            it.modelInterface >> Asset
+        }
+        def newLink = Mock(CustomLink)
+        def context = Mock(DtoToEntityContext) {
+            it.context >> [
+                (new ClassKey<>(Asset, targetAsset.id)): targetAsset
+            ]
+            it.factory >> Mock(EntityFactory)
+        }
+        def customAttributesTransformer = Mock(CustomAttributesTransformer)
+        def linkDto = new CustomLinkDto().tap {
+            type = "good type"
+            applicableTo = ["asset", "process"]
+            name = "good name"
+            target = ModelObjectReference.from(targetAsset, Mock(ReferenceAssembler))
+            attributes = [
+                "foo": "bar"
+            ]
+        }
 
+        when: "transforming it to an entity"
+        def entity = linkDto.toEntity(context, customAttributesTransformer)
 
-        when: "add some properties"
-        cp.setProperty("my.key.1","my test value 1")
-
-        cp.setProperty("my.key.2","my test value 2")
-
-
-        DtoToEntityContext tcontext = new DtoToEntityContext(entityFactory)
-        tcontext.addEntity(person)
-
-        Asset assetData = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext(refAssembler))
-                .toEntity(tcontext)
-
-        then: "The properties are also transformed"
-        assetData.getLinks().size() == 1
-        assetData.getLinks().first().getType().equals(cp.getType())
-
-        assetData.getLinks().first().stringProperties.size() == 2
-        assetData.getLinks().first().stringProperties["my.key.1"] == "my test value 1"
-        assetData.getLinks().first().stringProperties["my.key.2"] == "my test value 2"
-
-        when: "add properties of type number"
-        cp.setProperty("my.key.3", 10)
-
-
-        tcontext = new DtoToEntityContext(entityFactory)
-        tcontext.addEntity(person)
-
-        Asset savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext(refAssembler)).toEntity(tcontext)
-        CustomProperties savedCp = savedAsset.getLinks().first()
-
-        then: "numbers also"
-        savedCp.integerProperties.size() == 1
-        savedCp.integerProperties["my.key.3"] == 10
-
-
-        when: "add properties of type date"
-        cp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00.000Z"))
-
-
-        tcontext = new DtoToEntityContext(entityFactory)
-        tcontext.addEntity(person)
-
-        savedAsset = FullAssetDto.from(asset, EntityToDtoContext.getCompleteTransformationContext(refAssembler)).toEntity(tcontext)
-        savedCp = savedAsset.getLinks().first()
-
-        then: "date also"
-        savedCp.getOffsetDateTimeProperties().size() == 1
-        savedCp.getOffsetDateTimeProperties().get("my.key.4") == OffsetDateTime.parse("2020-02-02T00:00:00.000Z")
+        then: "all properties are transformed"
+        1 * context.factory.createCustomLink("good name", targetAsset, null) >> newLink
+        entity == newLink
+        1 * newLink.setType("good type")
+        1 * newLink.setApplicableTo(Set.of("asset", "process"))
+        1 * customAttributesTransformer.applyLinkAttributes(["foo": "bar"], newLink)
     }
 }

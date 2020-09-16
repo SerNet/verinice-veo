@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2020 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,20 +16,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-/**
- * Unrecoverable violations against business rules extend and throw this
- * exception. This must not be used for any preventable condition that can be
- * caught using validation and type checking.
- *
- * @author akoderman
- */
-public abstract class DomainException extends RuntimeException {
-
-    public DomainException(String message) {
+public class EntitySchemaException extends DomainException {
+    public EntitySchemaException(String message) {
         super(message);
     }
 
-    public DomainException(String message, Exception inner) {
-        super(message, inner);
+    public EntitySchemaException(String s, Exception inner) {
+        super(s, inner);
     }
 }

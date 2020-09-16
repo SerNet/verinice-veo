@@ -47,7 +47,8 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
         if (VALID_SCHEMAS.stream()
                          .filter(s -> s.equals(type))
                          .count() != 1) {
-            throw new IllegalArgumentException("Type is not a valid schema.");
+            throw new IllegalArgumentException(
+                    String.format("Type \"%s\" is not a valid schema.", type));
         }
         log.debug("Getting static JSON schema file for type: " + type);
         return extract(SCHEMA_FILES_PATH + type.substring(0, 1)

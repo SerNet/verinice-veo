@@ -82,9 +82,9 @@ class BasicCrudITSpec extends VeoMvcSpec {
                 targetUri: "/units/$unitId"
             ],
             links: [
-                'Process_depends_on_Asset':[
+                'process_DataCategories':[
                     [
-                        type: 'Process_depends_on_Asset',
+                        type: 'process_DataCategories',
                         name : 'requires',
                         target:
                         [
@@ -110,7 +110,7 @@ class BasicCrudITSpec extends VeoMvcSpec {
         def links = process.get().links
         then:
         links.size() == 1
-        links.first().type == 'Process_depends_on_Asset'
+        links.first().type == 'process_DataCategories'
         links.first().name == 'requires'
         links.first().target.id.uuidValue() == assetId
         when:

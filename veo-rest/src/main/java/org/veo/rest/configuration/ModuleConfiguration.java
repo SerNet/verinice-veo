@@ -238,8 +238,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public DtoToEntityContextFactory dtoToEntityContextFactory(EntityFactory entityFactory) {
-        return new DtoToEntityContextFactory(entityFactory);
+    public DtoToEntityContextFactory dtoToEntityContextFactory(EntityFactory entityFactory,
+            EntitySchemaService entitySchemaService) {
+        return new DtoToEntityContextFactory(entityFactory, entitySchemaService);
     }
 
     @Bean

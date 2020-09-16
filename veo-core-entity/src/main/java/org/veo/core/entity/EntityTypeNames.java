@@ -28,11 +28,20 @@ import java.util.Set;
  */
 public final class EntityTypeNames {
 
+    public static final String ASSET = "asset";
+    public static final String CONTROL = "control";
+    public static final String DOCUMENT = "document";
+    public static final String DOMAIN = "domain";
+    public static final String PERSON = "person";
+    public static final String PROCESS = "process";
+    public static final String UNIT = "unit";
+
     public static final String PERSONS = "persons";
     public static final String PROCESSES = "processes";
     public static final String CONTROLS = "controls";
     public static final String ASSETS = "assets";
     public static final String UNITS = "units";
+    public static final String DOCUMENTS = "documents";
     public static final String DOMAINS = "domains";
     public static final String GROUPS = "groups";
 
@@ -41,10 +50,12 @@ public final class EntityTypeNames {
      * included in this list or any of the mapping methods.
      */
     public static final Set<String> KNOWN_COLLECTION_NAMES = Set.of(PERSONS, PROCESSES, CONTROLS,
-                                                                    ASSETS, UNITS, DOMAINS);
+                                                                    DOCUMENTS, ASSETS, UNITS,
+                                                                    DOMAINS);
     private static final Map<Class, String> typeToCollection = Map.of(Person.class, PERSONS,
                                                                       Process.class, PROCESSES,
                                                                       Control.class, CONTROLS,
+                                                                      Document.class, DOCUMENT,
                                                                       Asset.class, ASSETS,
                                                                       Unit.class, UNITS,
                                                                       Domain.class, DOMAINS);
@@ -52,6 +63,7 @@ public final class EntityTypeNames {
     private static final Map<String, Class> collectionToType = Map.of(PERSONS, Person.class,
                                                                       PROCESSES, Process.class,
                                                                       CONTROLS, Control.class,
+                                                                      DOCUMENT, Document.class,
                                                                       ASSETS, Asset.class, UNITS,
                                                                       Unit.class, DOMAINS,
                                                                       Domain.class);

@@ -116,7 +116,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         Map request = [
             name: 'New Control',
             owner: [
-                displayName: 'test2',
+                displayName: 'controlDataProtectionObjectivesEugdprEncryption',
                 targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
@@ -144,20 +144,20 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         Map request = [
             name: 'New Control',
             owner: [
-                displayName: 'test2',
+                displayName: 'controlDataProtectionObjectivesEugdprEncryption',
                 targetUri: '/units/' + unit.id.uuidValue()
             ], customAspects:
             [
-                'my.aspect-test' :
+                'ControlDataProtectionObjectivesEugdpr' :
                 [
-                    type : 'my.aspect-test1',
+                    type : 'ControlDataProtectionObjectivesEugdpr',
                     applicableTo: [
                         "Control"
                     ],
                     domains: [],
                     attributes:  [
-                        test1:'value1',
-                        test2:'value2'
+                        controlDataProtectionObjectivesEugdprPseudonymization:true,
+                        controlDataProtectionObjectivesEugdprEncryption:false
                     ]
                 ]
             ]
@@ -187,7 +187,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         }
 
         then: 'the custom properties are saved'
-        savedControl.customAspects.first().type == 'my.aspect-test1'
+        savedControl.customAspects.first().type == 'ControlDataProtectionObjectivesEugdpr'
     }
 
     @WithUserDetails("user@domain.example")
@@ -363,16 +363,16 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
                 ]
             ], customAspects:
             [
-                'my.aspect-test' :
+                'ControlDataProtectionObjectivesEugdpr' :
                 [
-                    type : 'my.aspect-test1',
+                    type : 'ControlDataProtectionObjectivesEugdpr',
                     applicableTo: [
                         "Control"
                     ],
                     domains: [],
                     attributes:  [
-                        test1:'value1',
-                        test2:'value2'
+                        controlDataProtectionObjectivesEugdprPseudonymization:true,
+                        controlDataProtectionObjectivesEugdprEncryption:false
                     ]
                 ]
             ]
@@ -428,9 +428,9 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
                 ]
             ], customAspects:
             [
-                'my.aspect-test' :
+                'ControlDataProtectionObjectivesEugdpr' :
                 [
-                    type : 'my.aspect-test1',
+                    type : 'ControlDataProtectionObjectivesEugdpr',
                     applicableTo: [
                         "Control"
                     ],

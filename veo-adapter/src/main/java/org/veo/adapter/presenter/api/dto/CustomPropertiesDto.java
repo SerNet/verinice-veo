@@ -33,13 +33,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.transform.EntityFactory;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -110,7 +111,9 @@ public class CustomPropertiesDto {
         this.attributes = attributes;
     }
 
-    public CustomProperties toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2CustomProperties(tcontext, this);
+    public CustomProperties toEntity(EntityFactory factory,
+            CustomAttributesTransformer customAttributesTransformer) {
+        return DtoToEntityTransformer.transformDto2CustomProperties(factory, this,
+                                                                    customAttributesTransformer);
     }
 }

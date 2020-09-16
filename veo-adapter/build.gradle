@@ -26,6 +26,7 @@ dependencies {
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core'
 
+    testImplementation 'io.swagger.core.v3:swagger-core'
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

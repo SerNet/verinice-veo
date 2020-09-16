@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
+import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
@@ -83,7 +84,9 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
         return list;
     }
 
-    public CustomLink toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this);
+    public CustomLink toEntity(DtoToEntityContext tcontext,
+            CustomAttributesTransformer customAttributesTransformer) {
+        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this,
+                                                              customAttributesTransformer);
     }
 }

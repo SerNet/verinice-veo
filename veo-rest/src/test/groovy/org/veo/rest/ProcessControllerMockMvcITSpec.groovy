@@ -339,16 +339,16 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             ],
             customAspects:
             [
-                'my.aspect-test' :
+                'process_SensitiveData' :
                 [
-                    type : 'my.aspect-test1',
+                    type : 'process_SensitiveData',
                     applicableTo: [
                         "Process"
                     ],
                     domains: [],
                     attributes: [
-                        test1:'value1',
-                        test2:'value2'
+                        process_SensitiveData_SensitiveData: true,
+                        process_SensitiveData_comment: 'no comment'
                     ]
                 ]
 
@@ -380,10 +380,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'my.aspect-test1'
+        entity.customAspects.first().type == 'process_SensitiveData'
         entity.customAspects.first().applicableTo == ['Process'] as Set
-        entity.customAspects.first().stringProperties.test1 == 'value1'
-        entity.customAspects.first().stringProperties.test2 == 'value2'
+        entity.customAspects.first().booleanProperties.process_SensitiveData_SensitiveData
+        entity.customAspects.first().stringProperties.process_SensitiveData_comment == 'no comment'
     }
 
     @WithUserDetails("user@domain.example")
@@ -391,9 +391,9 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         given: "a saved process"
 
         CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("my.new.type")
+        cp.setType("process_SensitiveData")
         cp.setApplicableTo(['Process'] as Set)
-        cp.setProperty('test1', 'value1')
+        cp.setProperty('process_SensitiveData_comment', 'old comment')
         Key<UUID> id = Key.newUuid()
         def process = entityFactory.createProcess()
         process.id = id
@@ -425,15 +425,15 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             ],
             customAspects:
             [
-                'my.new.type' :
+                'process_SensitiveData' :
                 [
-                    type : 'my.new.type',
+                    type : 'process_SensitiveData',
                     applicableTo: [
                         "Process"
                     ],
                     domains: [],
                     attributes: [
-                        test1:'value2'
+                        process_SensitiveData_comment:'new comment'
                     ]
                 ]
             ]
@@ -462,9 +462,9 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'my.new.type'
+        entity.customAspects.first().type == 'process_SensitiveData'
         entity.customAspects.first().applicableTo == ['Process'] as Set
-        entity.customAspects.first().stringProperties.test1 == 'value2'
+        entity.customAspects.first().stringProperties.process_SensitiveData_comment == 'new comment'
     }
 
     @WithUserDetails("user@domain.example")
@@ -513,17 +513,17 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             ],
             links:
             [
-                'my.link-test' : [
+                'process_DataCategories' : [
                     [
-                        type : 'my.link-test',
+                        type : 'process_DataCategories',
                         applicableTo: [
                             "Process"
                         ],
                         name:'test link prcess->asset',
                         domains: [],
                         attributes: [
-                            test1:'value1',
-                            test2:'value2'
+                            process_DataCategories_dataOrigin: 'process_DataCategories_dataOrigin_direct',
+                            process_DataCategories_comment: 'ok'
                         ],
                         target:
                         [
@@ -551,7 +551,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         def links = result.links
         links.size() == 1
         and: 'there is one link of the expected type'
-        def linksOfExpectedType = links.'my.link-test'
+        def linksOfExpectedType = links.'process_DataCategories'
         linksOfExpectedType.size() == 1
         and: 'the expected link is present'
         linksOfExpectedType.first().name == 'test link prcess->asset'
@@ -573,10 +573,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue()
             ],
             links: [
-                'Process_depends_on_Asset': [
+                'process_DataCategories': [
                     [
-                        type  : 'Process_depends_on_Asset',
-                        name  : 'requires',
+                        type  : 'process_DataCategories',
+                        name  : 'categories',
                         target:
                         [
                             targetUri: "/assets/$assetId"
@@ -591,8 +591,8 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             with(process.links) {
                 //need to be in the open session
                 size() == 1
-                first().type == 'Process_depends_on_Asset'
-                first().name == 'requires'
+                first().type == 'process_DataCategories'
+                first().name == 'categories'
                 first().target.id.uuidValue() == assetId
             }
             return process

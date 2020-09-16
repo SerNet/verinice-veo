@@ -276,16 +276,16 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
                 ]
             ], customAspects:
             [
-                'my.aspect-test' :
+                'PersonCommons' :
                 [
-                    type : 'my.aspect-test1',
+                    type : 'PersonCommons',
                     applicableTo: [
                         "Person"
                     ],
                     domains: [],
                     attributes:  [
-                        test1:'value1',
-                        test2:'value2'
+                        personIsoAnrede:'personIsoAnredeFrau',
+                        personIsoSurname:'Schmidt'
                     ]
                 ]
             ]
@@ -316,10 +316,10 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         then:
         entity.name == 'New person-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'my.aspect-test1'
+        entity.customAspects.first().type == 'PersonCommons'
         entity.customAspects.first().applicableTo == ['Person'] as Set
-        entity.customAspects.first().stringProperties.test1 == 'value1'
-        entity.customAspects.first().stringProperties.test2 == 'value2'
+        entity.customAspects.first().stringProperties.personIsoAnrede == 'personIsoAnredeFrau'
+        entity.customAspects.first().stringProperties.personIsoSurname == 'Schmidt'
     }
 
     @WithUserDetails("user@domain.example")

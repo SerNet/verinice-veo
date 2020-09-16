@@ -2127,7 +2127,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"process_TypeOfSensitiveData\": [\n            {\n                \"type\": \"process_TypeOfSensitiveData\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"process_SensitiveData\": {\n            \"type\": \"process_SensitiveData\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"process_SensitiveData_SensitiveData\": true,\n                \"process_SensitiveData_comment\": \"no comment\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -2188,8 +2188,8 @@
                   "pm.test(\"Returned process has the correct values\", function () {",
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"processId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"processName\"))",
-                  "    pm.expect(jsonData.customAspects.myaspecttest1.type).to.equal('myaspecttest1');",
-                  "    pm.expect(jsonData.links.A1[0].type).to.equal('A1');",
+                  "    pm.expect(jsonData.customAspects.process_SensitiveData.type).to.equal('process_SensitiveData');",
+                  "    pm.expect(jsonData.links.process_TypeOfSensitiveData[0].type).to.equal('process_TypeOfSensitiveData');",
                   "",
                   "});",
                   "",
@@ -2257,217 +2257,12 @@
           ]
         },
         {
-          "name": "Create a control inside the unit with properties",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "e5f250d9-4408-48ca-86e1-69e9aa88ef74",
-                "exec": [
-                  "pm.collectionVariables.set('controlName', 'CRUD test control');"
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "2555b26c-df39-4e7d-9f44-43a95a152392",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "var resourceId = jsonData.resourceId;",
-                  "pm.test(\"Resource ID is a string\", function () {",
-                  "    pm.expect(resourceId).to.be.a('string')",
-                  "});",
-                  "pm.collectionVariables.set('controlId', resourceId);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/controls",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "controls"
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Load the control with properties",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "8e216401-d78e-4e78-8585-e0f539da00ea",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned control has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"controlId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"controlName\"))",
-                  "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
-                  "    pm.expect(jsonData.customAspects.myaspecttest1.type).to.equal('myaspecttest1');",
-                  "    pm.expect(jsonData.links.A1[0].type).to.equal('A1');",
-                  "",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/controls/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "controls",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{controlId}}",
-                  "description": "(Required) "
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            }
-          ]
-        },
-        {
           "name": "Create a person inside the unit with properties",
           "event": [
             {
               "listen": "prerequest",
               "script": {
-                "id": "d1bf6a1d-c712-4907-ba83-34e98ed9290a",
+                "id": "e5f250d9-4408-48ca-86e1-69e9aa88ef74",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -2477,7 +2272,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "2849f6d2-944c-4a1a-a901-6eadeacec287",
+                "id": "2555b26c-df39-4e7d-9f44-43a95a152392",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2503,7 +2298,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\"links\": {\n        \"Person_responsible_for_Process\": [\n            {\n                \"type\": \"Person_responsible_for_Process\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/processes/{{processId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"PersonCommons\": {\n            \"type\": \"PersonCommons\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"personIsoAnrede\": \"personIsoAnredeFrau\",\n                \"personIsoSurname\": \"Schmidt\"\n            }\n        }\n    }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2560,7 +2355,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "aef00abd-6936-4e65-a8a1-f132347c58b3",
+                "id": "8e216401-d78e-4e78-8585-e0f539da00ea",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2571,8 +2366,8 @@
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"personName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
                   "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
-                  "    pm.expect(jsonData.customAspects.myaspecttest1.type).to.equal('myaspecttest1');",
-                  "    pm.expect(jsonData.links.A1[0].type).to.equal('A1');",
+                  "    pm.expect(jsonData.customAspects.PersonCommons.type).to.equal('PersonCommons');",
+                  "    pm.expect(jsonData.links.Person_responsible_for_Process[0].type).to.equal('Person_responsible_for_Process');",
                   "",
                   "});",
                   ""
@@ -2597,6 +2392,211 @@
                 {
                   "key": "id",
                   "value": "{{personId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+            },
+            {
+              "name": "Asset not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create a control inside the unit with properties",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "d1bf6a1d-c712-4907-ba83-34e98ed9290a",
+                "exec": [
+                  "pm.collectionVariables.set('controlName', 'CRUD test control');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "2849f6d2-944c-4a1a-a901-6eadeacec287",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('controlId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"Control_assignee_Person\": [\n            {\n                \"type\": \"Control_assignee_Person\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/persons/{{personId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"ControlDataProtectionObjectivesEugdpr\": {\n            \"type\": \"ControlDataProtectionObjectivesEugdpr\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"controlDataProtectionObjectivesEugdprPseudonymization\": true,\n                \"controlDataProtectionObjectivesEugdprEncryption\": false\n            }\n        }\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/controls",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "controls"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load the control with properties",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "aef00abd-6936-4e65-a8a1-f132347c58b3",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returned control has the correct values\", function () {",
+                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"controlId\"));",
+                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"controlName\"))",
+                  "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.customAspects.ControlDataProtectionObjectivesEugdpr.type).to.equal('ControlDataProtectionObjectivesEugdpr');",
+                  "    pm.expect(jsonData.links.Control_assignee_Person[0].type).to.equal('Control_assignee_Person');",
+                  "",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/controls/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "controls",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{controlId}}",
                   "description": "(Required) "
                 }
               ]
@@ -2713,7 +2713,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n    ,\"links\": {\n        \"a1\": [\n            {\n                \"type\": \"A1\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"myaspecttest1\": {\n            \"type\": \"myaspecttest1\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"test1\": \"value1\",\n                \"test2\": \"value2\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n    ,\"links\": {\n        \"Asset_located_in_Asset\": [\n            {\n                \"type\": \"Asset_located_in_Asset\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"AssetCommons\": {\n            \"type\": \"AssetCommons\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"assetNum\": \"001\",\n                \"assetPlatform\": \"9 3/4\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -2776,8 +2776,8 @@
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"assetName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
                   "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
-                  "    pm.expect(jsonData.customAspects.myaspecttest1.type).to.equal('myaspecttest1');",
-                  "    pm.expect(jsonData.links.A1[0].type).to.equal('A1');",
+                  "    pm.expect(jsonData.customAspects.AssetCommons.type).to.equal('AssetCommons');",
+                  "    pm.expect(jsonData.links.Asset_located_in_Asset[0].type).to.equal('Asset_located_in_Asset');",
                   "});",
                   ""
                 ],
@@ -2884,7 +2884,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Verarbeitungstätigkeit 1\",\n    \"customAspects\": {\n        \"ProcessDvGroupRechtsgrundlage\": {\n            \"attributes\": {\n                \"processDvRechtsgrundlage\": [\n                    \"processDvRechtsgrundlage1\",\n                    \"processDvRechtsgrundlage5\",\n                    \"processDvRechtsgrundlage2\",\n                    \"processDvRechtsgrundlage3\",\n                    \"processDvRechtsgrundlage4\"\n                ]\n            },\n            \"type\": \"ProcessDvGroupRechtsgrundlage\"\n        }\n    },\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"Verarbeitungstätigkeit 1\",\n    \"customAspects\": {\n        \"process_SensitiveData\": {\n            \"attributes\": {\n                \"process_SensitiveData_SensitiveData\": true\n            },\n            \"type\": \"process_SensitiveData\"\n        }\n    },\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",

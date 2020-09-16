@@ -25,28 +25,33 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.transform.ClassKey;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.TransformContext;
+import org.veo.core.service.EntitySchemaService;
 
 public class DtoToEntityContext implements TransformContext {
 
     private Map<ClassKey<Key<UUID>>, ? super ModelObject> context = new HashMap<>();
 
-    public DtoToEntityContext(EntityFactory entityFactory) {
+    public DtoToEntityContext(EntityFactory entityFactory,
+            EntitySchemaService entitySchemaService) {
         super();
         this.factory = entityFactory;
+        this.customAttributesTransformerFactory = new CustomAttributesTransformerFactory(
+                entitySchemaService);
     }
 
     public Map<ClassKey<Key<UUID>>, ? super ModelObject> getContext() {
         return context;
     }
 
-    private EntityFactory factory;
+    private final EntityFactory factory;
+    private final CustomAttributesTransformerFactory customAttributesTransformerFactory;
 
     public EntityFactory getFactory() {
         return factory;
     }
 
-    public void setEntityFactory(EntityFactory factory) {
-        this.factory = factory;
+    public CustomAttributesTransformer createCustomAttributesTransformer(String entityType) {
+        return customAttributesTransformerFactory.createCustomAttributesTransformer(entityType);
     }
 
     /**

@@ -16,14 +16,17 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import org.mockito.Mock
+
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
-import org.veo.adapter.presenter.api.dto.AbstractDocumentDto
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
+import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.entity.transform.ClassKey
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
@@ -116,8 +119,11 @@ class DtoTransformerContextSpec extends Specification {
 
         when: "replace the unit in context"
 
-        DtoToEntityContext tcontext = new DtoToEntityContext(factory)
-        tcontext.addEntity(replacementUnit)
+        def tcontext = Mock(DtoToEntityContext) {
+            it.factory >> factory
+            it.context >> new HashMap<>()
+            it.context.put(new ClassKey<Key<UUID>>(Unit, replacementUnit.id), replacementUnit)
+        }
 
         doc = docDto.toEntity(tcontext)
 

@@ -16,23 +16,32 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
-import org.veo.core.entity.transform.EntityFactory;
+import java.util.Collections;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import org.veo.core.entity.EntitySchemaException;
 import org.veo.core.service.EntitySchemaService;
 
-/**
- * Creates {@link DtoToEntityContext} instances.
- */
-public class DtoToEntityContextFactory {
-    private final EntityFactory entityFactory;
+import io.swagger.v3.core.util.Json;
+
+/** Factory that creates @{code CustomAttributesTransformer} instances. */
+class CustomAttributesTransformerFactory {
     private final EntitySchemaService entitySchemaService;
 
-    public DtoToEntityContextFactory(EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService) {
-        this.entityFactory = entityFactory;
+    public CustomAttributesTransformerFactory(EntitySchemaService entitySchemaService) {
         this.entitySchemaService = entitySchemaService;
     }
 
-    public DtoToEntityContext create() {
-        return new DtoToEntityContext(entityFactory, entitySchemaService);
+    public CustomAttributesTransformer createCustomAttributesTransformer(String entityType) {
+        var schemaString = entitySchemaService.findSchema(entityType, Collections.emptyList());
+        try {
+            return new CustomAttributesTransformer(Json.mapper()
+                                                       .readTree(schemaString),
+                    new AttributeTransformer());
+        } catch (JsonProcessingException ex) {
+            throw new EntitySchemaException(
+                    String.format("Invalid entity schema \"%s/", entityType), ex);
+        }
     }
 }

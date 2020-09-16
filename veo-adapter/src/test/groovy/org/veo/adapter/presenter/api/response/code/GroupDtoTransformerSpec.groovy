@@ -29,6 +29,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.ProcessGroup
+import org.veo.core.entity.transform.ClassKey
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
@@ -188,11 +189,15 @@ class GroupDtoTransformerSpec extends Specification {
 
 
         when: "the DTOs are transformed back into entities"
-        def context = new DtoToEntityContext(factory)
-        context.addEntity(asset)
-        context.addEntity(asset1)
-        context.addEntity(asset2)
-        context.addEntity(process)
+        def context = Mock(DtoToEntityContext).tap {
+            it.context >> new HashMap<>()
+            it.context.put(new ClassKey<>(Asset, asset.id),  asset);
+            it.context.put(new ClassKey<>(Asset, asset1.id),  asset1);
+            it.context.put(new ClassKey<>(Asset, asset2.id),  asset2);
+            it.context.put(new ClassKey<>(Process, process.id),  process);
+            it.factory >> factory
+        }
+
         AssetGroup eag = ag.toEntity(context)
         ProcessGroup epg = pg.toEntity(context)
 
@@ -270,12 +275,18 @@ class GroupDtoTransformerSpec extends Specification {
         EntityFactory factory = Mock()
         factory.createDocumentGroup() >> gg
 
-        def transformationContext = new DtoToEntityContext(factory)
+        def transformationContext = Mock(DtoToEntityContext) {
+            it.context >> new HashMap<>()
+            it.factory >> factory
+        }
         [
             documentGroup1,
             documentGroup2,
             documentGroup3
-        ].forEach(transformationContext.&addEntity)
+        ].forEach({
+            transformationContext.context.put(new ClassKey<>(Document, it.id), it)}
+        )
+
 
         and: "The DTOs are transformed back"
         DocumentGroup dG1 = dtoDG1.toEntity(transformationContext)
