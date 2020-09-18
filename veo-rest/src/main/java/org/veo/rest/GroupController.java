@@ -33,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +73,7 @@ import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.group.CreateGroupUseCase;
 import org.veo.core.usecase.group.DeleteGroupUseCase;
 import org.veo.core.usecase.group.GetGroupUseCase;
@@ -172,16 +175,26 @@ public class GroupController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullGroupDto.class))),
             @ApiResponse(responseCode = "404", description = "Group not found") })
-    public @Valid CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> getGroup(
+    public @Valid CompletableFuture<ResponseEntity<FullEntityLayerSupertypeGroupDto<?>>> getGroup(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
-                Key.uuidFrom(uuid), type, client), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-                    return FullEntityLayerSupertypeGroupDto.from(output.getGroup(), tcontext);
-                });
+
+        CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> groupFuture = useCaseInteractor.execute(getGroupUseCase,
+                                                                                                       new GetGroupUseCase.InputData(
+                                                                                                               Key.uuidFrom(uuid),
+                                                                                                               type,
+                                                                                                               client),
+                                                                                                       output -> {
+                                                                                                           EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
+                                                                                                           return FullEntityLayerSupertypeGroupDto.from(output.getGroup(),
+                                                                                                                                                        tcontext);
+                                                                                                       });
+        return groupFuture.thenApply(groupDto -> ResponseEntity.ok()
+                                                               .eTag(ETag.from(groupDto.getId(),
+                                                                               groupDto.getVersion()))
+                                                               .body(groupDto));
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
@@ -238,6 +251,7 @@ public class GroupController extends AbstractEntityController {
             @ApiResponse(responseCode = "404", description = "Group not found") })
     public <T extends ModelObject> CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> updateGroup(
             @Parameter(required = false, hidden = true) Authentication auth,
+            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @NotNull @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                                                                                            schema = @Schema(implementation = FullGroupDto.class))) String requestBody,
@@ -253,14 +267,15 @@ public class GroupController extends AbstractEntityController {
         EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         ModelGroup<?> group = groupDto.toEntity(fromDtoContext);
         return useCaseInteractor.execute(putGroupUseCase,
-                                         new UpdateGroupUseCase.InputData(group, client), output -> // TODO:
-                                                                                                    // do
-                                                                                                    // we
-                                                                                                    // need
-                                                                                                    // the
-                                                                                                    // transform
-                                                                                                    // group
-                                                                                                    // funtion
+                                         new UpdateGroupUseCase.InputData(group, client, eTag),
+                                         output -> // TODO:
+                                         // do
+                                         // we
+                                         // need
+                                         // the
+                                         // transform
+                                         // group
+                                         // funtion
                                          transformGroup2Dto(toDtoContext, output.getGroup()));
     }
 

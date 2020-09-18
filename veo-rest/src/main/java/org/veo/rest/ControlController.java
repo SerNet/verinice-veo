@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,6 +66,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
+import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
@@ -147,16 +150,25 @@ public class ControlController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = AbstractControlDto.class))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
-    public @Valid CompletableFuture<FullControlDto> getControl(
+    public @Valid CompletableFuture<ResponseEntity<FullControlDto>> getControl(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
 
-        return useCaseInteractor.execute(getControlUseCase, new GetControlUseCase.InputData(
-                Key.uuidFrom(uuid), client), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-                    return FullControlDto.from(output.getControl(), tcontext);
-                });
+        CompletableFuture<FullControlDto> controlFuture = useCaseInteractor.execute(getControlUseCase,
+                                                                                    new GetControlUseCase.InputData(
+                                                                                            Key.uuidFrom(uuid),
+                                                                                            client),
+                                                                                    output -> {
+                                                                                        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
+                                                                                        return FullControlDto.from(output.getControl(),
+                                                                                                                   tcontext);
+                                                                                    });
+
+        return controlFuture.thenApply(controlDto -> ResponseEntity.ok()
+                                                                   .eTag(ETag.from(controlDto.getId(),
+                                                                                   controlDto.getVersion()))
+                                                                   .body(controlDto));
     }
 
     @PostMapping()
@@ -189,6 +201,7 @@ public class ControlController extends AbstractEntityController {
             @ApiResponse(responseCode = "404", description = "Control not found") })
     public CompletableFuture<FullControlDto> updateControl(
             @Parameter(required = false, hidden = true) Authentication auth,
+            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullControlDto controlDto) {
         applyId(uuid, controlDto);
@@ -201,7 +214,8 @@ public class ControlController extends AbstractEntityController {
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  controlDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Control>(
-                                                         controlDto.toEntity(tcontext), client);
+                                                         controlDto.toEntity(tcontext), client,
+                                                         eTag);
                                              }
 
                                          },

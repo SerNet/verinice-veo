@@ -21,6 +21,8 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.common.ETagMismatchException;
 
 import lombok.Value;
 
@@ -37,6 +39,18 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
 
     protected abstract OutputData<T> performModification(InputData<T> input);
 
+    protected void checkETag(EntityLayerSupertype storedElement,
+            InputData<? extends EntityLayerSupertype> input) {
+        if (!ETag.matches(storedElement.getId()
+                                       .uuidValue(),
+                          storedElement.getVersion(), input.getETag())) {
+            throw new ETagMismatchException(
+                    String.format("The eTag does not match for the element with the ID %s",
+                                  storedElement.getId()
+                                               .uuidValue()));
+        }
+    }
+
     @Valid
     @Value
     public static class InputData<T> implements UseCase.InputData {
@@ -47,6 +61,7 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
         @Valid
         Client authenticatedClient;
 
+        String eTag;
     }
 
     @Valid

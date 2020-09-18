@@ -11,6 +11,7 @@ dependencies {
     // The alternative would be to use spring transactional annotations.
     // These would support readonly transactions among other additional features.
     implementation 'javax.transaction:javax.transaction-api'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

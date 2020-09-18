@@ -40,6 +40,7 @@ bootRun {
     System.properties.'spring.profiles.active'?.with { activeSpringProfiles = it }
     systemProperty 'spring.profiles.active', activeSpringProfiles
     systemProperty 'veo.basedir', "${System.getProperty("user.home")}/.local/share/veo"
+    systemProperty 'veo.etag.salt', "zu#4Q8JKdy"
     if ( project.hasProperty('jvmArgs') ) {
         jvmArgs = (project.jvmArgs.split("\\s+") as List)
     }

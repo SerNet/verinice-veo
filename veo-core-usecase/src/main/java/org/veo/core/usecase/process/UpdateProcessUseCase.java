@@ -19,6 +19,7 @@ package org.veo.core.usecase.process;
 import java.time.Instant;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.ProcessRepository;
 
@@ -36,9 +37,19 @@ public class UpdateProcessUseCase<R> extends ModifyEntityUseCase<Process, R> {
 
     @Override
     public OutputData<Process> performModification(InputData<Process> input) {
+        Process storedProcess = processRepository.findById(input.getEntity()
+                                                                .getId())
+                                                 .orElseThrow(() -> new NotFoundException(
+                                                         "Process %s was not found.",
+                                                         input.getEntity()
+                                                              .getId()
+                                                              .uuidValue()));
+        checkETag(storedProcess, input);
         Process process = input.getEntity();
+        process.setVersion(storedProcess.getVersion());
         process.setValidFrom(Instant.now());
         return new OutputData<>(processRepository.save(process));
 
     }
+
 }

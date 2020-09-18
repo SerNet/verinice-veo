@@ -19,6 +19,7 @@ package org.veo.core.usecase.person;
 import java.time.Instant;
 
 import org.veo.core.entity.Person;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.PersonRepository;
 
@@ -33,7 +34,15 @@ public class UpdatePersonUseCase<R> extends ModifyEntityUseCase<Person, R> {
 
     @Override
     public OutputData<Person> performModification(InputData<Person> input) {
+        Person storedPerson = personRepository.findById(input.getEntity()
+                                                             .getId())
+                                              .orElseThrow(() -> new NotFoundException(
+                                                      "Person %s was not found.", input.getEntity()
+                                                                                       .getId()
+                                                                                       .uuidValue()));
+        checkETag(storedPerson, input);
         Person person = input.getEntity();
+        person.setVersion(storedPerson.getVersion());
         person.setValidFrom(Instant.now());
         return new OutputData<>(personRepository.save(person));
 

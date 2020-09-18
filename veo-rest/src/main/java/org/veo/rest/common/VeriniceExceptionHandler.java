@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.rest.DeviatingIdException;
 
 @ControllerAdvice
@@ -56,6 +57,11 @@ public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ NotImplementedException.class })
     protected ResponseEntity<ApiResponseBody> handle(NotImplementedException exception) {
         return handle(exception, HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @ExceptionHandler(ETagMismatchException.class)
+    protected ResponseEntity<ApiResponseBody> handle(ETagMismatchException exception) {
+        return handle(exception, HttpStatus.PRECONDITION_FAILED);
     }
 
     private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {

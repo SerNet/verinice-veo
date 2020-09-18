@@ -19,8 +19,11 @@ package org.veo.core.usecase.group;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
 import lombok.Value;
@@ -57,6 +60,7 @@ public abstract class UpdateGroupUseCase<R>
         @Valid
         ModelGroup<?> group;
         Client authenticatedClient;
+        String eTag;
 
     }
 
@@ -66,5 +70,16 @@ public abstract class UpdateGroupUseCase<R>
         @Valid
         ModelGroup<?> group;
 
+    }
+
+    protected void checkETag(EntityLayerSupertype storedElement, InputData input) {
+        if (!ETag.matches(storedElement.getId()
+                                       .uuidValue(),
+                          storedElement.getVersion(), input.getETag())) {
+            throw new ETagMismatchException(
+                    String.format("The eTag does not match for the group with the ID %s",
+                                  storedElement.getId()
+                                               .uuidValue()));
+        }
     }
 }

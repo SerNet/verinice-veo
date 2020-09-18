@@ -38,7 +38,6 @@ import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.NameAbleDto;
-import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -53,7 +52,6 @@ import org.veo.core.entity.NameAble;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.Versioned;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
 import org.veo.core.entity.groups.DocumentGroup;
@@ -81,7 +79,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createPerson(key, source.getName(), null);
         target.setId(key);
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -107,7 +104,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createPersonGroup();
         target.setId(key);
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -139,8 +135,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createAsset(key, source.getName(), null);
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -166,7 +160,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createAssetGroup();
         target.setId(key);
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -198,7 +191,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createProcess(key, source.getName(), null);
         target.setId(key);
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -224,8 +216,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createProcessGroup();
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -257,8 +247,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDocument(key, source.getName(), null);
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -284,8 +272,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDocumentGroup();
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -317,8 +303,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createControl(key, source.getName(), null);
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -344,8 +328,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createControlGroup();
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
@@ -377,8 +359,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createClient(key, source.getName());
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         target.setName(source.getName());
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(), e -> e.toEntity(tcontext)));
@@ -400,8 +380,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDomain(key, source.getName());
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
@@ -423,8 +401,6 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createUnit(key, source.getName(), null);
         target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target, key);
         mapNameAbleProperties(source, target);
         context.put(classKey, target);
 
@@ -486,11 +462,6 @@ public final class DtoToEntityTransformer {
                       return link;
                   })
                   .collect(Collectors.toSet());
-    }
-
-    private static void mapVersionedProperties(VersionedDto source, Versioned target,
-            Key<UUID> key) {
-        // target.setValidFrom(Instant.parse(source.getValidFrom()));
     }
 
     private static void mapNameAbleProperties(NameAbleDto source, NameAble target) {

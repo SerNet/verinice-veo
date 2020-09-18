@@ -33,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,6 +61,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -149,15 +152,23 @@ public class UnitController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullUnitDto.class))),
             @ApiResponse(responseCode = "404", description = "Unit not found") })
-    public @Valid CompletableFuture<FullUnitDto> getUnit(
+    public @Valid CompletableFuture<ResponseEntity<FullUnitDto>> getUnit(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
 
-        return useCaseInteractor.execute(getUnitUseCase, new GetUnitUseCase.InputData(
-                Key.uuidFrom(id), getAuthenticatedClient(auth)), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-                    return FullUnitDto.from(output.getUnit(), tcontext);
-                });
+        CompletableFuture<FullUnitDto> unitFuture = useCaseInteractor.execute(getUnitUseCase,
+                                                                              new GetUnitUseCase.InputData(
+                                                                                      Key.uuidFrom(id),
+                                                                                      getAuthenticatedClient(auth)),
+                                                                              output -> {
+                                                                                  EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
+                                                                                  return FullUnitDto.from(output.getUnit(),
+                                                                                                          tcontext);
+                                                                              });
+        return unitFuture.thenApply(unitDto -> ResponseEntity.ok()
+                                                             .eTag(ETag.from(unitDto.getId(),
+                                                                             unitDto.getVersion()))
+                                                             .body(unitDto));
     }
 
     // TODO: veo-279 use the complete dto
@@ -193,6 +204,7 @@ public class UnitController extends AbstractEntityController {
     // @ApiResponse(responseCode = "404", description = "Unit not found") })
     public CompletableFuture<FullUnitDto> updateUnit(
             @Parameter(required = false, hidden = true) Authentication auth,
+            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @RequestBody FullUnitDto unitDto) {
 
         DtoToEntityContext tcontext = referenceResolver.loadIntoContext(getAuthenticatedClient(auth),
@@ -200,7 +212,7 @@ public class UnitController extends AbstractEntityController {
 
         return useCaseInteractor.execute(putUnitUseCase,
                                          new UpdateUnitUseCase.InputData(unitDto.toEntity(tcontext),
-                                                 getAuthenticatedClient(auth)),
+                                                 getAuthenticatedClient(auth), eTag),
                                          output -> FullUnitDto.from(output.getUnit(),
                                                                     EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
     }

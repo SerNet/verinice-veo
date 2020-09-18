@@ -43,4 +43,10 @@ public class RestApiResponse {
         return ResponseEntity.noContent()
                              .build();
     }
+
+    public static ResponseEntity<ApiResponseBody> badRequest() {
+        return ResponseEntity.badRequest()
+                             .build();
+    }
+
 }

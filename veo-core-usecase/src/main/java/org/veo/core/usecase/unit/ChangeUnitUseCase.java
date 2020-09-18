@@ -25,6 +25,8 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
@@ -58,6 +60,7 @@ public abstract class ChangeUnitUseCase<R>
         return unitRepository.findById(input.getChangedUnit()
                                             .getId())
                              .map(u -> checkSameClient(u, input))
+                             .map(u -> checkETag(u, input))
                              .map(u -> update(u, input))
                              .map(u -> save(u, input))
                              .map(this::output)
@@ -105,11 +108,24 @@ public abstract class ChangeUnitUseCase<R>
         return storedUnit;
     }
 
+    private Unit checkETag(Unit storedUnit, InputData input) {
+        if (!ETag.matches(storedUnit.getId()
+                                    .uuidValue(),
+                          storedUnit.getVersion(), input.getETag())) {
+            throw new ETagMismatchException(
+                    String.format("The eTag does not match for the unit with the ID %s",
+                                  storedUnit.getId()
+                                            .uuidValue()));
+        }
+        return storedUnit;
+    }
+
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
         Unit changedUnit;
         Client client;
+        String eTag;
     }
 
     @Valid

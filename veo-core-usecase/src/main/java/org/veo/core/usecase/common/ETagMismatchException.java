@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 Jochen Kemnade.
+ * Copyright (c) 2020 Daniel Murygin.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,25 +14,15 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest;
+package org.veo.core.usecase.common;
 
-import javax.annotation.PostConstruct;
+/**
+ * This exception is thrown if a difference is found between two ETags.
+ */
+public class ETagMismatchException extends RuntimeException {
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-
-import org.veo.core.usecase.common.ETag;
-
-@Configuration
-@ComponentScan("org.veo")
-public class VeoRestConfiguration {
-
-    @Value("${veo.etag.salt}")
-    private String eTagSalt;
-
-    @PostConstruct
-    public void configureETagSalt() {
-        ETag.setSalt(eTagSalt);
+    public ETagMismatchException(String message) {
+        super(message);
     }
+
 }

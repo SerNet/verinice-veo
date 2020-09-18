@@ -43,7 +43,9 @@ public class PutGroupUseCase<R> extends UpdateGroupUseCase<R> {
             throw new NotFoundException("Group %s was not found.", group.getId()
                                                                         .uuidValue());
         }
-
+        checkETag(existingGroup.get(), input);
+        group.setVersion(existingGroup.get()
+                                      .getVersion());
         Client authenticatedClient = input.getAuthenticatedClient();
         checkSameClient(authenticatedClient, (EntityLayerSupertype) existingGroup.get());
 

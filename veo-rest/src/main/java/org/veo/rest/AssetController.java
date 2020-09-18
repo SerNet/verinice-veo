@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
@@ -45,6 +46,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,6 +69,7 @@ import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
+import org.veo.core.usecase.common.ETag;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ResourceTypeMap;
@@ -147,18 +150,26 @@ public class AssetController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullAssetDto.class))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public @Valid CompletableFuture<FullAssetDto> getAsset(
+    public @Valid CompletableFuture<ResponseEntity<FullAssetDto>> getAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
 
-        return useCaseInteractor.execute(getAssetUseCase,
-                                         new GetAssetUseCase.InputData(Key.uuidFrom(id), client),
-                                         output -> {
-                                             EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-                                             return FullAssetDto.from(output.getAsset(), tcontext);
-                                         });
+        CompletableFuture<FullAssetDto> assetFuture = useCaseInteractor.execute(getAssetUseCase,
+                                                                                new GetAssetUseCase.InputData(
+                                                                                        Key.uuidFrom(id),
+                                                                                        client),
+                                                                                output -> {
+                                                                                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
+                                                                                    return FullAssetDto.from(output.getAsset(),
+                                                                                                             tcontext);
+                                                                                });
+
+        return assetFuture.thenApply(assetDto -> ResponseEntity.ok()
+                                                               .eTag(ETag.from(assetDto.getId(),
+                                                                               assetDto.getVersion()))
+                                                               .body(assetDto));
     }
 
     @PostMapping()
@@ -190,6 +201,7 @@ public class AssetController extends AbstractEntityController {
             @ApiResponse(responseCode = "404", description = "Asset not found") })
     public CompletableFuture<FullAssetDto> updateAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
+            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
         applyId(id, assetDto);
         return useCaseInteractor.execute(updateAssetUseCase,
@@ -201,7 +213,7 @@ public class AssetController extends AbstractEntityController {
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  assetDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Asset>(
-                                                         assetDto.toEntity(tcontext), client);
+                                                         assetDto.toEntity(tcontext), client, eTag);
                                              }
                                          }
 
