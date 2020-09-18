@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.jpa.AssetDataRepository
@@ -24,17 +27,24 @@ import org.veo.persistence.entity.jpa.groups.AssetGroupData
 
 class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
 
+    public static final String TESTCLIENT_UUID = "274af105-8d21-4f07-8019-5c4573d503e5"
+
     @Autowired
     AssetDataRepository assetRepository
 
     @Autowired
     UnitDataRepository unitRepository
 
-    UnitData owner0;
-    UnitData owner1;
-    UnitData owner2;
+    @PersistenceContext
+    private EntityManager entityManager
+
+    UnitData owner0
+    UnitData owner1
+    UnitData owner2
 
     def setup() {
+
+
         owner0 = unitRepository.save(new UnitData(
                 dbId: UUID.randomUUID().toString(),
                 name: "owner 0"
@@ -72,7 +82,9 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         def result = assetRepository.findByUnits([owner0.dbId, owner1.dbId] as Set)
 
         then: "only the first two owners' assets are returned"
-        with(result.sort {it.name}) {
+        with(result.sort {
+            it.name
+        }) {
             size() == 2
             it[0].name == "asset 0"
             it[1].name == "asset 1"
@@ -122,7 +134,9 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         def result = assetRepository.findGroupsByUnits([owner0.dbId, owner1.dbId] as Set)
 
         then: "only the first two owners' assets are returned"
-        with(result.sort {it.name}) {
+        with(result.sort {
+            it.name
+        }) {
             size() == 2
             it[0].name == "group 0"
             it[1].name == "group 1"
@@ -148,5 +162,25 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         then: "only the group is returned"
         result.size() == 1
         result[0].name == "group"
+    }
+
+    def 'increment version id'() {
+        given: "one unit db ID"
+
+        def dbId = owner0.getDbId()
+
+        when: "load and save the asset"
+        UnitData unit = unitRepository.findById(dbId).get()
+
+        long versionBefore = unit.getVersion()
+        unit.setName("New name")
+        unitRepository.save(unit)
+        entityManager.flush()
+
+        unit = unitRepository.findById(dbId).get()
+
+        then: "version is incremented"
+        versionBefore == 0
+        unit.getVersion() == 1
     }
 }

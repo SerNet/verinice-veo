@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.rest
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -135,6 +138,16 @@ abstract class VeoRestMvcSpec extends VeoMvcSpec {
     private static def name(NameAble target) {
         if (target.name == null) {
             target.name = target.modelType + " " + target.id
+        }
+    }
+
+    static String getTextBetweenQuotes(String text) {
+        Pattern p = Pattern.compile("\"([^\"]*)\"")
+        Matcher m = p.matcher(text)
+        if (m.find()) {
+            return m.group(1)
+        } else {
+            return text
         }
     }
 }

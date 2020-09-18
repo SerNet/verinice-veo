@@ -34,6 +34,7 @@ import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.ProcessGroup
+import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -457,7 +458,10 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "the new group data is sent to the server"
-        def results = put("/groups/${id.uuidValue()}?type=Asset",request)
+        Map headers = [
+            'If-Match': ETag.from(assetGroup.id.uuidValue(), 1)
+        ]
+        def results = put("/groups/${id.uuidValue()}?type=Asset",request, headers)
 
         then: "the group is found"
         results.andExpect(status().isOk())
@@ -520,19 +524,23 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
                 name = "old name 1"
             })
         })
+        def uuid = Key.newUuid();
         def group2 = txTemplate.execute({
             assetRepository.save(new AssetGroupData().tap {
-                id = Key.newUuid()
+                id = uuid
                 owner = unit
                 name = "old name 2"
             })
         })
         when: "a put request tries to update group 1 using the ID of group 2"
+        Map headers = [
+            'If-Match': ETag.from(uuid.uuidValue(), 1)
+        ]
         put("/groups/${group2.id.uuidValue()}?type=Asset", [
             id: group1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: '/units/' + unit.id.uuidValue()]
-        ], false)
+        ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

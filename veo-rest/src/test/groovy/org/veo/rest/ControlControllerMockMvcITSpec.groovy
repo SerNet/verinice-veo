@@ -18,6 +18,7 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -26,7 +27,6 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomProperties
@@ -35,6 +35,7 @@ import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
 import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -76,6 +77,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -103,6 +105,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             Client c = clientRepository.save(client)
             unitRepository.save(unit)
         }
+        ETag.setSalt(salt)
     }
 
 
@@ -203,9 +206,15 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/controls/${control.id.uuidValue()}")
+        String expectedETag = DigestUtils.sha256Hex(control.id.uuidValue() + "_" + salt + "_" + Long.toString(control.getVersion()))
 
         then: "the control is found"
         results.andExpect(status().isOk())
+        and: "the eTag is set"
+        String eTag = results.andReturn().response.getHeader("ETag")
+        eTag != null
+        getTextBetweenQuotes(eTag).equals(expectedETag)
+        and:
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test control-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
@@ -305,7 +314,10 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
 
 
         when: "a request is made to the server"
-        def results = put("/controls/${control.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(control.id.uuidValue(), 1)
+        ]
+        def results = put("/controls/${control.id.uuidValue()}", request, headers)
 
         then: "the control is found"
         results.andExpect(status().isOk())
@@ -367,7 +379,10 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/controls/${control.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(control.id.uuidValue(), 1)
+        ]
+        def results = put("/controls/${control.id.uuidValue()}", request, headers)
 
         then: "the control is found"
         results.andExpect(status().isOk())
@@ -393,6 +408,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         control.setDomains([domain1] as Set)
         control.owner = unit
         control.name = "c-1"
+        control.version = 1
 
         control = txTemplate.execute {
             controlRepository.save(control)
@@ -427,7 +443,10 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/controls/${control.id.uuidValue()}", request, false)
+        Map headers = [
+            'If-Match': ETag.from(id.uuidValue(), 1)
+        ]
+        def results = put("/controls/${control.id.uuidValue()}", request, headers, false)
 
         then: "the data is rejected"
         HttpMessageNotReadableException ex = thrown()
@@ -477,11 +496,14 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
             }))
         })
         when: "a put request tries to update control 1 using the ID of control 2"
+        Map headers = [
+            'If-Match': ETag.from(control1.id.uuidValue(), 1)
+        ]
         put("/controls/${control2.id.uuidValue()}", [
             id: control1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: '/units/' + unit.id.uuidValue()]
-        ], false)
+        ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

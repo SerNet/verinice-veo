@@ -20,6 +20,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData
+import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.repository.ProcessRepository
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
@@ -34,12 +35,15 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         process.getId() >> id
         process.getName()>> "Updated process"
         process.getOwner() >> existingUnit
+        process.version >> 0
 
         when:
-        def output = usecase.execute(new InputData(process, existingClient))
+        def eTag = ETag.from(process.getId().uuidValue(), 0)
+        def output = usecase.execute(new InputData(process, existingClient, eTag))
         then:
 
         1 * processRepository.save( _) >> process
+        1 * processRepository.findById(_) >> Optional.of(process)
         output.entity != null
         output.entity.name == "Updated process"
     }

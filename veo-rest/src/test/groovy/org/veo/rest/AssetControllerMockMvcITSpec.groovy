@@ -18,6 +18,7 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -31,6 +32,7 @@ import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -70,6 +72,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -101,6 +104,7 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
             unitRepository.save(unit)
             unitRepository.save(unit2)
         }
+        ETag.setSalt(salt)
     }
 
     @WithUserDetails("user@domain.example")
@@ -151,9 +155,14 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/assets/${asset.id.uuidValue()}")
+        String expectedETag = DigestUtils.sha256Hex(asset.id.uuidValue() + "_" + salt + "_" + Long.toString(asset.getVersion()))
 
         then: "the asset is found"
         results.andExpect(status().isOk())
+        and: "the eTag is set"
+        String eTag = results.andReturn().response.getHeader("ETag")
+        eTag != null
+        getTextBetweenQuotes(eTag).equals(expectedETag)
         and: "the response contains the expected data"
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result == [
@@ -276,7 +285,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         asset.setCustomAspects([simpleProps] as Set)
 
         CustomLink link = entityFactory.createCustomLink("requires", asset2, asset)
-        link.setVersion(1L)
         link.setType("mypreciouslink")
         link.setApplicableTo(["Asset"] as Set)
         asset.setLinks([link] as Set)
@@ -287,9 +295,13 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/assets/${asset.id.uuidValue()}")
-
+        String expectedETag = DigestUtils.sha256Hex(asset.id.uuidValue() + "_" + salt + "_" + Long.toString(asset.getVersion()))
         then: "the asset is found"
         results.andExpect(status().isOk())
+        and:
+        String eTag = results.andReturn().response.getHeader("ETag")
+        eTag != null
+        getTextBetweenQuotes(eTag).equals(expectedETag)
         and: "the response contains the expected link"
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test asset-1'
@@ -460,7 +472,10 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/assets/${asset.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(id.uuidValue(), 1)
+        ]
+        def results = put("/assets/${asset.id.uuidValue()}", request, headers)
 
         then: "the asset is found"
         results.andExpect(status().isOk())
@@ -521,7 +536,11 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/assets/${asset.id.uuidValue()}",request)
+        Map headers = [
+            'If-Match': ETag.from(id.uuidValue(), 1)
+        ]
+
+        def results = put("/assets/${asset.id.uuidValue()}",request, headers)
 
         then: "the asset is found"
         results.andExpect(status().isOk())
@@ -612,11 +631,14 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
             }))
         })
         when: "a put request tries to update asset 1 using the ID of asset 2"
+        Map headers = [
+            'If-Match': ETag.from(asset1.id.uuidValue(), 1)
+        ]
         put("/assets/${asset2.id.uuidValue()}", [
             id: asset1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: '/units/' + unit.id.uuidValue()]
-        ], false)
+        ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

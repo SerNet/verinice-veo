@@ -26,13 +26,13 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 
-import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -74,6 +74,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -178,7 +179,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test process'
-        result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -215,7 +216,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/processes/${process.id.uuidValue()}", request, false)
+        Map headers = [
+            'If-Match': ETag.from(process.id.uuidValue(), 1)
+        ]
+        def results = put("/processes/${process.id.uuidValue()}", request, headers, false)
 
         then: "the process is not updated"
         MethodArgumentNotValidException ex = thrown()
@@ -259,7 +263,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/processes/${process.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(id.uuidValue(), 1)
+        ]
+        def results = put("/processes/${process.id.uuidValue()}", request, headers)
 
         then: "the process is found"
         results.andExpect(status().isOk())
@@ -349,7 +356,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/processes/${process.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(id.uuidValue(), 1)
+        ]
+        def results = put("/processes/${process.id.uuidValue()}", request, headers)
 
         then: "the process is found"
         results.andExpect(status().isOk())
@@ -428,7 +438,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
                 ]
             ]
         ]
-        def results = put("/processes/${process.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(process.id.uuidValue(), 1)
+        ]
+        def results = put("/processes/${process.id.uuidValue()}", request, headers)
 
         then: "the process is found"
         results.andExpect(status().isOk())
@@ -522,7 +535,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/processes/${createProcessResult.resourceId}", putProcessRequest)
+        Map headers = [
+            'If-Match': ETag.from(createProcessResult.resourceId, 1)
+        ]
+        def results = put("/processes/${createProcessResult.resourceId}", putProcessRequest, headers)
 
         then: "the process is found"
         results.andExpect(status().isOk())
@@ -687,11 +703,14 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
             }))
         })
         when: "a put request tries to update process 1 using the ID of process 2"
+        Map headers = [
+            'If-Match': ETag.from(process1.id.uuidValue(), 1)
+        ]
         put("/processes/${process2.id.uuidValue()}", [
             id: process1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: '/units/' + unit.id.uuidValue()]
-        ], false)
+        ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

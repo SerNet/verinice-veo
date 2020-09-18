@@ -18,6 +18,7 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -30,6 +31,7 @@ import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -69,6 +71,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -97,6 +100,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
             Client c = clientRepository.save(client)
             unitRepository.save(unit)
         }
+        ETag.setSalt(salt)
     }
 
     @WithUserDetails("user@domain.example")
@@ -142,9 +146,15 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/persons/${person.id.uuidValue()}")
+        String expectedETag = DigestUtils.sha256Hex(person.id.uuidValue() + "_" + salt + "_" + Long.toString(person.getVersion()))
 
         then: "the person is found"
         results.andExpect(status().isOk())
+        and: "the eTag is set"
+        String eTag = results.andReturn().response.getHeader("ETag")
+        eTag != null
+        getTextBetweenQuotes(eTag).equals(expectedETag)
+        and:
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test person-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
@@ -217,7 +227,10 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
 
 
         when: "a request is made to the server"
-        def results = put("/persons/${person.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(person.id.uuidValue(), 1)
+        ]
+        def results = put("/persons/${person.id.uuidValue()}", request, headers)
 
         then: "the person is found"
         results.andExpect(status().isOk())
@@ -279,7 +292,10 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = put("/persons/${person.id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(person.id.uuidValue(), 1)
+        ]
+        def results = put("/persons/${person.id.uuidValue()}", request, headers)
 
         then: "the person is found"
         results.andExpect(status().isOk())
@@ -344,11 +360,14 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
             }))
         })
         when: "a put request tries to update person 1 using the ID of person 2"
+        Map headers = [
+            'If-Match': ETag.from(person1.id.uuidValue(), 1)
+        ]
         put("/persons/${person2.id.uuidValue()}", [
             id: person1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: '/units/' + unit.id.uuidValue()]
-        ], false)
+        ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

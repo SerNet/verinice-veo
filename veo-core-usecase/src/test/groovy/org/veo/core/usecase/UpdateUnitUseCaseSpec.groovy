@@ -21,6 +21,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.transform.TransformTargetToEntityContext
+import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.ChangeUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase
@@ -43,6 +44,8 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         nUnit.getParent() >> existingUnit
         nUnit.getName() >> "New unit"
         nUnit.getId() >> id
+        nUnit.getDbId() >> id.uuidValue()
+        nUnit.getVersion() >> 0
 
         Unit cUnit = Mock()
         //        cUnit.getClient() >> existingClient
@@ -50,8 +53,8 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         cUnit.getParent() >> existingUnit
         cUnit.getName() >>  "Name changed"
         cUnit.getId() >> id
-
-
+        cUnit.getDbId() >> id.uuidValue()
+        cUnit.getVersion() >> 0
 
         and: "a parent unit in an existing client"
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
@@ -60,13 +63,14 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         def data2EntityContext = Stub(TransformTargetToEntityContext)
 
         when: "the use case to create a unit is executed"
-        def usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
-        def newUnit = usecase.execute(input).getUnit()
+        def createUseCase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
+        def newUnit = createUseCase.execute(input).getUnit()
 
         and: "the unit is changed and updated"
         newUnit.setName("Name changed")
-        def usecase2 = new UpdateUnitUseCase(unitRepository)
-        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient))
+        def eTagNewUnit = ETag.from(this.existingUnit.getId().uuidValue(), 0)
+        def updateUseCase = new UpdateUnitUseCase(unitRepository)
+        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient, eTagNewUnit))
 
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
@@ -106,7 +110,8 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
         def usecase2 = new UpdateUnitUseCase(unitRepository)
-        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient))
+        def eTag = ETag.from(newUnit.getId().uuidValue(), newUnit.getVersion())
+        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient, eTag))
 
         then: "a unit was retrieved"
         clientRepository.findById(_) >> Optional.of(this.existingClient)

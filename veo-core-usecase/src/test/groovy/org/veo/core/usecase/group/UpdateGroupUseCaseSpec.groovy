@@ -20,6 +20,7 @@ import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
+import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.group.UpdateGroupUseCase.InputData
 
 import spock.lang.Unroll
@@ -37,11 +38,13 @@ class UpdateGroupUseCaseSpec extends UseCaseSpec {
         group.getOwner() >> existingUnit
         group.getId() >> groupId
         group.name >> "Updated $type group"
+        group.version >> 0
 
         repositoryProvider.getRepositoryFor(_) >> repository
 
         when:
-        def output = usecase.execute(new InputData(group, existingClient))
+        def eTag = ETag.from(group.getId().uuidValue(), 0)
+        def output = usecase.execute(new InputData(group, existingClient, eTag))
         then:
 
         //        1 * targetToEntityContext.partialDomain() >> targetToEntityContext

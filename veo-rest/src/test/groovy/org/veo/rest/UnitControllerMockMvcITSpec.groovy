@@ -32,6 +32,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.UnitData
@@ -218,7 +219,11 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
 
-        def results = put("/units/${id.uuidValue()}", request)
+        Map headers = [
+            'If-Match': ETag.from(id.uuidValue(), 0)
+        ]
+
+        def results = put("/units/${id.uuidValue()}", request, headers)
 
         then: "the unit is updated and a status code returned"
         results.andExpect(status().isOk())
@@ -248,7 +253,11 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
 
-        def results1 = put("/units/${id.uuidValue()}", request1)
+        Map headers = [
+            'If-Match': ETag.from(id.uuidValue(), 0)
+        ]
+
+        def results1 = put("/units/${id.uuidValue()}", request1, headers)
 
         and: "the unit is updated secondly by changing the name and removing a domain"
         Map request2 = [
@@ -258,7 +267,11 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             domains: []]
 
-        def results2 = put("/units/${id.uuidValue()}", request2)
+        headers = [
+            'If-Match': ETag.from(id.uuidValue(), 1)
+        ]
+
+        def results2 = put("/units/${id.uuidValue()}", request2, headers)
 
         then: "the unit was correctly modified the first time"
         results1.andExpect(status().isOk())
