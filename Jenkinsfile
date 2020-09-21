@@ -190,10 +190,10 @@ pipeline {
         stage('Trigger Deployment') {
             agent any
             when {
-                branch 'master'
+                anyOf { branch 'master'; branch 'develop' }
             }
             steps {
-                build job: 'verinice-veo-deployment/master'
+                build job: 'verinice-veo-deployment/master', parameters: [string(name: 'environment', value: ['master':'k8s', 'develop':'k8s-develop'][env.GIT_BRANCH])]
             }
         }
     }
