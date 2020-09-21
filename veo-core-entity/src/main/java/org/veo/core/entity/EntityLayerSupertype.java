@@ -22,7 +22,7 @@ import java.util.Set;
  * The abstract base model class. Used to prevent duplicating common methods in
  * model layer objects.
  */
-public interface EntityLayerSupertype extends NameAble, ModelObject {
+public interface EntityLayerSupertype extends Nameable, ModelObject {
 
     /**
      * Add the given Domain to the collection domains.

@@ -27,7 +27,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
-import org.veo.adapter.presenter.api.dto.NameAbleDto;
+import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto;
@@ -53,7 +53,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.NameAble;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
@@ -131,7 +131,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
 
         target.setDomains(convertReferenceSet(source.getDomains(),
@@ -167,7 +167,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         // if (source.isGhost()) {
         // return target;
@@ -201,7 +201,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
 
         target.setDomains(convertReferenceSet(source.getDomains(),
@@ -236,7 +236,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         // if (source.isGhost()) {
         // return target;
@@ -270,7 +270,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
 
         target.setDomains(convertReferenceSet(source.getDomains(),
@@ -303,7 +303,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         // if (source.isGhost()) {
         // return target;
@@ -337,7 +337,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
 
         target.setDomains(convertReferenceSet(source.getDomains(),
@@ -371,7 +371,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         // if (source.isGhost()) {
         // return target;
@@ -405,7 +405,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
 
         target.setDomains(convertReferenceSet(source.getDomains(),
@@ -441,7 +441,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         // if (source.isGhost()) {
         // return target;
@@ -502,7 +502,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
         // if (source.isGhost()) {
@@ -527,7 +527,7 @@ public final class EntityToDtoTransformer {
         target.setId(key);
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         // if (source.isGhost()) {
         // return target;
@@ -554,7 +554,7 @@ public final class EntityToDtoTransformer {
         var target = new CustomLinkDto();
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         // if (source.isGhost()) {
         // return target;
         // }
@@ -585,7 +585,7 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    private static void mapNameAbleProperties(NameAble source, NameAbleDto target) {
+    private static void mapNameableProperties(Nameable source, NameableDto target) {
         target.setName(source.getName());
         target.setAbbreviation(source.getAbbreviation());
         target.setDescription(source.getDescription());

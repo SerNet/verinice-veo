@@ -38,7 +38,7 @@ import lombok.ToString;
 @Entity(name = "unit")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class UnitData extends BaseModelObjectData implements NameAbleData, Unit {
+public class UnitData extends BaseModelObjectData implements NameableData, Unit {
 
     @NotNull
     @Column(name = "name")

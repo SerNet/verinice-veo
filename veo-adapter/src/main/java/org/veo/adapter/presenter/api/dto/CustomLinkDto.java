@@ -44,7 +44,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomLinkDto extends CustomPropertiesDto implements NameAbleDto {
+public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the CustomLink.",

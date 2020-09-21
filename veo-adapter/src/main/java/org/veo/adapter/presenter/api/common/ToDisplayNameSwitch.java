@@ -17,13 +17,13 @@
 package org.veo.adapter.presenter.api.common;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.NameAble;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.util.ModelSwitch;
 
 public class ToDisplayNameSwitch extends ModelSwitch<String> {
 
     @Override
-    public String caseNameAble(NameAble object) {
+    public String caseNameable(Nameable object) {
         return object.getDisplayName();
     }
 

@@ -31,7 +31,7 @@ import lombok.EqualsAndHashCode;
 
 @Entity(name = "customlink")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomLinkData extends CustomPropertiesData implements NameAbleData, CustomLink {
+public class CustomLinkData extends CustomPropertiesData implements NameableData, CustomLink {
 
     @NotNull
     @Column(name = "name")

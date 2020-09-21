@@ -26,7 +26,7 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.NameAble
+import org.veo.core.entity.Nameable
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
@@ -135,7 +135,7 @@ abstract class VeoRestMvcSpec extends VeoMvcSpec {
         }
     }
 
-    private static def name(NameAble target) {
+    private static def name(Nameable target) {
         if (target.name == null) {
             target.name = target.modelType + " " + target.id
         }
