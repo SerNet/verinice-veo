@@ -81,7 +81,8 @@ abstract public class AbstractUnitDto implements NameableDto, VersionedDto {
     @JsonIgnore
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        list.add(getClient());
+        Optional.ofNullable(getClient())
+                .ifPresent(list::add);
         Optional.ofNullable(getParent())
                 .ifPresent(list::add);
         list.addAll(getDomains());

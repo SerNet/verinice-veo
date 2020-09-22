@@ -24,6 +24,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.entity.Unit
 import org.veo.core.usecase.repository.Repository
 import org.veo.core.usecase.repository.RepositoryProvider
 
@@ -52,11 +53,16 @@ class ModelObjectReferenceResolverSpec extends Specification {
                 Mock(Domain)
             ]
         }
+        def unit = Mock(Unit) {
+            it.client >> client
+        }
         def asset = Mock(Asset) {
             it.id >> Key.newUuid()
+            it.owner >> unit
         }
         def person = Mock(Person) {
             it.id >> Key.newUuid()
+            it.owner >> unit
         }
 
         when: "resolving references to the model objects"

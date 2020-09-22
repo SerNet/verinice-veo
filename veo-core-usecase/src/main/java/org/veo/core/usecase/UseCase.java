@@ -61,8 +61,8 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
      * Execute the usecase with the input, use the result resultMapper to produce a
      * R.
      *
-     * Override this Method and annotate it with @Transactional in the concrete
-     * usescase when you need to transform only the output.
+     * Override this Method and annotate it with @Transactional in the concrete use
+     * case when you need to transform only the output.
      */
     @Transactional(Transactional.TxType.REQUIRED)
     public R executeAndTransformResult(I input, Function<O, R> resultMapper) {
@@ -74,10 +74,6 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
         checkSameClient(authenticatedClient, unit, entity);
     }
 
-    // TODO VEO-124 this check should always be done implicitly by UnitImpl or
-    // ModelValidator. Without this check, it would be possible to overwrite
-    // objects from other clients with our own clientID, thereby hijacking these
-    // objects!
     protected static void checkSameClient(Client authenticatedClient, Unit unit,
             ModelObject elementToBeModified) {
         Client client = unit.getClient();

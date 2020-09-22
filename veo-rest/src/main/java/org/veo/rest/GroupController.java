@@ -18,7 +18,6 @@ package org.veo.rest;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer.transformGroup2Dto;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
@@ -30,6 +29,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -257,26 +257,21 @@ public class GroupController extends AbstractEntityController {
                                                                                                            schema = @Schema(implementation = FullGroupDto.class))) String requestBody,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type)
             throws JsonProcessingException {
-        Client client = getAuthenticatedClient(auth);
         Class dtoClass = getFullDtoClass(type);
         var groupDto = (FullEntityLayerSupertypeGroupDto<?>) objectMapper.readValue(requestBody,
                                                                                     dtoClass);
         applyId(uuid, groupDto);
-        DtoToEntityContext fromDtoContext = referenceResolver.loadIntoContext(client,
-                                                                              groupDto.getReferences());
-        EntityToDtoContext toDtoContext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-        ModelGroup<?> group = groupDto.toEntity(fromDtoContext);
         return useCaseInteractor.execute(putGroupUseCase,
-                                         new UpdateGroupUseCase.InputData(group, client, eTag),
-                                         output -> // TODO:
-                                         // do
-                                         // we
-                                         // need
-                                         // the
-                                         // transform
-                                         // group
-                                         // funtion
-                                         transformGroup2Dto(toDtoContext, output.getGroup()));
+                                         (Supplier<UpdateGroupUseCase.InputData>) () -> {
+                                             Client client = getAuthenticatedClient(auth);
+                                             DtoToEntityContext context = referenceResolver.loadIntoContext(client,
+                                                                                                            groupDto.getReferences());
+                                             return new UpdateGroupUseCase.InputData(
+                                                     groupDto.toEntity(context), client, eTag);
+                                         }, output -> {
+                                             return FullEntityLayerSupertypeGroupDto.from(output.getGroup(),
+                                                                                          EntityToDtoContext.getCompleteTransformationContext(referenceAssembler));
+                                         });
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

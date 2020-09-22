@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -63,6 +64,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.unit.ChangeUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -207,12 +209,14 @@ public class UnitController extends AbstractEntityController {
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @RequestBody FullUnitDto unitDto) {
 
-        DtoToEntityContext tcontext = referenceResolver.loadIntoContext(getAuthenticatedClient(auth),
-                                                                        Collections.emptyList());
-
         return useCaseInteractor.execute(putUnitUseCase,
-                                         new UpdateUnitUseCase.InputData(unitDto.toEntity(tcontext),
-                                                 getAuthenticatedClient(auth), eTag),
+                                         (Supplier<ChangeUnitUseCase.InputData>) () -> {
+                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(getAuthenticatedClient(auth),
+                                                                                                             unitDto.getReferences());
+                                             return new UpdateUnitUseCase.InputData(
+                                                     unitDto.toEntity(tcontext),
+                                                     getAuthenticatedClient(auth), eTag);
+                                         },
                                          output -> FullUnitDto.from(output.getUnit(),
                                                                     EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
     }

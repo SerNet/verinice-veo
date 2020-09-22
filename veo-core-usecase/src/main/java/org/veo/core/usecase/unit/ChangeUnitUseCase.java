@@ -78,7 +78,7 @@ public abstract class ChangeUnitUseCase<R>
         // returned after the save.
         // i.e. to exclude all references and collections:
         // "dataToEntityContext.partialUnit();"
-        unit.setClient(input.getClient());
+        unit.setClient(input.getAuthenticatedClient());
         ModelUtils.incrementVersion(unit);
         return this.unitRepository.save(unit);
     }
@@ -87,12 +87,15 @@ public abstract class ChangeUnitUseCase<R>
         return new OutputData(unit);
     }
 
-    // TODO VEO-124 this check should always be done implicitly by UnitImpl or
-    // ModelValidator. Without this check, it would be possible to overwrite
-    // objects from other clients with our own clientID, thereby hijacking these
-    // objects!
+    /**
+     * Without this check, it would be possible to overwrite objects from other
+     * clients with our own clientID, thereby hijacking these objects!
+     *
+     * @throws ClientBoundaryViolationException,
+     *             if there is another client in the input than in the stored unit
+     */
     private Unit checkSameClient(Unit storedUnit, InputData input) {
-        log.info("Comparing clients {} and {}", input.getClient()
+        log.info("Comparing clients {} and {}", input.getAuthenticatedClient()
                                                      .getId()
                                                      .uuidValue(),
                  storedUnit.getClient()
@@ -124,7 +127,7 @@ public abstract class ChangeUnitUseCase<R>
     @Value
     public static class InputData implements UseCase.InputData {
         Unit changedUnit;
-        Client client;
+        Client authenticatedClient;
         String eTag;
     }
 
