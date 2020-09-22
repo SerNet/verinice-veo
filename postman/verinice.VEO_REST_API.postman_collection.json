@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "7ed014f4-65a6-4dd2-9d35-acea99c66f25",
+    "_postman_id": "43d0a18e-1631-4124-8a15-c84edd1c5eb4",
     "name": "verinice.VEO REST API",
     "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -15,7 +15,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "2a170e06-c3cb-4d0f-9a46-ce511d019603",
+                "id": "69edb44e-a7da-4b87-b05f-55927d2af355",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -33,7 +33,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "65354a18-0e63-40a5-a5ac-c80067d00d45",
+                "id": "d619b1ae-b51d-4d06-b831-4129d8d69d79",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -98,85 +98,12 @@
           ]
         },
         {
-          "name": "Load all units",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "122b9682-8f40-44a0-b762-59686f649ffd",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"One unit is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
-                  "});",
-                  "pm.test(\"The created unit is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('unitId'));",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('unitName'));",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/units",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "units"
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "Units loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "[\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n },\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n }\n]"
-            }
-          ]
-        },
-        {
           "name": "Load the unit",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "03fcfbbc-66ef-49ef-853b-76958767bfef",
+                "id": "1366b020-d215-49e1-903d-12a710fc6dad",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -185,19 +112,7 @@
                   "pm.test(\"Returned unit has the correct values\", function () {",
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"unitId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "});",
-                  "var eTag = extractTextBetweenQuotes(pm.response.headers.get(\"ETag\"));",
-                  "pm.test(\"ETag header is a string\", function () {",
-                  "    pm.expect(eTag).to.be.a('string')",
-                  "});",
-                  "pm.collectionVariables.set(\"unitETag\", eTag);",
-                  "",
-                  "function extractTextBetweenQuotes(str){",
-                  "  const matches = str.match(/\"(.*?)\"/);",
-                  "  return matches",
-                  "    ? matches[1]",
-                  "    : str;",
-                  "}"
+                  "});"
                 ],
                 "type": "text/javascript"
               }
@@ -294,30 +209,23 @@
           ]
         },
         {
-          "name": "Update the unit",
+          "name": "Load all units",
           "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "3f783789-cd8c-4b3e-a0b2-fc2680ca98e6",
-                "exec": [
-                  "pm.collectionVariables.set(\"unitName\", \"Unit of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
-                ],
-                "type": "text/javascript"
-              }
-            },
             {
               "listen": "test",
               "script": {
-                "id": "4f82fe71-4237-4bb9-9272-c4b2435d337e",
+                "id": "d033a1b8-b2b6-4e74-8765-3adcd6f008f2",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
                   "});",
                   "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned unit has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"unitId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"unitName\"));",
+                  "pm.test(\"One unit is available\", function () {",
+                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "});",
+                  "pm.test(\"The created unit is returned\", function () {",
+                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('unitId'));",
+                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('unitName'));",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -325,178 +233,51 @@
             }
           ],
           "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{unitETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{unitId}}\",\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "GET",
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/units/:id",
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "units",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{unitId}}"
-                }
+                "units"
               ]
             }
           },
           "response": [
             {
-              "name": "default response",
+              "name": "Units loaded",
               "originalRequest": {
-                "method": "PUT",
+                "method": "GET",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"<add example here>\",\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
                 "url": {
-                  "raw": "{{baseUrl}}/units/:id",
+                  "raw": "{{baseUrl}}/units?parent=<string>",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
-                    "units",
-                    ":id"
+                    "units"
                   ],
-                  "variable": [
+                  "query": [
                     {
-                      "key": "id"
+                      "key": "parent",
+                      "value": "<string>"
                     }
                   ]
                 }
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "text",
+              "_postman_previewlanguage": "json",
               "header": [
                 {
                   "key": "Content-Type",
-                  "value": "*/*"
+                  "value": "application/json"
                 }
               ],
               "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Update the unit concurrently",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "d51e90ea-fa47-4d3b-b710-9823aa7542a4",
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "254afda2-06e0-4122-8b33-690f92b5fb55",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(412);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{unitETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{unitId}}\",\n    \"name\": \"{{unitName}}\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/units/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "units",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{unitId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"<add example here>\",\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
+              "body": "[\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n },\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n }\n]"
             }
           ]
         },
@@ -506,7 +287,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "ac98fb97-588d-4f3b-811d-91293c916369",
+                "id": "770669b7-d597-48a4-b9b0-364ae175850f",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -516,7 +297,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "217a026f-2c93-4cc1-9593-6f52cb15b472",
+                "id": "974b8474-0366-4673-b02f-b1246f4cd6a4",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -589,12 +370,127 @@
           ]
         },
         {
+          "name": "Load the asset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "6f963f9b-595b-4a24-b2b1-86e0f747326d",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returned asset has the correct values\", function () {",
+                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"assetId\"));",
+                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"assetName\"))",
+                  "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
+                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
+                  "",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/assets/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Asset loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+            }
+          ]
+        },
+        {
           "name": "Load all assets in the unit",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "41e1b413-f194-4bf0-8249-a770a7c56b3b",
+                "id": "84b3e43f-9698-43ab-b5c3-c581e33775e5",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -668,420 +564,12 @@
           ]
         },
         {
-          "name": "Load the asset",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "231d82fc-68ff-4af7-b7c0-39ab30d59535",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned asset has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"assetId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"assetName\"))",
-                  "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
-                  "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
-                  "",
-                  "});",
-                  "var eTag = extractTextBetweenQuotes(pm.response.headers.get(\"ETag\"));",
-                  "pm.test(\"ETag header is a string\", function () {",
-                  "    pm.expect(eTag).to.be.a('string')",
-                  "});",
-                  "pm.collectionVariables.set(\"assetETag\", eTag);",
-                  "",
-                  "function extractTextBetweenQuotes(str){",
-                  "  const matches = str.match(/\"(.*?)\"/);",
-                  "  return matches",
-                  "    ? matches[1]",
-                  "    : str;",
-                  "}",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/assets/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "assets",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{assetId}}",
-                  "description": "(Required) "
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Updates the asset",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "352213be-c578-40a9-9f57-68e90753a737",
-                "exec": [
-                  "pm.collectionVariables.set(\"assetName\", \"Asset of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "23a54ba0-bbaf-4487-afd5-d7bf06768146",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned asset has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"assetId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"assetName\"));",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "value": "{{assetETag}}",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/assets/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "assets",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{assetId}}",
-                  "description": "(Required) "
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Asset updated",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Update the asset concurrently",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "579d2faa-8680-4f97-ba57-136de5240068",
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "483521af-42e6-4c28-afa2-af320666c697",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(412);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{assetETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/assets/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "assets",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{assetId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "Asset updated",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
           "name": "Create a process that uses the asset",
           "event": [
             {
               "listen": "prerequest",
               "script": {
-                "id": "d24ae60d-ded9-48f2-b928-74edc049d7b0",
+                "id": "612d217a-3947-4179-851e-d87708358221",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -1091,7 +579,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "2bcc7334-e4b9-4a2c-ad12-8ef208d6d99e",
+                "id": "f10682de-0dbb-48ae-90b8-e136dc7f6fbf",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1164,12 +652,92 @@
           ]
         },
         {
+          "name": "Load the process",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "2056653d-4f69-49f3-a6a8-16889c04c17a",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returned process has the correct values\", function () {",
+                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"processId\"));",
+                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"processName\"))",
+                  "});",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/processes/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "processes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{processId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "default response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/processes/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "processes",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
           "name": "Load all processes in the unit",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "91a0ef5f-3534-42a5-91e6-e8f6fc548a8c",
+                "id": "372f70ec-6609-4709-8b0e-eca05088d709",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1243,309 +811,12 @@
           ]
         },
         {
-          "name": "Load the process",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "4823230e-f95d-45f9-a179-d9d0fcb41c48",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned process has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"processId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"processName\"))",
-                  "});",
-                  "var eTag = extractTextBetweenQuotes(pm.response.headers.get(\"ETag\"));",
-                  "pm.test(\"ETag header is a string\", function () {",
-                  "    pm.expect(eTag).to.be.a('string')",
-                  "});",
-                  "pm.collectionVariables.set(\"processETag\", eTag);",
-                  "",
-                  "function extractTextBetweenQuotes(str){",
-                  "  const matches = str.match(/\"(.*?)\"/);",
-                  "  return matches",
-                  "    ? matches[1]",
-                  "    : str;",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/processes/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "processes",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "{{processId}}",
-                  "description": "(Required) "
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Update the process",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "271c57a3-56ba-40ab-a4c3-9cab848e6b51",
-                "exec": [
-                  "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "355d3703-a8a7-485a-bf2e-6ed295701304",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned process has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"processId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"processName\"));",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{processETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{processId}}\",\n    \"name\": \"{{processName}}\",\n    \"description\": \"{{processName}} description\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"assets\": [\n    \t{\n\t        \"displayName\": \"{{assetName}}\",\n\t\t    \"targetUri\": \"/assets/{{assetId}}\"\n    \t}\t\n\t]\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/processes/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "processes",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{processId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Update the process concurrently",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "d9552ab2-0870-4c28-8dc0-4c2d53fae5a9",
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "c6e777d5-deaa-4936-9ddd-c314df124c68",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(412);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{processETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{processId}}\",\n    \"name\": \"{{processName}}\",\n    \"description\": \"{{processName}} description\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"assets\": [\n    \t{\n\t        \"displayName\": \"{{assetName}}\",\n\t\t    \"targetUri\": \"/assets/{{assetId}}\"\n    \t}\t\n\t]\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/processes/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "processes",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{processId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
           "name": "Create a person inside the unit",
           "event": [
             {
               "listen": "prerequest",
               "script": {
-                "id": "5120b3b7-516d-4102-b325-50c569153f3d",
+                "id": "79c0d542-6320-4ecd-ab31-d2798d8b3f79",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -1555,7 +826,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "269ae983-2433-40b4-9d73-1902cfd34ae6",
+                "id": "5e834e62-224c-4fcc-ab13-77f34b5e46da",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1633,7 +904,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "32ca27ea-15ae-4929-b30a-f0de401fdc56",
+                "id": "fd935c65-28cc-4670-804d-d79a6bcb39ba",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1712,7 +983,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "284aa825-ebdd-4df8-9b67-ab5688b47db9",
+                "id": "50192c3b-22ea-442d-876c-6ab9231ab80e",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1725,18 +996,6 @@
                   "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "",
                   "});",
-                  "var eTag = extractTextBetweenQuotes(pm.response.headers.get(\"ETag\"));",
-                  "pm.test(\"ETag header is a string\", function () {",
-                  "    pm.expect(eTag).to.be.a('string')",
-                  "});",
-                  "pm.collectionVariables.set(\"personETag\", eTag);",
-                  "",
-                  "function extractTextBetweenQuotes(str){",
-                  "  const matches = str.match(/\"(.*?)\"/);",
-                  "  return matches",
-                  "    ? matches[1]",
-                  "    : str;",
-                  "}",
                   ""
                 ],
                 "type": "text/javascript"
@@ -1765,39 +1024,6 @@
             }
           },
           "response": [
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
             {
               "name": "Asset loaded",
               "originalRequest": {
@@ -1830,92 +1056,19 @@
               ],
               "cookie": [],
               "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Update the person",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "adaff4fc-9107-4cf8-ab61-eba22e5c8499",
-                "exec": [
-                  "pm.collectionVariables.set(\"personName\", \"Person with \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
-                ],
-                "type": "text/javascript"
-              }
             },
             {
-              "listen": "test",
-              "script": {
-                "id": "a4eb502e-1b30-4ab2-9658-0e6bb3636036",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned person has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"personId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"personName\"));",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{personETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/persons/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "persons",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{personId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
+              "name": "Asset not found",
               "originalRequest": {
-                "method": "PUT",
+                "method": "GET",
                 "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
                 "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
+                  "raw": "{{baseUrl}}/assets/:id",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
-                    "processes",
+                    "assets",
                     ":id"
                   ],
                   "variable": [
@@ -1925,109 +1078,8 @@
                   ]
                 }
               },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Update the person concurrently",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "c7b85e7b-bc00-4670-81b0-7bf8456386c4",
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "66365c13-4be7-4c2f-bea1-8ea40943e900",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(412);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{personETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/persons/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "persons",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{personId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -2046,7 +1098,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "a520813d-f570-4ddf-8bde-aebe0e4a3b71",
+                "id": "3939d48a-cab2-4484-957c-2fbcbc6ed5d6",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -2056,7 +1108,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d47d3262-750b-4c6e-a432-c661867b38fb",
+                "id": "db53f7d1-1697-4382-95c6-f2607c9fbec8",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2134,7 +1186,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d49a641d-48ab-4369-bcd2-38903705e150",
+                "id": "51b2d2a0-01c9-46ec-a6f0-be2a0ec34f78",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2213,7 +1265,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9dc843cf-675e-4e13-b720-146cfa63dfb9",
+                "id": "b521df27-dbcb-44f9-b71f-16fbb931f748",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2226,18 +1278,6 @@
                   "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
                   "",
                   "});",
-                  "var eTag = extractTextBetweenQuotes(pm.response.headers.get(\"ETag\"));",
-                  "pm.test(\"ETag header is a string\", function () {",
-                  "    pm.expect(eTag).to.be.a('string')",
-                  "});",
-                  "pm.collectionVariables.set(\"controlETag\", eTag);",
-                  "",
-                  "function extractTextBetweenQuotes(str){",
-                  "  const matches = str.match(/\"(.*?)\"/);",
-                  "  return matches",
-                  "    ? matches[1]",
-                  "    : str;",
-                  "}",
                   ""
                 ],
                 "type": "text/javascript"
@@ -2335,219 +1375,12 @@
           ]
         },
         {
-          "name": "Update the control",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "43b847a9-741b-4953-8d90-208a0f146dbe",
-                "exec": [
-                  "pm.collectionVariables.set(\"controlName\", \"Control of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "a36dc27a-25f7-4ec9-b212-61812954da90",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "pm.test(\"Returned control has the correct values\", function () {",
-                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"controlId\"));",
-                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"controlName\"));",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{controlETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/controls/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "controls",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{controlId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
-          "name": "Update the control concurrently",
-          "event": [
-            {
-              "listen": "prerequest",
-              "script": {
-                "id": "7c98b234-07d3-46ad-8b07-e08955069558",
-                "exec": [
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            },
-            {
-              "listen": "test",
-              "script": {
-                "id": "d33eb009-065a-4fdf-85d6-015b101eb7c1",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(412);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "If-Match",
-                "type": "text",
-                "value": "{{controlETag}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/controls/:id",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "controls",
-                ":id"
-              ],
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "id",
-                  "value": "{{controlId}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
-        },
-        {
           "name": "Delete the process",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "1a887259-cde1-4dd1-a1b0-ecc8db9d812e",
+                "id": "72e9aecb-09e7-4d2e-b47f-87892dfe3db3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2581,39 +1414,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -2645,6 +1445,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -2654,7 +1487,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "1d49c054-d253-496a-bdca-7dc9c456aa64",
+                "id": "0f8b3d42-c986-4cc1-b8dc-489c76295ca5",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2761,7 +1594,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "5509c9cd-f6c0-4157-92b8-576d402111d0",
+                "id": "3c3abdd9-3557-4826-b1da-b292b5703913",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2868,7 +1701,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4dc5dbaf-b634-4c7b-a95e-d7d5e2f63b32",
+                "id": "e4d4ba93-d5d6-4c79-b22f-fdc84ab5d82e",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2902,39 +1735,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -2966,6 +1766,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -2975,7 +1808,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "1b6512bd-b71f-464c-abc5-8b8d75b378e9",
+                "id": "fbe83d62-742b-4f78-b164-a952e7038a36",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -3009,39 +1842,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -3073,6 +1873,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -3082,7 +1915,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "bc71de5b-7f82-4f60-967a-193de045421e",
+                "id": "b0f15979-87b4-4ca9-a36b-2b27daafacc7",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3100,7 +1933,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "4c5e08d5-bda6-4ffe-b2ed-f5d0456e6768",
+                "id": "18c6db20-cd61-49be-85c9-ba277291851b",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -3170,7 +2003,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "92b5cae7-3e14-4d7f-a01b-13621863f9b0",
+                "id": "824a83af-bbf0-498b-b87a-7ee90286a598",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -3180,7 +2013,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a3a4d993-1a13-445d-8625-febfdde50b55",
+                "id": "c55b5718-f66a-4b14-b126-78537d72a29b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3258,7 +2091,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "e7fabbbb-0560-4393-905c-ab82e8fb193e",
+                "id": "7b609b86-6048-4518-b2a4-4f9ec621e190",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -3268,7 +2101,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "1376ebbe-8268-4a64-a586-1ee65b8ed68f",
+                "id": "379b4de6-439a-4373-a8df-c87011a82b5b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3346,7 +2179,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "412053a8-b56f-43d0-89da-89fe229d9b93",
+                "id": "ec0ea2f7-8472-4d25-9ffe-fb46422d3902",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3429,7 +2262,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "5bd82d95-2986-4ebe-9944-94ec33f26024",
+                "id": "e5f250d9-4408-48ca-86e1-69e9aa88ef74",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -3439,7 +2272,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3e8a125e-d1db-407c-ac11-a4d703e90e9c",
+                "id": "2555b26c-df39-4e7d-9f44-43a95a152392",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3517,7 +2350,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "90fb4ae3-2fc8-4ced-aa11-b216f0a41777",
+                "id": "8e216401-d78e-4e78-8585-e0f539da00ea",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3634,7 +2467,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "87345e00-4a53-41c6-bdd0-29a040943e70",
+                "id": "d1bf6a1d-c712-4907-ba83-34e98ed9290a",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -3644,7 +2477,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "33d5a0d3-9963-4ba5-ad4c-753ba0d8cfec",
+                "id": "2849f6d2-944c-4a1a-a901-6eadeacec287",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3727,7 +2560,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "23d74b9b-51f2-45bd-bd19-29b3fcb8aceb",
+                "id": "aef00abd-6936-4e65-a8a1-f132347c58b3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3771,39 +2604,6 @@
           },
           "response": [
             {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
-            {
               "name": "Asset not found",
               "originalRequest": {
                 "method": "GET",
@@ -3835,6 +2635,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Asset loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
         },
@@ -3844,7 +2677,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "a68373d3-16b1-4263-99d5-3263fdec2480",
+                "id": "8c55b3d5-74a5-45ae-8757-48755cd493cb",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -3854,7 +2687,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "77c97f28-ad4b-4fe0-bcaa-ca9e3b408584",
+                "id": "d3b72367-c864-4f92-81b4-67cdecf93363",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3932,7 +2765,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "6d2aab02-1a1d-4be1-8ecc-1036f31bc9de",
+                "id": "c7b133bc-997b-409b-b9e4-79817462c9a7",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4015,7 +2848,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "598c99a7-ecf4-46ca-9f37-6c863509f2b0",
+                "id": "0c80d09d-d411-45b0-848a-3c214099b514",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -4025,7 +2858,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "38256d00-0517-4675-8315-3ffd742ffa52",
+                "id": "00c46943-969a-4599-9f3e-1524c6aab374",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4103,7 +2936,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "45a02e8c-0848-4af9-b8bb-404173540b91",
+                "id": "d883576e-b7e3-46e5-b897-52557422236d",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4192,7 +3025,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "242c3206-3a88-42f8-b690-7349f5f7b77a",
+                "id": "07fdaaa4-f68b-4b7d-a0d4-37b359cb8190",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4210,7 +3043,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "0d5c9d83-8a5b-4da4-88e6-04f73bdb9e90",
+                "id": "33b3e7e5-bf69-4533-a536-b216c80197ef",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -4280,7 +3113,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9f2c1175-b1b3-485a-84c8-df6989952461",
+                "id": "6bcb1751-ce69-434c-bdc9-1041168f7be0",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4298,7 +3131,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "8dcd9f64-fbaf-4ea0-8a2c-3b6cb23356bb",
+                "id": "f235a0ff-be04-474e-bc0a-5fd5996be0fb",
                 "exec": [
                   "pm.collectionVariables.set('subUnitName', 'CRUD test sub-unit');"
                 ],
@@ -4368,7 +3201,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "ef81558b-22ae-451a-9796-87873f353616",
+                "id": "6d7e0602-6a87-4031-a000-4d37220667d8",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'filter test asset');"
                 ],
@@ -4378,7 +3211,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a0bd2d90-4640-45d5-b524-dc32a678343a",
+                "id": "11e7cf45-4ade-424b-8f48-127497ba046e",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4456,7 +3289,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "533b17b9-aa75-4dac-8d99-fc13808ce0f0",
+                "id": "4dfc5fe4-8bff-492a-9c4c-732f3056f3fa",
                 "exec": [
                   "pm.collectionVariables.set('processName', 'filter test process');"
                 ],
@@ -4466,7 +3299,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "259495c5-cea6-4942-8105-322c601d62f0",
+                "id": "277bffd4-fe56-4d6c-8d6a-eeb1101502e4",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4544,7 +3377,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "4b956f59-fc09-4665-8b14-f66769a230aa",
+                "id": "a1dccd08-6b32-4010-b202-48b8932c6da0",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'filter test person');"
                 ],
@@ -4554,7 +3387,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f13fc08c-58b5-45bb-9210-3271af517fd5",
+                "id": "87293585-855a-43ad-9e8a-c5283008f24d",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4632,7 +3465,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "627741cb-10e1-407c-a95e-f7b24a7402d2",
+                "id": "7c3b4dee-6425-46b6-97ca-91e33a31c576",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'filter test control');"
                 ],
@@ -4642,7 +3475,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9a8c6aab-6cd3-487f-9b6f-933bc800213f",
+                "id": "eafa5cf7-60ba-4f02-b507-068db94ca91b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4720,7 +3553,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f951e741-de18-4bb9-801c-a67c325ab55a",
+                "id": "bc8993f1-15a1-421d-97b7-18e39539b64a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4831,7 +3664,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "936c0105-2fa2-47dc-9b2e-d084f398957c",
+                "id": "354f3b0c-54c3-49a3-9116-e1500df9b237",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4910,7 +3743,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "8bf4b537-3b94-4a5a-ab44-ff8649a56462",
+                "id": "e9fbbafd-25ab-4952-b504-601a0b0e1345",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4989,7 +3822,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "660b2bcc-e041-4a02-8ecb-d9597bbeec20",
+                "id": "39b8a81c-b4a3-4f5f-a91e-f84c5caf0cba",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5068,7 +3901,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "1b530336-584f-40f9-a59b-73fee60be231",
+                "id": "5cefa90e-f152-4c62-bbb6-28959f9280dc",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5147,7 +3980,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "8d69ea0c-c5b6-4904-a6e3-5414f1c06ff3",
+                "id": "80410063-96de-4e69-97b2-b5aa7f6bcee0",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5226,7 +4059,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3a67f628-8969-402b-9ca1-bbf82b840593",
+                "id": "4221a913-60c8-434f-a987-fc2a6b05d79a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(404);",
@@ -5298,7 +4131,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "312ee8b6-5170-4bcf-a91f-c642428e209d",
+                "id": "173c9bf5-c675-410e-a8a6-1f9d6e52b2d0",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5332,39 +4165,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -5396,6 +4196,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -5405,7 +4238,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f20a3281-2bc0-4b5f-b5e7-79629ae54cd2",
+                "id": "5e991281-934f-4218-aa4f-69db4069aa29",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5439,39 +4272,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -5503,6 +4303,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -5512,7 +4345,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "b1c65ed1-05e1-433f-a099-e9cab0f6ffc3",
+                "id": "b9c125cb-d09a-4db9-a2fd-7a1811b39c76",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5546,6 +4379,113 @@
           },
           "response": [
             {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the control",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "da12833c-4020-4df5-a74e-98b645df2dcb",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/controls/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "controls",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -5614,15 +4554,15 @@
           ]
         },
         {
-          "name": "Delete the control",
+          "name": "Delete the sub-unit",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "0a550cb7-6aa3-4d1e-8db2-f422462d6416",
+                "id": "16021b57-c8fb-40fd-8d06-3b555f536515",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -5634,18 +4574,18 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/controls/:uuid",
+              "raw": "{{baseUrl}}/units/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "controls",
+                "units",
                 ":uuid"
               ],
               "variable": [
                 {
                   "key": "uuid",
-                  "value": "{{controlId}}",
+                  "value": "{{subUnitId}}",
                   "description": "(Required) "
                 }
               ]
@@ -5721,12 +4661,12 @@
           ]
         },
         {
-          "name": "Delete the sub-unit",
+          "name": "Delete the unit",
           "event": [
             {
               "listen": "test",
               "script": {
-                "id": "ddaa9e08-fa2c-4d4a-a3b8-0a7004745e70",
+                "id": "d5f998e8-9c81-4e58-953f-39dce582d7cd",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -5752,7 +4692,373 @@
               "variable": [
                 {
                   "key": "uuid",
-                  "value": "{{subUnitId}}",
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ],
+      "protocolProfileBehavior": {
+        
+      }
+    },
+    {
+      "name": "Search functions",
+      "item": [
+        {
+          "name": "Create a unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "127fbe65-0e75-4920-9f1b-8b40c2388e54",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"unitId\", resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "85b3fe1e-ae29-4c76-aedc-7e9d748fa58b",
+                "exec": [
+                  "pm.collectionVariables.set('unitName', 'CRUD test unit');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/units",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/units",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "\"<object>\""
+            }
+          ]
+        },
+        {
+          "name": "Create an asset inside the unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "5ecbb397-b807-4d85-aeca-ac2d5c140b07",
+                "exec": [
+                  "pm.collectionVariables.set('assetName', 'CRUD test asset');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "id": "e3b2abcd-4bef-48a4-8c8d-58419d3f756a",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('assetId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a search",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d806863e-62cb-42b4-9285-9fb8d25cd863",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.searchUrl;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"searchId\", resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"unitId\": \"{{unitId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets/searches",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                "searches"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Run a search",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "54eb5192-297a-496c-854f-43a56f86f100",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{searchId}}",
+              "host": [
+                "{{baseUrl}}{{searchId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete the asset",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d148b6c5-2cc7-4141-9089-89cd35dd703a",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/assets/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{assetId}}",
                   "description": "(Required) "
                 }
               ]
@@ -5833,7 +5139,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0fdb8091-0513-485f-9d35-be03291dfabd",
+                "id": "c7f98b1a-c720-4f6d-a4e8-166215edc91c",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -5867,39 +5173,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -5931,81 +5204,41 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
-        }
-      ],
-      "protocolProfileBehavior": {
-        
-      }
-    },
-    {
-      "name": "Search functions",
-      "item": [
-        {
-          "name": "http://localhost:8070/units/searches",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "3a550518-97a1-4d17-bdbc-d2d516a6fce1",
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "var jsonData = pm.response.json();",
-                  "var resourceId = jsonData.searchUrl;",
-                  "pm.test(\"Resource ID is a string\", function () {",
-                  "    pm.expect(resourceId).to.be.a('string')",
-                  "});",
-                  "pm.collectionVariables.set(\"searchId\", resourceId);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"unitId\": \"{{unitId}}\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "http://localhost:8070/assets/searches",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8070",
-              "path": [
-                "assets",
-                "searches"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "http://localhost:8070/assets/searches/q1YqzcssCS3NTFGyUjJLM7S0NDUy101LMzTUNUkxMNS1MLFM1U1OMzSwTElNTTG2TFbSUUovyi8tCKksSFWyyivNyakFAA==",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "http://localhost:8070{{searchId}}",
-              "protocol": "http",
-              "host": [
-                "localhost"
-              ],
-              "port": "8070{{searchId}}"
-            }
-          },
-          "response": []
         }
       ],
       "protocolProfileBehavior": {
@@ -6037,7 +5270,7 @@
     {
       "listen": "prerequest",
       "script": {
-        "id": "3c1cedf3-a1f3-47b1-bcb6-119a2823548f",
+        "id": "8b2028b3-ea03-415b-bdcf-4e7a0df39d4e",
         "type": "text/javascript",
         "exec": [
           ""
@@ -6047,7 +5280,7 @@
     {
       "listen": "test",
       "script": {
-        "id": "66233c63-1c76-4e8b-abbd-1704adf488e9",
+        "id": "f18a8e83-d6c3-4155-aa24-ecf10f252354",
         "type": "text/javascript",
         "exec": [
           ""
@@ -6057,108 +5290,83 @@
   ],
   "variable": [
     {
-      "id": "f3d5347a-7df1-44ee-ad87-d85d4adead5c",
+      "id": "823938c1-f3ac-4ad6-b2b7-c11f634fac51",
       "key": "baseUrl",
       "value": "http://localhost:8070"
     },
     {
-      "id": "67ed1620-a108-4135-a3b4-610b359e72bc",
+      "id": "8134e904-4436-4801-ab18-f59169865344",
       "key": "unitId",
       "value": ""
     },
     {
-      "id": "558f03f9-0cc6-4a8f-a5c1-c79b7f6c0106",
+      "id": "ae618ae5-3b5c-449e-a452-3b9e8ec2abde",
       "key": "processId",
       "value": ""
     },
     {
-      "id": "e5f70aee-c001-4e12-914a-b317e5b5d7d9",
+      "id": "7a38da8f-0870-4ef8-a9ed-db61ade1bb1e",
       "key": "processName",
       "value": ""
     },
     {
-      "id": "e516ca8b-885b-4d56-9476-bb81ab337931",
+      "id": "0717d2f5-9673-483c-b8cd-febb6b115ad5",
       "key": "unitName",
       "value": ""
     },
     {
-      "id": "5167f7e8-b132-41f2-b9fd-30638365dfb6",
+      "id": "83eed492-e881-4ac4-b2f7-54560a65ad1d",
       "key": "accessToken",
       "value": ""
     },
     {
-      "id": "2a8524c8-7e7a-43ca-acb8-387226c75ca9",
+      "id": "0628bdb2-94b9-41ff-a062-91c4c7fb2134",
       "key": "assetId",
       "value": ""
     },
     {
-      "id": "f46f497b-4c3c-48e4-bc22-ad4af1ef242c",
+      "id": "63381cb9-7d3d-4535-84b5-0c33fcd15947",
       "key": "assetName",
       "value": ""
     },
     {
-      "id": "2c33d296-5238-4ef0-806e-1296215bb95c",
+      "id": "354bcf34-860e-4d67-9b9d-fa87e00211d3",
       "key": "personId",
       "value": ""
     },
     {
-      "id": "3996b8ae-ba0d-43fd-8c9b-2a97bd686e8d",
+      "id": "1202dd72-fd93-4e28-8181-a2a6f8b1937f",
       "key": "personName",
       "value": ""
     },
     {
-      "id": "46b1a4d2-637f-4b79-a82b-29db317980ce",
+      "id": "1e17139b-c605-4641-9b09-1bd88f62bb2a",
       "key": "controlId",
       "value": ""
     },
     {
-      "id": "81bbc592-d3b8-4070-afca-61e08d62bfc1",
+      "id": "b92fc81c-2573-4f37-857e-6b59a26b3765",
       "key": "controlName",
       "value": ""
     },
     {
-      "id": "162b460e-d6a5-4e8b-98b7-59f2112eb051",
+      "id": "bfe6276d-96f0-4a4f-bd96-4214e9360e1b",
       "key": "processIdveo271",
       "value": ""
     },
     {
-      "id": "cd679d66-8ad5-4b0e-9991-a7b81753be3d",
+      "id": "0af17639-8862-43ff-824a-4d691f19ad1c",
       "key": "subUnitName",
       "value": ""
     },
     {
-      "id": "cfbe3027-a1a7-49db-8588-21544faa3e14",
+      "id": "074a4920-43d2-4fc1-9bb9-5ad5f0adedfb",
       "key": "subUnitId",
       "value": ""
     },
     {
-      "id": "65fb0f1a-1e0e-4a19-a615-3d84c8d49dd6",
+      "id": "1468cf81-6110-44a9-8258-104214f4b48b",
       "key": "searchId",
-      "value": ""
-    },
-    {
-      "id": "08d33309-54db-46b9-8934-70c3dc98c8df",
-      "key": "unitETag",
-      "value": ""
-    },
-    {
-      "id": "31571550-14ce-4acd-bc63-dcde809380ad",
-      "key": "assetETag",
-      "value": ""
-    },
-    {
-      "id": "27d9912a-2ee0-4804-9bb2-f9c3e9fd7a6a",
-      "key": "processETag",
-      "value": ""
-    },
-    {
-      "id": "39b825ac-0c94-4c31-87bd-272eaae3812d",
-      "key": "personETag",
-      "value": ""
-    },
-    {
-      "id": "de51f907-027a-49f9-a583-3cda090f0daf",
-      "key": "controlETag",
       "value": ""
     }
   ],
