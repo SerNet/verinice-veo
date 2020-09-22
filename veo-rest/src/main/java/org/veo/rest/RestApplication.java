@@ -30,8 +30,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.veo.SpringPropertyLogger;
 
@@ -93,12 +91,6 @@ public class RestApplication {
 
     @Autowired
     private ApplicationContext appContext;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
-    // TODO VEO-291 remove old password encoder
 
     public static void main(String[] args) {
         SpringApplication.run(RestApplication.class, args);
