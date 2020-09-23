@@ -14,9 +14,9 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.persistence.entity.jpa;
 
-public interface NameAbleDto {
+public interface NameableData {
     String getName();
 
     void setName(String aName);

@@ -29,7 +29,7 @@ import lombok.ToString;
 
 @Entity(name = "domain")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class DomainData extends BaseModelObjectData implements NameAbleData, Domain {
+public class DomainData extends BaseModelObjectData implements NameableData, Domain {
 
     @NotNull
     @Column(name = "name")

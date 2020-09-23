@@ -28,7 +28,7 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 
-public interface EntityLayerSupertypeDto extends NameAbleDto, VersionedDto {
+public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
 
     Collection<ModelObjectReference<? extends ModelObject>> getReferences();
 

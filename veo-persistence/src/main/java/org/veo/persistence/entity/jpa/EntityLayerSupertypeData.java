@@ -41,7 +41,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public abstract class EntityLayerSupertypeData extends BaseModelObjectData
-        implements NameAbleData, EntityLayerSupertype {
+        implements NameableData, EntityLayerSupertype {
 
     @NotNull
     @Column(name = "name")

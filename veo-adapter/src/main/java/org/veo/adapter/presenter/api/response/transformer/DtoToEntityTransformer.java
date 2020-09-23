@@ -37,7 +37,7 @@ import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
-import org.veo.adapter.presenter.api.dto.NameAbleDto;
+import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -48,7 +48,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.NameAble;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
@@ -79,7 +79,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createPerson(key, source.getName(), null);
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -104,7 +104,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createPersonGroup();
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -135,7 +135,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createAsset(key, source.getName(), null);
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -160,7 +160,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createAssetGroup();
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -191,7 +191,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createProcess(key, source.getName(), null);
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -216,7 +216,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createProcessGroup();
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -247,7 +247,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDocument(key, source.getName(), null);
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -272,7 +272,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDocumentGroup();
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e1 -> ModelObjectReference.mapToEntity(context, e1)));
@@ -303,7 +303,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createControl(key, source.getName(), null);
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -328,7 +328,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createControlGroup();
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
         target.setDomains(convertSet(source.getDomains(),
                                      e -> ModelObjectReference.mapToEntity(context, e)));
@@ -380,7 +380,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createDomain(key, source.getName());
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
 
@@ -401,7 +401,7 @@ public final class DtoToEntityTransformer {
         target = tcontext.getFactory()
                          .createUnit(key, source.getName(), null);
         target.setId(key);
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         context.put(classKey, target);
 
         target.setDomains(convertSet(source.getDomains(),
@@ -431,7 +431,7 @@ public final class DtoToEntityTransformer {
 
         target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
-        mapNameAbleProperties(source, target);
+        mapNameableProperties(source, target);
         getPropertyTransformer().applyDtoPropertiesToEntity(source.getAttributes(), target);
 
         return target;
@@ -464,7 +464,7 @@ public final class DtoToEntityTransformer {
                   .collect(Collectors.toSet());
     }
 
-    private static void mapNameAbleProperties(NameAbleDto source, NameAble target) {
+    private static void mapNameableProperties(NameableDto source, Nameable target) {
         target.setName(source.getName());
         target.setAbbreviation(source.getAbbreviation());
         target.setDescription(source.getDescription());

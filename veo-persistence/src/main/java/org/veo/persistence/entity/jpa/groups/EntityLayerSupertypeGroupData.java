@@ -16,11 +16,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import org.veo.persistence.entity.jpa.NameAbleData;
+import org.veo.persistence.entity.jpa.NameableData;
 
 /**
  * @author urszeidler
  */
-public interface EntityLayerSupertypeGroupData<T> extends NameAbleData {
+public interface EntityLayerSupertypeGroupData<T> extends NameableData {
 
 }

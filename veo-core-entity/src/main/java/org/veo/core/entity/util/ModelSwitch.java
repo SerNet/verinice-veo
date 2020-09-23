@@ -26,7 +26,7 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.NameAble;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
@@ -84,8 +84,8 @@ public abstract class ModelSwitch<T> {
             if (object != null)
                 return object;
         }
-        if (o instanceof NameAble) {
-            T object = caseNameAble((NameAble) o);
+        if (o instanceof Nameable) {
+            T object = caseNameable((Nameable) o);
             if (object != null)
                 return object;
         }
@@ -139,7 +139,7 @@ public abstract class ModelSwitch<T> {
         return null;
     }
 
-    public T caseNameAble(NameAble object) {
+    public T caseNameable(Nameable object) {
         return null;
     }
 

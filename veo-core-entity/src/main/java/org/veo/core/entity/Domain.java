@@ -20,7 +20,7 @@ package org.veo.core.entity;
  * The domain should be referenced by the domain objects if applicable. It
  * defines a standard, a best practice or a company-specific context.
  */
-public interface Domain extends NameAble, ModelObject {
+public interface Domain extends Nameable, ModelObject {
 
     Boolean isActive();
 

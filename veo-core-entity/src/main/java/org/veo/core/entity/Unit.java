@@ -35,7 +35,7 @@ import java.util.Set;
  * Units should exclusively be used to model ownership and high-level access
  * restrictions.
  */
-public interface Unit extends NameAble, ModelObject {
+public interface Unit extends Nameable, ModelObject {
 
     Client getClient();
 

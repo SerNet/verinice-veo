@@ -19,7 +19,7 @@ package org.veo.core.entity;
 /**
  * Defines the basic properties of nameable elements.
  */
-public interface NameAble {
+public interface Nameable {
 
     String getName();
 
