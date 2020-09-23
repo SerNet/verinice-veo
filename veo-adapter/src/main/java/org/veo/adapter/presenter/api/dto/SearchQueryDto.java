@@ -18,6 +18,7 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -77,21 +78,33 @@ public class SearchQueryDto {
     }
 
     /**
-     * Encodes this search query as a base64-encoded, compressed string.
+     * Encodes this search query as a base64url-encoded, compressed string. This
+     * representation only contains unreserved URI characters (see RFC 3986 section
+     * 2.3).
      *
-     * @return the encoded string containing all search parameters
-     * @throws IOException
+     * @see SearchQueryDto#decodeFromSearchId(String)
      */
     @JsonIgnore
     public String getSearchId() throws IOException {
+        return Base64.getUrlEncoder()
+                     .encodeToString(toCompressedForm());
+    }
+
+    private byte[] toCompressedForm() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(stream,
                 new Deflater(Deflater.DEFAULT_COMPRESSION, true));
         deflaterOutputStream.write(new ObjectMapper().writeValueAsString(this)
-                                                     .getBytes("UTF-8"));
+                                                     .getBytes(StandardCharsets.UTF_8));
         deflaterOutputStream.close();
-        return Base64.getEncoder()
-                     .encodeToString(stream.toByteArray());
+        return stream.toByteArray();
+    }
+
+    /**
+     * Decodes a search query from a base64url-encoded, compressed string.
+     */
+    public static SearchQueryDto decodeFromSearchId(String searchId) throws IOException {
+        return decodeFromSearchId(searchId, Base64.getUrlDecoder());
     }
 
     /**
@@ -105,14 +118,15 @@ public class SearchQueryDto {
      * @return the reconstructed search query
      * @throws IOException
      */
-    public static SearchQueryDto decodeFromSearchId(String searchId) throws IOException {
+    private static SearchQueryDto decodeFromSearchId(String searchId, Base64.Decoder decoder)
+            throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(stream,
                 new Inflater(true));
-        inflaterOutputStream.write(Base64.getDecoder()
-                                         .decode(searchId.getBytes("UTF-8")));
+        inflaterOutputStream.write(decoder.decode(searchId.getBytes(StandardCharsets.UTF_8)));
         inflaterOutputStream.close();
-        return new ObjectMapper().readValue(stream.toString("UTF-8"), SearchQueryDto.class);
+        return new ObjectMapper().readValue(stream.toString(StandardCharsets.UTF_8),
+                                            SearchQueryDto.class);
     }
 
     @JsonPOJOBuilder(withPrefix = "")

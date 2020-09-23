@@ -48,5 +48,21 @@ class SearchQueryDtoSpec extends Specification {
 
         then: "the query is reconstructed correctly"
         query.getUnitId() == UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes).toString()
+        query.getDisplayName() == null
+    }
+
+    def "encoded search query must not contain reserved URI characters"() {
+        given: "a search object that leads to a '/' character in base64 encoding:"
+        def q = SearchQueryDto.builder()
+                .unitId("59c9e163-88e5-4ebd-886a-2b21470bd19d")
+                .build();
+
+        when: "it is encoded as an ID string"
+        def searchId = q.getSearchId()
+
+        then: "the ID contains only unreserved URI characters"
+        // Note: '=' will be percent-encoded in a URL but is unproblematic and therefore used
+        // by base64url as padding character, see RFC 4648 sec. 5.
+        searchId ==~ /^[a-zA-Z0-9\-._~=]*$/
     }
 }
