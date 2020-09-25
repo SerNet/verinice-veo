@@ -119,6 +119,12 @@ subprojects {
             dependency 'org.springdoc:springdoc-openapi-ui:1.4.6'
             dependency 'io.swagger.core.v3:swagger-core:2.1.4'
             dependency 'com.github.javafaker:javafaker:1.0.2'
+            [
+                'jsonschema-generator',
+                'jsonschema-module-jackson',
+                'jsonschema-module-javax-validation',
+                'jsonschema-module-swagger-2'
+            ].each { dependency "com.github.victools:$it:4.15.1" }
         }
     }
 
