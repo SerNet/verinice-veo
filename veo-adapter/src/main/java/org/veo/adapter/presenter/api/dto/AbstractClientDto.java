@@ -24,6 +24,8 @@ import java.util.Set;
 
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.core.entity.ModelObject;
 
@@ -47,7 +49,7 @@ abstract public class AbstractClientDto implements VersionedDto {
     @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
     private String validFrom;
 
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonIgnore
     private long version;
 
     @Schema(description = "The units for the Client.")
@@ -56,6 +58,7 @@ abstract public class AbstractClientDto implements VersionedDto {
     @Schema(description = "The domains for the Client.")
     private Set<AbstractDomainDto> domains = Collections.emptySet();
 
+    @JsonIgnore
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
         return list;

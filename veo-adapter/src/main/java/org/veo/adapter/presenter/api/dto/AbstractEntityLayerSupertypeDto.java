@@ -28,6 +28,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceEntityLayerSupertypeDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceEntityLayerSupertypeOwner;
@@ -70,7 +72,7 @@ abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
     @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
     private String validFrom;
 
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonIgnore
     private long version;
 
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceEntityLayerSupertypeDomains.class))
@@ -91,6 +93,7 @@ abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
             title = "CustomAspect")
     private Map<String, CustomPropertiesDto> customAspects = Collections.emptyMap();
 
+    @JsonIgnore
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         return Stream.concat(Stream.concat(getDomains().stream(), Stream.of(getOwner())),
                              getLinks().values()

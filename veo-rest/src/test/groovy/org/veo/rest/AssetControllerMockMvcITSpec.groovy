@@ -173,7 +173,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
                         simpleProp:'simpleValue'
                     ],
                     domains:[],
-                    references:[],
                     type: 'simpleAspect'
                 ]
             ],
@@ -186,14 +185,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
                 targetUri   : "http://localhost/units/${unit.id.uuidValue()}",
                 searchesUri : "http://localhost/units/searches",
                 resourcesUri: "http://localhost/units{?parent,displayName}"
-            ],
-            references:[
-                [
-                    displayName:'Test unit',
-                    targetUri   : "http://localhost/units/${unit.id.uuidValue()}",
-                    searchesUri : "http://localhost/units/searches",
-                    resourcesUri: "http://localhost/units{?parent,displayName}"
-                ]
             ]
         ]
     }
@@ -242,7 +233,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
                             simpleProp:'simpleValue'
                         ],
                         domains:[],
-                        references:[],
                         type: 'simpleAspect'
                     ]
                 ],
@@ -255,14 +245,6 @@ class AssetControllerMockMvcITSpec extends VeoRestMvcSpec {
                     targetUri: "http://localhost/units/${unit.id.uuidValue()}",
                     searchesUri: "http://localhost/units/searches",
                     resourcesUri: "http://localhost/units{?parent,displayName}"
-                ],
-                references:[
-                    [
-                        displayName:'Test unit',
-                        targetUri: "http://localhost/units/${unit.id.uuidValue()}",
-                        searchesUri: "http://localhost/units/searches",
-                        resourcesUri: "http://localhost/units{?parent,displayName}"
-                    ]
                 ]
             ]
         ]

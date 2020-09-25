@@ -23,6 +23,8 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
@@ -72,6 +74,8 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
         return EntityToDtoTransformer.transformCustomLink2Dto(tcontext, customLink);
     }
 
+    @JsonIgnore
+    @Override
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
         list.addAll(getDomains());

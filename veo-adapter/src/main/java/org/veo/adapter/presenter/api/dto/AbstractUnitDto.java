@@ -26,6 +26,8 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
@@ -61,7 +63,7 @@ abstract public class AbstractUnitDto implements NameableDto, VersionedDto {
     @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
     private String validFrom;
 
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonIgnore
     private ModelObjectReference<Client> client;
 
     @Schema(description = "The units for the Unit.")
@@ -73,9 +75,10 @@ abstract public class AbstractUnitDto implements NameableDto, VersionedDto {
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceUnitDomains.class))
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonIgnore
     private long version;
 
+    @JsonIgnore
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
         list.add(getClient());

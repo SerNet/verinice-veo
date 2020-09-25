@@ -29,6 +29,8 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
@@ -73,6 +75,7 @@ public class CustomPropertiesDto {
         return EntityToDtoTransformer.transformCustomProperties2Dto(tcontext, control);
     }
 
+    @JsonIgnore
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
         List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
         list.addAll(getDomains());

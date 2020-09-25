@@ -138,12 +138,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == "Test unit"
         result.abbreviation == "u-1"
         result.domains.first().displayName == "ISO 27001"
-        def references = result.references
-        references.size() == 2
-        references*.displayName == [
-            'Demo Client',
-            'ISO 27001'
-        ]
     }
 
     @WithUserDetails("user@domain.example")
@@ -347,14 +341,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == "sub-unit-1"
         result.parent.targetUri == "http://localhost/units/"+parent.resourceId
-
-        and: "sub unit refrences contain parent"
-        def references = result.references
-        references.size() == 2
-        references*.displayName == [
-            'Demo Client',
-            'parent-unit-1'
-        ]
 
         when: "get the parent"
 
