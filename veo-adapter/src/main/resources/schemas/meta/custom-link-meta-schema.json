@@ -27,7 +27,6 @@
       },
       "required": [
         "id",
-        "type",
         "domains",
         "attributes",
         "applicableTo",
@@ -409,7 +408,6 @@
       "type": "array",
       "enum": [
         [
-          "type",
           "target"
         ]
       ]

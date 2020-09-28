@@ -27,7 +27,6 @@
       },
       "required": [
         "id",
-        "type",
         "domains",
         "attributes",
         "applicableTo"
@@ -205,9 +204,7 @@
     },
     "required": {
       "type": "array",
-      "const": [
-        "type"
-      ]
+      "const": []
     }
   },
   "additionalProperties": false,

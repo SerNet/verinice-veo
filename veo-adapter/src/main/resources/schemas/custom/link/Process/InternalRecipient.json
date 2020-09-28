@@ -112,7 +112,6 @@
     },
     "additionalProperties": false,
     "required": [
-      "type",
       "target"
     ]
   }
