@@ -379,7 +379,6 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'AssetCommons' :
                 [
-                    type : 'AssetCommons',
                     applicableTo: [
                         "Asset"
                     ],

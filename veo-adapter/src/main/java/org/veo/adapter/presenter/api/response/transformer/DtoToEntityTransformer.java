@@ -16,9 +16,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -440,7 +441,8 @@ public final class DtoToEntityTransformer {
 
     // CustomLinkDto->CustomLink
     public static CustomLink transformDto2CustomLink(DtoToEntityContext tcontext,
-            CustomLinkDto source, CustomAttributesTransformer customAttributesTransformer) {
+            CustomLinkDto source, String type,
+            CustomAttributesTransformer customAttributesTransformer) {
         Map<ClassKey<Key<UUID>>, ? super ModelObject> context = tcontext.getContext();
 
         EntityLayerSupertype linkTarget = null;
@@ -451,8 +453,8 @@ public final class DtoToEntityTransformer {
         var target = tcontext.getFactory()
                              .createCustomLink(source.getName(), linkTarget, null);
 
-        target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
+        target.setType(type);
         mapNameableProperties(source, target);
         customAttributesTransformer.applyLinkAttributes(source.getAttributes(), target);
 
@@ -462,9 +464,11 @@ public final class DtoToEntityTransformer {
 
     // CustomPropertiesDto->CustomProperties
     public static CustomProperties transformDto2CustomProperties(EntityFactory factory,
-            CustomPropertiesDto source, CustomAttributesTransformer customAttributesTransformer) {
-        var target = factory.createCustomProperties(source.getType());
+            CustomPropertiesDto source, String type,
+            CustomAttributesTransformer customAttributesTransformer) {
+        var target = factory.createCustomProperties();
         target.setApplicableTo(source.getApplicableTo());
+        target.setType(type);
         customAttributesTransformer.applyAspectAttributes(source.getAttributes(), target);
         return target;
 
@@ -475,14 +479,16 @@ public final class DtoToEntityTransformer {
         return dto.getLinks()
                   .entrySet()
                   .stream()
-                  .flatMap(e -> e.getValue()
-                                 .stream())
-                  .map(linkDto -> {
-                      CustomLink link = linkDto.toEntity(context, customAttributesTransformer);
-                      link.setSource(entity);
-                      return link;
-                  })
-                  .collect(Collectors.toSet());
+                  .flatMap(entry -> entry.getValue()
+                                         .stream()
+                                         .map(linktDto -> {
+                                             var customLink = linktDto.toEntity(context,
+                                                                                entry.getKey(),
+                                                                                customAttributesTransformer);
+                                             customLink.setSource(entity);
+                                             return customLink;
+                                         }))
+                  .collect(toSet());
     }
 
     private static void mapNameableProperties(NameableDto source, Nameable target) {
@@ -506,9 +512,9 @@ public final class DtoToEntityTransformer {
         return dto.getCustomAspects()
                   .entrySet()
                   .stream()
-                  .map(Entry<String, CustomPropertiesDto>::getValue)
-                  .map(customAspectDto -> customAspectDto.toEntity(factory,
-                                                                   customAttributesTransformer))
+                  .map(entry -> entry.getValue()
+                                     .toEntity(factory, entry.getKey(),
+                                               customAttributesTransformer))
                   .collect(Collectors.toSet());
     }
 

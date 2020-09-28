@@ -64,8 +64,17 @@ public class SchemaMerger {
                                                                    + aspectNodes);
         for (JsonNode customSchema : customAspectSchemas) {
             String type = extractAspectType(customSchema);
+            removeAspectType(customSchema);
             propertiesNode.set(type, customSchema);
         }
+    }
+
+    /**
+     * Remove the type attribute (which becomes redundant after it has been used as
+     * the fieldName for the customAspect).
+     */
+    private void removeAspectType(JsonNode customSchema) {
+        ((ObjectNode) customSchema.get("properties")).remove("type");
     }
 
     /**
@@ -79,8 +88,18 @@ public class SchemaMerger {
 
         for (JsonNode customSchema : linkSchemas) {
             String type = extractLinkType(customSchema);
+            removeLinkType(customSchema);
             jsonNode.set(type, customSchema);
         }
+    }
+
+    /**
+     * Remove the type attribute (which becomes redundant after it has been used as
+     * the fieldName for the customLink).
+     */
+    private void removeLinkType(JsonNode customSchema) {
+        ((ObjectNode) customSchema.get("items")
+                                  .get("properties")).remove("type");
     }
 
     /**

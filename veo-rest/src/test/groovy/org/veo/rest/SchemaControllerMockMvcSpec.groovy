@@ -17,6 +17,7 @@
 package org.veo.rest
 
 import static org.hamcrest.Matchers.hasItem
+import static org.hamcrest.Matchers.hasKey
 import static org.springframework.http.HttpStatus.OK
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -75,7 +76,7 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
 
         and: "the custom links are present"
         results.andExpect(
-                jsonPath('$..enum[*]', hasItem("process_LegalBasisForProcessingSensitiveData"))
+                jsonPath('$..links.properties.process_LegalBasisForProcessingSensitiveData').hasJsonPath()
                 )
 
         and: "the custom aspects are present"
@@ -83,7 +84,7 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
                 jsonPath('$..enum[*]', hasItem("process_InformationObligations_informationObligations_done"))
                 )
                 .andExpect(
-                jsonPath('$..enum[*]', hasItem("process_DataCategories"))
+                jsonPath('$..links.properties.process_DataCategories').hasJsonPath()
                 )
     }
 
@@ -101,12 +102,12 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
 
         and: "the custom links are present"
         results.andExpect(
-                jsonPath('$..enum[*]', hasItem("Asset_located_in_Asset"))
+                jsonPath('$..links.properties.Asset_located_in_Asset').hasJsonPath()
                 )
 
         and: "the custom aspects are present"
         results.andExpect(
-                jsonPath('$..enum[*]', hasItem("AssetCommons"))
+                jsonPath('$..customAspects.properties.AssetCommons').hasJsonPath()
                 )
         results.andExpect(
                 jsonPath('$..enum[*]', hasItem("assetTypeSoftware"))

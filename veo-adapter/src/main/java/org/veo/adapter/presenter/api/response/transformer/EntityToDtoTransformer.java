@@ -16,6 +16,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -552,7 +556,6 @@ public final class EntityToDtoTransformer {
     public static CustomLinkDto transformCustomLink2Dto(EntityToDtoContext tcontext,
             CustomLink source) {
         var target = new CustomLinkDto();
-        target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
         mapNameableProperties(source, target);
         // if (source.isGhost()) {
@@ -578,7 +581,6 @@ public final class EntityToDtoTransformer {
     public static CustomPropertiesDto transformCustomProperties2Dto(EntityToDtoContext tcontext,
             CustomProperties source) {
         var target = new CustomPropertiesDto();
-        target.setType(source.getType());
         target.setApplicableTo(source.getApplicableTo());
 
         target.setAttributes(source.getAllProperties());
@@ -611,17 +613,22 @@ public final class EntityToDtoTransformer {
     private static Map<String, List<CustomLinkDto>> mapLinks(Set<CustomLink> links,
             EntityToDtoContext tcontext) {
         return links.stream()
-                    .map(link -> transformCustomLink2Dto(tcontext, link))
-                    .collect(Collectors.groupingBy(CustomLinkDto::getType));
+                    .collect(groupingBy(CustomLink::getType))
+                    .entrySet()
+                    .stream()
+                    .collect(toMap(Map.Entry::getKey, entry -> entry.getValue()
+                                                                    .stream()
+                                                                    .map(link -> transformCustomLink2Dto(tcontext,
+                                                                                                         link))
+                                                                    .collect(toList())));
     }
 
     private static Map<String, CustomPropertiesDto> mapCustomAspects(
             Set<CustomProperties> customAspects, EntityToDtoContext tcontext) {
         return customAspects.stream()
-                            .map(customAspect -> transformCustomProperties2Dto(tcontext,
-                                                                               customAspect))
-                            .collect(Collectors.toMap(CustomPropertiesDto::getType,
-                                                      Function.identity()));
+                            .collect(toMap(CustomProperties::getType,
+                                           aspect -> transformCustomProperties2Dto(tcontext,
+                                                                                   aspect)));
     }
 
     private EntityToDtoTransformer() {

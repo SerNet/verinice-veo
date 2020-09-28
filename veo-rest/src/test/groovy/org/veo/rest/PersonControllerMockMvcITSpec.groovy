@@ -257,7 +257,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'PersonCommons' :
                 [
-                    type : 'PersonCommons',
                     applicableTo: [
                         "Person"
                     ],

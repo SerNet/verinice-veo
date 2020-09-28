@@ -348,7 +348,6 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             links: [
                 'Process_depends_on_Asset': [
                     [
-                        type  : 'Process_depends_on_Asset',
                         name  : 'requires',
                         target:
                         [

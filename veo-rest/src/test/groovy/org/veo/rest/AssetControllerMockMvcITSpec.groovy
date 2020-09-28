@@ -170,9 +170,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                     attributes:[
                         simpleProp:'simpleValue'
                     ],
-                    domains:[],
-                    type: 'simpleAspect'
-                ]
+                    domains:[]]
             ],
             domains:[],
             id: asset.id.uuidValue(),
@@ -231,9 +229,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                         attributes:[
                             simpleProp:'simpleValue'
                         ],
-                        domains:[],
-                        type: 'simpleAspect'
-                    ]
+                        domains:[]]
                 ],
                 domains:[],
                 id: asset.id.uuidValue(),
@@ -499,11 +495,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                     targetUri: '/domains/'+domain.id.uuidValue(),
                     displayName: 'test ddd'
                 ]
-            ], customAspects:
+            ],
+            customAspects:
             [
                 'AssetCommons' :
                 [
-                    type : 'AssetCommons',
                     applicableTo: [
                         "Asset"
                     ],

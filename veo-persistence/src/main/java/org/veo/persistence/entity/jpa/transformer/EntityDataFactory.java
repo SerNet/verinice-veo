@@ -188,13 +188,6 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CustomProperties createCustomProperties(String type) {
-        CustomProperties properties = createCustomProperties();
-        properties.setType(type);
-        return properties;
-    }
-
-    @Override
     public ModelGroup<?> createGroup(GroupType groupType) {
         return createGroupInstance(groupType.entityClass);
     }

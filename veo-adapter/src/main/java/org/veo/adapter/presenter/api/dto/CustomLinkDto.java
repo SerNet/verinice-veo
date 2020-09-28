@@ -84,9 +84,9 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
         return list;
     }
 
-    public CustomLink toEntity(DtoToEntityContext tcontext,
+    public CustomLink toEntity(DtoToEntityContext tcontext, String type,
             CustomAttributesTransformer customAttributesTransformer) {
-        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this,
+        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this, type,
                                                               customAttributesTransformer);
     }
 }

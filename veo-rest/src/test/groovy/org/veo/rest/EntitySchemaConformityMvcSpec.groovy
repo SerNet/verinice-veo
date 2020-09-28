@@ -93,7 +93,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                             process_AffectedParties_supplementaryInformation: "strongly affected"
                         ],
                         name: "first affected party",
-                        type: "process_AffectedParties",
                         target: [
                             targetUri: "/persons/$personId"
                         ]
@@ -102,7 +101,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             customAspects: [
                 process_InternalRecipient: [
-                    type: "process_InternalRecipient",
                     attributes: [
                         process_InternalRecipient_InternalRecipient: true
                     ]

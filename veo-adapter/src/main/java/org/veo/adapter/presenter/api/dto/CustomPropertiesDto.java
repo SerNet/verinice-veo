@@ -54,13 +54,6 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class CustomPropertiesDto {
 
-    // TODO Add an example for the API documentation for field type.
-    @Schema(description = "The type for the CustomProperties.",
-            example = "<add example here>",
-            required = false)
-    @ToString.Include
-    private String type;
-
     // TODO Add an example for the API documentation for field applicableTo.
     @Schema(description = "The applicableTo for the CustomProperties.",
             example = "<add example here>",
@@ -111,9 +104,9 @@ public class CustomPropertiesDto {
         this.attributes = attributes;
     }
 
-    public CustomProperties toEntity(EntityFactory factory,
+    public CustomProperties toEntity(EntityFactory factory, String type,
             CustomAttributesTransformer customAttributesTransformer) {
-        return DtoToEntityTransformer.transformDto2CustomProperties(factory, this,
+        return DtoToEntityTransformer.transformDto2CustomProperties(factory, this, type,
                                                                     customAttributesTransformer);
     }
 }

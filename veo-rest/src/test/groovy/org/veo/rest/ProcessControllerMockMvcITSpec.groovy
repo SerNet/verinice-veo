@@ -314,7 +314,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_SensitiveData' :
                 [
-                    type : 'process_SensitiveData',
                     applicableTo: [
                         "Process"
                     ],
@@ -396,7 +395,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_SensitiveData' :
                 [
-                    type : 'process_SensitiveData',
                     applicableTo: [
                         "Process"
                     ],
@@ -484,7 +482,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_DataCategories' : [
                     [
-                        type : 'process_DataCategories',
                         applicableTo: [
                             "Process"
                         ],
@@ -544,7 +541,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             links: [
                 'process_DataCategories': [
                     [
-                        type  : 'process_DataCategories',
                         name  : 'categories',
                         target:
                         [

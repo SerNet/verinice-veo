@@ -83,7 +83,6 @@ class BasicCrudITSpec extends VeoMvcSpec {
             links: [
                 'process_DataCategories':[
                     [
-                        type: 'process_DataCategories',
                         name : 'requires',
                         target:
                         [

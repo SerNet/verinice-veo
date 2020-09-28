@@ -81,8 +81,6 @@ public interface EntityFactory {
     CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource);
 
-    CustomProperties createCustomProperties(String type);
-
     ModelGroup<?> createGroup(GroupType groupType);
 
     PersonGroup createPersonGroup();

@@ -148,7 +148,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'ControlDataProtectionObjectivesEugdpr' :
                 [
-                    type : 'ControlDataProtectionObjectivesEugdpr',
                     applicableTo: [
                         "Control"
                     ],
@@ -343,7 +342,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'ControlDataProtectionObjectivesEugdpr' :
                 [
-                    type : 'ControlDataProtectionObjectivesEugdpr',
                     applicableTo: [
                         "Control"
                     ],
@@ -402,7 +400,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'ControlDataProtectionObjectivesEugdpr' :
                 [
-                    type : 'ControlDataProtectionObjectivesEugdpr',
                     applicableTo: [
                         "Control"
                     ],
