@@ -61,6 +61,7 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
@@ -72,7 +73,6 @@ import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -107,7 +107,7 @@ public class AssetController extends AbstractEntityController {
         this.referenceResolver = referenceResolver;
     }
 
-    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.ASSETS;
+    public static final String URL_BASE_PATH = "/" + EntityTypeNames.ASSETS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreateAssetUseCase<ResponseEntity<ApiResponseBody>> createAssetUseCase;

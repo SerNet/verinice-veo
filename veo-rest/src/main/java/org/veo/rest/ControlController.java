@@ -62,6 +62,7 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
@@ -73,7 +74,6 @@ import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 
@@ -93,7 +93,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ControlController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.CONTROLS;
+    public static final String URL_BASE_PATH = "/" + EntityTypeNames.CONTROLS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreateControlUseCase<ResponseEntity<ApiResponseBody>> createControlUseCase;

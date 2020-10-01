@@ -69,6 +69,7 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
@@ -82,7 +83,6 @@ import org.veo.core.usecase.group.PutGroupUseCase;
 import org.veo.core.usecase.group.UpdateGroupUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 
@@ -104,7 +104,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GroupController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.GROUPS;
+    public static final String URL_BASE_PATH = "/" + EntityTypeNames.GROUPS;
 
     protected static final String TYPE_PARAM = "type";
 

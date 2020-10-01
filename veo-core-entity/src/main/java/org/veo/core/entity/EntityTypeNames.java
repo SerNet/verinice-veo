@@ -14,17 +14,10 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest.common;
+package org.veo.core.entity;
 
 import java.util.Map;
 import java.util.Set;
-
-import org.veo.core.entity.Asset;
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Person;
-import org.veo.core.entity.Process;
-import org.veo.core.entity.Unit;
 
 /**
  * This class contains translations from/to all known resource collections to
@@ -33,7 +26,7 @@ import org.veo.core.entity.Unit;
  * This should be maintained to be the only place where new resource types must
  * be added.
  */
-public final class ResourceTypeMap {
+public final class EntityTypeNames {
 
     public static final String PERSONS = "persons";
     public static final String PROCESSES = "processes";

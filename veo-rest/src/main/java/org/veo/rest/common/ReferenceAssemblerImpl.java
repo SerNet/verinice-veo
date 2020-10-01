@@ -35,6 +35,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -87,7 +88,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         // FIXME VEO-227 There is no ressource endpoint for Domain objects so we cannot
         // create a URL to them.
         if (Domain.class.isAssignableFrom(type)) {
-            return "/" + ResourceTypeMap.getCollectionNameFor(type);
+            return "/" + EntityTypeNames.getCollectionNameFor(type);
         }
         return "";
     }
@@ -158,7 +159,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     @Override
     public Class<? extends ModelObject> parseType(String uriString) {
         Optional<String> collectionName = readCollectionName(uriString);
-        return ResourceTypeMap.getTypeForCollectionName(collectionName.orElseThrow());
+        return EntityTypeNames.getTypeForCollectionName(collectionName.orElseThrow());
     }
 
     @Override
@@ -172,7 +173,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
 
     private Optional<String> readCollectionName(String uriString) {
-        return ResourceTypeMap.getKnownCollectionNames()
+        return EntityTypeNames.getKnownCollectionNames()
                               .stream()
                               .filter(t -> readUriString(uriString).matches(String.join("", ".*/",
                                                                                         t, "/",

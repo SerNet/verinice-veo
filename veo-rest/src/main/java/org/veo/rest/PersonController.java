@@ -60,6 +60,7 @@ import org.veo.adapter.presenter.api.io.mapper.CreatePersonOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -72,7 +73,6 @@ import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 
@@ -92,7 +92,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PersonController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.PERSONS;
+    public static final String URL_BASE_PATH = "/" + EntityTypeNames.PERSONS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
     private final CreatePersonUseCase<ResponseEntity<ApiResponseBody>> createPersonUseCase;

@@ -59,6 +59,7 @@ import org.veo.adapter.presenter.api.io.mapper.CreateProcessOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -71,7 +72,6 @@ import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.ResourceTypeMap;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -92,7 +92,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProcessController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + ResourceTypeMap.PROCESSES;
+    public static final String URL_BASE_PATH = "/" + EntityTypeNames.PROCESSES;
 
     private UseCaseInteractorImpl useCaseInteractor;
     private CreateProcessUseCase<ResponseEntity<ApiResponseBody>> createProcessUseCase;
