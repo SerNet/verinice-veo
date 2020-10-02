@@ -29,6 +29,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
+import org.veo.core.usecase.common.ETagMismatchException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
@@ -135,10 +136,10 @@ class OptimisticLockingMvcITSpec extends VeoRestMvcSpec {
                 targetUri: '/units/' + unit.id.uuidValue()
             ]
         ]
-        def resultPut2 = put("/assets/${postResultJson.resourceId}", putRequest2, headers)
+        put("/assets/${postResultJson.resourceId}", putRequest2, headers, false)
         then: "a status code 200 returned for the first put"
         resultPut1.andExpect(status().isOk())
-        and: "a ConditionNotSatisfiedError after the second put"
-        thrown ConditionNotSatisfiedError
+        and: "a ETagMismatchException after the second put"
+        thrown ETagMismatchException
     }
 }

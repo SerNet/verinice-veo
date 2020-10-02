@@ -16,8 +16,11 @@
  ******************************************************************************/
 package org.veo.core
 
+
 import static groovy.json.JsonOutput.toJson
 import static org.springframework.http.MediaType.APPLICATION_JSON
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -27,7 +30,6 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 import groovy.json.JsonSlurper
 
@@ -87,24 +89,33 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, boolean expectSuccessfulRequest) throws Exception {
-        ResultActions actions = mvc.perform(requestBuilder)
-        MvcResult result = actions.andReturn()
-        if (expectSuccessfulRequest) {
-            assert result.resolvedException == null
-            actions.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-            assert result.request.asyncStarted
-        } else {
-            actions.andExpect(MockMvcResultMatchers.status().is4xxClientError())
-            assert result.resolvedException != null
-            throw result.resolvedException
-        }
-
-        ResultActions  asyncActions = mvc
-                .perform(MockMvcRequestBuilders.asyncDispatch(result))
+        ResultActions asyncActions = mvc
+                .perform(MockMvcRequestBuilders.asyncDispatch(prepareAsyncRequest(requestBuilder)))
                 .andDo(MockMvcResultHandlers.print())
         MvcResult asyncResult = asyncActions.andReturn()
-        assert asyncResult.resolvedException == null
-        asyncActions.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+
+        if (expectSuccessfulRequest) {
+            assert asyncResult.resolvedException == null
+            asyncActions.andExpect(status().is2xxSuccessful())
+        } else {
+            asyncActions.andExpect(status().is4xxClientError())
+            assert asyncResult.resolvedException != null
+            throw asyncResult.resolvedException
+        }
+        return asyncActions
+    }
+
+    private MvcResult prepareAsyncRequest(MockHttpServletRequestBuilder requestBuilder) throws Exception{
+        def actions = mvc.perform(requestBuilder)
+        try {
+            return actions
+                    .andExpect(request().asyncStarted())
+                    .andReturn()
+        }
+        // The async request may fail to start if the request is invalid (e.g. has invalid HTTP header or params).
+        catch (AssertionError ignored) {
+            throw actions.andReturn().resolvedException;
+        }
     }
 
     def parseJson(ResultActions resultActions) {
