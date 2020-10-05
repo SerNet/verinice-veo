@@ -27,19 +27,16 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.entity.Client
+import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
-import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -58,7 +55,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan("org.veo.rest")
-class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
+class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -81,28 +78,29 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = entityFactory.createDomain()
-            domain.description = "ISO/IEC"
-            domain.abbreviation = "ISO"
-            domain.name = "ISO"
-            domain.id = Key.newUuid()
+            domain = newDomain {
+                description = "ISO/IEC"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            domain1 = entityFactory.createDomain()
-            domain1.description = "ISO/IEC2"
-            domain1.abbreviation = "ISO"
-            domain1.name = "ISO"
-            domain1.id = Key.newUuid()
+            domain1 = newDomain {
+                description = "ISO/IEC2"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            def client= entityFactory.createClient()
-            client.id = clientId
-            client.domains = [domain, domain1] as Set
+            def client= newClient {
+                id = clientId
+                domains = [domain, domain1] as Set
+            }
 
-            unit = entityFactory.createUnit()
-            unit.name = "Test unit"
-            unit.id = Key.newUuid()
+            unit = newUnit(client) {
+                name = "Test unit"
+            }
 
             unit.client = client
-            Client c = clientRepository.save(client)
+            clientRepository.save(client)
             unitRepository.save(unit)
         }
         ETag.setSalt(salt)
@@ -193,14 +191,10 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a control"() {
         given: "a saved control"
-
-        def control = entityFactory.createControl()
-        control.name = 'Test control-1'
-        control.owner = unit
-        control.id = Key.newUuid()
-
-        control = txTemplate.execute {
-            controlRepository.save(control)
+        def control = txTemplate.execute {
+            controlRepository.save(newControl(unit) {
+                name = 'Test control-1'
+            })
         }
 
 
@@ -223,17 +217,12 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all controls for a unit"() {
         given: "a saved asset"
-
-        def control = entityFactory.createControl()
-        control.id = Key.newUuid()
-        control.name = 'Test control-1'
-        control.owner = unit
-
-        def control2 = entityFactory.createControl()
-        control2.id = Key.newUuid()
-        control2.name = 'Test control-2'
-        control2.owner = unit
-
+        def control = newControl(unit) {
+            name = 'Test control-1'
+        }
+        def control2 = newControl(unit) {
+            name = 'Test control-2'
+        }
         (control, control2) = txTemplate.execute {
             [control, control2].collect(controlRepository.&save)
         }
@@ -258,12 +247,13 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "retrieveíng all controls for a unit does not return groups"() {
         given: "a saved control and a saved control group"
 
-        def control = entityFactory.createControl(Key.newUuid(), 'Test control-1', unit)
+        def control = newControl(unit) {
+            name = 'Test control-1'
+        }
 
-        ModelGroup controlGroup = entityFactory.createGroup(GroupType.Control)
-        controlGroup.id= Key.newUuid()
-        controlGroup.name = 'Group 1'
-        controlGroup.owner = unit
+        def controlGroup = newControlGroup(unit) {
+            name = 'Group 1'
+        }
 
         txTemplate.execute {
             [control, controlGroup].collect(controlRepository.&save)
@@ -284,16 +274,10 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a control"() {
         given: "a saved control"
-
-        Key<UUID> id = Key.newUuid()
-        def control = entityFactory.createControl()
-        control.id = Key.newUuid()
-        control.name = 'Test control-1'
-        control.owner = unit
-        control.domains = [domain1] as Set
-
-        control = txTemplate.execute {
-            controlRepository.save(control)
+        def control = txTemplate.execute {
+            controlRepository.save(newControl(unit) {
+                domains = [domain1] as Set
+            })
         }
 
         Map request = [
@@ -336,17 +320,11 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         cp.setType("my.new.type")
         cp.setApplicableTo(['Control'] as Set)
 
-        Key<UUID> id = Key.newUuid()
-        def control = entityFactory.createControl()
-        control.id = id
-        control.name ="C"
-        control.setCustomAspects([cp] as Set)
-        control.setDomains([domain1] as Set)
-        control.owner = unit
-
-
-        control = txTemplate.execute {
-            controlRepository.save(control)
+        def control = txTemplate.execute {
+            controlRepository.save(newControl(unit) {
+                customAspects = [cp] as Set
+                domains = [domain1] as Set
+            })
         }
         Map request = [
             name: 'New control-2',
@@ -401,17 +379,11 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
         cp.setType("my.new.type")
         cp.setApplicableTo(['Control'] as Set)
 
-        Key<UUID> id = Key.newUuid()
-        def control = new ControlData()
-        control.id = id
-        control.setCustomAspects([cp] as Set)
-        control.setDomains([domain1] as Set)
-        control.owner = unit
-        control.name = "c-1"
-        control.version = 1
-
-        control = txTemplate.execute {
-            controlRepository.save(control)
+        def control = txTemplate.execute {
+            controlRepository.save(newControl(unit) {
+                customAspects = [cp] as Set
+                domains = [domain1] as Set
+            })
         }
         Map request = [
             name: 'New control-2',
@@ -444,7 +416,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(id.uuidValue(), 1)
+            'If-Match': ETag.from(control.id.uuidValue(), 1)
         ]
         def results = put("/controls/${control.id.uuidValue()}", request, headers, false)
 
@@ -459,17 +431,8 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "delete a control"() {
 
         given: "an existing control"
-        Key<UUID> id = Key.newUuid()
-
-        def control = entityFactory.createControl()
-        control.name = 'Test control-delete'
-        control.domains = [domain1] as Set
-        control.name ="C"
-        control.owner = unit
-        control.id = id
-
-        control = txTemplate.execute {
-            controlRepository.save(control)
+        def control = txTemplate.execute {
+            controlRepository.save(newControl(unit))
         }
 
 
@@ -479,7 +442,7 @@ class ControlControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         then: "the control is deleted"
         results.andExpect(status().isOk())
-        controlRepository.findById(id).empty
+        controlRepository.findById(control.id).empty
     }
 
     @WithUserDetails("user@domain.example")

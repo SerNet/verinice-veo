@@ -31,14 +31,12 @@ import org.springframework.test.context.ActiveProfiles
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomProperties
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
-
-import spock.lang.Specification
+import org.veo.test.VeoSpec
 
 @SpringBootTest(classes = CustomAspectPersistenceSpec.class
 )
@@ -46,7 +44,7 @@ import spock.lang.Specification
 @ComponentScan("org.veo")
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("test")
-class CustomAspectPersistenceSpec extends Specification {
+class CustomAspectPersistenceSpec extends VeoSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -60,17 +58,15 @@ class CustomAspectPersistenceSpec extends Specification {
     def "create an asset with a customAspect and save-load it"() {
         given: "a Unit and an asset"
 
-        Key unitId = Key.newUuid()
-
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType('my.new.linktype')
         cp.setApplicableTo(['Asset'] as Set)
 
-        Unit unit = entityFactory.createUnit(unitId, "unit", null)
-        Client client = entityFactory.createClient(Key.newUuid(), "Demo Client")
-        unit.setClient(client)
-        Asset asset = entityFactory.createAsset(Key.newUuid(), "AssetName", unit)
-        asset.setCustomAspects([cp] as Set)
+        Client client = newClient()
+        Unit unit = newUnit(client)
+        Asset asset = newAsset(unit) {
+            customAspects = [cp] as Set
+        }
 
         clientRepository.save(client)
         unitRepository.save(unit)

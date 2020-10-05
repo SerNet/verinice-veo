@@ -24,12 +24,11 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
 import org.veo.persistence.VeoJpaConfiguration
-
-import spock.lang.Specification
+import org.veo.test.VeoSpec
 
 @DataJpaTest
 @ContextConfiguration(classes = VeoJpaConfiguration)
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("test")
-abstract class AbstractJpaSpec extends Specification {
+abstract class AbstractJpaSpec extends VeoSpec {
 }

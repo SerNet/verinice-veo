@@ -50,10 +50,9 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
     def setup() {
         client = txTemplate.execute {
-            Client client = entityFactory.createClient()
-            client.id = clientId
-
-            clientRepository.save(client)
+            clientRepository.save(newClient {
+                id = clientId
+            })
         }
     }
 

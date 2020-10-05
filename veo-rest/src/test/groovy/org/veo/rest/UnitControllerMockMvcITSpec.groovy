@@ -16,7 +16,9 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.hamcrest.Matchers.*
+import static org.hamcrest.Matchers.emptyOrNullString
+import static org.hamcrest.Matchers.is
+import static org.hamcrest.Matchers.not
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -35,7 +37,6 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.UnitData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
@@ -72,19 +73,16 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
+        domain = newDomain {
+            description = "ISO/IEC"
+            abbreviation = "ISO"
+            name = "27001"
+        }
 
-        domain = entityFactory.createDomain()
-        domain.description = "ISO/IEC"
-        domain.abbreviation = "ISO"
-        domain.name = "27001"
-        domain.id = Key.newUuid()
-
-
-        def client= entityFactory.createClient()
-        client.id = clientId
-        client.name = "Demo Client"
-        client.domains = [domain] as Set
-        Client c = repository.save(client)
+        client = repository.save(newClient {
+            id = clientId
+            domains = [domain] as Set
+        })
     }
 
     @WithUserDetails("user@domain.example")
@@ -111,25 +109,15 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "get a unit"() {
-        def id = Key.newUuid()
-        txTemplate.execute {
-            client = repository.findById(clientId).get()
-        }
-        Unit unit = entityFactory.createUnit()
-        unit.id = id
-        unit.name = "Test unit"
-        unit.setAbbreviation("u-1")
-        unit.setDescription("description")
-        unit.setDomains([client.domains.first()] as Set)
-        unit.client = client
-
-        txTemplate.execute {
-            unit = urepository.save(unit)
-        }
+        def unit = urepository.save(newUnit(client) {
+            name = "Test unit"
+            abbreviation = "u-1"
+            domains = [client.domains.first()] as Set
+        })
 
         when: "a request is made to the server"
 
-        def results = get("/units/${id.uuidValue()}")
+        def results = get("/units/${unit.id.uuidValue()}")
 
         then: "the unit is returned with HTTP status code 200"
 
@@ -142,23 +130,11 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "retrieve all units"() {
-        def id = Key.newUuid()
-        txTemplate.execute {
-            client = repository.findById(clientId).get()
-        }
-
-        Unit unit = entityFactory.createUnit()
-        unit.id = id
-        unit.name = "Test unit foo"
-        unit.setAbbreviation("u-1")
-        unit.setDescription("description")
-        unit.setDomains([client.domains.first()] as Set)
-        unit.setClient(client)
-
-        txTemplate.execute {
-            unit = urepository.save(unit)
-            repository.save(client)
-        }
+        def unit = urepository.save(newUnit(client) {
+            name = "Test unit foo"
+            abbreviation = "u-1"
+            domains = [client.domains.first()] as Set
+        })
 
         when: "a request is made to the server"
 
@@ -172,52 +148,37 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         result.first().name == "Test unit foo"
     }
 
-    def createTestClientUnit(Key id) {
-        Unit unit
-        Client c
-        txTemplate.execute {
-            c = repository.findById(clientId).get()
-            // we do not use Client.createUnit() here because we want to specify the unit's ID:
-            unit = entityFactory.createUnit()
-            unit.id = id
-            unit.name = "Test unit-5"
-            unit.setAbbreviation("u-1")
-            unit.setDescription("description")
-            unit.setClient(c)
-
-            c = repository.save(c)
-            urepository.save(unit)
+    def createTestClientUnit() {
+        return txTemplate.execute {
+            urepository.save(newUnit(client))
         }
-        return c
     }
 
     @WithUserDetails("user@domain.example")
     def "update a unit"() {
         given: "a unit"
-
-        def id = Key.newUuid()
-        Client c = createTestClientUnit(id)
+        def unit = createTestClientUnit()
 
         when: "the unit is updated by changing the name and adding a domain"
 
         Map request = [
-            id: id.uuidValue(),
+            id: unit.id.uuidValue(),
             name: 'New unit-2',
             abbreviation: 'u-2',
             description: 'desc',
             domains: [
                 [
-                    targetUri: '/domains/'+c.domains.first().id.uuidValue(),
+                    targetUri: '/domains/'+client.domains.first().id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
         ]
 
         Map headers = [
-            'If-Match': ETag.from(id.uuidValue(), 0)
+            'If-Match': ETag.from(unit.id.uuidValue(), 0)
         ]
 
-        def results = put("/units/${id.uuidValue()}", request, headers)
+        def results = put("/units/${unit.id.uuidValue()}", request, headers)
 
         then: "the unit is updated and a status code returned"
         results.andExpect(status().isOk())
@@ -230,172 +191,121 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     def "Update a unit multiple times"() {
 
         given: "a unit"
-        def id = Key.newUuid()
-        Client c = createTestClientUnit(id)
+        Unit unit = createTestClientUnit()
 
         when: "the unit is updated first by changing the name and adding a domain"
         Map request1 = [
-            id: id.uuidValue(),
+            id: unit.id.uuidValue(),
             name: 'New unit-2',
             abbreviation: 'u-2',
             description: 'desc',
             domains: [
                 [
-                    targetUri: '/domains/'+c.domains.first().id.uuidValue(),
+                    targetUri: '/domains/'+client.domains.first().id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
         ]
 
         Map headers = [
-            'If-Match': ETag.from(id.uuidValue(), 0)
+            'If-Match': ETag.from(unit.id.uuidValue(), 0)
         ]
 
-        def results1 = put("/units/${id.uuidValue()}", request1, headers)
+        def request1Result = parseJson(put("/units/${unit.id.uuidValue()}", request1, headers))
 
-        and: "the unit is updated secondly by changing the name and removing a domain"
+        then: "the unit was correctly modified the first time"
+        request1Result.name == "New unit-2"
+        request1Result.abbreviation == "u-2"
+        request1Result.domains.size() == 1
+
+        when: "the unit is updated secondly by changing the name and removing a domain"
         Map request2 = [
-            id: id.uuidValue(),
+            id: unit.id.uuidValue(),
             name: 'New unit-3',
             abbreviation: 'u-3',
             description: 'desc',
             domains: []]
 
         headers = [
-            'If-Match': ETag.from(id.uuidValue(), 1)
+            'If-Match': ETag.from(unit.id.uuidValue(), 1)
         ]
 
-        def results2 = put("/units/${id.uuidValue()}", request2, headers)
-
-        then: "the unit was correctly modified the first time"
-        results1.andExpect(status().isOk())
-        def result1 = new JsonSlurper().parseText(results1.andReturn().response.contentAsString)
-        result1.name == "New unit-2"
-        result1.abbreviation == "u-2"
-        result1.domains.size() == 1
+        def request2Result = parseJson(put("/units/${unit.id.uuidValue()}", request2, headers))
 
         then: "the unit was correctly modified the second time"
-        results2.andExpect(status().isOk())
-        def result2 = new JsonSlurper().parseText(results2.andReturn().response.contentAsString)
-        result2.name == "New unit-3"
-        result2.abbreviation == "u-3"
-        result2.domains.size() == 0
+        request2Result.name == "New unit-3"
+        request2Result.abbreviation == "u-3"
+        request2Result.domains.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
     def "create sub unit for a unit"() {
-
-        def id = Key.newUuid()
-        Client c = null
-        Unit unit = null
-        txTemplate.execute {
-            c = repository.findById(clientId).get()
-            unit = new UnitData()
-            unit.id = id
-            unit.name = "Test unit-2"
-            unit.setAbbreviation("u-3")
-            unit.setDescription("description")
-            unit.client = c
-            unit = urepository.save(unit)
-        }
-
-        given: "a request body"
-
-        Map request1 = [
+        given: "a parent unit"
+        def parent = parseJson(post('/units', [
             name: 'parent-unit-1'
-        ]
+        ]))
 
-        def results1 = post('/units', request1)
-
-        def parent = new JsonSlurper().parseText(results1.andReturn().getResponse().contentAsString)
-
-        Map request = [
+        when: "a sub unit is POSTed"
+        def postSubUnitResult = post('/units', [
             name: 'sub-unit-1',
             parent: [
                 targetUri: '/units/'+parent.resourceId,
                 displayName: 'test ddd'
             ]
-        ]
+        ])
 
-        when: "a request is made to the server"
-
-        def results = post('/units', request)
-
-        then: "the unit is created and a status code returned"
-        results.andExpect(status().isCreated())
+        then: "the sub unit is created and a status code returned"
+        postSubUnitResult.andExpect(status().isCreated())
 
         and: "the location of the new unit is returned"
-        results.andExpect(jsonPath('$.success').value("true"))
-        results.andExpect(jsonPath('$.resourceId', is(not(emptyOrNullString()))))
-        results.andExpect(jsonPath('$.message').value('Unit created successfully.'))
+        postSubUnitResult.andExpect(jsonPath('$.success').value("true"))
+        postSubUnitResult.andExpect(jsonPath('$.resourceId', is(not(emptyOrNullString()))))
+        postSubUnitResult.andExpect(jsonPath('$.message').value('Unit created successfully.'))
 
         when: "get the sub unit"
-        String temp = results.andReturn().getResponse().contentAsString
-        def su = new JsonSlurper().parseText(temp)
-
-        results = get("/units/${su.resourceId}")
+        def subUnitId = parseJson(postSubUnitResult).resourceId
+        def subUnit = parseJson(get("/units/${subUnitId}"))
 
         then: "the sub unit has the right parent"
+        subUnit.name == "sub-unit-1"
+        subUnit.parent.targetUri == "http://localhost/units/"+parent.resourceId
 
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        result.name == "sub-unit-1"
-        result.parent.targetUri == "http://localhost/units/"+parent.resourceId
-
-        when: "get the parent"
-
-        results = get("/units/${parent.resourceId}")
-
-        result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then: " parent contains the child"
-
-        results.andExpect(status().isOk())
-        result.name == "parent-unit-1"
-
+        // VEO-327 GET the parent unit and verify that it contains the child unit.
 
         when: "load the client"
-
-        Client tclient = null
-        List units = null
-        txTemplate.execute {
-            tclient = repository.findById(clientId).get()
-            units = urepository.findByClient(tclient)
+        def allUnits = txTemplate.execute {
+            urepository.findByClient(client)
         }
 
         then: "the data is persistent"
-        units.size() == 3
+        allUnits.size() == 2
     }
 
     @WithUserDetails("user@domain.example")
     def "delete a unit"() {
         given: "a unit"
+        def unit = createTestClientUnit()
 
-        def id = Key.newUuid()
-        Client c = createTestClientUnit(id)
-
-        when: "the client is loaded"
-        Client tclient = txTemplate.execute {
-            repository.findById(clientId).get()
-        }
-        Unit unit1 = txTemplate.execute {
-            urepository.findById(id).get()
+        when: "the unit is loaded"
+        def loadedUnit = txTemplate.execute {
+            urepository.findById(unit.id)
         }
 
-        then: "the unit is present"
-        unit1.id == id
+        then: "the loadedUnit is present"
+        loadedUnit.present
 
         when: "the unit is deleted"
-        def results = delete("/units/${id.uuidValue()}")
+        def results = delete("/units/${unit.id.uuidValue()}")
 
         then: "the unit is removed and a status code returned"
         results.andExpect(status().isNoContent())
 
         when: "the unit is loaded again"
-        def unit = txTemplate.execute {
-            urepository.findById(id)
+        loadedUnit = txTemplate.execute {
+            urepository.findById(unit.id)
         }
 
         then: "the unit is no longer present"
-        unit.empty
+        loadedUnit.empty
     }
 }

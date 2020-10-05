@@ -22,16 +22,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
-import org.veo.core.entity.*
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
+import org.veo.core.entity.Document
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
+import org.veo.core.entity.Person
+import org.veo.core.entity.Process
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.AssetData
-import org.veo.persistence.entity.jpa.ClientData
-import org.veo.persistence.entity.jpa.DocumentData
-import org.veo.persistence.entity.jpa.DomainData
-import org.veo.persistence.entity.jpa.PersonData
-import org.veo.persistence.entity.jpa.ProcessData
-import org.veo.persistence.entity.jpa.UnitData
 
 @SpringBootTest(classes = ClientRepositorySpec.class)
 @Transactional()
@@ -48,23 +48,22 @@ class ClientRepositorySpec extends VeoSpringSpec {
     def "create a simple client and a domain together"() {
         given: "a domain and a client"
 
-        Key clientId = Key.newUuid()
-        Domain domain = new DomainData()
-        domain.name = "27001"
-        domain.description = "ISO/IEC"
-        domain.abbreviation = "ISO"
-        domain.id = Key.newUuid()
+        Domain domain = newDomain {
+            name = "27001"
+            description = "ISO/IEC"
+            abbreviation = "ISO"
+        }
 
-        Client client = new ClientData()
-        client.id = clientId
-        client.name = "Demo Client"
-        client.setDomains([domain] as Set)
+        Client client = newClient {
+            name = "Demo Client"
+            domains = [domain] as Set
+        }
 
         repository.save(client)
 
         when: "loaded from db"
 
-        Optional<Client> newClient = repository.findById(clientId)
+        Optional<Client> newClient = repository.findById(client.id)
         boolean isPresent = newClient.isPresent()
 
         Client c = newClient.get()
@@ -80,7 +79,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         repository.save(c)
 
         and: "The client is retrieved"
-        newClient = repository.findById(clientId)
+        newClient = repository.findById(client.id)
         isPresent = newClient.isPresent()
         c = newClient.get()
 
@@ -97,42 +96,37 @@ class ClientRepositorySpec extends VeoSpringSpec {
         given: "a domain and a client"
 
         Key clientId = Key.newUuid()
-        Domain domain = new DomainData()
-        domain.name = "27001"
-        domain.description = "ISO/IEC"
-        domain.abbreviation = "ISO"
-        domain.id = Key.newUuid()
+        Domain domain = newDomain {
+            name = "27001"
+            description = "ISO/IEC"
+            abbreviation = "ISO"
+        }
 
-        Client client = new ClientData()
-        client.id = clientId
-        client.setDomains([domain] as Set)
-
-        client.setDomains(([domain] as Set))
+        Client client = newClient {
+            id = clientId
+            setDomains(([domain] as Set))
+        }
 
         repository.save(client)
 
         when: "loaded from db"
 
         Optional<Client> newClient = repository.findById(clientId)
-        boolean isPresent = newClient.isPresent()
 
         Client c = newClient.get()
-        Unit unit = new UnitData()
-        unit.name = "new Unit"
-        unit.id = Key.newUuid()
-        unit.client = c
-
-        unitRepository.save(unit)
+        unitRepository.save(newUnit(c) {
+            name = "new Unit"
+        })
 
         newClient = repository.findById(clientId)
         def units = unitRepository.findByClient(c)
 
-        isPresent = newClient.isPresent()
+        boolean isPresent = newClient.isPresent()
         c = newClient.get()
 
         then: "test"
 
-        isPresent == true
+        isPresent
         c.domains.first().description == "ISO/IEC"
         c.domains.first().abbreviation == "ISO"
         units.size == 1
@@ -142,43 +136,38 @@ class ClientRepositorySpec extends VeoSpringSpec {
         given: "a domain and a client"
 
         Key clientId = Key.newUuid()
-        Domain domain = new DomainData()
-        domain.name = "27001"
-        domain.description = "ISO/IEC"
-        domain.abbreviation = "ISO"
-        domain.id = Key.newUuid()
+        Domain domain = newDomain {
+            name = "27001"
+            description = "ISO/IEC"
+            abbreviation = "ISO"
+        }
 
 
-        Client client = new ClientData()
-        client.id = clientId
-        client.domains = ([domain] as Set)
+        Client client = newClient{
+            id = clientId
+            domains = ([domain] as Set)
+        }
 
-        Unit unit = new UnitData()
-        unit.id = Key.newUuid()
-        unit.name = "u1"
-        unit.client = client
-        unit.domains = [domain] as Set
+        Unit unit = newUnit(client) {
+            name = "u1"
+            domains = [domain] as Set
+        }
 
+        Person person = newPerson(unit) {
+            domains = [domain] as Set
+        }
 
-        Person person = new PersonData()
-        person.id = Key.newUuid()
-        person.owner = unit
-        person.domains = [domain] as Set
+        Asset asset = newAsset(unit) {
+            domains = [domain] as Set
+        }
 
-        Asset asset = new AssetData()
-        asset.id = Key.newUuid()
-        asset.owner = unit
-        asset.domains = [domain] as Set
+        Process process = newProcess(unit) {
+            domains = [domain] as Set
+        }
 
-        Process process = new ProcessData()
-        process.id = Key.newUuid()
-        process.owner = unit
-        process.domains = [domain] as Set
-
-        Document document = new DocumentData()
-        document.id = Key.newUuid()
-        document.owner = unit
-        document.domains = [domain] as Set
+        Document document = newDocument(unit) {
+            domains = [domain] as Set
+        }
 
         when:"save and load the client"
 

@@ -12,5 +12,6 @@ dependencies {
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation project(":veo-test")
     testRuntimeOnly 'com.h2database:h2'
 }

@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
-import org.veo.persistence.entity.jpa.groups.AssetGroupData
 
 class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
 
@@ -43,40 +42,23 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
     UnitData owner2
 
     def setup() {
-
-
-        owner0 = unitRepository.save(new UnitData(
-                dbId: UUID.randomUUID().toString(),
-                name: "owner 0"
-                ))
-        owner1 = unitRepository.save(new UnitData(
-                dbId: UUID.randomUUID().toString(),
-                name: "owner 1"
-                ))
-        owner2 = unitRepository.save(new UnitData(
-                dbId: UUID.randomUUID().toString(),
-                name: "owner 2"
-                ))
+        owner0 = unitRepository.save(newUnit(null))
+        owner1 = unitRepository.save(newUnit(null))
+        owner2 = unitRepository.save(newUnit(null))
     }
 
     def 'finds entities by owners'() {
         given: "three assets from different owners"
 
-        assetRepository.save(new AssetData(
-                dbId: UUID.randomUUID().toString(),
-                name: "asset 0",
-                owner: owner0
-                ))
-        assetRepository.save(new AssetData(
-                dbId: UUID.randomUUID().toString(),
-                name: "asset 1",
-                owner: owner1
-                ))
-        assetRepository.save(new AssetData(
-                dbId: UUID.randomUUID().toString(),
-                name: "asset 2",
-                owner: owner2
-                ))
+        assetRepository.save(newAsset(owner0) {
+            name = "asset 0"
+        })
+        assetRepository.save(newAsset(owner1) {
+            name = "asset 1"
+        })
+        assetRepository.save(newAsset(owner2) {
+            name = "asset 2"
+        })
 
         when: "querying assets from the first two owners"
         def result = assetRepository.findByUnits([owner0.dbId, owner1.dbId] as Set)
@@ -93,16 +75,12 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
 
     def 'finding entities by owners excludes groups'() {
         given: "a normal asset and an asset group, both from the same owner"
-        assetRepository.save(new AssetData(
-                dbId: UUID.randomUUID().toString(),
-                name: "normal",
-                owner: owner0
-                ))
-        assetRepository.save(new AssetGroupData(
-                dbId: UUID.randomUUID().toString(),
-                name: "group",
-                owner: owner0
-                ))
+        assetRepository.save(newAsset(owner0) {
+            name = "normal"
+        })
+        assetRepository.save(newAssetGroup(owner0) {
+            name = "group"
+        })
 
         when: "querying the owner's assets"
         def result = assetRepository.findByUnits([owner0.dbId] as Set)
@@ -114,21 +92,15 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
 
     def 'finds entity groups by owners'() {
         given: "three asset groups from different owners"
-        assetRepository.save(new AssetGroupData(
-                dbId: UUID.randomUUID().toString(),
-                name: "group 0",
-                owner: owner0
-                ))
-        assetRepository.save(new AssetGroupData(
-                dbId: UUID.randomUUID().toString(),
-                name: "group 1",
-                owner: owner1
-                ))
-        assetRepository.save(new AssetGroupData(
-                dbId: UUID.randomUUID().toString(),
-                name: "group 2",
-                owner: owner2
-                ))
+        assetRepository.save(newAssetGroup(owner0) {
+            name = "group 0"
+        })
+        assetRepository.save(newAssetGroup(owner1) {
+            name = "group 1"
+        })
+        assetRepository.save(newAssetGroup(owner2) {
+            name = "group 2"
+        })
 
         when: "querying groups from the first two owners"
         def result = assetRepository.findGroupsByUnits([owner0.dbId, owner1.dbId] as Set)
@@ -145,16 +117,12 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
 
     def 'finding entity groups by owners excludes normal entities'() {
         given: "a normal asset and an asset group, both from the same owner"
-        assetRepository.save(new AssetData(
-                dbId: UUID.randomUUID().toString(),
-                name: "normal",
-                owner: owner0
-                ))
-        assetRepository.save(new AssetGroupData(
-                dbId: UUID.randomUUID().toString(),
-                name: "group",
-                owner: owner0
-                ))
+        assetRepository.save(newAsset(owner0) {
+            name = "normal"
+        })
+        assetRepository.save(newAssetGroup(owner0) {
+            name = "group"
+        })
 
         when: "querying the owner's asset groups"
         def result = assetRepository.findGroupsByUnits([owner0.dbId] as Set)

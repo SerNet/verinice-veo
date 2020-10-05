@@ -1,0 +1,14 @@
+apply plugin: 'java-library'
+apply plugin: 'groovy'
+
+dependencies {
+    api 'org.spockframework:spock-core'
+    api project(':veo-core-entity')
+    api project(':veo-persistence')
+}
+
+spotbugsMain {
+    // disable serialVersionUID checks for groovy classes
+    // https://github.com/gradle/gradle/issues/8317
+    excludeFilter = file('spotbugs-excludes.xml')
+}

@@ -28,8 +28,6 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.repository.ClientRepository
 import org.veo.core.usecase.repository.UnitRepository
-import org.veo.persistence.entity.jpa.ClientData
-import org.veo.persistence.entity.jpa.UnitData
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -48,13 +46,11 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     String unitId = UUID.randomUUID().toString()
 
     def setup() {
-        unitRepository.save(new UnitData().tap{
+        def client = clientRepository.save(newClient {
+            dbId = WebMvcSecurityConfiguration.TESTCLIENT_UUID
+        })
+        unitRepository.save(newUnit(client) {
             dbId = unitId
-            name = "unit"
-            client = clientRepository.save(new ClientData().tap {
-                dbId = WebMvcSecurityConfiguration.TESTCLIENT_UUID
-                name = "client"
-            })
         })
     }
 

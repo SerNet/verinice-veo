@@ -16,14 +16,9 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
+import org.veo.test.VeoSpec
 
-import spock.lang.Specification
-
-class ExampleSpec extends Specification {
-
-    private EntityFactory entityFactory = new EntityDataFactory()
+class ExampleSpec extends VeoSpec {
 
     def "Create a new Domain"() {
         given: "a domain name"
@@ -31,7 +26,9 @@ class ExampleSpec extends Specification {
 
         when : "Domain is created"
 
-        Domain domain = entityFactory.createDomain(Key.newUuid(), name)
+        Domain domain = newDomain() {
+            it.name = name
+        }
 
         then: "domain is correct initatlized"
 
@@ -40,19 +37,23 @@ class ExampleSpec extends Specification {
 
     def "Create a new Client"() {
         given: "a Client name"
-        String domainname = 'Test domain'
-        String clientname = 'Test Client'
+        String domainName = 'Test domain'
+        String clientName = 'Test Client'
 
         when : "Cient is created"
 
-        Domain domain = entityFactory.createDomain(Key.newUuid(), domainname)
+        Domain domain = newDomain() {
+            name = domainName
+        }
 
-        Client client = entityFactory.createClient(Key.newUuid(), clientname)
-        client.setDomains([domain] as Set)
-        then: "domain is correct initatlized"
+        Client client = newClient() {
+            name = clientName
+            domains = [domain] as Set
+        }
+        then: "domain is correctly initialized"
 
-        client.getName().equals(clientname)
+        client.getName().equals(clientName)
         client.getDomains().size() == 1
-        client.getDomains().first().getName().equals(domainname)
+        client.getDomains().first().getName().equals(domainName)
     }
 }

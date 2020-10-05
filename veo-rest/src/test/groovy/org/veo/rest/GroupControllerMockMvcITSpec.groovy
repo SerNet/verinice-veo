@@ -24,16 +24,13 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.entity.Versioned.Lifecycle
-import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.ControlGroup
-import org.veo.core.entity.groups.DocumentGroup
-import org.veo.core.entity.groups.ProcessGroup
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -41,11 +38,6 @@ import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DocumentRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.ControlData
-import org.veo.persistence.entity.jpa.groups.AssetGroupData
-import org.veo.persistence.entity.jpa.groups.ControlGroupData
-import org.veo.persistence.entity.jpa.groups.DocumentGroupData
-import org.veo.persistence.entity.jpa.groups.ProcessGroupData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
@@ -63,7 +55,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 
 @ComponentScan("org.veo.rest")
-class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
+class GroupControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -95,31 +87,30 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = entityFactory.createDomain()
-            domain.description = "ISO/IEC"
-            domain.abbreviation = "ISO"
-            domain.name = "ISO"
-            domain.id = Key.newUuid()
+            domain = newDomain {
+                description = "ISO/IEC"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            domain1 = entityFactory.createDomain()
-            domain1.description = "ISO/IEC2"
-            domain1.abbreviation = "ISO"
-            domain1.name = "ISO"
-            domain1.id = Key.newUuid()
+            domain1 = newDomain {
+                description = "ISO/IEC2"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            def client= entityFactory.createClient()
-            client.id = clientId
-            client.domains = [domain, domain1] as Set
+            def client = newClient {
+                id = clientId
+                domains = [domain, domain1] as Set
+            }
 
-            unit = entityFactory.createUnit()
-            unit.name = "Test unit"
-            unit.id = Key.newUuid()
-            unit.client = client
+            unit = newUnit(client) {
+                name = "Test unit"
+            }
 
-            unit2 = entityFactory.createUnit()
-            unit2.name = "Test unit"
-            unit2.id = Key.newUuid()
-            unit2.client = client
+            unit2 = newUnit(client) {
+                name = "Test unit"
+            }
 
             clientRepository.save(client)
             unitRepository.save(unit)
@@ -186,16 +177,10 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a document group"() {
         given: "a saved document group"
-        DocumentGroup documentGroup = new DocumentGroupData().with{
-            id = Key.newUuid()
-            name = 'Test document group'
-            owner = unit
-            state = Lifecycle.CREATING
-            it
-        }
-
-        documentGroup = txTemplate.execute {
-            documentRepository.save(documentGroup)
+        def documentGroup = txTemplate.execute {
+            documentRepository.save(newDocumentGroup(unit) {
+                name = 'Test document group'
+            })
         }
 
         when: "the server is queried for the group"
@@ -211,27 +196,18 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a control group with members"() {
         given: "a saved control group with two members"
-
-        Control c1 = new ControlData()
-        c1.id = Key.newUuid()
-        c1.name = "c1"
-        c1.owner = unit
-
-        Control c2 = new ControlData()
-        c2.id = Key.newUuid()
-        c2.name = "c2"
-        c2.owner = unit
-
-        ControlGroup controlGroup = new ControlGroupData().with {
-            id = Key.newUuid()
-            name = 'Test control group'
-            owner = unit
-            members = [c1, c2]
-            state = Lifecycle.CREATING
-            it
+        Control c1 = newControl(unit) {
+            name = "c1"
         }
-        controlGroup = txTemplate.execute {
-            controlRepository.save(controlGroup)
+        Control c2 = newControl(unit) {
+            name = "c2"
+        }
+
+        def controlGroup = txTemplate.execute {
+            controlRepository.save(newControlGroup(unit) {
+                name = 'Test control group'
+                members = [c1, c2]
+            })
         }
 
         when: "the server is queried for the group"
@@ -249,27 +225,18 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a control group's members"() {
         given: "a saved control group with two members"
-
-        Control c1 = new ControlData()
-        c1.id = Key.newUuid()
-        c1.name = "c1"
-        c1.owner = unit
-
-        Control c2 = new ControlData()
-        c2.id = Key.newUuid()
-        c2.name = "c2"
-        c2.owner = unit
-
-        ControlGroup controlGroup = new ControlGroupData().with {
-            id = Key.newUuid()
-            name = 'Test control group'
-            owner = unit
-            members = [c1, c2]
-            state = Lifecycle.CREATING
-            it
+        Control c1 = newControl(unit) {
+            name = "c1"
         }
-        controlGroup = txTemplate.execute {
-            controlRepository.save(controlGroup)
+        Control c2 = newControl(unit) {
+            name = "c2"
+        }
+
+        def controlGroup = txTemplate.execute {
+            controlRepository.save(newControlGroup(unit) {
+                name = 'Test control group'
+                members = [c1, c2]
+            })
         }
 
         when: "the server is queried for the group's members"
@@ -288,19 +255,11 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all process groups for a client"() {
         given: "two saved process grousp"
-        ProcessGroup processGroup1 = new ProcessGroupData().with{
-            id = Key.newUuid()
+        def processGroup1 = newProcessGroup(unit) {
             name = 'Test process group 1'
-            owner = unit
-            state = Lifecycle.CREATING
-            it
         }
-        ProcessGroup processGroup2 = new ProcessGroupData().with{
-            id = Key.newUuid()
+        def processGroup2 = newProcessGroup(unit) {
             name = 'Test process group 2'
-            state = Lifecycle.CREATING
-            owner = unit
-            it
         }
 
         (processGroup1, processGroup2) =
@@ -327,23 +286,12 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "retrieve all asset groups for a unit"() {
-        given: "a saved asset"
-
-
-        def assetGroup1 = new AssetGroupData().with {
-            id = Key.newUuid()
+        given: "two saved assets from different units"
+        def assetGroup1 = newAssetGroup(unit) {
             name = 'Test asset group 1'
-            owner = unit
-            state = Lifecycle.CREATING
-            it
         }
-
-        def assetGroup2 = new AssetGroupData().with {
-            id = Key.newUuid()
+        def assetGroup2 = newAssetGroup(unit2) {
             name = 'Test asset group 2'
-            owner = unit2
-            state = Lifecycle.CREATING
-            it
         }
 
         (assetGroup1, assetGroup2) =
@@ -380,13 +328,8 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieving groups works if there are also non-group entities"() {
         given: "a control and a control group"
-        Control control = entityFactory.createControl(Key.newUuid(), "c1", unit)
-
-        ControlGroup controlGroup = new ControlGroupData().tap{
-            id = Key.newUuid()
-            name = 'Group 1'
-            owner = unit
-        }
+        Control control = newControl(unit)
+        ControlGroup controlGroup = newControlGroup(unit)
 
         txTemplate.execute {
             [control, controlGroup].each(controlRepository.&save)
@@ -412,19 +355,11 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         cp.setType("my.new.type")
         cp.setApplicableTo(['Asset'] as Set)
 
-        Key<UUID> id = Key.newUuid()
-        AssetGroup assetGroup = new AssetGroupData().with {
-            setId(id)
-            name = 'Test asset group'
-            setOwner(unit)
-            customAspects = [cp]
-            domains = [domain1]
-            state = Lifecycle.CREATING
-            it
-        }
-
-        assetGroup = txTemplate.execute {
-            assetRepository.save(assetGroup)
+        def assetGroup = txTemplate.execute {
+            assetRepository.save(newAssetGroup(unit) {
+                customAspects = [cp]
+                domains = [domain1]
+            })
         }
 
         Map request = [
@@ -461,7 +396,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
         Map headers = [
             'If-Match': ETag.from(assetGroup.id.uuidValue(), 1)
         ]
-        def results = put("/groups/${id.uuidValue()}?type=Asset",request, headers)
+        def results = put("/groups/${assetGroup.id.uuidValue()}?type=Asset",request, headers)
 
         then: "the group is found"
         results.andExpect(status().isOk())
@@ -473,7 +408,7 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when:
         def entity = txTemplate.execute {
-            assetRepository.findById(id).get().tap() {
+            assetRepository.findById(assetGroup.id).get().tap() {
                 // resolve proxy:
                 customAspects.first()
             }
@@ -492,17 +427,8 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "delete an asset group"() {
 
         given: "an existing asset group"
-        AssetGroup assetGroup = new AssetGroupData().with {
-            setId(Key.newUuid())
-            name = 'Test asset-delete'
-            owner = unit
-            setDomains([domain1] as Set)
-            state = Lifecycle.CREATING
-            it
-        }
-
-        assetGroup = txTemplate.execute {
-            assetRepository.save(assetGroup)
+        def assetGroup = txTemplate.execute {
+            assetRepository.save(newAssetGroup(unit))
         }
 
         when: "a delete request is sent to the server"
@@ -518,23 +444,14 @@ class GroupControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "can't put a group with another group's ID"() {
         given: "two groups"
         def group1 = txTemplate.execute({
-            assetRepository.save(new AssetGroupData().tap {
-                id = Key.newUuid()
-                owner = unit
-                name = "old name 1"
-            })
+            assetRepository.save(newAssetGroup(unit))
         })
-        def uuid = Key.newUuid();
         def group2 = txTemplate.execute({
-            assetRepository.save(new AssetGroupData().tap {
-                id = uuid
-                owner = unit
-                name = "old name 2"
-            })
+            assetRepository.save(newAssetGroup(unit))
         })
         when: "a put request tries to update group 1 using the ID of group 2"
         Map headers = [
-            'If-Match': ETag.from(uuid.uuidValue(), 1)
+            'If-Match': ETag.from(group2.id.uuidValue(), 1)
         ]
         put("/groups/${group2.id.uuidValue()}?type=Asset", [
             id: group1.id.uuidValue(),

@@ -18,14 +18,13 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-import org.spockframework.runtime.ConditionNotSatisfiedError
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.core.entity.Domain
+import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
@@ -49,7 +48,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan(["org.veo.rest","org.veo.rest.configuration"])
-class OptimisticLockingMvcITSpec extends VeoRestMvcSpec {
+class OptimisticLockingMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -61,35 +60,18 @@ class OptimisticLockingMvcITSpec extends VeoRestMvcSpec {
     private EntityDataFactory entityFactory
 
     private Unit unit
-    private Unit unit2
-    private Domain domain
-    private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
     String salt = "d0eH%vC!l8"
 
     def setup() {
         txTemplate.execute {
-            domain = entityFactory.createDomain()
-            domain.description = "ISO/IEC"
-            domain.abbreviation = "ISO"
-            domain.name = "ISO"
-            domain.id = Key.newUuid()
+            def client = newClient {
+                id = clientId
+            }
 
-            domain1 = entityFactory.createDomain()
-            domain1.description = "ISO/IEC2"
-            domain1.abbreviation = "ISO"
-            domain1.name = "ISO"
-            domain1.id = Key.newUuid()
-
-            def client= entityFactory.createClient()
-            client.id = clientId
-            client.domains = [domain, domain1] as Set
-
-            unit = entityFactory.createUnit()
-            unit.name = "Test unit"
-            unit.id = Key.newUuid()
-
-            unit.client = client
+            unit = newUnit(client) {
+                name = "Test unit"
+            }
 
             clientRepository.save(client)
             unitRepository.save(unit)

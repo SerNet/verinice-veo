@@ -28,8 +28,6 @@ import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.ClientData
-import org.veo.persistence.entity.jpa.UnitData
 
 @SpringBootTest(classes = GroupPersistenceSpec.class)
 @Transactional()
@@ -52,25 +50,16 @@ class GroupPersistenceSpec extends VeoSpringSpec {
 
     def "save a person group"() {
         given: "a client and a unit"
-        Key clientId = Key.newUuid()
-
-        ClientData client = new ClientData()
-        client.dbId = clientId.uuidValue()
-
-        def unitId = Key.newUuid()
-
-        def unit = new UnitData()
-        unit.id = unitId
-        unit.name = "u-1"
-        unit.client = client
+        def client = newClient()
+        def unit = newUnit(client)
 
         clientRepository.save(client)
         unitRepository.save(unit)
         when:
         def personGroupId = Key.newUuid()
 
-        def john = factory.createPerson(Key.newUuid(),'John',unit)
-        def jane = factory.createPerson(Key.newUuid(),'Jane',unit)
+        def john = newPerson(unit)
+        def jane = newPerson(unit)
 
         def personGroup = factory.createPersonGroup()
 

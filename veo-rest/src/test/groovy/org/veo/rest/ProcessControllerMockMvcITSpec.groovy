@@ -26,7 +26,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 
-import org.veo.core.entity.Client
+import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
@@ -53,7 +53,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan("org.veo.rest")
-class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
+class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -78,34 +78,32 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = entityFactory.createDomain()
-            domain.description = "ISO/IEC"
-            domain.abbreviation = "ISO"
-            domain.name = "ISO"
-            domain.id = Key.newUuid()
+            domain = newDomain {
+                description = "ISO/IEC"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            domain1 = entityFactory.createDomain()
-            domain1.description = "ISO/IEC2"
-            domain1.abbreviation = "ISO"
-            domain1.name = "ISO"
-            domain1.id = Key.newUuid()
+            domain1 = newDomain {
+                description = "ISO/IEC2"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            def client= entityFactory.createClient()
-            client.id = clientId
-            client.domains = [domain, domain1] as Set
+            def client = newClient {
+                id = clientId
+                domains = [domain, domain1] as Set
+            }
 
-            unit = entityFactory.createUnit()
-            unit.name = "Test unit"
-            unit.id = Key.newUuid()
+            unit = newUnit(client) {
+                name = "Test unit"
+            }
 
-            unit.client = client
-            Client c = clientRepository.save(client)
+            clientRepository.save(client)
 
-            unit2 = entityFactory.createUnit()
-            unit2.name = "Test unit2"
-            unit2.id = Key.newUuid()
-
-            unit2.client = client
+            unit2 = newUnit(client) {
+                name = "Test unit2"
+            }
 
             clientRepository.save(client)
             unitRepository.save(unit)
@@ -162,14 +160,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a process"() {
         given: "a saved process"
-        def id = Key.newUuid()
-        def process = entityFactory.createProcess()
-        process.id = id
-        process.name = 'Test process'
-        process.owner = unit
-
-        process = txTemplate.execute {
-            processRepository.save(process)
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                name = 'Test process'
+            })
         }
 
         when: "a request is made to the server"
@@ -186,15 +180,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "try to put a process without a name"() {
         given: "a saved process"
 
-        Key<UUID> id = Key.newUuid()
-        def process = entityFactory.createProcess()
-        process.id = id
-        process.owner = unit
-        process.name = 'Test process-put-noname'
-        process.domains = [domain1] as Set
-
-        process = txTemplate.execute {
-            processRepository.save(process)
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                domains = [domain1] as Set
+            })
         }
 
         Map request = [
@@ -233,15 +222,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "put a process"() {
         given: "a saved process"
 
-        Key<UUID> id = Key.newUuid()
-        def process = entityFactory.createProcess()
-        process.id = id
-        process.owner = unit
-        process.name = 'Test process-put'
-        process.domains = [domain1] as Set
-
-        process = txTemplate.execute {
-            processRepository.save(process)
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                domains = [domain1] as Set
+            })
         }
 
         Map request = [
@@ -264,7 +248,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(id.uuidValue(), 1)
+            'If-Match': ETag.from(process.id.uuidValue(), 1)
         ]
         def results = put("/processes/${process.id.uuidValue()}", request, headers)
 
@@ -281,15 +265,10 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "delete a process"() {
 
         given: "an existing process"
-        Key<UUID> id = Key.newUuid()
-        def process = entityFactory.createProcess()
-        process.id = id
-        process.owner = unit
-        process.name = 'Test process-delete'
-        process.domains = [domain1] as Set
-
-        process = txTemplate.execute {
-            processRepository.save(process)
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                domains = [domain1] as Set
+            })
         }
 
         when: "a delete request is sent to the server"
@@ -297,7 +276,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         then: "the process is deleted"
         results.andExpect(status().isOk())
-        processRepository.exists(id) == false
+        !processRepository.exists(process.id)
     }
 
     @WithUserDetails("user@domain.example")
@@ -307,18 +286,12 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         CustomProperties cp = entityFactory.createCustomProperties()
         cp.setType("my.new.type")
         cp.setApplicableTo(['Process'] as Set)
-        Key<UUID> id = Key.newUuid()
 
-
-        def process = entityFactory.createProcess()
-        process.id = id
-        process.name = 'Test process-put'
-        process.owner = unit
-        process.domains = [domain1] as Set
-        process.customAspects = [cp] as Set
-
-        process = txTemplate.execute {
-            processRepository.save(process)
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                domains = [domain1] as Set
+                customAspects = [cp] as Set
+            })
         }
 
         Map request = [
@@ -357,7 +330,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(id.uuidValue(), 1)
+            'If-Match': ETag.from(process.id.uuidValue(), 1)
         ]
         def results = put("/processes/${process.id.uuidValue()}", request, headers)
 
@@ -371,7 +344,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when:
         def entity = txTemplate.execute {
-            processRepository.findById(id).get().tap {
+            processRepository.findById(process.id).get().tap {
                 // make sure that the proxy is resolved
                 customAspects.first()
             }
@@ -394,16 +367,12 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         cp.setType("process_SensitiveData")
         cp.setApplicableTo(['Process'] as Set)
         cp.setProperty('process_SensitiveData_comment', 'old comment')
-        Key<UUID> id = Key.newUuid()
-        def process = entityFactory.createProcess()
-        process.id = id
-        process.owner = unit
-        process.name = 'Test process-put'
-        process.domains = [domain1] as Set
-        process.customAspects = [cp] as Set
 
-        process = txTemplate.execute {
-            processRepository.save(process)
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                domains = [domain1] as Set
+                customAspects = [cp] as Set
+            })
         }
 
         when: "a request is made to the server"
@@ -453,7 +422,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when:
         def entity = txTemplate.execute {
-            processRepository.findById(id).get().tap {
+            processRepository.findById(process.id).get().tap {
                 // make sure that the proxy is resolved
                 customAspects.first()
             }
@@ -603,22 +572,15 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "retrieve all processes for a client"() {
-        given: "a saved process"
+        given: "two saved processes in different units of the same client"
 
-        def process = entityFactory.createProcess()
-        process.id = Key.newUuid()
-        process.name = 'Test process-1'
-        process.owner = unit
-
-
-        def process2 = entityFactory.createProcess()
-        process2.id = Key.newUuid()
-        process2.name = 'Test process-2'
-        process2.owner = unit2
-
-
-        (process, process2) = txTemplate.execute {
-            [process, process2].collect(processRepository.&save)
+        txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                name = 'Test process-1'
+            })
+            processRepository.save(newProcess(unit2) {
+                name = 'Test process-2'
+            })
         }
 
         when: "a request is made to the server"
@@ -641,32 +603,19 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "retrieve all processes for a unit"() {
-        given: "a saved process"
+        given: "two saved process in different units"
 
-        def process = entityFactory.createProcess()
-        process.id = Key.newUuid()
-        process.name = 'Test process-1'
-        process.owner = unit
-
-
-        def process2 = entityFactory.createProcess()
-        process2.id = Key.newUuid()
-        process2.name = 'Test process-2'
-        process2.owner = unit2
-
-
-        (process, process2) = txTemplate.execute {
-            [process, process2].collect(processRepository.&save)
+        txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                name = 'Test process-1'
+            })
+            processRepository.save(newProcess(unit2) {
+                name = 'Test process-2'
+            })
         }
 
         when: "a request is made to the server"
-        def results = get("/processes?unit=${unit.id.uuidValue()}")
-
-        then: "the processes are returned"
-        results.andExpect(status().isOk())
-
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(get("/processes?unit=${unit.id.uuidValue()}"))
 
         then:
         result.size == 1
@@ -674,13 +623,7 @@ class ProcessControllerMockMvcITSpec extends VeoRestMvcSpec {
         result.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when: "a request is made to the server"
-        results = get("/processes?unit=${unit2.id.uuidValue()}")
-
-        then: "the processes are returned"
-        results.andExpect(status().isOk())
-
-        when:
-        result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result = parseJson(get("/processes?unit=${unit2.id.uuidValue()}"))
 
         then:
         result.size == 1

@@ -33,18 +33,17 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
 
     def 'custom props are inserted'() {
         given:
-        def asset = new AssetData(
+        def asset = newAsset(null) {
+            customAspects = [
+                new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
-                customAspects: [
-                    new CustomPropertiesData(
-                    dbId: UUID.randomUUID().toString(),
-                    dataProperties: [
-                        new PropertyData("k1", "uno"),
-                        new PropertyData("k2", 2)
-                    ]
-                    )
+                dataProperties: [
+                    new PropertyData("k1", "uno"),
+                    new PropertyData("k2", 2)
                 ]
                 )
+            ]
+        }
         when:
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
@@ -59,17 +58,16 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
 
     def 'property type can be changed'() {
         given: 'a saved asset with a string prop'
-        def asset = new AssetData(
+        def asset = newAsset(null) {
+            customAspects = [
+                new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
-                customAspects: [
-                    new CustomPropertiesData(
-                    dbId: UUID.randomUUID().toString(),
-                    dataProperties: [
-                        new PropertyData("k1", "uno")
-                    ]
-                    )
+                dataProperties: [
+                    new PropertyData("k1", "uno")
                 ]
                 )
+            ]
+        }
         assetRepository.save(asset)
         when: 'replacing the string prop with an int prop'
         asset.customAspects[0].dataProperties = [
@@ -87,18 +85,17 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
 
     def 'property can be removed'() {
         given: 'a saved asset with two props'
-        def asset = new AssetData(
+        def asset = newAsset(null) {
+            customAspects = [
+                new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
-                customAspects: [
-                    new CustomPropertiesData(
-                    dbId: UUID.randomUUID().toString(),
-                    dataProperties: [
-                        new PropertyData("k1", "uno"),
-                        new PropertyData("k2", "due")
-                    ]
-                    )
+                dataProperties: [
+                    new PropertyData("k1", "uno"),
+                    new PropertyData("k2", "due")
                 ]
                 )
+            ]
+        }
         assetRepository.save(asset)
         when: 'removing the first prop'
         asset.customAspects[0].dataProperties = [
@@ -119,16 +116,16 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given:
         def stringLength = 18000
         def longString = "X" * stringLength
-        def asset = new AssetData()
-        asset.dbId = UUID.randomUUID().toString()
-        asset.customAspects= [
-            new CustomPropertiesData(
-            dbId: UUID.randomUUID().toString(),
-            dataProperties: [
-                new PropertyData("p", longString),
+        def asset = newAsset(null) {
+            customAspects = [
+                new CustomPropertiesData(
+                dbId: UUID.randomUUID().toString(),
+                dataProperties: [
+                    new PropertyData("p", longString),
+                ]
+                )
             ]
-            )
-        ]
+        }
         when:
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.getId().uuidValue())

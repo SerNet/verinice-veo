@@ -29,7 +29,6 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.CustomProperties
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -37,15 +36,14 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-
-import spock.lang.Specification
+import org.veo.test.VeoSpec
 
 @SpringBootTest(classes = CustomLinkPersistenceSpec.class
 )
 @Transactional()
 @ComponentScan("org.veo")
 @ActiveProfiles("test")
-class CustomLinkPersistenceSpec extends Specification {
+class CustomLinkPersistenceSpec extends VeoSpec {
 
 
     @Autowired
@@ -62,10 +60,10 @@ class CustomLinkPersistenceSpec extends Specification {
     def "create an asset with a customLink and save-load it"() {
         given: "a person and an asset"
 
-        Key unitId = Key.newUuid()
-        Unit unit = entityFactory.createUnit(unitId, "unit", null)
-        Person person = entityFactory.createPerson(Key.newUuid(), "P1", unit)
-        Asset asset = entityFactory.createAsset(Key.newUuid(), "AssetName", unit)
+        Client client = newClient()
+        Unit unit = newUnit(client)
+        Person person = newPerson(unit)
+        Asset asset = newAsset(unit)
 
         CustomLink cp = entityFactory.createCustomLink("My link", person, asset)
 
@@ -73,9 +71,6 @@ class CustomLinkPersistenceSpec extends Specification {
         cp.setApplicableTo(['Asset'] as Set)
 
         asset.setLinks(cp as Set)
-
-        Client client = entityFactory.createClient(Key.newUuid(), "Demo client")
-        unit.setClient(client)
 
         clientRepository.save(client)
         unitRepository.save(unit)

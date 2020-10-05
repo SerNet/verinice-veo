@@ -20,28 +20,18 @@ import org.veo.core.entity.code.ModelValidationException
 import org.veo.core.entity.code.ModelValidator
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
-
-import spock.lang.Specification
+import org.veo.test.VeoSpec
 
 // generateValidatorTest
-class ModelValidatorSpec extends Specification {
+class ModelValidatorSpec extends VeoSpec {
     private EntityFactory entityFactory = new EntityDataFactory()
 
     def "a properly initialized Person instance passes validation"() {
         given : "a valid modelobject"
-
-        String name = "model-name:Person"
-
-        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
-
+        Unit unit = newUnit(null)
+        Person person = newPerson(unit)
 
         when : "model and validator is created"
-
-        Person person = entityFactory.createPerson(null, name, null)
-
-
-        person.setOwner(unit)
-
         ModelValidator.validate(person)
 
         then: "the validation of is succesful"
@@ -50,17 +40,10 @@ class ModelValidatorSpec extends Specification {
     }
     def "a properly initialized Asset instance passes validation"() {
         given : "a valid modelobject"
-
-        String name = "model-name:Asset"
-
-        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
+        Unit unit = newUnit(null)
+        Asset asset = newAsset(unit)
 
         when : "model and validator is created"
-
-        Asset asset = entityFactory.createAsset(Key.newUuid(), name, null)
-
-        asset.setOwner(unit)
-
         ModelValidator.validate(asset)
 
         then: "the validation of is succesful"
@@ -69,16 +52,10 @@ class ModelValidatorSpec extends Specification {
     }
     def "a properly initialized Process instance passes validation"() {
         given : "a valid modelobject"
-
-        String name = "model-name:Process"
-
-        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
+        Unit unit = newUnit(null)
+        Process process = newProcess(unit)
 
         when : "model and validator is created"
-
-        Process process = entityFactory.createProcess(Key.newUuid(), name, null)
-
-        process.setOwner(unit)
 
         ModelValidator.validate(process)
 
@@ -89,16 +66,10 @@ class ModelValidatorSpec extends Specification {
     def "a properly initialized Document instance passes validation"() {
         given : "a valid modelobject"
 
-        String name = "model-name:Document"
-
-        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
+        Unit unit = newUnit(null)
+        Document document = newDocument(unit)
 
         when : "model and validator is created"
-
-        Document document = entityFactory.createDocument(Key.newUuid(), name, null)
-
-        document.setOwner(unit)
-
         ModelValidator.validate(document)
 
         then: "the validation of is succesful"
@@ -107,17 +78,10 @@ class ModelValidatorSpec extends Specification {
     }
     def "a properly initialized Control instance passes validation"() {
         given : "a valid modelobject"
-
-        String name = "model-name:Control"
-
-        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
+        Unit unit = newUnit(null)
+        Control control = newControl(unit)
 
         when : "model and validator is created"
-
-        Control control = entityFactory.createControl(Key.newUuid(), name, null)
-
-        control.setOwner(unit)
-
         ModelValidator.validate(control)
 
         then: "the validation of is succesful"
@@ -126,17 +90,9 @@ class ModelValidatorSpec extends Specification {
     }
     def "a properly initialized Domain instance passes validation"() {
         given : "a valid modelobject"
-
-        String name = "model-name:Domain"
-
-
+        Domain domain = newDomain()
 
         when : "model and validator is created"
-
-        Domain domain = entityFactory.createDomain(Key.newUuid(), name)
-
-
-
         ModelValidator.validate(domain)
 
         then: "the validation of is succesful"
@@ -145,19 +101,11 @@ class ModelValidatorSpec extends Specification {
     }
     def "a properly initialized Unit instance passes validation"() {
         given : "a valid modelobject"
-
-        String name = "model-name:Unit"
-
-
+        Unit unit = newUnit(Mock(Client)) {
+            parent = Mock(Unit)
+        }
 
         when : "model and validator is created"
-
-        Unit unit = entityFactory.createUnit(Key.newUuid(), name, null)
-
-        unit.setParent(Mock(Unit))
-        unit.setClient(Mock(Client))
-
-
         ModelValidator.validate(unit)
 
         then: "the validation of is succesful"

@@ -31,8 +31,7 @@ import org.veo.persistence.access.jpa.DocumentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
-
-import spock.lang.Specification
+import org.veo.test.VeoSpec
 
 /**
  * Base class for veo specifications that use Spring
@@ -40,7 +39,7 @@ import spock.lang.Specification
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = NONE)
-abstract class VeoSpringSpec extends Specification {
+abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired
     ClientDataRepository clientDataRepository

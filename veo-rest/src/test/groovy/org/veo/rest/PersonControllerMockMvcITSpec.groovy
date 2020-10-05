@@ -26,7 +26,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.entity.Client
+import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
@@ -52,7 +52,7 @@ classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
 @ComponentScan("org.veo.rest")
-class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
+class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -75,29 +75,28 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
 
     def setup() {
         txTemplate.execute {
+            domain = newDomain {
+                description = "ISO/IEC"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            domain = entityFactory.createDomain()
-            domain.description = "ISO/IEC"
-            domain.abbreviation = "ISO"
-            domain.name = "ISO"
-            domain.id = Key.newUuid()
+            domain1 = newDomain {
+                description = "ISO/IEC2"
+                abbreviation = "ISO"
+                name = "ISO"
+            }
 
-            domain1 = entityFactory.createDomain()
-            domain1.description = "ISO/IEC2"
-            domain1.abbreviation = "ISO"
-            domain1.name = "ISO"
-            domain1.id = Key.newUuid()
+            def client= newClient {
+                id = clientId
+                domains = [domain, domain1] as Set
+            }
 
-            def client= entityFactory.createClient()
-            client.id = clientId
-            client.domains = [domain, domain1] as Set
+            unit = newUnit(client) {
+                name = "Test unit"
+            }
 
-            unit = entityFactory.createUnit()
-            unit.name = "Test unit"
-            unit.id = Key.newUuid()
-
-            unit.client = client
-            Client c = clientRepository.save(client)
+            clientRepository.save(client)
             unitRepository.save(unit)
         }
         ETag.setSalt(salt)
@@ -134,14 +133,10 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a person"() {
         given: "a saved person"
-
-        def person = entityFactory.createPerson()
-        person.id = Key.newUuid()
-        person.name = 'Test person-1'
-        person.owner = unit
-
-        person = txTemplate.execute {
-            personRepository.save(person)
+        def person = txTemplate.execute {
+            personRepository.save(newPerson(unit) {
+                name = 'Test person-1'
+            })
         }
 
         when: "a request is made to the server"
@@ -163,16 +158,12 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all persons for a unit"() {
         given: "two saved persons"
-
-        def person = entityFactory.createPerson()
-        person.id = Key.newUuid()
-        person.name = 'Test person-1'
-        person.owner = unit
-
-        def person2 = entityFactory.createPerson()
-        person2.id = Key.newUuid()
-        person2.name = 'Test person-2'
-        person2.owner = unit
+        def person = newPerson(unit) {
+            name = 'Test person-1'
+        }
+        def person2 = newPerson(unit) {
+            name = 'Test person-2'
+        }
 
         (person, person2) = txTemplate.execute {
             [person, person2].collect(personRepository.&save)
@@ -197,16 +188,8 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a person"() {
         given: "a saved person"
-
-        Key<UUID> id = Key.newUuid()
-        def person = entityFactory.createPerson()
-        person.id = id
-        person.name = 'Test person-1'
-        person.owner = unit
-        person.setDomains([domain1] as Set)
-
-        person = txTemplate.execute {
-            personRepository.save(person)
+        def person = txTemplate.execute {
+            personRepository.save(newPerson(unit))
         }
 
         Map request = [
@@ -249,16 +232,12 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
         cp.setType("my.new.type")
         cp.setApplicableTo(['Person'] as Set)
 
-        Key<UUID> id = Key.newUuid()
-        def person = entityFactory.createPerson()
-        person.id = id
-        person.name = 'Test person-1'
-        person.owner = unit
-        person.setDomains([domain1] as Set)
-        person.setCustomAspects([cp] as Set)
-
-        person = txTemplate.execute {
-            personRepository.save(person)
+        def person = txTemplate.execute {
+            personRepository.save(newPerson(unit) {
+                name = 'Test person-1'
+                domains = [domain1] as Set
+                customAspects = [cp] as Set
+            })
         }
 
         Map request = [
@@ -307,7 +286,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         when:
         def entity = txTemplate.execute {
-            personRepository.findById(id).get().tap() {
+            personRepository.findById(person.id).get().tap() {
                 // resolve proxy:
                 customAspects.first()
             }
@@ -326,15 +305,10 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
     def "delete a person"() {
 
         given: "an existing person"
-        Key<UUID> id = Key.newUuid()
-        def person = entityFactory.createPerson()
-        person.id = id
-        person.name = 'Test person-1'
-        person.owner = unit
-        person.setDomains([domain1] as Set)
-
-        person = txTemplate.execute {
-            personRepository.save(person)
+        def person = txTemplate.execute {
+            personRepository.save(newPerson(unit) {
+                name = 'Test person-1'
+            })
         }
 
         when: "a delete request is sent to the server"
@@ -343,7 +317,7 @@ class PersonControllerMockMvcITSpec extends VeoRestMvcSpec {
 
         then: "the person is deleted"
         results.andExpect(status().isOk())
-        !personRepository.exists(id)
+        !personRepository.exists(person.id)
     }
 
     @WithUserDetails("user@domain.example")
