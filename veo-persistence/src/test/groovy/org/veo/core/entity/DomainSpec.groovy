@@ -18,7 +18,7 @@ package org.veo.core.entity
 
 import org.veo.test.VeoSpec
 
-class ExampleSpec extends VeoSpec {
+class DomainSpec extends VeoSpec {
 
     def "Create a new Domain"() {
         given: "a domain name"
@@ -33,27 +33,5 @@ class ExampleSpec extends VeoSpec {
         then: "domain is correct initatlized"
 
         domain.getName().equals(name)
-    }
-
-    def "Create a new Client"() {
-        given: "a Client name"
-        String domainName = 'Test domain'
-        String clientName = 'Test Client'
-
-        when : "Cient is created"
-
-        Domain domain = newDomain() {
-            name = domainName
-        }
-
-        Client client = newClient() {
-            name = clientName
-            domains = [domain] as Set
-        }
-        then: "domain is correctly initialized"
-
-        client.getName().equals(clientName)
-        client.getDomains().size() == 1
-        client.getDomains().first().getName().equals(domainName)
     }
 }
