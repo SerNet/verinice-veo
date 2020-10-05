@@ -22,7 +22,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.code.ModelUtils;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
@@ -92,7 +91,8 @@ public abstract class ChangeUnitUseCase<R>
      * clients with our own clientID, thereby hijacking these objects!
      *
      * @throws ClientBoundaryViolationException,
-     *             if there is another client in the input than in the stored unit
+     *             if the client in the input and in the stored unit is not the same
+     *             as in the authentication object
      */
     private Unit checkSameClient(Unit storedUnit, InputData input) {
         log.info("Comparing clients {} and {}", input.getAuthenticatedClient()
@@ -101,14 +101,17 @@ public abstract class ChangeUnitUseCase<R>
                  storedUnit.getClient()
                            .getId()
                            .uuidValue());
-        if (!(new SameClientSpecification<>(
-                input.getClient()).isSatisfiedBy(storedUnit.getClient()))) {
-            throw new ClientBoundaryViolationException("The client boundary would be "
-                    + "violated by the attempted operation on element: " + this.toString()
-                    + " from client " + input.getClient()
-                                             .toString());
+        storedUnit.checkSameClient(input.getAuthenticatedClient());
+        if (input.getChangedUnit()
+                 .getClient() != null) {
+            input.getChangedUnit()
+                 .checkSameClient(input.getAuthenticatedClient());
         }
         return storedUnit;
+    }
+
+    public boolean isSame(Client client1, Client client2) {
+        return new SameClientSpecification<>(client1).isSatisfiedBy(client2);
     }
 
     private Unit checkETag(Unit storedUnit, InputData input) {

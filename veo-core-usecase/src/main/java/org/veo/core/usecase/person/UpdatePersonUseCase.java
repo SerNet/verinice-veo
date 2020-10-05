@@ -44,6 +44,7 @@ public class UpdatePersonUseCase<R> extends ModifyEntityUseCase<Person, R> {
         Person person = input.getEntity();
         person.setVersion(storedPerson.getVersion());
         person.setValidFrom(Instant.now());
+        checkClientBoundaries(input, storedPerson);
         return new OutputData<>(personRepository.save(person));
 
     }

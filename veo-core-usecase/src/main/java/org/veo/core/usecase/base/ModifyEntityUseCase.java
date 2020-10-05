@@ -32,8 +32,7 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
     @Override
     public OutputData<T> execute(InputData<T> input) {
         T entity = input.getEntity();
-        Client authenticatedClient = input.getAuthenticatedClient();
-        checkSameClient(authenticatedClient, entity);
+        entity.checkSameClient(input.getAuthenticatedClient());
         return performModification(input);
     }
 
@@ -49,6 +48,14 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
                                   storedElement.getId()
                                                .uuidValue()));
         }
+    }
+
+    protected void checkClientBoundaries(InputData<? extends EntityLayerSupertype> input,
+            EntityLayerSupertype storedEntity) {
+        EntityLayerSupertype entity = input.getEntity();
+        entity.checkSameClient(storedEntity.getOwner()
+                                           .getClient());
+        entity.checkSameClient(input.getAuthenticatedClient());
     }
 
     @Valid

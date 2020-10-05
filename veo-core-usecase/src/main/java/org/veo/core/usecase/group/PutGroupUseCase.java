@@ -19,7 +19,6 @@ package org.veo.core.usecase.group;
 import java.time.Instant;
 import java.util.Optional;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.exception.NotFoundException;
@@ -43,12 +42,10 @@ public class PutGroupUseCase<R> extends UpdateGroupUseCase<R> {
             throw new NotFoundException("Group %s was not found.", group.getId()
                                                                         .uuidValue());
         }
-        checkETag(existingGroup.get(), input);
-        group.setVersion(existingGroup.get()
-                                      .getVersion());
-        Client authenticatedClient = input.getAuthenticatedClient();
-        checkSameClient(authenticatedClient, (EntityLayerSupertype) existingGroup.get());
-
+        EntityLayerSupertype groupInDb = existingGroup.get();
+        checkETag(groupInDb, input);
+        group.setVersion(groupInDb.getVersion());
+        groupInDb.checkSameClient(input.getAuthenticatedClient());
         return (ModelGroup<?>) repository.save(group);
     }
 

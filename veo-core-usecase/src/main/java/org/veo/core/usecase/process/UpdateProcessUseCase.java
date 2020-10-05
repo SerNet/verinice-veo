@@ -48,6 +48,7 @@ public class UpdateProcessUseCase<R> extends ModifyEntityUseCase<Process, R> {
         Process process = input.getEntity();
         process.setVersion(storedProcess.getVersion());
         process.setValidFrom(Instant.now());
+        checkClientBoundaries(input, storedProcess);
         return new OutputData<>(processRepository.save(process));
 
     }

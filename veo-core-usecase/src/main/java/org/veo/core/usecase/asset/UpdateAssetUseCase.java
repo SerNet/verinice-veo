@@ -19,7 +19,6 @@ package org.veo.core.usecase.asset;
 import java.time.Instant;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.AssetRepository;
@@ -46,8 +45,7 @@ public class UpdateAssetUseCase<R> extends ModifyEntityUseCase<Asset, R> {
         checkETag(storedAsset, input);
         Asset entity = input.getEntity();
         entity.setVersion(storedAsset.getVersion());
-        Client authenticatedClient = input.getAuthenticatedClient();
-        checkSameClient(authenticatedClient, entity);
+        checkClientBoundaries(input, storedAsset);
         return performModification(input);
     }
 

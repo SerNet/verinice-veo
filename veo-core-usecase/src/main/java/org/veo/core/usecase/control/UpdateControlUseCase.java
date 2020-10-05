@@ -45,6 +45,7 @@ public class UpdateControlUseCase<R> extends ModifyEntityUseCase<Control, R> {
         Control control = input.getEntity();
         control.setVersion(storedControl.getVersion());
         control.setValidFrom(Instant.now());
+        checkClientBoundaries(input, storedControl);
         return new OutputData<>(controlRepository.save(control));
 
     }
