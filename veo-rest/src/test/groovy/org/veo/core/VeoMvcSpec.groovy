@@ -53,9 +53,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
 
-    ResultActions get(String url) {
+    ResultActions get(String url, boolean expectSuccessfulRequest = true) {
         doRequest(MockMvcRequestBuilders.get(url)
-                .accept(APPLICATION_JSON))
+                .accept(APPLICATION_JSON), expectSuccessfulRequest)
     }
 
     ResultActions put(String url, Map content, Map headers, boolean expectSuccessfulRequest = true) {
@@ -79,9 +79,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 expectSuccessfulRequest)
     }
 
-    ResultActions delete(String url) {
+    ResultActions delete(String url, boolean expectSuccessfulRequest = true) {
         doRequest(MockMvcRequestBuilders.delete(url)
-                .accept(APPLICATION_JSON))
+                .accept(APPLICATION_JSON), expectSuccessfulRequest)
     }
 
     ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
