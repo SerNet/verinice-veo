@@ -46,7 +46,7 @@ public class GetProcessUseCase<R>
         Process process = repository.findById(input.getId())
                                     .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                   .uuidValue()));
-        checkSameClient(input.getAuthenticatedClient(), process);
+        process.checkSameClient(input.authenticatedClient);
         return new OutputData(process);
     }
 

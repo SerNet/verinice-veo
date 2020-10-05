@@ -45,7 +45,7 @@ public class GetAssetUseCase<R>
         Asset asset = repository.findById(input.getId())
                                 .orElseThrow(() -> new NotFoundException(input.getId()
                                                                               .uuidValue()));
-        checkSameClient(input.authenticatedClient, asset);
+        asset.checkSameClient(input.authenticatedClient);
         return new OutputData(asset);
     }
 

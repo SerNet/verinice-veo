@@ -26,8 +26,6 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.UnitRepository;
-import org.veo.core.usecase.unit.GetUnitsUseCase.InputData;
-import org.veo.core.usecase.unit.GetUnitsUseCase.OutputData;
 
 import lombok.Value;
 
@@ -52,7 +50,7 @@ public class GetUnitUseCase<R>
         Unit unit = repository.findById(input.getUnitId())
                               .orElseThrow(() -> new NotFoundException(input.getUnitId()
                                                                             .uuidValue()));
-        checkSameClient(input.authenticatedClient, unit, unit);
+        unit.checkSameClient(input.authenticatedClient);
         return new OutputData(unit);
     }
 

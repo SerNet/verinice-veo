@@ -54,7 +54,7 @@ public class CreateControlUseCase<R>
                                                .getOwner()
                                                .getId()
                                                .uuidValue()));// the unit is already loaded
-        checkSameClient(input.authenticatedClient, unit, input.getControl());
+        unit.checkSameClient(input.authenticatedClient);
         input.getControl()
              .setId(Key.newUuid());
         return new OutputData(controlRepository.save(input.getControl()));

@@ -46,11 +46,7 @@ public class GetControlUseCase<R>
         Control control = repository.findById(input.getId())
                                     .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                   .uuidValue()));
-        // TODO VEO-124 this check should always be done implicitly by UnitImpl or
-        // ModelValidator. Without this check, it would be possible to overwrite
-        // objects from other clients with our own clientID, thereby hijacking these
-        // objects!
-        checkSameClient(input.authenticatedClient, control);
+        control.checkSameClient(input.authenticatedClient);
         return new OutputData(control);
     }
 

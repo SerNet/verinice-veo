@@ -61,7 +61,7 @@ public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, E
 
         Unit unit = unitRepository.findById(input.unitId)
                                   .orElseThrow(() -> new NotFoundException("Invalid unit ID"));
-        checkSameClient(client, unit, unit);
+        unit.checkSameClient(client);
 
         removeObjectsInUnit(unit);
         unitRepository.delete(unit);

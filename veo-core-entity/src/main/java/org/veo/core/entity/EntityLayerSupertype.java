@@ -18,6 +18,9 @@ package org.veo.core.entity;
 
 import java.util.Set;
 
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.SameClientSpecification;
+
 /**
  * The abstract base model class. Used to prevent duplicating common methods in
  * model layer objects.
@@ -83,5 +86,14 @@ public interface EntityLayerSupertype extends Nameable, ModelObject {
     Unit getOwner();
 
     void setOwner(Unit aOwner);
+
+    default void checkSameClient(Client authenticatedClient) {
+        Client client = getOwner().getClient();
+        if (!(new SameClientSpecification<>(authenticatedClient).isSatisfiedBy(client))) {
+            throw new ClientBoundaryViolationException("The client boundary would be "
+                    + "violated by the attempted operation on element: " + toString()
+                    + " from client " + authenticatedClient.toString());
+        }
+    }
 
 }

@@ -54,7 +54,7 @@ public class CreatePersonUseCase<R>
                                           person.getOwner()
                                                 .getId()
                                                 .uuidValue()));// remove
-        checkSameClient(input.authenticatedClient, unit, person);
+        unit.checkSameClient(input.authenticatedClient);
         return new OutputData(personRepository.save(person));
     }
 

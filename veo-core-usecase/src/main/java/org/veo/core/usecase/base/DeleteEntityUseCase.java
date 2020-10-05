@@ -52,7 +52,7 @@ public class DeleteEntityUseCase<R> extends UseCase<DeleteEntityUseCase.InputDat
                                                         input.entityClass.getSimpleName(),
                                                         input.getId()
                                                              .uuidValue()));
-        checkSameClient(input.authenticatedClient, entity);
+        entity.checkSameClient(input.authenticatedClient);
         Stream.of(Asset.class, Control.class, Document.class, Person.class, Process.class)
               .map(repositoryProvider::getEntityLayerSupertypeRepositoryFor)
               .forEach(r -> r.findByLinkTarget(entity)

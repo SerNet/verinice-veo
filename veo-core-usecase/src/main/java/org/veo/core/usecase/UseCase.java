@@ -21,13 +21,6 @@ import java.util.function.Supplier;
 
 import javax.transaction.Transactional;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.SameClientSpecification;
-
 /**
  * Superclass for all use cases. Each use case must provide an implementation of
  * input and output data structures.
@@ -67,22 +60,6 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
     @Transactional(Transactional.TxType.REQUIRED)
     public R executeAndTransformResult(I input, Function<O, R> resultMapper) {
         return resultMapper.apply(execute(input));
-    }
-
-    protected static void checkSameClient(Client authenticatedClient, EntityLayerSupertype entity) {
-        Unit unit = entity.getOwner();
-        checkSameClient(authenticatedClient, unit, entity);
-    }
-
-    protected static void checkSameClient(Client authenticatedClient, Unit unit,
-            ModelObject elementToBeModified) {
-        Client client = unit.getClient();
-        if (!(new SameClientSpecification<>(authenticatedClient).isSatisfiedBy(client))) {
-            throw new ClientBoundaryViolationException("The client boundary would be "
-                    + "violated by the attempted operation on element: "
-                    + elementToBeModified.toString() + " from client "
-                    + authenticatedClient.toString());
-        }
     }
 
     /**

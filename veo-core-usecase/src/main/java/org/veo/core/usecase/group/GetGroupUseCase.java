@@ -47,7 +47,7 @@ public class GetGroupUseCase<R>
                                                        .orElseThrow(() -> new NotFoundException(
                                                                input.getId()
                                                                     .uuidValue()));
-        checkSameClient(input.authenticatedClient, group);
+        group.checkSameClient(input.authenticatedClient);
         return new OutputData((ModelGroup<?>) group);
     }
 

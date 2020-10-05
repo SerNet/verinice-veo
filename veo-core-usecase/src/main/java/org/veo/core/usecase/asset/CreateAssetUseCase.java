@@ -54,8 +54,7 @@ public class CreateAssetUseCase<R>
                                           asset.getOwner()
                                                .getId()
                                                .uuidValue()));
-        checkSameClient(input.authenticatedClient, unit, asset);
-
+        unit.checkSameClient(input.authenticatedClient);
         return new OutputData(assetRepository.save(asset));
     }
 

@@ -55,7 +55,7 @@ public class CreateGroupUseCase<R>
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
                                           input.getUnitId()
                                                .uuidValue()));
-        checkSameClient(input.authenticatedClient, unit, unit);
+        unit.checkSameClient(input.authenticatedClient);
 
         ModelGroup<?> group = entityFactoty.createGroup(input.groupType);
 

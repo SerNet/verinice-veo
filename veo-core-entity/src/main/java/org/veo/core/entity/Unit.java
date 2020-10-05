@@ -18,6 +18,9 @@ package org.veo.core.entity;
 
 import java.util.Set;
 
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.SameClientSpecification;
+
 /**
  * A unit is high level group of elements defined by organizational structure.
  * Units may contain other units. For instance, a unit could be a division, a
@@ -62,5 +65,13 @@ public interface Unit extends Nameable, ModelObject {
     Set<Domain> getDomains();
 
     void setDomains(Set<Domain> aDomains);
+
+    default void checkSameClient(Client client) {
+        if (!(new SameClientSpecification<>(client).isSatisfiedBy(getClient()))) {
+            throw new ClientBoundaryViolationException("The client boundary would be "
+                    + "violated by the attempted operation on element: " + toString()
+                    + " from client " + client.toString());
+        }
+    }
 
 }

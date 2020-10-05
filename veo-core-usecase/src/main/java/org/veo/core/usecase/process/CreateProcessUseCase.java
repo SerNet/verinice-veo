@@ -56,7 +56,7 @@ public class CreateProcessUseCase<R>
                                           input.getProcess()
                                                .getOwner()
                                                .getId()));// the unit is already loaded
-        checkSameClient(input.authenticatedClient, unit, input.getProcess());
+        unit.checkSameClient(input.authenticatedClient);
         input.getProcess()
              .setId(Key.newUuid());
         verifyInput(input.getProcess());
