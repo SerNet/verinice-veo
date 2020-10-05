@@ -53,7 +53,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         with(retrievedAsset.get().customAspects[0].dataProperties) {
             size() == 2
             it.find { it.key == "k1" }.stringValue == "uno"
-            it.find { it.key == "k2" }.integerValue == 2
+            it.find { it.key == "k2" }.doubleValue  == 2
         }
     }
 
@@ -80,8 +80,8 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         then: 'the change has been applied'
         with(retrievedAsset.get().customAspects[0].dataProperties) {
             size() == 1
-            it[0].type == PropertyData.Type.INTEGER
-            it[0].integerValue == 1
+            it[0].type == PropertyData.Type.DOUBLE
+            it[0].doubleValue == 1
         }
     }
 

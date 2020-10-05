@@ -83,7 +83,7 @@ class AttributeTransformer {
                 target.setProperty(key, (Boolean) value);
                 break;
             case TYPE_NUMBER:
-                target.setProperty(key, (Integer) value);
+                target.setProperty(key, ((Number) value).doubleValue());
                 break;
             case TYPE_ARRAY:
                 var itemSchema = attrSchema.get(KEY_ITEMS);

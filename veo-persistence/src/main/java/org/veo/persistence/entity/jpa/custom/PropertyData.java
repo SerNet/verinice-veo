@@ -50,10 +50,10 @@ public class PropertyData {
         this.type = Type.STRING;
     }
 
-    public PropertyData(String key, Integer value) {
+    public PropertyData(String key, Double value) {
         this.key = key;
-        this.integerValue = value;
-        this.type = Type.INTEGER;
+        this.doubleValue = value;
+        this.type = Type.DOUBLE;
     }
 
     public PropertyData(String key, Boolean value) {
@@ -80,7 +80,7 @@ public class PropertyData {
     @Column(length = CustomProperties.MAXIMUM_STRING_LENGTH)
     private String stringValue;
     private Boolean booleanValue;
-    private Integer integerValue;
+    private Double doubleValue;
     private OffsetDateTime offsetDateTimeValue;
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> stringListValue;
@@ -90,7 +90,7 @@ public class PropertyData {
     }
 
     public enum Type {
-        BOOLEAN, STRING, STRING_LIST, INTEGER, OFFSET_DATE_TIME
+        BOOLEAN, STRING, STRING_LIST, DOUBLE, OFFSET_DATE_TIME
     }
 
     @Data
@@ -106,8 +106,8 @@ public class PropertyData {
             return getStringValue();
         case STRING_LIST:
             return getStringListValue();
-        case INTEGER:
-            return getIntegerValue();
+        case DOUBLE:
+            return getDoubleValue();
         case BOOLEAN:
             return getBooleanValue();
         case OFFSET_DATE_TIME:

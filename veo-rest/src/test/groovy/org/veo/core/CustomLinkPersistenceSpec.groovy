@@ -119,7 +119,7 @@ class CustomLinkPersistenceSpec extends Specification {
         CustomProperties savedCp = savedAsset.get().getLinks().first()
 
         then: "numbers also"
-        savedCp.integerProperties["my.key.3"] == 10
+        savedCp.doubleProperties["my.key.3"] == 10
 
         when: "add properties of type date"
 

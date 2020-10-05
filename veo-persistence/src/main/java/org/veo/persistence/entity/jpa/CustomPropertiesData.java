@@ -111,12 +111,12 @@ public class CustomPropertiesData implements CustomProperties {
     }
 
     @Override
-    public Map<String, Integer> getIntegerProperties() {
-        return getProperties(Integer.class);
+    public Map<String, Double> getDoubleProperties() {
+        return getProperties(Double.class);
     }
 
     @Override
-    public void setProperty(String key, Integer value) {
+    public void setProperty(String key, Double value) {
         PropertyData propertyData = new PropertyData(key, value);
         propertyData.setParentId(getDbId());
         dataProperties.add(propertyData);

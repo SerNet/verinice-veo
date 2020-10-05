@@ -118,8 +118,8 @@ class CustomAspectPersistenceSpec extends Specification {
         CustomProperties savedCp = savedAsset.get().getCustomAspects().first()
 
         then: "numbers also"
-        savedCp.integerProperties.size() == 1
-        savedCp.integerProperties["my.key.3"] == 10
+        savedCp.doubleProperties.size() == 1
+        savedCp.doubleProperties["my.key.3"] == 10
 
         when: "add properties of type date"
 
