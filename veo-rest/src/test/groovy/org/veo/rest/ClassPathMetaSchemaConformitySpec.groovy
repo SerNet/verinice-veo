@@ -16,29 +16,25 @@
  ******************************************************************************/
 package org.veo.rest
 
-import java.util.stream.Stream
-
-import org.springframework.beans.factory.annotation.Autowired
-
 import com.fasterxml.jackson.databind.JsonNode
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
-import org.veo.core.VeoSpringSpec
+import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl
 import org.veo.core.service.EntitySchemaService
 
 import io.swagger.v3.core.util.Json
+import spock.lang.Specification
 
-class MetaSchemaConformitySpec extends VeoSpringSpec {
-    @Autowired
-    EntitySchemaService entitySchemaService
-    Stream<JsonNode> entitySchemas
+class ClassPathMetaSchemaConformitySpec extends Specification {
+    static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl()
+    List<JsonNode> entitySchemas
 
     def setup() {
-        entitySchemas = entitySchemaService.listValidSchemaNames().getKnownSchemas().stream()
-                .map { entitySchemaService.findSchema(it, null) }
-                .map { Json.mapper().readTree(it) }
+        entitySchemas = entitySchemaService.listValidSchemaNames().getKnownSchemas()
+                .collect { entitySchemaService.findSchema(it, null) }
+                .collect {  Json.mapper().readTree(it) }
     }
 
     def "all custom aspect schemas conform to meta schema"() {
