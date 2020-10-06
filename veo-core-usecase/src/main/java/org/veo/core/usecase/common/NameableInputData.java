@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.common;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,9 +34,6 @@ import lombok.NoArgsConstructor;
 public class NameableInputData {
     private Optional<Key<UUID>> id;
 
-    private long version;
-    private Instant validFrom;
-    private Instant validUntil;
     private String name;
     private String abbreviation;
     private String description;

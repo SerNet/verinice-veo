@@ -58,8 +58,6 @@ public final class CreateUnitInputMapper {
         namedInput.setName(dto.getName());
         namedInput.setAbbreviation(dto.getAbbreviation());
         namedInput.setDescription(dto.getDescription());
-        // namedInput.setValidUntil(dto.getValidUntil());
-        // namedInput.setValidFrom(dto.getValidFrom());
 
         return new InputData(namedInput, Key.uuidFrom(clientId), parentId);
     }
