@@ -26,35 +26,37 @@ import org.veo.core.service.EntitySchemaService
 
 import io.swagger.v3.core.util.Json
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class ClassPathMetaSchemaConformitySpec extends Specification {
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl()
-    List<JsonNode> entitySchemas
 
-    def setup() {
-        entitySchemas = entitySchemaService.listValidSchemaNames().getKnownSchemas()
+    def getEntitySchemas() {
+        entitySchemaService.listValidSchemaNames().getKnownSchemas()
                 .collect { entitySchemaService.findSchema(it, null) }
                 .collect {  Json.mapper().readTree(it) }
     }
 
-    def "all custom aspect schemas conform to meta schema"() {
+    @Unroll
+    def "all custom aspects of #entitySchema.title schema conform to meta schema"() {
         expect:
         def customAspectMetaSchema = getMetaSchema("custom-aspect-meta-schema.json")
-        entitySchemas.forEach{
-            it.get("properties").get("customAspects").get("properties").forEach {
-                assert customAspectMetaSchema.validate(it).empty
-            }
+        entitySchema.get("properties").get("customAspects").get("properties").forEach {
+            assert customAspectMetaSchema.validate(it).empty
         }
+        where:
+        entitySchema << entitySchemas
     }
 
-    def "all custom link schemas conform to meta schema"() {
+    @Unroll
+    def "all custom links of #entitySchema.title schema conform to meta schema"() {
         expect:
         def customLinkMetaSchema = getMetaSchema("custom-link-meta-schema.json")
-        entitySchemas.forEach{
-            it.get("properties").get("links").get("properties").forEach {
-                assert customLinkMetaSchema.validate(it.get("items")).empty
-            }
+        entitySchema.get("properties").get("links").get("properties").forEach {
+            assert customLinkMetaSchema.validate(it.get("items")).empty
         }
+        where:
+        entitySchema << entitySchemas
     }
 
     private JsonSchema getMetaSchema(String file) throws IOException {
