@@ -31,12 +31,6 @@ import spock.lang.Unroll
 class ClassPathMetaSchemaConformitySpec extends Specification {
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl()
 
-    def getEntitySchemas() {
-        entitySchemaService.listValidSchemaNames().getKnownSchemas()
-                .collect { entitySchemaService.findSchema(it, null) }
-                .collect {  Json.mapper().readTree(it) }
-    }
-
     @Unroll
     def "all custom aspects of #entitySchema.title schema conform to meta schema"() {
         expect:
@@ -59,8 +53,24 @@ class ClassPathMetaSchemaConformitySpec extends Specification {
         entitySchema << entitySchemas
     }
 
+    @Unroll
+    def "entity schema #schema.title is a valid schema"() {
+        given:
+        def schema07 = getMetaSchema("draft-07.json")
+        expect:
+        schema07.validate(schema).empty
+        where:
+        schema << entitySchemas
+    }
+
     private JsonSchema getMetaSchema(String file) throws IOException {
         return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
                 .getSchema(getClass().getClassLoader().getResource("schemas/meta/"+file).openStream());
+    }
+
+    private static List<JsonNode> getEntitySchemas() {
+        entitySchemaService.listValidSchemaNames().getKnownSchemas()
+                .collect { entitySchemaService.findSchema(it, null) }
+                .collect {  Json.mapper().readTree(it) }
     }
 }
