@@ -86,7 +86,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "create a unit for a new client"() {
+    def "create a unit for an existing client"() {
 
         given: "a request body"
 
