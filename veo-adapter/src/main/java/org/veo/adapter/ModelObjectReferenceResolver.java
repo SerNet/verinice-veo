@@ -24,8 +24,10 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
@@ -63,11 +65,18 @@ public class ModelObjectReferenceResolver {
                 continue;// skip domains as we get them from the client
             }
             Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(objectReference.getType());
-            context.addEntity(entityRepository.findById(Key.uuidFrom(objectReference.getId()))
-                                              .orElseThrow(() -> new NotFoundException(
-                                                      "ref not found %s %s",
-                                                      objectReference.getId(),
-                                                      objectReference.getType())));
+            ModelObject entity = entityRepository.findById(Key.uuidFrom(objectReference.getId()))
+                                                 .orElseThrow(() -> new NotFoundException(
+                                                         "ref not found %s %s",
+                                                         objectReference.getId(),
+                                                         objectReference.getType()));
+            if (entity instanceof Unit) {
+                ((Unit) entity).checkSameClient(client);
+            }
+            if (entity instanceof EntityLayerSupertype) {
+                ((EntityLayerSupertype) entity).checkSameClient(client);
+            }
+            context.addEntity(entity);
         }
         return context;
     }

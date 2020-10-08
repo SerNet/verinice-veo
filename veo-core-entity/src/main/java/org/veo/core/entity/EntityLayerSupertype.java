@@ -87,12 +87,16 @@ public interface EntityLayerSupertype extends Nameable, ModelObject {
 
     void setOwner(Unit aOwner);
 
-    default void checkSameClient(Client authenticatedClient) {
-        Client client = getOwner().getClient();
-        if (!(new SameClientSpecification<>(authenticatedClient).isSatisfiedBy(client))) {
+    /**
+     * @throws ClientBoundaryViolationException
+     *             if the passed client is not equal to the client in the unit to
+     *             which the entity belongs
+     */
+    default void checkSameClient(Client client) {
+        if (!(new SameClientSpecification<>(client).isSatisfiedBy(getOwner().getClient()))) {
             throw new ClientBoundaryViolationException("The client boundary would be "
                     + "violated by the attempted operation on element: " + toString()
-                    + " from client " + authenticatedClient.toString());
+                    + " from client " + client.toString());
         }
     }
 

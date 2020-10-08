@@ -66,6 +66,10 @@ public interface Unit extends Nameable, ModelObject {
 
     void setDomains(Set<Domain> aDomains);
 
+    /**
+     * @throws ClientBoundaryViolationException
+     *             if the passed client is not equal to the client in the unit
+     */
     default void checkSameClient(Client client) {
         if (!(new SameClientSpecification<>(client).isSatisfiedBy(getClient()))) {
             throw new ClientBoundaryViolationException("The client boundary would be "
