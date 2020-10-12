@@ -121,7 +121,7 @@
           },
           "type": {
             "enum": [
-              "Person"
+              "person"
             ]
           }
         }

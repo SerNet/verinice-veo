@@ -107,7 +107,7 @@
           },
           "type": {
             "enum": [
-              "Asset"
+              "asset"
             ]
           }
         }
