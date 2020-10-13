@@ -1,0 +1,63 @@
+server:
+  port: 8070
+
+veo:
+  basedir: ${user.home}/.local/share/veo
+  cors:
+    origins: <ALLOWED_ORIGIN1>, <ALLOWED_ORIGIN2>
+  logging:
+    properties: 'spring.datasource.url,spring.jpa.database-platform'
+
+spring:
+  jmx:
+    enabled: true
+  data:
+    rest:
+      detection-strategy: annotated
+  jackson:
+    default-property-inclusion: non_null
+  jpa:
+    properties:
+      hibernate:
+        generate_statistics: true
+    open-in-view: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak.staging.verinice.com/auth/realms/verinice-veo
+          jwk-set-uri: https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/certs
+
+logging:
+  level:
+    org.springframework: WARN
+    org.veo.adapter: DEBUG
+    org.veo: DEBUG
+    org.hibernate: INFO
+    org.hibernate.engine.internal: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.EnumType: TRACE
+    org.hibernate.stat: DEBUG
+
+management:
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      cors:
+        allowed-headers: '*'
+        allowed-methods: OPTIONS, GET, POST
+        allowed-origins: '*'
+      exposure:
+        include: '*'
+
