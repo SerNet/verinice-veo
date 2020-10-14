@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import static java.util.Collections.singleton;
+
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -85,7 +88,10 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     }
 
     public void deleteByUnit(Unit owner) {
-        dataRepository.deleteByOwner_DbId(owner.getDbId());
+        var entities = dataRepository.findByUnits(singleton(owner.getDbId()));
+        entities.addAll((Collection<? extends S>) dataRepository.findGroupsByUnits(singleton(owner.getDbId())));
+        // using deleteAll() to use batching and optimistic locking:
+        dataRepository.deleteAll(entities);
     }
 
     public List<T> findByLinkTarget(EntityLayerSupertype entity) {
