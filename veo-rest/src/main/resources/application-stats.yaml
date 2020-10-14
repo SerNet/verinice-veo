@@ -39,6 +39,7 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.type.EnumType: TRACE
     org.hibernate.stat: DEBUG
+    net.ttddyy: INFO
 
 management:
   health:
