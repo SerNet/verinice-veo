@@ -17,12 +17,14 @@
 package org.veo.persistence.metrics;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
@@ -34,22 +36,28 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 @Component
 @Slf4j
 /**
- * This class is based on the example in "Spring Boot Persistence Best Practices", A.Leonard,
- * apress (2020).
+ * This class is based on the example in "Leonard, A. (2020): Spring Boot Persistence Best
+ * Practices. Apress Media."
  */
 public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
+
+    @Value("${veo.logging.datasource.slow_threshold_ms:1000}")
+    private long SLOW_THRESHOLD_MS;
+
+
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
 
         if (bean instanceof DataSource) {
 
-            log.info("DataSource has been found: " + bean);
+            log.info("DataSource has been found: " + bean + ". Logging queries and slow queries " +
+                             "(> " + SLOW_THRESHOLD_MS + "ms)");
 
             final ProxyFactory proxyFactory = new ProxyFactory(bean);
 
             proxyFactory.setProxyTargetClass(true);
-            proxyFactory.addAdvice(new ProxyDataSourceInterceptor((DataSource) bean));
+            proxyFactory.addAdvice(new ProxyDataSourceInterceptor((DataSource) bean, SLOW_THRESHOLD_MS));
 
             return proxyFactory.getProxy();
         }
@@ -65,11 +73,12 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
         private final DataSource dataSource;
 
-        public ProxyDataSourceInterceptor(final DataSource dataSource) {
+        public ProxyDataSourceInterceptor(DataSource dataSource, long slowThreshold) {
             super();
             this.dataSource = ProxyDataSourceBuilder.create(dataSource)
                                                     .name("DATA_SOURCE_PROXY")
                                                     .logQueryBySlf4j(SLF4JLogLevel.INFO)
+                                                    .logSlowQueryBySlf4j(slowThreshold, TimeUnit.MILLISECONDS)
                                                     .multiline()
                                                     .build();
         }

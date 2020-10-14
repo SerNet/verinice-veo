@@ -7,7 +7,8 @@ veo:
     origins: <ALLOWED_ORIGIN1>, <ALLOWED_ORIGIN2>
   logging:
     properties: 'spring.datasource.url,spring.jpa.database-platform'
-
+    datasource:
+      slow_threshold_ms: 30
 spring:
   jmx:
     enabled: true
