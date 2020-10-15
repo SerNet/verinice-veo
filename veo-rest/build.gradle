@@ -34,6 +34,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.networknt:json-schema-validator:1.0.43'
     testImplementation 'commons-codec:commons-codec'
+    testImplementation 'com.vladmihalcea:db-util'
     testImplementation project(":veo-test")
 }
 

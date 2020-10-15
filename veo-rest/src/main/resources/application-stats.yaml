@@ -8,7 +8,8 @@ veo:
   logging:
     properties: 'spring.datasource.url,spring.jpa.database-platform'
     datasource:
-      slow_threshold_ms: 30
+      slow_threshold_ms: 60
+      all_queries: true
 spring:
   jmx:
     enabled: true
@@ -32,10 +33,13 @@ spring:
 logging:
   level:
     org.springframework: WARN
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
     org.veo.adapter: DEBUG
     org.veo: DEBUG
     org.hibernate: INFO
     org.hibernate.engine.internal: INFO
+    org.hibernate.engine.transaction.internal.TransactionImpl: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.type.EnumType: TRACE

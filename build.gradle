@@ -123,6 +123,7 @@ subprojects {
                 'jsonschema-module-swagger-2'
             ].each { dependency "com.github.victools:$it:4.15.1" }
             dependency 'net.ttddyy:datasource-proxy:1.7'
+            dependency 'com.vladmihalcea:db-util:1.0.4'
         }
     }
 

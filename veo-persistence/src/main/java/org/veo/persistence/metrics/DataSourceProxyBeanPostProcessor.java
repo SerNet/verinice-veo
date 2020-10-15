@@ -30,12 +30,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.listener.logging.SLF4JLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
 @Component
-@Profile("stats")
+@Profile({ "stats", "test" })
 @Slf4j
 /**
  * This class is based on the example in "Leonard, A. (2020): Spring Boot
@@ -46,20 +48,23 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
     @Value("${veo.logging.datasource.slow_threshold_ms:1000}")
     private long SLOW_THRESHOLD_MS;
 
+    @Value("${veo.logging.datasource.all_queries:false}")
+    private boolean LOG_ALL;
+
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
-
         if (bean instanceof DataSource) {
-
-            log.info("DataSource has been found: " + bean + ". Logging queries and slow queries "
-                    + "(> " + SLOW_THRESHOLD_MS + "ms)");
-
+            String jdbcUrl = "unknown";
+            if (bean instanceof HikariDataSource) {
+                HikariDataSource hikariData = (HikariDataSource) bean;
+                jdbcUrl = hikariData.getJdbcUrl();
+            }
+            log.info("DataSource has been found: " + jdbcUrl + ". Logging queries and slow "
+                    + "queries " + "(> " + SLOW_THRESHOLD_MS + "ms)");
             final ProxyFactory proxyFactory = new ProxyFactory(bean);
-
             proxyFactory.setProxyTargetClass(true);
             proxyFactory.addAdvice(new ProxyDataSourceInterceptor((DataSource) bean,
-                    SLOW_THRESHOLD_MS));
-
+                    SLOW_THRESHOLD_MS, LOG_ALL));
             return proxyFactory.getProxy();
         }
         return bean;
@@ -74,28 +79,29 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
         private final DataSource dataSource;
 
-        public ProxyDataSourceInterceptor(DataSource dataSource, long slowThreshold) {
+        public ProxyDataSourceInterceptor(DataSource dataSource, long slowThreshold,
+                boolean logAll) {
             super();
-            this.dataSource = ProxyDataSourceBuilder.create(dataSource)
-                                                    .name("DATA_SOURCE_PROXY")
-                                                    .logQueryBySlf4j(SLF4JLogLevel.INFO)
-                                                    .logSlowQueryBySlf4j(slowThreshold,
-                                                                         TimeUnit.MILLISECONDS)
-                                                    .multiline()
-                                                    .build();
+            var dataSourceBuilder = ProxyDataSourceBuilder.create(dataSource)
+                                                          .countQuery()
+                                                          .name("DATA_SOURCE_PROXY")
+                                                          .logSlowQueryBySlf4j(slowThreshold,
+                                                                               TimeUnit.MILLISECONDS)
+                                                          .multiline();
+            if (logAll) {
+                dataSourceBuilder.logQueryBySlf4j(SLF4JLogLevel.INFO);
+            }
+            this.dataSource = dataSourceBuilder.build();
         }
 
         @Override
         public Object invoke(final MethodInvocation invocation) throws Throwable {
-
             final Method proxyMethod = ReflectionUtils.findMethod(this.dataSource.getClass(),
                                                                   invocation.getMethod()
                                                                             .getName());
-
             if (proxyMethod != null) {
                 return proxyMethod.invoke(this.dataSource, invocation.getArguments());
             }
-
             return invocation.proceed();
         }
     }
