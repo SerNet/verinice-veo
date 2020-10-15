@@ -25,12 +25,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Common record class to pass nameable attributes from a DTO into a use case.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-/**
- * Common record class to p[ass nameable attributes from a DTO into a use case.
- */
 public class NameableInputData {
     private Optional<Key<UUID>> id;
 
