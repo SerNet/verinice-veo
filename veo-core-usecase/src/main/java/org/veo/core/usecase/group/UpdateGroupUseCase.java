@@ -61,7 +61,7 @@ public abstract class UpdateGroupUseCase<R>
         ModelGroup<?> group;
         Client authenticatedClient;
         String eTag;
-
+        public String username;
     }
 
     @Valid

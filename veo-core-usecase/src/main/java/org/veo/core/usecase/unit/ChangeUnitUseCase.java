@@ -20,7 +20,6 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.code.ModelUtils;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.SameClientSpecification;
 import org.veo.core.usecase.UseCase;
@@ -56,17 +55,17 @@ public abstract class ChangeUnitUseCase<R>
                                                   .getId()
                                                   .uuidValue());
 
-        return unitRepository.findById(input.getChangedUnit()
-                                            .getId())
-                             .map(u -> checkSameClient(u, input))
-                             .map(u -> checkETag(u, input))
-                             .map(u -> update(u, input))
-                             .map(u -> save(u, input))
-                             .map(this::output)
-                             .orElseThrow(() -> new NotFoundException("Unit %s was not found.",
-                                     input.getChangedUnit()
-                                          .getId()
-                                          .uuidValue()));
+        var storedUnit = unitRepository.findById(input.getChangedUnit()
+                                                      .getId())
+                                       .orElseThrow(() -> new NotFoundException(
+                                               "Unit %s was not found.", input.getChangedUnit()
+                                                                              .getId()
+                                                                              .uuidValue()));
+        checkSameClient(storedUnit, input);
+        checkETag(storedUnit, input);
+        var updatedUnit = update(storedUnit, input);
+        updatedUnit.version(input.username, storedUnit);
+        return output(save(updatedUnit, input));
     }
 
     protected abstract Unit update(Unit storedUnit, InputData input);
@@ -78,7 +77,6 @@ public abstract class ChangeUnitUseCase<R>
         // i.e. to exclude all references and collections:
         // "dataToEntityContext.partialUnit();"
         unit.setClient(input.getAuthenticatedClient());
-        ModelUtils.incrementVersion(unit);
         return this.unitRepository.save(unit);
     }
 
@@ -94,7 +92,7 @@ public abstract class ChangeUnitUseCase<R>
      *             if the client in the input and in the stored unit is not the same
      *             as in the authentication object
      */
-    private Unit checkSameClient(Unit storedUnit, InputData input) {
+    private void checkSameClient(Unit storedUnit, InputData input) {
         log.info("Comparing clients {} and {}", input.getAuthenticatedClient()
                                                      .getId()
                                                      .uuidValue(),
@@ -107,14 +105,13 @@ public abstract class ChangeUnitUseCase<R>
             input.getChangedUnit()
                  .checkSameClient(input.getAuthenticatedClient());
         }
-        return storedUnit;
     }
 
     public boolean isSame(Client client1, Client client2) {
         return new SameClientSpecification<>(client1).isSatisfiedBy(client2);
     }
 
-    private Unit checkETag(Unit storedUnit, InputData input) {
+    private void checkETag(Unit storedUnit, InputData input) {
         if (!ETag.matches(storedUnit.getId()
                                     .uuidValue(),
                           storedUnit.getVersion(), input.getETag())) {
@@ -123,7 +120,6 @@ public abstract class ChangeUnitUseCase<R>
                                   storedUnit.getId()
                                             .uuidValue()));
         }
-        return storedUnit;
     }
 
     @Valid
@@ -132,6 +128,7 @@ public abstract class ChangeUnitUseCase<R>
         Unit changedUnit;
         Client authenticatedClient;
         String eTag;
+        String username;
     }
 
     @Valid

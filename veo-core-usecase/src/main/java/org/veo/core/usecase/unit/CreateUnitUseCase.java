@@ -95,6 +95,7 @@ public class CreateUnitUseCase<R>
                                     .getDescription());
         newUnit.setState(Lifecycle.STORED_CURRENT);
         newUnit.setClient(client);
+        newUnit.version(input.username, null);
         Unit save = unitRepository.save(newUnit);
         return new OutputData(save);
     }
@@ -109,6 +110,7 @@ public class CreateUnitUseCase<R>
                                                                                                 // unit
                                                                                                 // createtion
                                                                              .getName());
+        client.version(input.username, null);
         return clientRepository.save(client);
     }
 
@@ -118,6 +120,7 @@ public class CreateUnitUseCase<R>
         NameableInputData nameableInput;
         Key<UUID> clientId;
         Optional<Key<UUID>> parentUnitId;
+        String username;
     }
 
     @Valid

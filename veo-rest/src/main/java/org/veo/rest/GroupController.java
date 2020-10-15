@@ -85,6 +85,7 @@ import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
+import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
@@ -227,21 +228,24 @@ public class GroupController extends AbstractEntityController {
     @Operation(summary = "Creates a group")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Group created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createGroup(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateGroupDto createGroupDto) {
-        Client client = getAuthenticatedClient(auth);
+        Client client = getClient(user);
         return useCaseInteractor.execute(createGroupUseCase, new CreateGroupUseCase.InputData(
                 Key.uuidFrom(createGroupDto.getOwner()
                                            .getId()),
-                createGroupDto.getName(), createGroupDto.getType(), client), output -> {
-                    ModelGroup<?> group = output.getGroup();
-                    Optional<String> groupId = group.getId() == null ? Optional.empty()
-                            : Optional.ofNullable(group.getId()
-                                                       .uuidValue());
-                    ApiResponseBody apiResponseBody = new ApiResponseBody(true, groupId,
-                            "Group created successfully.");
-                    return RestApiResponse.created(URL_BASE_PATH, apiResponseBody);
-                });
+                createGroupDto.getName(), createGroupDto.getType(), client, user.getUsername()),
+                                         output -> {
+                                             ModelGroup<?> group = output.getGroup();
+                                             Optional<String> groupId = group.getId() == null
+                                                     ? Optional.empty()
+                                                     : Optional.ofNullable(group.getId()
+                                                                                .uuidValue());
+                                             ApiResponseBody apiResponseBody = new ApiResponseBody(
+                                                     true, groupId, "Group created successfully.");
+                                             return RestApiResponse.created(URL_BASE_PATH,
+                                                                            apiResponseBody);
+                                         });
     }
 
     // TODO: veo-281
@@ -250,7 +254,7 @@ public class GroupController extends AbstractEntityController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Group updated"),
             @ApiResponse(responseCode = "404", description = "Group not found") })
     public <T extends ModelObject> CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> updateGroup(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @NotNull @RequestBody @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -263,11 +267,12 @@ public class GroupController extends AbstractEntityController {
         applyId(uuid, groupDto);
         return useCaseInteractor.execute(putGroupUseCase,
                                          (Supplier<UpdateGroupUseCase.InputData>) () -> {
-                                             Client client = getAuthenticatedClient(auth);
+                                             Client client = getClient(user);
                                              DtoToEntityContext context = referenceResolver.loadIntoContext(client,
                                                                                                             groupDto.getReferences());
                                              return new UpdateGroupUseCase.InputData(
-                                                     groupDto.toEntity(context), client, eTag);
+                                                     groupDto.toEntity(context), client, eTag,
+                                                     user.getUsername());
                                          }, output -> {
                                              return FullEntityLayerSupertypeGroupDto.from(output.getGroup(),
                                                                                           EntityToDtoContext.getCompleteTransformationContext(referenceAssembler));

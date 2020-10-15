@@ -56,16 +56,33 @@ abstract public class AbstractDomainDto implements NameableDto, VersionedDto {
             required = false)
     private String description;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z")
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+            example = "1990-12-31T23:59:60Z",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validFrom;
+    private String createdAt;
+
+    @Schema(description = "The username of the user who created this object.",
+            example = "jane_doe",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    private String createdBy;
 
     @JsonIgnore
     private long version;
 
     @Schema(description = "The active for the Domain.")
     private Boolean active;
+
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+            example = "1990-12-31T23:59:60Z",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    private String updatedAt;
+
+    @Schema(description = "The username of the user who last updated this object.",
+            example = "jane_doe",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    private String updatedBy;
 
     @JsonIgnore
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {

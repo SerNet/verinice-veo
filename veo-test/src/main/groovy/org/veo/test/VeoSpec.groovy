@@ -31,6 +31,7 @@ import org.veo.core.entity.Nameable
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.entity.Versioned
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.entity.groups.DocumentGroup
@@ -86,6 +87,7 @@ abstract class VeoSpec extends Specification {
             if (it.name == null) {
                 it.name = it.modelType + it.id
             }
+            version(it)
         }
     }
 
@@ -135,6 +137,7 @@ abstract class VeoSpec extends Specification {
             id = Key.newUuid()
             execute(it, init)
             name(it)
+            version(it)
         }
     }
 
@@ -185,6 +188,7 @@ abstract class VeoSpec extends Specification {
             it.client = client
             execute(it, init)
             name(it)
+            version(it)
         }
     }
 
@@ -213,6 +217,22 @@ abstract class VeoSpec extends Specification {
             target.links = []
         }
         name(target)
+        version(target)
+    }
+
+    private static def version(Versioned target) {
+        if(target.createdBy == null) {
+            target.createdBy = "VeoRestMvcSpec entity factory"
+        }
+        if(target.createdAt == null) {
+            target.createdAt = Instant.now()
+        }
+        if(target.updatedBy == null) {
+            target.updatedBy = target.createdBy
+        }
+        if(target.updatedAt == null) {
+            target.updatedAt = target.createdAt
+        }
     }
 
     static String getTextBetweenQuotes(String text) {

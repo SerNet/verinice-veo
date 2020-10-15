@@ -41,11 +41,12 @@ import org.veo.core.usecase.unit.CreateUnitUseCase.InputData;
  *
  * The newly created unit is then returned by the use case:
  *
- * @see CreateUnitOutputMapper
+ * @see org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper
  */
 public final class CreateUnitInputMapper {
 
-    public static CreateUnitUseCase.InputData map(CreateUnitDto dto, String clientId) {
+    public static CreateUnitUseCase.InputData map(CreateUnitDto dto, String clientId,
+            String username) {
         Optional<Key<UUID>> parentId = Optional.ofNullable(dto.getParent())
                                                .map(ModelObjectReference::getId)
                                                .map(Key::uuidFrom);
@@ -59,7 +60,7 @@ public final class CreateUnitInputMapper {
         namedInput.setAbbreviation(dto.getAbbreviation());
         namedInput.setDescription(dto.getDescription());
 
-        return new InputData(namedInput, Key.uuidFrom(clientId), parentId);
+        return new InputData(namedInput, Key.uuidFrom(clientId), parentId, username);
     }
 
 }

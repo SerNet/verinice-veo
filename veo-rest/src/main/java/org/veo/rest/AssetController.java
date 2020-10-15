@@ -176,18 +176,19 @@ public class AssetController extends AbstractEntityController {
     @Operation(summary = "Creates an asset")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Asset created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateAssetDto dto) {
         return useCaseInteractor.execute(createAssetUseCase,
                                          new Supplier<CreateAssetUseCase.InputData>() {
 
                                              @Override
                                              public org.veo.core.usecase.asset.CreateAssetUseCase.InputData get() {
-                                                 Client client = getAuthenticatedClient(auth);
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  dto.getReferences());
                                                  return new CreateAssetUseCase.InputData(
-                                                         dto.toEntity(tcontext), client);
+                                                         dto.toEntity(tcontext), client,
+                                                         user.getUsername());
                                              }
                                          }, output -> {
                                              ApiResponseBody body = CreateAssetOutputMapper.map(output.getAsset());
@@ -200,7 +201,7 @@ public class AssetController extends AbstractEntityController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Asset updated"),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
     public CompletableFuture<FullAssetDto> updateAsset(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
         applyId(id, assetDto);
@@ -209,11 +210,12 @@ public class AssetController extends AbstractEntityController {
 
                                              @Override
                                              public InputData<Asset> get() {
-                                                 Client client = getAuthenticatedClient(auth);
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  assetDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Asset>(
-                                                         assetDto.toEntity(tcontext), client, eTag);
+                                                         assetDto.toEntity(tcontext), client, eTag,
+                                                         user.getUsername());
                                              }
                                          }
 

@@ -19,8 +19,8 @@ package org.veo.core.entity;
 import java.time.Instant;
 
 /**
- * A versioned entity with a sequential version number, lifecycle state and
- * validity time frame.
+ * A versioned entity with a sequential version number, lifecycle state and some
+ * metadata (time & author of creation and last modification).
  */
 public interface Versioned {
     /**
@@ -68,9 +68,21 @@ public interface Versioned {
      */
     void setState(Lifecycle state);
 
-    Instant getValidFrom();
+    Instant getCreatedAt();
 
-    void setValidFrom(Instant validFrom);
+    void setCreatedAt(Instant createdAt);
+
+    Instant getUpdatedAt();
+
+    void setUpdatedAt(Instant updatedAt);
+
+    String getCreatedBy();
+
+    void setCreatedBy(String username);
+
+    String getUpdatedBy();
+
+    void setUpdatedBy(String username);
 
     Instant getValidUntil();
 
@@ -107,4 +119,29 @@ public interface Versioned {
     long getVersion();
 
     void setVersion(long version);
+
+    /**
+     * Sets versioning properties on this entity. Call before saving this entity (as
+     * insert or update).
+     *
+     * @param username
+     *            User who authors this creation / update.
+     * @param storedEntity
+     *            The old existing version of this entity (pass null when creating
+     *            this as a new entity).
+     */
+    default void version(String username, Versioned storedEntity) {
+        var now = Instant.now();
+        setUpdatedAt(now);
+        setUpdatedBy(username);
+        if (storedEntity != null) {
+            setCreatedAt(storedEntity.getCreatedAt());
+            setCreatedBy(storedEntity.getCreatedBy());
+            setVersion(storedEntity.getVersion());
+        } else {
+            setCreatedAt(now);
+            setCreatedBy(username);
+            setVersion(0);
+        }
+    }
 }

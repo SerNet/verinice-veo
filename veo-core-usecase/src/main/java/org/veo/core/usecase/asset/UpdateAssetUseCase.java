@@ -16,10 +16,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.time.Instant;
-
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 
@@ -28,32 +25,8 @@ import org.veo.core.usecase.repository.AssetRepository;
  */
 public class UpdateAssetUseCase<R> extends ModifyEntityUseCase<Asset, R> {
 
-    private final AssetRepository assetRepository;
-
     public UpdateAssetUseCase(AssetRepository assetRepository) {
-        this.assetRepository = assetRepository;
-    }
-
-    @Override
-    public OutputData<Asset> execute(InputData<Asset> input) {
-        Asset storedAsset = assetRepository.findById(input.getEntity()
-                                                          .getId())
-                                           .orElseThrow(() -> new NotFoundException(
-                                                   "Asset %s was not found.", input.getEntity()
-                                                                                   .getId()
-                                                                                   .uuidValue()));
-        checkETag(storedAsset, input);
-        Asset entity = input.getEntity();
-        entity.setVersion(storedAsset.getVersion());
-        checkClientBoundaries(input, storedAsset);
-        return performModification(input);
-    }
-
-    @Override
-    protected OutputData<Asset> performModification(InputData<Asset> input) {
-        Asset asset = input.getEntity();
-        asset.setValidFrom(Instant.now());
-        return new OutputData<>(assetRepository.save(asset));
+        super(assetRepository);
     }
 
 }

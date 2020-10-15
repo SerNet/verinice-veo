@@ -23,7 +23,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.UnitRepository;
@@ -35,13 +34,10 @@ public class CreatePersonUseCase<R>
 
     private final UnitRepository unitRepository;
     private final PersonRepository personRepository;
-    private final EntityFactory entityFactory;
 
-    public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository personRepository,
-            EntityFactory entityFactory) {
+    public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository personRepository) {
         this.unitRepository = unitRepository;
         this.personRepository = personRepository;
-        this.entityFactory = entityFactory;
     }
 
     @Override
@@ -55,6 +51,7 @@ public class CreatePersonUseCase<R>
                                                 .getId()
                                                 .uuidValue()));// remove
         unit.checkSameClient(input.authenticatedClient);
+        person.version(input.username, null);
         return new OutputData(personRepository.save(person));
     }
 
@@ -63,6 +60,7 @@ public class CreatePersonUseCase<R>
     public static class InputData implements UseCase.InputData {
         Person newPerson;
         Client authenticatedClient;
+        String username;
     }
 
     @Valid

@@ -25,7 +25,8 @@ import org.veo.core.usecase.repository.ClientRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
- * Tests the client creation process. Note that this one tests the Unit controller but doesn't have the setup where the client is created manually.
+ * Tests the client creation process. Note that this one tests the Unit controller but doesn't have the setup where the
+ * client is created manually.
  */
 class ClientCreationMvcITSpec extends VeoMvcSpec {
     @Autowired

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import java.time.Instant
 
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullClientDto
@@ -62,6 +63,8 @@ class TransformerSpec extends Specification {
         unit.getId() >> Key.uuidFrom(unitId)
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.getClass()
+        unit.createdAt >> Instant.now()
+        unit.updatedAt >> Instant.now()
 
         subUnit.getParent() >> unit
         return unit
@@ -73,6 +76,8 @@ class TransformerSpec extends Specification {
         domain.getId()>> Key.uuidFrom(domainId)
         domain.getDescription()>> domainDescription
         domain.getModelInterface() >> Domain.getClass()
+        domain.createdAt >> Instant.now()
+        domain.updatedAt >> Instant.now()
 
         Client client = Mock()
         client.getid()>>Key.uuidFrom(clientId)
@@ -80,9 +85,8 @@ class TransformerSpec extends Specification {
         client.getUnits>>[unit]
         client.getName()>> clientName
         client.getModelInterface() >> Client.getClass()
-
-
-
+        client.createdAt >> Instant.now()
+        client.updatedAt >> Instant.now()
     }
 
     def AbstractUnitDto createUnitDto() {
@@ -144,6 +148,8 @@ class TransformerSpec extends Specification {
         domain.getName()>>domainName
         domain.getId()>> Key.uuidFrom(domainId)
         domain.getDescription()>> domainDescription
+        domain.getCreatedAt() >> Instant.now()
+        domain.getUpdatedAt() >> Instant.now()
 
 
         Client client = Mock()
@@ -151,6 +157,8 @@ class TransformerSpec extends Specification {
         client.getDomains() >> [domain]
         client.getUnits()>>[unit]
         client.getName()>> clientName
+        client.getCreatedAt() >> Instant.now()
+        client.getUpdatedAt() >> Instant.now()
 
         when: "the client is transformed into a DTO"
         def clientDto = FullClientDto.from(client, EntityToDtoContext.getCompleteTransformationContext())

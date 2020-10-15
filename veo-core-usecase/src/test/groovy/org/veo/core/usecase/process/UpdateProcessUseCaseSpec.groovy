@@ -37,13 +37,20 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.version >> 0
 
+        def existingProcess = Mock(Process) {
+            it.id >> process.id
+            it.name >> "Old process"
+            it.owner >> existingUnit
+        }
+
         when:
         def eTag = ETag.from(process.getId().uuidValue(), 0)
-        def output = usecase.execute(new InputData(process, existingClient, eTag))
+        def output = usecase.execute(new InputData(process, existingClient, eTag, "max"))
         then:
 
-        1 * processRepository.save( _) >> process
-        1 * processRepository.findById(_) >> Optional.of(process)
+        1 * process.version("max", existingProcess)
+        1 * processRepository.save(process) >> process
+        1 * processRepository.findById(process.id) >> Optional.of(existingProcess)
         output.entity != null
         output.entity.name == "Updated process"
     }

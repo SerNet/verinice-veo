@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -53,6 +54,26 @@ import lombok.ToString;
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class CustomPropertiesDto {
+
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+            example = "1990-12-31T23:59:60Z")
+    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    private String createdAt;
+    @Schema(description = "The username of the user who created this object.",
+            example = "jane_doe",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    private String createdBy;
+
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+            example = "1990-12-31T23:59:60Z",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    private String updatedAt;
+
+    @Schema(description = "The username of the user who last updated this object.",
+            example = "jane_doe",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    private String updatedBy;
 
     // TODO Add an example for the API documentation for field applicableTo.
     @Schema(description = "The applicableTo for the CustomProperties.",

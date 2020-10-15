@@ -23,22 +23,32 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
+import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 
 import lombok.Value;
 
 public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
         extends UseCase<ModifyEntityUseCase.InputData<T>, ModifyEntityUseCase.OutputData<T>, R> {
 
+    private final EntityLayerSupertypeRepository<T> repo;
+
+    public ModifyEntityUseCase(EntityLayerSupertypeRepository<T> repo) {
+        this.repo = repo;
+    }
+
     @Override
     public OutputData<T> execute(InputData<T> input) {
         T entity = input.getEntity();
         entity.checkSameClient(input.getAuthenticatedClient());
-        return performModification(input);
+        var storedEntity = repo.findById(input.entity.getId())
+                               .orElseThrow();
+        checkETag(storedEntity, input);
+        entity.version(input.username, storedEntity);
+        checkClientBoundaries(input, storedEntity);
+        return new OutputData<T>(repo.save(entity));
     }
 
-    protected abstract OutputData<T> performModification(InputData<T> input);
-
-    protected void checkETag(EntityLayerSupertype storedElement,
+    private void checkETag(EntityLayerSupertype storedElement,
             InputData<? extends EntityLayerSupertype> input) {
         if (!ETag.matches(storedElement.getId()
                                        .uuidValue(),
@@ -69,6 +79,8 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype, R>
         Client authenticatedClient;
 
         String eTag;
+
+        String username;
     }
 
     @Valid

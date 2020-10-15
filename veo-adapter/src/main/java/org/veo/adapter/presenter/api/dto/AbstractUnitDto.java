@@ -58,10 +58,26 @@ abstract public class AbstractUnitDto implements NameableDto, VersionedDto {
             example = "This is currently the main and only unit for our organization.")
     private String description;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z")
     @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
-    private String validFrom;
+    private String createdAt;
+
+    @Schema(description = "The username of the user who created this object.",
+            example = "jane_doe",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    private String createdBy;
+
+    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+            example = "1990-12-31T23:59:60Z",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    private String updatedAt;
+
+    @Schema(description = "The username of the user who last updated this object.",
+            example = "jane_doe",
+            accessMode = Schema.AccessMode.READ_ONLY)
+    private String updatedBy;
 
     @JsonIgnore
     private ModelObjectReference<Client> client;

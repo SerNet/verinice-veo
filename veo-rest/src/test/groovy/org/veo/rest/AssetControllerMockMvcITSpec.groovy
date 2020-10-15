@@ -18,6 +18,8 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import java.time.Instant
+
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -148,6 +150,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(unit) {
                 name = 'Test asset-1'
                 customAspects = [simpleProps] as Set
+                createdBy = "me"
+                createdAt = Instant.parse("2020-09-01T00:00:00Z")
+                updatedBy = "you"
+                updatedAt = Instant.parse("2020-09-02T00:00:00Z")
             })
         }
 
@@ -181,7 +187,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri   : "http://localhost/units/${unit.id.uuidValue()}",
                 searchesUri : "http://localhost/units/searches",
                 resourcesUri: "http://localhost/units{?parent,displayName}"
-            ]
+            ],
+            createdBy: "me",
+            createdAt: "2020-09-01T00:00:00Z",
+            updatedBy: "you",
+            updatedAt: "2020-09-02T00:00:00Z"
         ]
     }
 
@@ -221,28 +231,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the response contains the expected data"
         def getSearchResponse = parseJson(getSearchResult)
-        getSearchResponse == [
-            [
-                customAspects:[
-                    simpleAspect:[
-                        applicableTo:[],
-                        attributes:[
-                            simpleProp:'simpleValue'
-                        ],
-                        domains:[]]
-                ],
-                domains:[],
-                id: asset.id.uuidValue(),
-                links:[:],
-                name:'Test asset-1',
-                owner:[
-                    displayName:'Test unit',
-                    targetUri: "http://localhost/units/${unit.id.uuidValue()}",
-                    searchesUri: "http://localhost/units/searches",
-                    resourcesUri: "http://localhost/units{?parent,displayName}"
-                ]
-            ]
-        ]
+        getSearchResponse.size == 1
+        getSearchResponse[0].id == asset.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")

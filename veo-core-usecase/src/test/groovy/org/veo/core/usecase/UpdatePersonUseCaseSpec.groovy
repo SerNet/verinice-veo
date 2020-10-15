@@ -19,7 +19,7 @@ package org.veo.core.usecase
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.transform.TransformTargetToEntityContext
-import org.veo.core.usecase.base.ModifyEntityUseCase
+import org.veo.core.usecase.base.ModifyEntityUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.person.UpdatePersonUseCase
 import org.veo.core.usecase.repository.PersonRepository
@@ -27,10 +27,12 @@ import org.veo.core.usecase.repository.PersonRepository
 public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
+    UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository)
+
 
     def "update a person"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
+        TransformTargetToEntityContext targetToEntityContexte = Mock()
         def id = Key.newUuid()
         Person person = Mock()
         person.id >> id
@@ -40,10 +42,10 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
         when:
         def eTag = ETag.from(person.getId().uuidValue(), 0)
-        UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository)
-        def output = usecase.execute(new ModifyEntityUseCase.InputData(person, existingClient, eTag))
+        def output = usecase.execute(new InputData(person, existingClient, eTag, "max"))
 
         then:
+        1 * person.version("max", person)
         1 * personRepository.save(_) >> person
         1 * personRepository.findById(_) >> Optional.of(person)
         output.entity != null

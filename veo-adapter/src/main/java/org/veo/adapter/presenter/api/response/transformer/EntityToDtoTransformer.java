@@ -594,7 +594,12 @@ public final class EntityToDtoTransformer {
     }
 
     private static void mapVersionedProperties(Versioned source, VersionedDto target) {
-        // target.setValidFrom(source.getValidFrom().toString());
+        target.setCreatedAt(source.getCreatedAt()
+                                  .toString());
+        target.setCreatedBy(source.getCreatedBy());
+        target.setUpdatedAt(source.getUpdatedAt()
+                                  .toString());
+        target.setUpdatedBy(source.getUpdatedBy());
     }
 
     private static <TIn, TOut> Set<TOut> convertSet(Set<TIn> input, Function<TIn, TOut> mapper) {

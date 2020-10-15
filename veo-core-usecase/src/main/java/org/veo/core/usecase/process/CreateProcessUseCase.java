@@ -23,7 +23,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.UnitRepository;
@@ -38,13 +37,11 @@ public class CreateProcessUseCase<R>
 
     private final UnitRepository unitRepository;
     private final ProcessRepository processRepository;
-    private final EntityFactory entityFactory;
 
-    public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository processRepository,
-            EntityFactory entityFactory) {
+    public CreateProcessUseCase(UnitRepository unitRepository,
+            ProcessRepository processRepository) {
         this.unitRepository = unitRepository;
         this.processRepository = processRepository;
-        this.entityFactory = entityFactory;
     }
 
     @Override
@@ -60,6 +57,7 @@ public class CreateProcessUseCase<R>
         input.getProcess()
              .setId(Key.newUuid());
         verifyInput(input.getProcess());
+        input.process.version(input.username, null);
         return new OutputData(processRepository.save(input.getProcess()));
     }
 
@@ -75,6 +73,7 @@ public class CreateProcessUseCase<R>
         // private final String name;
         Process process;
         Client authenticatedClient;
+        String username;
     }
 
     @Valid

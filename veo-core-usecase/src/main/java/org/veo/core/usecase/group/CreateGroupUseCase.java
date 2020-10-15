@@ -63,6 +63,7 @@ public class CreateGroupUseCase<R>
         group.setName(input.getName());
         group.setOwner(unit);
         group.setState(Lifecycle.CREATING);
+        group.version(input.username, null);
 
         EntityLayerSupertypeRepository repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.groupType.entityClass);
 
@@ -77,7 +78,7 @@ public class CreateGroupUseCase<R>
         String name;
         GroupType groupType;
         Client authenticatedClient;
-
+        String username;
     }
 
     @Valid

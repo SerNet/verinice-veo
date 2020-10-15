@@ -42,8 +42,17 @@ public abstract class VersionedData implements Versioned {
     // Lifecycle state;
     private @NotNull Lifecycle state = Lifecycle.CREATING;
 
-    @Column(name = "valid_from", nullable = false)
-    private Instant validFrom = Instant.now();
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    @Column(name = "created_by", nullable = false)
+    private String createdBy;
+
+    @Column(name = "updated_by", nullable = false)
+    private String updatedBy;
 
     @Column(name = "valid_until", nullable = true)
     private Instant validUntil;
@@ -64,18 +73,18 @@ public abstract class VersionedData implements Versioned {
     }
 
     /**
-     * @return the validFrom
+     * @return the createdAt
      */
-    public Instant getValidFrom() {
-        return validFrom;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
     /**
-     * @param validFrom
-     *            the validFrom to set
+     * @param createdAt
+     *            the createdAt to set
      */
-    public void setValidFrom(Instant validFrom) {
-        this.validFrom = validFrom;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     /**
@@ -101,5 +110,35 @@ public abstract class VersionedData implements Versioned {
     @Override
     public void setState(Lifecycle state) {
         this.state = state;
+    }
+
+    @Override
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    @Override
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    @Override
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    @Override
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    @Override
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
     }
 }

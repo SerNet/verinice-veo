@@ -19,7 +19,6 @@ package org.veo.core.usecase.group
 import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
 import org.veo.core.entity.ModelGroup
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.group.CreateGroupUseCase.InputData
 
@@ -27,12 +26,12 @@ import spock.lang.Unroll
 
 class CreateGroupUseCaseSpec extends UseCaseSpec {
 
+    public static final String USER_NAME = "john"
     CreateGroupUseCase usecase = new CreateGroupUseCase(unitRepository,repositoryProvider, entityFactory)
 
     @Unroll
     def "create a #type group"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def repository = Mock(Class.forName("org.veo.core.usecase.repository.${type}Repository"))
 
         def id1= Key.newUuid()
@@ -49,11 +48,12 @@ class CreateGroupUseCaseSpec extends UseCaseSpec {
         entityFactory.createGroup(type) >> group
 
         when:
-        def output = usecase.execute(new InputData(existingUnit.id, "$type group 1", type, existingClient))
+        def output = usecase.execute(new InputData(existingUnit.id, "$type group 1", type, existingClient, USER_NAME))
 
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(type.entityClass) >> repository
+        1 * group.version(USER_NAME, null)
         1 * repository.save(_) >> group
         when:
         def group1 = output.group

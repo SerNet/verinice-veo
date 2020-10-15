@@ -76,6 +76,7 @@ import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
+import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -175,7 +176,7 @@ public class ControlController extends AbstractEntityController {
     @Operation(summary = "Creates a control")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Control created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateControlDto dto) {
         return useCaseInteractor.execute(createControlUseCase,
                                          new Supplier<CreateControlUseCase.InputData>() {
@@ -183,11 +184,12 @@ public class ControlController extends AbstractEntityController {
                                              @Override
                                              public CreateControlUseCase.InputData get() {
 
-                                                 Client client = getAuthenticatedClient(auth);
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  dto.getReferences());
                                                  return new CreateControlUseCase.InputData(
-                                                         dto.toEntity(tcontext), client);
+                                                         dto.toEntity(tcontext), client,
+                                                         user.getUsername());
                                              }
                                          }, output -> {
                                              ApiResponseBody body = CreateControlOutputMapper.map(output.getControl());
@@ -200,7 +202,7 @@ public class ControlController extends AbstractEntityController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Control updated"),
             @ApiResponse(responseCode = "404", description = "Control not found") })
     public CompletableFuture<FullControlDto> updateControl(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullControlDto controlDto) {
@@ -210,12 +212,12 @@ public class ControlController extends AbstractEntityController {
 
                                              @Override
                                              public InputData<Control> get() {
-                                                 Client client = getAuthenticatedClient(auth);
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  controlDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Control>(
                                                          controlDto.toEntity(tcontext), client,
-                                                         eTag);
+                                                         eTag, user.getUsername());
                                              }
 
                                          },

@@ -16,38 +16,13 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
-import java.time.Instant;
-
 import org.veo.core.entity.Control;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 
 public class UpdateControlUseCase<R> extends ModifyEntityUseCase<Control, R> {
 
-    private final ControlRepository controlRepository;
-
     public UpdateControlUseCase(ControlRepository controlRepository) {
-        super();
-        this.controlRepository = controlRepository;
+        super(controlRepository);
     }
-
-    @Override
-    public OutputData<Control> performModification(InputData<Control> input) {
-        Control storedControl = controlRepository.findById(input.getEntity()
-                                                                .getId())
-                                                 .orElseThrow(() -> new NotFoundException(
-                                                         "Control %s was not found.",
-                                                         input.getEntity()
-                                                              .getId()
-                                                              .uuidValue()));
-        checkETag(storedControl, input);
-        Control control = input.getEntity();
-        control.setVersion(storedControl.getVersion());
-        control.setValidFrom(Instant.now());
-        checkClientBoundaries(input, storedControl);
-        return new OutputData<>(controlRepository.save(control));
-
-    }
-
 }

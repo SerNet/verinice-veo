@@ -16,115 +16,67 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.common.ETag
-import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.ChangeUnitUseCase
-import org.veo.core.usecase.unit.CreateUnitUseCase
-import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
 import org.veo.core.usecase.unit.UpdateUnitUseCase
 
 public class UpdateUnitUseCaseSpec extends UseCaseSpec {
-
+    static final String USER_NAME = "john"
+    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository)
 
     def "Update an existing unit" () {
         given: "starting values for a unit"
-        def namedInput = new NameableInputData()
-        namedInput.setName("New unit")
-
-        def id = Key.newUuid()
-
-        Unit nUnit = Mock()
-        //        nUnit.getClient() >> existingClient
-        nUnit.getDomains() >> []
-        nUnit.getParent() >> existingUnit
-        nUnit.getName() >> "New unit"
-        nUnit.getId() >> id
-        nUnit.getDbId() >> id.uuidValue()
-        nUnit.getVersion() >> 0
-
-        Unit cUnit = Mock()
-        //        cUnit.getClient() >> existingClient
-        cUnit.getDomains() >> []
-        cUnit.getParent() >> existingUnit
-        cUnit.getName() >>  "Name changed"
-        cUnit.getId() >> id
-        cUnit.getDbId() >> id.uuidValue()
-        cUnit.getVersion() >> 0
-
-        and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
-
-        and: "fake repositories that record method calls"
-        def data2EntityContext = Stub(TransformTargetToEntityContext)
+        def newUnit = Mock(Unit) {
+            it.id >> this.existingUnit.id
+            it.name >> "Name changed"
+            it.client >> this.existingClient
+        }
 
         when: "the use case to create a unit is executed"
-        def createUseCase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
-        def newUnit = createUseCase.execute(input).getUnit()
 
-        and: "the unit is changed and updated"
-        newUnit.setName("Name changed")
         def eTagNewUnit = ETag.from(this.existingUnit.getId().uuidValue(), 0)
-        def updateUseCase = new UpdateUnitUseCase(unitRepository)
-        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient, eTagNewUnit))
+        def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient, eTagNewUnit, USER_NAME))
 
-        then: "a client was retrieved"
-        1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
-        entityFactory.createUnit(_,_,_) >> nUnit
+        then: "the existing unit was retrieved"
+        1 * unitRepository.findById(_) >> Optional.of(this.existingUnit)
+
+        and: "client boundaries were validated"
+        1 * this.existingUnit.checkSameClient(existingClient)
+        1 * newUnit.checkSameClient(existingClient)
 
         and: "the client was then saved with the new unit"
-        1 * unitRepository.save(_) >> nUnit
+        1 * newUnit.version(USER_NAME, this.existingUnit)
+        1 * unitRepository.save(_) >> newUnit
 
-        and: "a unit was retrieved"
-        2 * unitRepository.findById(_) >> Optional.of(this.existingUnit)
-
-        and: "the changed unit was stored"
-        1 * unitRepository.save(_) >> cUnit
-        output.unit != null
-        output.unit.name == "Name changed"
-        output.unit.id == nUnit.id
+        and: "the changed unit was returned"
+        output.unit == newUnit
     }
 
     def "Prevent updating a unit from another client" () {
-        given: "starting values for a unit"
-        def namedInput = new NameableInputData()
-        namedInput.setName("New unit")
-
-        and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
-
-        and: "a malicious client"
+        given: "a malicious client"
         Client maliciousClient = Mock()
         maliciousClient.getId() >> Key.newUuid()
         maliciousClient.getDomains >> []
-        maliciousClient.getName()>> "Existing client"
+        maliciousClient.getName() >> "Existing client"
 
         when: "the use case to create a unit is executed"
-        def usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
-        def newUnit = usecase.execute(input).getUnit()
+        def newUnit = Mock(Unit) {
+            it.id >> this.existingClient.id
+            it.client >> existingClient
+        }
 
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
-        def usecase2 = new UpdateUnitUseCase(unitRepository)
         def eTag = ETag.from(newUnit.getId().uuidValue(), newUnit.getVersion())
-        def output = usecase2.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient, eTag))
+        updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient, eTag, USER_NAME))
 
         then: "a unit was retrieved"
-        clientRepository.findById(_) >> Optional.of(this.existingClient)
         unitRepository.findById(_) >> Optional.of(this.existingUnit)
-        entityFactory.createUnit(_,_,_)>> Mock(Unit)
-
-        and: "the client was then saved with the new unit"
-        unitRepository.save(_) >> existingUnit
-
-        and: "a unit was retrieved"
-        unitRepository.findById(_) >> Optional.of(this.existingUnit)
-
-        and: ""
         existingUnit.checkSameClient(_) >> { throw new ClientBoundaryViolationException("The client boundary would be violated by the attempted operation") }
 
         and: "the security violation was prevented"

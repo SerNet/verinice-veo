@@ -25,13 +25,14 @@ import org.veo.core.usecase.repository.ProcessRepository
 
 public class CreateProcessUseCaseSpec extends UseCaseSpec {
 
+    public static final String USER_NAME = "john"
     ProcessRepository processRepository = Mock()
     Process process = Mock()
     Process process1 = Mock()
     Unit unit = Mock()
 
 
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,processRepository, entityFactory)
+    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,processRepository)
     def "create a process"() {
         process1.owner >> unit
         process1.name >> "John's process"
@@ -41,9 +42,10 @@ public class CreateProcessUseCaseSpec extends UseCaseSpec {
         process.getName() >> "John's process"
 
         when:
-        def output = usecase.execute(new InputData(process1, existingClient))
+        def output = usecase.execute(new InputData(process1, existingClient, USER_NAME))
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
+        1 * process1.version(USER_NAME, null)
         1 * processRepository.save(process1) >> process
         output.process != null
         output.process.name == "John's process"

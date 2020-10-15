@@ -27,6 +27,7 @@ import spock.lang.Unroll
 
 class UpdateGroupUseCaseSpec extends UseCaseSpec {
 
+    public static final String USER_NAME = "john"
     PutGroupUseCase usecase = new PutGroupUseCase(repositoryProvider)
     @Unroll
     def "update a #type group"() {
@@ -38,18 +39,21 @@ class UpdateGroupUseCaseSpec extends UseCaseSpec {
         group.getOwner() >> existingUnit
         group.getId() >> groupId
         group.name >> "Updated $type group"
-        group.version >> 0
+
+        def existingGroup = Mock(type.groupClass) {
+            it.id >> groupId
+        }
 
         repositoryProvider.getRepositoryFor(_) >> repository
 
         when:
         def eTag = ETag.from(group.getId().uuidValue(), 0)
-        def output = usecase.execute(new InputData(group, existingClient, eTag))
+        def output = usecase.execute(new InputData(group, existingClient, eTag, USER_NAME))
         then:
 
         //        1 * targetToEntityContext.partialDomain() >> targetToEntityContext
-        1 * repository.findById(groupId) >> Optional.of(group)
-
+        1 * repository.findById(groupId) >> Optional.of(existingGroup)
+        1 * group.version(USER_NAME, existingGroup)
         1 * repository.save(_) >> group
         output.group != null
         output.group.name == "Updated $type group"

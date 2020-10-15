@@ -109,6 +109,10 @@ public abstract class AbstractEntityController {
 
     protected Client getAuthenticatedClient(Authentication auth) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+        return getClient(user);
+    }
+
+    protected Client getClient(ApplicationUser user) {
         return getClient(user.getClientId());
     }
 

@@ -155,19 +155,18 @@ public class ProcessController extends AbstractEntityController {
     @Operation(summary = "Creates a process")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Process created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateProcessDto dto) {
         return useCaseInteractor.execute(createProcessUseCase,
                                          new Supplier<CreateProcessUseCase.InputData>() {
 
                                              @Override
                                              public InputData get() {
-
-                                                 Client client = getAuthenticatedClient(auth);
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  dto.getReferences());
                                                  return new InputData(dto.toEntity(tcontext),
-                                                         client);
+                                                         client, user.getUsername());
                                              }
                                          }
 
@@ -182,23 +181,22 @@ public class ProcessController extends AbstractEntityController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Process updated"),
             @ApiResponse(responseCode = "404", description = "Process not found") })
     public @Valid CompletableFuture<FullProcessDto> updateProcess(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @RequestBody FullProcessDto processDto) {
         applyId(id, processDto);
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         return useCaseInteractor.execute(updateProcessUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Process>>() {
 
                                              @Override
                                              public ModifyEntityUseCase.InputData<Process> get() {
-                                                 Client client = getClient(user.getClientId());
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  processDto.getReferences());
 
                                                  return new ModifyEntityUseCase.InputData<Process>(
-                                                         processDto.toEntity(tcontext),
-                                                         getAuthenticatedClient(auth), eTag);
+                                                         processDto.toEntity(tcontext), client,
+                                                         eTag, user.getUsername());
                                              }
                                          }
 

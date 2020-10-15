@@ -75,7 +75,7 @@ public class ModuleConfiguration {
     @Bean
     public CreateAssetUseCase createAssetUseCase(UnitRepositoryImpl unitRepository,
             AssetRepositoryImpl assetRepository) {
-        return new CreateAssetUseCase(unitRepository, assetRepository, getEntityFactory());
+        return new CreateAssetUseCase(unitRepository, assetRepository);
     }
 
     @Bean
@@ -97,7 +97,7 @@ public class ModuleConfiguration {
     @Bean
     public CreateControlUseCase createControlUseCase(UnitRepositoryImpl unitRepository,
             ControlRepositoryImpl controlRepository) {
-        return new CreateControlUseCase(unitRepository, controlRepository, getEntityFactory());
+        return new CreateControlUseCase(unitRepository, controlRepository);
     }
 
     @Bean
@@ -119,7 +119,7 @@ public class ModuleConfiguration {
     @Bean
     public CreateProcessUseCase createProcessUseCase(UnitRepositoryImpl unitRepository,
             ProcessRepositoryImpl processRepository) {
-        return new CreateProcessUseCase(unitRepository, processRepository, getEntityFactory());
+        return new CreateProcessUseCase(unitRepository, processRepository);
     }
 
     @Bean
@@ -169,7 +169,7 @@ public class ModuleConfiguration {
     @Bean
     public CreatePersonUseCase createPersonUseCase(UnitRepositoryImpl unitRepository,
             PersonRepositoryImpl personRepository) {
-        return new CreatePersonUseCase(unitRepository, personRepository, getEntityFactory());
+        return new CreatePersonUseCase(unitRepository, personRepository);
     }
 
     @Bean

@@ -16,13 +16,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-import org.mockito.Mock
+
+import java.time.Instant
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
-import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -49,6 +49,7 @@ class DtoTransformerContextSpec extends Specification {
         subUnit.getName() >> unitName
         subUnit.getId() >> Key.uuidFrom(unitId)
         subUnit.getModelInterface() >> Unit.class
+        subUnit.getCreatedAt() >> Instant.now()
         subUnit.getDisplayName() >> unitName
 
         Unit unit = Mock()
@@ -60,6 +61,7 @@ class DtoTransformerContextSpec extends Specification {
         unit.getId() >> Key.uuidFrom(unitId)
         unit.getUnits() >> [subUnit]
         unit.getModelInterface() >> Unit.class
+        unit.getCreatedAt() >> Instant.now()
 
         subUnit.getParent() >> unit
         return unit
@@ -91,6 +93,8 @@ class DtoTransformerContextSpec extends Specification {
         doc.getCustomAspects() >> []
         doc.getOwner() >> unit
         doc.getModelInterface() >> Document.class
+        doc.getCreatedAt() >> Instant.now()
+        doc.getUpdatedAt() >> Instant.now()
 
         def newDoc = Mock(Document)
 
@@ -106,6 +110,8 @@ class DtoTransformerContextSpec extends Specification {
         replacementUnit.getName() >> "replaced unit"
         replacementUnit.getId() >> Key.uuidFrom(unitId)
         replacementUnit.getModelInterface() >> Unit.class
+        replacementUnit.getCreatedAt() >> Instant.now()
+        replacementUnit.getUpdatedAt() >> Instant.now()
 
         when: "the document is transformed into a DTO"
 

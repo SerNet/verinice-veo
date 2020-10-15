@@ -23,7 +23,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.UnitRepository;
@@ -35,13 +34,10 @@ public class CreateAssetUseCase<R>
 
     private final UnitRepository unitRepository;
     private final AssetRepository assetRepository;
-    private final EntityFactory entityFactory;
 
-    public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository assetRepository,
-            EntityFactory entityFactory) {
+    public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository assetRepository) {
         this.unitRepository = unitRepository;
         this.assetRepository = assetRepository;
-        this.entityFactory = entityFactory;
     }
 
     @Override
@@ -55,6 +51,7 @@ public class CreateAssetUseCase<R>
                                                .getId()
                                                .uuidValue()));
         unit.checkSameClient(input.authenticatedClient);
+        asset.version(input.username, null);
         return new OutputData(assetRepository.save(asset));
     }
 
@@ -63,6 +60,7 @@ public class CreateAssetUseCase<R>
     public static class InputData implements UseCase.InputData {
         Asset newAsset;
         Client authenticatedClient;
+        String username;
     }
 
     @Valid

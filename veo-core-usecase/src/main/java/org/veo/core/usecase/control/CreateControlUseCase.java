@@ -23,7 +23,6 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.UnitRepository;
@@ -35,13 +34,11 @@ public class CreateControlUseCase<R>
 
     private final UnitRepository unitRepository;
     private final ControlRepository controlRepository;
-    private final EntityFactory entityFactory;
 
-    public CreateControlUseCase(UnitRepository unitRepository, ControlRepository controlRepository,
-            EntityFactory entityFactory) {
+    public CreateControlUseCase(UnitRepository unitRepository,
+            ControlRepository controlRepository) {
         this.unitRepository = unitRepository;
         this.controlRepository = controlRepository;
-        this.entityFactory = entityFactory;
     }
 
     @Override
@@ -57,6 +54,7 @@ public class CreateControlUseCase<R>
         unit.checkSameClient(input.authenticatedClient);
         input.getControl()
              .setId(Key.newUuid());
+        input.control.version(input.username, null);
         return new OutputData(controlRepository.save(input.getControl()));
     }
 
@@ -65,6 +63,7 @@ public class CreateControlUseCase<R>
     public static class InputData implements UseCase.InputData {
         Control control;
         Client authenticatedClient;
+        String username;
     }
 
     @Valid

@@ -34,7 +34,7 @@ public class PutGroupUseCase<R> extends UpdateGroupUseCase<R> {
     @Override
     protected ModelGroup<?> update(InputData input) {
         ModelGroup<?> group = input.getGroup();
-        group.setValidFrom(Instant.now());
+        group.setCreatedAt(Instant.now());
         Repository repository = repositoryProvider.getRepositoryFor(input.getGroup()
                                                                          .getClass());
         Optional<ModelGroup<?>> existingGroup = repository.findById(group.getId());
@@ -44,6 +44,7 @@ public class PutGroupUseCase<R> extends UpdateGroupUseCase<R> {
         }
         EntityLayerSupertype groupInDb = existingGroup.get();
         checkETag(groupInDb, input);
+        group.version(input.username, existingGroup.get());
         group.setVersion(groupInDb.getVersion());
         groupInDb.checkSameClient(input.getAuthenticatedClient());
         return (ModelGroup<?>) repository.save(group);

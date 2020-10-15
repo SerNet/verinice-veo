@@ -183,14 +183,13 @@ public class UnitController extends AbstractEntityController {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = RestApiResponse.class))) })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createUnit(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @Valid @RequestBody CreateUnitDto createUnitDto) {
-
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
 
         return useCaseInteractor.execute(createUnitUseCase,
                                          CreateUnitInputMapper.map(createUnitDto,
-                                                                   user.getClientId()),
+                                                                   user.getClientId(),
+                                                                   user.getUsername()),
                                          output -> {
                                              ApiResponseBody body = CreateUnitOutputMapper.map(output.getUnit());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
@@ -204,18 +203,17 @@ public class UnitController extends AbstractEntityController {
     // @ApiResponses(value = { @ApiResponse(responseCode = "200", description =
     // "Unit updated"),
     // @ApiResponse(responseCode = "404", description = "Unit not found") })
-    public CompletableFuture<FullUnitDto> updateUnit(
-            @Parameter(required = false, hidden = true) Authentication auth,
+    public CompletableFuture<FullUnitDto> updateUnit(@Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @RequestBody FullUnitDto unitDto) {
 
         return useCaseInteractor.execute(putUnitUseCase,
                                          (Supplier<ChangeUnitUseCase.InputData>) () -> {
-                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(getAuthenticatedClient(auth),
+                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(getClient(user),
                                                                                                              unitDto.getReferences());
                                              return new UpdateUnitUseCase.InputData(
-                                                     unitDto.toEntity(tcontext),
-                                                     getAuthenticatedClient(auth), eTag);
+                                                     unitDto.toEntity(tcontext), getClient(user),
+                                                     eTag, user.getUsername());
                                          },
                                          output -> FullUnitDto.from(output.getUnit(),
                                                                     EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));

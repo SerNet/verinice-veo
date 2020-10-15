@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Jochen Kemnade.
+ * Copyright (c) 2020 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,15 +14,22 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.person;
+package org.veo.rest;
 
-import org.veo.core.entity.Person;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
-import org.veo.core.usecase.repository.PersonRepository;
+import java.util.List;
 
-public class UpdatePersonUseCase<R> extends ModifyEntityUseCase<Person, R> {
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-    public UpdatePersonUseCase(PersonRepository personRepository) {
-        super(personRepository);
+/**
+ * Adds custom controller method parameter resolvers.
+ */
+@Configuration
+class WebMvcContext implements WebMvcConfigurer {
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new ApplicationUserArgumentResolver());
     }
 }

@@ -75,6 +75,7 @@ import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.interactor.UseCaseInteractorImpl;
+import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -174,18 +175,19 @@ public class PersonController extends AbstractEntityController {
     @Operation(summary = "Creates a person")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Person created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createPerson(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreatePersonDto dto) {
         return useCaseInteractor.execute(createPersonUseCase,
                                          new Supplier<CreatePersonUseCase.InputData>() {
 
                                              @Override
                                              public InputData get() {
-                                                 Client client = getAuthenticatedClient(auth);
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  dto.getReferences());
                                                  return new CreatePersonUseCase.InputData(
-                                                         dto.toEntity(tcontext), client);
+                                                         dto.toEntity(tcontext), client,
+                                                         user.getUsername());
                                              }
                                          }, output -> {
                                              ApiResponseBody body = CreatePersonOutputMapper.map(output.getPerson());
@@ -198,7 +200,7 @@ public class PersonController extends AbstractEntityController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Person updated"),
             @ApiResponse(responseCode = "404", description = "Person not found") })
     public CompletableFuture<FullPersonDto> updatePerson(
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullPersonDto personDto) {
@@ -208,12 +210,12 @@ public class PersonController extends AbstractEntityController {
 
                                              @Override
                                              public org.veo.core.usecase.base.ModifyEntityUseCase.InputData<Person> get() {
-                                                 Client client = getAuthenticatedClient(auth);
+                                                 Client client = getClient(user);
                                                  DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
                                                                                                                  personDto.getReferences());
                                                  return new ModifyEntityUseCase.InputData<Person>(
-                                                         personDto.toEntity(tcontext), client,
-                                                         eTag);
+                                                         personDto.toEntity(tcontext), client, eTag,
+                                                         user.getUsername());
                                              }
                                          },
 

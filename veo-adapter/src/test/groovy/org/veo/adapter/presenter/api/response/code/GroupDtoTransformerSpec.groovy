@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
+import java.time.Instant
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto
@@ -91,6 +93,8 @@ class GroupDtoTransformerSpec extends Specification {
         assetGroup.getOwner() >> unit
         assetGroup.getModelInterface >> Asset.class
         assetGroup.getMembers() >> []
+        assetGroup.getCreatedAt() >> Instant.now()
+        assetGroup.getUpdatedAt() >> Instant.now()
 
 
 
@@ -123,6 +127,8 @@ class GroupDtoTransformerSpec extends Specification {
         asset.domains >> []
         asset.clientName >> "AssetName"
         asset.modelInterface >> Asset.class
+        asset.createdAt >> Instant.now()
+        asset.updatedAt >> Instant.now()
 
         Asset asset1 = Mock(Asset)
         asset1.id >> a1id
@@ -131,6 +137,8 @@ class GroupDtoTransformerSpec extends Specification {
         asset1.customAspects >> []
         asset1.clientName >> "AssetName1"
         asset1.modelInterface >> Asset.class
+        asset1.createdAt >> Instant.now()
+        asset1.updatedAt >> Instant.now()
 
         Asset asset2 = Mock(Asset)
         asset2.id >> a2id
@@ -139,6 +147,8 @@ class GroupDtoTransformerSpec extends Specification {
         asset2.domains >> []
         asset2.clientName >> "AssetName2"
         asset2.modelInterface >> Asset.class
+        asset2.createdAt >> Instant.now()
+        asset2.updatedAt >> Instant.now()
 
         def process = Mock(Process)
         process.id >> pid
@@ -148,6 +158,8 @@ class GroupDtoTransformerSpec extends Specification {
         process.name >> "Process"
         process.modelInterface >> Process.class
         process.displayName >> "Process"
+        process.createdAt >> Instant.now()
+        process.updatedAt >> Instant.now()
 
 
         AssetGroup assetGroup = Mock(AssetGroup)
@@ -158,6 +170,8 @@ class GroupDtoTransformerSpec extends Specification {
         assetGroup.customAspects >> []
         assetGroup.members>>([asset1, asset2] as Set)
         assetGroup.modelInterface >> Asset.class
+        assetGroup.createdAt >> Instant.now()
+        assetGroup.updatedAt >> Instant.now()
 
         ProcessGroup processGroup = Mock()
         processGroup.id >> pgid
@@ -167,6 +181,8 @@ class GroupDtoTransformerSpec extends Specification {
         processGroup.customAspects >> []
         processGroup.members >>([process] as Set)
         processGroup.modelInterface >> Process.class
+        processGroup.createdAt >> Instant.now()
+        processGroup.updatedAt >> Instant.now()
 
         EntityFactory factory = Mock()
         factory.createAsset() >> asset
@@ -220,6 +236,8 @@ class GroupDtoTransformerSpec extends Specification {
         documentGroup1.links >> []
         documentGroup1.customAspects >> []
         documentGroup1.modelInterface >> Document.class
+        documentGroup1.createdAt >> Instant.now()
+        documentGroup1.updatedAt >> Instant.now()
 
         DocumentGroup documentGroup2 = Mock()
         documentGroup2.id >> Key.newUuid()
@@ -228,6 +246,8 @@ class GroupDtoTransformerSpec extends Specification {
         documentGroup2.links >> []
         documentGroup2.customAspects >> []
         documentGroup2.modelInterface >> Document.class
+        documentGroup2.createdAt >> Instant.now()
+        documentGroup2.updatedAt >> Instant.now()
 
         DocumentGroup documentGroup3 = Mock()
         documentGroup3.id >> Key.newUuid()
@@ -236,6 +256,8 @@ class GroupDtoTransformerSpec extends Specification {
         documentGroup3.links >> []
         documentGroup3.customAspects >> []
         documentGroup3.modelInterface >> Document.class
+        documentGroup3.createdAt >> Instant.now()
+        documentGroup3.updatedAt >> Instant.now()
 
         documentGroup1.members >> ([documentGroup2] as Set)
         documentGroup3.members >> ([documentGroup1] as Set)
@@ -308,6 +330,8 @@ class GroupDtoTransformerSpec extends Specification {
         assetGroup.customAspects >> []
         assetGroup.modelInterface >> Document.class
         assetGroup.members>> ([assetGroup] as Set)
+        assetGroup.createdAt >> Instant.now()
+        assetGroup.updatedAt >> Instant.now()
 
         def refAssembler = Mock(ReferenceAssembler)
 
