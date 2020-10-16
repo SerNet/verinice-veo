@@ -25,7 +25,8 @@ import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
 @Repository
-public class DocumentRepositoryImpl extends BaseRepository<Document, DocumentData>
+public class DocumentRepositoryImpl
+        extends AbstractEntityLayerSupertypeRepository<Document, DocumentData>
         implements DocumentRepository {
 
     public DocumentRepositoryImpl(DocumentDataRepository dataRepository,

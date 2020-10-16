@@ -25,8 +25,8 @@ import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
 @Repository
-public class ControlRepositoryImpl extends BaseRepository<Control, ControlData>
-        implements ControlRepository {
+public class ControlRepositoryImpl extends
+        AbstractEntityLayerSupertypeRepository<Control, ControlData> implements ControlRepository {
 
     public ControlRepositoryImpl(ControlDataRepository dataRepository,
             ModelObjectValidation validation) {

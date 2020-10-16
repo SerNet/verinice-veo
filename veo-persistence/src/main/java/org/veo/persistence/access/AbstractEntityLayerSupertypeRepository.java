@@ -18,14 +18,11 @@ package org.veo.persistence.access;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
@@ -33,52 +30,16 @@ import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public abstract class BaseRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>
-        implements EntityLayerSupertypeRepository<T> {
+abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>
+        extends AbstractModelObjectRepository<T, S> implements EntityLayerSupertypeRepository<T> {
 
     protected final EntityLayerSupertypeDataRepository<S> dataRepository;
 
-    protected final ModelObjectValidation validation;
-
-    @Override
-    public T save(T entity) {
-        validation.validateModelObject(entity);
-        return (T) dataRepository.save((S) entity);
-    }
-
-    @Override
-    public Optional<T> findById(Key<UUID> id) {
-        return (Optional<T>) dataRepository.findById(id.uuidValue());
-    }
-
-    @Override
-    public List<T> findByName(String search) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void delete(T entity) {
-        deleteById(entity.getId());
-    }
-
-    @Override
-    public void deleteById(Key<UUID> id) {
-        dataRepository.deleteById(id.uuidValue());
-    }
-
-    @Override
-    public boolean exists(Key<UUID> id) {
-        return dataRepository.existsById(id.uuidValue());
-    }
-
-    @Override
-    public Set<T> getByIds(Set<Key<UUID>> ids) {
-        // TODO Auto-generated method stub
-        return null;
+    public AbstractEntityLayerSupertypeRepository(
+            EntityLayerSupertypeDataRepository<S> dataRepository,
+            ModelObjectValidation validation) {
+        super(dataRepository, validation);
+        this.dataRepository = dataRepository;
     }
 
     @Override

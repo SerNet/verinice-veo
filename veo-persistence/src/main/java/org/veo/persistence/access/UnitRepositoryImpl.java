@@ -17,67 +17,26 @@
 package org.veo.persistence.access;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.UnitRepository;
 import org.veo.persistence.access.jpa.UnitDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.UnitData;
 
-import lombok.AllArgsConstructor;
-
 @Repository
-@AllArgsConstructor
-public class UnitRepositoryImpl implements UnitRepository {
+public class UnitRepositoryImpl extends AbstractModelObjectRepository<Unit, UnitData>
+        implements UnitRepository {
 
-    private UnitDataRepository dataRepository;
+    private final UnitDataRepository dataRepository;
 
-    private ModelObjectValidation validation;
-
-    @Override
-    public Unit save(Unit unit) {
-        validation.validateModelObject(unit);
-        return dataRepository.save((UnitData) unit);
-    }
-
-    @Override
-    public Optional<Unit> findById(Key<UUID> id) {
-        return (Optional) dataRepository.findById(id.uuidValue());
-    }
-
-    @Override
-    public List<Unit> findByName(String search) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void delete(Unit entity) {
-        dataRepository.delete((UnitData) entity);
-    }
-
-    @Override
-    public void deleteById(Key<UUID> id) {
-        dataRepository.deleteById(id.uuidValue());
-    }
-
-    @Override
-    public boolean exists(Key<UUID> id) {
-        return dataRepository.existsById(id.uuidValue());
-    }
-
-    @Override
-    public Set<Unit> getByIds(Set<Key<UUID>> ids) {
-        // TODO Auto-generated method stub
-        return null;
+    public UnitRepositoryImpl(UnitDataRepository dataRepository, ModelObjectValidation validation) {
+        super(dataRepository, validation);
+        this.dataRepository = dataRepository;
     }
 
     @Override

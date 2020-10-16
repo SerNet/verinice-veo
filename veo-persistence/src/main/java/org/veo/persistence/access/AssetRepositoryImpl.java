@@ -25,7 +25,7 @@ import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
 @Repository
-public class AssetRepositoryImpl extends BaseRepository<Asset, AssetData>
+public class AssetRepositoryImpl extends AbstractEntityLayerSupertypeRepository<Asset, AssetData>
         implements AssetRepository {
 
     public AssetRepositoryImpl(AssetDataRepository dataRepository,

@@ -25,8 +25,8 @@ import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ProcessData;
 
 @Repository
-public class ProcessRepositoryImpl extends BaseRepository<Process, ProcessData>
-        implements ProcessRepository {
+public class ProcessRepositoryImpl extends
+        AbstractEntityLayerSupertypeRepository<Process, ProcessData> implements ProcessRepository {
 
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository,
             ModelObjectValidation validation) {

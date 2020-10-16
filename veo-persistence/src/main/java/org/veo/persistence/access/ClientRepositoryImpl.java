@@ -16,67 +16,20 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
-import lombok.AllArgsConstructor;
-
 @Repository
-@AllArgsConstructor
-public class ClientRepositoryImpl implements ClientRepository {
+public class ClientRepositoryImpl extends AbstractModelObjectRepository<Client, ClientData>
+        implements ClientRepository {
 
-    private ClientDataRepository dataRepository;
-
-    private ModelObjectValidation validation;
-
-    @Override
-    public Client save(Client client) {
-        validation.validateModelObject(client);
-        return dataRepository.save((ClientData) client);
+    public ClientRepositoryImpl(ClientDataRepository dataRepository,
+            ModelObjectValidation validator) {
+        super(dataRepository, validator);
     }
-
-    @Override
-    public Optional<Client> findById(Key<UUID> id) {
-        Optional<ClientData> optional = dataRepository.findById(id.uuidValue());
-        return optional.isPresent() ? Optional.of(optional.get()) : Optional.empty();
-    }
-
-    @Override
-    public List<Client> findByName(String search) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void delete(Client entity) {
-        dataRepository.delete((ClientData) entity);
-    }
-
-    @Override
-    public void deleteById(Key<UUID> id) {
-        dataRepository.deleteById(id.uuidValue());
-    }
-
-    @Override
-    public boolean exists(Key<UUID> id) {
-        return dataRepository.existsById(id.uuidValue());
-    }
-
-    @Override
-    public Set<Client> getByIds(Set<Key<UUID>> ids) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

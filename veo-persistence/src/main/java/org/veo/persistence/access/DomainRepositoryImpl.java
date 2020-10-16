@@ -16,67 +16,20 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.usecase.repository.DomainRepository;
-import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
-import lombok.AllArgsConstructor;
-
 @Repository
-@AllArgsConstructor
-public class DomainRepositoryImpl implements DomainRepository {
+public class DomainRepositoryImpl extends AbstractModelObjectRepository<Domain, DomainData>
+        implements DomainRepository {
 
-    private DomainDataRepository dataRepository;
-
-    private ModelObjectValidation validation;
-
-    @Override
-    public Domain save(Domain domain) {
-        validation.validateModelObject(domain);
-        return dataRepository.save((DomainData) domain);
+    public DomainRepositoryImpl(CrudRepository<DomainData, String> dataRepository,
+            ModelObjectValidation validation) {
+        super(dataRepository, validation);
     }
-
-    @Override
-    public Optional<Domain> findById(Key<UUID> id) {
-        return (Optional) dataRepository.findById(id.uuidValue());
-
-    }
-
-    @Override
-    public List<Domain> findByName(String search) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void delete(Domain entity) {
-        dataRepository.delete((DomainData) entity);
-    }
-
-    @Override
-    public void deleteById(Key<UUID> id) {
-        dataRepository.deleteById(id.uuidValue());
-    }
-
-    @Override
-    public boolean exists(Key<UUID> id) {
-        return dataRepository.existsById(id.uuidValue());
-    }
-
-    @Override
-    public Set<Domain> getByIds(Set<Key<UUID>> ids) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

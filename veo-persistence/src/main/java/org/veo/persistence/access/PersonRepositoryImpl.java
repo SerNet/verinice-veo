@@ -25,7 +25,7 @@ import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.PersonData;
 
 @Repository
-public class PersonRepositoryImpl extends BaseRepository<Person, PersonData>
+public class PersonRepositoryImpl extends AbstractEntityLayerSupertypeRepository<Person, PersonData>
         implements PersonRepository {
 
     public PersonRepositoryImpl(PersonDataRepository dataRepository,
