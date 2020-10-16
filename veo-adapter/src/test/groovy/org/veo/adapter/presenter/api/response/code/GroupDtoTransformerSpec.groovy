@@ -29,7 +29,6 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.AssetGroup
-import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.ProcessGroup
 import org.veo.core.entity.transform.ClassKey
 import org.veo.core.entity.transform.EntityFactory
@@ -224,99 +223,6 @@ class GroupDtoTransformerSpec extends Specification {
 
         epg.members.size() == 1
         epg.members.first().name == process.name
-    }
-
-    def "Transform circular structure to DTO and back"() {
-        given: "some groups"
-
-        DocumentGroup documentGroup1 = Mock()
-        documentGroup1.id >> Key.newUuid()
-        documentGroup1.name>>"DocumentGroup1"
-        documentGroup1.domains >> []
-        documentGroup1.links >> []
-        documentGroup1.customAspects >> []
-        documentGroup1.modelInterface >> Document.class
-        documentGroup1.createdAt >> Instant.now()
-        documentGroup1.updatedAt >> Instant.now()
-
-        DocumentGroup documentGroup2 = Mock()
-        documentGroup2.id >> Key.newUuid()
-        documentGroup2.name>>"DocumentGroup1"
-        documentGroup2.domains >> []
-        documentGroup2.links >> []
-        documentGroup2.customAspects >> []
-        documentGroup2.modelInterface >> Document.class
-        documentGroup2.createdAt >> Instant.now()
-        documentGroup2.updatedAt >> Instant.now()
-
-        DocumentGroup documentGroup3 = Mock()
-        documentGroup3.id >> Key.newUuid()
-        documentGroup3.name>>"DocumentGroup1"
-        documentGroup3.domains >> []
-        documentGroup3.links >> []
-        documentGroup3.customAspects >> []
-        documentGroup3.modelInterface >> Document.class
-        documentGroup3.createdAt >> Instant.now()
-        documentGroup3.updatedAt >> Instant.now()
-
-        documentGroup1.members >> ([documentGroup2] as Set)
-        documentGroup3.members >> ([documentGroup1] as Set)
-
-        documentGroup2.members >> ([documentGroup3] as Set)
-
-        ReferenceAssembler assembler = Mock()
-
-        when: "the groups are transformed"
-        def context = EntityToDtoContext.getCompleteTransformationContext(assembler)
-        def dtoDG1 = FullEntityLayerSupertypeGroupDto.from(documentGroup1, context)
-        def dtoDG2 = FullEntityLayerSupertypeGroupDto.from(documentGroup2, context)
-        def dtoDG3 = FullEntityLayerSupertypeGroupDto.from(documentGroup3, context)
-
-        then: "all members are set"
-        def refAssembler = Mock(ReferenceAssembler)
-        dtoDG1.members == [
-            ModelObjectReference.from(documentGroup2, refAssembler)
-        ] as Set
-        dtoDG2.members == [
-            ModelObjectReference.from(documentGroup3, refAssembler)
-        ] as Set
-        dtoDG3.members == [
-            ModelObjectReference.from(documentGroup1, refAssembler)
-        ] as Set
-
-
-        when: "A transformation context is prepared"
-
-        DocumentGroup gg = Mock()
-        // pitty this does not work
-        //        1 * gg.setMembers([documentGroup2] as Set)
-        //        1 * gg.setMembers([documentGroup3] as Set)
-        //        1 * gg.setMembers([documentGroup1] as Set)
-        3 * gg.setMembers(_)
-
-        EntityFactory factory = Mock()
-        factory.createDocumentGroup() >> gg
-
-        def transformationContext = Mock(DtoToEntityContext) {
-            it.context >> new HashMap<>()
-            it.factory >> factory
-        }
-        [
-            documentGroup1,
-            documentGroup2,
-            documentGroup3
-        ].forEach({
-            transformationContext.context.put(new ClassKey<>(Document, it.id), it)}
-        )
-
-
-        and: "The DTOs are transformed back"
-        DocumentGroup dG1 = dtoDG1.toEntity(transformationContext)
-        DocumentGroup dG2 = dtoDG2.toEntity(transformationContext)
-        DocumentGroup dG3 = dtoDG3.toEntity(transformationContext)
-
-        then: "all members are set"
-        // TODO VEO-288 This test is missing some conditions here.
     }
 
     def "Transform group that contains itself"() {
