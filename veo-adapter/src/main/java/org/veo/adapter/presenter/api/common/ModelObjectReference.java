@@ -101,27 +101,21 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
     }
 
     /**
-     * Maps the given reference to an entity in the context map.
+     * Search given context (cache) for the entity referenced by this.
      *
-     * @param <T>
-     *            the type to map
      * @param context
      *            the transformcontext
-     * @param ref
-     *            the modelref of type T
      * @return the mapped entity of type T
      * @throws RuntimeException
      *             when no entity is found
      */
-    public static <T extends ModelObject> T mapToEntity(
-            Map<ClassKey<Key<UUID>>, ? super ModelObject> context, ModelObjectReference<T> ref) {
-        ClassKey<Key<UUID>> key = new ClassKey<>(ref.getType(), Key.uuidFrom(ref.getId()));
+    public T findInContext(Map<ClassKey<Key<UUID>>, ? super ModelObject> context) {
+        ClassKey<Key<UUID>> key = new ClassKey<>(type, Key.uuidFrom(id));
         @SuppressWarnings("unchecked")
         T object = (T) context.get(key);
         if (object == null)
-            throw new NotFoundException("No object found for type:" + ref.getType()
-                                                                         .getSimpleName()
-                    + " and id:" + ref.getId());
+            throw new NotFoundException(
+                    "No object found for type:" + type.getSimpleName() + " and id:" + id);
         return object;
     }
 
