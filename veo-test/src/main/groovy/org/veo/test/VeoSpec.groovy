@@ -27,6 +27,7 @@ import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Key
+import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Nameable
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
@@ -75,7 +76,7 @@ abstract class VeoSpec extends Specification {
             id = Key.newUuid()
             it.owner = owner
             execute(it, init)
-            initEntityLayerSupertype(it)
+            initModelGroup(it)
         }
     }
 
@@ -107,7 +108,7 @@ abstract class VeoSpec extends Specification {
             id = Key.newUuid()
             it.owner = owner
             execute(it, init)
-            initEntityLayerSupertype(it)
+            initModelGroup(it)
         }
     }
 
@@ -127,7 +128,7 @@ abstract class VeoSpec extends Specification {
             id = Key.newUuid()
             it.owner = owner
             execute(it, init)
-            initEntityLayerSupertype(it)
+            initModelGroup(it)
         }
     }
 
@@ -157,7 +158,7 @@ abstract class VeoSpec extends Specification {
             id = Key.newUuid()
             it.owner = owner
             execute(it, init)
-            initEntityLayerSupertype(it)
+            initModelGroup(it)
         }
     }
 
@@ -218,6 +219,13 @@ abstract class VeoSpec extends Specification {
         }
         name(target)
         version(target)
+    }
+
+    private static def initModelGroup(ModelGroup<? extends EntityLayerSupertype> group) {
+        initEntityLayerSupertype(group)
+        if(group.members == null) {
+            group.members = new HashSet<>()
+        }
     }
 
     private static def version(Versioned target) {
