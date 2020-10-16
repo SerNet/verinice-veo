@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -47,30 +48,36 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     @Column(name = "name")
     @ToString.Include
     private String name;
+
     @Column(name = "abbreviation")
     private String abbreviation;
+
     @Column(name = "description")
     private String description;
+
     // many to one entitylayersupertype-> domain
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
     private Set<Domain> domains;
+
     // many to one entitylayersupertype-> customlink
     @Column(name = "links")
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = CustomLinkData.class,
                fetch = FetchType.LAZY)
-    private Set<CustomLink> links;
+    private Set<CustomLink> links = new HashSet<>();
+
     // many to one entitylayersupertype-> customproperties
     @Column(name = "customaspects")
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = CustomPropertiesData.class,
                fetch = FetchType.LAZY)
-    private Set<CustomProperties> customAspects;
-    @NotNull
+    private Set<CustomProperties> customAspects = new HashSet<>();
+
     // one to one entitylayersupertype-> unit
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
     @JoinColumn(name = "owner_id")
     private Unit owner;
@@ -112,7 +119,8 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     }
 
     public void setLinks(Set<CustomLink> aLinks) {
-        this.links = aLinks;
+        this.links.clear();
+        this.links.addAll(aLinks);
     }
 
     public Set<CustomProperties> getCustomAspects() {
@@ -120,7 +128,8 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     }
 
     public void setCustomAspects(Set<CustomProperties> aCustomAspects) {
-        this.customAspects = aCustomAspects;
+        this.customAspects.clear();
+        this.customAspects.addAll(aCustomAspects);
     }
 
     public Unit getOwner() {
