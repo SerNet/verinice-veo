@@ -270,7 +270,11 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         subUnit.name == "sub-unit-1"
         subUnit.parent.targetUri == "http://localhost/units/"+parent.resourceId
 
-        // VEO-327 GET the parent unit and verify that it contains the child unit.
+        and: "the retrieved parent contains the sub unit"
+        with(parseJson(get("/units/$parent.resourceId")).units) {
+            size() == 1
+            get(0).targetUri == "http://localhost/units/$subUnitId"
+        }
 
         when: "load the client"
         def allUnits = txTemplate.execute {
@@ -279,6 +283,62 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the data is persistent"
         allUnits.size() == 2
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "sub units are read-only when creating a unit"() {
+        given: "a parent and sub unit"
+        def parentUnitId = parseJson(post("/units", [
+            name: "parent"
+        ])).resourceId
+        def subUnitId = parseJson(post("/units", [
+            name: "sub",
+            parent: [
+                targetUri: "/units/$parentUnitId"
+            ]
+        ])).resourceId
+
+        when: "trying to create a new parent for the existing sub unit"
+        def newUnitId = parseJson(post("/units", [
+            name: "new unit",
+            units: [
+                [
+                    targetUri: "/units/$subUnitId"
+                ]
+            ]
+        ])).resourceId
+
+        then: "the sub unit list was ignored"
+        parseJson(get("/units/$newUnitId")).units.size() == 0
+
+        and: "the sub unit is still assigned to the original parent"
+        parseJson(get("/units/$subUnitId")).parent.targetUri == "http://localhost/units/$parentUnitId"
+        parseJson(get("/units/$parentUnitId")).units[0].targetUri == "http://localhost/units/$subUnitId"
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "sub units are read-only when updating a unit"() {
+        given: "a parent and sub unit"
+        def parentUnitId = parseJson(post("/units", [
+            name: "parent"
+        ])).resourceId
+        def subUnitId = parseJson(post("/units", [
+            name: "sub",
+            parent: [
+                targetUri: "/units/$parentUnitId"
+            ]
+        ])).resourceId
+
+        when: "trying to update the parent with an empty sub unit list"
+        def parentUnitETag = parseETag(get("/units/$parentUnitId"));
+        put("/units/$parentUnitId", [
+            id: parentUnitId,
+            name: "parent",
+            units: []], ["If-Match": parentUnitETag])
+
+        then: "the unit hierarchy is still the same"
+        parseJson(get("/units/$subUnitId")).parent.targetUri == "http://localhost/units/$parentUnitId"
+        parseJson(get("/units/$parentUnitId")).units[0].targetUri == "http://localhost/units/$subUnitId"
     }
 
     @WithUserDetails("user@domain.example")

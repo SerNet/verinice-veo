@@ -62,6 +62,10 @@ public interface Unit extends Nameable, ModelObject {
      */
     boolean removeFromDomains(Domain aDomain);
 
+    Set<Unit> getUnits();
+
+    void setUnits(Set<Unit> units);
+
     Set<Domain> getDomains();
 
     void setDomains(Set<Domain> aDomains);

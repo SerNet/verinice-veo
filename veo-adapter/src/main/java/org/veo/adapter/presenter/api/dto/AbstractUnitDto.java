@@ -83,8 +83,8 @@ abstract public class AbstractUnitDto implements NameableDto, VersionedDto {
     @JsonIgnore
     private ModelObjectReference<Client> client;
 
-    @Schema(description = "The units for the Unit.")
-    private Set<AbstractUnitDto> units = Collections.emptySet();
+    @Schema(description = "The sub units for the Unit.", accessMode = Schema.AccessMode.READ_ONLY)
+    private Set<ModelObjectReference<Unit>> units = Collections.emptySet();
 
     @Schema(implementation = ModelObjectReferenceUnitParent.class)
     private ModelObjectReference<Unit> parent;

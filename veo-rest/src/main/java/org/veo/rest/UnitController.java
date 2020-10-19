@@ -196,7 +196,6 @@ public class UnitController extends AbstractEntityController {
                                          });
     }
 
-    // TODO: veo-280 include subunits
     @Async
     @PutMapping(value = "/{id}")
     // @Operation(summary = "Updates a unit")

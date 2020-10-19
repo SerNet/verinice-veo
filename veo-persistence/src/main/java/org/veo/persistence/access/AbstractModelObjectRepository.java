@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -74,7 +76,13 @@ abstract class AbstractModelObjectRepository<T extends ModelObject, S extends Ba
 
     @Override
     public Set<T> getByIds(Set<Key<UUID>> ids) {
-        // TODO Auto-generated method stub
-        return null;
+        var idStrings = ids.stream()
+                           .map(Key::uuidValue)
+                           .collect(Collectors.toList());
+        return StreamSupport.stream(dataRepository.findAllById(idStrings)
+                                                  .spliterator(),
+                                    false)
+                            .map(e -> (T) e)
+                            .collect(Collectors.toSet());
     }
 }

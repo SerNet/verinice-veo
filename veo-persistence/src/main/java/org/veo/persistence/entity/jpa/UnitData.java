@@ -16,14 +16,17 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
@@ -53,10 +56,16 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
     @JoinColumn(name = "client_id")
     private Client client;
-    // one to one unit-> unit
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
-    @JoinColumn(name = "parent_id")
+
+    // one to many unit-> unit
+    @OneToMany(mappedBy = "parent",
+               fetch = FetchType.LAZY,
+               targetEntity = UnitData.class,
+               cascade = CascadeType.ALL)
+    private final Set<Unit> units = new HashSet<>();
+    @ManyToOne(targetEntity = UnitData.class)
     private Unit parent;
+
     // many to one unit-> domain
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class)
@@ -100,6 +109,18 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
 
     public void setParent(Unit aParent) {
         this.parent = aParent;
+    }
+
+    @Override
+    public Set<Unit> getUnits() {
+        return units;
+    }
+
+    @Override
+    public void setUnits(Set<Unit> units) {
+        units.forEach(u -> u.setParent(this));
+        this.units.clear();
+        this.units.addAll(units);
     }
 
     public Set<Domain> getDomains() {

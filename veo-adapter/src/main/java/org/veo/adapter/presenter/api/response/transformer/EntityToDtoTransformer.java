@@ -530,6 +530,9 @@ public final class EntityToDtoTransformer {
         target = new FullUnitDto();
         target.setId(key);
         target.setVersion(source.getVersion());
+        target.setUnits(convertSet(source.getUnits(),
+                                   u -> ModelObjectReference.from(u,
+                                                                  tcontext.getReferenceAssembler())));
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
         context.put(classKey, target);

@@ -18,6 +18,8 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import java.time.Instant
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullClientDto
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto
@@ -90,9 +92,9 @@ class TransformerSpec extends Specification {
     }
 
     def AbstractUnitDto createUnitDto() {
-        def subUnitDto = new FullUnitDto()
-        subUnitDto.setId(subUnitId)
-        subUnitDto.setName(subUnitName)
+        def subUnitDto = Mock(ModelObjectReference) {
+            it.id >> subUnitId
+        }
 
         def unitDto = new FullUnitDto()
         unitDto.setId(unitId)
@@ -107,7 +109,7 @@ class TransformerSpec extends Specification {
         def unit = createUnit()
 
         when: "the parent unit is transformed into a DTO"
-        def unitDto = FullUnitDto.from(unit, EntityToDtoContext.getCompleteTransformationContext())
+        def unitDto = FullUnitDto.from(unit, EntityToDtoContext.getCompleteTransformationContext(Mock(ReferenceAssembler)))
 
         then: "The DTO contains all required data"
         unitDto.name == unitName
