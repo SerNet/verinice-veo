@@ -83,14 +83,15 @@ public class CustomAttributesTransformer {
         });
     }
 
-    private JsonNode getAspectAttrPropsSchema(String type) {
+    private JsonNode getAspectAttrPropsSchema(String aspectType) {
         var aspectSchema = jsonSchema.get(KEY_PROPERTIES)
                                      .get(KEY_CUSTOM_ASPECTS)
                                      .get(KEY_PROPERTIES)
-                                     .get(type);
+                                     .get(aspectType);
         if (aspectSchema == null) {
             throw new IllegalArgumentException(
-                    String.format("Custom aspect type \"%s\" does not exist in schema.", type));
+                    String.format("Custom aspect type \"%s\" does not exist in schema.",
+                                  aspectType));
         }
         return aspectSchema.get(KEY_PROPERTIES)
                            .get(KEY_ATTRIBUTES)

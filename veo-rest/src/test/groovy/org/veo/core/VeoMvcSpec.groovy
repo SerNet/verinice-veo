@@ -114,7 +114,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         }
         // The async request may fail to start if the request is invalid (e.g. has invalid HTTP header or params).
         catch (AssertionError ignored) {
-            throw actions.andReturn().resolvedException;
+            throw actions.andReturn().resolvedException
         }
     }
 
