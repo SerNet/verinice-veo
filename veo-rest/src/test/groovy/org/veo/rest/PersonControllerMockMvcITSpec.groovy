@@ -344,4 +344,19 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
+
+    @WithUserDetails("user@domain.example")
+    def "can put back person"() {
+        given: "a new person"
+        def id = parseJson(post("/persons/", [
+            name: "new name",
+            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+        ])).resourceId
+        def getResult = get("/persons/$id")
+
+        expect: "putting the retrieved person back to be successful"
+        put("/persons/$id", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
 }

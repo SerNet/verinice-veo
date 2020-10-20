@@ -308,4 +308,19 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the unit is no longer present"
         loadedUnit.empty
     }
+
+
+    @WithUserDetails("user@domain.example")
+    def "can put back unit"() {
+        given: "a new unit"
+        def id = parseJson(post("/units/", [
+            name: "new name"
+        ])).resourceId
+        def getResult = get("/units/$id")
+
+        expect: "putting the retrieved unit back to be successful"
+        put("/units/$id", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
 }

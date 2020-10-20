@@ -653,4 +653,20 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
+
+
+    @WithUserDetails("user@domain.example")
+    def "can put back process"() {
+        given: "a new process"
+        def id = parseJson(post("/processes/", [
+            name: "new name",
+            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+        ])).resourceId
+        def getResult = get("/processes/$id")
+
+        expect: "putting the retrieved process back to be successful"
+        put("/processes/$id", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
 }

@@ -467,4 +467,20 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
+
+
+    @WithUserDetails("user@domain.example")
+    def "can put back control"() {
+        given: "a new control"
+        def id = parseJson(post("/controls/", [
+            name: "new name",
+            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+        ])).resourceId
+        def getResult = get("/controls/$id")
+
+        expect: "putting the retrieved control back to be successful"
+        put("/controls/$id", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
 }

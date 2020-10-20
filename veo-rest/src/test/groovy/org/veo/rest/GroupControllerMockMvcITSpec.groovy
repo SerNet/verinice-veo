@@ -460,4 +460,21 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
+
+
+    @WithUserDetails("user@domain.example")
+    def "can put back group"() {
+        given: "a new asset group"
+        def id = parseJson(post("/groups?type=", [
+            name: "new name",
+            type: "Asset",
+            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+        ])).resourceId
+        def getResult = get("/groups/$id?type=Asset")
+
+        expect: "putting the retrieved group back to be successful"
+        put("/groups/$id?type=Asset", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
 }

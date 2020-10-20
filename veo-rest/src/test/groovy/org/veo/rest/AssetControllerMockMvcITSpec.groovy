@@ -605,4 +605,19 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
+
+    @WithUserDetails("user@domain.example")
+    def "can put back asset"() {
+        given: "a new asset"
+        def id = parseJson(post("/assets/", [
+            name: "new name",
+            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+        ])).resourceId
+        def getResult = get("/assets/$id")
+
+        expect: "putting the retrieved asset back to be successful"
+        put("/assets/$id", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
 }
