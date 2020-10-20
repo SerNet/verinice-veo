@@ -23,13 +23,14 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.Pattern;
 
+import org.veo.adapter.presenter.api.Patterns;
 import org.veo.core.entity.Key;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class KeyDto {
 
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+    @Pattern(regexp = Patterns.UUID,
              flags = Pattern.Flag.CASE_INSENSITIVE,
              message = "ID can be null (for new entities) or a valid UUID string following RFC 4122. If a UUID is"
                      + "given during creation of a new entity, it will be used as ID for the generated object. "

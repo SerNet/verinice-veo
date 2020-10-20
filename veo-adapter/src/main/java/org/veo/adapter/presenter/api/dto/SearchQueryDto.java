@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
+import org.veo.adapter.presenter.api.Patterns;
 import org.veo.core.entity.GroupType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,8 +57,7 @@ import lombok.Value;
 @JsonDeserialize(builder = SearchQueryDto.SearchQueryDtoBuilder.class)
 public class SearchQueryDto {
 
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-             message = "ID must be a valid UUID string following RFC 4122.")
+    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
     @Schema(description = "The ID of the unit of which the searches elements must be a member.")
     String unitId;
 

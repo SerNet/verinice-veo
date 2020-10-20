@@ -25,6 +25,7 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Domain;
@@ -59,7 +60,7 @@ abstract public class AbstractDomainDto implements NameableDto, VersionedDto {
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z",
             accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    @Pattern(regexp = Patterns.DATETIME)
     private String createdAt;
 
     @Schema(description = "The username of the user who created this object.",
@@ -76,7 +77,7 @@ abstract public class AbstractDomainDto implements NameableDto, VersionedDto {
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z",
             accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))")
+    @Pattern(regexp = Patterns.DATETIME)
     private String updatedAt;
 
     @Schema(description = "The username of the user who last updated this object.",

@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
+import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
@@ -41,7 +42,7 @@ import lombok.ToString;
 public class FullControlGroupDto extends FullControlDto
         implements FullEntityLayerSupertypeGroupDto<Control> {
 
-    @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+    @Pattern(regexp = Patterns.UUID,
              flags = Pattern.Flag.CASE_INSENSITIVE,
              message = "ID must be a valid UUID string following RFC 4122.")
     @Schema(description = "ID must be a valid UUID string following RFC 4122.",
