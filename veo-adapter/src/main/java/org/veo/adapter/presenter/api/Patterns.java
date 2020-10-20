@@ -24,7 +24,7 @@ public final class Patterns {
     /**
      * Pattern for ISO timestamps, e.g. "2020-10-19T13:20:29.717794Z"
      */
-    public static final String DATETIME = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,2})?([zZ]|[+-]\\d{2}:\\d{2}))";
+    public static final String DATETIME = "(\\d{4}-\\d{2}-\\d{2}[Tt]\\d{2}:\\d{2}:\\d{2}(\\.\\d{0,6})?([zZ]|[+-]\\d{2}:\\d{2}))";
 
     /**
      * Case-insensitive pattern for UUIDs, e.g.
