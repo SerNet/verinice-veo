@@ -170,9 +170,9 @@ public class CustomPropertiesData implements CustomProperties {
 
     private <TOut> Map<String, TOut> getProperties(Class<?> inClass, Function<Object, TOut> cast) {
         return dataProperties.stream()
-                             .filter(p -> inClass.isInstance(((PropertyData) p).getValue()))
-                             .collect(Collectors.toMap(p -> ((PropertyData) p).getKey(),
-                                                       p -> cast.apply(((PropertyData) p).getValue())));
+                             .filter(p -> inClass.isInstance(p.getValue()))
+                             .collect(Collectors.toMap(PropertyData::getKey,
+                                                       p -> cast.apply(p.getValue())));
     }
 
     /**
