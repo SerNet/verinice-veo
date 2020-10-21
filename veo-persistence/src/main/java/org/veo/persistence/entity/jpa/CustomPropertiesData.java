@@ -181,8 +181,7 @@ public class CustomPropertiesData implements CustomProperties {
      * @return true if added
      */
     public boolean addToDomains(Domain aDomain) {
-        boolean add = this.domains.add(aDomain);
-        return add;
+        return this.domains.add(aDomain);
     }
 
     /**
@@ -191,8 +190,7 @@ public class CustomPropertiesData implements CustomProperties {
      * @return true if removed
      */
     public boolean removeFromDomains(Domain aDomain) {
-        boolean remove = this.domains.remove(aDomain);
-        return remove;
+        return this.domains.remove(aDomain);
     }
 
     public String getDbId() {
