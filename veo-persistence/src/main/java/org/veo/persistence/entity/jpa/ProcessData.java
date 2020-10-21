@@ -18,8 +18,6 @@ package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
 
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Process;
 
 import lombok.EqualsAndHashCode;
@@ -29,15 +27,5 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProcessData extends EntityLayerSupertypeData implements Process {
-
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return Process.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_PROCESS;
-    }
 
 }

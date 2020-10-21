@@ -29,6 +29,7 @@ import java.util.Set;
 public final class EntityTypeNames {
 
     public static final String ASSET = "asset";
+    public static final String CLIENT = "client";
     public static final String CONTROL = "control";
     public static final String DOCUMENT = "document";
     public static final String DOMAIN = "domain";
@@ -36,15 +37,15 @@ public final class EntityTypeNames {
     public static final String PROCESS = "process";
     public static final String UNIT = "unit";
 
-    public static final String PERSONS = "persons";
-    public static final String PROCESSES = "processes";
-    public static final String CONTROLS = "controls";
     public static final String ASSETS = "assets";
-    public static final String UNITS = "units";
+    public static final String CLIENTS = "clients";
+    public static final String CONTROLS = "controls";
     public static final String DOCUMENTS = "documents";
     public static final String DOMAINS = "domains";
     public static final String GROUPS = "groups";
-
+    public static final String PERSONS = "persons";
+    public static final String PROCESSES = "processes";
+    public static final String UNITS = "units";
     /**
      * Groups are mapped to their member's entity type. They are therefor not
      * included in this list or any of the mapping methods.
@@ -57,12 +58,14 @@ public final class EntityTypeNames {
                                                                       Control.class, CONTROLS,
                                                                       Document.class, DOCUMENT,
                                                                       Asset.class, ASSETS,
+                                                                      Client.class, CLIENTS,
                                                                       Unit.class, UNITS,
                                                                       Domain.class, DOMAINS);
 
     private static final Map<String, Class> collectionToType = Map.of(PERSONS, Person.class,
                                                                       PROCESSES, Process.class,
                                                                       CONTROLS, Control.class,
+                                                                      CLIENTS, Client.class,
                                                                       DOCUMENT, Document.class,
                                                                       ASSETS, Asset.class, UNITS,
                                                                       Unit.class, DOMAINS,

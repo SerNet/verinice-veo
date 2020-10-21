@@ -77,6 +77,17 @@ public interface CustomProperties {
 
     void setProperty(String key, List<String> value);
 
+    // @formatter:off
+    /**
+     * W.l.o.g. we assume this CustomAspect belongs to a person.
+     *
+     * The (jackson) serialized map then has to conform to
+     * Person.json#properties.customAspects.properties.{this.getType()}.properties.attributes.properties.
+     *
+     * Person.json#properties.customAspects.properties.{this.getType()}
+     * has to conform to custom-aspect-meta-schema.json.
+     */
+    // @formatter:on
     Map<String, ?> getAllProperties();
 
 }

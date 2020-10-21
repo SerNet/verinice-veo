@@ -21,4 +21,8 @@ package org.veo.core.entity;
  */
 public interface Document extends EntityLayerSupertype {
 
+    @Override
+    default String getModelType() {
+        return EntityTypeNames.DOCUMENT;
+    }
 }

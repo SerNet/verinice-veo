@@ -25,8 +25,6 @@ import javax.persistence.OneToMany;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -78,15 +76,5 @@ public class ClientData extends BaseModelObjectData implements Client {
     public boolean removeFromDomains(Domain aDomain) {
         boolean remove = this.domains.remove(aDomain);
         return remove;
-    }
-
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return Client.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_CLIENT;
     }
 }

@@ -82,4 +82,12 @@ public interface Unit extends Nameable, ModelObject {
         }
     }
 
+    @Override
+    default Class<? extends ModelObject> getModelInterface() {
+        return Unit.class;
+    }
+
+    default String getModelType() {
+        return EntityTypeNames.UNIT;
+    }
 }

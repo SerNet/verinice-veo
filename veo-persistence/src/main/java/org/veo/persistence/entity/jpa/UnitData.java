@@ -31,8 +31,6 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Unit;
 
 import lombok.EqualsAndHashCode;
@@ -150,15 +148,4 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
         boolean remove = this.domains.remove(aDomain);
         return remove;
     }
-
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return Unit.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_UNIT;
-    }
-
 }

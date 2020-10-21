@@ -26,4 +26,13 @@ public interface Domain extends Nameable, ModelObject {
 
     void setActive(Boolean aActive);
 
+    @Override
+    default Class<? extends ModelObject> getModelInterface() {
+        return Domain.class;
+    }
+
+    @Override
+    default String getModelType() {
+        return EntityTypeNames.DOMAIN;
+    }
 }

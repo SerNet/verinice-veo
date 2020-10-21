@@ -19,8 +19,6 @@ package org.veo.persistence.entity.jpa;
 import javax.persistence.Entity;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -29,15 +27,5 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class AssetData extends EntityLayerSupertypeData implements Asset {
-
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return Asset.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_ASSET;
-    }
 
 }

@@ -47,4 +47,13 @@ public interface Client extends ModelObject {
 
     void setDomains(Set<Domain> aDomains);
 
+    @Override
+    default Class<? extends ModelObject> getModelInterface() {
+        return Client.class;
+    }
+
+    @Override
+    default String getModelType() {
+        return EntityTypeNames.CLIENT;
+    }
 }

@@ -21,4 +21,14 @@ package org.veo.core.entity;
  */
 public interface Process extends EntityLayerSupertype {
 
+    @Override
+    default Class<? extends ModelObject> getModelInterface() {
+        return Process.class;
+    }
+
+    @Override
+    default String getModelType() {
+        return EntityTypeNames.PROCESS;
+    }
+
 }

@@ -19,7 +19,6 @@ package org.veo.persistence.entity.jpa;
 import javax.persistence.Entity;
 
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 import org.veo.core.entity.Person;
 
 import lombok.EqualsAndHashCode;
@@ -33,10 +32,5 @@ public class PersonData extends EntityLayerSupertypeData implements Person {
     @Override
     public Class<? extends ModelObject> getModelInterface() {
         return Person.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_PERSON;
     }
 }

@@ -20,7 +20,6 @@ import javax.persistence.Entity;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -33,11 +32,6 @@ public class ControlData extends EntityLayerSupertypeData implements Control {
     @Override
     public Class<? extends ModelObject> getModelInterface() {
         return Control.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_CONTROL;
     }
 
 }

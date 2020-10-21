@@ -22,4 +22,13 @@ package org.veo.core.entity;
  */
 public interface Asset extends EntityLayerSupertype {
 
+    @Override
+    default String getModelType() {
+        return EntityTypeNames.ASSET;
+    }
+
+    @Override
+    default Class<? extends ModelObject> getModelInterface() {
+        return Asset.class;
+    }
 }

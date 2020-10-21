@@ -22,4 +22,9 @@ package org.veo.core.entity;
  */
 public interface Person extends EntityLayerSupertype {
 
+    @Override
+    default String getModelType() {
+        return EntityTypeNames.PERSON;
+    }
+
 }

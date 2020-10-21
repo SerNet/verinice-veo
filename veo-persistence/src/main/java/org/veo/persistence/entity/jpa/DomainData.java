@@ -21,8 +21,6 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -72,15 +70,5 @@ public class DomainData extends BaseModelObjectData implements NameableData, Dom
 
     public void setActive(Boolean aActive) {
         this.active = aActive;
-    }
-
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return Domain.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_DOMAIN;
     }
 }

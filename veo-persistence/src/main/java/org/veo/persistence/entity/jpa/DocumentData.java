@@ -20,7 +20,6 @@ import javax.persistence.Entity;
 
 import org.veo.core.entity.Document;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -33,11 +32,6 @@ public class DocumentData extends EntityLayerSupertypeData implements Document {
     @Override
     public Class<? extends ModelObject> getModelInterface() {
         return Document.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_DOCUMENT;
     }
 
 }
