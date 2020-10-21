@@ -28,9 +28,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
-import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.EntityLayerSupertype;
@@ -79,15 +79,13 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
     @JsonIgnore
     @Override
     public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        list.addAll(getDomains());
+        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>(getDomains());
         list.add(getTarget());
         return list;
     }
 
     public CustomLink toEntity(DtoToEntityContext tcontext, String type,
-            CustomAttributesTransformer customAttributesTransformer) {
-        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this, type,
-                                                              customAttributesTransformer);
+            EntitySchema entitySchema) {
+        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this, type, entitySchema);
     }
 }

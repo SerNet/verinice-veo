@@ -29,14 +29,13 @@ import org.veo.core.service.EntitySchemaService;
 
 public class DtoToEntityContext implements TransformContext {
 
-    private Map<ClassKey<Key<UUID>>, ? super ModelObject> context = new HashMap<>();
+    private final Map<ClassKey<Key<UUID>>, ? super ModelObject> context = new HashMap<>();
 
     public DtoToEntityContext(EntityFactory entityFactory,
             EntitySchemaService entitySchemaService) {
         super();
         this.factory = entityFactory;
-        this.customAttributesTransformerFactory = new CustomAttributesTransformerFactory(
-                entitySchemaService);
+        this.entitySchemaLoader = new EntitySchemaLoader(entitySchemaService);
     }
 
     public Map<ClassKey<Key<UUID>>, ? super ModelObject> getContext() {
@@ -44,14 +43,14 @@ public class DtoToEntityContext implements TransformContext {
     }
 
     private final EntityFactory factory;
-    private final CustomAttributesTransformerFactory customAttributesTransformerFactory;
+    private final EntitySchemaLoader entitySchemaLoader;
 
-    public EntityFactory getFactory() {
+    public EntityFactory getLoader() {
         return factory;
     }
 
-    public CustomAttributesTransformer createCustomAttributesTransformer(String entityType) {
-        return customAttributesTransformerFactory.createCustomAttributesTransformer(entityType);
+    public EntitySchema loadEntitySchema(String entityType) {
+        return entitySchemaLoader.load(entityType);
     }
 
     /**

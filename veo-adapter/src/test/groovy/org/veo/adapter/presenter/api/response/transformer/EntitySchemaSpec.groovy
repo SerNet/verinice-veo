@@ -20,14 +20,15 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.EntityLayerSupertype
 
 import spock.lang.Specification
 
-class CustomAttributesTransformerSpec extends Specification{
+class EntitySchemaSpec extends Specification{
     ObjectMapper om = new ObjectMapper()
     AttributeTransformer transformer = Mock()
 
-    CustomAttributesTransformer sut
+    EntitySchema sut
 
     def setup() {
         def schema = om.valueToTree([
@@ -66,6 +67,38 @@ class CustomAttributesTransformerSpec extends Specification{
                                                 type: "boolean"
                                             ]
                                         ]
+                                    ],
+                                    target: [
+                                        properties: [
+                                            type: [
+                                                enum: [
+                                                    "target_type"
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        UltimateLink: [
+                            type : "array" ,
+                            items : [
+                                type : "object" ,
+                                properties : [
+                                    attributes: [
+                                        properties: [
+                                        ]
+                                    ],
+                                    target: [
+                                        properties: [
+                                            type: [
+                                                enum: [
+                                                    "target_type",
+                                                    "another_target_type",
+                                                    "yet_another_target_type"
+                                                ]
+                                            ]
+                                        ]
                                     ]
                                 ]
                             ]
@@ -74,7 +107,7 @@ class CustomAttributesTransformerSpec extends Specification{
                 ]
             ]
         ])
-        sut = new CustomAttributesTransformer(schema, transformer)
+        sut = new EntitySchema(schema, transformer)
     }
 
     def "applies custom aspect attributes"() {
@@ -177,5 +210,53 @@ class CustomAttributesTransformerSpec extends Specification{
 
         then: "an exception is thrown"
         thrown(IllegalArgumentException)
+    }
+
+    def "invalid links cause exception"() {
+        given: "a link with invalid target modelType"
+        def link = Mock(CustomLink) {
+            it.type >> "SuperLink"
+            it.target >> Mock(EntityLayerSupertype) {
+                it.modelType >> "no_target_type"
+            }
+        }
+
+        when: "validated"
+        sut.validateLinkTarget(link)
+
+        then: "an exception is thrown"
+        thrown(IllegalArgumentException)
+    }
+
+    def "valid links are allowed"() {
+        given: "a link with valid target modelType"
+        def link = Mock(CustomLink) {
+            it.type >> "SuperLink"
+            it.target >> Mock(EntityLayerSupertype) {
+                it.modelType >> "target_type"
+            }
+        }
+
+        when: "validated"
+        sut.validateLinkTarget(link)
+
+        then: "throws no illegal argument exceptions"
+        notThrown(IllegalArgumentException)
+    }
+
+    def "mutiple valid links are allowed"() {
+        given: "a link with valid target modelType"
+        def link = Mock(CustomLink) {
+            it.type >> "UltimateLink"
+            it.target >> Mock(EntityLayerSupertype) {
+                it.modelType >> "another_target_type"
+            }
+        }
+
+        when: "validated"
+        sut.validateLinkTarget(link)
+
+        then: "throws no illegal argument exceptions"
+        notThrown(IllegalArgumentException)
     }
 }

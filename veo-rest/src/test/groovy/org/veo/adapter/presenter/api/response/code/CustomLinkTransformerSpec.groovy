@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.response.code
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
-import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
+import org.veo.adapter.presenter.api.response.transformer.EntitySchema
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
@@ -72,9 +72,9 @@ class CustomLinkTransformerSpec extends Specification {
             it.context >> [
                 (new ClassKey<>(Asset, targetAsset.id)): targetAsset
             ]
-            it.factory >> Mock(EntityFactory)
+            it.loader >> Mock(EntityFactory)
         }
-        def customAttributesTransformer = Mock(CustomAttributesTransformer)
+        def schema = Mock(EntitySchema)
         def linkDto = new CustomLinkDto().tap {
             applicableTo = ["asset", "process"]
             name = "good name"
@@ -85,13 +85,13 @@ class CustomLinkTransformerSpec extends Specification {
         }
 
         when: "transforming it to an entity"
-        def entity = linkDto.toEntity(context, "good type", customAttributesTransformer)
+        def entity = linkDto.toEntity(context, "good type", schema)
 
         then: "all properties are transformed"
-        1 * context.factory.createCustomLink("good name", targetAsset, null) >> newLink
+        1 * context.loader.createCustomLink("good name", targetAsset, null) >> newLink
         entity == newLink
         1 * newLink.setType("good type")
         1 * newLink.setApplicableTo(Set.of("asset", "process"))
-        1 * customAttributesTransformer.applyLinkAttributes(["foo": "bar"], newLink)
+        1 * schema.applyLinkAttributes(["foo": "bar"], newLink)
     }
 }

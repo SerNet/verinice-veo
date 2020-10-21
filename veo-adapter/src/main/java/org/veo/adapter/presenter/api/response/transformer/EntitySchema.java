@@ -28,17 +28,20 @@ import org.veo.core.entity.CustomProperties;
  * schema. This is the high-level transformer class; the actual low-level
  * parsing and applying is delegated to an {@code AttributeTransformer}.
  */
-public class CustomAttributesTransformer {
+public class EntitySchema {
     public static final String KEY_ATTRIBUTES = "attributes";
     public static final String KEY_CUSTOM_ASPECTS = "customAspects";
     public static final String KEY_ITEMS = "items";
     public static final String KEY_LINKS = "links";
     public static final String KEY_PROPERTIES = "properties";
+    public static final String KEY_TARGET = "target";
+    public static final String KEY_TYPE = "type";
+    public static final String KEY_ENUM = "enum";
 
     private final JsonNode jsonSchema;
     private final AttributeTransformer transformer;
 
-    public CustomAttributesTransformer(JsonNode jsonSchema, AttributeTransformer transformer) {
+    public EntitySchema(JsonNode jsonSchema, AttributeTransformer transformer) {
         this.jsonSchema = jsonSchema;
         this.transformer = transformer;
     }
@@ -70,6 +73,33 @@ public class CustomAttributesTransformer {
      */
     public void applyLinkAttributes(Map<String, ?> input, CustomLink target) {
         apply(input, target, getLinkAttrPropsSchema(target.getType()));
+    }
+
+    /**
+     * Validates if the links target type is allowed by the schema.
+     */
+    public void validateLinkTarget(CustomLink link) throws IllegalArgumentException {
+        final var validTargetTypes = jsonSchema.get(KEY_PROPERTIES)
+                                               .get(KEY_LINKS)
+                                               .get(KEY_PROPERTIES)
+                                               .get(link.getType())
+                                               .get(KEY_ITEMS)
+                                               .get(KEY_PROPERTIES)
+                                               .get(KEY_TARGET)
+                                               .get(KEY_PROPERTIES)
+                                               .get(KEY_TYPE)
+                                               .get(KEY_ENUM);
+        for (var type : validTargetTypes) {
+            if (link.getTarget()
+                    .getModelType()
+                    .equalsIgnoreCase(type.asText())) {
+                return;
+            }
+        }
+        throw new IllegalArgumentException(
+                String.format("link target of type '%s' hat to be one of %s", link.getTarget()
+                                                                                  .getModelType(),
+                              validTargetTypes));
     }
 
     private void apply(Map<String, ?> input, CustomProperties target, JsonNode attrPropSchema) {

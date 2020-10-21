@@ -35,8 +35,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
-import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
@@ -125,8 +125,8 @@ public class CustomPropertiesDto {
     }
 
     public CustomProperties toEntity(EntityFactory factory, String type,
-            CustomAttributesTransformer customAttributesTransformer) {
+            EntitySchema entitySchema) {
         return DtoToEntityTransformer.transformDto2CustomProperties(factory, this, type,
-                                                                    customAttributesTransformer);
+                                                                    entitySchema);
     }
 }

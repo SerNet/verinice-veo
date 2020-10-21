@@ -25,23 +25,23 @@ import org.veo.core.service.EntitySchemaService;
 
 import io.swagger.v3.core.util.Json;
 
-/** Factory that creates @{code CustomAttributesTransformer} instances. */
-class CustomAttributesTransformerFactory {
+/** Loader that loads {@link EntitySchema} instances. */
+class EntitySchemaLoader {
     private final EntitySchemaService entitySchemaService;
 
-    public CustomAttributesTransformerFactory(EntitySchemaService entitySchemaService) {
+    public EntitySchemaLoader(EntitySchemaService entitySchemaService) {
         this.entitySchemaService = entitySchemaService;
     }
 
-    public CustomAttributesTransformer createCustomAttributesTransformer(String entityType) {
+    public EntitySchema load(String entityType) {
         var schemaString = entitySchemaService.findSchema(entityType, Collections.emptyList());
         try {
-            return new CustomAttributesTransformer(Json.mapper()
-                                                       .readTree(schemaString),
+            return new EntitySchema(Json.mapper()
+                                        .readTree(schemaString),
                     new AttributeTransformer());
         } catch (JsonProcessingException ex) {
             throw new EntitySchemaException(
-                    String.format("Invalid entity schema \"%s/", entityType), ex);
+                    String.format("Invalid entity schema \"%s\"", entityType), ex);
         }
     }
 }

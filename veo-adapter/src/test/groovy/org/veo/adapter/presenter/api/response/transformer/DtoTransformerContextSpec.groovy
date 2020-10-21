@@ -126,7 +126,7 @@ class DtoTransformerContextSpec extends Specification {
         when: "replace the unit in context"
 
         def tcontext = Mock(DtoToEntityContext) {
-            it.factory >> factory
+            it.loader >> factory
             it.context >> new HashMap<>()
             it.context.put(new ClassKey<Key<UUID>>(Unit, replacementUnit.id), replacementUnit)
         }
