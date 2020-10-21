@@ -53,6 +53,7 @@ public class CustomPropertiesData implements CustomProperties {
 
     @Column(name = "type")
     @ToString.Include
+    @EqualsAndHashCode.Include
     private String type;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "applicableto")

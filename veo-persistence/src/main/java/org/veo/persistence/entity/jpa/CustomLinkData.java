@@ -44,11 +44,13 @@ public class CustomLinkData extends CustomPropertiesData implements NameableData
     // one to one customlink-> entitylayersupertype
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = EntityLayerSupertypeData.class)
     @JoinColumn(name = "target_id")
+    @EqualsAndHashCode.Include
     private EntityLayerSupertype target;
     @NotNull
     // one to one customlink-> entitylayersupertype
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = EntityLayerSupertypeData.class)
     @JoinColumn(name = "source_id")
+    @EqualsAndHashCode.Include
     private EntityLayerSupertype source;
 
     public String getName() {
