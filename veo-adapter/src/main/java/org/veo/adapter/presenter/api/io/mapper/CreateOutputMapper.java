@@ -19,20 +19,27 @@ package org.veo.adapter.presenter.api.io.mapper;
 import java.util.Optional;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.core.entity.Control;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelObject;
 
 /**
- * Returns just the id of the newly created Control as output.
+ * Returns just the id of the newly created ModelObject as output.
  */
-public final class CreateControlOutputMapper {
+public final class CreateOutputMapper {
 
-    public static ApiResponseBody map(Control control) {
-        Optional<String> controlId = control.getId() == null ? Optional.empty()
-                : Optional.ofNullable(control.getId()
-                                             .uuidValue());
-        ApiResponseBody apiResponseBody = new ApiResponseBody(true, controlId,
-                "Control created successfully.");
-        return apiResponseBody;
+    public static ApiResponseBody map(ModelObject modelObject) {
+        Optional<String> id = Optional.ofNullable(modelObject.getId())
+                                      .map(Key::uuidValue);
+        return new ApiResponseBody(true, id,
+                String.format("%s created successfully.", upperFirst(modelObject.getModelType())));
     }
 
+    private static String upperFirst(String in) {
+        if (in.isEmpty()) {
+            return "";
+        }
+        return in.substring(0, 1)
+                 .toUpperCase()
+                + in.substring(1);
+    }
 }

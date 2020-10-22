@@ -55,7 +55,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateProcessOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -164,7 +164,7 @@ public class ProcessController extends AbstractEntityController {
                                          }
 
                                          , output -> {
-                                             ApiResponseBody body = CreateProcessOutputMapper.map(output.getEntity());
+                                             ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }

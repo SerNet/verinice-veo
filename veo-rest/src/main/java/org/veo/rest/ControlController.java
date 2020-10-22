@@ -57,7 +57,7 @@ import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateControlOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -185,7 +185,7 @@ public class ControlController extends AbstractEntityController {
                                                      dto.toEntity(tcontext), client,
                                                      user.getUsername());
                                          }, output -> {
-                                             ApiResponseBody body = CreateControlOutputMapper.map(output.getEntity());
+                                             ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }

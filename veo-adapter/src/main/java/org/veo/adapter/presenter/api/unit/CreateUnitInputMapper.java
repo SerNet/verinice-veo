@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -41,7 +42,7 @@ import org.veo.core.usecase.unit.CreateUnitUseCase.InputData;
  *
  * The newly created unit is then returned by the use case:
  *
- * @see org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper
+ * @see CreateOutputMapper
  */
 public final class CreateUnitInputMapper {
 

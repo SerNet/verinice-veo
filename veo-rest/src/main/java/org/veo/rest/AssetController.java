@@ -56,7 +56,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateAssetOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
@@ -185,7 +185,7 @@ public class AssetController extends AbstractEntityController {
                                                      dto.toEntity(tcontext), client,
                                                      user.getUsername());
                                          }, output -> {
-                                             ApiResponseBody body = CreateAssetOutputMapper.map(output.getEntity());
+                                             ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }

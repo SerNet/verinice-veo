@@ -56,7 +56,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
@@ -185,7 +185,7 @@ public class UnitController extends AbstractEntityController {
                                                                    user.getClientId(),
                                                                    user.getUsername()),
                                          output -> {
-                                             ApiResponseBody body = CreateUnitOutputMapper.map(output.getUnit());
+                                             ApiResponseBody body = CreateOutputMapper.map(output.getUnit());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }
