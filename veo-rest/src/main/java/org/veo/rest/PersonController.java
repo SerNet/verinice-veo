@@ -62,11 +62,11 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.person.CreatePersonUseCase;
-import org.veo.core.usecase.person.CreatePersonUseCase.InputData;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
@@ -173,19 +173,15 @@ public class PersonController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreatePersonDto dto) {
         return useCaseInteractor.execute(createPersonUseCase,
-                                         new Supplier<CreatePersonUseCase.InputData>() {
-
-                                             @Override
-                                             public InputData get() {
-                                                 Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
-                                                                                                                 dto.getReferences());
-                                                 return new CreatePersonUseCase.InputData(
-                                                         dto.toEntity(tcontext), client,
-                                                         user.getUsername());
-                                             }
+                                         (Supplier<CreateEntityUseCase.InputData<Person>>) () -> {
+                                             Client client = getClient(user);
+                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                             dto.getReferences());
+                                             return new CreateEntityUseCase.InputData<>(
+                                                     dto.toEntity(tcontext), client,
+                                                     user.getUsername());
                                          }, output -> {
-                                             ApiResponseBody body = CreatePersonOutputMapper.map(output.getPerson());
+                                             ApiResponseBody body = CreatePersonOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }

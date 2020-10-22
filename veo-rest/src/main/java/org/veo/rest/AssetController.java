@@ -66,6 +66,7 @@ import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
@@ -176,19 +177,15 @@ public class AssetController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateAssetDto dto) {
         return useCaseInteractor.execute(createAssetUseCase,
-                                         new Supplier<CreateAssetUseCase.InputData>() {
-
-                                             @Override
-                                             public org.veo.core.usecase.asset.CreateAssetUseCase.InputData get() {
-                                                 Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
-                                                                                                                 dto.getReferences());
-                                                 return new CreateAssetUseCase.InputData(
-                                                         dto.toEntity(tcontext), client,
-                                                         user.getUsername());
-                                             }
+                                         (Supplier<CreateEntityUseCase.InputData<Asset>>) () -> {
+                                             Client client = getClient(user);
+                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                             dto.getReferences());
+                                             return new CreateEntityUseCase.InputData<>(
+                                                     dto.toEntity(tcontext), client,
+                                                     user.getUsername());
                                          }, output -> {
-                                             ApiResponseBody body = CreateAssetOutputMapper.map(output.getAsset());
+                                             ApiResponseBody body = CreateAssetOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }

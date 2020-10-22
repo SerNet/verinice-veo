@@ -18,9 +18,8 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.process.CreateProcessUseCase.InputData
+import org.veo.core.usecase.base.CreateEntityUseCase
 import org.veo.core.usecase.repository.ProcessRepository
 
 public class CreateProcessUseCaseSpec extends UseCaseSpec {
@@ -38,16 +37,15 @@ public class CreateProcessUseCaseSpec extends UseCaseSpec {
         process1.name >> "John's process"
 
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         process.getName() >> "John's process"
 
         when:
-        def output = usecase.execute(new InputData(process1, existingClient, USER_NAME))
+        def output = usecase.execute(new CreateEntityUseCase.InputData(process1, existingClient, USER_NAME))
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * process1.version(USER_NAME, null)
         1 * processRepository.save(process1) >> process
-        output.process != null
-        output.process.name == "John's process"
+        output.entity != null
+        output.entity.name == "John's process"
     }
 }

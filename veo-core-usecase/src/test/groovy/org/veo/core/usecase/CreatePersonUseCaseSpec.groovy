@@ -17,9 +17,8 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Person
-import org.veo.core.entity.transform.TransformTargetToEntityContext
+import org.veo.core.usecase.base.CreateEntityUseCase
 import org.veo.core.usecase.person.CreatePersonUseCase
-import org.veo.core.usecase.person.CreatePersonUseCase.InputData
 import org.veo.core.usecase.repository.PersonRepository
 
 public class CreatePersonUseCaseSpec extends UseCaseSpec {
@@ -31,18 +30,17 @@ public class CreatePersonUseCaseSpec extends UseCaseSpec {
 
     def "create a person"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         Person p = Mock()
         p.name >> "John"
         p.owner >> existingUnit
 
         when:
-        def output = usecase.execute(new InputData(p, existingClient, USER_NAME))
+        def output = usecase.execute(new CreateEntityUseCase.InputData(p, existingClient, USER_NAME))
         then:
         1 * p.version(USER_NAME, null)
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * personRepository.save(p) >> p
-        output.person != null
-        output.person.name == "John"
+        output.entity != null
+        output.entity.name == "John"
     }
 }

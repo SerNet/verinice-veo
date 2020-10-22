@@ -16,57 +16,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-import lombok.Value;
+public class CreateAssetUseCase extends CreateEntityUseCase<Asset> {
 
-public class CreateAssetUseCase
-        extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
-
-    private final UnitRepository unitRepository;
-    private final AssetRepository assetRepository;
-
-    public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository assetRepository) {
-        this.unitRepository = unitRepository;
-        this.assetRepository = assetRepository;
-    }
-
-    @Override
-    public OutputData execute(InputData input) {
-        Asset asset = input.getNewAsset();
-        asset.setId(Key.newUuid());
-        Unit unit = unitRepository.findById(asset.getOwner()
-                                                 .getId())
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          asset.getOwner()
-                                               .getId()
-                                               .uuidValue()));
-        unit.checkSameClient(input.authenticatedClient);
-        asset.version(input.username, null);
-        return new OutputData(assetRepository.save(asset));
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Asset newAsset;
-        Client authenticatedClient;
-        String username;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Asset asset;
+    public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository entityRepo) {
+        super(unitRepository, entityRepo);
     }
 }

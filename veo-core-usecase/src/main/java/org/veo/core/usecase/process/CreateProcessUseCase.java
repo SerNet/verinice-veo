@@ -16,70 +16,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import javax.validation.Valid;
-
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.UnitRepository;
-
-import lombok.Value;
 
 /**
  * Creates a persistent new process object.
  */
-public class CreateProcessUseCase
-        extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData> {
+public class CreateProcessUseCase extends CreateEntityUseCase<Process> {
 
-    private final UnitRepository unitRepository;
-    private final ProcessRepository processRepository;
-
-    public CreateProcessUseCase(UnitRepository unitRepository,
-            ProcessRepository processRepository) {
-        this.unitRepository = unitRepository;
-        this.processRepository = processRepository;
-    }
-
-    @Override
-    public OutputData execute(InputData input) {
-        Unit unit = unitRepository.findById(input.getProcess()
-                                                 .getOwner()
-                                                 .getId())
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          input.getProcess()
-                                               .getOwner()
-                                               .getId()));// the unit is already loaded
-        unit.checkSameClient(input.authenticatedClient);
-        input.getProcess()
-             .setId(Key.newUuid());
-        verifyInput(input.getProcess());
-        input.process.version(input.username, null);
-        return new OutputData(processRepository.save(input.getProcess()));
-    }
-
-    private void verifyInput(Process process) {
-        // This needs to be done for all where we accecpt complete entities
-
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        // private final Key<UUID> unitId;
-        // private final String name;
-        Process process;
-        Client authenticatedClient;
-        String username;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Process process;
+    public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository entityRepo) {
+        super(unitRepository, entityRepo);
     }
 }

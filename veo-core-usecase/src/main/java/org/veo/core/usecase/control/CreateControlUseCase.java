@@ -16,60 +16,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
-import javax.validation.Valid;
-
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-import lombok.Value;
+public class CreateControlUseCase extends CreateEntityUseCase<Control> {
 
-public class CreateControlUseCase
-        extends UseCase<CreateControlUseCase.InputData, CreateControlUseCase.OutputData> {
-
-    private final UnitRepository unitRepository;
-    private final ControlRepository controlRepository;
-
-    public CreateControlUseCase(UnitRepository unitRepository,
-            ControlRepository controlRepository) {
-        this.unitRepository = unitRepository;
-        this.controlRepository = controlRepository;
-    }
-
-    @Override
-    public OutputData execute(InputData input) {
-        Unit unit = unitRepository.findById(input.getControl()
-                                                 .getOwner()
-                                                 .getId())
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          input.getControl()
-                                               .getOwner()
-                                               .getId()
-                                               .uuidValue()));// the unit is already loaded
-        unit.checkSameClient(input.authenticatedClient);
-        input.getControl()
-             .setId(Key.newUuid());
-        input.control.version(input.username, null);
-        return new OutputData(controlRepository.save(input.getControl()));
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Control control;
-        Client authenticatedClient;
-        String username;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Control control;
+    public CreateControlUseCase(UnitRepository unitRepository, ControlRepository entityRepo) {
+        super(unitRepository, entityRepo);
     }
 }

@@ -61,11 +61,11 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.process.CreateProcessUseCase;
-import org.veo.core.usecase.process.CreateProcessUseCase.InputData;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
@@ -154,20 +154,17 @@ public class ProcessController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateProcessDto dto) {
         return useCaseInteractor.execute(createProcessUseCase,
-                                         new Supplier<CreateProcessUseCase.InputData>() {
-
-                                             @Override
-                                             public InputData get() {
-                                                 Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
-                                                                                                                 dto.getReferences());
-                                                 return new InputData(dto.toEntity(tcontext),
-                                                         client, user.getUsername());
-                                             }
+                                         (Supplier<CreateEntityUseCase.InputData<Process>>) () -> {
+                                             Client client = getClient(user);
+                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                             dto.getReferences());
+                                             return new CreateEntityUseCase.InputData<>(
+                                                     dto.toEntity(tcontext), client,
+                                                     user.getUsername());
                                          }
 
                                          , output -> {
-                                             ApiResponseBody body = CreateProcessOutputMapper.map(output.getProcess());
+                                             ApiResponseBody body = CreateProcessOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }

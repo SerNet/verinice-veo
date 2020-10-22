@@ -63,6 +63,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
@@ -175,20 +176,16 @@ public class ControlController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateControlDto dto) {
         return useCaseInteractor.execute(createControlUseCase,
-                                         new Supplier<CreateControlUseCase.InputData>() {
+                                         (Supplier<CreateEntityUseCase.InputData<Control>>) () -> {
 
-                                             @Override
-                                             public CreateControlUseCase.InputData get() {
-
-                                                 Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
-                                                                                                                 dto.getReferences());
-                                                 return new CreateControlUseCase.InputData(
-                                                         dto.toEntity(tcontext), client,
-                                                         user.getUsername());
-                                             }
+                                             Client client = getClient(user);
+                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
+                                                                                                             dto.getReferences());
+                                             return new CreateEntityUseCase.InputData<>(
+                                                     dto.toEntity(tcontext), client,
+                                                     user.getUsername());
                                          }, output -> {
-                                             ApiResponseBody body = CreateControlOutputMapper.map(output.getControl());
+                                             ApiResponseBody body = CreateControlOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
                                          });
     }

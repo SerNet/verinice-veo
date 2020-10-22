@@ -16,57 +16,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.person;
 
-import javax.validation.Valid;
-
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
-import lombok.Value;
+public class CreatePersonUseCase extends CreateEntityUseCase<Person> {
 
-public class CreatePersonUseCase
-        extends UseCase<CreatePersonUseCase.InputData, CreatePersonUseCase.OutputData> {
-
-    private final UnitRepository unitRepository;
-    private final PersonRepository personRepository;
-
-    public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository personRepository) {
-        this.unitRepository = unitRepository;
-        this.personRepository = personRepository;
-    }
-
-    @Override
-    public OutputData execute(InputData input) {
-        Person person = input.newPerson;
-        person.setId(Key.newUuid());
-        Unit unit = unitRepository.findById(person.getOwner()
-                                                  .getId())
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          person.getOwner()
-                                                .getId()
-                                                .uuidValue()));// remove
-        unit.checkSameClient(input.authenticatedClient);
-        person.version(input.username, null);
-        return new OutputData(personRepository.save(person));
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Person newPerson;
-        Client authenticatedClient;
-        String username;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Person person;
+    public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository entityRepo) {
+        super(unitRepository, entityRepo);
     }
 }
