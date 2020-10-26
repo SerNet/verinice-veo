@@ -23,7 +23,9 @@ import static java.util.stream.Collectors.toMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
@@ -47,6 +49,7 @@ import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -55,6 +58,7 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Nameable;
@@ -122,34 +126,14 @@ public final class EntityToDtoTransformer {
 
     public static FullPersonGroupDto transformPersonGroup2Dto(EntityToDtoContext tcontext,
             PersonGroup source) {
-        String key = source.getId()
-                           .uuidValue();
-        ClassKey<String> classKey = new ClassKey<>(FullPersonGroupDto.class, key);
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        FullPersonGroupDto target = (FullPersonGroupDto) context.get(classKey);
-        if (target != null) {
-            return target;
-        }
-
-        target = new FullPersonGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-        target.setMembers(convertReferenceSet(source.getMembers(),
-                                              tcontext.getReferenceAssembler()));
-        return target;
+        return lazyTransform(tcontext.getContext(), FullPersonGroupDto.class, source.getId(),
+                             () -> {
+                                 String key = source.getId()
+                                                    .uuidValue();
+                                 FullPersonGroupDto target = new FullPersonGroupDto();
+                                 mapModelGroup(tcontext, source, target);
+                                 return target;
+                             });
     }
 
     // Person ->
@@ -158,310 +142,94 @@ public final class EntityToDtoTransformer {
         if (source instanceof ModelGroup<?>) {
             return transformPersonGroup2Dto(tcontext, (PersonGroup) source);
         }
-        String key = source.getId()
-                           .uuidValue();
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        ClassKey<String> classKey = new ClassKey<>(FullPersonDto.class, key);
-        FullPersonDto target = (FullPersonDto) context.get(classKey);
-        if (target != null) {
+        return lazyTransform(tcontext.getContext(), FullPersonDto.class, source.getId(), () -> {
+            FullPersonDto target = new FullPersonDto();
+            mapEntityLayerSupertype(tcontext, source, target);
             return target;
-        }
-
-        target = new FullPersonDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-
-        return target;
+        });
     }
 
     public static FullAssetGroupDto transformAssetGroup2Dto(EntityToDtoContext tcontext,
             AssetGroup source) {
-        String key = source.getId()
-                           .uuidValue();
-        ClassKey<String> classKey = new ClassKey<>(FullAssetGroupDto.class, key);
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        FullAssetGroupDto target = (FullAssetGroupDto) context.get(classKey);
-        if (target != null) {
+        return lazyTransform(tcontext.getContext(), FullAssetGroupDto.class, source.getId(), () -> {
+            String key = source.getId()
+                               .uuidValue();
+            FullAssetGroupDto target = new FullAssetGroupDto();
+            mapModelGroup(tcontext, source, target);
             return target;
-        }
-
-        target = new FullAssetGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-        target.setMembers(convertReferenceSet(source.getMembers(),
-                                              tcontext.getReferenceAssembler()));
-        return target;
+        });
     }
 
     // Asset -> AssetDto
     public static FullAssetDto transformAsset2Dto(EntityToDtoContext tcontext, Asset source) {
-        // if (source instanceof ModelGroup<?>) {
-        // return transformAssetGroup2Dto(tcontext, (AssetGroup) source);
-        // }
-        String key = source.getId()
-                           .uuidValue();
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        ClassKey<String> classKey = new ClassKey<>(FullAssetDto.class, key);
-        FullAssetDto target = (FullAssetDto) context.get(classKey);
-        if (target != null) {
+        return lazyTransform(tcontext.getContext(), FullAssetDto.class, source.getId(), () -> {
+            FullAssetDto target = new FullAssetDto();
+            mapEntityLayerSupertype(tcontext, source, target);
             return target;
-        }
-
-        target = new FullAssetDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-
-        return target;
+        });
     }
 
     public static FullProcessGroupDto transformProcessGroup2Dto(EntityToDtoContext tcontext,
             ProcessGroup source) {
-        String key = source.getId()
-                           .uuidValue();
-        ClassKey<String> classKey = new ClassKey<>(FullProcessGroupDto.class, key);
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        FullProcessGroupDto target = (FullProcessGroupDto) context.get(classKey);
-        if (target != null) {
-            return target;
-        }
-
-        target = new FullProcessGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-        target.setMembers(convertReferenceSet(source.getMembers(),
-                                              tcontext.getReferenceAssembler()));
-        return target;
+        return lazyTransform(tcontext.getContext(), FullProcessGroupDto.class, source.getId(),
+                             () -> {
+                                 String key = source.getId()
+                                                    .uuidValue();
+                                 FullProcessGroupDto target = new FullProcessGroupDto();
+                                 mapModelGroup(tcontext, source, target);
+                                 return target;
+                             });
     }
 
     // Process ->
     // ProcessDto
     public static FullProcessDto transformProcess2Dto(EntityToDtoContext tcontext, Process source) {
-        String key = source.getId()
-                           .uuidValue();
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        ClassKey<String> classKey = new ClassKey<>(FullProcessDto.class, key);
-        FullProcessDto target = (FullProcessDto) context.get(classKey);
-        if (target != null) {
+        return lazyTransform(tcontext.getContext(), FullProcessDto.class, source.getId(), () -> {
+            FullProcessDto target = new FullProcessDto();
+            mapEntityLayerSupertype(tcontext, source, target);
             return target;
-        }
-
-        target = new FullProcessDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-
-        return target;
+        });
     }
 
     public static FullDocumentGroupDto transformDocumentGroup2Dto(EntityToDtoContext tcontext,
             DocumentGroup source) {
-        String key = source.getId()
-                           .uuidValue();
-        ClassKey<String> classKey = new ClassKey<>(FullDocumentGroupDto.class, key);
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        FullDocumentGroupDto target = (FullDocumentGroupDto) context.get(classKey);
-        if (target != null) {
-            return target;
-        }
-
-        target = new FullDocumentGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-        target.setMembers(convertReferenceSet(source.getMembers(),
-                                              tcontext.getReferenceAssembler()));
-        return target;
+        return lazyTransform(tcontext.getContext(), FullDocumentGroupDto.class, source.getId(),
+                             () -> {
+                                 FullDocumentGroupDto target = new FullDocumentGroupDto();
+                                 mapModelGroup(tcontext, source, target);
+                                 return target;
+                             });
     }
 
     // Document ->
     // DocumentDto
     public static FullDocumentDto transformDocument2Dto(EntityToDtoContext tcontext,
             Document source) {
-        String key = source.getId()
-                           .uuidValue();
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        ClassKey<String> classKey = new ClassKey<>(FullDocumentDto.class, key);
-        FullDocumentDto target = (FullDocumentDto) context.get(classKey);
-        if (target != null) {
+        return lazyTransform(tcontext.getContext(), FullDocumentDto.class, source.getId(), () -> {
+            FullDocumentDto target = new FullDocumentDto();
+            mapEntityLayerSupertype(tcontext, source, target);
             return target;
-        }
-
-        target = new FullDocumentDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-
-        return target;
+        });
     }
 
     public static FullControlGroupDto transformControlGroup2Dto(EntityToDtoContext tcontext,
             ControlGroup source) {
-        String key = source.getId()
-                           .uuidValue();
-        ClassKey<String> classKey = new ClassKey<>(FullControlGroupDto.class, key);
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        FullControlGroupDto target = (FullControlGroupDto) context.get(classKey);
-        if (target != null) {
-            return target;
-        }
-
-        target = new FullControlGroupDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-        target.setMembers(convertReferenceSet(source.getMembers(),
-                                              tcontext.getReferenceAssembler()));
-        return target;
+        return lazyTransform(tcontext.getContext(), FullControlGroupDto.class, source.getId(),
+                             () -> {
+                                 FullControlGroupDto target = new FullControlGroupDto();
+                                 mapModelGroup(tcontext, source, target);
+                                 return target;
+                             });
     }
 
     // Control ->
     // ControlDto
     public static FullControlDto transformControl2Dto(EntityToDtoContext tcontext, Control source) {
-        // if (source instanceof ModelGroup<?>) {
-        // return transformControlGroup2Dto(tcontext, (ControlGroup) source);
-        // }
-        String key = source.getId()
-                           .uuidValue();
-        Map<ClassKey<String>, Object> context = tcontext.getContext();
-        ClassKey<String> classKey = new ClassKey<>(FullControlDto.class, key);
-        FullControlDto target = (FullControlDto) context.get(classKey);
-        if (target != null) {
+        return lazyTransform(tcontext.getContext(), FullControlDto.class, source.getId(), () -> {
+            FullControlDto target = new FullControlDto();
+            mapEntityLayerSupertype(tcontext, source, target);
             return target;
-        }
-
-        target = new FullControlDto();
-        target.setId(key);
-        target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
-        mapNameableProperties(source, target);
-        context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
-
-        target.setDomains(convertReferenceSet(source.getDomains(),
-                                              tcontext.getReferenceAssembler()));
-        target.setLinks(mapLinks(source.getLinks(), tcontext));
-        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
-
-        if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(),
-                                                      tcontext.getReferenceAssembler()));
-        }
-
-        return target;
+        });
     }
 
     // Client ->
@@ -481,10 +249,6 @@ public final class EntityToDtoTransformer {
         target.setVersion(source.getVersion());
         target.setName(source.getName());
         context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
-
         target.setDomains(convertSet(source.getDomains(), e -> transformDomain2Dto(tcontext, e)));
 
         return target;
@@ -509,9 +273,6 @@ public final class EntityToDtoTransformer {
         mapNameableProperties(source, target);
         target.setActive(source.isActive());
         context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
 
         return target;
     }
@@ -536,9 +297,6 @@ public final class EntityToDtoTransformer {
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
         context.put(classKey, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
 
         target.setDomains(convertReferenceSet(source.getDomains(),
                                               tcontext.getReferenceAssembler()));
@@ -561,9 +319,6 @@ public final class EntityToDtoTransformer {
         var target = new CustomLinkDto();
         target.setApplicableTo(source.getApplicableTo());
         mapNameableProperties(source, target);
-        // if (source.isGhost()) {
-        // return target;
-        // }
 
         target.setAttributes(source.getAllProperties());
 
@@ -571,12 +326,48 @@ public final class EntityToDtoTransformer {
             target.setTarget(ModelObjectReference.from(source.getTarget(),
                                                        tcontext.getReferenceAssembler()));
         }
-        // if (source.getSource() != null) {
-        // target.setSource(ModelObjectReference.from(source.getSource()));
-        // }
 
         return target;
 
+    }
+
+    private static <TDto extends EntityLayerSupertypeDto & IdentifiableDto> void mapEntityLayerSupertype(
+            EntityToDtoContext tcontext, EntityLayerSupertype source, TDto target) {
+        target.setId(source.getId()
+                           .uuidValue());
+        target.setVersion(source.getVersion());
+        mapVersionedProperties(source, target);
+        mapNameableProperties(source, target);
+
+        target.setDomains(convertReferenceSet(source.getDomains(),
+                                              tcontext.getReferenceAssembler()));
+        target.setLinks(mapLinks(source.getLinks(), tcontext));
+        target.setCustomAspects(mapCustomAspects(source.getCustomAspects(), tcontext));
+
+        if (source.getOwner() != null) {
+            target.setOwner(ModelObjectReference.from(source.getOwner(),
+                                                      tcontext.getReferenceAssembler()));
+        }
+    }
+
+    private static <TEntity extends EntityLayerSupertype> void mapModelGroup(
+            EntityToDtoContext tcontext, ModelGroup<TEntity> source,
+            FullEntityLayerSupertypeGroupDto<TEntity> target) {
+        mapEntityLayerSupertype(tcontext, source, target);
+        target.setMembers(convertReferenceSet(source.getMembers(),
+                                              tcontext.getReferenceAssembler()));
+    }
+
+    private static <TDto> TDto lazyTransform(Map<ClassKey<String>, Object> context,
+            Class<TDto> clazz, Key<UUID> key, Supplier<TDto> transformer) {
+        String keyValue = key.uuidValue();
+        ClassKey<String> classKey = new ClassKey<>(clazz, keyValue);
+        TDto target = (TDto) context.get(classKey);
+        if (target == null) {
+            target = transformer.get();
+            context.put(classKey, target);
+        }
+        return target;
     }
 
     // CustomProperties ->
