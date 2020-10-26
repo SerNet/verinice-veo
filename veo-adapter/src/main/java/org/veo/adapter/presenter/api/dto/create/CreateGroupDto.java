@@ -19,7 +19,7 @@ package org.veo.adapter.presenter.api.dto.create;
 import javax.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceEntityLayerSupertypeOwner;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
 import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Unit;
 
@@ -37,7 +37,7 @@ public final class CreateGroupDto {
     private String name;
 
     @NotNull(message = "A owner must be present.")
-    @Schema(required = true, implementation = ModelObjectReferenceEntityLayerSupertypeOwner.class)
+    @Schema(required = true, implementation = ModelObjectReferenceOwner.class)
     private ModelObjectReference<Unit> owner;
 
     @NotNull(message = "A type must be present.")

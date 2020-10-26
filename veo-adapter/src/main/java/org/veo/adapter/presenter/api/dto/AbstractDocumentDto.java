@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDocumentDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDocumentOwner;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -63,7 +63,7 @@ abstract public class AbstractDocumentDto extends AbstractEntityLayerSupertypeDt
     }
 
     @Override
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDocumentDomains.class))
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
     public Set<ModelObjectReference<Domain>> getDomains() {
         return super.getDomains();
     }
@@ -81,7 +81,7 @@ abstract public class AbstractDocumentDto extends AbstractEntityLayerSupertypeDt
     }
 
     @Override
-    @Schema(implementation = ModelObjectReferenceDocumentOwner.class)
+    @Schema(implementation = ModelObjectReferenceOwner.class)
     public ModelObjectReference<Unit> getOwner() {
         return super.getOwner();
     }

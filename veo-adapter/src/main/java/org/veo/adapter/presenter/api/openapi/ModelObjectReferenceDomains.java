@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -20,18 +20,23 @@ import org.veo.adapter.presenter.api.common.IModelObjectReference;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "EntityLayerSupertypeOwner",
-        description = "A reference to the unit containing this entity.")
-public interface ModelObjectReferenceEntityLayerSupertypeOwner extends IModelObjectReference {
+/**
+ * Swagger documentation for the reference 'domains': The domains the entity is
+ * part of.
+ */
+@Schema(name = "DomainsReference", description = "A reference to a domain")
+public interface ModelObjectReferenceDomains extends IModelObjectReference {
 
-    @Schema(description = "A friendly human readable title of the referenced unit.",
-            example = "My Unit")
+    // TODO: update reference doc for DomainsReference
+
+    @Schema(description = "A friendly human readable title of the referenced domain.",
+            example = "ISO 27001:2013")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced unit.",
-            example = "http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced domains.",
+            example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 

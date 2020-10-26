@@ -32,8 +32,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceEntityLayerSupertypeDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceEntityLayerSupertypeOwner;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
@@ -93,12 +93,12 @@ abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
     @JsonIgnore
     private long version;
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceEntityLayerSupertypeDomains.class))
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
     @Valid
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
     @NotNull(message = "A owner must be present.")
-    @Schema(required = true, implementation = ModelObjectReferenceEntityLayerSupertypeOwner.class)
+    @Schema(required = true, implementation = ModelObjectReferenceOwner.class)
     private ModelObjectReference<Unit> owner;
 
     @Valid

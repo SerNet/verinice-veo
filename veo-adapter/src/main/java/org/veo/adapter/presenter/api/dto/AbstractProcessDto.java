@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceProcessOwner;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
@@ -64,7 +64,7 @@ abstract public class AbstractProcessDto extends AbstractEntityLayerSupertypeDto
     }
 
     @Override
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceProcessDomains.class))
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
     public Set<ModelObjectReference<Domain>> getDomains() {
         return super.getDomains();
     }
@@ -82,7 +82,7 @@ abstract public class AbstractProcessDto extends AbstractEntityLayerSupertypeDto
     }
 
     @Override
-    @Schema(implementation = ModelObjectReferenceProcessOwner.class)
+    @Schema(implementation = ModelObjectReferenceOwner.class)
     public ModelObjectReference<Unit> getOwner() {
         return super.getOwner();
     }

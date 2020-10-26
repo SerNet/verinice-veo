@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
@@ -89,7 +89,7 @@ abstract public class AbstractUnitDto implements NameableDto, VersionedDto {
     @Schema(implementation = ModelObjectReferenceUnitParent.class)
     private ModelObjectReference<Unit> parent;
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceUnitDomains.class))
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
     @JsonIgnore

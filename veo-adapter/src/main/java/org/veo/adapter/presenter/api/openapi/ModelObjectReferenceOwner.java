@@ -21,24 +21,21 @@ import org.veo.adapter.presenter.api.common.IModelObjectReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Swagger documentation for the reference 'domains' of 'Unit': The domains the
- * unit is part of.
+ * Swagger documentation for the reference 'owner' of 'Asset':
  */
+@Schema(name = "OwnerReference", description = "A reference to the unit containing this entity.")
+public interface ModelObjectReferenceOwner extends IModelObjectReference {
 
-@Schema(name = "UnitDomainsReference",
-        description = "A reference to the unit containing this entity.")
+    // TODO: update reference doc for OwnerReference
 
-public interface ModelObjectReferenceUnitDomains extends IModelObjectReference {
-
-    // TODO: update reference doc for UnitDomains
-
-    @Schema(description = "The domains of the unit.", example = "ISO 27001:2013")
+    @Schema(description = "A friendly human readable title of the referenced unit.",
+            example = "My Unit")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced domains.",
-            example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced unit.",
+            example = "http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 

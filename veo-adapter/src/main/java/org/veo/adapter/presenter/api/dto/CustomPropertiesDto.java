@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -81,7 +81,7 @@ public class CustomPropertiesDto {
             required = false)
     private Set<String> applicableTo = Collections.emptySet();
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceCustomPropertiesDomains.class))
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
 
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
