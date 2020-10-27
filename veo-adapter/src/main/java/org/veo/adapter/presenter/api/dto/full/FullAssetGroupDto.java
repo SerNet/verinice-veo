@@ -19,15 +19,12 @@ package org.veo.adapter.presenter.api.dto.full;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.groups.AssetGroup;
@@ -60,11 +57,6 @@ public class FullAssetGroupDto extends FullAssetDto
     @Override
     public void setMembers(Set<ModelObjectReference<Asset>> members) {
         this.members = members;
-    }
-
-    public static FullAssetGroupDto from(@Valid AssetGroup processGroup,
-            EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformAssetGroup2Dto(tcontext, processGroup);
     }
 
     public AssetGroup toEntity(DtoToEntityContext tcontext) {

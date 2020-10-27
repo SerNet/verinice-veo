@@ -58,7 +58,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateUnitOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -89,7 +88,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage units.
- *
+ * <p>
  * Uses async calls with {@code CompletableFuture} to parallelize long running
  * operations (i.e. network calls to the database or to other HTTP services).
  *
@@ -135,12 +134,10 @@ public class UnitController extends AbstractEntityController {
         final GetUnitsUseCase.InputData inputData = new GetUnitsUseCase.InputData(client,
                 Optional.ofNullable(parentUuid));
 
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-
         return useCaseInteractor.execute(getUnitsUseCase, inputData, output -> {
             return output.getUnits()
                          .stream()
-                         .map(u -> FullUnitDto.from(u, tcontext))
+                         .map(u -> FullUnitDto.from(u, referenceAssembler))
                          .collect(Collectors.toList());
         });
     }
@@ -162,11 +159,8 @@ public class UnitController extends AbstractEntityController {
                                                                               new GetUnitUseCase.InputData(
                                                                                       Key.uuidFrom(id),
                                                                                       getAuthenticatedClient(auth)),
-                                                                              output -> {
-                                                                                  EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-                                                                                  return FullUnitDto.from(output.getUnit(),
-                                                                                                          tcontext);
-                                                                              });
+                                                                              output -> FullUnitDto.from(output.getUnit(),
+                                                                                                         referenceAssembler));
         return unitFuture.thenApply(unitDto -> ResponseEntity.ok()
                                                              .eTag(ETag.from(unitDto.getId(),
                                                                              unitDto.getVersion()))
@@ -213,9 +207,8 @@ public class UnitController extends AbstractEntityController {
                                              return new UpdateUnitUseCase.InputData(
                                                      unitDto.toEntity(tcontext), getClient(user),
                                                      eTag, user.getUsername());
-                                         },
-                                         output -> FullUnitDto.from(output.getUnit(),
-                                                                    EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
+                                         }, output -> FullUnitDto.from(output.getUnit(),
+                                                                       referenceAssembler));
     }
 
     @Async

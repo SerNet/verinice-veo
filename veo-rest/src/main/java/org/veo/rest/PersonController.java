@@ -58,7 +58,6 @@ import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.CreatePersonOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -133,11 +132,10 @@ public class PersonController extends AbstractEntityController {
 
         final GetPersonsUseCase.InputData inputData = new GetPersonsUseCase.InputData(client,
                 Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         return useCaseInteractor.execute(getPersonsUseCase, inputData, output -> {
             return output.getEntities()
                          .stream()
-                         .map(u -> FullPersonDto.from(u, tcontext))
+                         .map(u -> FullPersonDto.from(u, referenceAssembler))
                          .collect(Collectors.toList());
         });
     }
@@ -159,11 +157,8 @@ public class PersonController extends AbstractEntityController {
                                                                                   new GetPersonUseCase.InputData(
                                                                                           Key.uuidFrom(uuid),
                                                                                           client),
-                                                                                  output -> {
-                                                                                      EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-                                                                                      return FullPersonDto.from(output.getPerson(),
-                                                                                                                tcontext);
-                                                                                  });
+                                                                                  output -> FullPersonDto.from(output.getPerson(),
+                                                                                                               referenceAssembler));
 
         return personFuture.thenApply(personDto -> ResponseEntity.ok()
                                                                  .eTag(ETag.from(personDto.getId(),
@@ -220,7 +215,7 @@ public class PersonController extends AbstractEntityController {
                                          },
 
                                          output -> FullPersonDto.from(output.getEntity(),
-                                                                      EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
+                                                                      referenceAssembler));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

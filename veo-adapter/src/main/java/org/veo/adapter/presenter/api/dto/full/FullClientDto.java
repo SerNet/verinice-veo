@@ -24,7 +24,6 @@ import org.veo.adapter.presenter.api.dto.AbstractClientDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -46,8 +45,8 @@ public class FullClientDto extends AbstractClientDto implements IdentifiableDto 
     @ToString.Include
     private String id;
 
-    public static FullClientDto from(@Valid Client asset, EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformClient2Dto(tcontext, asset);
+    public static FullClientDto from(@Valid Client asset) {
+        return EntityToDtoTransformer.transformClient2Dto(asset);
     }
 
     public Client toEntity(DtoToEntityContext tcontext) {

@@ -19,15 +19,12 @@ package org.veo.adapter.presenter.api.dto.full;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.groups.PersonGroup;
@@ -60,11 +57,6 @@ public class FullPersonGroupDto extends FullPersonDto
     @Override
     public void setMembers(Set<ModelObjectReference<Person>> members) {
         this.members = members;
-    }
-
-    public static FullPersonGroupDto from(@Valid PersonGroup processGroup,
-            EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformPersonGroup2Dto(tcontext, processGroup);
     }
 
     public PersonGroup toEntity(DtoToEntityContext tcontext) {

@@ -21,7 +21,6 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
@@ -48,16 +47,14 @@ class CustomLinkTransformerSpec extends Specification {
         }
 
         when: "transforming it to a DTO"
-        def context = Mock(EntityToDtoContext) {
-            it.referenceAssembler >> Mock(ReferenceAssembler)
-        }
-        def dto = CustomLinkDto.from(link, context)
+        def referenceAssembler = Mock(ReferenceAssembler)
+        def dto = CustomLinkDto.from(link, referenceAssembler)
 
         then: "all properties are transformed"
         with(dto) {
             applicableTo == Set.of("asset", "process")
             name == "good name"
-            target == ModelObjectReference.from(targetAsset, context.referenceAssembler)
+            target == ModelObjectReference.from(targetAsset, referenceAssembler)
             with(attributes) {
                 get("foo") == "bar"
             }

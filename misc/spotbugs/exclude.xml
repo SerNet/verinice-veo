@@ -1,0 +1,11 @@
+<FindBugsFilter>
+    <!-- disable serialVersionUID checks for groovy classes -->
+	<!-- https://github.com/gradle/gradle/issues/8317 -->
+    <Match>
+        <Source name="~.*\.groovy" />
+        <Bug pattern="SE_NO_SERIALVERSIONID" />
+    </Match>
+    <Match>
+        <Source name="~.*\.kt" />
+    </Match>
+</FindBugsFilter>

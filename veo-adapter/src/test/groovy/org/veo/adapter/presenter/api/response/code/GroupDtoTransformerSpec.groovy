@@ -22,7 +22,6 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
@@ -98,8 +97,7 @@ class GroupDtoTransformerSpec extends Specification {
 
 
         when: "the group is transformed into a DTO"
-        def context = EntityToDtoContext.getCompleteTransformationContext(assembler)
-        def dto = FullEntityLayerSupertypeGroupDto.from(assetGroup, context)
+        def dto = FullEntityLayerSupertypeGroupDto.from(assetGroup, assembler)
 
         then: "The DTO contains all required data"
         dto.name == assetGroup.name
@@ -191,9 +189,8 @@ class GroupDtoTransformerSpec extends Specification {
         ReferenceAssembler assembler = Mock()
 
         when: "the groups are transformed to DTOs"
-        def e2DtoContext = EntityToDtoContext.getCompleteTransformationContext(assembler)
-        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, e2DtoContext)
-        def pg = FullEntityLayerSupertypeGroupDto.from(processGroup, e2DtoContext)
+        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, assembler)
+        def pg = FullEntityLayerSupertypeGroupDto.from(processGroup, assembler)
         then: "the two assets and the group are also transformed with members"
         ag.members.size()==2
         ag.members*.displayName as Set == [asset1.name, asset2.name] as Set
@@ -242,8 +239,7 @@ class GroupDtoTransformerSpec extends Specification {
         def refAssembler = Mock(ReferenceAssembler)
 
         when: "the group is transformed"
-        def context = EntityToDtoContext.getCompleteTransformationContext(refAssembler)
-        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, context)
+        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, refAssembler)
 
         then: "The group contains it self as it is not forbidden"
         ag.members == [

@@ -66,7 +66,6 @@ import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -154,11 +153,10 @@ public class GroupController extends AbstractEntityController {
 
         final GetGroupsUseCase.InputData inputData = new GetGroupsUseCase.InputData(client, type,
                 Optional.ofNullable(unitUuid));
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         return useCaseInteractor.execute(getGroupsUseCase, inputData, output -> output.getGroups()
                                                                                       .stream()
                                                                                       .map(u -> FullEntityLayerSupertypeGroupDto.from(u,
-                                                                                                                                      tcontext))
+                                                                                                                                      referenceAssembler))
                                                                                       .collect(Collectors.toList()));
 
     }
@@ -183,9 +181,8 @@ public class GroupController extends AbstractEntityController {
                                                                                                                type,
                                                                                                                client),
                                                                                                        output -> {
-                                                                                                           EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                                                                                                            return FullEntityLayerSupertypeGroupDto.from(output.getGroup(),
-                                                                                                                                                        tcontext);
+                                                                                                                                                        referenceAssembler);
                                                                                                        });
         return groupFuture.thenApply(groupDto -> ResponseEntity.ok()
                                                                .eTag(ETag.from(groupDto.getId(),
@@ -208,11 +205,10 @@ public class GroupController extends AbstractEntityController {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), output -> {
-                    EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                     ModelGroup<?> group = output.getGroup();
                     return group.getMembers()
                                 .stream()
-                                .map(member -> EntityToDtoTransformer.transform2Dto(tcontext,
+                                .map(member -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
                                                                                     member))
                                 .collect(Collectors.toList());
                 });
@@ -268,10 +264,9 @@ public class GroupController extends AbstractEntityController {
                                              return new UpdateGroupUseCase.InputData(
                                                      groupDto.toEntity(context), client, eTag,
                                                      user.getUsername());
-                                         }, output -> {
-                                             return FullEntityLayerSupertypeGroupDto.from(output.getGroup(),
-                                                                                          EntityToDtoContext.getCompleteTransformationContext(referenceAssembler));
-                                         });
+                                         },
+                                         output -> FullEntityLayerSupertypeGroupDto.from(output.getGroup(),
+                                                                                         referenceAssembler));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

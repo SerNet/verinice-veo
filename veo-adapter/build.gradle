@@ -11,12 +11,16 @@ sourceSets {
 
 apply plugin: 'groovy'
 apply plugin: 'java-library'
-
+apply plugin: 'kotlin'
 
 configurations {
     generateSchemas
 }
 
+test {
+    // required by kotest
+    useJUnitPlatform()
+}
 dependencies {
 
     api project(":veo-core-usecase")
@@ -26,6 +30,7 @@ dependencies {
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core'
 
+    testImplementation project(':veo-test')
     testImplementation 'io.swagger.core.v3:swagger-core'
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -70,3 +75,9 @@ plugins.withId('eclipse'){
 }
 
 processResources.dependsOn(generateEntitySchemas)
+
+spotless {
+    kotlin {
+        ktlint()
+    }
+}

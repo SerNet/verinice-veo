@@ -16,9 +16,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
@@ -27,7 +27,8 @@ public interface FullEntityLayerSupertypeGroupDto<T extends EntityLayerSupertype
         extends EntityLayerSupertypeGroupDto<T>, IdentifiableDto {
 
     static FullEntityLayerSupertypeGroupDto<?> from(ModelGroup<?> group,
-            EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformGroup2Dto(tcontext, group);
+            ReferenceAssembler referenceAssembler) {
+
+        return EntityToDtoTransformer.transformGroup2Dto(referenceAssembler, group);
     }
 }

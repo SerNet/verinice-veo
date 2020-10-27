@@ -59,7 +59,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateControlOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.EntityTypeNames;
@@ -134,12 +133,12 @@ public class ControlController extends AbstractEntityController {
 
         final GetControlsUseCase.InputData inputData = new GetControlsUseCase.InputData(client,
                 Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
         return useCaseInteractor.execute(getControlsUseCase, inputData, output -> {
             return output.getEntities()
                          .stream()
-                         .map(u -> FullControlDto.from(u, tcontext))
+                         .map(u -> FullControlDto.from(u, referenceAssembler))
                          .collect(Collectors.toList());
+
         });
     }
 
@@ -160,11 +159,8 @@ public class ControlController extends AbstractEntityController {
                                                                                     new GetControlUseCase.InputData(
                                                                                             Key.uuidFrom(uuid),
                                                                                             client),
-                                                                                    output -> {
-                                                                                        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-                                                                                        return FullControlDto.from(output.getControl(),
-                                                                                                                   tcontext);
-                                                                                    });
+                                                                                    output -> FullControlDto.from(output.getControl(),
+                                                                                                                  referenceAssembler));
 
         return controlFuture.thenApply(controlDto -> ResponseEntity.ok()
                                                                    .eTag(ETag.from(controlDto.getId(),
@@ -223,7 +219,7 @@ public class ControlController extends AbstractEntityController {
                                          },
 
                                          output -> FullControlDto.from(output.getEntity(),
-                                                                       EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
+                                                                       referenceAssembler));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

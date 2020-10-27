@@ -24,7 +24,6 @@ import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
@@ -46,8 +45,8 @@ public class FullDomainDto extends AbstractDomainDto implements IdentifiableDto 
     @ToString.Include
     private String id;
 
-    public static FullDomainDto from(@Valid Domain domain, EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformDomain2Dto(tcontext, domain);
+    public static FullDomainDto from(@Valid Domain domain) {
+        return EntityToDtoTransformer.transformDomain2Dto(domain);
     }
 
     public Domain toEntity(DtoToEntityContext tcontext) {

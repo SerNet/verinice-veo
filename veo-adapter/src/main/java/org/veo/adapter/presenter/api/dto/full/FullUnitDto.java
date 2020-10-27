@@ -20,11 +20,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -46,8 +46,8 @@ public class FullUnitDto extends AbstractUnitDto implements IdentifiableDto {
     @ToString.Include
     private String id;
 
-    public static FullUnitDto from(@Valid Unit asset, EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformUnit2Dto(tcontext, asset);
+    public static FullUnitDto from(@Valid Unit asset, ReferenceAssembler referenceAssembler) {
+        return EntityToDtoTransformer.transformUnit2Dto(referenceAssembler, asset);
     }
 
     public Unit toEntity(DtoToEntityContext tcontext) {

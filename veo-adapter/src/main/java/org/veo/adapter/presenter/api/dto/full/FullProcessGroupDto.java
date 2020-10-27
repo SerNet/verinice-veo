@@ -19,15 +19,12 @@ package org.veo.adapter.presenter.api.dto.full;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.groups.ProcessGroup;
@@ -60,11 +57,6 @@ public class FullProcessGroupDto extends FullProcessDto
     @Override
     public void setMembers(Set<ModelObjectReference<Process>> members) {
         this.members = members;
-    }
-
-    public static FullProcessGroupDto from(@Valid ProcessGroup processGroup,
-            EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformProcessGroup2Dto(tcontext, processGroup);
     }
 
     public ProcessGroup toEntity(DtoToEntityContext tcontext) {

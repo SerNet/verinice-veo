@@ -20,11 +20,11 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
@@ -46,8 +46,8 @@ public class FullProcessDto extends AbstractProcessDto implements IdentifiableDt
     @ToString.Include
     private String id;
 
-    public static FullProcessDto from(@Valid Process asset, EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformProcess2Dto(tcontext, asset);
+    public static FullProcessDto from(@Valid Process asset, ReferenceAssembler assembler) {
+        return EntityToDtoTransformer.transformProcess2Dto(assembler, asset);
     }
 
     public Process toEntity(DtoToEntityContext tcontext) {

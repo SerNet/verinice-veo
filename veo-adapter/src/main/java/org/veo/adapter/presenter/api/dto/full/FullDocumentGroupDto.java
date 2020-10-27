@@ -24,9 +24,9 @@ import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Key;
@@ -52,8 +52,8 @@ public class FullDocumentGroupDto extends FullDocumentDto
     private Set<ModelObjectReference<Document>> members = Collections.emptySet();
 
     public static FullDocumentGroupDto from(@Valid DocumentGroup processGroup,
-            EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformDocumentGroup2Dto(tcontext, processGroup);
+            ReferenceAssembler referenceAssembler) {
+        return EntityToDtoTransformer.transformDocumentGroup2Dto(referenceAssembler, processGroup);
     }
 
     @Override

@@ -109,7 +109,7 @@ class TransformerSpec extends Specification {
         def unit = createUnit()
 
         when: "the parent unit is transformed into a DTO"
-        def unitDto = FullUnitDto.from(unit, EntityToDtoContext.getCompleteTransformationContext(Mock(ReferenceAssembler)))
+        def unitDto = FullUnitDto.from(unit, Mock(ReferenceAssembler))
 
         then: "The DTO contains all required data"
         unitDto.name == unitName
@@ -163,7 +163,7 @@ class TransformerSpec extends Specification {
         client.getUpdatedAt() >> Instant.now()
 
         when: "the client is transformed into a DTO"
-        def clientDto = FullClientDto.from(client, EntityToDtoContext.getCompleteTransformationContext())
+        def clientDto = FullClientDto.from(client)
 
         then: "The DTO contains all required data"
         unit.id.uuidValue() == unitId

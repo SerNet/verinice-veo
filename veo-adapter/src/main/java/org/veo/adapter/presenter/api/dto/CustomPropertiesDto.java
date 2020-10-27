@@ -37,7 +37,6 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomPropertiesDomains;
 import org.veo.adapter.presenter.api.response.transformer.CustomAttributesTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
@@ -86,9 +85,8 @@ public class CustomPropertiesDto {
 
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
-    public static CustomPropertiesDto from(@Valid CustomProperties control,
-            EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformCustomProperties2Dto(tcontext, control);
+    public static CustomPropertiesDto from(@Valid CustomProperties control) {
+        return EntityToDtoTransformer.transformCustomProperties2Dto(control);
     }
 
     @JsonIgnore

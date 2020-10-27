@@ -24,9 +24,9 @@ import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
@@ -63,8 +63,8 @@ public class FullControlGroupDto extends FullControlDto
     }
 
     public static FullControlGroupDto from(@Valid ControlGroup processGroup,
-            EntityToDtoContext tcontext) {
-        return EntityToDtoTransformer.transformControlGroup2Dto(tcontext, processGroup);
+            ReferenceAssembler referenceAssembler) {
+        return EntityToDtoTransformer.transformControlGroup2Dto(referenceAssembler, processGroup);
     }
 
     public ControlGroup toEntity(DtoToEntityContext tcontext) {

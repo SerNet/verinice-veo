@@ -57,7 +57,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateProcessOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -84,7 +83,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller for the resource API of "Process" entities.
- *
+ * <p>
  * A process is a business entity
  */
 @RestController
@@ -138,12 +137,9 @@ public class ProcessController extends AbstractEntityController {
                                                                                         }
                                                                                     }
 
-                                                                                    , output -> {
-                                                                                        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-
-                                                                                        return FullProcessDto.from(output.getProcess(),
-                                                                                                                   tcontext);
-                                                                                    });
+                                                                                    ,
+                                                                                    output -> FullProcessDto.from(output.getProcess(),
+                                                                                                                  referenceAssembler));
 
         return processFuture.thenApply(processDto -> ResponseEntity.ok()
                                                                    .eTag(ETag.from(processDto.getId(),
@@ -200,9 +196,8 @@ public class ProcessController extends AbstractEntityController {
                                              }
                                          }
 
-                                         ,
-                                         output -> FullProcessDto.from(output.getEntity(),
-                                                                       EntityToDtoContext.getCompleteTransformationContext(referenceAssembler)));
+                                         , output -> FullProcessDto.from(output.getEntity(),
+                                                                         referenceAssembler));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -236,12 +231,10 @@ public class ProcessController extends AbstractEntityController {
         final GetProcessesUseCase.InputData inputData = new GetProcessesUseCase.InputData(client,
                 Optional.ofNullable(parentUuid), Optional.ofNullable(displayName));
 
-        EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
-
         return useCaseInteractor.execute(getProcessesUseCase, inputData, output -> {
             return output.getEntities()
                          .stream()
-                         .map(u -> FullProcessDto.from(u, tcontext))
+                         .map(u -> FullProcessDto.from(u, referenceAssembler))
                          .collect(Collectors.toList());
         });
     }

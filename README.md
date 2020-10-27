@@ -276,6 +276,17 @@ or just
 
 You can find formatting settings for IDEs in [misc/eclipse](misc/eclipse).
 
+Spotless can fix code formatting violations by running
+
+	./gradlew spotlessApply
+
+For some reason the `ktlint` plugin cannot apply fixes. To automatically format Kotlin files
+you can install [`ktlint`](https://ktlint.github.io/#getting-started) and run
+
+	ktlint -F
+
+In the project root.
+
 Sample git hooks are provided in [misc/git](misc/git), e.g.
 [pre-commit](misc/git/pre-commit), which checks the code style on each commit.
 To install, copy the file to *.git/hooks/pre-commit*, etc. Make sure the

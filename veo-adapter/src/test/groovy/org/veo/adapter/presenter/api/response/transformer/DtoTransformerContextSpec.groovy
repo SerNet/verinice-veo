@@ -115,7 +115,7 @@ class DtoTransformerContextSpec extends Specification {
 
         when: "the document is transformed into a DTO"
 
-        def docDto = FullDocumentDto.from(doc, EntityToDtoContext.getCompleteTransformationContext(assembler))
+        def docDto = FullDocumentDto.from(doc, assembler)
 
         then: "Test the Dto"
         docDto.id == doc.id.uuidValue()

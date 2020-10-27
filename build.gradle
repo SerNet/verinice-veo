@@ -1,10 +1,18 @@
+buildscript {
+    ext.kotlin_version = '1.3.72'
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
 plugins {
     id 'org.springframework.boot' version '2.3.4.RELEASE' apply false
     id "com.github.spotbugs" version '4.5.0'
     id "com.diffplug.spotless" version "5.5.2" apply false
     id "io.freefair.lombok" version "5.2.1"
 }
-
+repositories {
+    mavenCentral()
+}
 def continuousIntegrationBuild = rootProject.hasProperty('ci')
 
 allprojects  {
@@ -12,7 +20,6 @@ allprojects  {
     version = '0.2.0-SNAPSHOT'
 
     apply plugin: "com.diffplug.spotless"
-
 
     def currentUserName = "git config user.name".execute().text.trim() ?: "<name>"
 
@@ -79,7 +86,6 @@ allprojects  {
 }
 
 subprojects {
-
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'com.github.spotbugs'
@@ -125,6 +131,12 @@ subprojects {
                 'jsonschema-module-javax-validation',
                 'jsonschema-module-swagger-2'
             ].each { dependency "com.github.victools:$it:4.15.1" }
+            dependency "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+            dependency "io.kotest:kotest-runner-junit5-jvm:4.2.5"
+            dependency "io.kotest:kotest-assertions-core-jvm:4.2.5"
+            dependency "io.kotest:kotest-property-jvm:4.2.5"
+            dependency "io.mockk:mockk:1.9.3"
         }
     }
 
@@ -144,6 +156,7 @@ subprojects {
     }
     pmdTest.enabled = false
 
+    spotbugs.excludeFilter = rootProject.file('misc/spotbugs/exclude.xml')
     spotbugsTest.enabled = false
     // write human readable report on normal builds
     spotbugsMain.reports {
@@ -176,6 +189,7 @@ subprojects {
     dependencies {
         compileOnly 'org.slf4j:slf4j-api'
         runtimeOnly 'ch.qos.logback:logback-classic'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     }
 
     compileJava {
