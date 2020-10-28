@@ -25,7 +25,7 @@ import org.veo.core.usecase.repository.ProcessRepository;
 /**
  * Reinstantiate persisted process objects.
  */
-public class GetProcessesUseCase<R> extends GetEntitiesUseCase<Process, R> {
+public class GetProcessesUseCase extends GetEntitiesUseCase<Process> {
 
     public GetProcessesUseCase(ClientRepository clientRepository,
             ProcessRepository processRepository, UnitHierarchyProvider unitHierarchyProvider) {

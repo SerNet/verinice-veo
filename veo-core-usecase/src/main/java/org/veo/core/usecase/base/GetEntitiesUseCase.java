@@ -35,8 +35,8 @@ import lombok.Value;
 /**
  * Reinstantiate persisted entity objects.
  */
-public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, R>
-        extends UseCase<GetEntitiesUseCase.InputData, GetEntitiesUseCase.OutputData<T>, R> {
+public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
+        extends UseCase<GetEntitiesUseCase.InputData, GetEntitiesUseCase.OutputData<T>> {
 
     private final EntityLayerSupertypeRepository<T> repository;
     private final ClientRepository clientRepository;

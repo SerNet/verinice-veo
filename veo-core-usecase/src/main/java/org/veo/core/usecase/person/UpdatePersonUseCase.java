@@ -20,7 +20,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.PersonRepository;
 
-public class UpdatePersonUseCase<R> extends ModifyEntityUseCase<Person, R> {
+public class UpdatePersonUseCase extends ModifyEntityUseCase<Person> {
 
     public UpdatePersonUseCase(PersonRepository personRepository) {
         super(personRepository);

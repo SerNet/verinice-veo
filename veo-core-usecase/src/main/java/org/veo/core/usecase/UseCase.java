@@ -31,10 +31,8 @@ import javax.transaction.Transactional;
  *            the inputdata type
  * @param <O>
  *            the output data type
- * @param <R>
- *            the result type
  */
-public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.OutputData, R> {
+public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.OutputData> {
 
     public abstract O execute(I input);
 
@@ -46,7 +44,7 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
      * usescase when you need to transform the input and/or the output.
      */
     @Transactional(Transactional.TxType.REQUIRED)
-    public R executeAndTransformResult(Supplier<I> inputSupplier, Function<O, R> resultMapper) {
+    public <R> R executeAndTransformResult(Supplier<I> inputSupplier, Function<O, R> resultMapper) {
         return resultMapper.apply(execute(inputSupplier.get()));
     }
 
@@ -58,7 +56,7 @@ public abstract class UseCase<I extends UseCase.InputData, O extends UseCase.Out
      * case when you need to transform only the output.
      */
     @Transactional(Transactional.TxType.REQUIRED)
-    public R executeAndTransformResult(I input, Function<O, R> resultMapper) {
+    public <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
         return resultMapper.apply(execute(input));
     }
 

@@ -38,8 +38,8 @@ import lombok.Value;
  * the UUID. In almost all cases changing the version number should be left to
  * the repository.
  */
-public abstract class UpdateGroupUseCase<R>
-        extends UseCase<UpdateGroupUseCase.InputData, UpdateGroupUseCase.OutputData, R> {
+public abstract class UpdateGroupUseCase
+        extends UseCase<UpdateGroupUseCase.InputData, UpdateGroupUseCase.OutputData> {
 
     protected final RepositoryProvider repositoryProvider;
 

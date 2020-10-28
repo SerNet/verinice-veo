@@ -110,10 +110,10 @@ public class AssetController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.ASSETS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
-    private final CreateAssetUseCase<ResponseEntity<ApiResponseBody>> createAssetUseCase;
-    private final UpdateAssetUseCase<FullAssetDto> updateAssetUseCase;
-    private final GetAssetUseCase<FullAssetDto> getAssetUseCase;
-    private final GetAssetsUseCase<List<FullAssetDto>> getAssetsUseCase;
+    private final CreateAssetUseCase createAssetUseCase;
+    private final UpdateAssetUseCase updateAssetUseCase;
+    private final GetAssetUseCase getAssetUseCase;
+    private final GetAssetsUseCase getAssetsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
 

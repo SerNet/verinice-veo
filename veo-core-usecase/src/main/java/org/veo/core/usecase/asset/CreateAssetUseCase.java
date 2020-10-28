@@ -29,8 +29,8 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-public class CreateAssetUseCase<R>
-        extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData, R> {
+public class CreateAssetUseCase
+        extends UseCase<CreateAssetUseCase.InputData, CreateAssetUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
     private final AssetRepository assetRepository;

@@ -33,8 +33,8 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted client object.
  */
-public class GetClientUseCase<R>
-        extends UseCase<GetClientUseCase.InputData, GetClientUseCase.OutputData, R> {
+public class GetClientUseCase
+        extends UseCase<GetClientUseCase.InputData, GetClientUseCase.OutputData> {
 
     private final ClientRepository repository;
 

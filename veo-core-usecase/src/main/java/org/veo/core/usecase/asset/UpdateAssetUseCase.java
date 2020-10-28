@@ -23,7 +23,7 @@ import org.veo.core.usecase.repository.AssetRepository;
 /**
  * @author urszeidler
  */
-public class UpdateAssetUseCase<R> extends ModifyEntityUseCase<Asset, R> {
+public class UpdateAssetUseCase extends ModifyEntityUseCase<Asset> {
 
     public UpdateAssetUseCase(AssetRepository assetRepository) {
         super(assetRepository);

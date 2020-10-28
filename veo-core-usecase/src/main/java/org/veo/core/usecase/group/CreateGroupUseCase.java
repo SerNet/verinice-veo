@@ -35,8 +35,8 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-public class CreateGroupUseCase<R>
-        extends UseCase<CreateGroupUseCase.InputData, CreateGroupUseCase.OutputData, R> {
+public class CreateGroupUseCase
+        extends UseCase<CreateGroupUseCase.InputData, CreateGroupUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
     private final RepositoryProvider repositoryProvider;

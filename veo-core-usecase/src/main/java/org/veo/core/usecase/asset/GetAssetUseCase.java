@@ -32,8 +32,8 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted process object.
  */
-public class GetAssetUseCase<R>
-        extends UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData, R> {
+public class GetAssetUseCase
+        extends UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
 
     private final AssetRepository repository;
 

@@ -25,7 +25,7 @@ import org.veo.core.usecase.repository.ControlRepository;
 /**
  * Reinstantiate persisted control objects.
  */
-public class GetControlsUseCase<R> extends GetEntitiesUseCase<Control, R> {
+public class GetControlsUseCase extends GetEntitiesUseCase<Control> {
 
     public GetControlsUseCase(ClientRepository clientRepository,
             ControlRepository controlRepository, UnitHierarchyProvider unitHierarchyProvider) {

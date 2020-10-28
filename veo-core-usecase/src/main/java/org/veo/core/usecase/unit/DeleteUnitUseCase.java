@@ -38,7 +38,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, EmptyOutput, R> {
+public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
 
     private final ClientRepository clientRepository;
     private final RepositoryProvider repositoryProvider;

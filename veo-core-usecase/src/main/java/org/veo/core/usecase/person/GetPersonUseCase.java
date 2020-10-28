@@ -32,8 +32,8 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted person object.
  */
-public class GetPersonUseCase<R>
-        extends UseCase<GetPersonUseCase.InputData, GetPersonUseCase.OutputData, R> {
+public class GetPersonUseCase
+        extends UseCase<GetPersonUseCase.InputData, GetPersonUseCase.OutputData> {
 
     private final PersonRepository repository;
 

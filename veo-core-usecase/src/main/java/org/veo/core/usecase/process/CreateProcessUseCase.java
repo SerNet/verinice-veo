@@ -32,8 +32,8 @@ import lombok.Value;
 /**
  * Creates a persistent new process object.
  */
-public class CreateProcessUseCase<R>
-        extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData, R> {
+public class CreateProcessUseCase
+        extends UseCase<CreateProcessUseCase.InputData, CreateProcessUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
     private final ProcessRepository processRepository;

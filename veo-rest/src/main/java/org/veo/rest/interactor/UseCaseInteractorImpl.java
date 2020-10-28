@@ -46,15 +46,15 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
 
     @Override
     public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
-            UseCase<I, O, R> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper) {
+            UseCase<I, O> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper) {
         return CompletableFuture.supplyAsync(() -> useCase.executeAndTransformResult(inputSupplier,
                                                                                      outputMapper));
     }
 
     @Override
     public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
-            UseCase<I, O, R> useCase, @Valid I input, // TODO implement test to make sure all marked
-                                                      // complex types in fields are validated
+            UseCase<I, O> useCase, @Valid I input, // TODO implement test to make sure all marked
+                                                   // complex types in fields are validated
             Function<O, R> outputMapper) {
         return CompletableFuture.supplyAsync(() -> useCase.executeAndTransformResult(input,
                                                                                      outputMapper));

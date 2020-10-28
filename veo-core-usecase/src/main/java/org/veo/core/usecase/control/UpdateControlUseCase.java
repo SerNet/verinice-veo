@@ -20,7 +20,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 
-public class UpdateControlUseCase<R> extends ModifyEntityUseCase<Control, R> {
+public class UpdateControlUseCase extends ModifyEntityUseCase<Control> {
 
     public UpdateControlUseCase(ControlRepository controlRepository) {
         super(controlRepository);

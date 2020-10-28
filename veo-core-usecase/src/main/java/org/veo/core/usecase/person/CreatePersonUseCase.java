@@ -29,8 +29,8 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-public class CreatePersonUseCase<R>
-        extends UseCase<CreatePersonUseCase.InputData, CreatePersonUseCase.OutputData, R> {
+public class CreatePersonUseCase
+        extends UseCase<CreatePersonUseCase.InputData, CreatePersonUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
     private final PersonRepository personRepository;

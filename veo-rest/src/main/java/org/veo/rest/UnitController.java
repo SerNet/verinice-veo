@@ -105,11 +105,11 @@ public class UnitController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.UNITS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
-    private final CreateUnitUseCase<ResponseEntity<ApiResponseBody>> createUnitUseCase;
-    private final GetUnitUseCase<FullUnitDto> getUnitUseCase;
-    private final UpdateUnitUseCase<FullUnitDto> putUnitUseCase;
+    private final CreateUnitUseCase createUnitUseCase;
+    private final GetUnitUseCase getUnitUseCase;
+    private final UpdateUnitUseCase putUnitUseCase;
     private final DeleteUnitUseCase<ResponseEntity<ApiResponseBody>> deleteUnitUseCase;
-    private final GetUnitsUseCase<List<FullUnitDto>> getUnitsUseCase;
+    private final GetUnitsUseCase getUnitsUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
 
     @GetMapping

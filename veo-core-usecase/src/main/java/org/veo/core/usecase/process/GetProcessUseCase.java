@@ -32,8 +32,8 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted process object.
  */
-public class GetProcessUseCase<R>
-        extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData, R> {
+public class GetProcessUseCase
+        extends UseCase<GetProcessUseCase.InputData, GetProcessUseCase.OutputData> {
 
     private final ProcessRepository repository;
 

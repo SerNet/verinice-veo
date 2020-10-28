@@ -19,7 +19,7 @@ package org.veo.core.usecase.unit;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.UnitRepository;
 
-public class UpdateUnitUseCase<R> extends ChangeUnitUseCase<R> {
+public class UpdateUnitUseCase extends ChangeUnitUseCase {
 
     public UpdateUnitUseCase(UnitRepository repository) {
         super(repository);

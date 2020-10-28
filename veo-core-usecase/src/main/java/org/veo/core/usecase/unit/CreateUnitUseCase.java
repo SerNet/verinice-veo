@@ -48,8 +48,8 @@ import lombok.Value;
  * @author akoderman
  */
 // @Log
-public class CreateUnitUseCase<R>
-        extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData, R> {
+public class CreateUnitUseCase
+        extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
 
     private final ClientRepository clientRepository;
     private final UnitRepository unitRepository;

@@ -60,7 +60,7 @@ public interface UseCaseInteractor {
      * @return
      */
     public <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
-            UseCase<I, O, R> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper);
+            UseCase<I, O> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper);
 
     /**
      * This function is used to execute a use case with an asynchronous callback.
@@ -84,7 +84,7 @@ public interface UseCaseInteractor {
      * @return
      */
     public <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
-            UseCase<I, O, R> useCase, @Valid I input, Function<O, R> outputMapper);
+            UseCase<I, O> useCase, @Valid I input, Function<O, R> outputMapper);
 
     /**
      * The input data must be validated before it is passed to the use case. The

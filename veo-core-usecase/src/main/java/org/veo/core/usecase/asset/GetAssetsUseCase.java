@@ -25,7 +25,7 @@ import org.veo.core.usecase.repository.ClientRepository;
 /**
  * Reinstantiate persisted asset objects.
  */
-public class GetAssetsUseCase<R> extends GetEntitiesUseCase<Asset, R> {
+public class GetAssetsUseCase extends GetEntitiesUseCase<Asset> {
 
     public GetAssetsUseCase(ClientRepository clientRepository, AssetRepository assetRepository,
             UnitHierarchyProvider unitHierarchyProvider) {

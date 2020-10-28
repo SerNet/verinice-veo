@@ -25,7 +25,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
-public class PutGroupUseCase<R> extends UpdateGroupUseCase<R> {
+public class PutGroupUseCase extends UpdateGroupUseCase {
 
     public PutGroupUseCase(RepositoryProvider repositoryProvider) {
         super(repositoryProvider);

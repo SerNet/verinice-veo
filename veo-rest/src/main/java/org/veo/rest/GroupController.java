@@ -112,26 +112,21 @@ public class GroupController extends AbstractEntityController {
     private final UseCaseInteractorImpl useCaseInteractor;
     private final ObjectMapper objectMapper;
 
-    private final CreateGroupUseCase<ResponseEntity<ApiResponseBody>> createGroupUseCase;
-    private final GetGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> getGroupUseCase;
-    private final GetGroupsUseCase<?, List<FullEntityLayerSupertypeGroupDto<?>>> getGroupsUseCase;
-    private final GetGroupUseCase<List<EntityLayerSupertypeDto>> getGroupMemberUseCase;
-    private final PutGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> putGroupUseCase;
+    private final CreateGroupUseCase createGroupUseCase;
+    private final GetGroupUseCase getGroupUseCase;
+    private final GetGroupsUseCase<?> getGroupsUseCase;
+    private final PutGroupUseCase putGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
 
     public GroupController(UseCaseInteractorImpl useCaseInteractor, ObjectMapper objectMapper,
-            CreateGroupUseCase createGroupUseCase,
-            GetGroupUseCase<FullEntityLayerSupertypeGroupDto<?>> getGroupUseCase,
-            GetGroupsUseCase<?, List<FullEntityLayerSupertypeGroupDto<?>>> getGroupsUseCase,
-            GetGroupUseCase<List<EntityLayerSupertypeDto>> getGroupMemberUseCase,
-            PutGroupUseCase putGroupUseCase, DeleteGroupUseCase deleteGroupUseCase,
-            ModelObjectReferenceResolver referenceResolver) {
+            CreateGroupUseCase createGroupUseCase, GetGroupUseCase getGroupUseCase,
+            GetGroupsUseCase<?> getGroupsUseCase, PutGroupUseCase putGroupUseCase,
+            DeleteGroupUseCase deleteGroupUseCase, ModelObjectReferenceResolver referenceResolver) {
         this.useCaseInteractor = useCaseInteractor;
         this.createGroupUseCase = createGroupUseCase;
         this.getGroupUseCase = getGroupUseCase;
         this.getGroupsUseCase = getGroupsUseCase;
-        this.getGroupMemberUseCase = getGroupMemberUseCase;
         this.putGroupUseCase = putGroupUseCase;
         this.deleteGroupUseCase = deleteGroupUseCase;
         this.objectMapper = objectMapper;
@@ -211,7 +206,7 @@ public class GroupController extends AbstractEntityController {
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @RequestParam(value = TYPE_PARAM, required = true) GroupType type) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getGroupMemberUseCase, new GetGroupUseCase.InputData(
+        return useCaseInteractor.execute(getGroupUseCase, new GetGroupUseCase.InputData(
                 Key.uuidFrom(uuid), type, client), output -> {
                     EntityToDtoContext tcontext = EntityToDtoContext.getCompleteTransformationContext(referenceAssembler);
                     ModelGroup<?> group = output.getGroup();

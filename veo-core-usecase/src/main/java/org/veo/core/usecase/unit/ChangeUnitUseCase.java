@@ -36,8 +36,8 @@ import lombok.extern.slf4j.Slf4j;
  * changes to the asset.
  */
 @Slf4j
-public abstract class ChangeUnitUseCase<R>
-        extends UseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData, R> {
+public abstract class ChangeUnitUseCase
+        extends UseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
 

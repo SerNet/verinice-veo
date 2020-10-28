@@ -97,10 +97,10 @@ public class ControlController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.CONTROLS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
-    private final CreateControlUseCase<ResponseEntity<ApiResponseBody>> createControlUseCase;
-    private final GetControlUseCase<FullControlDto> getControlUseCase;
-    private final GetControlsUseCase<List<FullControlDto>> getControlsUseCase;
-    private final UpdateControlUseCase<FullControlDto> updateControlUseCase;
+    private final CreateControlUseCase createControlUseCase;
+    private final GetControlUseCase getControlUseCase;
+    private final GetControlsUseCase getControlsUseCase;
+    private final UpdateControlUseCase updateControlUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
 

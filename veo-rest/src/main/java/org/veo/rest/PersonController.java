@@ -96,10 +96,10 @@ public class PersonController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.PERSONS;
 
     private final UseCaseInteractorImpl useCaseInteractor;
-    private final CreatePersonUseCase<ResponseEntity<ApiResponseBody>> createPersonUseCase;
-    private final GetPersonUseCase<FullPersonDto> getPersonUseCase;
-    private final GetPersonsUseCase<List<FullPersonDto>> getPersonsUseCase;
-    private final UpdatePersonUseCase<FullPersonDto> updatePersonUseCase;
+    private final CreatePersonUseCase createPersonUseCase;
+    private final GetPersonUseCase getPersonUseCase;
+    private final GetPersonsUseCase getPersonsUseCase;
+    private final UpdatePersonUseCase updatePersonUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
 

@@ -38,8 +38,8 @@ import lombok.Value;
 /**
  * Reinstantiate persisted group objects.
  */
-public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertype>, R>
-        extends UseCase<GetGroupsUseCase.InputData, GetGroupsUseCase.OutputData<T>, R> {
+public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertype>>
+        extends UseCase<GetGroupsUseCase.InputData, GetGroupsUseCase.OutputData<T>> {
 
     private final RepositoryProvider repositoryProvider;
     private final ClientRepository clientRepository;

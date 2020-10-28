@@ -95,11 +95,11 @@ public class ProcessController extends AbstractEntityController {
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.PROCESSES;
 
     private UseCaseInteractorImpl useCaseInteractor;
-    private CreateProcessUseCase<ResponseEntity<ApiResponseBody>> createProcessUseCase;
-    private GetProcessUseCase<FullProcessDto> getProcessUseCase;
-    private UpdateProcessUseCase<FullProcessDto> updateProcessUseCase;
+    private CreateProcessUseCase createProcessUseCase;
+    private GetProcessUseCase getProcessUseCase;
+    private UpdateProcessUseCase updateProcessUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private GetProcessesUseCase<List<FullProcessDto>> getProcessesUseCase;
+    private GetProcessesUseCase getProcessesUseCase;
     private final ModelObjectReferenceResolver referenceResolver;
 
     public ProcessController(UseCaseInteractorImpl useCaseInteractor,
