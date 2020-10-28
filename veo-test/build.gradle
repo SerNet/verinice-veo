@@ -1,14 +1,8 @@
 apply plugin: 'java-library'
 apply plugin: 'groovy'
-apply plugin: 'kotlin'
 
 dependencies {
     api 'org.spockframework:spock-core'
     api project(':veo-core-entity')
     api project(':veo-persistence')
-
-    api "io.kotest:kotest-runner-junit5-jvm"
-    api "io.kotest:kotest-assertions-core-jvm"
-    api "io.kotest:kotest-property-jvm"
-    api "io.mockk:mockk"
 }

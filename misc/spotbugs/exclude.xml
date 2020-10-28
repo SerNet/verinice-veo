@@ -5,7 +5,4 @@
         <Source name="~.*\.groovy" />
         <Bug pattern="SE_NO_SERIALVERSIONID" />
     </Match>
-    <Match>
-        <Source name="~.*\.kt" />
-    </Match>
 </FindBugsFilter>
