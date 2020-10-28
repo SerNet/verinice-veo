@@ -49,6 +49,12 @@ abstract class AbstractModelObjectRepository<T extends ModelObject, S extends Ba
     }
 
     @Override
+    public List<T> saveAll(Set<T> entities) {
+        entities.forEach(validation::validateModelObject);
+        return (List<T>) dataRepository.saveAll((Set<S>) entities);
+    }
+
+    @Override
     public Optional<T> findById(Key<UUID> id) {
         return (Optional<T>) dataRepository.findById(id.uuidValue());
     }

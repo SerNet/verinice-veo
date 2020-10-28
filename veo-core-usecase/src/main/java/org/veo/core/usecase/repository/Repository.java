@@ -35,6 +35,8 @@ public interface Repository<T, K> {
 
     public T save(T entity);
 
+    public List<T> saveAll(Set<T> entities);
+
     public Optional<T> findById(K id);
 
     public List<T> findByName(String search);
