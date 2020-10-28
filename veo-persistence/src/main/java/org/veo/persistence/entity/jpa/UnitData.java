@@ -45,10 +45,13 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
     @Column(name = "name")
     @ToString.Include
     private String name;
+
     @Column(name = "abbreviation")
     private String abbreviation;
+
     @Column(name = "description")
     private String description;
+
     @NotNull
     // one to one unit-> client
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
@@ -67,7 +70,7 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
     // many to one unit-> domain
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class)
-    private Set<Domain> domains;
+    private Set<Domain> domains = new HashSet<>();
 
     public String getName() {
         return this.name;

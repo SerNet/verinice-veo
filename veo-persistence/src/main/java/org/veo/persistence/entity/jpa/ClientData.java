@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -40,7 +41,7 @@ public class ClientData extends BaseModelObjectData implements Client {
     // many to one client-> domain
     @Column(name = "domains")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = DomainData.class)
-    private Set<Domain> domains;
+    private Set<Domain> domains = new HashSet<>();
 
     public String getName() {
         return this.name;
