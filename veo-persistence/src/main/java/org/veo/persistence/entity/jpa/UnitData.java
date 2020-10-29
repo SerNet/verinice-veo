@@ -53,12 +53,10 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
     private String description;
 
     @NotNull
-    // one to one unit-> client
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
     @JoinColumn(name = "client_id")
     private Client client;
 
-    // one to many unit-> unit
     @OneToMany(mappedBy = "parent",
                fetch = FetchType.LAZY,
                targetEntity = UnitData.class,
@@ -68,7 +66,6 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
     @ManyToOne(targetEntity = UnitData.class)
     private Unit parent;
 
-    // many to one unit-> domain
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class)
     private Set<Domain> domains = new HashSet<>();

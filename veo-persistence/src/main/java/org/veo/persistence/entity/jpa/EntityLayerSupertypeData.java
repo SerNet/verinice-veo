@@ -55,12 +55,10 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     @Column(name = "description")
     private String description;
 
-    // many to one entitylayersupertype-> domain
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
     private Set<Domain> domains;
 
-    // many to one entitylayersupertype-> customlink
     @Column(name = "links")
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
@@ -68,7 +66,6 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
                fetch = FetchType.LAZY)
     private Set<CustomLink> links = new HashSet<>();
 
-    // many to one entitylayersupertype-> customproperties
     @Column(name = "customaspects")
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
@@ -76,7 +73,6 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
                fetch = FetchType.LAZY)
     private Set<CustomProperties> customAspects = new HashSet<>();
 
-    // one to one entitylayersupertype-> unit
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
     @JoinColumn(name = "owner_id")

@@ -55,10 +55,11 @@ public class CustomPropertiesData implements CustomProperties {
     @ToString.Include
     @EqualsAndHashCode.Include
     private String type;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "applicableto")
     private Set<String> applicableTo;
-    // many to one customproperties-> domain
+
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class)
     protected Set<Domain> domains;
