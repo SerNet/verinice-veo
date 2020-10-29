@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import org.veo.core.entity.Domain
-
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
@@ -81,8 +80,8 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(5)
-        assertUpdateCount(2)
+        assertInsertCount(4)
+        assertUpdateCount(1)
         assertSelectCount(4)
     }
 

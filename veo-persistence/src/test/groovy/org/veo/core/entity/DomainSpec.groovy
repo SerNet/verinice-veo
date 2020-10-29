@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+
 import org.veo.test.VeoSpec
 
 class DomainSpec extends VeoSpec {
@@ -25,13 +26,19 @@ class DomainSpec extends VeoSpec {
         String name = 'Test domain'
 
         when : "Domain is created"
-
         Domain domain = newDomain() {
             it.name = name
         }
 
-        then: "domain is correct initatlized"
+        and: "the domain is added to a client"
+        def client = newClient() {
+            domains = [domain] as Set
+        }
 
+        then: "domain is correct initatlized"
         domain.getName().equals(name)
+        domain.owner == client
+        client.getDomains().size() == 1
+        client.getDomains().first() == domain
     }
 }

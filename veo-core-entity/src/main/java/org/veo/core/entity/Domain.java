@@ -35,4 +35,9 @@ public interface Domain extends Nameable, ModelObject {
     default String getModelType() {
         return EntityTypeNames.DOMAIN;
     }
+
+    void setOwner(Client owner);
+
+    Client getOwner();
+
 }

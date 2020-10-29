@@ -58,6 +58,10 @@ public interface EntityFactory {
 
     Document createDocument(Key<UUID> id, String name, Unit parent);
 
+    /**
+     * Reconstitutes a domain without the reference to its owning client. Adding it
+     * to a client is the caller's responsibility.
+     */
     Domain createDomain(Key<UUID> id, String name);
 
     CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,

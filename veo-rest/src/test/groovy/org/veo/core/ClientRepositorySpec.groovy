@@ -21,6 +21,8 @@ import javax.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -31,23 +33,22 @@ import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 @SpringBootTest(classes = ClientRepositorySpec.class)
-@Transactional()
 @ComponentScan("org.veo")
 class ClientRepositorySpec extends VeoSpringSpec {
 
-
     @Autowired
     private ClientRepositoryImpl repository
+
     @Autowired
     private UnitRepositoryImpl unitRepository
 
-
     def "create a simple client and a domain together"() {
-        given: "a domain and a client"
 
+        given: "a domain and a client"
         Domain domain = newDomain {
             name = "27001"
             description = "ISO/IEC"
@@ -61,19 +62,18 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         repository.save(client)
 
-        when: "loaded from db"
-
+        when: "the client is retrieved from the database"
         Optional<Client> newClient = repository.findById(client.id)
         boolean isPresent = newClient.isPresent()
 
         Client c = newClient.get()
 
-        then : "is all ok"
+        then : "client and domain are valid"
         isPresent == true
         c.name == "Demo Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
-
+        c.domains.first().owner == c
 
         when: "The client is persisted"
         repository.save(c)
@@ -83,13 +83,14 @@ class ClientRepositorySpec extends VeoSpringSpec {
         isPresent = newClient.isPresent()
         c = newClient.get()
 
-        then : "is all ok"
+        then : "the client and domain are valid"
         isPresent == true
         c.name == "Demo Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
         c.domains.first().description == "ISO/IEC"
         c.domains.first().abbreviation == "ISO"
+        c.domains.first().owner == c
     }
 
     def "create a simple client with unit"() {

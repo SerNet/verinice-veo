@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import org.veo.persistence.entity.jpa.DomainData
 import org.veo.test.VeoSpec
 
 class ClientSpec extends VeoSpec{
@@ -24,20 +25,20 @@ class ClientSpec extends VeoSpec{
         String domainName = 'Test domain'
         String clientName = 'Test Client'
 
-        when : "Cient is created"
-
+        when : "Client is created"
         Domain domain = newDomain() {
             name = domainName
         }
-
         Client client = newClient() {
             name = clientName
-            domains = [domain] as Set
         }
-        then: "domain is correctly initialized"
+        // domain.client is set by calling client.setDomains():
+        client.setDomains([domain] as Set)
 
+        then: "domain is correctly initialized"
         client.getName().equals(clientName)
         client.getDomains().size() == 1
         client.getDomains().first().getName().equals(domainName)
+        domain.owner == client
     }
 }

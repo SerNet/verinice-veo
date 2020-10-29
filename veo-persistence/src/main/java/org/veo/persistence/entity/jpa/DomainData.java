@@ -16,59 +16,52 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelPackage;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "domain")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 public class DomainData extends BaseModelObjectData implements NameableData, Domain {
 
     @NotNull
-    @Column(name = "name")
     @ToString.Include
     private String name;
-    @Column(name = "abbreviation")
+
     private String abbreviation;
-    @Column(name = "description")
+
     private String description;
-    @Column(name = "active")
+
     private Boolean active;
 
-    public String getName() {
-        return this.name;
+    // This enforces the composition association Client-Domain
+    @ManyToOne(targetEntity = ClientData.class, optional = false)
+    @NotNull
+    private Client owner;
+
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Domain.class;
     }
 
-    public void setName(String aName) {
-        this.name = aName;
+    @Override
+    public String getModelType() {
+        return ModelPackage.ELEMENT_DOMAIN;
     }
 
-    public String getAbbreviation() {
-        return this.abbreviation;
-    }
-
-    public void setAbbreviation(String aAbbreviation) {
-        this.abbreviation = aAbbreviation;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String aDescription) {
-        this.description = aDescription;
-    }
-
+    @Override
     public Boolean isActive() {
-        return this.active;
+        return active;
     }
 
-    public void setActive(Boolean aActive) {
-        this.active = aActive;
-    }
 }

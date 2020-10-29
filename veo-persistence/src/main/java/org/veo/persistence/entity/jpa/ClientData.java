@@ -40,7 +40,10 @@ public class ClientData extends BaseModelObjectData implements Client {
     private String name;
 
     @Column(name = "domains")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = DomainData.class)
+    @OneToMany(mappedBy = "owner",
+               cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = DomainData.class)
     private Set<Domain> domains = new HashSet<>();
 
     public String getName() {
@@ -57,6 +60,7 @@ public class ClientData extends BaseModelObjectData implements Client {
 
     public void setDomains(Set<Domain> newDomains) {
         domains.clear();
+        newDomains.forEach(domain -> domain.setOwner(this));
         domains.addAll(newDomains);
     }
 
@@ -66,6 +70,7 @@ public class ClientData extends BaseModelObjectData implements Client {
      * @return true if added
      */
     public boolean addToDomains(Domain aDomain) {
+        aDomain.setOwner(this);
         return this.domains.add(aDomain);
     }
 
@@ -75,6 +80,11 @@ public class ClientData extends BaseModelObjectData implements Client {
      * @return true if removed
      */
     public boolean removeFromDomains(Domain aDomain) {
+        if (aDomain.getOwner()
+                   .equals(this))
+            throw new IllegalArgumentException(
+                    String.format("Domain does not belong to this " + "client: %s", aDomain));
+        aDomain.setOwner(null);
         return this.domains.remove(aDomain);
     }
 }
