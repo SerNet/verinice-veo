@@ -64,6 +64,7 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
                targetEntity = UnitData.class,
                cascade = CascadeType.ALL)
     private final Set<Unit> units = new HashSet<>();
+
     @ManyToOne(targetEntity = UnitData.class)
     private Unit parent;
 
@@ -128,8 +129,9 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
         return this.domains;
     }
 
-    public void setDomains(Set<Domain> aDomains) {
-        this.domains = aDomains;
+    public void setDomains(Set<Domain> newDomains) {
+        domains.clear();
+        domains.addAll(newDomains);
     }
 
     /**
@@ -138,8 +140,7 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
      * @return true if added
      */
     public boolean addToDomains(Domain aDomain) {
-        boolean add = this.domains.add(aDomain);
-        return add;
+        return this.domains.add(aDomain);
     }
 
     /**

@@ -38,7 +38,7 @@ public class ClientData extends BaseModelObjectData implements Client {
     @Column(name = "name")
     @ToString.Include
     private String name;
-    // many to one client-> domain
+
     @Column(name = "domains")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = DomainData.class)
     private Set<Domain> domains = new HashSet<>();
@@ -55,8 +55,9 @@ public class ClientData extends BaseModelObjectData implements Client {
         return this.domains;
     }
 
-    public void setDomains(Set<Domain> aDomains) {
-        this.domains = aDomains;
+    public void setDomains(Set<Domain> newDomains) {
+        domains.clear();
+        domains.addAll(newDomains);
     }
 
     /**
@@ -65,8 +66,7 @@ public class ClientData extends BaseModelObjectData implements Client {
      * @return true if added
      */
     public boolean addToDomains(Domain aDomain) {
-        boolean add = this.domains.add(aDomain);
-        return add;
+        return this.domains.add(aDomain);
     }
 
     /**
@@ -75,7 +75,6 @@ public class ClientData extends BaseModelObjectData implements Client {
      * @return true if removed
      */
     public boolean removeFromDomains(Domain aDomain) {
-        boolean remove = this.domains.remove(aDomain);
-        return remove;
+        return this.domains.remove(aDomain);
     }
 }
