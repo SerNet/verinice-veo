@@ -188,33 +188,53 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public ModelGroup<?> createGroup(GroupType groupType) {
-        return createGroupInstance(groupType.entityClass);
+    public ModelGroup<?> createGroup(GroupType groupType, Key<UUID> key, String name, Unit unit) {
+        return createGroupInstance(groupType.entityClass, key, name, unit);
     }
 
     @Override
-    public PersonGroup createPersonGroup() {
-        return new PersonGroupData();
+    public PersonGroup createPersonGroup(Key<UUID> key, String name, Unit owner) {
+        var group = new PersonGroupData();
+        group.setId(key);
+        group.setName(name);
+        group.setOwner(owner);
+        return group;
     }
 
     @Override
-    public AssetGroup createAssetGroup() {
-        return new AssetGroupData();
+    public AssetGroup createAssetGroup(Key<UUID> key, String name, Unit owner) {
+        var group = new AssetGroupData();
+        group.setId(key);
+        group.setName(name);
+        group.setOwner(owner);
+        return group;
     }
 
     @Override
-    public ProcessGroup createProcessGroup() {
-        return new ProcessGroupData();
+    public ProcessGroup createProcessGroup(Key<UUID> key, String name, Unit owner) {
+        var group = new ProcessGroupData();
+        group.setId(key);
+        group.setName(name);
+        group.setOwner(owner);
+        return group;
     }
 
     @Override
-    public DocumentGroup createDocumentGroup() {
-        return new DocumentGroupData();
+    public DocumentGroup createDocumentGroup(Key<UUID> key, String name, Unit owner) {
+        var group = new DocumentGroupData();
+        group.setId(key);
+        group.setName(name);
+        group.setOwner(owner);
+        return group;
     }
 
     @Override
-    public ControlGroup createControlGroup() {
-        return new ControlGroupData();
+    public ControlGroup createControlGroup(Key<UUID> key, String name, Unit owner) {
+        var group = new ControlGroupData();
+        group.setId(key);
+        group.setName(name);
+        group.setOwner(owner);
+        return group;
     }
 
     private void initCollection(EntityLayerSupertype object) {
@@ -223,17 +243,18 @@ public class EntityDataFactory implements EntityFactory {
         object.setCustomAspects(new HashSet<CustomProperties>());
     }
 
-    private ModelGroup<?> createGroupInstance(Class<? extends ModelObject> entityClass) {
+    private ModelGroup<?> createGroupInstance(Class<? extends ModelObject> entityClass,
+            Key<UUID> key, String name, Unit unit) {
         if (entityClass == Person.class)// TODO: check does these come from the same classloader?
-            return createPersonGroup();
+            return createPersonGroup(key, name, unit);
         if (entityClass == Document.class)
-            return createDocumentGroup();
+            return createDocumentGroup(key, name, unit);
         if (entityClass == Asset.class)
-            return createAssetGroup();
+            return createAssetGroup(key, name, unit);
         if (entityClass == Process.class)
-            return createProcessGroup();
+            return createProcessGroup(key, name, unit);
         if (entityClass == Control.class)
-            return createControlGroup();
+            return createControlGroup(key, name, unit);
         throw new IllegalArgumentException("No such Group for: " + entityClass);
     }
 

@@ -61,12 +61,9 @@ class GroupPersistenceSpec extends VeoSpringSpec {
         def john = newPerson(unit)
         def jane = newPerson(unit)
 
-        def personGroup = factory.createPersonGroup()
+        def personGroup = factory.createPersonGroup(personGroupId, 'My person group', unit)
 
         personGroup.with {
-            name = 'My person group'
-            owner = unit
-            id = personGroupId
             members = [john, jane]
             state = Lifecycle.CREATING
             it

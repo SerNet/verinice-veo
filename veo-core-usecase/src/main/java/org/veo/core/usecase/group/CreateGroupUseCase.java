@@ -57,11 +57,9 @@ public class CreateGroupUseCase
                                                .uuidValue()));
         unit.checkSameClient(input.authenticatedClient);
 
-        ModelGroup<?> group = entityFactoty.createGroup(input.groupType);
+        ModelGroup<?> group = entityFactoty.createGroup(input.groupType, Key.newUuid(),
+                                                        input.getName(), unit);
 
-        group.setId(Key.newUuid());
-        group.setName(input.getName());
-        group.setOwner(unit);
         group.setState(Lifecycle.CREATING);
         group.version(input.username, null);
 

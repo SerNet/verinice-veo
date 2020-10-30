@@ -24,6 +24,7 @@ import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
+import org.veo.core.entity.EntityTypeNames
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
@@ -126,6 +127,7 @@ class GroupDtoTransformerSpec extends Specification {
         asset.modelInterface >> Asset.class
         asset.createdAt >> Instant.now()
         asset.updatedAt >> Instant.now()
+        asset.modelType >> EntityTypeNames.ASSET
 
         Asset asset1 = Mock(Asset)
         asset1.id >> a1id
@@ -136,6 +138,7 @@ class GroupDtoTransformerSpec extends Specification {
         asset1.modelInterface >> Asset.class
         asset1.createdAt >> Instant.now()
         asset1.updatedAt >> Instant.now()
+        asset.modelType >> EntityTypeNames.ASSET
 
         Asset asset2 = Mock(Asset)
         asset2.id >> a2id
@@ -146,6 +149,7 @@ class GroupDtoTransformerSpec extends Specification {
         asset2.modelInterface >> Asset.class
         asset2.createdAt >> Instant.now()
         asset2.updatedAt >> Instant.now()
+        asset.modelType >> EntityTypeNames.ASSET
 
         def process = Mock(Process)
         process.id >> pid
@@ -157,6 +161,7 @@ class GroupDtoTransformerSpec extends Specification {
         process.displayName >> "Process"
         process.createdAt >> Instant.now()
         process.updatedAt >> Instant.now()
+        asset.modelType >> EntityTypeNames.ASSET
 
 
         AssetGroup assetGroup = Mock(AssetGroup)
@@ -169,6 +174,7 @@ class GroupDtoTransformerSpec extends Specification {
         assetGroup.modelInterface >> Asset.class
         assetGroup.createdAt >> Instant.now()
         assetGroup.updatedAt >> Instant.now()
+        asset.modelType >> EntityTypeNames.ASSET
 
         ProcessGroup processGroup = Mock()
         processGroup.id >> pgid
@@ -180,11 +186,14 @@ class GroupDtoTransformerSpec extends Specification {
         processGroup.modelInterface >> Process.class
         processGroup.createdAt >> Instant.now()
         processGroup.updatedAt >> Instant.now()
+        asset.modelType >> EntityTypeNames.PROCESS
 
         EntityFactory factory = Mock()
         factory.createAsset() >> asset
         factory.createAssetGroup() >> assetGroup
         factory.createProcessGroup() >> processGroup
+        factory.createAssetGroup(agid, "AssetGroup", null) >> assetGroup
+        factory.createProcessGroup(pgid, "ProcessGroupInstanceName", null) >> processGroup
 
         ReferenceAssembler assembler = Mock()
 

@@ -81,15 +81,15 @@ public interface EntityFactory {
     CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource);
 
-    ModelGroup<?> createGroup(GroupType groupType);
+    ModelGroup<?> createGroup(GroupType groupType, Key<UUID> key, String name, Unit unit);
 
-    PersonGroup createPersonGroup();
+    PersonGroup createPersonGroup(Key<UUID> id, String name, Unit unit);
 
-    AssetGroup createAssetGroup();
+    AssetGroup createAssetGroup(Key<UUID> id, String name, Unit unit);
 
-    ProcessGroup createProcessGroup();
+    ProcessGroup createProcessGroup(Key<UUID> id, String name, Unit unit);
 
-    DocumentGroup createDocumentGroup();
+    DocumentGroup createDocumentGroup(Key<UUID> id, String name, Unit unit);
 
-    ControlGroup createControlGroup();
+    ControlGroup createControlGroup(Key<UUID> id, String name, Unit unit);
 }

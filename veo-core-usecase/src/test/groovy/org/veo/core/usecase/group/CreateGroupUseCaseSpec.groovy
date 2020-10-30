@@ -45,7 +45,7 @@ class CreateGroupUseCaseSpec extends UseCaseSpec {
         group.name >> e.name
         group.getClass()>>Class.forName("org.veo.core.entity.groups.${type}Group")
 
-        entityFactory.createGroup(type) >> group
+        entityFactory.createGroup(type, _, "$type group 1", existingUnit) >> group
 
         when:
         def output = usecase.execute(new InputData(existingUnit.id, "$type group 1", type, existingClient, USER_NAME))
