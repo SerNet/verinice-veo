@@ -17,13 +17,12 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelPackage;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,19 +44,9 @@ public class DomainData extends BaseModelObjectData implements NameableData, Dom
     private Boolean active;
 
     // This enforces the composition association Client-Domain
-    @ManyToOne(targetEntity = ClientData.class, optional = false)
+    @ManyToOne(targetEntity = ClientData.class, optional = false, fetch = FetchType.LAZY)
     @NotNull
     private Client owner;
-
-    @Override
-    public Class<? extends ModelObject> getModelInterface() {
-        return Domain.class;
-    }
-
-    @Override
-    public String getModelType() {
-        return ModelPackage.ELEMENT_DOMAIN;
-    }
 
     @Override
     public Boolean isActive() {

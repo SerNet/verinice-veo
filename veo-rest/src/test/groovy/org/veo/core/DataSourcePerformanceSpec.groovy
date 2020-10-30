@@ -16,32 +16,19 @@
  ******************************************************************************/
 package org.veo.core
 
-import static com.vladmihalcea.sql.SQLStatementCountValidator.*
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
-
-import org.veo.core.entity.Asset
-import org.veo.core.entity.Client
-import org.veo.core.entity.CustomProperties
-import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
-import org.veo.core.entity.Person
-import org.veo.core.entity.Process
-import org.veo.core.entity.Unit
+import org.veo.core.entity.*
 import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.groups.PersonGroup
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.access.AssetRepositoryImpl
-import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.PersonRepositoryImpl
-import org.veo.persistence.access.ProcessRepositoryImpl
-import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.CustomPropertiesData
-import org.veo.persistence.entity.jpa.UnitData
+import org.veo.persistence.access.*
+
+import static com.vladmihalcea.sql.SQLStatementCountValidator.*
 
 @SpringBootTest(classes = DataSourcePerformanceSpec.class)
 @ComponentScan("org.veo")
@@ -96,7 +83,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(1)
-        assertUpdateCount(1)
+        assertUpdateCount(0)
         assertSelectCount(1)
     }
 
@@ -111,7 +98,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(13)
-        assertUpdateCount(5)
+        assertUpdateCount(2)
         assertSelectCount(9)
     }
 
@@ -142,7 +129,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(5)
-        assertUpdateCount(3)
+        assertUpdateCount(1)
         assertSelectCount(3)
     }
 
@@ -157,10 +144,10 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         savePersonSubGroups(100, "subgroup", group as PersonGroup)
 
         then:
-        assertDeleteCount(101)
+        assertDeleteCount(0)
         assertInsertCount(600)
-        assertUpdateCount(401)
-        assertSelectCount(1209)
+        assertUpdateCount(101)
+        assertSelectCount(1310)
     }
 
     def "SQL performance for selecting units of a client"() {
