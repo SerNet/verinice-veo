@@ -27,12 +27,14 @@ import javax.persistence.OneToMany;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "client")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 public class ClientData extends BaseModelObjectData implements Client {
 
     @Column(name = "name")
@@ -45,18 +47,6 @@ public class ClientData extends BaseModelObjectData implements Client {
                orphanRemoval = true,
                targetEntity = DomainData.class)
     private Set<Domain> domains = new HashSet<>();
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String aName) {
-        this.name = aName;
-    }
-
-    public Set<Domain> getDomains() {
-        return this.domains;
-    }
 
     public void setDomains(Set<Domain> newDomains) {
         domains.clear();

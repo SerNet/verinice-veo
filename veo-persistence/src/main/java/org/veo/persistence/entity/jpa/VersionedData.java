@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Versioned;
 
+import lombok.Data;
 import lombok.ToString;
 
 /**
@@ -32,6 +33,8 @@ import lombok.ToString;
  */
 @MappedSuperclass
 @ToString(onlyExplicitlyIncluded = true)
+@Data
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod") // PMD does not see Lombok's methods
 public abstract class VersionedData implements Versioned {
     @ToString.Include
     @Version
@@ -56,89 +59,4 @@ public abstract class VersionedData implements Versioned {
 
     @Column(name = "valid_until", nullable = true)
     private Instant validUntil;
-
-    /**
-     * @return the version
-     */
-    public long getVersion() {
-        return version;
-    }
-
-    /**
-     * @param version
-     *            the version to set
-     */
-    public void setVersion(long version) {
-        this.version = version;
-    }
-
-    /**
-     * @return the createdAt
-     */
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    /**
-     * @param createdAt
-     *            the createdAt to set
-     */
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    /**
-     * @return the validUntil
-     */
-    public Instant getValidUntil() {
-        return validUntil;
-    }
-
-    /**
-     * @param validUntil
-     *            the validUntil to set
-     */
-    public void setValidUntil(Instant validUntil) {
-        this.validUntil = validUntil;
-    }
-
-    @Override
-    public Lifecycle getState() {
-        return state;
-    }
-
-    @Override
-    public void setState(Lifecycle state) {
-        this.state = state;
-    }
-
-    @Override
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    @Override
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    @Override
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    @Override
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    @Override
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    @Override
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
 }

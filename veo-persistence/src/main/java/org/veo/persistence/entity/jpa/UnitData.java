@@ -33,12 +33,14 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "unit")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 public class UnitData extends BaseModelObjectData implements NameableData, Unit {
 
     @NotNull
@@ -70,60 +72,11 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
     @ManyToMany(targetEntity = DomainData.class)
     private Set<Domain> domains = new HashSet<>();
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String aName) {
-        this.name = aName;
-    }
-
-    public String getAbbreviation() {
-        return this.abbreviation;
-    }
-
-    public void setAbbreviation(String aAbbreviation) {
-        this.abbreviation = aAbbreviation;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String aDescription) {
-        this.description = aDescription;
-    }
-
-    public Client getClient() {
-        return this.client;
-    }
-
-    public void setClient(Client aClient) {
-        this.client = aClient;
-    }
-
-    public Unit getParent() {
-        return this.parent;
-    }
-
-    public void setParent(Unit aParent) {
-        this.parent = aParent;
-    }
-
-    @Override
-    public Set<Unit> getUnits() {
-        return units;
-    }
-
     @Override
     public void setUnits(Set<Unit> units) {
         units.forEach(u -> u.setParent(this));
         this.units.clear();
         this.units.addAll(units);
-    }
-
-    public Set<Domain> getDomains() {
-        return this.domains;
     }
 
     public void setDomains(Set<Domain> newDomains) {
@@ -146,7 +99,6 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
      * @return true if removed
      */
     public boolean removeFromDomains(Domain aDomain) {
-        boolean remove = this.domains.remove(aDomain);
-        return remove;
+        return this.domains.remove(aDomain);
     }
 }

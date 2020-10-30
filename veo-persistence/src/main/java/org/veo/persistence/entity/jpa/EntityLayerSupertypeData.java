@@ -29,6 +29,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
+import lombok.Data;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
@@ -41,6 +42,7 @@ import lombok.ToString;
 @Entity(name = "entitylayersupertype")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 public abstract class EntityLayerSupertypeData extends BaseModelObjectData
         implements NameableData, EntityLayerSupertype {
 
@@ -73,67 +75,20 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
                fetch = FetchType.LAZY)
     private Set<CustomProperties> customAspects = new HashSet<>();
 
+    // one to one entitylayersupertype-> unit
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
     @JoinColumn(name = "owner_id")
     private Unit owner;
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String aName) {
-        this.name = aName;
-    }
-
-    public String getAbbreviation() {
-        return this.abbreviation;
-    }
-
-    public void setAbbreviation(String aAbbreviation) {
-        this.abbreviation = aAbbreviation;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String aDescription) {
-        this.description = aDescription;
-    }
-
-    public Set<Domain> getDomains() {
-        return this.domains;
-    }
-
-    public void setDomains(Set<Domain> aDomains) {
-        this.domains = aDomains;
-    }
-
-    public Set<CustomLink> getLinks() {
-        return this.links;
-    }
 
     public void setLinks(Set<CustomLink> aLinks) {
         this.links.clear();
         this.links.addAll(aLinks);
     }
 
-    public Set<CustomProperties> getCustomAspects() {
-        return this.customAspects;
-    }
-
     public void setCustomAspects(Set<CustomProperties> aCustomAspects) {
         this.customAspects.clear();
         this.customAspects.addAll(aCustomAspects);
-    }
-
-    public Unit getOwner() {
-        return this.owner;
-    }
-
-    public void setOwner(Unit aOwner) {
-        this.owner = aOwner;
     }
 
     /**
@@ -142,8 +97,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if added
      */
     public boolean addToDomains(Domain aDomain) {
-        boolean add = this.domains.add(aDomain);
-        return add;
+        return this.domains.add(aDomain);
     }
 
     /**
@@ -152,8 +106,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if removed
      */
     public boolean removeFromDomains(Domain aDomain) {
-        boolean remove = this.domains.remove(aDomain);
-        return remove;
+        return this.domains.remove(aDomain);
     }
 
     /**
@@ -163,8 +116,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if added
      */
     public boolean addToLinks(CustomLink aCustomLink) {
-        boolean add = this.links.add(aCustomLink);
-        return add;
+        return this.links.add(aCustomLink);
     }
 
     /**
@@ -174,8 +126,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if removed
      */
     public boolean removeFromLinks(CustomLink aCustomLink) {
-        boolean remove = this.links.remove(aCustomLink);
-        return remove;
+        return this.links.remove(aCustomLink);
     }
 
     /**
@@ -184,8 +135,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if added
      */
     public boolean addToCustomAspects(CustomProperties aCustomProperties) {
-        boolean add = this.customAspects.add(aCustomProperties);
-        return add;
+        return this.customAspects.add(aCustomProperties);
     }
 
     /**
@@ -194,8 +144,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if removed
      */
     public boolean removeFromCustomAspects(CustomProperties aCustomProperties) {
-        boolean remove = this.customAspects.remove(aCustomProperties);
-        return remove;
+        return this.customAspects.remove(aCustomProperties);
     }
 
 }

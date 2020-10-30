@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import static java.util.Objects.requireNonNullElse;
+
 import java.util.UUID;
 
 import javax.persistence.Id;
@@ -24,6 +26,7 @@ import javax.persistence.MappedSuperclass;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -33,6 +36,7 @@ import lombok.ToString;
 @MappedSuperclass
 @EqualsAndHashCode(of = "dbId", callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
+@Data
 public abstract class BaseModelObjectData extends VersionedData implements ModelObject {
 
     @Id
@@ -46,18 +50,6 @@ public abstract class BaseModelObjectData extends VersionedData implements Model
 
     @Override
     public void setId(Key<UUID> id) {
-        if (id == null) {
-            this.dbId = Key.NIL_UUID.uuidValue();
-        } else {
-            this.dbId = id.uuidValue();
-        }
-    }
-
-    public String getDbId() {
-        return dbId;
-    }
-
-    public void setDbId(String id) {
-        this.dbId = id;
+        this.dbId = requireNonNullElse(id, Key.NIL_UUID).uuidValue();
     }
 }

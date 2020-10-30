@@ -23,6 +23,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import lombok.Data;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
@@ -31,6 +32,7 @@ import lombok.EqualsAndHashCode;
 
 @Entity(name = "customlink")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 public class CustomLinkData extends CustomPropertiesData implements NameableData, CustomLink {
 
     @NotNull
@@ -55,54 +57,13 @@ public class CustomLinkData extends CustomPropertiesData implements NameableData
     @EqualsAndHashCode.Include
     private EntityLayerSupertype source;
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String aName) {
-        this.name = aName;
-    }
-
-    public String getAbbreviation() {
-        return this.abbreviation;
-    }
-
-    public void setAbbreviation(String aAbbreviation) {
-        this.abbreviation = aAbbreviation;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String aDescription) {
-        this.description = aDescription;
-    }
-
-    public EntityLayerSupertype getTarget() {
-        return this.target;
-    }
-
-    public void setTarget(EntityLayerSupertype aTarget) {
-        this.target = aTarget;
-    }
-
-    public EntityLayerSupertype getSource() {
-        return this.source;
-    }
-
-    public void setSource(EntityLayerSupertype aSource) {
-        this.source = aSource;
-    }
-
     /**
      * Add the given Domain to the collection domains.
      *
      * @return true if added
      */
     public boolean addToDomains(Domain aDomain) {
-        boolean add = this.domains.add(aDomain);
-        return add;
+        return this.domains.add(aDomain);
     }
 
     /**
@@ -111,7 +72,6 @@ public class CustomLinkData extends CustomPropertiesData implements NameableData
      * @return true if removed
      */
     public boolean removeFromDomains(Domain aDomain) {
-        boolean remove = this.domains.remove(aDomain);
-        return remove;
+        return this.domains.remove(aDomain);
     }
 }

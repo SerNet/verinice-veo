@@ -34,6 +34,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import lombok.Data;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.persistence.entity.jpa.custom.PropertyData;
@@ -44,6 +45,7 @@ import lombok.ToString;
 @Entity(name = "customproperties")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 public class CustomPropertiesData implements CustomProperties {
 
     @Id
@@ -63,30 +65,6 @@ public class CustomPropertiesData implements CustomProperties {
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class)
     protected Set<Domain> domains;
-
-    public String getType() {
-        return this.type;
-    }
-
-    public void setType(String aType) {
-        this.type = aType;
-    }
-
-    public Set<String> getApplicableTo() {
-        return this.applicableTo;
-    }
-
-    public void setApplicableTo(Set<String> aApplicableTo) {
-        this.applicableTo = aApplicableTo;
-    }
-
-    public Set<Domain> getDomains() {
-        return this.domains;
-    }
-
-    public void setDomains(Set<Domain> aDomains) {
-        this.domains = aDomains;
-    }
 
     @OneToMany(targetEntity = PropertyData.class,
                fetch = FetchType.EAGER,
@@ -192,13 +170,5 @@ public class CustomPropertiesData implements CustomProperties {
      */
     public boolean removeFromDomains(Domain aDomain) {
         return this.domains.remove(aDomain);
-    }
-
-    public String getDbId() {
-        return dbId;
-    }
-
-    public void setDbId(String id) {
-        this.dbId = id;
     }
 }
