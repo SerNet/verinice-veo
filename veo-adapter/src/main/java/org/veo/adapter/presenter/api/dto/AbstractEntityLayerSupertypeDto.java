@@ -16,13 +16,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -35,7 +32,6 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -49,6 +45,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupertypeDto {
 
     @NotNull(message = "A name must be present.")
@@ -111,13 +108,4 @@ abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
             title = "CustomAspect")
     private Map<String, CustomPropertiesDto> customAspects = Collections.emptyMap();
 
-    @JsonIgnore
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        return Stream.concat(Stream.concat(getDomains().stream(), Stream.of(getOwner())),
-                             getLinks().values()
-                                       .stream()
-                                       .flatMap(list -> list.stream()
-                                                            .map(CustomLinkDto::getTarget)))
-                     .collect(Collectors.toList());
-    }
 }

@@ -53,7 +53,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.FullGroupDto;
@@ -66,6 +65,7 @@ import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -116,12 +116,13 @@ public class GroupController extends AbstractEntityController {
     private final GetGroupsUseCase<?> getGroupsUseCase;
     private final PutGroupUseCase putGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
-    private final ModelObjectReferenceResolver referenceResolver;
+    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     public GroupController(UseCaseInteractorImpl useCaseInteractor, ObjectMapper objectMapper,
             CreateGroupUseCase createGroupUseCase, GetGroupUseCase getGroupUseCase,
             GetGroupsUseCase<?> getGroupsUseCase, PutGroupUseCase putGroupUseCase,
-            DeleteGroupUseCase deleteGroupUseCase, ModelObjectReferenceResolver referenceResolver) {
+            DeleteGroupUseCase deleteGroupUseCase,
+            DtoToEntityContextFactory dtoToEntityContextFactory) {
         this.useCaseInteractor = useCaseInteractor;
         this.createGroupUseCase = createGroupUseCase;
         this.getGroupUseCase = getGroupUseCase;
@@ -129,7 +130,7 @@ public class GroupController extends AbstractEntityController {
         this.putGroupUseCase = putGroupUseCase;
         this.deleteGroupUseCase = deleteGroupUseCase;
         this.objectMapper = objectMapper;
-        this.referenceResolver = referenceResolver;
+        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     @GetMapping
@@ -259,8 +260,7 @@ public class GroupController extends AbstractEntityController {
         return useCaseInteractor.execute(putGroupUseCase,
                                          (Supplier<UpdateGroupUseCase.InputData>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext context = referenceResolver.loadIntoContext(client,
-                                                                                                            groupDto.getReferences());
+                                             DtoToEntityContext context = dtoToEntityContextFactory.create(client);
                                              return new UpdateGroupUseCase.InputData(
                                                      groupDto.toEntity(context), client, eTag,
                                                      user.getUsername());

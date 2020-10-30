@@ -17,14 +17,11 @@
 package org.veo.adapter
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
-import org.veo.core.entity.Unit
 import org.veo.core.usecase.repository.Repository
 import org.veo.core.usecase.repository.RepositoryProvider
 
@@ -33,80 +30,77 @@ import spock.lang.Specification
 class ModelObjectReferenceResolverSpec extends Specification {
 
     RepositoryProvider repositoryProvider = Mock()
-    DtoToEntityContextFactory dtoToEntityContextFactory = Mock()
-    ModelObjectReferenceResolver referenceResolver = new ModelObjectReferenceResolver(repositoryProvider, dtoToEntityContextFactory)
+    Client client = Mock()
+    ModelObjectReferenceResolver referenceResolver = new ModelObjectReferenceResolver(repositoryProvider, client)
 
     Repository<Asset, Key<UUID>> assetRepo = Mock()
     Repository<Person, Key<UUID>> personRepo = Mock()
-    DtoToEntityContext newContext = Mock()
 
     def setup() {
         repositoryProvider.getRepositoryFor(Asset) >> assetRepo
         repositoryProvider.getRepositoryFor(Person) >> personRepo
-        dtoToEntityContextFactory.create() >> newContext
     }
 
-    def "loads models into context"() {
-        given: "an asset, a person and a client with a domain"
-        def client = Mock(Client) {
-            it.domains >> [
-                Mock(Domain)
-            ]
-        }
-        def unit = Mock(Unit) {
-            it.client >> client
-        }
+    def "loads reference target from repo"() {
+        given: "an asset"
         def asset = Mock(Asset) {
             it.id >> Key.newUuid()
-            it.owner >> unit
-        }
-        def person = Mock(Person) {
-            it.id >> Key.newUuid()
-            it.owner >> unit
+            it.getModelInterface() >> Asset
         }
 
         when: "resolving references to the model objects"
-        def result = referenceResolver.loadIntoContext(client, [
-            Mock(ModelObjectReference) {
-                it.id >> asset.id.uuidValue()
-                it.type >> Asset
-            },
-            Mock(ModelObjectReference) {
-                it.id >> person.id.uuidValue()
-                it.type >> Person
-            }
-        ])
-        then: "the asset, the person and the domain are added to the new context"
-        result == newContext
+        def result = referenceResolver.resolve(ModelObjectReference.from(asset, Mock(ReferenceAssembler)))
+        then: "the asset is returned"
         1 * assetRepo.findById(asset.id) >> Optional.of(asset)
-        1 * personRepo.findById(person.id) >> Optional.of(person)
-        1 * newContext.addEntity(asset)
-        1 * newContext.addEntity(person)
-        1 * newContext.addEntity(client.domains[0])
-        0 * newContext.addEntity(_)
+        result == asset
+        and: "the client was validated"
+        1 * asset.checkSameClient(client)
     }
 
-    def "ignores domain references"() {
-        given: "a client with two domains"
-        def client = Mock(Client) {
-            it.domains >> [
-                Mock(Domain),
-                Mock(Domain)
-            ]
+    def "caches results"() {
+        given: "two assets and two persons"
+        def asset1 = Mock(Asset) {
+            it.id >> Key.newUuid()
+            it.getModelInterface() >> Asset
+        }
+        def asset2 = Mock(Asset) {
+            it.id >> Key.newUuid()
+            it.getModelInterface() >> Asset
+        }
+        def person1 = Mock(Person) {
+            it.id >> Key.newUuid()
+            it.getModelInterface() >> Person
+        }
+        def person2 = Mock(Person) {
+            it.id >> Key.newUuid()
+            it.getModelInterface() >> Person
         }
 
-        when: "resolving a reference to another domain"
-        def result = referenceResolver.loadIntoContext(client, [
-            Mock(ModelObjectReference) {
-                it.id >> Key.newUuid().uuidValue()
-                it.type >> Domain
-            }
-        ])
-        then: "the domain object reference is ignored and only the client's domains are added"
-        result == newContext
-        0 * repositoryProvider.getRepositoryFor(Domain)
-        1 * newContext.addEntity(client.domains[0])
-        1 * newContext.addEntity(client.domains[1])
-        0 * newContext.addEntity(_)
+        when: "resolving the references initially"
+        referenceResolver.resolve(ModelObjectReference.from(asset1, Mock(ReferenceAssembler)))
+        referenceResolver.resolve(ModelObjectReference.from(asset2, Mock(ReferenceAssembler)))
+        referenceResolver.resolve(ModelObjectReference.from(person1, Mock(ReferenceAssembler)))
+        referenceResolver.resolve(ModelObjectReference.from(person2, Mock(ReferenceAssembler)))
+        then: "the entities are fetched from the repo"
+        1 * assetRepo.findById(asset1.id) >> Optional.of(asset1)
+        1 * assetRepo.findById(asset2.id) >> Optional.of(asset2)
+        1 * personRepo.findById(person1.id) >> Optional.of(person1)
+        1 * personRepo.findById(person2.id) >> Optional.of(person2)
+
+        when: "resolving the references again"
+        def retrievedAsset1 = referenceResolver.resolve(ModelObjectReference.from(asset1, Mock(ReferenceAssembler)))
+        def retrievedAsset2 = referenceResolver.resolve(ModelObjectReference.from(asset2, Mock(ReferenceAssembler)))
+        def retrievedPerson1 = referenceResolver.resolve(ModelObjectReference.from(person1, Mock(ReferenceAssembler)))
+        def retrievedPerson2 = referenceResolver.resolve(ModelObjectReference.from(person2, Mock(ReferenceAssembler)))
+        then: "they are not fetched again"
+        0 * assetRepo.findById(_)
+        0 * assetRepo.findById(_)
+        0 * personRepo.findById(_)
+        0 * personRepo.findById(_)
+        and: "they are returned from a cache"
+        retrievedAsset1 == asset1
+        retrievedAsset2 == asset2
+        retrievedPerson1 == person1
+        retrievedPerson2 == person2
     }
 }

@@ -17,11 +17,8 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -29,8 +26,6 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Pattern;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
@@ -40,7 +35,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.transform.EntityFactory;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -87,13 +81,6 @@ public class CustomPropertiesDto {
 
     public static CustomPropertiesDto from(@Valid CustomProperties control) {
         return EntityToDtoTransformer.transformCustomProperties2Dto(control);
-    }
-
-    @JsonIgnore
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        list.addAll(getDomains());
-        return list;
     }
 
     // maybe this is the best way to handle this.

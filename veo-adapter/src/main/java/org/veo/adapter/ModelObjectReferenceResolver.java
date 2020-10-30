@@ -16,14 +16,12 @@
  ******************************************************************************/
 package org.veo.adapter;
 
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
@@ -32,52 +30,54 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
+/**
+ * Resolves {@link ModelObjectReference}s by fetching the target entity from a
+ * repository. Instances of this class should NOT be long-lived, because it uses
+ * an entity cache.
+ */
 public class ModelObjectReferenceResolver {
     private final RepositoryProvider repositoryProvider;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
+    private final Client client;
+    private final Map<ModelObjectReference<?>, ModelObject> cache = new HashMap<>();
 
-    public ModelObjectReferenceResolver(RepositoryProvider repositoryProvider,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+    public ModelObjectReferenceResolver(RepositoryProvider repositoryProvider, Client client) {
         this.repositoryProvider = repositoryProvider;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
+        this.client = client;
     }
 
     /**
-     * Resolves model references by loading the models from the DB and adding them
-     * to a transformation context.
+     * Resolves given reference by fetching the target entity from a cache or a
+     * repository.
      *
-     * @param client
-     *            Authenticated client
-     * @param references
-     *            Model object references to be loaded
-     * @return A new transformation context that contains all resolved models
+     * @param objectReference
+     *            referencing the desired entity
+     * @param <TEntity>
+     *            target entity type
+     * @throws NotFoundException
+     *             when entity does not exist in the repository.
+     * @throws org.veo.core.entity.specification.ClientBoundaryViolationException
+     *             when entity does not belong to this resolver's client.
      */
-    public DtoToEntityContext loadIntoContext(Client client,
-            Collection<ModelObjectReference<? extends ModelObject>> references) {
-        DtoToEntityContext context = dtoToEntityContextFactory.create();
+    public <TEntity extends ModelObject> TEntity resolve(
+            ModelObjectReference<TEntity> objectReference) throws NotFoundException {
+        var entity = cache.get(objectReference);
+        if (entity != null) {
+            return (TEntity) entity;
+        }
 
-        for (Domain d : client.getDomains()) {
-            context.addEntity(d);
+        Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(objectReference.getType());
+        entity = entityRepository.findById(Key.uuidFrom(objectReference.getId()))
+                                 .orElseThrow(() -> new NotFoundException("ref not found %s %s",
+                                         objectReference.getId(), objectReference.getType()));
+        if (entity instanceof Unit) {
+            ((Unit) entity).checkSameClient(client);
         }
-        for (ModelObjectReference<? extends ModelObject> objectReference : references) {
-            if (objectReference.getType()
-                               .equals(Domain.class)) {
-                continue;// skip domains as we get them from the client
-            }
-            Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(objectReference.getType());
-            ModelObject entity = entityRepository.findById(Key.uuidFrom(objectReference.getId()))
-                                                 .orElseThrow(() -> new NotFoundException(
-                                                         "ref not found %s %s",
-                                                         objectReference.getId(),
-                                                         objectReference.getType()));
-            if (entity instanceof Unit) {
-                ((Unit) entity).checkSameClient(client);
-            }
-            if (entity instanceof EntityLayerSupertype) {
-                ((EntityLayerSupertype) entity).checkSameClient(client);
-            }
-            context.addEntity(entity);
+        if (entity instanceof EntityLayerSupertype) {
+            ((EntityLayerSupertype) entity).checkSameClient(client);
         }
-        return context;
+        cache.put(objectReference, entity);
+        return (TEntity) entity;
     }
+
+    // TODO VEO-344 BULK RESOLVE
 }

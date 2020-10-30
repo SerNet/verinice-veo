@@ -16,34 +16,25 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import org.veo.core.entity.Key;
+import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.transform.ClassKey;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.TransformContext;
 import org.veo.core.service.EntitySchemaService;
 
 public class DtoToEntityContext implements TransformContext {
 
-    private final Map<ClassKey<Key<UUID>>, ? super ModelObject> context = new HashMap<>();
-
-    public DtoToEntityContext(EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService) {
-        super();
+    public DtoToEntityContext(EntityFactory entityFactory, EntitySchemaService entitySchemaService,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
         this.factory = entityFactory;
         this.entitySchemaLoader = new EntitySchemaLoader(entitySchemaService);
-    }
-
-    public Map<ClassKey<Key<UUID>>, ? super ModelObject> getContext() {
-        return context;
+        this.modelObjectReferenceResolver = modelObjectReferenceResolver;
     }
 
     private final EntityFactory factory;
     private final EntitySchemaLoader entitySchemaLoader;
+    private final ModelObjectReferenceResolver modelObjectReferenceResolver;
 
     public EntityFactory getFactory() {
         return factory;
@@ -53,15 +44,7 @@ public class DtoToEntityContext implements TransformContext {
         return entitySchemaLoader.load(entityType);
     }
 
-    /**
-     * Add an entity to the context which will be used in the transformation for
-     * matching object. An object need the corresponding Dto type and the same id to
-     * Match.
-     */
-    public void addEntity(ModelObject entity) {
-        Class<? extends ModelObject> entityInterface = entity.getModelInterface();
-
-        ClassKey<Key<UUID>> classKey = new ClassKey<>(entityInterface, entity.getId());
-        context.put(classKey, entity);
+    public <T extends ModelObject> T resolve(ModelObjectReference<T> reference) {
+        return modelObjectReferenceResolver.resolve(reference);
     }
 }

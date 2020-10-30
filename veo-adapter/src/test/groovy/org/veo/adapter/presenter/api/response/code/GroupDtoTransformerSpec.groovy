@@ -20,17 +20,15 @@ import java.time.Instant
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
+import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.EntityTypeNames
 import org.veo.core.entity.Key
-import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.AssetGroup
-import org.veo.core.entity.groups.ProcessGroup
-import org.veo.core.entity.transform.ClassKey
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
@@ -40,12 +38,6 @@ class GroupDtoTransformerSpec extends Specification {
     def unitId = "2e63d3f8-b326-4304-84e6-c12efbbcaaa4"
     def subUnitName = "Test subunit"
     def subUnitId = "fb329c3e-b87b-44d2-a680-e2d12539f3f7"
-    def clientName = "New Client"
-    def clientId = "c6960c88-1c71-4e0f-b429-0746d362f12b"
-    def domainName = "New Domain"
-    def domainId = "202ef4bc-102b-4feb-bbec-1366bcbdac0f"
-    def domainDescription = "This is a domain."
-    def assetId
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -73,7 +65,7 @@ class GroupDtoTransformerSpec extends Specification {
         return unit
     }
 
-    def "Transform simple group to DTO and back"() {
+    def "Transform simple group to DTO"() {
         given: "A unit with a group"
         Unit unit = createUnit()
 
@@ -82,9 +74,9 @@ class GroupDtoTransformerSpec extends Specification {
 
         //        assetGroup.setId(Key.newUuid())
 
-        assetGroup.getOwner()>>unit
-        assetGroup.getName()>>"AssetGroupInstanceName"
-        assetGroup.getId()>>Key.newUuid()
+        assetGroup.getOwner() >> unit
+        assetGroup.getName() >> "AssetGroupInstanceName"
+        assetGroup.getId() >> Key.newUuid()
         assetGroup.getDomains() >> []
         assetGroup.getLinks() >> []
         assetGroup.getLinks() >> []
@@ -96,7 +88,6 @@ class GroupDtoTransformerSpec extends Specification {
         assetGroup.getUpdatedAt() >> Instant.now()
 
 
-
         when: "the group is transformed into a DTO"
         def dto = FullEntityLayerSupertypeGroupDto.from(assetGroup, assembler)
 
@@ -106,129 +97,76 @@ class GroupDtoTransformerSpec extends Specification {
 
     }
 
-    def "Transform group with members to DTO and back"() {
-        given: "Some groups with members"
+    def "Transform group with members to DTO"() {
+        given: "A group with two members"
+        Asset asset1 = Mock(Asset) {
+            it.id >> Key.newUuid()
+            it.displayName >> "Asset 1"
+            it.modelInterface >> Asset
+        }
 
-        def aid= Key.newUuid()
-        def a1id= Key.newUuid()
-        def a2id= Key.newUuid()
-        def pid= Key.newUuid()
-        def agid= Key.newUuid()
-        def pgid= Key.newUuid()
+        Asset asset2 = Mock(Asset) {
+            it.id >> Key.newUuid()
+            it.displayName >> "Asset 2"
+            it.modelInterface >> Asset
+        }
 
-
-        Asset asset = Mock(Asset)
-        asset.id >> aid
-        asset.domains >> []
-        asset.links >> []
-        asset.customAspects >> []
-        asset.domains >> []
-        asset.clientName >> "AssetName"
-        asset.modelInterface >> Asset.class
-        asset.createdAt >> Instant.now()
-        asset.updatedAt >> Instant.now()
-        asset.modelType >> EntityTypeNames.ASSET
-
-        Asset asset1 = Mock(Asset)
-        asset1.id >> a1id
-        asset1.domains >> []
-        asset1.links >> []
-        asset1.customAspects >> []
-        asset1.clientName >> "AssetName1"
-        asset1.modelInterface >> Asset.class
-        asset1.createdAt >> Instant.now()
-        asset1.updatedAt >> Instant.now()
-        asset.modelType >> EntityTypeNames.ASSET
-
-        Asset asset2 = Mock(Asset)
-        asset2.id >> a2id
-        asset2.links >> []
-        asset2.customAspects >> []
-        asset2.domains >> []
-        asset2.clientName >> "AssetName2"
-        asset2.modelInterface >> Asset.class
-        asset2.createdAt >> Instant.now()
-        asset2.updatedAt >> Instant.now()
-        asset.modelType >> EntityTypeNames.ASSET
-
-        def process = Mock(Process)
-        process.id >> pid
-        process.domains >> []
-        process.links >> []
-        process.customAspects >> []
-        process.name >> "Process"
-        process.modelInterface >> Process.class
-        process.displayName >> "Process"
-        process.createdAt >> Instant.now()
-        process.updatedAt >> Instant.now()
-        asset.modelType >> EntityTypeNames.ASSET
-
-
-        AssetGroup assetGroup = Mock(AssetGroup)
-        assetGroup.id >> agid
-        assetGroup.name >> "AssetGroup"
-        assetGroup.domains >> []
-        assetGroup.links >> []
-        assetGroup.customAspects >> []
-        assetGroup.members>>([asset1, asset2] as Set)
-        assetGroup.modelInterface >> Asset.class
-        assetGroup.createdAt >> Instant.now()
-        assetGroup.updatedAt >> Instant.now()
-        asset.modelType >> EntityTypeNames.ASSET
-
-        ProcessGroup processGroup = Mock()
-        processGroup.id >> pgid
-        processGroup.name >> "ProcessGroupInstanceName"
-        processGroup.domains >> []
-        processGroup.links >> []
-        processGroup.customAspects >> []
-        processGroup.members >>([process] as Set)
-        processGroup.modelInterface >> Process.class
-        processGroup.createdAt >> Instant.now()
-        processGroup.updatedAt >> Instant.now()
-        asset.modelType >> EntityTypeNames.PROCESS
-
-        EntityFactory factory = Mock()
-        factory.createAsset() >> asset
-        factory.createAssetGroup() >> assetGroup
-        factory.createProcessGroup() >> processGroup
-        factory.createAssetGroup(agid, "AssetGroup", null) >> assetGroup
-        factory.createProcessGroup(pgid, "ProcessGroupInstanceName", null) >> processGroup
+        AssetGroup assetGroup = Mock(AssetGroup) {
+            it.id >> Key.newUuid()
+            it.name >> "AssetGroup"
+            it.domains >> []
+            it.links >> []
+            it.customAspects >> []
+            it.members >> ([asset1, asset2] as Set)
+            it.modelInterface >> Asset.class
+            it.createdAt >> Instant.now()
+            it.updatedAt >> Instant.now()
+            it.modelType >> EntityTypeNames.ASSET
+        }
 
         ReferenceAssembler assembler = Mock()
 
-        when: "the groups are transformed to DTOs"
-        def ag = FullEntityLayerSupertypeGroupDto.from(assetGroup, assembler)
-        def pg = FullEntityLayerSupertypeGroupDto.from(processGroup, assembler)
-        then: "the two assets and the group are also transformed with members"
-        ag.members.size()==2
-        ag.members*.displayName as Set == [asset1.name, asset2.name] as Set
+        when: "the group is transformed to a DTO"
+        def assetGroupDto = FullEntityLayerSupertypeGroupDto.from(assetGroup, assembler)
+        then: "the DTO contains references to both members"
+        assetGroupDto.members.size() == 2
+        assetGroupDto.members.sort { it.displayName }*.displayName == [
+            asset1.displayName,
+            asset2.displayName
+        ]
+    }
 
-        pg.members.size() == 1
-        pg.members.first().displayName == process.name
-
-
-
-        when: "the DTOs are transformed back into entities"
-        def context = Mock(DtoToEntityContext).tap {
-            it.context >> new HashMap<>()
-            it.context.put(new ClassKey<>(Asset, asset.id),  asset);
-            it.context.put(new ClassKey<>(Asset, asset1.id),  asset1);
-            it.context.put(new ClassKey<>(Asset, asset2.id),  asset2);
-            it.context.put(new ClassKey<>(Process, process.id),  process);
-            it.factory >> factory
+    def "Transform group DTO with members to entity"() {
+        given: "an asset group DTO with two members"
+        def asset1Ref = Mock(ModelObjectReference)
+        def asset2Ref = Mock(ModelObjectReference)
+        def asset1 = Mock(Asset)
+        def asset2 = Mock(Asset)
+        def newAssetGroupEntity = Mock(AssetGroup) {
+            it.modelType >> EntityTypeNames.ASSET
+        }
+        def context = Mock(DtoToEntityContext) {
+            it.factory >> Mock(EntityFactory)
+        }
+        def assetGroupId = Key.newUuid()
+        def assetGroupDto = new FullAssetGroupDto().tap {
+            id = assetGroupId.uuidValue()
+            name = "AssetGroup"
+            setMembers([
+                asset1Ref,
+                asset2Ref
+            ] as Set)
         }
 
-        AssetGroup eag = ag.toEntity(context)
-        ProcessGroup epg = pg.toEntity(context)
+        when: "transforming the DTO to an entity"
+        def result = assetGroupDto.toEntity(context)
 
-        then: "the two assets and the group are also transformed with members"
-
-        eag.members.size()==2
-        eag.members*.name as Set == [asset1.name, asset2.name] as Set
-
-        epg.members.size() == 1
-        epg.members.first().name == process.name
+        then: "the group is transformed with members"
+        1 * context.factory.createAssetGroup(assetGroupId, "AssetGroup", null) >> newAssetGroupEntity
+        1 * context.resolve(asset1Ref) >> asset1
+        1 * context.resolve(asset2Ref) >> asset2
+        result == newAssetGroupEntity
+        1 * newAssetGroupEntity.setMembers([asset1, asset2].toSet())
     }
 
     def "Transform group that contains itself"() {
@@ -236,12 +174,12 @@ class GroupDtoTransformerSpec extends Specification {
 
         AssetGroup assetGroup = Mock()
         assetGroup.id >> (Key.newUuid())
-        assetGroup.name >>"AssetGroupInstanceName"
+        assetGroup.name >> "AssetGroupInstanceName"
         assetGroup.domains >> []
         assetGroup.links >> []
         assetGroup.customAspects >> []
         assetGroup.modelInterface >> Document.class
-        assetGroup.members>> ([assetGroup] as Set)
+        assetGroup.members >> ([assetGroup] as Set)
         assetGroup.createdAt >> Instant.now()
         assetGroup.updatedAt >> Instant.now()
 

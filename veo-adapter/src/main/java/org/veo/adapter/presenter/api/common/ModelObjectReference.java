@@ -16,16 +16,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
-import java.util.Map;
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.transform.ClassKey;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -98,25 +92,6 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
 
         return new ModelObjectReference<T>(urlAssembler.parseId(uri),
                 (Class<T>) urlAssembler.parseType(uri), urlAssembler);
-    }
-
-    /**
-     * Search given context (cache) for the entity referenced by this.
-     *
-     * @param context
-     *            the transformcontext
-     * @return the mapped entity of type T
-     * @throws RuntimeException
-     *             when no entity is found
-     */
-    public T findInContext(Map<ClassKey<Key<UUID>>, ? super ModelObject> context) {
-        ClassKey<Key<UUID>> key = new ClassKey<>(type, Key.uuidFrom(id));
-        @SuppressWarnings("unchecked")
-        T object = (T) context.get(key);
-        if (object == null)
-            throw new NotFoundException(
-                    "No object found for type:" + type.getSimpleName() + " and id:" + id);
-        return object;
     }
 
     @Override

@@ -16,8 +16,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EntitySchemaService;
+import org.veo.core.usecase.repository.RepositoryProvider;
 
 /**
  * Creates {@link DtoToEntityContext} instances.
@@ -25,14 +28,17 @@ import org.veo.core.service.EntitySchemaService;
 public class DtoToEntityContextFactory {
     private final EntityFactory entityFactory;
     private final EntitySchemaService entitySchemaService;
+    private final RepositoryProvider repositoryProvider;
 
     public DtoToEntityContextFactory(EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService) {
+            EntitySchemaService entitySchemaService, RepositoryProvider repositoryProvider) {
         this.entityFactory = entityFactory;
         this.entitySchemaService = entitySchemaService;
+        this.repositoryProvider = repositoryProvider;
     }
 
-    public DtoToEntityContext create() {
-        return new DtoToEntityContext(entityFactory, entitySchemaService);
+    public DtoToEntityContext create(Client client) {
+        return new DtoToEntityContext(entityFactory, entitySchemaService,
+                new ModelObjectReferenceResolver(repositoryProvider, client));
     }
 }

@@ -19,7 +19,6 @@ package org.veo.rest.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.transform.EntityFactory;
@@ -239,14 +238,8 @@ public class ModuleConfiguration {
 
     @Bean
     public DtoToEntityContextFactory dtoToEntityContextFactory(EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService) {
-        return new DtoToEntityContextFactory(entityFactory, entitySchemaService);
-    }
-
-    @Bean
-    public ModelObjectReferenceResolver modelObjectReferenceResolver(
-            RepositoryProvider repositoryProvider,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
-        return new ModelObjectReferenceResolver(repositoryProvider, dtoToEntityContextFactory);
+            EntitySchemaService entitySchemaService, RepositoryProvider repositoryProvider) {
+        return new DtoToEntityContextFactory(entityFactory, entitySchemaService,
+                repositoryProvider);
     }
 }

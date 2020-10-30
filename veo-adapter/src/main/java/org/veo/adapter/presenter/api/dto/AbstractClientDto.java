@@ -16,10 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Pattern;
@@ -27,8 +24,6 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.core.entity.ModelObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -39,6 +34,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 abstract public class AbstractClientDto implements VersionedDto {
 
     @Schema(description = "The name for the Client.", example = "SerNet GmbH")
@@ -74,10 +70,4 @@ abstract public class AbstractClientDto implements VersionedDto {
 
     @Schema(description = "The domains for the Client.")
     private Set<AbstractDomainDto> domains = Collections.emptySet();
-
-    @JsonIgnore
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        return list;
-    }
 }

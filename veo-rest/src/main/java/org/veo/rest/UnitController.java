@@ -51,13 +51,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -109,7 +109,7 @@ public class UnitController extends AbstractEntityController {
     private final UpdateUnitUseCase putUnitUseCase;
     private final DeleteUnitUseCase<ResponseEntity<ApiResponseBody>> deleteUnitUseCase;
     private final GetUnitsUseCase getUnitsUseCase;
-    private final ModelObjectReferenceResolver referenceResolver;
+    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     @GetMapping
     @Operation(summary = "Loads all units")
@@ -202,11 +202,11 @@ public class UnitController extends AbstractEntityController {
 
         return useCaseInteractor.execute(putUnitUseCase,
                                          (Supplier<ChangeUnitUseCase.InputData>) () -> {
-                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(getClient(user),
-                                                                                                             unitDto.getReferences());
+                                             Client client = getClient(user);
+                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new UpdateUnitUseCase.InputData(
-                                                     unitDto.toEntity(tcontext), getClient(user),
-                                                     eTag, user.getUsername());
+                                                     unitDto.toEntity(tcontext), client, eTag,
+                                                     user.getUsername());
                                          }, output -> FullUnitDto.from(output.getUnit(),
                                                                        referenceAssembler));
     }

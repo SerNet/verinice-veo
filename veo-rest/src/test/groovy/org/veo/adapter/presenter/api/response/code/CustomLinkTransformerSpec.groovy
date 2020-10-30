@@ -24,7 +24,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntitySchema
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
-import org.veo.core.entity.transform.ClassKey
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
@@ -68,12 +67,6 @@ class CustomLinkTransformerSpec extends Specification {
             it.modelInterface >> Asset
         }
         def newLink = Mock(CustomLink)
-        def context = Mock(DtoToEntityContext) {
-            it.context >> [
-                (new ClassKey<>(Asset, targetAsset.id)): targetAsset
-            ]
-            it.factory >> Mock(EntityFactory)
-        }
         def schema = Mock(EntitySchema)
         def linkDto = new CustomLinkDto().tap {
             applicableTo = ["asset", "process"]
@@ -82,6 +75,10 @@ class CustomLinkTransformerSpec extends Specification {
             attributes = [
                 "foo": "bar"
             ]
+        }
+        def context = Mock(DtoToEntityContext) {
+            it.resolve(linkDto.target) >> targetAsset
+            it.factory >> Mock(EntityFactory)
         }
 
         when: "transforming it to an entity"

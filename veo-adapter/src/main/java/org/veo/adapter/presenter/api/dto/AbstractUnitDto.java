@@ -16,11 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -35,7 +31,6 @@ import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -94,17 +89,6 @@ abstract public class AbstractUnitDto implements NameableDto, VersionedDto {
 
     @JsonIgnore
     private long version;
-
-    @JsonIgnore
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>();
-        Optional.ofNullable(getClient())
-                .ifPresent(list::add);
-        Optional.ofNullable(getParent())
-                .ifPresent(list::add);
-        list.addAll(getDomains());
-        return list;
-    }
 
     public abstract Unit toEntity(DtoToEntityContext context);
 }

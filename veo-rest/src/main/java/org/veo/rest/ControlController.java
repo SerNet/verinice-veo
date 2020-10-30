@@ -51,7 +51,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -59,6 +58,7 @@ import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.EntityTypeNames;
@@ -102,20 +102,20 @@ public class ControlController extends AbstractEntityController {
     private final GetControlsUseCase getControlsUseCase;
     private final UpdateControlUseCase updateControlUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final ModelObjectReferenceResolver referenceResolver;
+    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     public ControlController(UseCaseInteractorImpl useCaseInteractor,
             CreateControlUseCase createControlUseCase, GetControlUseCase getControlUseCase,
             GetControlsUseCase getControlsUseCase, UpdateControlUseCase updateControlUseCase,
             DeleteEntityUseCase deleteEntityUseCase,
-            ModelObjectReferenceResolver referenceResolver) {
+            DtoToEntityContextFactory dtoToEntityContextFactory) {
         this.useCaseInteractor = useCaseInteractor;
         this.createControlUseCase = createControlUseCase;
         this.getControlUseCase = getControlUseCase;
         this.getControlsUseCase = getControlsUseCase;
         this.updateControlUseCase = updateControlUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.referenceResolver = referenceResolver;
+        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     @GetMapping
@@ -179,8 +179,7 @@ public class ControlController extends AbstractEntityController {
                                          (Supplier<CreateEntityUseCase.InputData<Control>>) () -> {
 
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
-                                                                                                             dto.getReferences());
+                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dto.toEntity(tcontext), client,
                                                      user.getUsername());
@@ -206,8 +205,7 @@ public class ControlController extends AbstractEntityController {
                                              @Override
                                              public InputData<Control> get() {
                                                  Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = referenceResolver.loadIntoContext(client,
-                                                                                                                 controlDto.getReferences());
+                                                 DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                                  return new ModifyEntityUseCase.InputData<Control>(
                                                          controlDto.toEntity(tcontext), client,
                                                          eTag, user.getUsername());

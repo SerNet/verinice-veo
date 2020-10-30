@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,12 +24,9 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 
 public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
-
-    Collection<ModelObjectReference<? extends ModelObject>> getReferences();
 
     Set<ModelObjectReference<Domain>> getDomains();
 

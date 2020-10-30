@@ -177,20 +177,17 @@ public final class DtoToEntityTransformer {
     // UnitDto->Unit
     public static Unit transformDto2Unit(DtoToEntityContext tcontext, AbstractUnitDto source,
             Key<UUID> key) {
-        var context = tcontext.getContext();
         var target = tcontext.getFactory()
                              .createUnit(key, source.getName(), null);
         target.setId(key);
         mapNameableProperties(source, target);
 
-        target.setDomains(convertSet(source.getDomains(), d -> d.findInContext(context)));
+        target.setDomains(convertSet(source.getDomains(), tcontext::resolve));
         if (source.getClient() != null) {
-            target.setClient(source.getClient()
-                                   .findInContext(context));
+            target.setClient(tcontext.resolve(source.getClient()));
         }
         if (source.getParent() != null) {
-            target.setParent(source.getParent()
-                                   .findInContext(context));
+            target.setParent(tcontext.resolve(source.getParent()));
         }
 
         return target;
@@ -201,8 +198,7 @@ public final class DtoToEntityTransformer {
             CustomLinkDto source, String type, EntitySchema entitySchema) {
         EntityLayerSupertype linkTarget = null;
         if (source.getTarget() != null) {
-            linkTarget = source.getTarget()
-                               .findInContext(tcontext.getContext());
+            linkTarget = tcontext.resolve(source.getTarget());
         }
 
         var target = tcontext.getFactory()
@@ -233,21 +229,19 @@ public final class DtoToEntityTransformer {
         mapEntityLayerSupertype(tcontext, source, target);
         target.setMembers(source.getMembers()
                                 .stream()
-                                .map(e -> e.findInContext(tcontext.getContext()))
+                                .map(tcontext::resolve)
                                 .collect(Collectors.toSet()));
     }
 
     private static <TDto extends EntityLayerSupertypeDto, TEntity extends EntityLayerSupertype> void mapEntityLayerSupertype(
             DtoToEntityContext tcontext, TDto source, TEntity target) {
-        var context = tcontext.getContext();
         mapNameableProperties(source, target);
-        target.setDomains(convertSet(source.getDomains(), e -> e.findInContext(context)));
+        target.setDomains(convertSet(source.getDomains(), tcontext::resolve));
         var entitySchema = tcontext.loadEntitySchema(target.getModelType());
         target.setLinks(mapLinks(tcontext, target, source, entitySchema));
         target.setCustomAspects(mapCustomAspects(source, tcontext.getFactory(), entitySchema));
         if (source.getOwner() != null) {
-            target.setOwner(source.getOwner()
-                                  .findInContext(context));
+            target.setOwner(tcontext.resolve(source.getOwner()));
         }
     }
 

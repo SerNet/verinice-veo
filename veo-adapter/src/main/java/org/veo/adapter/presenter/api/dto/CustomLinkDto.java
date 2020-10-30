@@ -16,14 +16,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -34,7 +28,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.ModelObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -74,14 +67,6 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
     public static CustomLinkDto from(@Valid CustomLink customLink,
             ReferenceAssembler referenceAssembler) {
         return EntityToDtoTransformer.transformCustomLink2Dto(referenceAssembler, customLink);
-    }
-
-    @JsonIgnore
-    @Override
-    public Collection<ModelObjectReference<? extends ModelObject>> getReferences() {
-        List<ModelObjectReference<? extends ModelObject>> list = new ArrayList<>(getDomains());
-        list.add(getTarget());
-        return list;
     }
 
     public CustomLink toEntity(DtoToEntityContext tcontext, String type,
