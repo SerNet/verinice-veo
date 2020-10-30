@@ -132,7 +132,7 @@ class TransformerSpec extends Specification {
         when: "The parent unit DTO is transformed into a unit"
         def context = Mock(DtoToEntityContext) {
             it.context >> new HashMap<>()
-            it.loader >> factory
+            it.factory >> factory
         }
         def unit = unitDto.toEntity(context)
 
@@ -200,7 +200,7 @@ class TransformerSpec extends Specification {
         when: "the DTO is transformed into a Client"
         def context = Mock(DtoToEntityContext) {
             it.context >> new HashMap<>()
-            it.loader >> factory
+            it.factory >> factory
         }
         def client = clientDto.toEntity(context)
 

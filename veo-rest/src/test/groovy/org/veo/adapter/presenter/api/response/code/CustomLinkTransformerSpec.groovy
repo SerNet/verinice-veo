@@ -72,7 +72,7 @@ class CustomLinkTransformerSpec extends Specification {
             it.context >> [
                 (new ClassKey<>(Asset, targetAsset.id)): targetAsset
             ]
-            it.loader >> Mock(EntityFactory)
+            it.factory >> Mock(EntityFactory)
         }
         def schema = Mock(EntitySchema)
         def linkDto = new CustomLinkDto().tap {
@@ -88,7 +88,7 @@ class CustomLinkTransformerSpec extends Specification {
         def entity = linkDto.toEntity(context, "good type", schema)
 
         then: "all properties are transformed"
-        1 * context.loader.createCustomLink("good name", targetAsset, null) >> newLink
+        1 * context.factory.createCustomLink("good name", targetAsset, null) >> newLink
         entity == newLink
         1 * newLink.setType("good type")
         1 * newLink.setApplicableTo(Set.of("asset", "process"))

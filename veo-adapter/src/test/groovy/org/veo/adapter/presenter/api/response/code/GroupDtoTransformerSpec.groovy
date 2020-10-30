@@ -207,7 +207,7 @@ class GroupDtoTransformerSpec extends Specification {
             it.context.put(new ClassKey<>(Asset, asset1.id),  asset1);
             it.context.put(new ClassKey<>(Asset, asset2.id),  asset2);
             it.context.put(new ClassKey<>(Process, process.id),  process);
-            it.loader >> factory
+            it.factory >> factory
         }
 
         AssetGroup eag = ag.toEntity(context)

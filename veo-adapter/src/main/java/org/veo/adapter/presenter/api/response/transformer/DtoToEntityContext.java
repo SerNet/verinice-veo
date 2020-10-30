@@ -45,7 +45,7 @@ public class DtoToEntityContext implements TransformContext {
     private final EntityFactory factory;
     private final EntitySchemaLoader entitySchemaLoader;
 
-    public EntityFactory getLoader() {
+    public EntityFactory getFactory() {
         return factory;
     }
 
