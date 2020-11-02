@@ -27,6 +27,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.entity.Asset
+import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.ModelObject
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -36,6 +37,8 @@ import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.BaseModelObjectData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
+import org.veo.persistence.entity.jpa.CustomLinkData
+import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
@@ -252,5 +255,31 @@ class IdentityConsistencySpec<T extends ModelObject> extends VeoSpringSpec {
 
         then:
         notThrown(Exception)
+    }
+
+    @Transactional
+    def "The identity of the entity 'customLinkData' is consistent over state transitions"() {
+        given:
+        def asset = newAsset(unit)
+        def process = newProcess(unit)
+        assetDataRepository.save(asset)
+        processDataRepository.save(process)
+        entityManager.flush()
+
+        when:
+        def link = new CustomLinkData().with{
+            name = "aLink"
+            source = asset
+            target = process
+            it
+        }
+        asset.setLinks([link] as Set)
+        testIdentityConsistency(CustomLinkData.class, link)
+
+        then:
+        notThrown(Exception)
+
+        and: "two different entities are not equal"
+        link != new CustomLinkData()
     }
 }
