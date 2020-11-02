@@ -70,7 +70,7 @@ class CustomLinkPersistenceSpec extends VeoSpec {
         cp.setType('my.new.linktype')
         cp.setApplicableTo(['Asset'] as Set)
 
-        asset.setLinks(cp as Set)
+        asset.setLinks([cp] as Set)
 
         clientRepository.save(client)
         unitRepository.save(unit)
