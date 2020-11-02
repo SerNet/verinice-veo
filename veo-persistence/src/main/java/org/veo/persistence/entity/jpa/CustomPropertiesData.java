@@ -62,9 +62,10 @@ public class CustomPropertiesData implements CustomProperties {
     @EqualsAndHashCode.Include
     @ManyToOne(fetch = FetchType.LAZY,
                targetEntity = EntityLayerSupertypeData.class,
-               // 'links' are also customProperties, saved in same table but mapped by 'source'
-               // column.
-               // 'owner' must be nullable for these entities:
+               // 'links' are also customProperties, saved in the same table but mapped by
+               // 'source'
+               // column, due to the single-table inheritance mapping used here.
+               // 'owner' must therefore be nullable for these entities:
                optional = true)
     private EntityLayerSupertype owner;
 
@@ -97,6 +98,12 @@ public class CustomPropertiesData implements CustomProperties {
         PropertyData propertyData = new PropertyData(key, value);
         propertyData.setParentId(getDbId());
         dataProperties.add(propertyData);
+    }
+
+    public void setDataProperties(Set<PropertyData> newDataProperties) {
+        this.dataProperties.clear();
+        newDataProperties.forEach(propertyData -> propertyData.setParentId(this.dbId));
+        this.dataProperties.addAll(newDataProperties);
     }
 
     @Override

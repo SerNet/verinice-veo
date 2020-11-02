@@ -16,14 +16,15 @@
  ******************************************************************************/
 package org.veo.core
 
-
 import static com.vladmihalcea.sql.SQLStatementCountValidator.*
+
+import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.annotation.Propagation
 
 import org.veo.core.entity.*
 import org.veo.core.entity.Versioned.Lifecycle
@@ -37,6 +38,7 @@ import org.veo.persistence.access.*
 class DataSourcePerformanceSpec extends VeoSpringSpec {
 
 
+    public static final String PROP_KEY = "propKey"
     @Autowired
     private ClientRepositoryImpl clientRepository
 
@@ -117,6 +119,37 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         assertInsertCount(3)
         assertUpdateCount(0)
         assertSelectCount(2)
+    }
+
+    def "SQL performance for saving 1 process with 1 customAspect with 10 array properties"() {
+        given:
+        createClient()
+
+        when:
+        reset()
+        def process = saveProcessWithArrayCustomAspect(10)
+
+        then:
+        assertDeleteCount(0)
+        assertInsertCount(14)
+        assertUpdateCount(0)
+        assertSelectCount(3)
+    }
+
+    def "SQL performance for putting 1 string value in 1 customAspect with 10 existing values"() {
+        given:
+        createClient()
+        def process = saveProcessWithArrayCustomAspect(10)
+
+        when:
+        reset()
+        updateProcessWithArrayCustomAspect(process)
+
+        then:
+        assertDeleteCount(1)
+        assertInsertCount(11)
+        assertUpdateCount(0)
+        assertSelectCount(9)
     }
 
     def "SQL performance for saving 1 group of 2 persons"() {
@@ -215,7 +248,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
 
         when:
         reset()
-        units.each {it.addToDomains(domain2)}
+        units.each { it.addToDomains(domain2) }
         unitRepository.saveAll(units)
 
         then:
@@ -330,6 +363,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         personRepository.save(group)
     }
 
+    @Transactional
     def saveProcessWithCustomAspects(int count) {
         def process = newProcess(unit)
         for (i in 0..<count) {
@@ -361,6 +395,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         unitRepository.findByClient(client)
     }
 
+    @Transactional
     void createSubUnits(int count) {
         for (i in 0..<count) {
             def unit = newUnit(client).with {
@@ -372,7 +407,34 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         }
     }
 
+    @Transactional
     List<Unit> selectSubUnits(Unit owner) {
         unitRepository.findByParent(owner)
+    }
+
+    @Transactional
+    def Process saveProcessWithArrayCustomAspect(int count) {
+        def process = newProcess(unit)
+        def values = []
+        for (i in 0..<count) {
+            values.add("value_" + i)
+        }
+        CustomProperties cp = entityFactory.createCustomProperties().with {
+            type = "aType"
+            applicableTo = ["Process"] as Set
+            it
+        }
+        cp.setProperty(PROP_KEY, values as List)
+        process.addToCustomAspects(cp)
+        return processRepository.save(process)
+    }
+
+    @Transactional
+    def void updateProcessWithArrayCustomAspect(Process detachedProcess) {
+        def process = processRepository.findById(detachedProcess.getId()).get()
+        // adding 1 value to the end of the list:
+        process.customAspects
+                .first().stringListProperties.entrySet().first().value.add("value_new")
+        processRepository.save(process)
     }
 }

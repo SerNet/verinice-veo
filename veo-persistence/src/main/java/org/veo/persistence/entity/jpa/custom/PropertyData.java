@@ -18,6 +18,7 @@ package org.veo.persistence.entity.jpa.custom;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -26,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.CustomProperties;
 
@@ -70,18 +72,23 @@ public class PropertyData {
 
     public PropertyData(String key, List<String> value) {
         this.key = key;
-        this.stringListValue = value;
         this.type = Type.STRING_LIST;
+        this.stringListValue.addAll(value);
     }
 
+    @NotNull
     @Column(nullable = false)
     private Type type;
 
     @Column(length = CustomProperties.MAXIMUM_STRING_LENGTH)
     private String stringValue;
+
     private Boolean booleanValue;
+
     private Double doubleValue;
+
     private OffsetDateTime offsetDateTimeValue;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> stringListValue;
 
@@ -116,4 +123,10 @@ public class PropertyData {
             throw new UnsupportedOperationException("Unhandled property type: " + type);
         }
     }
+
+    public void setStringListValue(List<String> newValues) {
+        stringListValue.clear();
+        stringListValue.addAll(newValues);
+    }
+
 }
