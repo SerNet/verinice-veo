@@ -29,13 +29,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -65,6 +65,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = CustomLinkData.class,
+               mappedBy = "source",
                fetch = FetchType.LAZY)
     private Set<CustomLink> links = new HashSet<>();
 
@@ -72,6 +73,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = CustomPropertiesData.class,
+               mappedBy = "owner",
                fetch = FetchType.LAZY)
     private Set<CustomProperties> customAspects = new HashSet<>();
 
@@ -81,13 +83,19 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     @JoinColumn(name = "owner_id")
     private Unit owner;
 
-    public void setLinks(Set<CustomLink> aLinks) {
+    public void setLinks(Set<CustomLink> newLinks) {
         this.links.clear();
-        this.links.addAll(aLinks);
+        newLinks.forEach(l -> l.setSource(this));
+        this.links.addAll(newLinks);
     }
 
     public void setCustomAspects(Set<CustomProperties> aCustomAspects) {
         this.customAspects.clear();
+        aCustomAspects.forEach(aspect -> {
+            if (aspect instanceof CustomPropertiesData) {
+                ((CustomPropertiesData) aspect).setOwner(this);
+            }
+        });
         this.customAspects.addAll(aCustomAspects);
     }
 
@@ -121,6 +129,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if added
      */
     public boolean addToLinks(CustomLink aCustomLink) {
+        aCustomLink.setSource(this);
         return this.links.add(aCustomLink);
     }
 
@@ -131,6 +140,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if removed
      */
     public boolean removeFromLinks(CustomLink aCustomLink) {
+        aCustomLink.setSource(null);
         return this.links.remove(aCustomLink);
     }
 
@@ -140,6 +150,9 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if added
      */
     public boolean addToCustomAspects(CustomProperties aCustomProperties) {
+        if (aCustomProperties instanceof CustomPropertiesData) {
+            ((CustomPropertiesData) aCustomProperties).setOwner(this);
+        }
         return this.customAspects.add(aCustomProperties);
     }
 
@@ -149,6 +162,10 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      * @return true if removed
      */
     public boolean removeFromCustomAspects(CustomProperties aCustomProperties) {
+        if (aCustomProperties instanceof CustomPropertiesData) {
+            CustomPropertiesData propertiesData = (CustomPropertiesData) aCustomProperties;
+            propertiesData.setOwner(null);
+        }
         return this.customAspects.remove(aCustomProperties);
     }
 

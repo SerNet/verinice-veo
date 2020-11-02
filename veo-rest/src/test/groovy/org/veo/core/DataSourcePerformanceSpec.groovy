@@ -17,18 +17,19 @@
 package org.veo.core
 
 
+import static com.vladmihalcea.sql.SQLStatementCountValidator.*
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
+
 import org.veo.core.entity.*
 import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.groups.PersonGroup
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.*
-
-import static com.vladmihalcea.sql.SQLStatementCountValidator.*
 
 @SpringBootTest(classes = DataSourcePerformanceSpec.class)
 @ComponentScan("org.veo")
@@ -97,9 +98,9 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(13)
-        assertUpdateCount(2)
-        assertSelectCount(9)
+        assertInsertCount(11)
+        assertUpdateCount(1)
+        assertSelectCount(7)
     }
 
 
@@ -113,8 +114,8 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(4)
-        assertUpdateCount(1)
+        assertInsertCount(3)
+        assertUpdateCount(0)
         assertSelectCount(2)
     }
 

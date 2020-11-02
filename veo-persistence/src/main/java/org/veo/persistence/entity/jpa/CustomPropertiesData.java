@@ -32,13 +32,15 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import lombok.Data;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.persistence.entity.jpa.custom.PropertyData;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -53,16 +55,23 @@ public class CustomPropertiesData implements CustomProperties {
     private String dbId = UUID.randomUUID()
                               .toString();
 
-    @Column(name = "type")
     @ToString.Include
     @EqualsAndHashCode.Include
     private String type;
+
+    @EqualsAndHashCode.Include
+    @ManyToOne(fetch = FetchType.LAZY,
+               targetEntity = EntityLayerSupertypeData.class,
+               // 'links' are also customProperties, saved in same table but mapped by 'source'
+               // column.
+               // 'owner' must be nullable for these entities:
+               optional = true)
+    private EntityLayerSupertype owner;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "applicableto")
     private Set<String> applicableTo;
 
-    @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class)
     protected Set<Domain> domains;
 

@@ -16,18 +16,17 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity(name = "customlink")
@@ -36,23 +35,26 @@ import lombok.EqualsAndHashCode;
 public class CustomLinkData extends CustomPropertiesData implements NameableData, CustomLink {
 
     @NotNull
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "abbreviation")
     private String abbreviation;
 
-    @Column(name = "description")
     private String description;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = EntityLayerSupertypeData.class)
+    @ManyToOne(fetch = FetchType.LAZY,
+               targetEntity = EntityLayerSupertypeData.class,
+               optional = true) // due to the single-table inheritance mapping, this must be
+                                // nullable
     @JoinColumn(name = "target_id")
     @EqualsAndHashCode.Include
     private EntityLayerSupertype target;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = EntityLayerSupertypeData.class)
+    @ManyToOne(fetch = FetchType.LAZY,
+               targetEntity = EntityLayerSupertypeData.class,
+               optional = true) // due to the single-table inheritance mapping, this must be
+                                // nullable
     @JoinColumn(name = "source_id")
     @EqualsAndHashCode.Include
     private EntityLayerSupertype source;
@@ -73,5 +75,9 @@ public class CustomLinkData extends CustomPropertiesData implements NameableData
      */
     public boolean removeFromDomains(Domain aDomain) {
         return this.domains.remove(aDomain);
+    }
+
+    public void setSource(EntityLayerSupertype aSource) {
+        this.source = aSource;
     }
 }
