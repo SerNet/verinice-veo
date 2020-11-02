@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.core
 
+import org.veo.core.entity.CustomProperties
+import org.veo.persistence.entity.jpa.CustomPropertiesData
+
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -52,7 +55,7 @@ import org.veo.persistence.entity.jpa.groups.ProcessGroupData
 @SpringBootTest(classes = IdentityConsistencySpec.class)
 @ComponentScan("org.veo")
 @ActiveProfiles("test")
-class IdentityConsistencySpec<T extends ModelObject> extends VeoSpringSpec {
+class IdentityConsistencySpec<T> extends VeoSpringSpec {
 
 
     @PersistenceContext
@@ -152,10 +155,12 @@ class IdentityConsistencySpec<T extends ModelObject> extends VeoSpringSpec {
         // have a valid ID or that do not have their collections properly initialized.
 
         when:
-        testIdentityConsistency(AssetData.class, newAsset(unit))
+        def asset = newAsset(unit)
+        testIdentityConsistency(AssetData.class, asset)
 
         then:
         notThrown(Exception)
+        asset != newAsset(unit)
     }
 
     @Transactional
@@ -233,28 +238,54 @@ class IdentityConsistencySpec<T extends ModelObject> extends VeoSpringSpec {
     @Transactional
     def "The identity of the entity 'processgroup' is consistent over state transitions"() {
         when:
-        testIdentityConsistency(ProcessGroupData.class, newProcessGroup(unit))
+        def group = newProcessGroup(unit)
+        testIdentityConsistency(ProcessGroupData.class, group)
 
         then:
         notThrown(Exception)
+        group != newProcessGroup(unit)
     }
 
     @Transactional
     def "The identity of the entity 'unit' is consistent over state transitions"() {
         when:
-        testIdentityConsistency(UnitData.class, newUnit(client))
+        def unit = newUnit(client)
+        testIdentityConsistency(UnitData.class, unit)
 
         then:
         notThrown(Exception)
+        unit != newUnit(client)
     }
 
     @Transactional
     def "The identity of the entity 'client' is consistent over state transitions"() {
         when:
-        testIdentityConsistency(ClientData.class, newClient())
+        def client = newClient()
+        testIdentityConsistency(ClientData.class, client)
 
         then:
         notThrown(Exception)
+        client != newClient()
+    }
+
+    @Transactional
+    def "The identity of the entity 'customPropertiesData' is consistent over state transitions"() {
+        given:
+        def asset = newAsset(unit)
+        assetDataRepository.save(asset)
+        entityManager.flush()
+
+        when:
+        def aspect = new CustomPropertiesData()
+        asset.setCustomAspects([aspect] as Set<CustomProperties>)
+
+        testIdentityConsistency(CustomPropertiesData.class, aspect)
+
+        then:
+        notThrown(Exception)
+
+        and: "two different entities are not equal"
+        aspect != new CustomPropertiesData()
     }
 
     @Transactional
