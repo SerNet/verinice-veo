@@ -217,7 +217,6 @@ public class EntityDataFactory implements EntityFactory {
         entityLayerSupertype.setId(newUuid);
         entityLayerSupertype.setName(name);
         entityLayerSupertype.setOwner(unit);
-        initCollection(entityLayerSupertype);
     }
 
 }
