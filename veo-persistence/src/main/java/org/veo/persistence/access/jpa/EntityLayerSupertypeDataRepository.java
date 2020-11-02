@@ -18,6 +18,7 @@ package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
@@ -32,6 +33,11 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     Collection<T> findByNameContainingIgnoreCase(String search);
 
     List<T> findByOwner_Client_DbId(String clientId); // NOPMD
+
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+            + "left join fetch e.links " + "where e.dbId = ?1")
+    @Override
+    Optional<T> findById(String id);
 
     @Query("select e from #{#entityName} as e where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
     List<T> findByUnits(Set<String> unitIds);
