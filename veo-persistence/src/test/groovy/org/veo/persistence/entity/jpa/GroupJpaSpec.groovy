@@ -18,28 +18,42 @@ package org.veo.persistence.entity.jpa
 
 import static org.junit.Assert.assertSame
 
+import javax.transaction.Transactional
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.persistence.access.jpa.AssetDataRepository
+import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.UnitDataRepository
 
 class GroupJpaSpec extends AbstractJpaSpec {
     @Autowired
     AssetDataRepository assetRepository
 
     @Autowired
+    UnitDataRepository unitRepository
+
+    @Autowired
+    ClientDataRepository clientRepository
+
+    @Autowired
     TransactionTemplate transactionTemplate
 
+    @Transactional
     def "circular groups are supported"() {
         when:"saving a circular asset group structure"
         def group1Id = transactionTemplate.execute {
-            def unit = newUnit(newClient ())
+            def client = newClient()
+            def unit = newUnit(client)
             def group1 = newAssetGroup(unit)
             def group2 = newAssetGroup(unit) {
                 members = [group1]
             }
             group1.members.add(group2)
+            clientRepository.save(client)
+            unitRepository.save(unit)
             assetRepository.save(group1).id.uuidValue()
         }
         then: "the entities can be retrieved"
