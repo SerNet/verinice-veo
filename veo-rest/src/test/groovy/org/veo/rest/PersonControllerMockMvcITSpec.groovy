@@ -211,7 +211,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(person.id.uuidValue(), 1)
+            'If-Match': ETag.from(person.id.uuidValue(), 0)
         ]
         def results = put("/persons/${person.id.uuidValue()}", request, headers)
 

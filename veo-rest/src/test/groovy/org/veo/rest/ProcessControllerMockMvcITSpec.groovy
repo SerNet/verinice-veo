@@ -502,7 +502,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(createProcessResult.resourceId, 1)
+            'If-Match': ETag.from(createProcessResult.resourceId, 0)
         ]
         def results = put("/processes/${createProcessResult.resourceId}", putProcessRequest, headers)
 

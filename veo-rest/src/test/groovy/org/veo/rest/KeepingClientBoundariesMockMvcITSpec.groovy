@@ -371,7 +371,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
 
     def putEntityToAnotherUnit(String url, String entityUuid) {
         Map headers = [
-            'If-Match': ETag.from(entityUuid, 1)
+            'If-Match': ETag.from(entityUuid, 0)
         ]
         put("${url}/${entityUuid}", [
             id: '' + entityUuid,
