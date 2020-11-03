@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.transaction.annotation.Propagation
 
 import org.veo.core.entity.*
 import org.veo.core.entity.Versioned.Lifecycle
@@ -227,13 +226,38 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         when:
         reset()
         personRepository.deleteByUnit(unit)
+        unitRepository.delete(unit)
 
         then:
-        assertDeleteCount(707)
+        assertDeleteCount(709)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(911)
+        assertSelectCount(913)
     }
+
+    def "SQL performance for deleting a unit with 1 asset, 1 process and 1 persongroup linked to each other"() {
+        given:
+        createClient()
+        createLinkedEntities()
+
+        when:
+        reset()
+        deleteUnit()
+
+        then: "all entities are removed"
+        personRepository.findByUnits([unit] as Set).size() == 0
+        assetRepository.findByUnits([unit] as Set).size() == 0
+        processRepository.findByUnits([unit] as Set).size() == 0
+        unitRepository.findByClient(client).size() == 0
+
+        and:
+        assertDeleteCount(22)
+        assertInsertCount(0)
+        assertUpdateCount(0)
+        assertSelectCount(33)
+    }
+
+
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
         given:
@@ -436,5 +460,46 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         process.customAspects
                 .first().stringListProperties.entrySet().first().value.add("value_new")
         processRepository.save(process)
+    }
+
+    @Transactional
+    def createLinkedEntities() {
+        def personGroup = savePersonGroup("parentgroup") // creates group with 2 persons
+        def asset = newAsset(unit)
+        asset = assetRepository.save(asset)
+        def process = newProcess(unit)
+        process = processRepository.save(process)
+
+        def link_person_asset = entityFactory.createCustomLink("link1", personGroup, asset).with {
+            type = "type1"
+            applicableTo = ["Person"] as Set
+            it
+        }
+        personGroup.addToLinks(link_person_asset)
+        personGroup = personRepository.save(personGroup)
+
+        def link_asset_process = entityFactory.createCustomLink("link2", asset, process).with {
+            type = "type2"
+            applicableTo = ["Asset"] as Set
+            it
+        }
+        asset.addToLinks(link_asset_process)
+        asset = assetRepository.save(asset)
+
+        def link_process_person = entityFactory.createCustomLink("link3", process, personGroup).with {
+            type = "type3"
+            applicableTo = ["Process"] as Set
+            it
+        }
+        process.addToLinks(link_process_person)
+        process = processRepository.save(process)
+    }
+
+    @Transactional
+    def deleteUnit() {
+        assetRepository.deleteByUnit(unit)
+        processRepository.deleteByUnit(unit)
+        personRepository.deleteByUnit(unit)
+        unitRepository.delete(unit)
     }
 }
