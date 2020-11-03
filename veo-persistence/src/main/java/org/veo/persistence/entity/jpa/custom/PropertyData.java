@@ -21,12 +21,15 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.OrderColumn;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.CustomProperties;
@@ -90,11 +93,13 @@ public class PropertyData {
     private OffsetDateTime offsetDateTimeValue;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> stringListValue;
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
+    @CollectionTable(name = "propertydata_stringvalue",
+                     joinColumns = {
+                             @JoinColumn(name = "propertydata_key", referencedColumnName = "key"),
+                             @JoinColumn(name = "propertydata_parent_id",
+                                         referencedColumnName = "parentid") })
+    @OrderColumn(name = "index_id")
+    private List<String> stringListValue = new ArrayList<>();
 
     public enum Type {
         BOOLEAN, STRING, STRING_LIST, DOUBLE, OFFSET_DATE_TIME

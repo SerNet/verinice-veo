@@ -146,8 +146,8 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         updateProcessWithArrayCustomAspect(process)
 
         then:
-        assertDeleteCount(1)
-        assertInsertCount(11)
+        assertDeleteCount(0)
+        assertInsertCount(1)
         assertUpdateCount(0)
         assertSelectCount(9)
     }
