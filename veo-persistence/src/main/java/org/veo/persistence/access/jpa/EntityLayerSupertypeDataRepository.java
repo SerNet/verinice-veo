@@ -65,6 +65,4 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
             String uuidValue);
 
     List<T> findByLinks_Target_DbId(String uuidValue);
-
-    void deleteByOwner_DbId(String uuidValue);
 }
