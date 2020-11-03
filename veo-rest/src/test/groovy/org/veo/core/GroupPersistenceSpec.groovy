@@ -52,9 +52,9 @@ class GroupPersistenceSpec extends VeoSpringSpec {
         given: "a client and a unit"
         def client = newClient()
         def unit = newUnit(client)
-
         clientRepository.save(client)
         unitRepository.save(unit)
+
         when:
         def personGroupId = Key.newUuid()
 
@@ -62,6 +62,7 @@ class GroupPersistenceSpec extends VeoSpringSpec {
         def jane = newPerson(unit)
 
         def personGroup = factory.createPersonGroup(personGroupId, 'My person group', unit)
+        personGroup.version("user", null)
 
         personGroup.with {
             members = [john, jane]
