@@ -49,21 +49,16 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
             + "where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
 
-    @Query("select e from #{#entityName} as e where e.owner.dbId = ?1 and type(e) = #{#entityName}")
-    @Deprecated
-    // FIXME this method should be removed, it was only added because
-    // findByOwnerId
-    // also returns groups, which it shouldn't. We probably need to fix our JPA
-    // mapping in that regard
-    List<T> findEntitiesByOwner_DbId(String ownerId);
-
+    /**
+     * Find only entities of the specific type for a client. This method does not
+     * return groups of the specific type. I.e. it will return all 'Person'
+     * instances that are not a 'PersonGroup'.
+     *
+     * @param clientId
+     *            The UUID of the client
+     */
     @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e) = #{#entityName}")
-    @Deprecated
-    // FIXME this method should be removed, it was only added because
-    // findByOwnerId
-    // also returns groups, which it shouldn't. We probably need to fix our JPA
-    // mapping in that regard
-    List<T> findEntitiesByOwner_Client_DbId(String uuidValue);
+    List<T> findEntitiesByOwner_Client_DbId(String clientId);
 
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(
             String uuidValue);
