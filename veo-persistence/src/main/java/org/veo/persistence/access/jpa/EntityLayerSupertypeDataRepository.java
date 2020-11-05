@@ -34,7 +34,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
 
     List<T> findByOwner_Client_DbId(String clientId); // NOPMD
 
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.dbId = ?1")
     @Override
     Optional<T> findById(String id);
@@ -46,7 +46,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param unitIds
      *            a list of units' UUIDs
      */
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.owner.dbId IN ?1")
     List<T> findByUnits(Set<String> unitIds);
 
@@ -58,7 +58,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param unitIds
      *            a list of units' UUIDs
      */
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
     List<T> findEntitiesByUnits(Set<String> unitIds);
 
@@ -70,7 +70,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param unitIds
      *            a list of units' UUIDs
      */
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links "
             // + "left join fetch e.members "
             + "where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
@@ -84,7 +84,8 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param clientId
      *            The UUID of the client
      */
-    @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e) = #{#entityName}")
+    @Query("select distinct e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e)"
+            + " = #{#entityName}")
     List<T> findEntitiesByOwner_Client_DbId(String clientId);
 
     /**
