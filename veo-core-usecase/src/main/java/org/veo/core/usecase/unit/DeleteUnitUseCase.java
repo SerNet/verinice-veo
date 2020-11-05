@@ -70,7 +70,8 @@ public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, E
         return EmptyOutput.INSTANCE;
     }
 
-    private void removeObjectsInUnit(Unit unit) {
+    @Transactional
+    void removeObjectsInUnit(Unit unit) {
         List.of(Asset.class, Control.class, Document.class, Person.class, Process.class)
             .forEach(clazz -> {
                 repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
