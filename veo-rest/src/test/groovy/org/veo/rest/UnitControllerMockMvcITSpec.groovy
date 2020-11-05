@@ -22,6 +22,10 @@ import static org.hamcrest.Matchers.not
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
+import javax.transaction.Transactional
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -33,14 +37,20 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
+import org.veo.core.entity.Versioned
 import org.veo.core.usecase.common.ETag
+import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.PersonRepositoryImpl
+import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
+import groovy.transform.CompileStatic
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -64,8 +74,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private TransactionTemplate txTemplate
+
     @Autowired
     private EntityDataFactory entityFactory
+
     private Client client
 
     private Domain domain
@@ -345,6 +357,99 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     def "delete a unit"() {
         given: "a unit"
         def unit = createTestClientUnit()
+
+        when: "the unit is loaded"
+        def loadedUnit = txTemplate.execute {
+            urepository.findById(unit.id)
+        }
+
+        then: "the loadedUnit is present"
+        loadedUnit.present
+
+        when: "the unit is deleted"
+        def results = delete("/units/${unit.id.uuidValue()}")
+
+        then: "the unit is removed and a status code returned"
+        results.andExpect(status().isNoContent())
+
+        when: "the unit is loaded again"
+        loadedUnit = txTemplate.execute {
+            urepository.findById(unit.id)
+        }
+
+        then: "the unit is no longer present"
+        loadedUnit.empty
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "delete a unit containing linked entities"() {
+        given: "a unit with linked asset and process"
+        def unit = createTestClientUnit()
+
+        Map createAssetRequest = [
+            name: 'New Asset',
+            owner: [
+                displayName: 'test2',
+                targetUri: '/units/' + unit.id.uuidValue()
+            ]
+        ]
+        def creatAssetResponse = post('/assets', createAssetRequest)
+        def createAssetResult = new JsonSlurper().parseText(creatAssetResponse.andReturn().response.contentAsString)
+
+        Map createProcessRequest = [
+            name: 'New process',
+            owner: [
+                displayName: 'test2',
+                targetUri: '/units/' + unit.id.uuidValue()
+            ]
+        ]
+        def createProcessResponse = post('/processes', createProcessRequest)
+        def createProcessResult = new JsonSlurper().parseText(createProcessResponse.andReturn().response.contentAsString)
+        def processId = createProcessResult.resourceId
+
+        Map putProcessRequest = [
+            name: 'New Process-2',
+            abbreviation: 'u-2',
+            description: 'desc',
+            owner:
+            [
+                targetUri: '/units/'+unit.id.uuidValue(),
+                displayName: 'test unit'
+            ]
+            ,
+            domains: [
+                [
+                    targetUri: '/domains/'+domain.id.uuidValue(),
+                    displayName: 'test ddd'
+                ]
+            ],
+            links:
+            [
+                'process_DataCategories' : [
+                    [
+                        applicableTo: [
+                            "Process"
+                        ],
+                        name:'test link prcess->asset',
+                        domains: [],
+                        attributes: [
+                            process_DataCategories_dataOrigin: 'process_DataCategories_dataOrigin_direct',
+                            process_DataCategories_comment: 'ok'
+                        ],
+                        target:
+                        [
+                            targetUri: '/assets/'+createAssetResult.resourceId,
+                            displayName: 'test ddd'
+                        ]
+                    ]]
+            ]
+        ]
+
+        Map headers = [
+            'If-Match': ETag.from(createProcessResult.resourceId, 0)
+        ]
+        put("/processes/${createProcessResult.resourceId}", putProcessRequest, headers)
+
 
         when: "the unit is loaded"
         def loadedUnit = txTemplate.execute {
