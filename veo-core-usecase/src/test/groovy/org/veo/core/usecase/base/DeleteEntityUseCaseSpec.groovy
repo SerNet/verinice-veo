@@ -65,7 +65,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
             personRepository,
             processRepository
         ].each {
-            1 * it.findByLinkTarget(_) >> []
+            0 * it.findByLinkTarget(_)
         }
         1 * processRepository.findById(id) >> Optional.of(process)
         1 * processRepository.deleteById(id)
@@ -87,7 +87,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
             personRepository,
             processRepository
         ].each {
-            1 * it.findByLinkTarget(_) >> []
+            0 * it.findByLinkTarget(_)
         }
         1 * personRepository.findById(id) >> Optional.of(person)
         1 * personRepository.deleteById(id)
@@ -116,7 +116,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
             personRepository,
             processRepository
         ].each {
-            1 * it.findByLinkTarget(_) >> [person]
+            0 * it.findByLinkTarget(_)
         }
         1 * documentRepository.findById(id) >> Optional.of(document)
         1 * documentRepository.deleteById(id)
