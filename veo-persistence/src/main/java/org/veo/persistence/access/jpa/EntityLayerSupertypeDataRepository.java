@@ -39,10 +39,37 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     @Override
     Optional<T> findById(String id);
 
+    /**
+     * Find all entities of the repository's type in the given units. This includes
+     * normal and group types, i.e. 'Person' as well as 'PersonGroup' instances.
+     *
+     * @param unitIds
+     *            a list of units' UUIDs
+     */
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
+            + "left join fetch e.links " + "where e.owner.dbId IN ?1")
     List<T> findByUnits(Set<String> unitIds);
 
+    /**
+     * Find all entities of the repository's type in the given units. Groups will
+     * not be included in the result. I.e. 'Person' will be returned, but not
+     * 'PersonGroup' instances.
+     *
+     * @param unitIds
+     *            a list of units' UUIDs
+     */
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+            + "left join fetch e.links " + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
+    List<T> findEntitiesByUnits(Set<String> unitIds);
+
+    /**
+     * Find all entity groups of the repository's type in the given units. Only
+     * groups will be included in the result. I.e. 'Person' will not be returned,
+     * but only 'PersonGroup' instances.
+     *
+     * @param unitIds
+     *            a list of units' UUIDs
+     */
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links "
             // + "left join fetch e.members "
@@ -50,8 +77,8 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
 
     /**
-     * Find only entities of the specific type for a client. This method does not
-     * return groups of the specific type. I.e. it will return all 'Person'
+     * Find only entities of the repository's type for a client. This method does
+     * not return groups of the specific type. I.e. it will return all 'Person'
      * instances that are not a 'PersonGroup'.
      *
      * @param clientId
@@ -60,8 +87,13 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e) = #{#entityName}")
     List<T> findEntitiesByOwner_Client_DbId(String clientId);
 
-    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(
-            String uuidValue);
+    /**
+     * Find all groups of the repository's type for a client.
+     *
+     * @param clientId
+     *            the UUID of the client
+     */
+    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(String clientId);
 
     List<T> findByLinks_Target_DbId(String uuidValue);
 }

@@ -66,7 +66,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
                              .map(unit -> unit.getId()
                                               .uuidValue())
                              .collect(Collectors.toSet());
-        return (List<T>) dataRepository.findByUnits(unitIdSet);
+        return (List<T>) dataRepository.findEntitiesByUnits(unitIdSet);
     }
 
     @Override
@@ -92,7 +92,6 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     @Transactional
     public void deleteByUnit(Unit owner) {
         var entities = dataRepository.findByUnits(singleton(owner.getDbId()));
-        entities.addAll((Collection<? extends S>) dataRepository.findGroupsByUnits(singleton(owner.getDbId())));
         // using deleteAll() to utilize batching and optimistic locking:
         dataRepository.deleteAll(entities);
     }
