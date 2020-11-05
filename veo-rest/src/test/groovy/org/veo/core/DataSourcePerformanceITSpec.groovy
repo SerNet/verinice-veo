@@ -251,7 +251,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 0
 
         and:
-        assertDeleteCount(22)
+        assertDeleteCount(25)
         assertInsertCount(0)
         assertUpdateCount(0)
         assertSelectCount(17)
@@ -466,8 +466,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     @Transactional
     def createLinkedEntities() {
         def personGroup = savePersonGroup("parentgroup") // creates group with 2 persons
+
         def asset = newAsset(unit)
         asset = assetRepository.save(asset)
+
         def process = newProcess(unit)
         process = processRepository.save(process)
 
@@ -479,16 +481,22 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         personGroup.addToLinks(link_person_asset)
         personGroup = personRepository.save(personGroup)
 
-        def link_asset_process = entityFactory.createCustomLink("link2", asset, process).with {
+        def link_asset_person = entityFactory.createCustomLink("link2", asset, personGroup).with {
             type = "type2"
             applicableTo = ["Asset"] as Set
             it
         }
+        def link_asset_process = entityFactory.createCustomLink("link3", asset, process).with {
+            type = "type3"
+            applicableTo = ["Asset"] as Set
+            it
+        }
         asset.addToLinks(link_asset_process)
+        asset.addToLinks(link_asset_person)
         asset = assetRepository.save(asset)
 
-        def link_process_person = entityFactory.createCustomLink("link3", process, personGroup).with {
-            type = "type3"
+        def link_process_person = entityFactory.createCustomLink("link4", process, personGroup).with {
+            type = "type4"
             applicableTo = ["Process"] as Set
             it
         }
@@ -498,9 +506,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     def deleteUnit() {
+        personRepository.deleteByUnit(unit)
         assetRepository.deleteByUnit(unit)
         processRepository.deleteByUnit(unit)
-        personRepository.deleteByUnit(unit)
         unitRepository.delete(unit)
     }
 }
