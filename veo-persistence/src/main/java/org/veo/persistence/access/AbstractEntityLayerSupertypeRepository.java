@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.ModelGroup;
@@ -87,10 +89,11 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
                              .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteByUnit(Unit owner) {
         var entities = dataRepository.findByUnits(singleton(owner.getDbId()));
         entities.addAll((Collection<? extends S>) dataRepository.findGroupsByUnits(singleton(owner.getDbId())));
-        // using deleteAll() to use batching and optimistic locking:
+        // using deleteAll() to utilize batching and optimistic locking:
         dataRepository.deleteAll(entities);
     }
 

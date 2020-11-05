@@ -21,14 +21,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.groups.EntityLayerSupertypeGroupData;
 
 public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSupertypeData>
-        extends CrudRepository<T, String> {
+        extends JpaRepository<T, String> {
 
     Collection<T> findByNameContainingIgnoreCase(String search);
 
@@ -39,10 +39,14 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     @Override
     Optional<T> findById(String id);
 
-    @Query("select e from #{#entityName} as e where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+            + "left join fetch e.links " + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
     List<T> findByUnits(Set<String> unitIds);
 
-    @Query("select e from #{#entityName} as e where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+            + "left join fetch e.links "
+            // + "left join fetch e.members "
+            + "where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
 
     @Query("select e from #{#entityName} as e where e.owner.dbId = ?1 and type(e) = #{#entityName}")

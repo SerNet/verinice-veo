@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -42,7 +43,7 @@ public class ProcessGroupData extends ProcessData
     @JoinTable(name = "process_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Process> members;
+    private Set<Process> members = new HashSet<>();
 
     @Override
     public Set<Process> getMembers() {
@@ -51,6 +52,7 @@ public class ProcessGroupData extends ProcessData
 
     @Override
     public void setMembers(Set<Process> members) {
-        this.members = members;
+        this.members.clear();
+        this.members.addAll(members);
     }
 }

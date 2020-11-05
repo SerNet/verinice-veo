@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -42,7 +43,7 @@ public class ControlGroupData extends ControlData
     @JoinTable(name = "control_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Control> members;
+    private Set<Control> members = new HashSet<>();
 
     @Override
     public Set<Control> getMembers() {
@@ -51,7 +52,8 @@ public class ControlGroupData extends ControlData
 
     @Override
     public void setMembers(Set<Control> members) {
-        this.members = members;
+        this.members.clear();
+        this.members.addAll(members);
     }
 
 }

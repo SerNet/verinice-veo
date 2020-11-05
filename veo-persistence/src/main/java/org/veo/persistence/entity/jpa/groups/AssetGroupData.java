@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -42,7 +43,7 @@ public class AssetGroupData extends AssetData
     @JoinTable(name = "asset_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Asset> members;
+    private Set<Asset> members = new HashSet<>();
 
     @Override
     public Set<Asset> getMembers() {
@@ -51,7 +52,8 @@ public class AssetGroupData extends AssetData
 
     @Override
     public void setMembers(Set<Asset> members) {
-        this.members = members;
+        this.members.clear();
+        this.members.addAll(members);
     }
 
 }

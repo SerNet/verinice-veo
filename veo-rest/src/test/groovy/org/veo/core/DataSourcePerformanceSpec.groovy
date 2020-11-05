@@ -180,7 +180,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(600)
         assertUpdateCount(101)
-        assertSelectCount(1310)
+        assertSelectCount(310)
     }
 
     def "SQL performance for selecting units of a client"() {
@@ -232,7 +232,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         assertDeleteCount(709)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(913)
+        assertSelectCount(4)
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 persongroup linked to each other"() {
@@ -254,7 +254,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
         assertDeleteCount(22)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(33)
+        assertSelectCount(18)
     }
 
 
@@ -367,6 +367,7 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
 
     @Transactional
     def savePersonSubGroups(int count, String baseName, PersonGroup group) {
+        def subGroups = []
         for (i in 0..<count) {
             def personGroupId = Key.newUuid()
             def dolly = newPerson(unit)
@@ -381,9 +382,9 @@ class DataSourcePerformanceSpec extends VeoSpringSpec {
                 it
             }
             subGroup.version(USERNAME, null)
-            subGroup = personRepository.save(subGroup)
-            group.getMembers().add(subGroup)
+            subGroups.add(subGroup)
         }
+        group.getMembers().addAll(subGroups)
         personRepository.save(group)
     }
 
