@@ -16,9 +16,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import org.veo.core.entity.CustomProperties
-import org.veo.persistence.entity.jpa.CustomPropertiesData
-
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -29,15 +26,11 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
-import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomProperties
-import org.veo.core.entity.ModelObject
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.AssetData
-import org.veo.persistence.entity.jpa.BaseModelObjectData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomLinkData
@@ -52,10 +45,10 @@ import org.veo.persistence.entity.jpa.groups.DocumentGroupData
 import org.veo.persistence.entity.jpa.groups.PersonGroupData
 import org.veo.persistence.entity.jpa.groups.ProcessGroupData
 
-@SpringBootTest(classes = IdentityConsistencySpec.class)
+@SpringBootTest(classes = IdentityConsistencyITSpec.class)
 @ComponentScan("org.veo")
 @ActiveProfiles("test")
-class IdentityConsistencySpec<T> extends VeoSpringSpec {
+class IdentityConsistencyITSpec<T> extends VeoSpringSpec {
 
 
     @PersistenceContext

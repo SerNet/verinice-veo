@@ -31,10 +31,10 @@ import org.veo.core.entity.groups.PersonGroup
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.*
 
-@SpringBootTest(classes = DataSourcePerformanceSpec.class)
+@SpringBootTest(classes = DataSourcePerformanceITSpec.class)
 @ComponentScan("org.veo")
 @ActiveProfiles(["test", "stats"])
-class DataSourcePerformanceSpec extends VeoSpringSpec {
+class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
 
     public static final String PROP_KEY = "propKey"
