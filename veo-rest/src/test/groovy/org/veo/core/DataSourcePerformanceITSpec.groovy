@@ -251,10 +251,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 0
 
         and:
-        assertDeleteCount(25)
+        assertDeleteCount(30)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(17)
+        assertSelectCount(19)
     }
 
 
@@ -470,6 +470,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def asset = newAsset(unit)
         asset = assetRepository.save(asset)
 
+        def asset2 = newAsset(unit)
+        asset2 = assetRepository.save(asset2)
+
         def process = newProcess(unit)
         process = processRepository.save(process)
 
@@ -502,12 +505,20 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
         process.addToLinks(link_process_person)
         process = processRepository.save(process)
+
+        def link_asset_asset = entityFactory.createCustomLink("link5", asset, asset2).with {
+            type = "type5"
+            applicableTo = ["Asset"] as Set
+            it
+        }
+        asset.addToLinks(link_asset_asset)
+        asset = assetRepository.save(asset)
     }
 
     @Transactional
     def deleteUnit() {
-        personRepository.deleteByUnit(unit)
         assetRepository.deleteByUnit(unit)
+        personRepository.deleteByUnit(unit)
         processRepository.deleteByUnit(unit)
         unitRepository.delete(unit)
     }
