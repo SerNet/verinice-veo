@@ -123,10 +123,10 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     }
 
     /**
-     * Add the given CustomLink to the collection links. opposite of
-     * EntityLayerSupertype.source
+     * Add the given CustomLink to the collection of links. Manages the association
+     * between EntityLayerSupertype and CustomLink.
      *
-     * @return true if added
+     * @return true if the link was successfully added
      */
     public boolean addToLinks(CustomLink aCustomLink) {
         aCustomLink.setSource(this);
@@ -139,6 +139,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
      *
      * @return true if removed
      */
+    @Override
     public boolean removeFromLinks(CustomLink aCustomLink) {
         aCustomLink.setSource(null);
         return this.links.remove(aCustomLink);
