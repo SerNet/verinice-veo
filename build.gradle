@@ -178,11 +178,15 @@ subprojects {
         runtimeOnly 'ch.qos.logback:logback-classic'
     }
 
-    compileJava {
-        options.debugOptions.debugLevel = "source,lines,vars"
+    tasks.withType(JavaCompile) {
+        configure(options){
+            debugOptions.debugLevel = "source,lines,vars"
+            // See https://docs.oracle.com/en/java/javase/11/tools/javac.html#GUID-AEEC9F07-CB49-4E96-8BC7-BCC2C7F725C9
+            // for a detailed list of linting keys.
+            compilerArgs.addAll([
+                '-Xlint:all',
+                '-Xlint:-serial'
+            ])
+        }
     }
-    compileTestJava{
-        options.debugOptions.debugLevel = "source,lines,vars"
-    }
-
 }
