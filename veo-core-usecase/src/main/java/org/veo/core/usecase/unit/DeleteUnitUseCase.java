@@ -19,6 +19,7 @@ package org.veo.core.usecase.unit;
 import java.util.List;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Asset;
@@ -53,6 +54,7 @@ public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, E
     }
 
     @Override
+    @Transactional
     public EmptyOutput execute(InputData input) {
         Client client = clientRepository.findById(input.getAuthenticatedClient()
                                                        .getId())
