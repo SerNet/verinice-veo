@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "93b49df2-6c97-49ef-b4c0-254e14d47965",
+    "_postman_id": "ded24172-ef03-4738-858d-a08cc710a102",
     "name": "verinice.VEO REST API",
     "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -15,7 +15,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f1fe60f3-77c0-4917-b39b-945a1097930e",
+                "id": "f83fef51-e003-4117-89ff-1f3a95bd84d3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -33,7 +33,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "08549c25-0355-4ea0-9ba8-fd8cf1f89b7f",
+                "id": "760af45b-9efc-47b8-aa18-a89941020284",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -103,7 +103,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "abea3d4b-7cfe-4d45-a957-21d5894c1ef0",
+                "id": "8c86b2db-afc6-482c-a2f0-0946dbef8597",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -226,7 +226,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ba8ba4ba-d4b3-4b5c-ae67-019a7aa37cb2",
+                "id": "38db7580-5be9-4450-93f9-1d10e24191bd",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -299,7 +299,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "25c6c926-e8ad-495b-8758-fda669defbeb",
+                "id": "28dea835-7f6f-44d5-925a-4355d1da219b",
                 "exec": [
                   "pm.collectionVariables.set(\"unitName\", \"Unit of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -309,7 +309,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "89e0ad88-ad61-4a93-a1c3-a8727cf30ecf",
+                "id": "ca45409c-36ae-46a5-b8e3-fda3fe0a747a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -405,7 +405,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "c83761b1-16a6-4003-a3ff-71d6786a0ae7",
+                "id": "b4bcafd8-00bc-4c17-8536-ea48eca1df02",
                 "exec": [
                   ""
                 ],
@@ -415,7 +415,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "222f4eee-b62c-4f38-bf67-62e13c0ead3a",
+                "id": "33b28670-7a61-48c8-a075-f902972a9ab1",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(412);",
@@ -506,7 +506,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "68b23278-5aed-4490-a00b-6060adb8a3d4",
+                "id": "958be0a5-ac6d-48b7-9ae2-2a23eacb6b29",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -516,7 +516,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "b1cb72d5-78c2-40a3-948e-72faa51c81f9",
+                "id": "e1420b7d-1f68-4b4e-9cce-2b7fe16ddcb7",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -594,7 +594,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d0ae437c-4c06-49d5-a6d4-19d8cb181390",
+                "id": "913638e0-464b-4719-b150-f9dc28870854",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -647,39 +647,6 @@
           },
           "response": [
             {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Asset loaded",
               "originalRequest": {
                 "method": "GET",
@@ -711,6 +678,39 @@
               ],
               "cookie": [],
               "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+            },
+            {
+              "name": "Asset not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -720,7 +720,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0206f756-a048-49a4-bf56-50362d79eef7",
+                "id": "622292be-f700-487b-bb62-951c471fbc98",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -799,7 +799,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "35e2ed0c-f7c3-4497-a6c4-6a697923931c",
+                "id": "6747c670-dddf-4d81-9e24-7ac814021629",
                 "exec": [
                   "pm.collectionVariables.set(\"assetName\", \"Asset of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -809,7 +809,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0c981eb1-af56-454d-a71c-36b6aa1fe9d4",
+                "id": "887fb297-b1aa-4e3e-b23c-2997e8a8a282",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -861,43 +861,6 @@
           },
           "response": [
             {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Asset updated",
               "originalRequest": {
                 "method": "PUT",
@@ -933,6 +896,43 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Asset not found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -942,7 +942,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "8b629935-b9b6-4938-bd54-1bdcf4f4b99c",
+                "id": "820d536b-8c34-4838-8e09-ee485c7b0c21",
                 "exec": [
                   ""
                 ],
@@ -952,7 +952,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "17cd6786-fcfb-4064-9f4f-cb670e69a7ab",
+                "id": "0edfaee0-361b-4918-8aaa-9b3bea1acd11",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(412);",
@@ -1080,7 +1080,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "75dbac06-e4ec-4859-bd9d-d8d3c391d643",
+                "id": "cc19b0a2-e9c3-4f60-8362-756e6270ce7d",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -1090,7 +1090,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "8ed0f872-5880-4bed-a4b0-e5766b2f6a47",
+                "id": "30422b8a-bf34-4070-8813-80e27c6ad480",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1168,7 +1168,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "739c7fd0-b090-4ac6-b0b0-88f3f8dd2703",
+                "id": "8de6dfe8-ab9a-4e09-9992-0ef6aaa81004",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1259,7 +1259,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "67784a87-c767-4e94-8682-954b516d33cf",
+                "id": "8f9ffe26-f9a3-4713-8844-5d10e59928a4",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -1269,7 +1269,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "b7678be0-4fe8-465c-8f0f-d8bb0ef42b1e",
+                "id": "cb55f265-1c1c-41e7-bd01-db85439a2101",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1365,7 +1365,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "0ae384ea-ed30-4373-8ecb-302980cf4cc4",
+                "id": "fd0c7b21-6609-4495-b6ae-387269b1c44b",
                 "exec": [
                   ""
                 ],
@@ -1375,7 +1375,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ad4b66e7-10dd-44da-b51c-56abecf1238a",
+                "id": "a622e838-8a48-41d0-9a2d-c384254a4c5e",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(412);",
@@ -1466,7 +1466,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "8910abee-8c3c-4413-ba68-c14b0e4c8081",
+                "id": "969144eb-d5af-49f6-ba17-1a5bc625d99b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1545,7 +1545,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "c1b17a67-034c-48e2-97ec-e64228bb37ab",
+                "id": "71ee16b4-cacc-4dbe-92d0-f9a885ca640a",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -1555,7 +1555,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "5dc2ccf6-0341-4e2e-ad75-1b50467ddc78",
+                "id": "c3065dda-a6c5-40b4-85b7-aad593250485",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -1633,7 +1633,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d6356778-db94-47b2-8feb-0d9a545192e9",
+                "id": "597dc90c-f091-41f6-8c40-2c2aba144849",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1712,7 +1712,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "21d4e2a5-2455-4634-beb6-c3b31b3bf90d",
+                "id": "7de9afd9-5869-4896-a3a9-a6b966fb6baa",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1838,7 +1838,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "0a41cf29-b888-4214-872c-bd20fe5cf050",
+                "id": "9f800f4c-edc2-4eaa-a33e-715877588a78",
                 "exec": [
                   "pm.collectionVariables.set(\"personName\", \"Person with \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -1848,7 +1848,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9d70d8ec-e813-4565-9fd1-f2bf84dd65d3",
+                "id": "31a5f186-99a6-48cf-90dc-6e6be785b6e3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -1944,7 +1944,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "08c8e32c-c39a-44e4-a5c3-0eebccce5b01",
+                "id": "fc294598-bd35-46e1-94e7-56c39b37edeb",
                 "exec": [
                   ""
                 ],
@@ -1954,7 +1954,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "5c516c6a-0d30-4f32-a1db-1aca46bbf7f3",
+                "id": "7000c24b-3e4e-4e12-bfce-8df5dbe5b9b6",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(412);",
@@ -2045,7 +2045,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "ece78736-c6a6-48f3-bff2-6fdb394d55ad",
+                "id": "d8496c34-ef62-44c5-b921-4639776593f6",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -2055,7 +2055,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9121d3a9-7feb-4d70-8f95-227658bd795a",
+                "id": "42d852d8-e98d-4285-92fe-5337e310fcdf",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -2133,7 +2133,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ceede0d6-2a7a-44e4-a68e-866b53b28e86",
+                "id": "b10207fb-0b8c-469b-a021-51adf48d459b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2212,7 +2212,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "93cac063-ac95-4caa-9db2-3a1e92d5e446",
+                "id": "f6824f37-87ff-4885-b69c-21a255741046",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2338,7 +2338,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "99b48a85-f833-4186-915a-7a53b05b0ea7",
+                "id": "626397fa-7a1c-4cb7-8ad5-d3ef45368940",
                 "exec": [
                   "pm.collectionVariables.set(\"controlName\", \"Control of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -2348,7 +2348,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "b02443ed-31c8-4667-bafa-e6f88a775fbb",
+                "id": "403bce51-d0de-44fb-8ccf-e56807e7fdc3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2444,7 +2444,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "7b25d514-ae81-4786-bc53-9f1222466711",
+                "id": "89323890-60d0-4d4b-8561-393dc7665b1b",
                 "exec": [
                   ""
                 ],
@@ -2454,7 +2454,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "e93ac9d2-73e4-4cd7-a852-4b2bb9396eb1",
+                "id": "9ff9cf00-4534-4625-83f9-fa2960ab629d",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(412);",
@@ -2545,7 +2545,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f916b83f-92d5-4805-b8c0-ae7b0c0535b2",
+                "id": "e3652108-782c-47fa-ab45-d5a24524a625",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2579,39 +2579,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -2643,6 +2610,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -2652,7 +2652,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d357d8ff-94f6-4ad8-9236-95a9c003d488",
+                "id": "b73685f9-ae1f-4c28-bf02-b8e15a6b2eed",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2686,39 +2686,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -2750,6 +2717,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -2759,7 +2759,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "23228758-3622-47bd-8af0-922066f53ebe",
+                "id": "733d8c6b-faaa-45f4-b594-989b0bf154ed",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2866,7 +2866,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "7b835d9a-3a2d-497e-89df-69f8d87300d6",
+                "id": "ad94cc2a-33bc-4ed1-aaf8-7777b2f67c65",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -2973,7 +2973,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "366cc8e9-e70f-4eaa-a06b-b1bd1e7f2d23",
+                "id": "359e8dd4-d9f3-4562-be67-2079a83b4ab8",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -3080,7 +3080,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "62b9f55d-75d6-4a79-a819-830833b7aa71",
+                "id": "411c3006-67c6-4d16-9e6d-9d12ce8007fd",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3098,7 +3098,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "34b882d1-a352-4848-9ee2-9e27c6557c09",
+                "id": "0d4bc59c-d914-4c57-be19-d312a066374d",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -3168,7 +3168,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "f0f455fc-a06d-4cb6-9bba-b19a8ed312f4",
+                "id": "767dbb5d-d4bd-4e42-9294-a150d4d41278",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -3178,7 +3178,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3a3310fc-db6c-43dd-a3b3-4aeaf9f7524e",
+                "id": "1c411baf-c83e-42c3-8677-d1de3155ee8f",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3256,7 +3256,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "de5d360e-e5c8-46ca-9584-7dd83eb793ee",
+                "id": "ef39713b-01f7-4531-a7c8-137c8d8e6bba",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -3266,7 +3266,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "dbd527d7-0ad2-49ea-b614-920ee8eab0ca",
+                "id": "105621e3-fdfb-420e-80ee-2f02a687872f",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3344,7 +3344,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d73a55c2-eea7-4eca-aaf6-341abc360c48",
+                "id": "09b6b529-d9f1-430b-899f-8c40a0a9a6b3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3426,7 +3426,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "984e8a17-0292-495c-928f-a34b79549ceb",
+                "id": "893f0ae4-6975-40b4-a1eb-158ce1075f88",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'CRUD test person');"
                 ],
@@ -3436,7 +3436,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4c6c89a4-7ac0-47f4-8ba9-51b82f2a16a3",
+                "id": "3b7d9e29-a12e-4599-885a-f8a0756971bc",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3519,7 +3519,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "fad958a9-a825-45ae-80b5-390a5fc22762",
+                "id": "431a4ddb-6be6-45e1-b83d-ceb7cb1017b5",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3563,39 +3563,6 @@
           },
           "response": [
             {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
-            {
               "name": "Asset loaded",
               "originalRequest": {
                 "method": "GET",
@@ -3627,6 +3594,39 @@
               ],
               "cookie": [],
               "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+            },
+            {
+              "name": "Asset not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
             }
           ]
         },
@@ -3636,7 +3636,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "da302e1e-0c5a-4a4e-b5e8-68d5eaa7d3c6",
+                "id": "c672f3f0-a2b4-4199-a727-657888385ae0",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'CRUD test control');"
                 ],
@@ -3646,7 +3646,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "e855a5ad-99b7-4af3-a9dd-7e5adc045603",
+                "id": "b79c6e2b-601b-42a7-b9df-b3dd0d3721a8",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3724,7 +3724,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f3ad8ceb-666a-4944-9da6-7c97e1d9abea",
+                "id": "4bb92ea5-8f8e-45fa-b8cd-e382e84fdbf1",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -3841,7 +3841,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "66492732-4341-4466-a29a-ab680bb61eda",
+                "id": "0cc6c5c5-6899-4616-ac4f-e9c48d6e9510",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -3851,7 +3851,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "44346eb6-61ae-4fc0-843b-b3d759decc29",
+                "id": "1b21ccc5-50e8-4049-b7ef-73d108766bc2",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -3929,7 +3929,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "487b0318-6baf-4716-a40c-7206e0896204",
+                "id": "dc00b3d3-5456-4eb3-a7df-eeb57eab305b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4012,7 +4012,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "c5b968a3-86c2-4878-96d7-85232fb155cb",
+                "id": "105ab11c-7bcc-4266-966b-7cb2691c0972",
                 "exec": [
                   "pm.collectionVariables.set(\"processName\", \"Process of \" + pm.variables.replaceIn('{{$randomFirstName}}'));"
                 ],
@@ -4022,7 +4022,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "49831589-9846-4711-9256-807f75c4281a",
+                "id": "7e855748-89bb-437b-b2ed-f81a1c05c089",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4100,7 +4100,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d10ac24d-b53f-4c10-ab80-4cec38748e48",
+                "id": "046e7ced-ad85-48cd-b75d-78fe8c3f0a4a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4173,6 +4173,113 @@
               "body": ""
             }
           ]
+        },
+        {
+          "name": "Delete the work unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "30763ed0-81e6-4aa4-b8f1-355c0b51b0c6",
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
         }
       ],
       "description": "Basic CRUD operations",
@@ -4189,7 +4296,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "e9e9fb09-8655-447f-bfab-aeba07c49cb1",
+                "id": "0c7c8a7d-c544-486e-963d-029dd80f7a6d",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4207,7 +4314,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "fe218796-be51-4636-b458-7eef8a24c47e",
+                "id": "3831c841-6df0-4de3-9088-f04a78684083",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -4277,7 +4384,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "2ab33399-376f-4399-90ff-405f0db70871",
+                "id": "8fa55bab-86b0-4da1-a99a-c5730b7d955c",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4295,7 +4402,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "c8088182-2820-4455-af7c-d76757af5063",
+                "id": "177b66b9-39d6-483a-a116-b050300f4323",
                 "exec": [
                   "pm.collectionVariables.set('subUnitName', 'CRUD test sub-unit');"
                 ],
@@ -4365,7 +4472,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "f9d3cc37-c9aa-4ad7-bb92-ce285a8c42eb",
+                "id": "1b8d4503-37e0-404a-8847-7e561586a47d",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'filter test asset');"
                 ],
@@ -4375,7 +4482,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f94778b6-64a3-457c-afcf-627eb8a3f13e",
+                "id": "ef1072c3-e872-4cf4-8332-83a003f660b0",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4453,7 +4560,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "7101a9b6-1931-4c7a-b36b-8888167011b7",
+                "id": "d024d8f2-6256-4c0c-b6db-5b652bac2b1d",
                 "exec": [
                   "pm.collectionVariables.set('processName', 'filter test process');"
                 ],
@@ -4463,7 +4570,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ce7782e0-da4d-46dd-912c-f5d8a9936f62",
+                "id": "003e2b24-7f1c-4faa-a129-136748d42590",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4541,7 +4648,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "cd009ea7-88ff-4a0e-9620-b1591f198e0e",
+                "id": "cd5f1e2d-6457-4378-9cb2-101450ce6375",
                 "exec": [
                   "pm.collectionVariables.set('personName', 'filter test person');"
                 ],
@@ -4551,7 +4658,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "745d1b78-3718-48e5-bbaf-5826d052223c",
+                "id": "92a307e9-d2e8-41c7-afed-09a89ca515c1",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4629,7 +4736,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "4abb1cc8-d1a0-47be-bc06-73d105cb0a1a",
+                "id": "fb57170f-40fa-433a-a403-957aa7de5c56",
                 "exec": [
                   "pm.collectionVariables.set('controlName', 'filter test control');"
                 ],
@@ -4639,7 +4746,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "57c4da8c-e766-4eee-8652-b14471082849",
+                "id": "0f9a146b-7125-44eb-bf5c-76bbf1f5e342",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -4717,7 +4824,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0ee7263c-a723-4fc6-84ce-f244a695024d",
+                "id": "b9f36a60-3d82-447e-b9d0-4886e08eb36b",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4755,39 +4862,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit loaded",
               "originalRequest": {
                 "method": "GET",
@@ -4819,6 +4893,39 @@
               ],
               "cookie": [],
               "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -4828,7 +4935,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "756b1319-6e3f-4889-9841-ae1beaca5dd7",
+                "id": "ed1725e9-869e-442a-a650-4b0b43b71f89",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4907,7 +5014,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "2d4741b0-3106-4dba-a6fc-fdcc51a4f39d",
+                "id": "68cbd2d9-fae3-474b-9daf-a236f3070ac3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -4986,7 +5093,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a89e85a4-65db-457a-b42e-4b9df79a21ef",
+                "id": "94ad5a9f-af76-4113-b01a-a95d540386bb",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5065,7 +5172,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a203a995-a510-48b0-8e11-5ba68ed48372",
+                "id": "9cace24f-ed92-4251-beb7-d0d8d2cf3bd8",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5144,7 +5251,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "da3863fd-27ea-43ad-a23c-70ab23571003",
+                "id": "5cde04ea-3f07-4963-9b3f-d27b3f002484",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5223,7 +5330,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "0a92b374-445c-405a-827f-6a88bb9a8469",
+                "id": "a588d594-5f8e-43c1-8113-8d4c3d90369c",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(404);",
@@ -5295,7 +5402,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "cfc876ab-0bba-43d0-9bd5-53f753975ab5",
+                "id": "a22b1cf9-6b9d-488f-8ec5-07b1c4336d4a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5329,39 +5436,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -5393,6 +5467,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -5402,7 +5509,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "c67c0990-7371-4b5d-afbf-9b5182643b12",
+                "id": "af4e75de-a389-43e2-965b-c267c96d8875",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5509,7 +5616,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "9eae7c47-18db-4e94-ae71-7b6d349af4da",
+                "id": "074a7270-9c63-45e5-b044-714bf8cf8fd8",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5616,7 +5723,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "93dbc11c-985a-41b3-bacc-c273e2e34379",
+                "id": "85eccee7-b0f6-4b6f-aaa7-07c7f8c24cc0",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -5723,7 +5830,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d3d7368b-0083-48d4-8098-61f581219d8e",
+                "id": "f30727c3-19bd-48d7-ba35-0f823dd3ac6a",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -5757,39 +5864,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -5821,6 +5895,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -5830,7 +5937,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "eed28dff-376b-4f57-aab5-234507ce9bd0",
+                "id": "624a6217-53a1-43d7-9c0e-e660e8b4fd55",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -5864,39 +5971,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -5928,6 +6002,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         }
@@ -5945,7 +6052,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "76d1716e-1984-46f4-81ef-f192a470017e",
+                "id": "5edcf792-e2c6-4cc3-81d7-53affebc52da",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -5963,7 +6070,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "723aebcd-ba8e-45f6-a1d0-74cf8122bf59",
+                "id": "c010df32-6822-4f33-b745-3ecc7b18e066",
                 "exec": [
                   "pm.collectionVariables.set('unitName', 'CRUD test unit');"
                 ],
@@ -6033,7 +6140,7 @@
             {
               "listen": "prerequest",
               "script": {
-                "id": "ea7732c7-ccc8-4157-bdcc-affa15fd1682",
+                "id": "c872931f-d324-49a3-988d-349d6fa8f908",
                 "exec": [
                   "pm.collectionVariables.set('assetName', 'CRUD test asset');"
                 ],
@@ -6043,7 +6150,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "705289c4-2636-4696-a748-d37d4ddfa271",
+                "id": "3da83670-b6e0-48e9-aa77-e24fe4742fe3",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -6121,7 +6228,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "352479ee-c9d3-4afc-af99-8253b9329238",
+                "id": "1ba2ba5d-2f18-438f-9312-903d81fadbd8",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(201);",
@@ -6168,7 +6275,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "4f45b9a7-b27b-4a15-bff8-e457ecebfd0b",
+                "id": "bcd7c3b8-b1ef-4f2b-b98f-cd0d9da81956",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -6196,7 +6303,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "18ab2943-9dcd-438c-a991-620c8ce77ca7",
+                "id": "68c1fe8e-87c8-412f-b953-224878ab887d",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(200);",
@@ -6230,39 +6337,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -6294,6 +6368,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -6303,7 +6410,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a081387d-27c9-4a93-9392-44276a94ad57",
+                "id": "ccb4832d-1177-4eb3-955c-57bfa4d83d97",
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
                   "    pm.response.to.have.status(204);",
@@ -6337,39 +6444,6 @@
           },
           "response": [
             {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit not found",
               "originalRequest": {
                 "method": "DELETE",
@@ -6401,6 +6475,39 @@
               ],
               "cookie": [],
               "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         }
@@ -6414,13 +6521,48 @@
     "type": "oauth2",
     "oauth2": [
       {
+        "key": "tokenType",
+        "value": "bearer",
+        "type": "string"
+      },
+      {
         "key": "accessToken",
         "value": "{{accessToken}}",
         "type": "string"
       },
       {
-        "key": "tokenType",
-        "value": "bearer",
+        "key": "scope",
+        "value": "veo-user",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth",
+        "type": "string"
+      },
+      {
+        "key": "client_authentication",
+        "value": "body",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "veo-development-client",
+        "type": "string"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "http://localhost:8070",
+        "type": "string"
+      },
+      {
+        "key": "tokenName",
+        "value": "veotoken",
         "type": "string"
       },
       {
@@ -6434,7 +6576,7 @@
     {
       "listen": "prerequest",
       "script": {
-        "id": "dc89e1d2-b56e-414e-903f-182602098b36",
+        "id": "6612bfce-1934-4430-86b8-509d0b058b3f",
         "type": "text/javascript",
         "exec": [
           ""
@@ -6444,7 +6586,7 @@
     {
       "listen": "test",
       "script": {
-        "id": "76b0a282-991a-4fce-836c-9de5b698aeaf",
+        "id": "30556f1d-5300-41f8-beb2-a85e58c2a8da",
         "type": "text/javascript",
         "exec": [
           ""
@@ -6454,107 +6596,107 @@
   ],
   "variable": [
     {
-      "id": "6b7ac73a-7c7b-47ce-86bd-9452e3cd9c47",
+      "id": "1b731d27-2709-4677-a508-cb8e7d48915c",
       "key": "baseUrl",
       "value": "http://localhost:8070"
     },
     {
-      "id": "41857a68-00ae-46f9-9fd7-e011ccbada18",
+      "id": "f7f84f05-5875-45cb-be50-e28d00518020",
       "key": "unitId",
       "value": ""
     },
     {
-      "id": "ef0e5306-82ef-4d00-a5ea-82cc17b25a89",
+      "id": "d50e0c04-0d0c-4ac8-8ab9-e709b2c1b1b2",
       "key": "processId",
       "value": ""
     },
     {
-      "id": "a922a1f2-45f3-4bd8-b7ad-d5b891ff0b7d",
+      "id": "61922dbd-43fb-413f-acf3-bf2ca6754b58",
       "key": "processName",
       "value": ""
     },
     {
-      "id": "e402db36-fe0c-486b-a262-05f045bb0c07",
+      "id": "8b8eac35-0d8d-4314-94b5-e8088de9fb84",
       "key": "unitName",
       "value": ""
     },
     {
-      "id": "177f4d1a-1213-4142-a788-e6f088084353",
+      "id": "73eb52f1-c439-4240-8bbc-d31195208068",
       "key": "accessToken",
       "value": ""
     },
     {
-      "id": "f79ba3a6-f5c4-4124-8d04-5b0bd6516f4a",
+      "id": "fd9db6a5-c4b8-461a-ba1b-d5c03c6914cf",
       "key": "assetId",
       "value": ""
     },
     {
-      "id": "4b63d707-7083-4498-822c-b9984d83e08b",
+      "id": "dff1bcc7-0768-4927-85f9-edf4a7e8c390",
       "key": "assetName",
       "value": ""
     },
     {
-      "id": "f4fd74d1-e195-44a0-a7cf-420a85ddf8ab",
+      "id": "50cad7a1-5ffe-49c6-8e1b-18943388e33e",
       "key": "personId",
       "value": ""
     },
     {
-      "id": "64bd3738-17e2-472a-a1ae-c108c258a62e",
+      "id": "4782cb15-b054-4622-879b-83fa598deff8",
       "key": "personName",
       "value": ""
     },
     {
-      "id": "55bd1183-cbb3-4115-821c-98f929184a78",
+      "id": "552109d8-b859-463e-8cca-e6bb2cb2f304",
       "key": "controlId",
       "value": ""
     },
     {
-      "id": "c4b504f1-92a2-4cd3-b910-451df169540d",
+      "id": "3ef0d038-6750-4460-a276-d8ab4620cb3e",
       "key": "controlName",
       "value": ""
     },
     {
-      "id": "50f2a2d8-e528-4a03-bb2f-33e3640b61d4",
+      "id": "1b54ef92-809f-43fb-8faf-05e693805bb7",
       "key": "processIdveo271",
       "value": ""
     },
     {
-      "id": "db26d7fe-df39-4dca-9711-ed7b82047ad9",
+      "id": "b74e1ef6-f760-4b55-aff0-9b65c08a0376",
       "key": "subUnitName",
       "value": ""
     },
     {
-      "id": "2acc39ad-64ef-41b0-b3bb-f32c591fadea",
+      "id": "1179be70-1e54-43bc-9312-b199ac778362",
       "key": "subUnitId",
       "value": ""
     },
     {
-      "id": "ee762ece-0304-46e6-9cc8-327a85c9031f",
+      "id": "68b65782-8851-4ab9-83cd-2ead2d5b11a0",
       "key": "searchId",
       "value": ""
     },
     {
-      "id": "1c28d772-303e-4d8e-86a0-61c80f9536e8",
+      "id": "9c6c98eb-83f3-45d0-9437-076159a4f915",
       "key": "unitETag",
       "value": ""
     },
     {
-      "id": "96b663fa-7ed8-4ba6-9fd9-594b1e9ce7be",
+      "id": "4f51f601-6743-4496-b1ef-7e4732123a70",
       "key": "assetETag",
       "value": ""
     },
     {
-      "id": "1f39c444-56a1-47ee-b50a-1d8f199bfafa",
+      "id": "ccdae364-c200-4834-bbcd-581a1f5551c7",
       "key": "processETag",
       "value": ""
     },
     {
-      "id": "88379c55-989f-4612-926b-6ed709b53f25",
+      "id": "3eb75bc9-db7f-4d18-ac27-be697d95b26b",
       "key": "personETag",
       "value": ""
     },
     {
-      "id": "a8049f7f-5086-4599-9e6a-44ab286a37fa",
+      "id": "590d0db7-6a43-4208-ad7c-8ea99d52b360",
       "key": "controlETag",
       "value": ""
     }
