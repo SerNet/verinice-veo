@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
@@ -31,6 +32,7 @@ import org.veo.core.usecase.repository.Repository;
 import org.veo.persistence.entity.jpa.BaseModelObjectData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
+@Transactional(readOnly = true)
 abstract class AbstractModelObjectRepository<T extends ModelObject, S extends BaseModelObjectData>
         implements Repository<T, Key<UUID>> {
     private final CrudRepository<S, String> dataRepository;
@@ -43,12 +45,14 @@ abstract class AbstractModelObjectRepository<T extends ModelObject, S extends Ba
     }
 
     @Override
+    @Transactional
     public T save(T entity) {
         validation.validateModelObject(entity);
         return (T) dataRepository.save((S) entity);
     }
 
     @Override
+    @Transactional
     public List<T> saveAll(Set<T> entities) {
         entities.forEach(validation::validateModelObject);
         return (List<T>) dataRepository.saveAll((Set<S>) entities);
@@ -66,11 +70,13 @@ abstract class AbstractModelObjectRepository<T extends ModelObject, S extends Ba
     }
 
     @Override
+    @Transactional
     public void delete(T entity) {
         deleteById(entity.getId());
     }
 
     @Override
+    @Transactional
     public void deleteById(Key<UUID> id) {
         dataRepository.deleteById(id.uuidValue());
     }

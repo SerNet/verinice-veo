@@ -24,8 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
@@ -38,6 +37,7 @@ import org.veo.persistence.entity.jpa.BaseModelObjectData;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
+@Transactional(readOnly = true)
 abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>
         extends AbstractModelObjectRepository<T, S> implements EntityLayerSupertypeRepository<T> {
 
@@ -115,6 +115,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     }
 
     @Override
+    @Transactional
     public void deleteById(Key<UUID> id) {
         var links = linkDataRepository.findLinksByTargetIds(singleton(id.uuidValue()));
         linkDataRepository.deleteAll(links);
