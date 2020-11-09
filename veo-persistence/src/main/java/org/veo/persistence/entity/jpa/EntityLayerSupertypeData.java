@@ -84,9 +84,9 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     private Unit owner;
 
     public void setLinks(Set<CustomLink> newLinks) {
-        this.links.clear();
+        links.clear();
         newLinks.forEach(l -> l.setSource(this));
-        this.links.addAll(newLinks);
+        links.addAll(newLinks);
     }
 
     public void setCustomAspects(Set<CustomProperties> aCustomAspects) {

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Process;
 import org.veo.core.usecase.repository.ProcessRepository;
+import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ProcessData;
@@ -29,8 +30,8 @@ public class ProcessRepositoryImpl extends
         AbstractEntityLayerSupertypeRepository<Process, ProcessData> implements ProcessRepository {
 
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository,
-            ModelObjectValidation validation) {
-        super(dataRepository, validation);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
+        super(dataRepository, validation, linkDataRepository);
     }
 
 }

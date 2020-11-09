@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.groups.EntityLayerSupertypeGroupData;
@@ -48,6 +49,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      */
     @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.owner.dbId IN ?1")
+    @Transactional(readOnly = true)
     List<T> findByUnits(Set<String> unitIds);
 
     /**
@@ -60,6 +62,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      */
     @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
+    @Transactional(readOnly = true)
     List<T> findEntitiesByUnits(Set<String> unitIds);
 
     /**
@@ -74,6 +77,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
             + "left join fetch e.links "
             // + "left join fetch e.members "
             + "where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
+    @Transactional(readOnly = true)
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
 
     /**
@@ -86,6 +90,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      */
     @Query("select distinct e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e)"
             + " = #{#entityName}")
+    @Transactional(readOnly = true)
     List<T> findEntitiesByOwner_Client_DbId(String clientId);
 
     /**
@@ -94,7 +99,17 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param clientId
      *            the UUID of the client
      */
+    @Transactional(readOnly = true)
     List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(String clientId);
 
+    /**
+     * Returns all entities of the repository's type that have a link with the given
+     * UUID as target.
+     *
+     * @param uuidValue
+     *            the UUID value of the targetted entity
+     */
+    @Transactional(readOnly = true)
     List<T> findByLinks_Target_DbId(String uuidValue);
+
 }

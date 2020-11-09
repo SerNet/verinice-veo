@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Document;
 import org.veo.core.usecase.repository.DocumentRepository;
+import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.DocumentDataRepository;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
@@ -30,8 +31,8 @@ public class DocumentRepositoryImpl
         implements DocumentRepository {
 
     public DocumentRepositoryImpl(DocumentDataRepository dataRepository,
-            ModelObjectValidation validation) {
-        super(dataRepository, validation);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
+        super(dataRepository, validation, linkDataRepository);
     }
 
 }

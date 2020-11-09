@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Person;
 import org.veo.core.usecase.repository.PersonRepository;
+import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.PersonData;
@@ -29,8 +30,8 @@ public class PersonRepositoryImpl extends AbstractEntityLayerSupertypeRepository
         implements PersonRepository {
 
     public PersonRepositoryImpl(PersonDataRepository dataRepository,
-            ModelObjectValidation validation) {
-        super(dataRepository, validation);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
+        super(dataRepository, validation, linkDataRepository);
     }
 
 }

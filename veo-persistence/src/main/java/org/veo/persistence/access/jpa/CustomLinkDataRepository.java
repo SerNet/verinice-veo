@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2020 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,24 +14,24 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access;
+package org.veo.persistence.access.jpa;
 
-import org.springframework.stereotype.Repository;
+import java.util.Set;
 
-import org.veo.core.entity.Asset;
-import org.veo.core.usecase.repository.AssetRepository;
-import org.veo.persistence.access.jpa.AssetDataRepository;
-import org.veo.persistence.access.jpa.CustomLinkDataRepository;
-import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
-@Repository
-public class AssetRepositoryImpl extends AbstractEntityLayerSupertypeRepository<Asset, AssetData>
-        implements AssetRepository {
+import org.veo.persistence.entity.jpa.CustomLinkData;
 
-    public AssetRepositoryImpl(AssetDataRepository dataRepository, ModelObjectValidation validation,
-            CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
-    }
+public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, String> {
+    @Query("SELECT l FROM customlink l where l.target.dbId  IN ?1")
+    @Transactional(readOnly = true)
+    Set<CustomLinkData> findLinksByTargetIds(Set<String> targetIDs);
 
+    @Query("DELETE FROM customlink l where l.target.dbId  IN ?1")
+    @Transactional()
+    @Modifying
+    void deleteLinksByTargetIds(Set<String> targetIDs);
 }

@@ -21,16 +21,20 @@ import static java.util.Collections.singleton;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
+import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
+import org.veo.persistence.entity.jpa.BaseModelObjectData;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
@@ -39,11 +43,14 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
 
     protected final EntityLayerSupertypeDataRepository<S> dataRepository;
 
+    final CustomLinkDataRepository linkDataRepository;
+
     public AbstractEntityLayerSupertypeRepository(
-            EntityLayerSupertypeDataRepository<S> dataRepository,
-            ModelObjectValidation validation) {
+            EntityLayerSupertypeDataRepository<S> dataRepository, ModelObjectValidation validation,
+            CustomLinkDataRepository linkDataRepository) {
         super(dataRepository, validation);
         this.dataRepository = dataRepository;
+        this.linkDataRepository = linkDataRepository;
     }
 
     @Override
@@ -91,7 +98,12 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     @Transactional
     public void deleteByUnit(Unit owner) {
         var entities = dataRepository.findByUnits(singleton(owner.getDbId()));
+        var entityIDs = entities.stream()
+                                .map(BaseModelObjectData::getDbId)
+                                .collect(Collectors.toSet());
+        var links = linkDataRepository.findLinksByTargetIds(entityIDs);
         // using deleteAll() to utilize batching and optimistic locking:
+        linkDataRepository.deleteAll(links);
         dataRepository.deleteAll(entities);
     }
 
@@ -100,6 +112,13 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
                                                                       .uuidValue())
                                        .stream()
                                        .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteById(Key<UUID> id) {
+        var links = linkDataRepository.findLinksByTargetIds(singleton(id.uuidValue()));
+        linkDataRepository.deleteAll(links);
+        dataRepository.deleteById(id.uuidValue());
     }
 
 }

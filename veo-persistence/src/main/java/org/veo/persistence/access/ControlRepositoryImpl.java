@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import org.veo.core.entity.Control;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
+import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
@@ -29,8 +30,8 @@ public class ControlRepositoryImpl extends
         AbstractEntityLayerSupertypeRepository<Control, ControlData> implements ControlRepository {
 
     public ControlRepositoryImpl(ControlDataRepository dataRepository,
-            ModelObjectValidation validation) {
-        super(dataRepository, validation);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
+        super(dataRepository, validation, linkDataRepository);
     }
 
 }
