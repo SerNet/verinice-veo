@@ -32,11 +32,8 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all persons for a client"() {
         given:
-        EntityFactory factory = Mock()
-        factory.createPerson() >> Mock(Person.class)
 
         TransformTargetToEntityContext targetToEntityContext = Mock()
-        targetToEntityContext.entityFactory >> factory
         def id = Key.newUuid()
         Person person = Mock() {
             getOwner() >> existingUnit

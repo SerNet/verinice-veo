@@ -27,8 +27,6 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
     CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
 
     def "Create new unit in a new client" () {
-        entityFactory.createUnit() >> existingUnit
-
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
         newUnit1.name >> "New unit"

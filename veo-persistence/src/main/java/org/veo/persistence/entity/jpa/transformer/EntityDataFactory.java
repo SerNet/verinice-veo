@@ -62,73 +62,27 @@ import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
 public class EntityDataFactory implements EntityFactory {
 
     @Override
-    public Asset createAsset() {
-        AssetData object = new AssetData();
-        return object;
-    }
-
-    @Override
-    public Client createClient() {
-        return new ClientData();
-    }
-
-    @Override
-    public Control createControl() {
-        return new ControlData();
-    }
-
-    @Override
-    public CustomLink createCustomLink() {
-        return new CustomLinkData();
-    }
-
-    @Override
     public CustomProperties createCustomProperties() {
         return new CustomPropertiesData();
     }
 
     @Override
-    public Document createDocument() {
-        return new DocumentData();
-    }
-
-    @Override
-    public Domain createDomain() {
-        return new DomainData();
-    }
-
-    @Override
-    public Person createPerson() {
-        return new PersonData();
-    }
-
-    @Override
-    public Process createProcess() {
-        return new ProcessData();
-    }
-
-    @Override
-    public Unit createUnit() {
-        return new UnitData();
-    }
-
-    @Override
     public Person createPerson(Key<UUID> id, String name, Unit unit) {
-        Person person = createPerson();
+        Person person = new PersonData();
         setEntityLayerData(person, id, name, unit);
         return person;
     }
 
     @Override
     public Process createProcess(Key<UUID> id, String name, Unit unit) {
-        Process process = createProcess();
+        Process process = new ProcessData();
         setEntityLayerData(process, id, name, unit);
         return process;
     }
 
     @Override
     public Client createClient(Key<UUID> id, String name) {
-        Client client = createClient();
+        Client client = new ClientData();
         client.setId(id);
         client.setName(name);
         client.setDomains(new HashSet<Domain>());
@@ -137,21 +91,21 @@ public class EntityDataFactory implements EntityFactory {
 
     @Override
     public Asset createAsset(Key<UUID> id, String name, Unit unit) {
-        Asset asset = createAsset();
+        Asset asset = new AssetData();
         setEntityLayerData(asset, id, name, unit);
         return asset;
     }
 
     @Override
     public Control createControl(Key<UUID> id, String name, Unit unit) {
-        Control control = createControl();
+        Control control = new ControlData();
         setEntityLayerData(control, id, name, unit);
         return control;
     }
 
     @Override
     public Unit createUnit(Key<UUID> id, String name, Unit parent) {
-        Unit unit = createUnit();
+        Unit unit = new UnitData();
         unit.setId(id);
         unit.setName(name);
         unit.setParent(parent);
@@ -164,14 +118,14 @@ public class EntityDataFactory implements EntityFactory {
 
     @Override
     public Document createDocument(Key<UUID> id, String name, Unit parent) {
-        Document document = createDocument();
+        Document document = new DocumentData();
         setEntityLayerData(document, id, name, parent);
         return document;
     }
 
     @Override
     public Domain createDomain(Key<UUID> id, String name) {
-        Domain domain = createDomain();
+        Domain domain = new DomainData();
         domain.setId(id);
         domain.setName(name);
         return domain;
@@ -180,7 +134,7 @@ public class EntityDataFactory implements EntityFactory {
     @Override
     public CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource) {
-        CustomLink link = createCustomLink();
+        CustomLink link = new CustomLinkData();
         link.setName(name);
         link.setTarget(linkTarget);
         link.setSource(linkSource);

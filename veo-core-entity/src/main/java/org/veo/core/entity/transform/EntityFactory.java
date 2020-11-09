@@ -42,25 +42,7 @@ import org.veo.core.entity.groups.ProcessGroup;
  * @author urszeidler
  */
 public interface EntityFactory {
-    Asset createAsset();
-
-    Client createClient();
-
-    Control createControl();
-
-    CustomLink createCustomLink();
-
     CustomProperties createCustomProperties();
-
-    Document createDocument();
-
-    Domain createDomain();
-
-    Person createPerson();
-
-    Process createProcess();
-
-    Unit createUnit();
 
     Person createPerson(Key<UUID> id, String name, Unit unit);
 

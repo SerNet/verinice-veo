@@ -32,11 +32,7 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a person"() {
         given:
-        EntityFactory factory = Mock()
-        factory.createPerson()>> Mock(Person.class)
-
         TransformTargetToEntityContext targetToEntityContext = Mock()
-        targetToEntityContext.entityFactory >> factory
 
         def id = Key.newUuid()
         Person person = Mock() {
