@@ -1,6 +1,7 @@
 {
   "lang": {
     "de": {
+      "abbreviation": "Abkürzung",
       "assetNum": "Anzahl",
       "assetType": "Art des Assets",
       "assetTypeInf": "Information",
@@ -22,6 +23,8 @@
       "assetStatusRepair": "Reparatur",
       "assetStatusStandby": "Standby",
       "assetStatusReserve": "Reverse",
+      "description": "Beschreibung",
+      "name": "Name",
       "personIsoAnrede": "Anrede",
       "personIsoAnredeNone": "",
       "personIsoAnredeFrau": "Frau",
@@ -167,6 +170,7 @@
       "process_TypeOfSensitiveData": "Art besonders sensitiver Daten"
     },
     "en": {
+      "abbreviation": "Abbreviation",
       "assetNum": "Number",
       "assetType": "Type of Asset",
       "assetTypeInf": "Information",
@@ -188,6 +192,8 @@
       "assetStatusRepair": "Repair",
       "assetStatusStandby": "Standby",
       "assetStatusReserve": "Reverse",
+      "description": "Description",
+      "name": "Name",
       "personIsoAnrede": "Salutation",
       "personIsoAnredeNone": "",
       "personIsoAnredeFrau": "Ms",
@@ -333,6 +339,7 @@
       "process_TypeOfSensitiveData": "Type of particularly sensitive data"
     },
     "cs": {
+      "abbreviation": "Zkratka",
       "assetNum": "Číslo",
       "assetType": "Typ Aktiva",
       "assetTypeInf": "Informace",
@@ -354,6 +361,8 @@
       "assetStatusRepair": "V opravě",
       "assetStatusStandby": "V záloze",
       "assetStatusReserve": "Vráceno",
+      "description": "Popis",
+      "name": "Jméno",
       "personIsoAnrede": "Oslovení",
       "personIsoAnredeNone": "Nízká",
       "personIsoAnredeFrau": "Paní",
@@ -827,6 +836,7 @@
       "processEvaluationOfToms": ""
     },
     "it": {
+      "abbreviation": "Abbreviazione",
       "assetNum": "Numero",
       "assetType": "Tipo di Asset",
       "assetTypeInf": "Information",
@@ -848,6 +858,8 @@
       "assetStatusRepair": "Riparazione",
       "assetStatusStandby": "Modalità standby",
       "assetStatusReserve": "inversa",
+      "description": "Descrizione",
+      "name": "Nome",
       "personIsoAnrede": "Formula di apertura",
       "personIsoAnredeNone": "",
       "personIsoAnredeFrau": "Sig.ra",
