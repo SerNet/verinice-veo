@@ -48,7 +48,7 @@ public interface EntitySchemaService {
      *
      * @param roles
      *            the role identifiers that the user is allowed to see
-     * @param findSchema
+     * @param inputSchema
      *            the input schema from which certain attributes will be removed
      * @return the reduced JSON-schema document
      */
