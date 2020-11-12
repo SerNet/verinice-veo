@@ -19,6 +19,7 @@ package org.veo;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,10 +47,13 @@ public class SchemaMerger {
     }
 
     public void extendSchema(JsonNode schema, String type) {
-        Optional.ofNullable(customAspects.get(type))
-                .ifPresent(extensions -> processCustomAspects(extensions, schema));
-        Optional.ofNullable(customlinks.get(type))
-                .ifPresent(extensions -> processLinkSchemas(extensions, schema));
+        var aspectExtensions = Optional.ofNullable(customAspects.get(type))
+                                       .orElseGet(Collections::emptyList);
+        processCustomAspects(aspectExtensions, schema);
+
+        var linkExtensions = Optional.ofNullable(customlinks.get(type))
+                                     .orElseGet(Collections::emptyList);
+        processLinkSchemas(linkExtensions, schema);
     }
 
     /**
