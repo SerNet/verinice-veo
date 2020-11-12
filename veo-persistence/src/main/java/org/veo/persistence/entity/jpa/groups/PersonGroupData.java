@@ -43,7 +43,7 @@ public class PersonGroupData extends PersonData
     @JoinTable(name = "person_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Person> members = new HashSet<>();
+    final private Set<Person> members = new HashSet<>();
 
     @Override
     public Set<Person> getMembers() {

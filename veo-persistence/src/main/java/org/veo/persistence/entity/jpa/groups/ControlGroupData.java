@@ -43,7 +43,7 @@ public class ControlGroupData extends ControlData
     @JoinTable(name = "control_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Control> members = new HashSet<>();
+    final private Set<Control> members = new HashSet<>();
 
     @Override
     public Set<Control> getMembers() {

@@ -43,7 +43,7 @@ public class ProcessGroupData extends ProcessData
     @JoinTable(name = "process_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Process> members = new HashSet<>();
+    final private Set<Process> members = new HashSet<>();
 
     @Override
     public Set<Process> getMembers() {

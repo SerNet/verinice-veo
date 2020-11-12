@@ -43,7 +43,7 @@ public class DocumentGroupData extends DocumentData
     @JoinTable(name = "document_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Document> members = new HashSet<>();
+    final private Set<Document> members = new HashSet<>();
 
     @Override
     public Set<Document> getMembers() {

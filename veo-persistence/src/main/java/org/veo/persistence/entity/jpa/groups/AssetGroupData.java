@@ -43,7 +43,7 @@ public class AssetGroupData extends AssetData
     @JoinTable(name = "asset_group_members",
                joinColumns = @JoinColumn(name = "group_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Asset> members = new HashSet<>();
+    final private Set<Asset> members = new HashSet<>();
 
     @Override
     public Set<Asset> getMembers() {

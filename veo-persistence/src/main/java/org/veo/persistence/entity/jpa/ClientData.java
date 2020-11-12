@@ -46,7 +46,7 @@ public class ClientData extends BaseModelObjectData implements Client {
                cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = DomainData.class)
-    private Set<Domain> domains = new HashSet<>();
+    final private Set<Domain> domains = new HashSet<>();
 
     public void setDomains(Set<Domain> newDomains) {
         domains.clear();
