@@ -18,6 +18,7 @@ package org.veo.persistence.entity.jpa;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,7 +75,7 @@ public class CustomPropertiesData implements CustomProperties {
     private Set<String> applicableTo;
 
     @ManyToMany(targetEntity = DomainData.class)
-    protected Set<Domain> domains;
+    final protected Set<Domain> domains = new HashSet<>();
 
     @OneToMany(targetEntity = PropertyData.class,
                fetch = FetchType.EAGER,
@@ -186,5 +187,11 @@ public class CustomPropertiesData implements CustomProperties {
      */
     public boolean removeFromDomains(Domain aDomain) {
         return this.domains.remove(aDomain);
+    }
+
+    @Override
+    public void setDomains(Set<Domain> newDomains) {
+        domains.clear();
+        domains.addAll(newDomains);
     }
 }

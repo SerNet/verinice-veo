@@ -99,7 +99,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(11)
+        assertInsertCount(7)
         assertUpdateCount(1)
         assertSelectCount(7)
     }
@@ -130,7 +130,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(14)
+        assertInsertCount(5)
         assertUpdateCount(0)
         assertSelectCount(3)
     }
@@ -161,7 +161,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(5)
+        assertInsertCount(3)
         assertUpdateCount(1)
         assertSelectCount(3)
     }
@@ -178,8 +178,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(600)
-        assertUpdateCount(101)
+        assertInsertCount(211)
+        assertUpdateCount(4)
         assertSelectCount(310)
     }
 
@@ -229,7 +229,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.delete(unit)
 
         then:
-        assertDeleteCount(709)
+        assertDeleteCount(407)
         assertInsertCount(0)
         assertUpdateCount(0)
         assertSelectCount(4)
@@ -251,7 +251,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 0
 
         and:
-        assertDeleteCount(30)
+        assertDeleteCount(25)
         assertInsertCount(0)
         assertUpdateCount(0)
         assertSelectCount(22)
@@ -277,8 +277,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(2)
-        assertUpdateCount(2)
+        assertInsertCount(1)
+        assertUpdateCount(1)
         assertSelectCount(5)
     }
 
