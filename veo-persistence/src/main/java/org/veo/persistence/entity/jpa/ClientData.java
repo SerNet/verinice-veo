@@ -26,6 +26,7 @@ import javax.persistence.OneToMany;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -72,7 +73,7 @@ public class ClientData extends BaseModelObjectData implements Client {
     public boolean removeFromDomains(Domain aDomain) {
         if (aDomain.getOwner()
                    .equals(this))
-            throw new IllegalArgumentException(
+            throw new ClientBoundaryViolationException(
                     String.format("Domain does not belong to this " + "client: %s", aDomain));
         aDomain.setOwner(null);
         return this.domains.remove(aDomain);
