@@ -22,6 +22,26 @@ spring:
       ddl-auto: update
     ## Turn OSIV off - only the business layer decides the fetching strategy for a particular use case:
     open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          # execute statements in batches:
+          batch_size: 30
+          # batch updates and deletes for entities that have a @Version property:
+          batch_versioned_data: true
+        query:
+          # prevent in-memory pagination when join fetching collections:
+          fail_on_pagination_over_collection_fetch: true
+          # pad 'IN'-clauses to next power of 2 to improve statement caching:
+          in_clause_parameter_padding: true
+        connection:
+          # removes the necessity to acquire the db connection at the beginning of each
+          # transaction to check the autocommit status:
+          # IMPORTANT: hikari.auto-commit=false must be set as well
+          provider_disables_autocommit: true
+  datasource:
+    hikari:
+      auto-commit: false
 
   security:
     oauth2:
