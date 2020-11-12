@@ -40,8 +40,12 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 @Profile({ "stats", "test" })
 @Slf4j
 /**
- * This class is based on the example in "Leonard, A. (2020): Spring Boot
- * Persistence Best Practices. Apress Media."
+ * A data source proxy that can be configured to log slow and/or all generated
+ * queries at the level of the SQL datasource. It can be used for simple logging
+ * or to query the exact number of generated SQL queries at flush time in tests.
+ *
+ * Based on the example in "Leonard, A. (2020): Spring Boot Persistence Best
+ * Practices. Apress Media."
  */
 public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
