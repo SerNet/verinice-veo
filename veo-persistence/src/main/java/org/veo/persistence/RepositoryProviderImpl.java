@@ -74,20 +74,8 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ModelObject> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
-        if (Person.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) personRepository;
-        }
-        if (Asset.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) assetRepository;
-        }
-        if (Process.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) processRepository;
-        }
-        if (Document.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) documentRepository;
-        }
-        if (Control.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) controlRepository;
+        if (EntityLayerSupertype.class.isAssignableFrom(entityType)) {
+            return (Repository<T, Key<UUID>>) getEntityLayerSupertypeRepositoryFor((Class<EntityLayerSupertype>) entityType);
         }
         if (Client.class.isAssignableFrom(entityType)) {
             return (Repository<T, Key<UUID>>) clientRepository;
