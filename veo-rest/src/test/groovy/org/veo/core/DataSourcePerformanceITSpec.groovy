@@ -263,9 +263,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         given:
         createClient()
         def units = createClientUnits(2)
-        def domain2 = entityFactory.createDomain()
-        domain2.setId(Key.newUuid())
-        domain2.setName("domain2")
+        def domain2 = entityFactory.createDomain(Key.newUuid(), "domain2")
         domain2.version(USERNAME, null)
         client.addToDomains(domain2)
         client = clientRepository.save(client)
@@ -284,20 +282,15 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     void createClient() {
-        def domain = entityFactory.createDomain()
-        domain.setId(Key.newUuid())
-        domain.setName("domain1")
+        def domain = entityFactory.createDomain(Key.newUuid(), "domain1")
         domain.version(USERNAME, null)
 
-        client = entityFactory.createClient()
+        client = entityFactory.createClient(Key.newUuid(), "client")
         client.addToDomains(domain)
-        client.setId(Key.newUuid())
         client.version(USERNAME, null)
 
-        unit = entityFactory.createUnit()
+        unit = entityFactory.createUnit(Key.newUuid(), "unit1",null)
         unit.setClient(client)
-        unit.setId(Key.newUuid())
-        unit.setName("unit1")
         unit.addToDomains(domain)
         unit.version(USERNAME, null)
 
@@ -351,11 +344,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def personGroupId = Key.newUuid()
         def john = newPerson(unit)
         def jane = newPerson(unit)
-        def personGroup = entityFactory.createPersonGroup()
+        def personGroup = entityFactory.createPersonGroup(personGroupId, groupName, unit)
 
         personGroup.with {
-            name = groupName
-            owner = unit
             id = personGroupId
             members = [john, jane]
             state = Lifecycle.CREATING
@@ -372,11 +363,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             def personGroupId = Key.newUuid()
             def dolly = newPerson(unit)
             def minime = newPerson(unit)
-            def subGroup = entityFactory.createPersonGroup()
+            def subGroup = entityFactory.createPersonGroup(personGroupId, baseName+count, unit)
             subGroup.with {
-                name = baseName + count
-                owner = unit
-                id = personGroupId
                 members = [dolly, minime]
                 state = Lifecycle.CREATING
                 it
