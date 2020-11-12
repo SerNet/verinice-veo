@@ -38,6 +38,10 @@ import org.veo.core.usecase.group.DeleteGroupUseCase;
 import org.veo.core.usecase.group.GetGroupUseCase;
 import org.veo.core.usecase.group.GetGroupsUseCase;
 import org.veo.core.usecase.group.PutGroupUseCase;
+import org.veo.core.usecase.incident.CreateIncidentUseCase;
+import org.veo.core.usecase.incident.GetIncidentUseCase;
+import org.veo.core.usecase.incident.GetIncidentsUseCase;
+import org.veo.core.usecase.incident.UpdateIncidentUseCase;
 import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
@@ -58,6 +62,7 @@ import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.persistence.access.AssetRepositoryImpl;
 import org.veo.persistence.access.ClientRepositoryImpl;
 import org.veo.persistence.access.ControlRepositoryImpl;
+import org.veo.persistence.access.IncidentRepositoryImpl;
 import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
@@ -113,6 +118,29 @@ public class ModuleConfiguration {
     @Bean
     public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository) {
         return new UpdateControlUseCase(controlRepository);
+    }
+
+    @Bean
+    public CreateIncidentUseCase createIncidentUseCase(UnitRepositoryImpl unitRepository,
+            IncidentRepositoryImpl incidentRepository) {
+        return new CreateIncidentUseCase(unitRepository, incidentRepository);
+    }
+
+    @Bean
+    public GetIncidentUseCase getIncidentUseCase(IncidentRepositoryImpl incidentRepository) {
+        return new GetIncidentUseCase(incidentRepository);
+    }
+
+    @Bean
+    public GetIncidentsUseCase getIncidentsUseCase(ClientRepositoryImpl clientRepository,
+            IncidentRepositoryImpl incidentRepository,
+            UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetIncidentsUseCase(clientRepository, incidentRepository, unitHierarchyProvider);
+    }
+
+    @Bean
+    public UpdateIncidentUseCase updateIncidentUseCase(IncidentRepositoryImpl incidentRepository) {
+        return new UpdateIncidentUseCase(incidentRepository);
     }
 
     @Bean

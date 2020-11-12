@@ -28,6 +28,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
+import org.veo.persistence.access.jpa.IncidentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
@@ -57,6 +58,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     DocumentDataRepository documentDataRepository
 
     @Autowired
+    IncidentDataRepository incidentDataRepository
+
+    @Autowired
     PersonDataRepository personDataRepository
 
     @Autowired
@@ -71,6 +75,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 assetDataRepository,
                 controlDataRepository,
                 documentDataRepository,
+                incidentDataRepository,
                 personDataRepository,
                 processDataRepository
             ].each {
@@ -82,6 +87,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 assetDataRepository,
                 controlDataRepository,
                 documentDataRepository,
+                incidentDataRepository,
                 personDataRepository,
                 processDataRepository,
                 unitDataRepository,

@@ -27,6 +27,7 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.GroupType;
+import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Person;
@@ -35,6 +36,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
 import org.veo.core.entity.groups.DocumentGroup;
+import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 
@@ -53,6 +55,8 @@ public interface EntityFactory {
     Asset createAsset(Key<UUID> id, String name, Unit unit);
 
     Control createControl(Key<UUID> id, String name, Unit unit);
+
+    Incident createIncident(Key<UUID> key, String name, Unit unit);
 
     Unit createUnit(Key<UUID> id, String name, Unit unit);
 
@@ -78,4 +82,6 @@ public interface EntityFactory {
     DocumentGroup createDocumentGroup(Key<UUID> id, String name, Unit unit);
 
     ControlGroup createControlGroup(Key<UUID> id, String name, Unit unit);
+
+    IncidentGroup createIncidentGroup(Key<UUID> id, String name, Unit unit);
 }

@@ -32,6 +32,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.usecase.common.ETag
+import org.veo.core.usecase.repository.IncidentRepository
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -70,6 +71,9 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ControlRepositoryImpl controlRepository
+
+    @Autowired
+    private IncidentRepository incidentRepository
 
     @Autowired
     private ProcessRepositoryImpl processRepository
@@ -190,6 +194,25 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test document group'
+        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve an incident group"() {
+        given: "a saved incident group"
+        def incidentGroup = txTemplate.execute {
+            incidentRepository.save(newIncidentGroup(unit) {
+                name = 'Test incident group'
+            })
+        }
+
+        when: "the server is queried for the group"
+        def results = get("/groups/${incidentGroup.id.uuidValue()}?type=Incident")
+
+        then: "the incident group is found"
+        results.andExpect(status().isOk())
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.name == 'Test incident group'
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
     }
 

@@ -34,6 +34,7 @@ public final class EntityTypeNames {
     public static final String CONTROL = "control";
     public static final String DOCUMENT = "document";
     public static final String DOMAIN = "domain";
+    public static final String INCIDENT = "incident";
     public static final String PERSON = "person";
     public static final String PROCESS = "process";
     public static final String UNIT = "unit";
@@ -43,6 +44,7 @@ public final class EntityTypeNames {
     public static final String CONTROLS = "controls";
     public static final String DOCUMENTS = "documents";
     public static final String DOMAINS = "domains";
+    public static final String INCIDENTS = "incidents";
     public static final String GROUPS = "groups";
     public static final String PERSONS = "persons";
     public static final String PROCESSES = "processes";
@@ -58,6 +60,7 @@ public final class EntityTypeNames {
                                                                       Process.class, PROCESSES,
                                                                       Control.class, CONTROLS,
                                                                       Document.class, DOCUMENT,
+                                                                      Incident.class, INCIDENT,
                                                                       Asset.class, ASSETS,
                                                                       Client.class, CLIENTS,
                                                                       Unit.class, UNITS,
@@ -67,6 +70,7 @@ public final class EntityTypeNames {
                                                                       PROCESSES, Process.class,
                                                                       CONTROLS, Control.class,
                                                                       CLIENTS, Client.class,
+                                                                      INCIDENTS, Incident.class,
                                                                       DOCUMENT, Document.class,
                                                                       ASSETS, Asset.class, UNITS,
                                                                       Unit.class, DOMAINS,

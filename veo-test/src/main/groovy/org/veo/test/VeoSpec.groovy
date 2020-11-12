@@ -26,6 +26,7 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
 import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Nameable
@@ -36,6 +37,7 @@ import org.veo.core.entity.Versioned
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.entity.groups.DocumentGroup
+import org.veo.core.entity.groups.IncidentGroup
 import org.veo.core.entity.groups.PersonGroup
 import org.veo.core.entity.groups.ProcessGroup
 import org.veo.persistence.entity.jpa.AssetData
@@ -43,12 +45,14 @@ import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.DomainData
+import org.veo.persistence.entity.jpa.IncidentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.UnitData
 import org.veo.persistence.entity.jpa.groups.AssetGroupData
 import org.veo.persistence.entity.jpa.groups.ControlGroupData
 import org.veo.persistence.entity.jpa.groups.DocumentGroupData
+import org.veo.persistence.entity.jpa.groups.IncidentGroupData
 import org.veo.persistence.entity.jpa.groups.PersonGroupData
 import org.veo.persistence.entity.jpa.groups.ProcessGroupData
 
@@ -125,6 +129,26 @@ abstract class VeoSpec extends Specification {
     static DocumentGroupData newDocumentGroup(Unit owner, @DelegatesTo(value = DocumentGroup.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.DocumentGroup") Closure init = null) {
         return new DocumentGroupData().tap {
+            id = Key.newUuid()
+            it.owner = owner
+            execute(it, init)
+            initModelGroup(it)
+        }
+    }
+
+    static IncidentData newIncident(Unit owner, @DelegatesTo(value = Incident.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Incident") Closure init = null) {
+        return new IncidentData().tap {
+            id = Key.newUuid()
+            it.owner = owner
+            execute(it, init)
+            initEntityLayerSupertype(it)
+        }
+    }
+
+    static IncidentGroupData newIncidentGroup(Unit owner, @DelegatesTo(value = IncidentGroup.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.IncidentGroup") Closure init = null) {
+        return new IncidentGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
             execute(it, init)

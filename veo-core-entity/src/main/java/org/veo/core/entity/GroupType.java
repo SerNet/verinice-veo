@@ -19,13 +19,15 @@ package org.veo.core.entity;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
 import org.veo.core.entity.groups.DocumentGroup;
+import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 
 public enum GroupType {
     Asset(Asset.class, AssetGroup.class), Control(Control.class, ControlGroup.class), Document(
-            Document.class, DocumentGroup.class), Person(Person.class,
-                    PersonGroup.class), Process(Process.class, ProcessGroup.class);
+            Document.class,
+            DocumentGroup.class), Incident(Incident.class, IncidentGroup.class), Person(
+                    Person.class, PersonGroup.class), Process(Process.class, ProcessGroup.class);
 
     public final Class<? extends EntityLayerSupertype> entityClass;
     public final Class<? extends ModelGroup<?>> groupClass;

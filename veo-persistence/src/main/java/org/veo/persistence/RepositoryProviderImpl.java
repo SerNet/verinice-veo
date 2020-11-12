@@ -27,6 +27,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
@@ -38,6 +39,7 @@ import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.DocumentRepository;
 import org.veo.core.usecase.repository.DomainRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
+import org.veo.core.usecase.repository.IncidentRepository;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.Repository;
@@ -52,6 +54,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
 
     @Autowired
     private AssetRepository assetRepository;
+
+    @Autowired
+    private IncidentRepository incidentRepository;
 
     @Autowired
     private ProcessRepository processRepository;
@@ -98,6 +103,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
         }
         if (Asset.class.isAssignableFrom(entityType)) {
             return (EntityLayerSupertypeRepository<T>) assetRepository;
+        }
+        if (Incident.class.isAssignableFrom(entityType)) {
+            return (EntityLayerSupertypeRepository<T>) incidentRepository;
         }
         if (Process.class.isAssignableFrom(entityType)) {
             return (EntityLayerSupertypeRepository<T>) processRepository;

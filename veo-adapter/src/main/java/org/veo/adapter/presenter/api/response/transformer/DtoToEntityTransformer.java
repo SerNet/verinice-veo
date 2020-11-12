@@ -29,6 +29,7 @@ import org.veo.adapter.presenter.api.dto.AbstractClientDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
+import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
@@ -45,6 +46,7 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
@@ -55,6 +57,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
 import org.veo.core.entity.groups.DocumentGroup;
+import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.core.entity.transform.EntityFactory;
@@ -146,6 +149,23 @@ public final class DtoToEntityTransformer {
             EntityLayerSupertypeGroupDto<Control> source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createControlGroup(key, source.getName(), null);
+        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        return target;
+    }
+
+    // IncidentDto->Incident
+    public static Incident transformDto2Incident(DtoToEntityContext tcontext,
+            AbstractIncidentDto source, Key<UUID> key) {
+        var target = tcontext.getFactory()
+                             .createIncident(key, source.getName(), null);
+        mapEntityLayerSupertype(tcontext, source, target);
+        return target;
+    }
+
+    public static IncidentGroup transformDto2IncidentGroup(DtoToEntityContext tcontext,
+            EntityLayerSupertypeGroupDto<Incident> source, Key<UUID> key) {
+        var target = tcontext.getFactory()
+                             .createIncidentGroup(key, source.getName(), null);
         mapEntityLayerSupertypeGroup(tcontext, source, target);
         return target;
     }

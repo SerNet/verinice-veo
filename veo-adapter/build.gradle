@@ -56,6 +56,7 @@ task generateEntitySchemas(type: JavaExec) {
         'org.veo.adapter.presenter.api.dto.full',
         'Asset',
         'Control',
+        'Incident',
         'Person',
         'Process'
     ]

@@ -42,6 +42,8 @@ import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
@@ -56,6 +58,7 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Incident;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Nameable;
@@ -66,6 +69,7 @@ import org.veo.core.entity.Versioned;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
 import org.veo.core.entity.groups.DocumentGroup;
+import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 
@@ -106,6 +110,9 @@ public final class EntityToDtoTransformer {
         }
         if (source instanceof AssetGroup) {
             return transformAssetGroup2Dto(referenceAssembler, (AssetGroup) source);
+        }
+        if (source instanceof IncidentGroup) {
+            return transformIncidentGroup2Dto(referenceAssembler, (IncidentGroup) source);
         }
         if (source instanceof ProcessGroup) {
             return transformProcessGroup2Dto(referenceAssembler, (ProcessGroup) source);
@@ -199,6 +206,22 @@ public final class EntityToDtoTransformer {
             Control source) {
         FullControlDto target = new FullControlDto();
         mapEntityLayerSupertype(referenceAssembler, source, target);
+        return target;
+    }
+
+    // Incident ->
+    // IncidentDto
+    public static FullIncidentDto transformIncident2Dto(ReferenceAssembler referenceAssembler,
+            Incident source) {
+        FullIncidentDto target = new FullIncidentDto();
+        mapEntityLayerSupertype(referenceAssembler, source, target);
+        return target;
+    }
+
+    public static FullIncidentGroupDto transformIncidentGroup2Dto(
+            ReferenceAssembler referenceAssembler, IncidentGroup source) {
+        FullIncidentGroupDto target = new FullIncidentGroupDto();
+        mapModelGroup(referenceAssembler, source, target);
         return target;
     }
 
