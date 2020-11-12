@@ -16,18 +16,13 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
-import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Document;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Person;
-import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
@@ -69,11 +64,11 @@ public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, E
     }
 
     void removeObjectsInUnit(Unit unit) {
-        List.of(Asset.class, Control.class, Document.class, Person.class, Process.class)
-            .forEach(clazz -> {
-                repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
-                                  .deleteByUnit(unit);
-            });
+        EntityTypeNames.getKnownEntityClasses()
+                       .forEach(clazz -> {
+                           repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
+                                             .deleteByUnit(unit);
+                       });
 
     }
 

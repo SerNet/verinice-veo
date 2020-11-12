@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,6 +71,11 @@ public final class EntityTypeNames {
                                                                       ASSETS, Asset.class, UNITS,
                                                                       Unit.class, DOMAINS,
                                                                       Domain.class);
+    public static final List<Class<? extends EntityLayerSupertype>> ENTITY_CLASS_LIST = List.of(Asset.class,
+                                                                                                Control.class,
+                                                                                                Document.class,
+                                                                                                Person.class,
+                                                                                                Process.class);
 
     public static String getCollectionNameFor(Class type) {
         return typeToCollection.get(type);
@@ -81,5 +87,9 @@ public final class EntityTypeNames {
 
     public static Set<String> getKnownCollectionNames() {
         return KNOWN_COLLECTION_NAMES;
+    }
+
+    public static List<Class<? extends EntityLayerSupertype>> getKnownEntityClasses() {
+        return ENTITY_CLASS_LIST;
     }
 }
