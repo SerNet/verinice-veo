@@ -35,7 +35,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
 
     List<T> findByOwner_Client_DbId(String clientId); // NOPMD
 
-    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.dbId = ?1")
     @Override
     Optional<T> findById(String id);
@@ -47,10 +47,10 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param unitIds
      *            a list of units' UUIDs
      */
-    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.owner.dbId IN ?1")
     @Transactional(readOnly = true)
-    List<T> findByUnits(Set<String> unitIds);
+    Set<T> findByUnits(Set<String> unitIds);
 
     /**
      * Find all entities of the repository's type in the given units. Groups will
@@ -60,10 +60,13 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param unitIds
      *            a list of units' UUIDs
      */
-    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
     @Transactional(readOnly = true)
-    List<T> findEntitiesByUnits(Set<String> unitIds);
+    // Using Set as return type here makes it unnecessary to add the DISTINCT
+    // keyword to the query
+    // which saves an additional hash aggregate operation in the database.
+    Set<T> findEntitiesByUnits(Set<String> unitIds);
 
     /**
      * Find all entity groups of the repository's type in the given units. Only
@@ -73,12 +76,12 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param unitIds
      *            a list of units' UUIDs
      */
-    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.customAspects "
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links "
             // + "left join fetch e.members "
             + "where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
     @Transactional(readOnly = true)
-    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
+    Set<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
 
     /**
      * Find only entities of the repository's type for a client. This method does
@@ -88,10 +91,13 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      * @param clientId
      *            The UUID of the client
      */
-    @Query("select distinct e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e)"
+    @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e)"
             + " = #{#entityName}")
     @Transactional(readOnly = true)
-    List<T> findEntitiesByOwner_Client_DbId(String clientId);
+    // Using Set as return type here makes it unnecessary to add the DISTINCT
+    // keyword to the query
+    // which saves an additional hash aggregate operation in the database.
+    Set<T> findEntitiesByOwner_Client_DbId(String clientId);
 
     /**
      * Find all groups of the repository's type for a client.
@@ -100,7 +106,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      *            the UUID of the client
      */
     @Transactional(readOnly = true)
-    List<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(String clientId);
+    Set<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(String clientId);
 
     /**
      * Returns all entities of the repository's type that have a link with the given

@@ -25,6 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
@@ -60,8 +61,8 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
             list = dataRepository.findByOwner_Client_DbId(client.getId()
                                                                 .uuidValue());
         } else {
-            list = dataRepository.findEntitiesByOwner_Client_DbId(client.getId()
-                                                                        .uuidValue());
+            list = List.copyOf(dataRepository.findEntitiesByOwner_Client_DbId(client.getId()
+                                                                                    .uuidValue()));
         }
         return (List<T>) list;
     }
@@ -72,7 +73,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
                              .map(unit -> unit.getId()
                                               .uuidValue())
                              .collect(Collectors.toSet());
-        return (List<T>) dataRepository.findEntitiesByUnits(unitIdSet);
+        return (List<T>) List.copyOf(dataRepository.findEntitiesByUnits(unitIdSet));
     }
 
     @Override

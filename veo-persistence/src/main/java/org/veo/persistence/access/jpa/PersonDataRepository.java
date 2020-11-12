@@ -17,13 +17,14 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.List;
+import java.util.Set;
 
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.groups.PersonGroupData;
 
 public interface PersonDataRepository extends EntityLayerSupertypeDataRepository<PersonData> {
 
-    List<PersonGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
+    Set<PersonGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
 
     List<PersonGroupData> findGroupsByOwner_DbId(String uuidValue);
 }
