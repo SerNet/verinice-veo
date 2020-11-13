@@ -111,10 +111,10 @@ pipeline {
                         dockerImage.push("git-${env.GIT_COMMIT}")
                         if (env.GIT_BRANCH == 'master') {
                             dockerImage.push("latest")
-                            dockerImage.push("build-${env.BUILD_NUMBER}")
+                            dockerImage.push("master-build-${env.BUILD_NUMBER}")
                         } else if (env.GIT_BRANCH == 'develop') {
                             dockerImage.push("develop")
-                            dockerImage.push("build-${env.BUILD_NUMBER}")
+                            dockerImage.push("develop-build-${env.BUILD_NUMBER}")
                         }
                     }
                 }
