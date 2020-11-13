@@ -39,8 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
     private static final String SCHEMA_FILES_PATH = "/schemas/entity/";
-    private static final List<String> VALID_SCHEMAS = List.of("process", "asset", "incident",
-                                                              "person", "control");
+    private static final List<String> VALID_SCHEMAS = List.of("process", "asset", "document",
+                                                              "incident", "person", "control");
 
     @Override
     public String findSchema(String type, List<String> domains) {

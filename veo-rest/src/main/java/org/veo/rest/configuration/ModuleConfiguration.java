@@ -33,6 +33,10 @@ import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
+import org.veo.core.usecase.document.CreateDocumentUseCase;
+import org.veo.core.usecase.document.GetDocumentUseCase;
+import org.veo.core.usecase.document.GetDocumentsUseCase;
+import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.group.CreateGroupUseCase;
 import org.veo.core.usecase.group.DeleteGroupUseCase;
 import org.veo.core.usecase.group.GetGroupUseCase;
@@ -62,6 +66,7 @@ import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.persistence.access.AssetRepositoryImpl;
 import org.veo.persistence.access.ClientRepositoryImpl;
 import org.veo.persistence.access.ControlRepositoryImpl;
+import org.veo.persistence.access.DocumentRepositoryImpl;
 import org.veo.persistence.access.IncidentRepositoryImpl;
 import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
@@ -118,6 +123,29 @@ public class ModuleConfiguration {
     @Bean
     public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository) {
         return new UpdateControlUseCase(controlRepository);
+    }
+
+    @Bean
+    public CreateDocumentUseCase createDocumentUseCase(UnitRepositoryImpl unitRepository,
+            DocumentRepositoryImpl documentRepository) {
+        return new CreateDocumentUseCase(unitRepository, documentRepository);
+    }
+
+    @Bean
+    public GetDocumentUseCase getDocumentUseCase(DocumentRepositoryImpl documentRepository) {
+        return new GetDocumentUseCase(documentRepository);
+    }
+
+    @Bean
+    public GetDocumentsUseCase getDocumentsUseCase(ClientRepositoryImpl clientRepository,
+            DocumentRepositoryImpl documentRepository,
+            UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetDocumentsUseCase(clientRepository, documentRepository, unitHierarchyProvider);
+    }
+
+    @Bean
+    public UpdateDocumentUseCase updateDocumentUseCase(DocumentRepositoryImpl documentRepository) {
+        return new UpdateDocumentUseCase(documentRepository);
     }
 
     @Bean
