@@ -16,8 +16,13 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.List;
 import java.util.Set;
 
+import org.veo.core.entity.format.AbbreviationPlaceholder;
+import org.veo.core.entity.format.DisplayNameFormat;
+import org.veo.core.entity.format.NamePlaceholder;
+import org.veo.core.entity.format.OwnerPlaceholder;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
 
@@ -100,4 +105,13 @@ public interface EntityLayerSupertype extends ModelObject {
         }
     }
 
+    @Override
+    default String getDisplayName() {
+        // TODO VEO-284 Use configurable format template & placeholders, optimize owner
+        // retrieval performance.
+        var format = new DisplayNameFormat<>("%s - %s (%s)",
+                List.of(new AbbreviationPlaceholder<>(), new NamePlaceholder<>(),
+                        new OwnerPlaceholder(new NamePlaceholder<>())));
+        return format.render(this);
+    }
 }

@@ -242,7 +242,9 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'Test control group'
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         result.members.size() == 2
-        result.members*.displayName as Set == ['c1', 'c2'] as Set
+        result.members*.displayName as Set == [
+            '- c1 (Test unit)',
+            '- c2 (Test unit)'] as Set
     }
 
     @WithUserDetails("user@domain.example")
