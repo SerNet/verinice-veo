@@ -22,15 +22,7 @@ package org.veo.adapter.presenter.api.common;
  */
 public final class Switches {
 
-    private static ToDisplayNameSwitch toDisplayNameSwitch;
     private static ToUUIDReferenceSwitch toUUIDReferenceSwitch;
-
-    public static ToDisplayNameSwitch toDisplayNameSwitch() {
-        if (toDisplayNameSwitch == null) {
-            toDisplayNameSwitch = new ToDisplayNameSwitch();
-        }
-        return toDisplayNameSwitch;
-    }
 
     public static ToUUIDReferenceSwitch toUUIDReferenceSwitch() {
         if (toUUIDReferenceSwitch == null) {

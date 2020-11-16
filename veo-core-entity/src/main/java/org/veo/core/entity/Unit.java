@@ -38,7 +38,7 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * Units should exclusively be used to model ownership and high-level access
  * restrictions.
  */
-public interface Unit extends Nameable, ModelObject {
+public interface Unit extends ModelObject {
 
     Client getClient();
 

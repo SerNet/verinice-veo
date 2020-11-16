@@ -77,9 +77,7 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
         if (modelInterface != null) {
             return new ModelObjectReference<T>(entity.getId()
                                                      .uuidValue(),
-                    Switches.toDisplayNameSwitch()
-                            .doSwitch(entity),
-                    (Class<T>) modelInterface, urlAssembler);
+                    entity.getDisplayName(), (Class<T>) modelInterface, urlAssembler);
         } else {
             throw new IllegalArgumentException(
                     "The given entity does not return an entity interface. " + entity.getClass()

@@ -42,6 +42,12 @@ public class ClientData extends BaseModelObjectData implements Client {
     @ToString.Include
     private String name;
 
+    @Column(name = "abbreviation")
+    private String abbreviation;
+
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "domains")
     @OneToMany(mappedBy = "owner",
                cascade = CascadeType.ALL,

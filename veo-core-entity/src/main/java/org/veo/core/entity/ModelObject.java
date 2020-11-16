@@ -22,7 +22,7 @@ import java.util.UUID;
  * The basic model object interface, a model object can be observed via property
  * change listener.
  */
-public interface ModelObject extends Versioned {
+public interface ModelObject extends Nameable, Versioned {
     Key<UUID> getId();
 
     void setId(Key<UUID> id);
