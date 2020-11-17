@@ -32,6 +32,7 @@ import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Nameable
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
+import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.groups.AssetGroup
@@ -40,6 +41,7 @@ import org.veo.core.entity.groups.DocumentGroup
 import org.veo.core.entity.groups.IncidentGroup
 import org.veo.core.entity.groups.PersonGroup
 import org.veo.core.entity.groups.ProcessGroup
+import org.veo.core.entity.groups.ScenarioGroup
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
@@ -48,6 +50,7 @@ import org.veo.persistence.entity.jpa.DomainData
 import org.veo.persistence.entity.jpa.IncidentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
+import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.UnitData
 import org.veo.persistence.entity.jpa.groups.AssetGroupData
 import org.veo.persistence.entity.jpa.groups.ControlGroupData
@@ -55,6 +58,7 @@ import org.veo.persistence.entity.jpa.groups.DocumentGroupData
 import org.veo.persistence.entity.jpa.groups.IncidentGroupData
 import org.veo.persistence.entity.jpa.groups.PersonGroupData
 import org.veo.persistence.entity.jpa.groups.ProcessGroupData
+import org.veo.persistence.entity.jpa.groups.ScenarioGroupData
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -149,6 +153,26 @@ abstract class VeoSpec extends Specification {
     static IncidentGroupData newIncidentGroup(Unit owner, @DelegatesTo(value = IncidentGroup.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.IncidentGroup") Closure init = null) {
         return new IncidentGroupData().tap {
+            id = Key.newUuid()
+            it.owner = owner
+            execute(it, init)
+            initModelGroup(it)
+        }
+    }
+
+    static ScenarioData newScenario(Unit owner, @DelegatesTo(value = Scenario.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scenario") Closure init = null) {
+        return new ScenarioData().tap {
+            id = Key.newUuid()
+            it.owner = owner
+            execute(it, init)
+            initEntityLayerSupertype(it)
+        }
+    }
+
+    static ScenarioGroupData newScenarioGroup(Unit owner, @DelegatesTo(value = ScenarioGroup.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ScenarioGroup") Closure init = null) {
+        return new ScenarioGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
             execute(it, init)

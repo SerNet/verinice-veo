@@ -38,6 +38,7 @@ public final class EntityTypeNames {
     public static final String PERSON = "person";
     public static final String PROCESS = "process";
     public static final String UNIT = "unit";
+    public static final String SCENARIO = "scenario";
 
     public static final String ASSETS = "assets";
     public static final String CLIENTS = "clients";
@@ -49,6 +50,8 @@ public final class EntityTypeNames {
     public static final String PERSONS = "persons";
     public static final String PROCESSES = "processes";
     public static final String UNITS = "units";
+    public static final String SCENARIOS = "scenarios";
+
     /**
      * Groups are mapped to their member's entity type. They are therefor not
      * included in this list or any of the mapping methods.
@@ -59,8 +62,9 @@ public final class EntityTypeNames {
     private static final Map<Class, String> typeToCollection = Map.of(Person.class, PERSONS,
                                                                       Process.class, PROCESSES,
                                                                       Control.class, CONTROLS,
-                                                                      Document.class, DOCUMENT,
-                                                                      Incident.class, INCIDENT,
+                                                                      Document.class, DOCUMENTS,
+                                                                      Incident.class, INCIDENTS,
+                                                                      Scenario.class, SCENARIOS,
                                                                       Asset.class, ASSETS,
                                                                       Client.class, CLIENTS,
                                                                       Unit.class, UNITS,
@@ -75,6 +79,7 @@ public final class EntityTypeNames {
                                                                                               Document.class,
                                                                                               Person.class,
                                                                                               Incident.class,
+                                                                                              Scenario.class,
                                                                                               Process.class);
 
     public static String getCollectionNameFor(Class type) {

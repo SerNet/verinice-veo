@@ -36,7 +36,6 @@ import org.veo.persistence.access.*
 @ActiveProfiles(["test", "stats"])
 class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
-
     public static final String PROP_KEY = "propKey"
     @Autowired
     private ClientRepositoryImpl clientRepository

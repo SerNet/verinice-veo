@@ -58,6 +58,10 @@ import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.usecase.scenario.CreateScenarioUseCase;
+import org.veo.core.usecase.scenario.GetScenarioUseCase;
+import org.veo.core.usecase.scenario.GetScenariosUseCase;
+import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -70,6 +74,7 @@ import org.veo.persistence.access.DocumentRepositoryImpl;
 import org.veo.persistence.access.IncidentRepositoryImpl;
 import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
+import org.veo.persistence.access.ScenarioRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 
@@ -146,6 +151,29 @@ public class ModuleConfiguration {
     @Bean
     public UpdateDocumentUseCase updateDocumentUseCase(DocumentRepositoryImpl documentRepository) {
         return new UpdateDocumentUseCase(documentRepository);
+    }
+
+    @Bean
+    public CreateScenarioUseCase createScenarioUseCase(UnitRepositoryImpl unitRepository,
+            ScenarioRepositoryImpl scenarioRepository) {
+        return new CreateScenarioUseCase(unitRepository, scenarioRepository);
+    }
+
+    @Bean
+    public GetScenarioUseCase getScenarioUseCase(ScenarioRepositoryImpl scenarioRepository) {
+        return new GetScenarioUseCase(scenarioRepository);
+    }
+
+    @Bean
+    public GetScenariosUseCase getScenariosUseCase(ClientRepositoryImpl clientRepository,
+            ScenarioRepositoryImpl scenarioRepository,
+            UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetScenariosUseCase(clientRepository, scenarioRepository, unitHierarchyProvider);
+    }
+
+    @Bean
+    public UpdateScenarioUseCase updateScenarioUseCase(ScenarioRepositoryImpl scenarioRepository) {
+        return new UpdateScenarioUseCase(scenarioRepository);
     }
 
     @Bean

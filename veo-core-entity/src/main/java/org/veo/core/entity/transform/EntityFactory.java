@@ -32,6 +32,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
@@ -39,6 +40,7 @@ import org.veo.core.entity.groups.DocumentGroup;
 import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
+import org.veo.core.entity.groups.ScenarioGroup;
 
 /**
  * @author urszeidler
@@ -57,6 +59,8 @@ public interface EntityFactory {
     Control createControl(Key<UUID> id, String name, Unit unit);
 
     Incident createIncident(Key<UUID> key, String name, Unit unit);
+
+    Scenario createScenario(Key<UUID> key, String name, Unit unit);
 
     Unit createUnit(Key<UUID> id, String name, Unit unit);
 
@@ -84,4 +88,6 @@ public interface EntityFactory {
     ControlGroup createControlGroup(Key<UUID> id, String name, Unit unit);
 
     IncidentGroup createIncidentGroup(Key<UUID> id, String name, Unit unit);
+
+    ScenarioGroup createScenarioGroup(Key<UUID> id, String name, Unit unit);
 }

@@ -32,6 +32,7 @@ import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
+import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
@@ -53,6 +54,7 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
@@ -60,6 +62,7 @@ import org.veo.core.entity.groups.DocumentGroup;
 import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
+import org.veo.core.entity.groups.ScenarioGroup;
 import org.veo.core.entity.transform.EntityFactory;
 
 /**
@@ -166,6 +169,23 @@ public final class DtoToEntityTransformer {
             EntityLayerSupertypeGroupDto<Incident> source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createIncidentGroup(key, source.getName(), null);
+        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        return target;
+    }
+
+    // ScenarioDto->Scenario
+    public static Scenario transformDto2Scenario(DtoToEntityContext tcontext,
+            AbstractScenarioDto source, Key<UUID> key) {
+        var target = tcontext.getFactory()
+                             .createScenario(key, source.getName(), null);
+        mapEntityLayerSupertype(tcontext, source, target);
+        return target;
+    }
+
+    public static ScenarioGroup transformDto2ScenarioGroup(DtoToEntityContext tcontext,
+            EntityLayerSupertypeGroupDto<Scenario> source, Key<UUID> key) {
+        var target = tcontext.getFactory()
+                             .createScenarioGroup(key, source.getName(), null);
         mapEntityLayerSupertypeGroup(tcontext, source, target);
         return target;
     }

@@ -32,6 +32,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.ClientRepository;
@@ -44,6 +45,7 @@ import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.ScenarioRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
 @Service
@@ -57,6 +59,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
 
     @Autowired
     private IncidentRepository incidentRepository;
+
+    @Autowired
+    private ScenarioRepository scenarioRepository;
 
     @Autowired
     private ProcessRepository processRepository;
@@ -106,6 +111,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
         }
         if (Incident.class.isAssignableFrom(entityType)) {
             return (EntityLayerSupertypeRepository<T>) incidentRepository;
+        }
+        if (Scenario.class.isAssignableFrom(entityType)) {
+            return (EntityLayerSupertypeRepository<T>) scenarioRepository;
         }
         if (Process.class.isAssignableFrom(entityType)) {
             return (EntityLayerSupertypeRepository<T>) processRepository;

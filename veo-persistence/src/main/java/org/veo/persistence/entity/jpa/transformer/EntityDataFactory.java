@@ -34,6 +34,7 @@ import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.groups.AssetGroup;
 import org.veo.core.entity.groups.ControlGroup;
@@ -41,6 +42,7 @@ import org.veo.core.entity.groups.DocumentGroup;
 import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
+import org.veo.core.entity.groups.ScenarioGroup;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ClientData;
@@ -52,6 +54,7 @@ import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.IncidentData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
+import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.groups.AssetGroupData;
 import org.veo.persistence.entity.jpa.groups.ControlGroupData;
@@ -59,6 +62,7 @@ import org.veo.persistence.entity.jpa.groups.DocumentGroupData;
 import org.veo.persistence.entity.jpa.groups.IncidentGroupData;
 import org.veo.persistence.entity.jpa.groups.PersonGroupData;
 import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
+import org.veo.persistence.entity.jpa.groups.ScenarioGroupData;
 
 /**
  * @author urszeidler
@@ -112,6 +116,13 @@ public class EntityDataFactory implements EntityFactory {
         Incident incident = new IncidentData();
         setEntityLayerData(incident, id, name, unit);
         return incident;
+    }
+
+    @Override
+    public Scenario createScenario(Key<UUID> id, String name, Unit unit) {
+        Scenario scenario = new ScenarioData();
+        setEntityLayerData(scenario, id, name, unit);
+        return scenario;
     }
 
     @Override
@@ -205,6 +216,15 @@ public class EntityDataFactory implements EntityFactory {
     @Override
     public IncidentGroup createIncidentGroup(Key<UUID> key, String name, Unit owner) {
         var group = new IncidentGroupData();
+        group.setId(key);
+        group.setName(name);
+        group.setOwner(owner);
+        return group;
+    }
+
+    @Override
+    public ScenarioGroup createScenarioGroup(Key<UUID> key, String name, Unit owner) {
+        var group = new ScenarioGroupData();
         group.setId(key);
         group.setName(name);
         group.setOwner(owner);

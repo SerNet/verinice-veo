@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
+import org.veo.core.usecase.repository.ScenarioRepository
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
@@ -31,6 +32,7 @@ import org.veo.persistence.access.jpa.DocumentDataRepository
 import org.veo.persistence.access.jpa.IncidentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
+import org.veo.persistence.access.jpa.ScenarioDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.test.VeoSpec
 
@@ -61,6 +63,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     IncidentDataRepository incidentDataRepository
 
     @Autowired
+    ScenarioDataRepository scenarioDataRepository
+
+    @Autowired
     PersonDataRepository personDataRepository
 
     @Autowired
@@ -76,6 +81,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 controlDataRepository,
                 documentDataRepository,
                 incidentDataRepository,
+                scenarioDataRepository,
                 personDataRepository,
                 processDataRepository
             ].each {
@@ -88,6 +94,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 controlDataRepository,
                 documentDataRepository,
                 incidentDataRepository,
+                scenarioDataRepository,
                 personDataRepository,
                 processDataRepository,
                 unitDataRepository,

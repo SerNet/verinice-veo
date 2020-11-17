@@ -24,6 +24,7 @@ import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
+import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.repository.AssetRepository
 import org.veo.core.usecase.repository.ControlRepository
@@ -31,6 +32,7 @@ import org.veo.core.usecase.repository.DocumentRepository
 import org.veo.core.usecase.repository.IncidentRepository
 import org.veo.core.usecase.repository.PersonRepository
 import org.veo.core.usecase.repository.ProcessRepository
+import org.veo.core.usecase.repository.ScenarioRepository
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 
 public class DeleteUnitUseCaseSpec extends UseCaseSpec {
@@ -47,6 +49,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         def incidentReporitory = Mock(IncidentRepository)
         def personReporitory = Mock(PersonRepository)
         def processReporitory = Mock(ProcessRepository)
+        def scenarioReporitory = Mock(ScenarioRepository)
         when: "the unit is deleted"
         def input = new DeleteUnitUseCase.InputData(existingUnit.getId(), existingClient)
         def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider)
@@ -59,6 +62,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Incident) >> incidentReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processReporitory
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scenario) >> scenarioReporitory
         1 * clientRepository.findById(_) >> Optional.of(existingClient)
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * assetReporitory.deleteByUnit(existingUnit)
@@ -67,6 +71,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         1 * incidentReporitory.deleteByUnit(existingUnit)
         1 * personReporitory.deleteByUnit(existingUnit)
         1 * processReporitory.deleteByUnit(existingUnit)
+        1 * scenarioReporitory.deleteByUnit(existingUnit)
         and: "the unit is deleted"
         1 * unitRepository.delete(_)
     }
