@@ -16,9 +16,9 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class contains translations from/to all known resource collections to
@@ -66,21 +66,16 @@ public final class EntityTypeNames {
                                                                       Unit.class, UNITS,
                                                                       Domain.class, DOMAINS);
 
-    private static final Map<String, Class> collectionToType = Map.of(PERSONS, Person.class,
-                                                                      PROCESSES, Process.class,
-                                                                      CONTROLS, Control.class,
-                                                                      CLIENTS, Client.class,
-                                                                      INCIDENTS, Incident.class,
-                                                                      DOCUMENT, Document.class,
-                                                                      ASSETS, Asset.class, UNITS,
-                                                                      Unit.class, DOMAINS,
-                                                                      Domain.class);
-    public static final List<Class<? extends EntityLayerSupertype>> ENTITY_CLASS_LIST = List.of(Asset.class,
-                                                                                                Control.class,
-                                                                                                Document.class,
-                                                                                                Person.class,
-                                                                                                Incident.class,
-                                                                                                Process.class);
+    private static final Map<String, Class> collectionToType = typeToCollection.entrySet()
+                                                                               .stream()
+                                                                               .collect(Collectors.toMap(Map.Entry::getValue,
+                                                                                                         Map.Entry::getKey));
+    public static final Set<Class<? extends EntityLayerSupertype>> ENTITY_CLASS_LIST = Set.of(Asset.class,
+                                                                                              Control.class,
+                                                                                              Document.class,
+                                                                                              Person.class,
+                                                                                              Incident.class,
+                                                                                              Process.class);
 
     public static String getCollectionNameFor(Class type) {
         return typeToCollection.get(type);
@@ -94,7 +89,7 @@ public final class EntityTypeNames {
         return KNOWN_COLLECTION_NAMES;
     }
 
-    public static List<Class<? extends EntityLayerSupertype>> getKnownEntityClasses() {
+    public static Set<Class<? extends EntityLayerSupertype>> getKnownEntityClasses() {
         return ENTITY_CLASS_LIST;
     }
 }
