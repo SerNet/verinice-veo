@@ -79,6 +79,7 @@ public final class EntityTypeNames {
                                                                                                 Control.class,
                                                                                                 Document.class,
                                                                                                 Person.class,
+                                                                                                Incident.class,
                                                                                                 Process.class);
 
     public static String getCollectionNameFor(Class type) {

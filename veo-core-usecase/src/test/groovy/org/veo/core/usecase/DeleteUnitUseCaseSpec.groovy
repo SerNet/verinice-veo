@@ -20,6 +20,7 @@ package org.veo.core.usecase
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
 import org.veo.core.entity.Document
+import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
@@ -27,6 +28,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.repository.AssetRepository
 import org.veo.core.usecase.repository.ControlRepository
 import org.veo.core.usecase.repository.DocumentRepository
+import org.veo.core.usecase.repository.IncidentRepository
 import org.veo.core.usecase.repository.PersonRepository
 import org.veo.core.usecase.repository.ProcessRepository
 import org.veo.core.usecase.unit.DeleteUnitUseCase
@@ -42,6 +44,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         def assetReporitory = Mock(AssetRepository)
         def controlReporitory = Mock(ControlRepository)
         def documentReporitory = Mock(DocumentRepository)
+        def incidentReporitory = Mock(IncidentRepository)
         def personReporitory = Mock(PersonRepository)
         def processReporitory = Mock(ProcessRepository)
         when: "the unit is deleted"
@@ -53,6 +56,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Asset) >> assetReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Control) >> controlReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentReporitory
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Incident) >> incidentReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processReporitory
         1 * clientRepository.findById(_) >> Optional.of(existingClient)
@@ -60,6 +64,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         1 * assetReporitory.deleteByUnit(existingUnit)
         1 * controlReporitory.deleteByUnit(existingUnit)
         1 * documentReporitory.deleteByUnit(existingUnit)
+        1 * incidentReporitory.deleteByUnit(existingUnit)
         1 * personReporitory.deleteByUnit(existingUnit)
         1 * processReporitory.deleteByUnit(existingUnit)
         and: "the unit is deleted"
