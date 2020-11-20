@@ -26,8 +26,10 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
+import org.veo.core.entity.Client
 import org.veo.core.entity.CustomProperties
-import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.AssetData
@@ -48,7 +50,7 @@ import org.veo.persistence.entity.jpa.groups.ProcessGroupData
 @SpringBootTest(classes = IdentityConsistencyITSpec.class)
 @ComponentScan("org.veo")
 @ActiveProfiles("test")
-class IdentityConsistencyITSpec<T> extends VeoSpringSpec {
+class IdentityConsistencyITSpec extends VeoSpringSpec {
 
 
     @PersistenceContext
@@ -60,10 +62,8 @@ class IdentityConsistencyITSpec<T> extends VeoSpringSpec {
     @Autowired
     UnitRepositoryImpl unitRepository
 
-    @Autowired
-    private EntityFactory factory
-    private client
-    private unit
+    private Client client
+    private Unit unit
 
     @Transactional
     def setup() {
@@ -75,7 +75,7 @@ class IdentityConsistencyITSpec<T> extends VeoSpringSpec {
     }
 
 
-    def void testIdentityConsistency(Class<T> clazz, T entity) {
+    def <T> void testIdentityConsistency(Class<T> clazz, T entity) {
         // HashSet requires correct implementations
         // of hashCode() (to find the bucket) and
         // of equals() (to identify the object):
