@@ -13,12 +13,6 @@
     <rule ref="category/java/errorprone.xml">
     </rule>
 
-    <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
-        <properties>
-            <property name="violationSuppressRegex" value="^Found 'UR'-anomaly.*"/>
-        </properties>
-    </rule>
-
     <rule ref="category/java/bestpractices.xml">
         <exclude name="GuardLogStatement"/>
     </rule>

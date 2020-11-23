@@ -1,8 +1,4 @@
-plugins { id 'org.unbroken-dome.xjc' version '1.4.3' }
-
-xjcGenerate {
-    source = fileTree('src/main/resources') { include '*.xsd' }
-}
+plugins { id 'org.unbroken-dome.xjc' version '2.0.0' }
 
 dependencies { compileOnly 'javax.xml.bind:jaxb-api' }
 
