@@ -31,6 +31,7 @@ import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ClientData
@@ -40,6 +41,7 @@ import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
+import org.veo.persistence.entity.jpa.SubTypeAspectData
 import org.veo.persistence.entity.jpa.UnitData
 import org.veo.persistence.entity.jpa.groups.AssetGroupData
 import org.veo.persistence.entity.jpa.groups.ControlGroupData
@@ -60,17 +62,26 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
     ClientRepositoryImpl clientRepository
 
     @Autowired
+    DomainRepositoryImpl domainRepository
+
+    @Autowired
     UnitRepositoryImpl unitRepository
 
     private Client client
     private Unit unit
+    private Domain domain
 
     @Transactional
     def setup() {
         client = newClient()
+        domain = newDomain() {
+            owner = client
+        }
         unit = newUnit(this.client)
         clientRepository.save(this.client)
+        domainRepository.save(this.domain)
         unitRepository.save(this.unit)
+
         entityManager.flush()
     }
 
@@ -279,6 +290,25 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         and: "two different entities are not equal"
         aspect != new CustomPropertiesData()
+    }
+
+    @Transactional
+    def "The identity of the entity 'subTypeAspectData' is consistent over state transitions"() {
+        given:
+        def asset = newAsset(unit)
+        assetDataRepository.save(asset)
+        entityManager.flush()
+
+        when:
+        asset.setSubType(this.domain, "foo")
+        def aspect = asset.subTypeAspects[0]
+        testIdentityConsistency(SubTypeAspectData.class, aspect)
+
+        then:
+        notThrown(Exception)
+
+        and: "two different entities are not equal"
+        aspect != new SubTypeAspectData()
     }
 
     @Transactional

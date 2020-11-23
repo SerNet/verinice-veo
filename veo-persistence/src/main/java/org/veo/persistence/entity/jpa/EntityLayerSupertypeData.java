@@ -17,6 +17,7 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -34,6 +35,8 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.aspects.Aspect;
+import org.veo.core.entity.aspects.SubTypeAspect;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -76,6 +79,32 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
                mappedBy = "owner",
                fetch = FetchType.LAZY)
     final private Set<CustomProperties> customAspects = new HashSet<>();
+
+    @Column(name = "sub_type_aspects")
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = SubTypeAspectData.class,
+               mappedBy = "owner",
+               fetch = FetchType.LAZY)
+    private Set<SubTypeAspectData> subTypeAspects = new HashSet<>();
+
+    protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
+        return source.stream()
+                     .filter(aspect -> aspect.getDomain() == domain)
+                     .findFirst();
+    }
+
+    @Override
+    public Optional<String> getSubType(Domain domain) {
+        return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getSubType);
+    }
+
+    @Override
+    public void setSubType(Domain domain, String subType) {
+        var aspect = new SubTypeAspectData(domain, this, subType);
+        subTypeAspects.remove(aspect);
+        subTypeAspects.add(aspect);
+    }
 
     // one to one entitylayersupertype-> unit
     @NotNull

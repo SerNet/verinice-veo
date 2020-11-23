@@ -26,15 +26,18 @@ import org.veo.core.service.EntitySchemaService;
 public class DtoToEntityContext implements TransformContext {
 
     public DtoToEntityContext(EntityFactory entityFactory, EntitySchemaService entitySchemaService,
-            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+            ModelObjectReferenceResolver modelObjectReferenceResolver,
+            SubTypeTransformer subTypeTransformer) {
         this.factory = entityFactory;
         this.entitySchemaLoader = new EntitySchemaLoader(entitySchemaService);
         this.modelObjectReferenceResolver = modelObjectReferenceResolver;
+        this.subTypeTransformer = subTypeTransformer;
     }
 
     private final EntityFactory factory;
     private final EntitySchemaLoader entitySchemaLoader;
     private final ModelObjectReferenceResolver modelObjectReferenceResolver;
+    private final SubTypeTransformer subTypeTransformer;
 
     public EntityFactory getFactory() {
         return factory;
@@ -46,5 +49,9 @@ public class DtoToEntityContext implements TransformContext {
 
     public <T extends ModelObject> T resolve(ModelObjectReference<T> reference) {
         return modelObjectReferenceResolver.resolve(reference);
+    }
+
+    public SubTypeTransformer getSubTypeTransformer() {
+        return subTypeTransformer;
     }
 }

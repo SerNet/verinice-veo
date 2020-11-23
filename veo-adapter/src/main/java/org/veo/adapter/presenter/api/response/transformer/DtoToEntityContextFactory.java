@@ -29,9 +29,12 @@ public class DtoToEntityContextFactory {
     private final EntityFactory entityFactory;
     private final EntitySchemaService entitySchemaService;
     private final RepositoryProvider repositoryProvider;
+    private final SubTypeTransformer subTypeTransformer;
 
-    public DtoToEntityContextFactory(EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService, RepositoryProvider repositoryProvider) {
+    public DtoToEntityContextFactory(SubTypeTransformer subTypeTransformer,
+            EntityFactory entityFactory, EntitySchemaService entitySchemaService,
+            RepositoryProvider repositoryProvider) {
+        this.subTypeTransformer = subTypeTransformer;
         this.entityFactory = entityFactory;
         this.entitySchemaService = entitySchemaService;
         this.repositoryProvider = repositoryProvider;
@@ -39,6 +42,6 @@ public class DtoToEntityContextFactory {
 
     public DtoToEntityContext create(Client client) {
         return new DtoToEntityContext(entityFactory, entitySchemaService,
-                new ModelObjectReferenceResolver(repositoryProvider, client));
+                new ModelObjectReferenceResolver(repositoryProvider, client), subTypeTransformer);
     }
 }

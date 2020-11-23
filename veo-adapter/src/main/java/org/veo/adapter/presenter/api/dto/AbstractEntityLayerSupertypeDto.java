@@ -108,4 +108,8 @@ abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
             title = "CustomAspect")
     private Map<String, CustomPropertiesDto> customAspects = Collections.emptyMap();
 
+    @Valid
+    @Schema(description = "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
+            title = "SubType")
+    private Map<String, String> subType = Collections.emptyMap();
 }

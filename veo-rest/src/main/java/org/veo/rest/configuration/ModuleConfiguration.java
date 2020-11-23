@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
+import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
@@ -321,9 +322,15 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public DtoToEntityContextFactory dtoToEntityContextFactory(EntityFactory entityFactory,
+    SubTypeTransformer aspectTransformer() {
+        return new SubTypeTransformer();
+    }
+
+    @Bean
+    public DtoToEntityContextFactory dtoToEntityContextFactory(
+            SubTypeTransformer subTypeTransformer, EntityFactory entityFactory,
             EntitySchemaService entitySchemaService, RepositoryProvider repositoryProvider) {
-        return new DtoToEntityContextFactory(entityFactory, entitySchemaService,
+        return new DtoToEntityContextFactory(subTypeTransformer, entityFactory, entitySchemaService,
                 repositoryProvider);
     }
 }

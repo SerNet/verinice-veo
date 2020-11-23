@@ -23,6 +23,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
+import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.EntityTypeNames
@@ -147,6 +148,7 @@ class GroupDtoTransformerSpec extends Specification {
         }
         def context = Mock(DtoToEntityContext) {
             it.factory >> Mock(EntityFactory)
+            it.subTypeTransformer >> Mock(SubTypeTransformer)
         }
         def assetGroupId = Key.newUuid()
         def assetGroupDto = new FullAssetGroupDto().tap {
@@ -167,6 +169,7 @@ class GroupDtoTransformerSpec extends Specification {
         1 * context.resolve(asset2Ref) >> asset2
         result == newAssetGroupEntity
         1 * newAssetGroupEntity.setMembers([asset1, asset2].toSet())
+        1 * context.subTypeTransformer.mapSubTypesToEntity(assetGroupDto, newAssetGroupEntity)
     }
 
     def "Transform group that contains itself"() {

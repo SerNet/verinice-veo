@@ -55,7 +55,7 @@ public final class ModelValidator {
          * This method may be used to implement additional checks for specific types.
          *
          * @param object
-         *            a valid model object subtype
+         *            a valid model object type
          * @param validationErrors
          *            an output parameter for validation error messages
          */

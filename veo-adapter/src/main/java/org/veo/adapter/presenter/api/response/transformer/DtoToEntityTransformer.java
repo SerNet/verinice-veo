@@ -277,6 +277,8 @@ public final class DtoToEntityTransformer {
             DtoToEntityContext tcontext, TDto source, TEntity target) {
         mapNameableProperties(source, target);
         target.setDomains(convertSet(source.getDomains(), tcontext::resolve));
+        tcontext.getSubTypeTransformer()
+                .mapSubTypesToEntity(source, target);
         var entitySchema = tcontext.loadEntitySchema(target.getModelType());
         target.setLinks(mapLinks(tcontext, target, source, entitySchema));
         target.setCustomAspects(mapCustomAspects(source, tcontext.getFactory(), entitySchema));

@@ -40,6 +40,14 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 abstract public class AspectData implements Aspect {
 
+    public AspectData(Domain domain, EntityLayerSupertype owner) {
+        this.domain = domain;
+        this.owner = owner;
+    }
+
+    protected AspectData() {
+    }
+
     @Id
     @ToString.Include
     private String dbId = UUID.randomUUID()

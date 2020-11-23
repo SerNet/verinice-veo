@@ -17,6 +17,7 @@
 package org.veo.core.entity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.format.AbbreviationPlaceholder;
@@ -69,6 +70,10 @@ public interface EntityLayerSupertype extends ModelObject {
     Set<CustomLink> getLinks();
 
     void setLinks(Set<CustomLink> aLinks);
+
+    Optional<String> getSubType(Domain domain);
+
+    void setSubType(Domain domain, String subType);
 
     /**
      * Add the given CustomProperties to the collection customAspects.

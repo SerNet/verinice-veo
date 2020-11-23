@@ -188,6 +188,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 searchesUri : "http://localhost/units/searches",
                 resourcesUri: "http://localhost/units{?parent,displayName}"
             ],
+            subType: [:],
             createdBy: "me",
             createdAt: "2020-09-01T00:00:00Z",
             updatedBy: "you",

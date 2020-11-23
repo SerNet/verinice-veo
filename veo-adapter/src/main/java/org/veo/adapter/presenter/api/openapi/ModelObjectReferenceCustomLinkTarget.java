@@ -22,7 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * This class is for documentation only. It specifies type-specific comments and
- * examples for a reference to a specific subtype of ModelObject.
+ * examples for a reference to a specific type of ModelObject.
  *
  * It is only supposed to be used in OpenApi annotations and should not be
  * extended and implemented.

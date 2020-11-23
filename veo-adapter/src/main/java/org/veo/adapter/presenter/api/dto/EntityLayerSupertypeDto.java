@@ -45,4 +45,8 @@ public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
     void setCustomAspects(Map<String, CustomPropertiesDto> customAspects);
 
     EntityLayerSupertype toEntity(DtoToEntityContext context);
+
+    Map<String, String> getSubType();
+
+    void setSubType(Map<String, String> subType);
 }

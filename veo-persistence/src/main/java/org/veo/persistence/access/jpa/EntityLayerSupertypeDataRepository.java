@@ -36,7 +36,8 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     List<T> findByOwner_Client_DbId(String clientId); // NOPMD
 
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "where e.dbId = ?1")
+            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
+            + "where e.dbId = ?1")
     @Override
     Optional<T> findById(String id);
 
@@ -48,7 +49,8 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      *            a list of units' UUIDs
      */
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "where e.owner.dbId IN ?1")
+            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
+            + "where e.owner.dbId IN ?1")
     @Transactional(readOnly = true)
     Set<T> findByUnits(Set<String> unitIds);
 
@@ -61,7 +63,8 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      *            a list of units' UUIDs
      */
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
+            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
+            + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
     @Transactional(readOnly = true)
     // Using Set as return type here makes it unnecessary to add the DISTINCT
     // keyword to the query
@@ -77,7 +80,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
      *            a list of units' UUIDs
      */
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links "
+            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
             // + "left join fetch e.members "
             + "where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
     @Transactional(readOnly = true)

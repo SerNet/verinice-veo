@@ -147,7 +147,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(1)
         assertUpdateCount(0)
-        assertSelectCount(9)
+        assertSelectCount(10)
     }
 
     def "SQL performance for saving 1 group of 2 persons"() {
@@ -179,7 +179,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(211)
         assertUpdateCount(4)
-        assertSelectCount(310)
+        assertSelectCount(313)
     }
 
     def "SQL performance for selecting units of a client"() {

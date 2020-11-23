@@ -333,6 +333,8 @@ public final class EntityToDtoTransformer {
         target.setDomains(convertReferenceSet(source.getDomains(), referenceAssembler));
         target.setLinks(mapLinks(source.getLinks(), referenceAssembler));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects()));
+        // TODO VEO-382 inject AspectTransformer
+        new SubTypeTransformer().mapSubTypesToDto(source, target);
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner(), referenceAssembler));
