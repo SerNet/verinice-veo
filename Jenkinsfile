@@ -107,29 +107,18 @@ pipeline {
             steps {
                 script {
                     def dockerImage = docker.build('eu.gcr.io/veo-projekt/veo', "--build-arg VEO_VERSION='$projectVersion' --label org.opencontainers.image.version='$projectVersion' --label org.opencontainers.image.revision='$env.GIT_COMMIT' .")
-
-                    def removeImage = { identifier ->
-                       sh "docker image rm -f ${identifier}"
-                    }
-
-                    def pushAndRemoveImage = { img, imageTag ->
-                       img.push(imageTag)
-                       removeImage("${img.id}:${imageTag}")
-                    }
-
                     // Finally, we'll push the image with several tags:
                     // Pushing multiple tags is cheap, as all the layers are reused.
                     withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
-                        pushAndRemoveImage(dockerImage, "git-${env.GIT_COMMIT}")
+                        dockerImage.push("git-${env.GIT_COMMIT}")
                         if (env.GIT_BRANCH == 'master') {
-                            pushAndRemoveImage(dockerImage, 'latest')
-                            pushAndRemoveImage(dockerImage, "master-build-${env.BUILD_NUMBER}")
+                            dockerImage.push("latest")
+                            dockerImage.push("master-build-${env.BUILD_NUMBER}")
                         } else if (env.GIT_BRANCH == 'develop') {
-                            pushAndRemoveImage(dockerImage, 'develop')
-                            pushAndRemoveImage(dockerImage, "develop-build-${env.BUILD_NUMBER}")
+                            dockerImage.push("develop")
+                            dockerImage.push("develop-build-${env.BUILD_NUMBER}")
                         }
                     }
-                    removeImage(dockerImage.id)
                 }
             }
         }
