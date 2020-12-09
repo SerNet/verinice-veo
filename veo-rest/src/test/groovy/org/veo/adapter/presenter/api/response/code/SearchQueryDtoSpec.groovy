@@ -24,13 +24,13 @@ import spock.lang.Specification
 class SearchQueryDtoSpec extends Specification {
 
 
-    public static final String ENCODED = "q1Yqzcss8UxRslIyNLQwTE4zNNVNSbE00jU2NjfTTTIyNtJNSzFLMrCwTDNJMrVU0lFKL8ovLQipLEhVssorzcnRUUrJLC7ISaz0S8yFCtUCAA=="
+    public static final String ENCODED = "q1Yqzcss8UxRslIyNLQwTE4zNNVNSbE00jU2NjfTTTIyNtJNSzFLMrCwTDNJMrVU0lFKySwuyEms9EvMTVWyyivNyakFAA=="
 
     def "encode search query"() {
         given: "a search query"
         def q = SearchQueryDto.builder()
                 .unitId(UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes).toString())
-                .build();
+                .build()
 
         when: "it is encoded as an ID string"
         def searchId = q.getSearchId()
@@ -55,7 +55,7 @@ class SearchQueryDtoSpec extends Specification {
         given: "a search object that leads to a '/' character in base64 encoding:"
         def q = SearchQueryDto.builder()
                 .unitId("59c9e163-88e5-4ebd-886a-2b21470bd19d")
-                .build();
+                .build()
 
         when: "it is encoded as an ID string"
         def searchId = q.getSearchId()

@@ -16,15 +16,8 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.List;
-import java.util.Set;
-
 import org.veo.persistence.entity.jpa.DocumentData;
-import org.veo.persistence.entity.jpa.groups.DocumentGroupData;
 
 public interface DocumentDataRepository extends EntityLayerSupertypeDataRepository<DocumentData> {
 
-    Set<DocumentGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
-
-    List<DocumentGroupData> findGroupsByOwner_DbId(String uuidValue);
 }

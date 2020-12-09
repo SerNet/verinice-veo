@@ -19,35 +19,35 @@ package org.veo.core.usecase.group;
 import java.time.Instant;
 import java.util.Optional;
 
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.usecase.repository.Repository;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.EntityGroupRepository;
 
 public class PutGroupUseCase extends UpdateGroupUseCase {
 
-    public PutGroupUseCase(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider);
+    public PutGroupUseCase(EntityGroupRepository entityGroupRepository) {
+        super(entityGroupRepository);
     }
 
     @Override
     protected ModelGroup<?> update(InputData input) {
-        ModelGroup<?> group = input.getGroup();
-        group.setCreatedAt(Instant.now());
-        Repository repository = repositoryProvider.getRepositoryFor(input.getGroup()
-                                                                         .getClass());
-        Optional<ModelGroup<?>> existingGroup = repository.findById(group.getId());
+        Optional<ModelGroup<?>> existingGroup = entityGroupRepository.findById(Key.uuidFrom(input.getUuid()));
+
         if (existingGroup.isEmpty()) {
-            throw new NotFoundException("Group %s was not found.", group.getId()
-                                                                        .uuidValue());
+            throw new NotFoundException("Group %s was not found.", input.getUuid());
         }
-        EntityLayerSupertype groupInDb = existingGroup.get();
+        ModelGroup<?> groupInDb = existingGroup.get();
+
+        ModelGroup<?> group = input.getGroupMapper()
+                                   .apply((Class<ModelGroup>) groupInDb.getClass());
+        group.setCreatedAt(Instant.now());
+
         checkETag(groupInDb, input);
         group.version(input.username, existingGroup.get());
         group.setVersion(groupInDb.getVersion());
         groupInDb.checkSameClient(input.getAuthenticatedClient());
-        return (ModelGroup<?>) repository.save(group);
+        return (ModelGroup<?>) entityGroupRepository.save(group);
     }
 
 }

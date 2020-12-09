@@ -16,16 +16,8 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.List;
-import java.util.Set;
-
 import org.veo.persistence.entity.jpa.IncidentData;
-import org.veo.persistence.entity.jpa.groups.IncidentGroupData;
 
 public interface IncidentDataRepository extends EntityLayerSupertypeDataRepository<IncidentData> {
-
-    Set<IncidentGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
-
-    List<IncidentGroupData> findGroupsByOwner_DbId(String uuidValue);
 
 }

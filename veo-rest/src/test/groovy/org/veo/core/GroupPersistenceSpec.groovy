@@ -26,7 +26,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.PersonRepositoryImpl
+import org.veo.persistence.access.EntityGroupRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 @SpringBootTest(classes = GroupPersistenceSpec.class)
@@ -41,7 +41,7 @@ class GroupPersistenceSpec extends VeoSpringSpec {
     private UnitRepositoryImpl unitRepository
 
     @Autowired
-    private PersonRepositoryImpl personRepository
+    private EntityGroupRepositoryImpl entityGroupRepository
 
     @Autowired
     private EntityFactory factory
@@ -69,13 +69,13 @@ class GroupPersistenceSpec extends VeoSpringSpec {
             state = Lifecycle.CREATING
             it
         }
-        personGroup = personRepository.save(personGroup)
+        personGroup = entityGroupRepository.save(personGroup)
         then:
         personGroup != null
         personGroup.members  == [john, jane] as Set
 
         when:
-        personGroup = personRepository.findById(personGroupId)
+        personGroup = entityGroupRepository.findById(personGroupId)
         then:
         personGroup.present
         personGroup.get().name == 'My person group'

@@ -29,6 +29,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -39,6 +40,7 @@ import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.DocumentRepository;
 import org.veo.core.usecase.repository.DomainRepository;
+import org.veo.core.usecase.repository.EntityGroupRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.IncidentRepository;
 import org.veo.core.usecase.repository.PersonRepository;
@@ -81,6 +83,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     @Autowired
     private UnitRepository unitRepository;
 
+    @Autowired
+    private EntityGroupRepository entityGroupRepository;
+
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ModelObject> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
@@ -103,6 +108,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     @Override
     public <T extends EntityLayerSupertype> EntityLayerSupertypeRepository<T> getEntityLayerSupertypeRepositoryFor(
             Class<T> entityType) {
+        if (ModelGroup.class.isAssignableFrom(entityType)) {
+            return (EntityLayerSupertypeRepository<T>) entityGroupRepository;
+        }
         if (Person.class.isAssignableFrom(entityType)) {
             return (EntityLayerSupertypeRepository<T>) personRepository;
         }
@@ -124,6 +132,7 @@ public class RepositoryProviderImpl implements RepositoryProvider {
         if (Control.class.isAssignableFrom(entityType)) {
             return (EntityLayerSupertypeRepository<T>) controlRepository;
         }
+
         throw new IllegalArgumentException("Unsupported entity type " + entityType);
     }
 

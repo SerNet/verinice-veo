@@ -16,15 +16,8 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.List;
-import java.util.Set;
-
 import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.groups.ControlGroupData;
 
 public interface ControlDataRepository extends EntityLayerSupertypeDataRepository<ControlData> {
 
-    Set<ControlGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
-
-    List<ControlGroupData> findGroupsByOwner_DbId(String uuidValue);
 }

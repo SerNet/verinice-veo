@@ -39,6 +39,7 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DocumentRepositoryImpl
+import org.veo.persistence.access.EntityGroupRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
@@ -83,6 +84,9 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ProcessRepositoryImpl processRepository
+
+    @Autowired
+    private EntityGroupRepositoryImpl entityGroupRepository
 
     @Autowired
     TransactionTemplate txTemplate
@@ -223,7 +227,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the group"
-        def results = get("/groups/${documentGroup.id.uuidValue()}?type=Document")
+        def results = get("/groups/${documentGroup.id.uuidValue()}")
 
         then: "the document group is found"
         results.andExpect(status().isOk())
@@ -242,7 +246,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the group"
-        def results = get("/groups/${incidentGroup.id.uuidValue()}?type=Incident")
+        def results = get("/groups/${incidentGroup.id.uuidValue()}")
 
         then: "the incident group is found"
         results.andExpect(status().isOk())
@@ -261,7 +265,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the group"
-        def results = get("/groups/${scenarioGroup.id.uuidValue()}?type=Scenario")
+        def results = get("/groups/${scenarioGroup.id.uuidValue()}")
 
         then: "the scenario group is found"
         results.andExpect(status().isOk())
@@ -288,7 +292,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the group"
-        def results = get("/groups/${controlGroup.id.uuidValue()}?type=Control")
+        def results = get("/groups/${controlGroup.id.uuidValue()}")
 
         then: "the control group is found"
         results.andExpect(status().isOk())
@@ -319,7 +323,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the group's members"
-        def results = get("/groups/${controlGroup.id.uuidValue()}/members?type=Control")
+        def results = get("/groups/${controlGroup.id.uuidValue()}/members")
 
         then: "the control group is found"
         results.andExpect(status().isOk())
@@ -332,8 +336,8 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve all process groups for a client"() {
-        given: "two saved process grousp"
+    def "retrieve all groups for a client"() {
+        given: "two saved groups"
         def processGroup1 = newProcessGroup(unit) {
             name = 'Test process group 1'
         }
@@ -346,8 +350,8 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
                     [processGroup1, processGroup2].collect(processRepository.&save)
                 }
 
-        when: "the server is queried for the process groups"
-        def results = get("/groups?type=Process")
+        when: "the server is queried for the groups"
+        def results = get("/groups")
 
         then: "the groups are returned"
         results.andExpect(status().isOk())
@@ -364,8 +368,8 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve all asset groups for a unit"() {
-        given: "two saved assets from different units"
+    def "retrieve all groups for a unit"() {
+        given: "two saved groups from different units"
         def assetGroup1 = newAssetGroup(unit) {
             name = 'Test asset group 1'
         }
@@ -377,10 +381,10 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
                 txTemplate.execute {
                     [assetGroup1, assetGroup2].collect(assetRepository.&save)
                 }
-        when: "a request is made to the server for all assets groups of a unit"
-        def results = get("/groups?unit=${unit.id.uuidValue()}&type=Asset")
+        when: "a request is made to the server for all groups of a unit"
+        def results = get("/groups?unit=${unit.id.uuidValue()}")
 
-        then: "the respective asset group is returned"
+        then: "the respective group is returned"
         results.andExpect(status().isOk())
         when:
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
@@ -390,10 +394,10 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         result.first().name == 'Test asset group 1'
         result.first().owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 
-        when: "a request is made to the server for all assets groups of another unit"
-        results = get("/groups?unit=${unit2.id.uuidValue()}&type=Asset")
+        when: "a request is made to the server for all groups of another unit"
+        results = get("/groups?unit=${unit2.id.uuidValue()}")
 
-        then: "the respective asset group is returned"
+        then: "the respective group is returned"
         results.andExpect(status().isOk())
         when:
         result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
@@ -414,8 +418,8 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
             [control, controlGroup].each(controlRepository.&save)
         }
 
-        when: "the server is queried for the control groups"
-        def results = get("/groups?type=Control")
+        when: "the server is queried for the groups"
+        def results = get("/groups")
 
         then: "the groups are returned"
         results.andExpect(status().isOk())
@@ -474,7 +478,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(assetGroup.id.uuidValue(), 1)
         ]
-        def results = put("/groups/${assetGroup.id.uuidValue()}?type=Asset",request, headers)
+        def results = put("/groups/${assetGroup.id.uuidValue()}",request, headers)
 
         then: "the group is found"
         results.andExpect(status().isOk())
@@ -486,7 +490,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
 
         when:
         def entity = txTemplate.execute {
-            assetRepository.findById(assetGroup.id).get().tap() {
+            entityGroupRepository.findById(assetGroup.id).get().tap() {
                 // resolve proxy:
                 customAspects.first()
             }
@@ -511,7 +515,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a delete request is sent to the server"
 
-        def results = delete("/groups/${assetGroup.id.uuidValue()}?type=Asset")
+        def results = delete("/groups/${assetGroup.id.uuidValue()}")
 
         then: "the asset group is deleted"
         results.andExpect(status().isOk())
@@ -531,7 +535,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(group2.id.uuidValue(), 1)
         ]
-        put("/groups/${group2.id.uuidValue()}?type=Asset", [
+        put("/groups/${group2.id.uuidValue()}", [
             id: group1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: '/units/' + unit.id.uuidValue()]
@@ -546,15 +550,15 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     @Unroll
     def "can put back #type group"() {
         given: "a new #type group"
-        def id = parseJson(post("/groups?type=", [
+        def id = parseJson(post("/groups", [
             name: "new name",
             type: type,
             owner: [targetUri: "/units/"+unit.id.uuidValue()]
         ])).resourceId
-        def getResult = get("/groups/$id?type=$type")
+        def getResult = get("/groups/$id")
 
         expect: "putting the retrieved group back to be successful"
-        put("/groups/$id?type=$type", parseJson(getResult), [
+        put("/groups/$id", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
         where:

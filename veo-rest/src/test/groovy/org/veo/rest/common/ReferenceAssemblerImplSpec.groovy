@@ -66,6 +66,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         Control| 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | '/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
         Scenario| 'f05ab334-c605-456e-8a78-9e1bc85b8509'|  '/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'
         Incident| '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
+        ModelGroup | '59d3c21d-2f21-4085-950d-1273056d664a' | '/groups/59d3c21d-2f21-4085-950d-1273056d664a'
     }
 
     @Unroll
@@ -78,6 +79,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         Control| '/controls{?unit,displayName}'
         Scenario| '/scenarios{?unit,displayName}'
         Incident| '/incidents{?unit,displayName}'
+        ModelGroup | '/groups{?unit}'
     }
 
     @Unroll
@@ -90,5 +92,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Control| '/controls/searches'
         Scenario| '/scenarios/searches'
         Incident| '/incidents/searches'
+        ModelGroup | '/groups/searches'
     }
 }

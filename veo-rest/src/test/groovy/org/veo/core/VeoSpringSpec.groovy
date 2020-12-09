@@ -24,11 +24,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.usecase.repository.ScenarioRepository
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
+import org.veo.persistence.access.jpa.EntityGroupDataRepository
 import org.veo.persistence.access.jpa.IncidentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
@@ -72,6 +72,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     ProcessDataRepository processDataRepository
 
     @Autowired
+    EntityGroupDataRepository entityGroupDataRepository
+
+    @Autowired
     TransactionTemplate txTemplate
 
     def setup() {
@@ -90,6 +93,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 }
             }
             [
+                entityGroupDataRepository,
                 assetDataRepository,
                 controlDataRepository,
                 documentDataRepository,
@@ -98,7 +102,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 personDataRepository,
                 processDataRepository,
                 unitDataRepository,
-                clientDataRepository
+                clientDataRepository,
             ]*.deleteAll()
         }
     }

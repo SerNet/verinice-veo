@@ -63,8 +63,8 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
                                                 "Invalid client ID"));
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return new OutputData<>(filterByDisplayName(repository.findByClient(client, false),
-                                                        input.getDisplayName()));
+            return new OutputData<>(
+                    filterByDisplayName(repository.findByClient(client), input.getDisplayName()));
         } else {
             var units = unitHierarchyProvider.findAllInRoot(Key.uuidFrom(input.getUnitUuid()
                                                                               .get()));

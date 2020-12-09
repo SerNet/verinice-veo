@@ -24,13 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.groups.AssetGroup
-import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.EntityGroupDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class GroupJpaSpec extends AbstractJpaSpec {
     @Autowired
-    AssetDataRepository assetRepository
+    EntityGroupDataRepository entityGroupDataRepository
 
     @Autowired
     UnitDataRepository unitRepository
@@ -54,10 +54,10 @@ class GroupJpaSpec extends AbstractJpaSpec {
             group1.members.add(group2)
             clientRepository.save(client)
             unitRepository.save(unit)
-            assetRepository.save(group1).id.uuidValue()
+            entityGroupDataRepository.save(group1).id.uuidValue()
         }
         then: "the entities can be retrieved"
-        def retrievedGroup1 = (AssetGroup)assetRepository.findById(group1Id).get()
+        def retrievedGroup1 = (AssetGroup)entityGroupDataRepository.findById(group1Id).get()
         def retrievedGroup2 = (AssetGroup)retrievedGroup1.members.first()
         and: "group 1 is always the same object"
         assertSame(retrievedGroup2.members.first(), retrievedGroup1)

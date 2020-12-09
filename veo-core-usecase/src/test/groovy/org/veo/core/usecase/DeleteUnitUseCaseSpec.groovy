@@ -22,6 +22,7 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Document
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
+import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
@@ -29,6 +30,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.repository.AssetRepository
 import org.veo.core.usecase.repository.ControlRepository
 import org.veo.core.usecase.repository.DocumentRepository
+import org.veo.core.usecase.repository.EntityGroupRepository
 import org.veo.core.usecase.repository.IncidentRepository
 import org.veo.core.usecase.repository.PersonRepository
 import org.veo.core.usecase.repository.ProcessRepository
@@ -50,12 +52,14 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         def personReporitory = Mock(PersonRepository)
         def processReporitory = Mock(ProcessRepository)
         def scenarioReporitory = Mock(ScenarioRepository)
+        def entityGroupRepository = Mock(EntityGroupRepository)
         when: "the unit is deleted"
         def input = new DeleteUnitUseCase.InputData(existingUnit.getId(), existingClient)
         def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider)
         usecase.execute(input)
 
         then: "the client for the unit is retrieved"
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(ModelGroup) >> entityGroupRepository
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Asset) >> assetReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Control) >> controlReporitory
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentReporitory
@@ -65,6 +69,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scenario) >> scenarioReporitory
         1 * clientRepository.findById(_) >> Optional.of(existingClient)
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
+        1 * entityGroupRepository.deleteByUnit(existingUnit)
         1 * assetReporitory.deleteByUnit(existingUnit)
         1 * controlReporitory.deleteByUnit(existingUnit)
         1 * documentReporitory.deleteByUnit(existingUnit)

@@ -16,18 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.groups.ProcessGroup;
-import org.veo.persistence.entity.jpa.ProcessData;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,24 +27,6 @@ import lombok.ToString;
 @Entity(name = "process_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProcessGroupData extends ProcessData
-        implements ProcessGroup, EntityLayerSupertypeGroupData<ProcessData> {
+public class ProcessGroupData extends EntityGroupData<Process> implements ProcessGroup {
 
-    @ManyToMany(targetEntity = ProcessData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "process_group_members",
-               joinColumns = @JoinColumn(name = "group_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    final private Set<Process> members = new HashSet<>();
-
-    @Override
-    public Set<Process> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<Process> members) {
-        this.members.clear();
-        this.members.addAll(members);
-    }
 }

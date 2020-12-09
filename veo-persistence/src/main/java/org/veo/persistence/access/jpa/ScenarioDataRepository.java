@@ -16,16 +16,8 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.List;
-import java.util.Set;
-
 import org.veo.persistence.entity.jpa.ScenarioData;
-import org.veo.persistence.entity.jpa.groups.ScenarioGroupData;
 
 public interface ScenarioDataRepository extends EntityLayerSupertypeDataRepository<ScenarioData> {
-
-    Set<ScenarioGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
-
-    List<ScenarioGroupData> findGroupsByOwner_DbId(String uuidValue);
 
 }

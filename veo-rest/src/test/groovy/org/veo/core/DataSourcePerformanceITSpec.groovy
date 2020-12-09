@@ -53,6 +53,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     private ProcessRepositoryImpl processRepository
 
     @Autowired
+    private EntityGroupRepositoryImpl entityGroupRepository
+
+    @Autowired
     private EntityFactory entityFactory
 
     private Client client
@@ -224,14 +227,15 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         when:
         reset()
+        entityGroupRepository.deleteByUnit(unit)
         personRepository.deleteByUnit(unit)
         unitRepository.delete(unit)
 
         then:
-        assertDeleteCount(407)
+        assertDeleteCount(222)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(4)
+        assertSelectCount(6)
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 persongroup linked to each other"() {
@@ -253,7 +257,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(25)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(22)
+        assertSelectCount(24)
     }
 
 
@@ -504,6 +508,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     def deleteUnit() {
+        entityGroupRepository.deleteByUnit(unit)
         assetRepository.deleteByUnit(unit)
         personRepository.deleteByUnit(unit)
         processRepository.deleteByUnit(unit)

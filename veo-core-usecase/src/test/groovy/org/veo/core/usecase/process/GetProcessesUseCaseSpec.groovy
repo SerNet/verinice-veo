@@ -22,7 +22,6 @@ import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.repository.ProcessRepository
-import org.veo.core.usecase.repository.UnitRepository
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
@@ -41,7 +40,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * processRepository.findByClient(existingClient, false) >> [process]
+        1 * processRepository.findByClient(existingClient) >> [process]
         output.entities*.id == [id]
     }
 

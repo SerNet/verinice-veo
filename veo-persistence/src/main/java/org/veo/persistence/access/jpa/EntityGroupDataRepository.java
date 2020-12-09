@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Alexander Ben Nasrallah.
+ * Copyright (c) 2020 Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,19 +14,11 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa.groups;
+package org.veo.persistence.access.jpa;
 
-import javax.persistence.Entity;
+import org.veo.persistence.entity.jpa.groups.EntityGroupData;
 
-import org.veo.core.entity.Scenario;
-import org.veo.core.entity.groups.ScenarioGroup;
-
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-@Entity(name = "scenario_group")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ScenarioGroupData extends EntityGroupData<Scenario> implements ScenarioGroup {
+public interface EntityGroupDataRepository
+        extends EntityLayerSupertypeDataRepository<EntityGroupData<?>> {
 
 }

@@ -18,7 +18,6 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -29,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
@@ -55,16 +53,11 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     }
 
     @Override
-    public List<T> findByClient(Client client, boolean includeGroups) {
-        List<S> list = Collections.emptyList();
-        if (includeGroups) {
-            list = dataRepository.findByOwner_Client_DbId(client.getId()
-                                                                .uuidValue());
-        } else {
-            list = List.copyOf(dataRepository.findEntitiesByOwner_Client_DbId(client.getId()
-                                                                                    .uuidValue()));
-        }
+    public List<T> findByClient(Client client) {
+        List<S> list = List.copyOf(dataRepository.findByOwner_Client_DbId(client.getId()
+                                                                                .uuidValue()));
         return (List<T>) list;
+
     }
 
     @Override
@@ -73,27 +66,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
                              .map(unit -> unit.getId()
                                               .uuidValue())
                              .collect(Collectors.toSet());
-        return (List<T>) List.copyOf(dataRepository.findEntitiesByUnits(unitIdSet));
-    }
-
-    @Override
-    public List<ModelGroup<T>> findGroupsByUnits(Set<Unit> units) {
-        var unitIdSet = units.stream()
-                             .map(unit -> unit.getId()
-                                              .uuidValue())
-                             .collect(Collectors.toSet());
-        return dataRepository.findGroupsByUnits(unitIdSet)
-                             .stream()
-                             .map(data -> (ModelGroup<T>) data)
-                             .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ModelGroup<T>> findGroupsByClient(Client client) {
-        return dataRepository.findGroupsByOwner_Client_DbId(client.getDbId())
-                             .stream()
-                             .map(data -> (ModelGroup<T>) data)
-                             .collect(Collectors.toList());
+        return (List<T>) List.copyOf(dataRepository.findByUnits(unitIdSet));
     }
 
     @Transactional

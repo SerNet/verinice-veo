@@ -72,6 +72,7 @@ import org.veo.persistence.access.AssetRepositoryImpl;
 import org.veo.persistence.access.ClientRepositoryImpl;
 import org.veo.persistence.access.ControlRepositoryImpl;
 import org.veo.persistence.access.DocumentRepositoryImpl;
+import org.veo.persistence.access.EntityGroupRepositoryImpl;
 import org.veo.persistence.access.IncidentRepositoryImpl;
 import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
@@ -274,30 +275,32 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateGroupUseCase getCreateGroupUseCase(UnitRepository unitRepository,
-            RepositoryProvider repositoryProvider) {
-        return new CreateGroupUseCase(unitRepository, repositoryProvider, getEntityFactory());
+            EntityGroupRepositoryImpl entityGroupRepository) {
+        return new CreateGroupUseCase(unitRepository, entityGroupRepository, getEntityFactory());
     }
 
     @Bean
-    public GetGroupUseCase getGroupUseCase(RepositoryProvider repositoryProvider,
+    public GetGroupUseCase getGroupUseCase(EntityGroupRepositoryImpl entityGroupRepository,
             UnitRepository unitRepository) {
-        return new GetGroupUseCase(repositoryProvider);
+        return new GetGroupUseCase(entityGroupRepository);
     }
 
     @Bean
     public GetGroupsUseCase getGroupsUseCase(ClientRepositoryImpl clientRepository,
-            UnitHierarchyProvider unitHierarchyProvider, RepositoryProvider repositoryProvider) {
-        return new GetGroupsUseCase(clientRepository, repositoryProvider, unitHierarchyProvider);
+            UnitHierarchyProvider unitHierarchyProvider,
+            EntityGroupRepositoryImpl entityGroupRepository) {
+        return new GetGroupsUseCase(clientRepository, entityGroupRepository, unitHierarchyProvider);
     }
 
     @Bean
-    public DeleteGroupUseCase getDeleteGroupUseCase(RepositoryProvider repositoryProvider) {
-        return new DeleteGroupUseCase(repositoryProvider);
+    public DeleteGroupUseCase getDeleteGroupUseCase(
+            EntityGroupRepositoryImpl entityGroupRepository) {
+        return new DeleteGroupUseCase(entityGroupRepository);
     }
 
     @Bean
-    public PutGroupUseCase putGroupUseCase(RepositoryProvider repositoryProvider) {
-        return new PutGroupUseCase(repositoryProvider);
+    public PutGroupUseCase putGroupUseCase(EntityGroupRepositoryImpl entityGroupRepository) {
+        return new PutGroupUseCase(entityGroupRepository);
     }
 
     @Bean

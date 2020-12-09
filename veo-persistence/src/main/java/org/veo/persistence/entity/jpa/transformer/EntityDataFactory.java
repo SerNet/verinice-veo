@@ -31,7 +31,6 @@ import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
@@ -165,7 +164,7 @@ public class EntityDataFactory implements EntityFactory {
 
     @Override
     public ModelGroup<?> createGroup(GroupType groupType, Key<UUID> key, String name, Unit unit) {
-        return createGroupInstance(groupType.entityClass, key, name, unit);
+        return createGroupInstance(groupType, key, name, unit);
     }
 
     @Override
@@ -231,24 +230,27 @@ public class EntityDataFactory implements EntityFactory {
         return group;
     }
 
-    private ModelGroup<?> createGroupInstance(Class<? extends ModelObject> entityClass,
-            Key<UUID> key, String name, Unit unit) {
-        if (entityClass == Person.class)// TODO: check does these come from the
-                                        // same classloader?
+    private ModelGroup<?> createGroupInstance(GroupType groupType, Key<UUID> key, String name,
+            Unit unit) {
+        switch (groupType) {// TODO: check does these come from the same
+                            // classloader?
+        case Person:
             return createPersonGroup(key, name, unit);
-        if (entityClass == Document.class)
+        case Document:
             return createDocumentGroup(key, name, unit);
-        if (entityClass == Asset.class)
+        case Asset:
             return createAssetGroup(key, name, unit);
-        if (entityClass == Process.class)
+        case Process:
             return createProcessGroup(key, name, unit);
-        if (entityClass == Control.class)
+        case Control:
             return createControlGroup(key, name, unit);
-        if (entityClass == Incident.class)
+        case Incident:
             return createIncidentGroup(key, name, unit);
-        if (entityClass == Scenario.class)
+        case Scenario:
             return createScenarioGroup(key, name, unit);
-        throw new IllegalArgumentException("No such Group for: " + entityClass);
+        default:
+            throw new IllegalArgumentException("No such Group for: " + groupType);
+        }
     }
 
     private void setEntityLayerData(EntityLayerSupertype entityLayerSupertype, Key<UUID> newUuid,

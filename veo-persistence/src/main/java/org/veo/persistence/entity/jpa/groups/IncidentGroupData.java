@@ -16,17 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.groups.IncidentGroup;
-import org.veo.persistence.entity.jpa.IncidentData;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -34,24 +27,6 @@ import lombok.ToString;
 @Entity(name = "incident_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class IncidentGroupData extends IncidentData
-        implements IncidentGroup, EntityLayerSupertypeGroupData<IncidentData> {
-
-    @ManyToMany(targetEntity = IncidentData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "incident_group_members",
-               joinColumns = @JoinColumn(name = "group_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private Set<Incident> members;
-
-    @Override
-    public Set<Incident> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<Incident> members) {
-        this.members = members;
-    }
+public class IncidentGroupData extends EntityGroupData<Incident> implements IncidentGroup {
 
 }

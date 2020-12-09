@@ -23,15 +23,13 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.EntityGroupRepository;
 
 import lombok.Value;
 
@@ -41,14 +39,15 @@ import lombok.Value;
 public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertype>>
         extends UseCase<GetGroupsUseCase.InputData, GetGroupsUseCase.OutputData<T>> {
 
-    private final RepositoryProvider repositoryProvider;
+    private final EntityGroupRepository entityGroupRepository;
     private final ClientRepository clientRepository;
     private final UnitHierarchyProvider unitHierarchyProvider;
 
     public GetGroupsUseCase(ClientRepository clientRepository,
-            RepositoryProvider repositoryProvider, UnitHierarchyProvider unitHierarchyProvider) {
+            EntityGroupRepository entityGroupRepository,
+            UnitHierarchyProvider unitHierarchyProvider) {
         this.clientRepository = clientRepository;
-        this.repositoryProvider = repositoryProvider;
+        this.entityGroupRepository = entityGroupRepository;
         this.unitHierarchyProvider = unitHierarchyProvider;
     }
 
@@ -63,15 +62,14 @@ public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertyp
                                                        .getId())
                                         .orElseThrow(() -> new NotFoundException(
                                                 "Invalid client ID"));
-        EntityLayerSupertypeRepository<? extends EntityLayerSupertype> groupRepository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.groupType.entityClass);
 
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return new OutputData<T>((List<T>) groupRepository.findGroupsByClient(client));
+            return new OutputData<T>((List<T>) entityGroupRepository.findByClient(client));
         } else {
             var units = unitHierarchyProvider.findAllInRoot(Key.uuidFrom(input.getUnitUuid()
                                                                               .get()));
-            return new OutputData<T>((List<T>) groupRepository.findGroupsByUnits(units));
+            return new OutputData<T>((List<T>) entityGroupRepository.findByUnits(units));
         }
     }
 
@@ -79,7 +77,6 @@ public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertyp
     @Value
     public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
-        GroupType groupType;
         Optional<String> unitUuid;
     }
 

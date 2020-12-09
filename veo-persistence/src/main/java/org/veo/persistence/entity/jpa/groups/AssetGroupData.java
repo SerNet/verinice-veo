@@ -16,18 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.groups.AssetGroup;
-import org.veo.persistence.entity.jpa.AssetData;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,25 +27,6 @@ import lombok.ToString;
 @Entity(name = "asset_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class AssetGroupData extends AssetData
-        implements AssetGroup, EntityLayerSupertypeGroupData<AssetData> {
-
-    @ManyToMany(targetEntity = AssetData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "asset_group_members",
-               joinColumns = @JoinColumn(name = "group_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    final private Set<Asset> members = new HashSet<>();
-
-    @Override
-    public Set<Asset> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<Asset> members) {
-        this.members.clear();
-        this.members.addAll(members);
-    }
+public class AssetGroupData extends EntityGroupData<Asset> implements AssetGroup {
 
 }

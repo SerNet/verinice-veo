@@ -14,9 +14,25 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.persistence.access;
 
-public enum GroupType {
-    Asset, Control, Document, Incident, Scenario, Person, Process;
+import org.springframework.stereotype.Repository;
+
+import org.veo.core.entity.ModelGroup;
+import org.veo.core.usecase.repository.EntityGroupRepository;
+import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.EntityGroupDataRepository;
+import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.groups.EntityGroupData;
+
+@Repository
+public class EntityGroupRepositoryImpl
+        extends AbstractEntityLayerSupertypeRepository<ModelGroup<?>, EntityGroupData<?>>
+        implements EntityGroupRepository {
+
+    public EntityGroupRepositoryImpl(EntityGroupDataRepository dataRepository,
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
+        super(dataRepository, validation, linkDataRepository);
+    }
 
 }

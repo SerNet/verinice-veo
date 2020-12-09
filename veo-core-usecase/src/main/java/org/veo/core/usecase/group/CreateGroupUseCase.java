@@ -29,8 +29,7 @@ import org.veo.core.entity.Versioned.Lifecycle;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.EntityGroupRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
@@ -39,13 +38,13 @@ public class CreateGroupUseCase
         extends UseCase<CreateGroupUseCase.InputData, CreateGroupUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
-    private final RepositoryProvider repositoryProvider;
+    private final EntityGroupRepository entityGroupRepository;
     private final EntityFactory entityFactoty;
 
-    public CreateGroupUseCase(UnitRepository unitRepository, RepositoryProvider repositoryProvider,
-            EntityFactory entityFactoty) {
+    public CreateGroupUseCase(UnitRepository unitRepository,
+            EntityGroupRepository entityGroupRepository, EntityFactory entityFactoty) {
         this.unitRepository = unitRepository;
-        this.repositoryProvider = repositoryProvider;
+        this.entityGroupRepository = entityGroupRepository;
         this.entityFactoty = entityFactoty;
     }
 
@@ -63,9 +62,7 @@ public class CreateGroupUseCase
         group.setState(Lifecycle.CREATING);
         group.version(input.username, null);
 
-        EntityLayerSupertypeRepository repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.groupType.entityClass);
-
-        return new OutputData((ModelGroup<?>) repository.save(group));
+        return new OutputData((ModelGroup<?>) entityGroupRepository.save(group));
 
     }
 

@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.group;
 
+import java.util.function.Function;
+
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
@@ -24,7 +26,7 @@ import org.veo.core.entity.ModelGroup;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.EntityGroupRepository;
 
 import lombok.Value;
 
@@ -41,10 +43,10 @@ import lombok.Value;
 public abstract class UpdateGroupUseCase
         extends UseCase<UpdateGroupUseCase.InputData, UpdateGroupUseCase.OutputData> {
 
-    protected final RepositoryProvider repositoryProvider;
+    protected final EntityGroupRepository entityGroupRepository;
 
-    public UpdateGroupUseCase(RepositoryProvider repositoryProvider) {
-        this.repositoryProvider = repositoryProvider;
+    public UpdateGroupUseCase(EntityGroupRepository entityGroupRepository) {
+        this.entityGroupRepository = entityGroupRepository;
     }
 
     @Override
@@ -58,8 +60,9 @@ public abstract class UpdateGroupUseCase
     @Value
     public static class InputData implements UseCase.InputData {
         @Valid
-        ModelGroup<?> group;
+        Function<Class<ModelGroup>, ModelGroup<?>> groupMapper;
         Client authenticatedClient;
+        String uuid;
         String eTag;
         public String username;
     }

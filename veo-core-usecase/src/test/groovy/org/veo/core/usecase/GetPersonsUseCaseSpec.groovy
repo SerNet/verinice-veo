@@ -18,7 +18,6 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.person.GetPersonsUseCase
@@ -43,7 +42,7 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * personRepository.findByClient(existingClient, false) >> [person]
+        1 * personRepository.findByClient(existingClient) >> [person]
         output.entities*.id == [id]
     }
 

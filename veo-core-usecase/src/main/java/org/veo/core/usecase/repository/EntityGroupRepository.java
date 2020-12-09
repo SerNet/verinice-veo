@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Urs Zeidler.
+ * Copyright (c) 2020 Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,13 +14,16 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa.groups;
+package org.veo.core.usecase.repository;
 
-import org.veo.persistence.entity.jpa.NameableData;
+import org.veo.core.entity.ModelGroup;
 
 /**
- * @author urszeidler
+ * A repository for <code>ModelGroup</code> entities.
+ *
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
  */
-public interface EntityLayerSupertypeGroupData<T> extends NameableData {
+public interface EntityGroupRepository extends EntityLayerSupertypeRepository<ModelGroup<?>> {
 
 }

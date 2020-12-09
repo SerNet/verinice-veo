@@ -16,18 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Document;
 import org.veo.core.entity.groups.DocumentGroup;
-import org.veo.persistence.entity.jpa.DocumentData;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,25 +27,6 @@ import lombok.ToString;
 @Entity(name = "document_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class DocumentGroupData extends DocumentData
-        implements DocumentGroup, EntityLayerSupertypeGroupData<DocumentData> {
-
-    @ManyToMany(targetEntity = DocumentData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "document_group_members",
-               joinColumns = @JoinColumn(name = "group_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    final private Set<Document> members = new HashSet<>();
-
-    @Override
-    public Set<Document> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<Document> members) {
-        this.members.clear();
-        this.members.addAll(members);
-    }
+public class DocumentGroupData extends EntityGroupData<Document> implements DocumentGroup {
 
 }

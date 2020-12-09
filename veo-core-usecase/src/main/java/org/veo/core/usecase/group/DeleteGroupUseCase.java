@@ -22,35 +22,32 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.Repository;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.EntityGroupRepository;
 
 import lombok.Value;
 
 public class DeleteGroupUseCase
         extends UseCase<DeleteGroupUseCase.InputData, DeleteGroupUseCase.OutputData> {
 
-    private final RepositoryProvider repositoryProvider;
+    private final EntityGroupRepository entityGroupRepository;
 
-    public DeleteGroupUseCase(RepositoryProvider repositoryProvider) {
-        this.repositoryProvider = repositoryProvider;
+    public DeleteGroupUseCase(EntityGroupRepository entityGroupRepository) {
+        this.entityGroupRepository = entityGroupRepository;
     }
 
     @Override
     public OutputData execute(InputData input) {
 
-        Repository<? extends EntityLayerSupertype, Key<UUID>> repository = repositoryProvider.getRepositoryFor(input.groupType.entityClass);
-
-        EntityLayerSupertype group = repository.findById(input.getId())
-                                               .orElseThrow(() -> new NotFoundException(
-                                                       "Group %s was not found.", input.getId()
-                                                                                       .uuidValue()));
+        EntityLayerSupertype group = entityGroupRepository.findById(input.getId())
+                                                          .orElseThrow(() -> new NotFoundException(
+                                                                  "Group %s was not found.",
+                                                                  input.getId()
+                                                                       .uuidValue()));
         group.checkSameClient(input.authenticatedClient);
-        repository.deleteById(group.getId());
+        entityGroupRepository.deleteById(group.getId());
         return new OutputData(input.getId());
 
     }
@@ -58,7 +55,6 @@ public class DeleteGroupUseCase
     @Value
     public static class InputData implements UseCase.InputData {
         Key<UUID> id;
-        GroupType groupType;
         Client authenticatedClient;
     }
 

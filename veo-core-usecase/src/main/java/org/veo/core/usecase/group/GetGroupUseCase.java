@@ -22,31 +22,29 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.EntityGroupRepository;
 
 import lombok.Value;
 
 public class GetGroupUseCase
         extends UseCase<GetGroupUseCase.InputData, GetGroupUseCase.OutputData> {
 
-    private final RepositoryProvider repositoryProvider;
+    private final EntityGroupRepository entityGroupRepository;
 
-    public GetGroupUseCase(RepositoryProvider repositoryProvider) {
-        this.repositoryProvider = repositoryProvider;
+    public GetGroupUseCase(EntityGroupRepository entityGroupRepository) {
+        this.entityGroupRepository = entityGroupRepository;
     }
 
     @Override
     public OutputData execute(InputData input) {
-        EntityLayerSupertype group = repositoryProvider.getRepositoryFor(input.groupType.entityClass)
-                                                       .findById(input.getId())
-                                                       .orElseThrow(() -> new NotFoundException(
-                                                               input.getId()
-                                                                    .uuidValue()));
+        EntityLayerSupertype group = entityGroupRepository.findById(input.getId())
+                                                          .orElseThrow(() -> new NotFoundException(
+                                                                  input.getId()
+                                                                       .uuidValue()));
         group.checkSameClient(input.authenticatedClient);
         return new OutputData((ModelGroup<?>) group);
     }
@@ -55,7 +53,6 @@ public class GetGroupUseCase
     @Value
     public static class InputData implements UseCase.InputData {
         Key<UUID> id;
-        GroupType groupType;
         Client authenticatedClient;
     }
 

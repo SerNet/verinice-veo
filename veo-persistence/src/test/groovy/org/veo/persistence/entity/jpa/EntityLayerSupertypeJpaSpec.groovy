@@ -22,6 +22,7 @@ import javax.persistence.PersistenceContext
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.jpa.AssetDataRepository
+import org.veo.persistence.access.jpa.EntityGroupDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
@@ -30,6 +31,10 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
 
     @Autowired
     AssetDataRepository assetRepository
+
+    @Autowired
+    EntityGroupDataRepository entityGroupDataRepository
+
 
     @Autowired
     UnitDataRepository unitRepository
@@ -61,7 +66,7 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         })
 
         when: "querying assets from the first two owners"
-        def result = assetRepository.findEntitiesByUnits([owner0.dbId, owner1.dbId] as Set)
+        def result = assetRepository.findByUnits([owner0.dbId, owner1.dbId] as Set)
 
         then: "only the first two owners' assets are returned"
         with(result.sort {
@@ -83,7 +88,7 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         })
 
         when: "querying the owner's assets"
-        def result = assetRepository.findEntitiesByUnits([owner0.dbId] as Set)
+        def result = assetRepository.findByUnits([owner0.dbId] as Set)
 
         then: "only the normal asset is returned"
         result.size() == 1
@@ -103,9 +108,9 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         })
 
         when: "querying groups from the first two owners"
-        def result = assetRepository.findGroupsByUnits([owner0.dbId, owner1.dbId] as Set)
+        def result = entityGroupDataRepository.findByUnits([owner0.dbId, owner1.dbId] as Set)
 
-        then: "only the first two owners' assets are returned"
+        then: "only the first two owners' groups are returned"
         with(result.sort {
             it.name
         }) {
@@ -125,7 +130,7 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         })
 
         when: "querying the owner's asset groups"
-        def result = assetRepository.findGroupsByUnits([owner0.dbId] as Set)
+        def result = entityGroupDataRepository.findByUnits([owner0.dbId] as Set)
 
         then: "only the group is returned"
         result.size() == 1

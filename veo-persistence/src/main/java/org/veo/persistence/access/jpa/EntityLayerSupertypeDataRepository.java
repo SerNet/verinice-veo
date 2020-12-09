@@ -26,7 +26,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
-import org.veo.persistence.entity.jpa.groups.EntityLayerSupertypeGroupData;
 
 public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSupertypeData>
         extends JpaRepository<T, String> {
@@ -53,63 +52,6 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
             + "where e.owner.dbId IN ?1")
     @Transactional(readOnly = true)
     Set<T> findByUnits(Set<String> unitIds);
-
-    /**
-     * Find all entities of the repository's type in the given units. Groups will
-     * not be included in the result. I.e. 'Person' will be returned, but not
-     * 'PersonGroup' instances.
-     *
-     * @param unitIds
-     *            a list of units' UUIDs
-     */
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
-            + "where e.owner.dbId IN ?1  and type(e) = #{#entityName}")
-    @Transactional(readOnly = true)
-    // Using Set as return type here makes it unnecessary to add the DISTINCT
-    // keyword to the query
-    // which saves an additional hash aggregate operation in the database.
-    Set<T> findEntitiesByUnits(Set<String> unitIds);
-
-    /**
-     * Find all entity groups of the repository's type in the given units. Only
-     * groups will be included in the result. I.e. 'Person' will not be returned,
-     * but only 'PersonGroup' instances.
-     *
-     * @param unitIds
-     *            a list of units' UUIDs
-     */
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
-            // + "left join fetch e.members "
-            + "where e.owner.dbId IN ?1 and type(e) != #{#entityName}")
-    @Transactional(readOnly = true)
-    Set<? extends EntityLayerSupertypeGroupData<T>> findGroupsByUnits(Set<String> unitIds);
-
-    /**
-     * Find only entities of the repository's type for a client. This method does
-     * not return groups of the specific type. I.e. it will return all 'Person'
-     * instances that are not a 'PersonGroup'.
-     *
-     * @param clientId
-     *            The UUID of the client
-     */
-    @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1 and type(e)"
-            + " = #{#entityName}")
-    @Transactional(readOnly = true)
-    // Using Set as return type here makes it unnecessary to add the DISTINCT
-    // keyword to the query
-    // which saves an additional hash aggregate operation in the database.
-    Set<T> findEntitiesByOwner_Client_DbId(String clientId);
-
-    /**
-     * Find all groups of the repository's type for a client.
-     *
-     * @param clientId
-     *            the UUID of the client
-     */
-    @Transactional(readOnly = true)
-    Set<? extends EntityLayerSupertypeGroupData<T>> findGroupsByOwner_Client_DbId(String clientId);
 
     /**
      * Returns all entities of the repository's type that have a link with the given

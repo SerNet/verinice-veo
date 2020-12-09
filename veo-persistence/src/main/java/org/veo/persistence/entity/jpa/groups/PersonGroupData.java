@@ -16,18 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Person;
 import org.veo.core.entity.groups.PersonGroup;
-import org.veo.persistence.entity.jpa.PersonData;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,25 +27,6 @@ import lombok.ToString;
 @Entity(name = "person_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class PersonGroupData extends PersonData
-        implements PersonGroup, EntityLayerSupertypeGroupData<PersonData> {
-
-    @ManyToMany(targetEntity = PersonData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "person_group_members",
-               joinColumns = @JoinColumn(name = "group_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    final private Set<Person> members = new HashSet<>();
-
-    @Override
-    public Set<Person> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<Person> members) {
-        this.members.clear();
-        this.members.addAll(members);
-    }
+public class PersonGroupData extends EntityGroupData<Person> implements PersonGroup {
 
 }

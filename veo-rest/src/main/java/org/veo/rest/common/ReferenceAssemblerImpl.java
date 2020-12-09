@@ -37,6 +37,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -44,6 +45,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Unit;
 import org.veo.rest.AssetController;
 import org.veo.rest.ControlController;
+import org.veo.rest.GroupController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.PersonController;
 import org.veo.rest.ProcessController;
@@ -64,6 +66,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     @Override
     @SuppressFBWarnings // ignore warning on call to method proxy factory
     public String targetReferenceOf(Class type, String id) {
+        if (ModelGroup.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(GroupController.class).getGroup(ANY_AUTH,
+                                                                   id)).withRel(GroupController.URL_BASE_PATH)
+                                                                       .getHref();
+        }
         if (Asset.class.isAssignableFrom(type)) {
             return linkTo(methodOn(AssetController.class).getAsset(ANY_AUTH,
                                                                    id)).withRel(AssetController.URL_BASE_PATH)
@@ -109,6 +116,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     public String searchesReferenceOf(Class<? extends ModelObject> type) {
+        if (ModelGroup.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(GroupController.class).createSearch(ANY_AUTH,
+                                                                       ANY_SEARCH)).withRel(GroupController.URL_BASE_PATH)
+                                                                                   .getHref();
+        }
         if (Asset.class.isAssignableFrom(type)) {
             return linkTo(methodOn(AssetController.class).createSearch(ANY_AUTH,
                                                                        ANY_SEARCH)).withRel(AssetController.URL_BASE_PATH)
@@ -150,6 +162,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     @Override
     @SuppressFBWarnings // ignore warnings on calls to method proxy factories
     public String resourcesReferenceOf(Class<? extends ModelObject> type) {
+        if (ModelGroup.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(GroupController.class).getGroups(ANY_AUTH,
+                                                                    ANY_STRING)).withSelfRel()
+                                                                                .getHref();
+        }
         if (Asset.class.isAssignableFrom(type)) {
             return linkTo(methodOn(AssetController.class).getAssets(ANY_AUTH, ANY_STRING,
                                                                     ANY_STRING)).withSelfRel()

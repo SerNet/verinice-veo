@@ -39,7 +39,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * assetRepository.findByClient(existingClient, false) >> [asset]
+        1 * assetRepository.findByClient(existingClient) >> [asset]
         output.entities*.id == [id]
     }
 

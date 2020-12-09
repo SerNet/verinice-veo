@@ -41,7 +41,7 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * controlRepository.findByClient(existingClient, false) >> [control]
+        1 * controlRepository.findByClient(existingClient) >> [control]
         output.entities*.id == [id]
     }
 

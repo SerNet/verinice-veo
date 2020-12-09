@@ -16,18 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.groups.ControlGroup;
-import org.veo.persistence.entity.jpa.ControlData;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -35,25 +27,6 @@ import lombok.ToString;
 @Entity(name = "control_group")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ControlGroupData extends ControlData
-        implements ControlGroup, EntityLayerSupertypeGroupData<ControlData> {
-
-    @ManyToMany(targetEntity = ControlData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "control_group_members",
-               joinColumns = @JoinColumn(name = "group_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    final private Set<Control> members = new HashSet<>();
-
-    @Override
-    public Set<Control> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<Control> members) {
-        this.members.clear();
-        this.members.addAll(members);
-    }
+public class ControlGroupData extends EntityGroupData<Control> implements ControlGroup {
 
 }

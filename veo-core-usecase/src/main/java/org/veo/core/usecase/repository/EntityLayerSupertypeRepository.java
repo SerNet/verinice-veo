@@ -23,21 +23,16 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Unit;
 
 public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
         extends Repository<T, Key<UUID>> {
 
-    public List<T> findByClient(Client client, boolean includeGroups);
+    public List<T> findByClient(Client client);
 
     public List<T> findByUnits(Set<Unit> units);
 
-    public List<ModelGroup<T>> findGroupsByUnits(Set<Unit> units);
-
     public List<T> findByLinkTarget(EntityLayerSupertype entity);
-
-    public List<ModelGroup<T>> findGroupsByClient(Client client);
 
     public void deleteByUnit(Unit owner);
 }

@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.core.entity.GroupType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -61,19 +60,14 @@ public class SearchQueryDto {
     @Schema(description = "The ID of the unit of which the searches elements must be a member.")
     String unitId;
 
-    @Schema(description = "For group searches: the type of the entity that is being searched. "
-            + "Ignored for searches returning single entities.")
-    GroupType groupType;
-
     @Size(min = 3, max = 255)
     @Schema(description = "A substring of the displayName of an entity.")
     String displayName;
 
     // TODO VEO-38 implement search by displayName and possibly other fields
 
-    public SearchQueryDto(String unitId, GroupType entityType, String displayName) {
+    public SearchQueryDto(String unitId, String displayName) {
         this.unitId = unitId;
-        this.groupType = entityType;
         this.displayName = displayName;
     }
 

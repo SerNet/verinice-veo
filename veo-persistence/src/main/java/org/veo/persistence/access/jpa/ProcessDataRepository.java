@@ -16,15 +16,8 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.List;
-import java.util.Set;
-
 import org.veo.persistence.entity.jpa.ProcessData;
-import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
 
 public interface ProcessDataRepository extends EntityLayerSupertypeDataRepository<ProcessData> {
 
-    Set<ProcessGroupData> findGroupsByOwner_Client_DbId(String uuidValue);
-
-    List<ProcessGroupData> findGroupsByOwner_DbId(String uuidValue);
 }

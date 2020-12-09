@@ -21,28 +21,31 @@ import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.group.DeleteGroupUseCase.InputData
+import org.veo.core.usecase.repository.EntityGroupRepository
 
 import spock.lang.Unroll
 
 class DeleteGroupUseCaseSpec extends UseCaseSpec {
 
-    DeleteGroupUseCase usecase = new DeleteGroupUseCase(repositoryProvider)
+    EntityGroupRepository entityGroupRepository = Mock()
+
+
+    DeleteGroupUseCase usecase = new DeleteGroupUseCase(entityGroupRepository)
 
     @Unroll
     def "delete a #type group"() {
         given:
-        def repository = Mock(Class.forName("org.veo.core.usecase.repository.${type}Repository"))
+        def repository = Mock(EntityGroupRepository)
         def groupId = Key.newUuid()
         EntityLayerSupertype group = Mock()
         group.getOwner() >> existingUnit
         group.getId() >> groupId
 
         when:
-        def output = usecase.execute(new InputData(groupId, type, existingClient))
+        def output = usecase.execute(new InputData(groupId, existingClient))
         then:
-        1 * repositoryProvider.getRepositoryFor(type.entityClass) >> repository
-        1 * repository.findById(groupId) >> Optional.of(group)
-        1 * repository.deleteById(groupId)
+        1 * entityGroupRepository.findById(groupId) >> Optional.of(group)
+        1 * entityGroupRepository.deleteById(groupId)
         output.id == groupId
 
         where:
