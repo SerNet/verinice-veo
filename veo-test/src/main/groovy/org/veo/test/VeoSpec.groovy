@@ -42,6 +42,7 @@ import org.veo.core.entity.groups.IncidentGroup
 import org.veo.core.entity.groups.PersonGroup
 import org.veo.core.entity.groups.ProcessGroup
 import org.veo.core.entity.groups.ScenarioGroup
+import org.veo.core.entity.groups.Scope
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
@@ -59,6 +60,7 @@ import org.veo.persistence.entity.jpa.groups.IncidentGroupData
 import org.veo.persistence.entity.jpa.groups.PersonGroupData
 import org.veo.persistence.entity.jpa.groups.ProcessGroupData
 import org.veo.persistence.entity.jpa.groups.ScenarioGroupData
+import org.veo.persistence.entity.jpa.groups.ScopeData
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -223,6 +225,16 @@ abstract class VeoSpec extends Specification {
     static ProcessGroupData newProcessGroup(Unit owner, @DelegatesTo(value = ProcessGroup.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ProcessGroup") Closure init = null) {
         return new ProcessGroupData().tap {
+            id = Key.newUuid()
+            it.owner = owner
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
+        }
+    }
+
+    static ScopeData newScope(Unit owner, @DelegatesTo(value = Scope.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ModelGroup") Closure init = null) {
+        return new ScopeData().tap {
             id = Key.newUuid()
             it.owner = owner
             VeoSpec.execute(it, init)

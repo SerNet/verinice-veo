@@ -16,54 +16,29 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.groups;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.core.entity.groups.Scope;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Entity(name = "entitygroup")
+@Entity(name = "scope")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public abstract class EntityGroupData<T extends EntityLayerSupertype>
-        extends EntityLayerSupertypeData implements ModelGroup<T> {
+public class ScopeData extends EntityGroupData<ModelGroup<?>> implements Scope {
+
+    @Override
+    public String getModelType() {
+        return EntityTypeNames.SCOPE;
+    }
 
     @Override
     public Class<? extends ModelObject> getModelInterface() {
-        return ModelGroup.class;
-    }
-
-    @ManyToMany(targetEntity = EntityLayerSupertypeData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "group_members",
-               joinColumns = @JoinColumn(name = "group_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    private final Set<T> members = new HashSet<>();
-
-    @Override
-    public Set<T> getMembers() {
-        return members;
-    }
-
-    public void addGroupMember(T member) {
-        members.add(member);
-    }
-
-    @Override
-    public void setMembers(Set<T> members) {
-        this.members.clear();
-        this.members.addAll(members);
+        return Scope.class;
     }
 
 }

@@ -60,7 +60,8 @@ task generateEntitySchemas(type: JavaExec) {
         'Incident',
         'Scenario',
         'Person',
-        'Process'
+        'Process',
+        'Scope'
     ]
 }
 

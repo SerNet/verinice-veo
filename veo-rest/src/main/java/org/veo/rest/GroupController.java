@@ -67,6 +67,7 @@ import org.veo.adapter.presenter.api.dto.full.FullIncidentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioGroupDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -89,6 +90,7 @@ import org.veo.persistence.entity.jpa.groups.IncidentGroupData;
 import org.veo.persistence.entity.jpa.groups.PersonGroupData;
 import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
 import org.veo.persistence.entity.jpa.groups.ScenarioGroupData;
+import org.veo.persistence.entity.jpa.groups.ScopeData;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -263,8 +265,7 @@ public class GroupController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext context = dtoToEntityContextFactory.create(client);
 
-                                             Function<Class<ModelGroup>, ModelGroup<?>> groupMapper = (
-                                                     cl) -> {
+                                             Function<Class<ModelGroup>, ModelGroup<?>> groupMapper = cl -> {
                                                  Class dtoClass = getFullDtoClass(cl);
                                                  FullEntityLayerSupertypeGroupDto<?> groupDto;
                                                  try {
@@ -273,9 +274,13 @@ public class GroupController extends AbstractEntityController {
                                                      applyId(uuid, groupDto);
                                                      return groupDto.toEntity(context);
                                                  } catch (JsonProcessingException e) {
-                                                     // FIXME we need to do something really witty
-                                                     // here.
-                                                     throw new RuntimeException(e);
+                                                     // TODO we might need to do something wittier
+                                                     // here
+                                                     // to report the error back to the client
+                                                     throw new DtoTransformationException(
+                                                             "Failed to map request body to a "
+                                                                     + dtoClass,
+                                                             e);
                                                  }
 
                                              };
@@ -324,6 +329,9 @@ public class GroupController extends AbstractEntityController {
         }
         if (type.equals(ScenarioGroupData.class)) {
             return FullScenarioGroupDto.class;
+        }
+        if (type.equals(ScopeData.class)) {
+            return FullScopeDto.class;
         }
         throw new IllegalArgumentException("Unsupported type " + type);
 

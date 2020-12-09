@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.groups.AssetGroup
+import org.veo.core.entity.groups.PersonGroup
+import org.veo.core.entity.groups.Scope
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.EntityGroupDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
@@ -61,5 +63,40 @@ class GroupJpaSpec extends AbstractJpaSpec {
         def retrievedGroup2 = (AssetGroup)retrievedGroup1.members.first()
         and: "group 1 is always the same object"
         assertSame(retrievedGroup2.members.first(), retrievedGroup1)
+    }
+
+
+    @Transactional
+    def "save and load a scope"() {
+        when:"saving a scope with subgroups and elements"
+        def client = newClient()
+        def unit = newUnit(client)
+        def asset = newAsset(unit)
+        def assetGroup = newAssetGroup(unit) {
+            members = [asset]
+        }
+        def person = newPerson(unit)
+        def personGroup = newPersonGroup(unit) {
+            members = [person]
+        }
+        def scope = newScope(unit) {
+            members = [assetGroup, personGroup]
+        }
+        def scopeId = transactionTemplate.execute {
+            clientRepository.save(client)
+            unitRepository.save(unit)
+            entityGroupDataRepository.save(scope).id.uuidValue()
+        }
+        then: "the scope can be retrieved"
+        def retrievedScope = (Scope) entityGroupDataRepository.findById(scopeId).get()
+        and: "it contains the groups"
+        retrievedScope.members.size() == 2
+        retrievedScope.members.contains assetGroup
+        retrievedScope.members.contains personGroup
+        and: "the groups contain the elements"
+        def retrievedAssetGroup = retrievedScope.members.findAll {it instanceof AssetGroup}.first()
+        def retrievedPersonGroup = retrievedScope.members.findAll {it instanceof PersonGroup}.first()
+        retrievedAssetGroup.members == [asset] as Set
+        retrievedPersonGroup.members == [person] as Set
     }
 }

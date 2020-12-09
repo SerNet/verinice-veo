@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.veo.core.entity.groups.Scope;
+
 /**
  * This class contains translations from/to all known resource collections to
  * their names/URIs.
@@ -39,6 +41,7 @@ public final class EntityTypeNames {
     public static final String PROCESS = "process";
     public static final String UNIT = "unit";
     public static final String SCENARIO = "scenario";
+    public static final String SCOPE = "scope";
 
     public static final String ASSETS = "assets";
     public static final String CLIENTS = "clients";
@@ -89,7 +92,8 @@ public final class EntityTypeNames {
                                                                                               Person.class,
                                                                                               Incident.class,
                                                                                               Scenario.class,
-                                                                                              Process.class);
+                                                                                              Process.class,
+                                                                                              Scope.class);
 
     public static String getCollectionNameFor(Class type) {
         return typeToCollection.get(type);

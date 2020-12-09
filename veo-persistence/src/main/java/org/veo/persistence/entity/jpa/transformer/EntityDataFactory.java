@@ -42,6 +42,7 @@ import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.core.entity.groups.ScenarioGroup;
+import org.veo.core.entity.groups.Scope;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ClientData;
@@ -62,6 +63,7 @@ import org.veo.persistence.entity.jpa.groups.IncidentGroupData;
 import org.veo.persistence.entity.jpa.groups.PersonGroupData;
 import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
 import org.veo.persistence.entity.jpa.groups.ScenarioGroupData;
+import org.veo.persistence.entity.jpa.groups.ScopeData;
 
 /**
  * @author urszeidler
@@ -230,6 +232,15 @@ public class EntityDataFactory implements EntityFactory {
         return group;
     }
 
+    @Override
+    public Scope createScope(Key<UUID> key, String name, Unit owner) {
+        var group = new ScopeData();
+        group.setId(key);
+        group.setName(name);
+        group.setOwner(owner);
+        return group;
+    }
+
     private ModelGroup<?> createGroupInstance(GroupType groupType, Key<UUID> key, String name,
             Unit unit) {
         switch (groupType) {// TODO: check does these come from the same
@@ -248,6 +259,8 @@ public class EntityDataFactory implements EntityFactory {
             return createIncidentGroup(key, name, unit);
         case Scenario:
             return createScenarioGroup(key, name, unit);
+        case Scope:
+            return createScope(key, name, unit);
         default:
             throw new IllegalArgumentException("No such Group for: " + groupType);
         }

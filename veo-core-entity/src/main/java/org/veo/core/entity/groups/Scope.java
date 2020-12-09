@@ -14,8 +14,21 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.groups;
 
-public enum GroupType {
-    Asset, Control, Document, Incident, Scenario, Person, Process, Scope;
+import org.veo.core.entity.EntityTypeNames;
+import org.veo.core.entity.ModelGroup;
+import org.veo.core.entity.ModelObject;
+
+public interface Scope extends ModelGroup<ModelGroup<?>> {
+
+    @Override
+    default String getModelType() {
+        return EntityTypeNames.SCOPE;
+    }
+
+    @Override
+    default Class<? extends ModelObject> getModelInterface() {
+        return Scope.class;
+    }
 }

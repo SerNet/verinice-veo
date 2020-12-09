@@ -14,8 +14,16 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.rest;
 
-public enum GroupType {
-    Asset, Control, Document, Incident, Scenario, Person, Process, Scope;
+/**
+ * Exception that should be thrown when a PUT request body cannot be transformed
+ * into a Dto.
+ */
+public class DtoTransformationException extends RuntimeException {
+
+    public DtoTransformationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

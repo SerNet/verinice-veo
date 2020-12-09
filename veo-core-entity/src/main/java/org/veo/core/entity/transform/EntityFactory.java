@@ -41,6 +41,7 @@ import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.core.entity.groups.ScenarioGroup;
+import org.veo.core.entity.groups.Scope;
 
 /**
  * @author urszeidler
@@ -90,4 +91,6 @@ public interface EntityFactory {
     IncidentGroup createIncidentGroup(Key<UUID> id, String name, Unit unit);
 
     ScenarioGroup createScenarioGroup(Key<UUID> id, String name, Unit unit);
+
+    Scope createScope(Key<UUID> key, String name, Unit owner);
 }

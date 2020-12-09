@@ -30,6 +30,7 @@ import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
+import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.ControlGroup
 import org.veo.core.usecase.common.ETag
@@ -218,6 +219,34 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
 
 
     @WithUserDetails("user@domain.example")
+    def "create a scope"() {
+        given: "a request body"
+
+        Map request = [
+            name: 'My Scope',
+            type: 'Scope',
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ]
+        ]
+
+        when: "the request is sent"
+
+        def results = post('/groups', request)
+
+        then: "the scope is created and a status code returned"
+        results.andExpect(status().isCreated())
+
+        and: "the location of the new scope is returned"
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.success == true
+        def resourceId = result.resourceId
+        resourceId != null
+        resourceId != ''
+        result.message == 'Group created successfully.'
+    }
+
+    @WithUserDetails("user@domain.example")
     def "retrieve a document group"() {
         given: "a saved document group"
         def documentGroup = txTemplate.execute {
@@ -303,6 +332,98 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
         result.members*.displayName as Set == [
             '- c1 (Test unit)',
             '- c2 (Test unit)'] as Set
+    }
+
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve a scope with members"() {
+        given: "a saved scope with a group with two members"
+        Person p1 = newPerson(unit) {
+            name = "p1"
+        }
+        Person p2 = newPerson(unit) {
+            name = "p2"
+        }
+
+        def personGroup = newPersonGroup(unit) {
+            name = 'Test person group'
+            members = [p1, p2]
+        }
+
+        def scope = txTemplate.execute {
+            entityGroupRepository.save(newScope(unit) {
+                name = 'Test scope'
+                members = [personGroup]
+            })
+        }
+
+
+        when: "the server is queried for the scope"
+        def results = get("/groups/${scope.id.uuidValue()}")
+
+        then: "the scope is found"
+        results.andExpect(status().isOk())
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.name == 'Test scope'
+        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        and: "is has the correct members"
+        result.members.size() == 1
+        result.members.first().displayName == '- Test person group (Test unit)'
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "query and modify a scope's members"() {
+        given: "a saved scope and two groups"
+
+        def (assetGroup, scenarioGroup,scope ) = txTemplate.execute {
+
+            def assetGroup = entityGroupRepository.save(newAssetGroup(unit) {
+                name = 'Test asset group'
+            })
+            def scenarioGroup = entityGroupRepository.save(newScenarioGroup(unit) {
+                name = 'Test scenario group'
+            })
+            def scope = entityGroupRepository.save(newScope(unit) {
+                name = 'Test scope'
+            })
+            [
+                assetGroup,
+                scenarioGroup,
+                scope
+            ]
+        }
+
+
+        when: "the server is queried for the scope"
+        def results = get("/groups/${scope.id.uuidValue()}")
+
+        then: "the scope is found"
+        results.andExpect(status().isOk())
+        when:
+        def result = parseJson(results)
+        then:
+        result.name == 'Test scope'
+        result.members.empty
+
+        when: "the server is queried for the group's members"
+        def membersResults = get("/groups/${scope.id.uuidValue()}/members")
+        then: "the members are returned"
+        membersResults.andExpect(status().isOk())
+        when:
+        def membersResult =parseJson(membersResults)
+        then:
+        membersResult.empty
+
+        when: "Updating the scope's members"
+        result.members = [
+            [targetUri : "http://localhost/groups/${assetGroup.id.uuidValue()}"],
+            [targetUri : "http://localhost/groups/${scenarioGroup.id.uuidValue()}"]
+        ]
+        put("/groups/${scope.id.uuidValue()}", result, [
+            "If-Match": getTextBetweenQuotes(results.andReturn().response.getHeader("ETag"))
+        ])
+        then:
+        txTemplate.execute { entityGroupRepository.findById(scope.id).get().members.size() }  == 2
     }
 
     @WithUserDetails("user@domain.example")

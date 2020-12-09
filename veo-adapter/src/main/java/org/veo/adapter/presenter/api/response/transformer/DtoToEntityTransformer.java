@@ -39,6 +39,7 @@ import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -63,6 +64,7 @@ import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.core.entity.groups.ScenarioGroup;
+import org.veo.core.entity.groups.Scope;
 import org.veo.core.entity.transform.EntityFactory;
 
 /**
@@ -186,6 +188,14 @@ public final class DtoToEntityTransformer {
             EntityLayerSupertypeGroupDto<Scenario> source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createScenarioGroup(key, source.getName(), null);
+        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        return target;
+    }
+
+    public static Scope transformDto2Scope(DtoToEntityContext tcontext, FullScopeDto source,
+            Key<UUID> key) {
+        var target = tcontext.getFactory()
+                             .createScope(key, source.getName(), null);
         mapEntityLayerSupertypeGroup(tcontext, source, target);
         return target;
     }
@@ -332,4 +342,5 @@ public final class DtoToEntityTransformer {
 
     private DtoToEntityTransformer() {
     }
+
 }

@@ -50,6 +50,7 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioGroupDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
@@ -76,6 +77,7 @@ import org.veo.core.entity.groups.IncidentGroup;
 import org.veo.core.entity.groups.PersonGroup;
 import org.veo.core.entity.groups.ProcessGroup;
 import org.veo.core.entity.groups.ScenarioGroup;
+import org.veo.core.entity.groups.Scope;
 
 /**
  * A collection of transform functions to transform entities to Dto back and
@@ -135,6 +137,9 @@ public final class EntityToDtoTransformer {
         }
         if (source instanceof ControlGroup) {
             return transformControlGroup2Dto(referenceAssembler, (ControlGroup) source);
+        }
+        if (source instanceof Scope) {
+            return transformScope2Dto(referenceAssembler, (Scope) source);
         }
         throw new IllegalArgumentException("No transform method defined for " + source.getClass()
                                                                                       .getSimpleName());
@@ -250,6 +255,13 @@ public final class EntityToDtoTransformer {
     public static FullScenarioGroupDto transformScenarioGroup2Dto(
             ReferenceAssembler referenceAssembler, ScenarioGroup source) {
         FullScenarioGroupDto target = new FullScenarioGroupDto();
+        mapModelGroup(referenceAssembler, source, target);
+        return target;
+    }
+
+    private static FullEntityLayerSupertypeGroupDto<?> transformScope2Dto(
+            ReferenceAssembler referenceAssembler, Scope source) {
+        FullScopeDto target = new FullScopeDto();
         mapModelGroup(referenceAssembler, source, target);
         return target;
     }

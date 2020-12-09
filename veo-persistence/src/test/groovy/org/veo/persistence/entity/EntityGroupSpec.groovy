@@ -19,6 +19,7 @@ package org.veo.persistence.entity
 import java.time.Instant
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
@@ -27,12 +28,11 @@ import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.SameClientSpecification
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.persistence.entity.jpa.groups.EntityGroupData
+import org.veo.persistence.entity.jpa.groups.ScopeData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
-
-import spock.lang.Specification
-
-public class EntityGroupSpec extends Specification {
-
+import org.veo.test.VeoSpec
+public class EntityGroupSpec extends VeoSpec {
     EntityFactory entityFactory
 
     Client client
@@ -140,18 +140,24 @@ public class EntityGroupSpec extends Specification {
     }
 
     def "A group can contain subgroups of different types" () {
-        // FIXME VEO-136 this test was deleted, and also the possibility to create groups of groups
-        //        given: "two groups of identical types"
-        //        EntityGroup<org.veo.core.entity.Asset> subgroup1 = EntityGroup.newGroup(unit, "Subgroup 1");
-        //        EntityGroup<org.veo.core.entity.Process> subgroup2 = EntityGroup.newGroup(unit, "Subgroup 2");
-        //
-        //        when: "a group is created with those subgroups"
-        //        EntityGroup<EntityGroup<? extends EntityLayerSupertype>> group = EntityGroup.newGroup(unit, "Group");
-        //        group.addGroupMember(client, subgroup1);
-        //        group.addGroupMember(client, subgroup2);
-        //
-        //        then: "the group contains both subgroups"
-        //        group.getGroupMembers().size() == 2;
+        given: "two groups of identical types"
+        EntityGroupData<org.veo.core.entity.Asset> subgroup1 = newAssetGroup(unit) {
+            name = "Subgroup 1"
+        }
+
+        EntityGroupData<org.veo.core.entity.Process> subgroup2 = newProcessGroup(unit) {
+            name = "Subgroup 2"
+        }
+
+        when: "a group is created with those subgroups"
+        EntityGroupData<EntityGroupData<? extends EntityLayerSupertype>> group = new ScopeData()
+
+
+        group.addGroupMember(subgroup1)
+        group.addGroupMember( subgroup2)
+
+        then: "the group contains both subgroups"
+        group.members.size() == 2
     }
 
     def "A group can contain a subgroup that contains itself" () {
