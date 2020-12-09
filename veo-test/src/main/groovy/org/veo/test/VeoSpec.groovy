@@ -73,8 +73,8 @@ abstract class VeoSpec extends Specification {
         return new AssetData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -83,8 +83,8 @@ abstract class VeoSpec extends Specification {
         return new AssetGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initModelGroup(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initModelGroup(it)
         }
     }
 
@@ -92,7 +92,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Client") Closure init = null) {
         return new ClientData().tap {
             id = Key.newUuid()
-            execute(it, init)
+            VeoSpec.execute(it, init)
             if (it.name == null) {
                 it.name = it.modelType + it.id
             }
@@ -105,8 +105,8 @@ abstract class VeoSpec extends Specification {
         return new ControlData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -115,8 +115,8 @@ abstract class VeoSpec extends Specification {
         return new ControlGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initModelGroup(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initModelGroup(it)
         }
     }
 
@@ -125,8 +125,8 @@ abstract class VeoSpec extends Specification {
         return new DocumentData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -135,8 +135,8 @@ abstract class VeoSpec extends Specification {
         return new DocumentGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initModelGroup(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initModelGroup(it)
         }
     }
 
@@ -145,8 +145,8 @@ abstract class VeoSpec extends Specification {
         return new IncidentData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -155,8 +155,8 @@ abstract class VeoSpec extends Specification {
         return new IncidentGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initModelGroup(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initModelGroup(it)
         }
     }
 
@@ -165,8 +165,8 @@ abstract class VeoSpec extends Specification {
         return new ScenarioData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -175,8 +175,8 @@ abstract class VeoSpec extends Specification {
         return new ScenarioGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initModelGroup(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initModelGroup(it)
         }
     }
 
@@ -184,7 +184,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure init = null) {
         return new DomainData().tap {
             id = Key.newUuid()
-            execute(it, init)
+            VeoSpec.execute(it, init)
             name(it)
             version(it)
         }
@@ -195,8 +195,8 @@ abstract class VeoSpec extends Specification {
         return new PersonData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -205,8 +205,8 @@ abstract class VeoSpec extends Specification {
         return new PersonGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initModelGroup(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initModelGroup(it)
         }
     }
 
@@ -215,8 +215,8 @@ abstract class VeoSpec extends Specification {
         return new ProcessData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -225,8 +225,8 @@ abstract class VeoSpec extends Specification {
         return new ProcessGroupData().tap {
             id = Key.newUuid()
             it.owner = owner
-            execute(it, init)
-            initEntityLayerSupertype(it)
+            VeoSpec.execute(it, init)
+            VeoSpec.initEntityLayerSupertype(it)
         }
     }
 
@@ -235,7 +235,7 @@ abstract class VeoSpec extends Specification {
         return new UnitData().tap {
             id = Key.newUuid()
             it.client = client
-            execute(it, init)
+            VeoSpec.execute(it, init)
             name(it)
             version(it)
         }
