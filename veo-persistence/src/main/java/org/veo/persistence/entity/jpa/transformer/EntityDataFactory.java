@@ -93,7 +93,7 @@ public class EntityDataFactory implements EntityFactory {
         Client client = new ClientData();
         client.setId(id);
         client.setName(name);
-        client.setDomains(new HashSet<Domain>());
+        client.setDomains(new HashSet<>());
         return client;
     }
 
@@ -134,7 +134,7 @@ public class EntityDataFactory implements EntityFactory {
         if (parent != null) {
             unit.setClient(parent.getClient());
         }
-        unit.setDomains(new HashSet<Domain>());
+        unit.setDomains(new HashSet<>());
         return unit;
     }
 
@@ -231,15 +231,10 @@ public class EntityDataFactory implements EntityFactory {
         return group;
     }
 
-    private void initCollection(EntityLayerSupertype object) {
-        object.setDomains(new HashSet<Domain>());
-        object.setLinks(new HashSet<CustomLink>());
-        object.setCustomAspects(new HashSet<CustomProperties>());
-    }
-
     private ModelGroup<?> createGroupInstance(Class<? extends ModelObject> entityClass,
             Key<UUID> key, String name, Unit unit) {
-        if (entityClass == Person.class)// TODO: check does these come from the same classloader?
+        if (entityClass == Person.class)// TODO: check does these come from the
+                                        // same classloader?
             return createPersonGroup(key, name, unit);
         if (entityClass == Document.class)
             return createDocumentGroup(key, name, unit);
