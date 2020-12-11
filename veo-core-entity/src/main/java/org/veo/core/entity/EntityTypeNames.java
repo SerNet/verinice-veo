@@ -52,23 +52,32 @@ public final class EntityTypeNames {
     public static final String UNITS = "units";
     public static final String SCENARIOS = "scenarios";
 
-    /**
-     * Groups are mapped to their member's entity type. They are therefor not
-     * included in this list or any of the mapping methods.
-     */
     public static final Set<String> KNOWN_COLLECTION_NAMES = Set.of(PERSONS, PROCESSES, CONTROLS,
                                                                     DOCUMENTS, ASSETS, UNITS,
+                                                                    SCENARIOS, INCIDENTS, GROUPS,
                                                                     DOMAINS);
-    private static final Map<Class, String> typeToCollection = Map.of(Person.class, PERSONS,
-                                                                      Process.class, PROCESSES,
-                                                                      Control.class, CONTROLS,
-                                                                      Document.class, DOCUMENTS,
-                                                                      Incident.class, INCIDENTS,
-                                                                      Scenario.class, SCENARIOS,
-                                                                      Asset.class, ASSETS,
-                                                                      Client.class, CLIENTS,
-                                                                      Unit.class, UNITS,
-                                                                      Domain.class, DOMAINS);
+    private static final Map<Class, String> typeToCollection = Map.ofEntries(Map.entry(Person.class,
+                                                                                       PERSONS),
+                                                                             Map.entry(Process.class,
+                                                                                       PROCESSES),
+                                                                             Map.entry(Control.class,
+                                                                                       CONTROLS),
+                                                                             Map.entry(Document.class,
+                                                                                       DOCUMENTS),
+                                                                             Map.entry(Incident.class,
+                                                                                       INCIDENTS),
+                                                                             Map.entry(Scenario.class,
+                                                                                       SCENARIOS),
+                                                                             Map.entry(Asset.class,
+                                                                                       ASSETS),
+                                                                             Map.entry(ModelGroup.class,
+                                                                                       GROUPS),
+                                                                             Map.entry(Client.class,
+                                                                                       CLIENTS),
+                                                                             Map.entry(Unit.class,
+                                                                                       UNITS),
+                                                                             Map.entry(Domain.class,
+                                                                                       DOMAINS));
 
     private static final Map<String, Class> collectionToType = typeToCollection.entrySet()
                                                                                .stream()

@@ -36,14 +36,18 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityTypeNames;
+import org.veo.core.entity.Incident;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Unit;
 import org.veo.rest.AssetController;
 import org.veo.rest.ControlController;
+import org.veo.rest.IncidentController;
 import org.veo.rest.PersonController;
 import org.veo.rest.ProcessController;
+import org.veo.rest.ScenarioController;
 import org.veo.rest.UnitController;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -85,6 +89,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                        id)).withRel(ControlController.URL_BASE_PATH)
                                                                            .getHref();
         }
+        if (Scenario.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(ScenarioController.class).getScenario(ANY_AUTH,
+                                                                         id)).withRel(ControlController.URL_BASE_PATH)
+                                                                             .getHref();
+        }
+        if (Incident.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(IncidentController.class).getIncident(ANY_AUTH,
+                                                                         id)).withRel(IncidentController.URL_BASE_PATH)
+                                                                             .getHref();
+        }
         // FIXME VEO-227 There is no ressource endpoint for Domain objects so we cannot
         // create a URL to them.
         if (Domain.class.isAssignableFrom(type)) {
@@ -120,6 +134,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                          ANY_SEARCH)).withRel(ControlController.URL_BASE_PATH)
                                                                                      .getHref();
         }
+        if (Scenario.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(ScenarioController.class).createSearch(ANY_AUTH,
+                                                                          ANY_SEARCH)).withRel(ControlController.URL_BASE_PATH)
+                                                                                      .getHref();
+        }
+        if (Incident.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(IncidentController.class).createSearch(ANY_AUTH,
+                                                                          ANY_SEARCH)).withRel(IncidentController.URL_BASE_PATH)
+                                                                                      .getHref();
+        }
         return "";
     }
 
@@ -150,6 +174,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             return linkTo(methodOn(ControlController.class).getControls(ANY_AUTH, ANY_STRING,
                                                                         ANY_STRING)).withSelfRel()
                                                                                     .getHref();
+        }
+        if (Scenario.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(ScenarioController.class).getScenarios(ANY_AUTH, ANY_STRING,
+                                                                          ANY_STRING)).withSelfRel()
+                                                                                      .getHref();
+        }
+        if (Incident.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(IncidentController.class).getIncidents(ANY_AUTH, ANY_STRING,
+                                                                          ANY_STRING)).withSelfRel()
+                                                                                      .getHref();
         }
         // all types not listed above do not support access to a resource collection.
         // Returning 'null' as per the method contract:

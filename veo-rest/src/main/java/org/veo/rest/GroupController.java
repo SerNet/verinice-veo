@@ -62,8 +62,10 @@ import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
+import org.veo.adapter.presenter.api.dto.full.FullScenarioGroupDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -298,6 +300,10 @@ public class GroupController extends AbstractEntityController {
             return FullPersonGroupDto.class;
         case Process:
             return FullProcessGroupDto.class;
+        case Incident:
+            return FullIncidentGroupDto.class;
+        case Scenario:
+            return FullScenarioGroupDto.class;
         default:
             throw new IllegalArgumentException("Unsupported type " + type);
         }

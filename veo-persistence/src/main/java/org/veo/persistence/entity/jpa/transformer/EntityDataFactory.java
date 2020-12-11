@@ -249,6 +249,10 @@ public class EntityDataFactory implements EntityFactory {
             return createProcessGroup(key, name, unit);
         if (entityClass == Control.class)
             return createControlGroup(key, name, unit);
+        if (entityClass == Incident.class)
+            return createIncidentGroup(key, name, unit);
+        if (entityClass == Scenario.class)
+            return createScenarioGroup(key, name, unit);
         throw new IllegalArgumentException("No such Group for: " + entityClass);
     }
 

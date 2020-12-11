@@ -28,6 +28,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
+import org.veo.core.entity.GroupType
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.groups.ControlGroup
@@ -44,6 +45,7 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
+import spock.lang.Unroll
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -183,6 +185,35 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "create a scenario group"() {
+        given: "a request body"
+
+        Map request = [
+            name: 'My Scenarios',
+            type: 'Scenario',
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ]
+        ]
+
+        when: "the request is sent"
+
+        def results = post('/groups', request)
+
+        then: "the scenario group is created and a status code returned"
+        results.andExpect(status().isCreated())
+
+        and: "the location of the new scenario group is returned"
+        def result = parseJson(results)
+        result.success == true
+        def resourceId = result.resourceId
+        resourceId != null
+        resourceId != ''
+        result.message == 'Group created successfully.'
+    }
+
+
+    @WithUserDetails("user@domain.example")
     def "retrieve a document group"() {
         given: "a saved document group"
         def documentGroup = txTemplate.execute {
@@ -221,7 +252,7 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve an scenario group"() {
+    def "retrieve a scenario group"() {
         given: "a saved scenario group"
         def scenarioGroup = txTemplate.execute {
             scenarioRepository.save(newScenarioGroup(unit) {
@@ -510,19 +541,23 @@ class GroupControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
 
+
     @WithUserDetails("user@domain.example")
-    def "can put back group"() {
-        given: "a new asset group"
+    @Unroll
+    def "can put back #type group"() {
+        given: "a new #type group"
         def id = parseJson(post("/groups?type=", [
             name: "new name",
-            type: "Asset",
+            type: type,
             owner: [targetUri: "/units/"+unit.id.uuidValue()]
         ])).resourceId
-        def getResult = get("/groups/$id?type=Asset")
+        def getResult = get("/groups/$id?type=$type")
 
         expect: "putting the retrieved group back to be successful"
-        put("/groups/$id?type=Asset", parseJson(getResult), [
+        put("/groups/$id?type=$type", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
+        where:
+        type << GroupType.values()
     }
 }
