@@ -107,7 +107,7 @@ public class UnitController extends AbstractEntityController {
     private final CreateUnitUseCase createUnitUseCase;
     private final GetUnitUseCase getUnitUseCase;
     private final UpdateUnitUseCase putUnitUseCase;
-    private final DeleteUnitUseCase<ResponseEntity<ApiResponseBody>> deleteUnitUseCase;
+    private final DeleteUnitUseCase deleteUnitUseCase;
     private final GetUnitsUseCase getUnitsUseCase;
     private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
@@ -238,7 +238,8 @@ public class UnitController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullUnitDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        // TODO VEO-38 replace this placeholder implementation with a search
+        // usecase:
         try {
             var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
             return getUnits(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());

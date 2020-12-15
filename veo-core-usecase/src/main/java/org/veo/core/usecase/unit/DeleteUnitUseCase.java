@@ -33,7 +33,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
+public class DeleteUnitUseCase extends UseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
 
     private final ClientRepository clientRepository;
     private final RepositoryProvider repositoryProvider;
@@ -66,10 +66,8 @@ public class DeleteUnitUseCase<R> extends UseCase<DeleteUnitUseCase.InputData, E
     void removeObjectsInUnit(Unit unit) {
 
         EntityTypeNames.getKnownEntityClasses()
-                       .forEach(clazz -> {
-                           repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
-                                             .deleteByUnit(unit);
-                       });
+                       .forEach(clazz -> repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
+                                                           .deleteByUnit(unit));
 
     }
 

@@ -22,7 +22,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.exception.NotFoundException;
@@ -36,8 +35,8 @@ import lombok.Value;
 /**
  * Reinstantiate persisted group objects.
  */
-public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertype>>
-        extends UseCase<GetGroupsUseCase.InputData, GetGroupsUseCase.OutputData<T>> {
+public class GetGroupsUseCase
+        extends UseCase<GetGroupsUseCase.InputData, GetGroupsUseCase.OutputData> {
 
     private final EntityGroupRepository entityGroupRepository;
     private final ClientRepository clientRepository;
@@ -57,7 +56,7 @@ public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertyp
      * repository.
      */
     @Override
-    public OutputData<T> execute(InputData input) {
+    public OutputData execute(InputData input) {
         Client client = clientRepository.findById(input.getAuthenticatedClient()
                                                        .getId())
                                         .orElseThrow(() -> new NotFoundException(
@@ -65,11 +64,11 @@ public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertyp
 
         if (input.getUnitUuid()
                  .isEmpty()) {
-            return new OutputData<T>((List<T>) entityGroupRepository.findByClient(client));
+            return new OutputData(entityGroupRepository.findByClient(client));
         } else {
             var units = unitHierarchyProvider.findAllInRoot(Key.uuidFrom(input.getUnitUuid()
                                                                               .get()));
-            return new OutputData<T>((List<T>) entityGroupRepository.findByUnits(units));
+            return new OutputData(entityGroupRepository.findByUnits(units));
         }
     }
 
@@ -82,8 +81,8 @@ public class GetGroupsUseCase<T extends ModelGroup<? extends EntityLayerSupertyp
 
     @Valid
     @Value
-    public static class OutputData<T> implements UseCase.OutputData {
+    public static class OutputData implements UseCase.OutputData {
         @Valid
-        List<T> groups;
+        List<ModelGroup<?>> groups;
     }
 }

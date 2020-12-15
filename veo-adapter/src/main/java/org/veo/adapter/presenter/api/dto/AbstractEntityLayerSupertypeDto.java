@@ -46,7 +46,7 @@ import lombok.ToString;
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-abstract public class AbstractEntityLayerSupertypeDto implements EntityLayerSupertypeDto {
+public abstract class AbstractEntityLayerSupertypeDto implements EntityLayerSupertypeDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the EntityLayerSupertype.",

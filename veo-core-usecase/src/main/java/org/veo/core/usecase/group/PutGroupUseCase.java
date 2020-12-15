@@ -40,14 +40,14 @@ public class PutGroupUseCase extends UpdateGroupUseCase {
         ModelGroup<?> groupInDb = existingGroup.get();
 
         ModelGroup<?> group = input.getGroupMapper()
-                                   .apply((Class<ModelGroup>) groupInDb.getClass());
+                                   .apply(groupInDb.getClass());
         group.setCreatedAt(Instant.now());
 
         checkETag(groupInDb, input);
         group.version(input.username, existingGroup.get());
         group.setVersion(groupInDb.getVersion());
         groupInDb.checkSameClient(input.getAuthenticatedClient());
-        return (ModelGroup<?>) entityGroupRepository.save(group);
+        return entityGroupRepository.save(group);
     }
 
 }

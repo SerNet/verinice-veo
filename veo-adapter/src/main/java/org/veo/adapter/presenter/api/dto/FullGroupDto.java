@@ -33,7 +33,7 @@ import lombok.ToString;
  * only. It can be used to describe responses on endpoints that may return
  * several types of {@link EntityLayerSupertypeGroupDto}.
  */
-abstract public class FullGroupDto<T extends EntityLayerSupertype>
+public abstract class FullGroupDto<T extends EntityLayerSupertype>
         extends AbstractEntityLayerSupertypeDto implements FullEntityLayerSupertypeGroupDto<T> {
 
     @Pattern(regexp = Patterns.UUID,
@@ -42,11 +42,11 @@ abstract public class FullGroupDto<T extends EntityLayerSupertype>
     @Schema(description = "ID must be a valid UUID string following RFC 4122.",
             example = "adf037f1-0089-48ad-9177-92269918758b")
     @ToString.Include
-    abstract public String getId();
+    public abstract String getId();
 
-    abstract public void setId(String id);
+    public abstract void setId(String id);
 
     @Override
     @Schema(required = true, description = "The group's members")
-    abstract public Set<ModelObjectReference<T>> getMembers();
+    public abstract Set<ModelObjectReference<T>> getMembers();
 }

@@ -40,7 +40,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Scenario", description = "Schema for Scenario")
-abstract public class AbstractScenarioDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractScenarioDto extends AbstractEntityLayerSupertypeDto {
 
     @Override
     @Schema(description = "The name for the Scenario.", example = "Flood")

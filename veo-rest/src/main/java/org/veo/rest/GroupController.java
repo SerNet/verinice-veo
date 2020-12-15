@@ -75,7 +75,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelGroup;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.group.CreateGroupUseCase;
 import org.veo.core.usecase.group.DeleteGroupUseCase;
@@ -124,14 +123,14 @@ public class GroupController extends AbstractEntityController {
 
     private final CreateGroupUseCase createGroupUseCase;
     private final GetGroupUseCase getGroupUseCase;
-    private final GetGroupsUseCase<?> getGroupsUseCase;
+    private final GetGroupsUseCase getGroupsUseCase;
     private final PutGroupUseCase putGroupUseCase;
     private final DeleteGroupUseCase deleteGroupUseCase;
     private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     public GroupController(UseCaseInteractorImpl useCaseInteractor, ObjectMapper objectMapper,
             CreateGroupUseCase createGroupUseCase, GetGroupUseCase getGroupUseCase,
-            GetGroupsUseCase<?> getGroupsUseCase, PutGroupUseCase putGroupUseCase,
+            GetGroupsUseCase getGroupsUseCase, PutGroupUseCase putGroupUseCase,
             DeleteGroupUseCase deleteGroupUseCase,
             DtoToEntityContextFactory dtoToEntityContextFactory) {
         this.useCaseInteractor = useCaseInteractor;
@@ -253,7 +252,7 @@ public class GroupController extends AbstractEntityController {
     @Operation(summary = "Updates a group")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Group updated"),
             @ApiResponse(responseCode = "404", description = "Group not found") })
-    public <T extends ModelObject> CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> updateGroup(
+    public CompletableFuture<FullEntityLayerSupertypeGroupDto<?>> updateGroup(
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
@@ -265,8 +264,9 @@ public class GroupController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext context = dtoToEntityContextFactory.create(client);
 
-                                             Function<Class<ModelGroup>, ModelGroup<?>> groupMapper = cl -> {
-                                                 Class dtoClass = getFullDtoClass(cl);
+                                             @SuppressWarnings("rawtypes")
+                                             Function<Class<? extends ModelGroup>, ModelGroup<?>> groupMapper = cl -> {
+                                                 Class<? extends FullEntityLayerSupertypeGroupDto<?>> dtoClass = getFullDtoClass(cl);
                                                  FullEntityLayerSupertypeGroupDto<?> groupDto;
                                                  try {
                                                      groupDto = (FullEntityLayerSupertypeGroupDto<?>) objectMapper.readValue(requestBody,
@@ -308,7 +308,8 @@ public class GroupController extends AbstractEntityController {
                                                                  .build());
     }
 
-    private Class getFullDtoClass(Class<ModelGroup> type) {
+    private Class<? extends FullEntityLayerSupertypeGroupDto<?>> getFullDtoClass(
+            @SuppressWarnings("rawtypes") Class<? extends ModelGroup> type) {
         if (type.equals(AssetGroupData.class)) {
             return FullAssetGroupDto.class;
         }

@@ -65,7 +65,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     @SuppressFBWarnings // ignore warning on call to method proxy factory
-    public String targetReferenceOf(Class type, String id) {
+    public String targetReferenceOf(Class<? extends ModelObject> type, String id) {
         if (ModelGroup.class.isAssignableFrom(type)) {
             return linkTo(methodOn(GroupController.class).getGroup(ANY_AUTH,
                                                                    id)).withRel(GroupController.URL_BASE_PATH)
@@ -106,7 +106,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                          id)).withRel(IncidentController.URL_BASE_PATH)
                                                                              .getHref();
         }
-        // FIXME VEO-227 There is no ressource endpoint for Domain objects so we cannot
+        // FIXME VEO-227 There is no ressource endpoint for Domain objects so we
+        // cannot
         // create a URL to them.
         if (Domain.class.isAssignableFrom(type)) {
             return "/" + EntityTypeNames.getCollectionNameFor(type);
@@ -202,7 +203,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                           ANY_STRING)).withSelfRel()
                                                                                       .getHref();
         }
-        // all types not listed above do not support access to a resource collection.
+        // all types not listed above do not support access to a resource
+        // collection.
         // Returning 'null' as per the method contract:
         return null;
     }

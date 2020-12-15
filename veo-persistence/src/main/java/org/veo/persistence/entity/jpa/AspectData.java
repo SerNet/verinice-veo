@@ -38,7 +38,7 @@ import lombok.ToString;
 @Entity(name = "aspect")
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-abstract public class AspectData implements Aspect {
+public abstract class AspectData implements Aspect {
 
     public AspectData(Domain domain, EntityLayerSupertype owner) {
         this.domain = domain;

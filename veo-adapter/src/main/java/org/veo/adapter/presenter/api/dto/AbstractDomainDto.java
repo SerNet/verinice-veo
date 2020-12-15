@@ -34,7 +34,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-abstract public class AbstractDomainDto implements NameableDto, VersionedDto {
+public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Domain.", example = "Data protection", required = true)

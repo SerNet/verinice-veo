@@ -41,7 +41,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-abstract public class AbstractDocumentDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractDocumentDto extends AbstractEntityLayerSupertypeDto {
 
     @Override
     @Schema(description = "The name for the Document.", example = "Bitcoin Price Predictions")

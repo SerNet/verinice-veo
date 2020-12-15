@@ -35,7 +35,7 @@ import lombok.ToString;
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-abstract public class AbstractClientDto implements VersionedDto {
+public abstract class AbstractClientDto implements VersionedDto {
 
     @Schema(description = "The name for the Client.", example = "SerNet GmbH")
     @ToString.Include

@@ -43,7 +43,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Process", description = "Schema for Process")
-abstract public class AbstractProcessDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractProcessDto extends AbstractEntityLayerSupertypeDto {
     @Override
     @Schema(description = "The name for the Process.", example = "Two-factor authentication")
     public String getName() {

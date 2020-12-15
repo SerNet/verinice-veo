@@ -41,7 +41,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Person", description = "Schema for Person")
-abstract public class AbstractPersonDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractPersonDto extends AbstractEntityLayerSupertypeDto {
 
     @Override
     @Schema(description = "The name for the Person.", example = "Mia Musterfrau")

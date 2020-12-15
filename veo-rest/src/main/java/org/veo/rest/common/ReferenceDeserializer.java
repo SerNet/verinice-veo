@@ -35,7 +35,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
  * to deconstruct URLs.
  */
 @JsonComponent
-public class ReferenceDeserializer extends JsonDeserializer<ModelObjectReference> {
+public class ReferenceDeserializer extends JsonDeserializer<ModelObjectReference<?>> {
 
     public static final String TARGET_URI = "targetUri";
 
@@ -43,7 +43,7 @@ public class ReferenceDeserializer extends JsonDeserializer<ModelObjectReference
     ReferenceAssembler urlAssembler;
 
     @Override
-    public ModelObjectReference deserialize(JsonParser p, DeserializationContext ctxt)
+    public ModelObjectReference<?> deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException {
         TreeNode treeNode = p.getCodec()
                              .readTree(p);

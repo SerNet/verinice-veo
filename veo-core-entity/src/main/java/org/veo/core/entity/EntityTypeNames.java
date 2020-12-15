@@ -59,33 +59,33 @@ public final class EntityTypeNames {
                                                                     DOCUMENTS, ASSETS, UNITS,
                                                                     SCENARIOS, INCIDENTS, GROUPS,
                                                                     DOMAINS);
-    private static final Map<Class, String> typeToCollection = Map.ofEntries(Map.entry(Person.class,
-                                                                                       PERSONS),
-                                                                             Map.entry(Process.class,
-                                                                                       PROCESSES),
-                                                                             Map.entry(Control.class,
-                                                                                       CONTROLS),
-                                                                             Map.entry(Document.class,
-                                                                                       DOCUMENTS),
-                                                                             Map.entry(Incident.class,
-                                                                                       INCIDENTS),
-                                                                             Map.entry(Scenario.class,
-                                                                                       SCENARIOS),
-                                                                             Map.entry(Asset.class,
-                                                                                       ASSETS),
-                                                                             Map.entry(ModelGroup.class,
-                                                                                       GROUPS),
-                                                                             Map.entry(Client.class,
-                                                                                       CLIENTS),
-                                                                             Map.entry(Unit.class,
-                                                                                       UNITS),
-                                                                             Map.entry(Domain.class,
-                                                                                       DOMAINS));
+    private static final Map<Class<? extends ModelObject>, String> typeToCollection = Map.ofEntries(Map.entry(Person.class,
+                                                                                                              PERSONS),
+                                                                                                    Map.entry(Process.class,
+                                                                                                              PROCESSES),
+                                                                                                    Map.entry(Control.class,
+                                                                                                              CONTROLS),
+                                                                                                    Map.entry(Document.class,
+                                                                                                              DOCUMENTS),
+                                                                                                    Map.entry(Incident.class,
+                                                                                                              INCIDENTS),
+                                                                                                    Map.entry(Scenario.class,
+                                                                                                              SCENARIOS),
+                                                                                                    Map.entry(Asset.class,
+                                                                                                              ASSETS),
+                                                                                                    Map.entry(ModelGroup.class,
+                                                                                                              GROUPS),
+                                                                                                    Map.entry(Client.class,
+                                                                                                              CLIENTS),
+                                                                                                    Map.entry(Unit.class,
+                                                                                                              UNITS),
+                                                                                                    Map.entry(Domain.class,
+                                                                                                              DOMAINS));
 
-    private static final Map<String, Class> collectionToType = typeToCollection.entrySet()
-                                                                               .stream()
-                                                                               .collect(Collectors.toMap(Map.Entry::getValue,
-                                                                                                         Map.Entry::getKey));
+    private static final Map<String, Class<? extends ModelObject>> collectionToType = typeToCollection.entrySet()
+                                                                                                      .stream()
+                                                                                                      .collect(Collectors.toMap(Map.Entry::getValue,
+                                                                                                                                Map.Entry::getKey));
     public static final Set<Class<? extends EntityLayerSupertype>> ENTITY_CLASS_LIST = Set.of(Asset.class,
                                                                                               Control.class,
                                                                                               Document.class,
@@ -95,11 +95,11 @@ public final class EntityTypeNames {
                                                                                               Process.class,
                                                                                               Scope.class);
 
-    public static String getCollectionNameFor(Class type) {
+    public static String getCollectionNameFor(Class<? extends ModelObject> type) {
         return typeToCollection.get(type);
     }
 
-    public static Class getTypeForCollectionName(String name) {
+    public static Class<? extends ModelObject> getTypeForCollectionName(String name) {
         return collectionToType.get(name);
     }
 
@@ -109,5 +109,8 @@ public final class EntityTypeNames {
 
     public static Set<Class<? extends EntityLayerSupertype>> getKnownEntityClasses() {
         return ENTITY_CLASS_LIST;
+    }
+
+    private EntityTypeNames() {
     }
 }

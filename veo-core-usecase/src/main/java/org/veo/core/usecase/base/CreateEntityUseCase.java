@@ -31,7 +31,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-abstract public class CreateEntityUseCase<TEntity extends EntityLayerSupertype> extends
+public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> extends
         UseCase<CreateEntityUseCase.InputData<TEntity>, CreateEntityUseCase.OutputData<TEntity>> {
     private final UnitRepository unitRepository;
     private final Repository<TEntity, Key<UUID>> entityRepo;

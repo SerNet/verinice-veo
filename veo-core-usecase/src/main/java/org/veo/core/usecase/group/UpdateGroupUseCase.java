@@ -60,7 +60,8 @@ public abstract class UpdateGroupUseCase
     @Value
     public static class InputData implements UseCase.InputData {
         @Valid
-        Function<Class<ModelGroup>, ModelGroup<?>> groupMapper;
+        @SuppressWarnings("rawtypes")
+        Function<Class<? extends ModelGroup>, ModelGroup<?>> groupMapper;
         Client authenticatedClient;
         String uuid;
         String eTag;

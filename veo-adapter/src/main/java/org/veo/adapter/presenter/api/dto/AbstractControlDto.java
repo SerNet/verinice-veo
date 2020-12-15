@@ -41,7 +41,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Control", description = "Schema for Control")
-abstract public class AbstractControlDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractControlDto extends AbstractEntityLayerSupertypeDto {
 
     @Override
     @Schema(description = "The name for the Control.", example = "Install sensors")
