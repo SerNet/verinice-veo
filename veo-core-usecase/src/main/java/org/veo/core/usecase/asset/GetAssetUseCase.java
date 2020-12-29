@@ -29,9 +29,6 @@ import org.veo.core.usecase.repository.AssetRepository;
 
 import lombok.Value;
 
-/**
- * Reinstantiate a persisted process object.
- */
 public class GetAssetUseCase
         extends UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
 
