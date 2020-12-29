@@ -17,21 +17,32 @@
 package org.veo.persistence.entity
 
 import java.time.Instant
+import java.util.stream.Collectors
 
+import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
+import org.veo.core.entity.CustomLink
+import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Key
+import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.groups.AssetGroup
+import org.veo.core.entity.groups.ProcessGroup
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.specification.EntitySpecification
+import org.veo.core.entity.specification.InvalidUnitException
 import org.veo.core.entity.specification.SameClientSpecification
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.groups.EntityGroupData
 import org.veo.persistence.entity.jpa.groups.ScopeData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.test.VeoSpec
+
+import spock.lang.Ignore
+
 public class EntityGroupSpec extends VeoSpec {
     EntityFactory entityFactory
 
@@ -45,6 +56,7 @@ public class EntityGroupSpec extends VeoSpec {
         this.unit = entityFactory.createUnit(Key.newUuid(), "unit", null)
         this.unit.setClient(client)
     }
+
 
     def "A group object can be created" () {
         given: "a timestamp"
@@ -141,11 +153,11 @@ public class EntityGroupSpec extends VeoSpec {
 
     def "A group can contain subgroups of different types" () {
         given: "two groups of identical types"
-        EntityGroupData<org.veo.core.entity.Asset> subgroup1 = newAssetGroup(unit) {
+        EntityGroupData<Asset> subgroup1 = newAssetGroup(unit) {
             name = "Subgroup 1"
         }
 
-        EntityGroupData<org.veo.core.entity.Process> subgroup2 = newProcessGroup(unit) {
+        EntityGroupData<Process> subgroup2 = newProcessGroup(unit) {
             name = "Subgroup 2"
         }
 
@@ -191,6 +203,7 @@ public class EntityGroupSpec extends VeoSpec {
         group.members.first() == group
     }
 
+    @Ignore( "TODO VEO-384 restore guard clause when adding members from other clients to a group")
     def "A group cannot be created with elements from different clients" () {
         given: "a set of two processes from different clients"
         Client client2 = entityFactory.createClient(Key.newUuid(), "client 2")
@@ -205,11 +218,8 @@ public class EntityGroupSpec extends VeoSpec {
         def group = entityFactory.createProcessGroup(Key.newUuid(), "group", null)
         group.members = processes
 
-        then: "an exception is not thrown"
-        // Test disabled.
-        // TODO VEO-384 restore guard clause when adding members from other clients to a group
-        //thrown ClientBoundaryViolationException;
-        notThrown ClientBoundaryViolationException
+        then: "an exception is thrown"
+        thrown ClientBoundaryViolationException;
     }
 
     def "A group member from another client cannot be added" () {
