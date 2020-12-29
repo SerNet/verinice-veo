@@ -86,11 +86,11 @@ public class SearchQueryDto {
 
     private byte[] toCompressedForm() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(stream,
-                new Deflater(Deflater.DEFAULT_COMPRESSION, true));
-        deflaterOutputStream.write(new ObjectMapper().writeValueAsString(this)
-                                                     .getBytes(StandardCharsets.UTF_8));
-        deflaterOutputStream.close();
+        try (DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(stream,
+                new Deflater(Deflater.DEFAULT_COMPRESSION, true))) {
+            deflaterOutputStream.write(new ObjectMapper().writeValueAsString(this)
+                                                         .getBytes(StandardCharsets.UTF_8));
+        }
         return stream.toByteArray();
     }
 
@@ -115,10 +115,10 @@ public class SearchQueryDto {
     private static SearchQueryDto decodeFromSearchId(String searchId, Base64.Decoder decoder)
             throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(stream,
-                new Inflater(true));
-        inflaterOutputStream.write(decoder.decode(searchId.getBytes(StandardCharsets.UTF_8)));
-        inflaterOutputStream.close();
+        try (InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(stream,
+                new Inflater(true))) {
+            inflaterOutputStream.write(decoder.decode(searchId.getBytes(StandardCharsets.UTF_8)));
+        }
         return new ObjectMapper().readValue(stream.toString(StandardCharsets.UTF_8),
                                             SearchQueryDto.class);
     }
