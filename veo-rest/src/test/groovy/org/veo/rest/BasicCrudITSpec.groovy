@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
@@ -49,9 +50,11 @@ class BasicCrudITSpec extends VeoMvcSpec {
     Client client
 
     def setup() {
+        def domain1 = newDomain {name = 'Domain 1'}
         client = txTemplate.execute {
             clientRepository.save(newClient {
                 id = clientId
+                domains = [domain1]
             })
         }
     }

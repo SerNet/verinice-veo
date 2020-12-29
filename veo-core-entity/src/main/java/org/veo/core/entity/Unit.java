@@ -18,6 +18,8 @@ package org.veo.core.entity;
 
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
 
@@ -49,7 +51,7 @@ public interface Unit extends ModelObject {
     void setParent(Unit aParent);
 
     /**
-     * Add the given Domain to the collection domains.
+     * Add the given Domain to the collection of domains.
      *
      * @return true if added
      */
@@ -90,4 +92,15 @@ public interface Unit extends ModelObject {
     default String getModelType() {
         return EntityTypeNames.UNIT;
     }
+
+    /**
+     * Returns all domains to the collection of domains.
+     *
+     * @param domains
+     *            The domains to add to this unit.
+     *
+     * @return {@code true} if the domain collection changed as a result of this
+     *         call
+     */
+    boolean addToDomains(@NotNull Set<Domain> domains);
 }

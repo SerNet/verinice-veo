@@ -110,8 +110,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         // cannot
         // create a URL to them.
         if (Domain.class.isAssignableFrom(type)) {
-            return "/" + EntityTypeNames.getCollectionNameFor(type);
+            return "/" + EntityTypeNames.getCollectionNameFor(type) + "/" + id;
         }
+
         return "";
     }
 

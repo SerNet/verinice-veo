@@ -35,6 +35,7 @@ import org.veo.core.entity.Unit;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 
 @Entity(name = "unit")
@@ -84,13 +85,12 @@ public class UnitData extends BaseModelObjectData implements NameableData, Unit 
         domains.addAll(newDomains);
     }
 
-    /**
-     * Add the given Domain to the collection domains.
-     *
-     * @return true if added
-     */
     public boolean addToDomains(Domain aDomain) {
         return this.domains.add(aDomain);
+    }
+
+    public boolean addToDomains(@NotNull @NonNull Set<Domain> domains) {
+        return this.domains.addAll(domains);
     }
 
     /**

@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.NameableInputData
@@ -30,7 +31,6 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
         newUnit1.name >> "New unit"
-
 
         given: "starting values for a unit"
         def namedInput = new NameableInputData()
@@ -48,12 +48,12 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * entityFactory.createClient(_,_) >> existingClient
         1 * existingClient.version(USER_NAME, null)
         1 * entityFactory.createUnit(_,_,_) >> newUnit1
+        1 * entityFactory.createDomain(_,_) >> existingDomain
 
         and: "a new client was then correctly created and stored"
         1 * newUnit1.version(USER_NAME, null)
         1 * unitRepository.save(_) >> newUnit1
-
-        //        existingClient.getUnit(_) >> Optional.of(newUnit1)
+        1 * clientRepository.save(_) >> existingClient
 
         and: "a new unit was created and stored"
         newUnit != null

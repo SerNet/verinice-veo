@@ -17,6 +17,7 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -34,6 +35,7 @@ abstract class UseCaseSpec extends Specification {
 
     Client existingClient
     Unit existingUnit
+    Domain existingDomain
     Set<Unit> existingUnitHierarchyMembers
     ClientRepository clientRepository = Mock()
     UnitHierarchyProvider unitHierarchyProvider = Mock()
@@ -42,10 +44,11 @@ abstract class UseCaseSpec extends Specification {
     EntityFactory entityFactory = Mock()
 
     def setup() {
+        existingDomain = Mock()
 
         Client client = Mock()
         client.getId() >> Key.newUuid()
-        client.getDomains >> []
+        client.getDomains() >> [existingDomain]
         client.getName()>> "Existing client"
         existingClient = client
 

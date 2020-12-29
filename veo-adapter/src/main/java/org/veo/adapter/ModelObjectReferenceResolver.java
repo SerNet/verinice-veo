@@ -16,17 +16,22 @@
  ******************************************************************************/
 package org.veo.adapter;
 
+import static java.lang.String.format;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.SameClientSpecification;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 
@@ -46,7 +51,7 @@ public class ModelObjectReferenceResolver {
     }
 
     /**
-     * Resolves given reference by fetching the target entity from a cache or a
+     * Resolves the given reference by fetching the target entity from a cache or a
      * repository.
      *
      * @param objectReference
@@ -74,6 +79,13 @@ public class ModelObjectReferenceResolver {
         }
         if (entity instanceof EntityLayerSupertype) {
             ((EntityLayerSupertype) entity).checkSameClient(client);
+        }
+        if (entity instanceof Domain) {
+            if (!(new SameClientSpecification(client)).isSatisfiedBy(((Domain) entity).getOwner()))
+                throw new ClientBoundaryViolationException(
+                        format("The client boundary would be violated by the attempted operation "
+                                + "on element: %s",
+                               entity));
         }
         cache.put(objectReference, entity);
         return (TEntity) entity;

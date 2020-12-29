@@ -17,23 +17,10 @@
 package org.veo.persistence.entity
 
 import java.time.Instant
-import java.util.stream.Collectors
 
-import org.veo.core.entity.Asset
-import org.veo.core.entity.Client
-import org.veo.core.entity.CustomLink
-import org.veo.core.entity.CustomProperties
-import org.veo.core.entity.EntityLayerSupertype
-import org.veo.core.entity.Key
-import org.veo.core.entity.Person
-import org.veo.core.entity.Process
-import org.veo.core.entity.Unit
-import org.veo.core.entity.Versioned
+import org.veo.core.entity.*
 import org.veo.core.entity.groups.AssetGroup
-import org.veo.core.entity.groups.ProcessGroup
 import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.entity.specification.EntitySpecification
-import org.veo.core.entity.specification.InvalidUnitException
 import org.veo.core.entity.specification.SameClientSpecification
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.groups.EntityGroupData
@@ -58,7 +45,7 @@ public class EntityGroupSpec extends VeoSpec {
     }
 
 
-    def "A group object can be created" () {
+    def "A group object can be created"() {
         given: "a timestamp"
         Instant beforeCreation = Instant.now()
 
@@ -87,7 +74,7 @@ public class EntityGroupSpec extends VeoSpec {
     //
     //    }
 
-    def "A group can contain assets" () {
+    def "A group can contain assets"() {
         given: "a set of two assets"
         Set assets = Set.of(
                 entityFactory.createAsset(Key.newUuid(), "asset 1", unit),
@@ -103,7 +90,7 @@ public class EntityGroupSpec extends VeoSpec {
     }
 
 
-    def "A group can contain processes" () {
+    def "A group can contain processes"() {
         given: "a set of two processes"
         def processes = [
             entityFactory.createProcess(Key.newUuid(), "process 1", unit),
@@ -119,7 +106,7 @@ public class EntityGroupSpec extends VeoSpec {
     }
 
     // Note: this could be prevented from working with @TypeChecked
-    def "A group can only contain objects of the same type" () {
+    def "A group can only contain objects of the same type"() {
         given: "two objects of different types"
         def process = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
         def asset = entityFactory.createAsset(Key.newUuid(), "asset 1", unit)
@@ -135,7 +122,7 @@ public class EntityGroupSpec extends VeoSpec {
         // i.e.: "this.groupMembers.iterator().next().getClass().isInstance(newMember)"
     }
 
-    def "A group can contain subgroups of identical types" () {
+    def "A group can contain subgroups of identical types"() {
         given: "two groups of identical types"
         Process processGroup1 = entityFactory.createProcessGroup(Key.newUuid(), "processgroup 1", unit)
         Process processGroup2 = entityFactory.createProcessGroup(Key.newUuid(), "processgroup 2", unit)
@@ -151,7 +138,7 @@ public class EntityGroupSpec extends VeoSpec {
         topProcessGroup.members.size() == 2
     }
 
-    def "A group can contain subgroups of different types" () {
+    def "A group can contain subgroups of different types"() {
         given: "two groups of identical types"
         EntityGroupData<Asset> subgroup1 = newAssetGroup(unit) {
             name = "Subgroup 1"
@@ -166,13 +153,13 @@ public class EntityGroupSpec extends VeoSpec {
 
 
         group.addGroupMember(subgroup1)
-        group.addGroupMember( subgroup2)
+        group.addGroupMember(subgroup2)
 
         then: "the group contains both subgroups"
         group.members.size() == 2
     }
 
-    def "A group can contain a subgroup that contains itself" () {
+    def "A group can contain a subgroup that contains itself"() {
         given: "a subgroup of identical types"
         def subGroup = entityFactory.createProcessGroup(Key.newUuid(), "subgroup", unit)
 
@@ -185,13 +172,13 @@ public class EntityGroupSpec extends VeoSpec {
 
         then: "the group contains the subgroup which contains itself"
         topGroup.members.size() == 1
-        subGroup.members.size() ==1
+        subGroup.members.size() == 1
         topGroup.members.iterator().next().equals(subGroup)
         subGroup.members.iterator().next().equals(topGroup)
 
     }
 
-    def "A group could contain itself" () {
+    def "A group could contain itself"() {
         given: "a new empty group"
         def group = entityFactory.createProcessGroup(Key.newUuid(), "subgroup", unit)
 
@@ -203,8 +190,8 @@ public class EntityGroupSpec extends VeoSpec {
         group.members.first() == group
     }
 
-    @Ignore( "TODO VEO-384 restore guard clause when adding members from other clients to a group")
-    def "A group cannot be created with elements from different clients" () {
+    @Ignore("TODO VEO-384 restore guard clause when adding members from other clients to a group")
+    def "A group cannot be created with elements from different clients"() {
         given: "a set of two processes from different clients"
         Client client2 = entityFactory.createClient(Key.newUuid(), "client 2")
         Unit unit2 = entityFactory.createUnit(Key.newUuid(), "unit 2", null)
@@ -219,10 +206,10 @@ public class EntityGroupSpec extends VeoSpec {
         group.members = processes
 
         then: "an exception is thrown"
-        thrown ClientBoundaryViolationException;
+        thrown ClientBoundaryViolationException
     }
 
-    def "A group member from another client cannot be added" () {
+    def "A group member from another client cannot be added"() {
         given: "a set of two processes from different clients"
         Client client2 = entityFactory.createClient(Key.newUuid(), "client 2")
         Unit unit2 = entityFactory.createUnit(Key.newUuid(), "unit 2", null)
@@ -242,7 +229,7 @@ public class EntityGroupSpec extends VeoSpec {
         notThrown ClientBoundaryViolationException
     }
 
-    def "A group can return its members" () {
+    def "A group can return its members"() {
         given: "a set of two processes"
         def p1 = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
         def p2 = entityFactory.createProcess(Key.newUuid(), "process 2", unit)
@@ -257,7 +244,7 @@ public class EntityGroupSpec extends VeoSpec {
         processGroup.members.contains(p2)
     }
 
-    def "A group can return members that fulfill a specification" () {
+    def "A group can return members that fulfill a specification"() {
         given: "a set of two processes"
         def p1 = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
         def p2 = entityFactory.createProcess(Key.newUuid(), "process 2", unit)
@@ -277,11 +264,11 @@ public class EntityGroupSpec extends VeoSpec {
 
         // instead we have to do this:
         processGroup.members.stream()
-                .filter({spec1.isSatisfiedBy(it.getOwner().getClient())})
+                .filter({ spec1.isSatisfiedBy(it.getOwner().getClient()) })
                 .toSet()
                 .size() == 2
         processGroup.members.stream()
-                .filter({spec2.isSatisfiedBy(it.getOwner().getClient())})
+                .filter({ spec2.isSatisfiedBy(it.getOwner().getClient()) })
                 .toSet()
                 .size() == 0
 
@@ -297,7 +284,8 @@ public class EntityGroupSpec extends VeoSpec {
      * objects or for groups of objects. The group may implement different behaviour
      * than individual objects, i.e. involving its members in the operation.
      */
-    def "A group can be used just like a single element of the same type" () {
+
+    def "A group can be used just like a single element of the same type"() {
         given: "a set of two processes"
         def p1 = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
         def p2 = entityFactory.createProcess(Key.newUuid(), "process 2", unit)

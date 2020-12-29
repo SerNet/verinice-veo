@@ -35,8 +35,8 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     List<T> findByOwner_Client_DbId(String clientId); // NOPMD
 
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
-            + "where e.dbId = ?1")
+            + "left join fetch e.domains " + "left join fetch e.subTypeAspects "
+            + "left join fetch e.links " + "where e.dbId = ?1")
     @Override
     Optional<T> findById(String id);
 

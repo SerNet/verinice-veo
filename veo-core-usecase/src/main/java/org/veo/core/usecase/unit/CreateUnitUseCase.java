@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned.Lifecycle;
@@ -40,10 +41,10 @@ import lombok.Value;
  *
  * If no client exists for the given client-ID it will be created. Users of this
  * class must ensure that a clientID belongs to a valid client - i.e. this class
- * is NOT the authoritative source to detemrine if a clientID is valid or not.
+ * is NOT the authoritative source to determine if a clientID is valid or not.
  *
  * Instead, this task should be carried out by an authentication service which
- * provides a valid clientID and passed on to this use case.
+ * provides a valid clientID to this use case.
  *
  * @author akoderman
  */
@@ -60,6 +61,31 @@ public class CreateUnitUseCase
         this.clientRepository = clientRepository;
         this.unitRepository = unitRepository;
         this.entityFactory = entityFactory;
+
+    }
+
+    /**
+     * Returns a default domain.
+     *
+     * See VEO-227.
+     *
+     * Until this is implemented, it is impossible to create a domain (required when
+     * creating a new client) using the existing REST endpoints. The existing tests
+     * only worked because they create a domain object using the domain repository
+     * directly.
+     *
+     * It is also impossible to add or remove domains using the REST endpoints.
+     * Therefore we need this singular domain as a placeholder.
+     *
+     * @return a placeholder domain that will be replaced by the first real domain
+     *         once it is implemented
+     */
+    // TODO VEO-227
+    private Domain defaultDomain(String user) {
+        var domian = entityFactory.createDomain(Key.newUuid(),
+                                                "Placeholder domain - see issue VEO-227");
+        domian.version(user, null);
+        return domian;
     }
 
     @Override
@@ -70,7 +96,9 @@ public class CreateUnitUseCase
 
         // Note: the new client will get the name of the new unit by default.
         // If we want to get a client name we would have to do a REST call to get it
-        // from the auth server
+        // from the auth server. Alternatively, the auth server could publish a name
+        // change event
+        // which we listen to. This would require messaging middleware.
 
         Unit newUnit;
         if (input.getParentUnitId()
@@ -95,22 +123,22 @@ public class CreateUnitUseCase
                                     .getDescription());
         newUnit.setState(Lifecycle.STORED_CURRENT);
         newUnit.setClient(client);
+        newUnit.addToDomains(client.getDomains());
         newUnit.version(input.username, null);
         Unit save = unitRepository.save(newUnit);
         return new OutputData(save);
     }
 
     private Client createNewClient(InputData input) {
-        Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()// These
-                                                                                                // are
-                                                                                                // the
-                                                                                                // input
-                                                                                                // of
-                                                                                                // the
-                                                                                                // unit
-                                                                                                // createtion
+        // By default, the client is created with the unit's name, description and
+        // abbreviation:
+        Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
                                                                              .getName());
         client.version(input.username, null);
+        // TODO VEO-227 It is currently not possible to create a new domain using REST
+        // resources,
+        // so we have to use one default domain for a new client:
+        client.addToDomains(defaultDomain(input.getUsername()));
         return clientRepository.save(client);
     }
 

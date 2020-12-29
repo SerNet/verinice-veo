@@ -27,9 +27,6 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * A reference to another model object
- */
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
@@ -73,6 +70,8 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
      */
     public static <T extends ModelObject> ModelObjectReference<T> from(T entity,
             @NonNull ReferenceAssembler urlAssembler) {
+        if (entity == null)
+            return null;
         Class<? extends ModelObject> modelInterface = entity.getModelInterface();
         if (modelInterface != null) {
             return new ModelObjectReference<T>(entity.getId()
