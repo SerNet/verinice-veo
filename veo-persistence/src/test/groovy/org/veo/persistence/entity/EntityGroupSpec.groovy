@@ -18,7 +18,13 @@ package org.veo.persistence.entity
 
 import java.time.Instant
 
-import org.veo.core.entity.*
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
+import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Key
+import org.veo.core.entity.Process
+import org.veo.core.entity.Unit
+import org.veo.core.entity.Versioned
 import org.veo.core.entity.groups.AssetGroup
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.SameClientSpecification
@@ -209,6 +215,7 @@ public class EntityGroupSpec extends VeoSpec {
         thrown ClientBoundaryViolationException
     }
 
+    @Ignore("TODO VEO-384 restore guard clause when adding members from other clients to a group")
     def "A group member from another client cannot be added"() {
         given: "a set of two processes from different clients"
         Client client2 = entityFactory.createClient(Key.newUuid(), "client 2")
@@ -223,10 +230,7 @@ public class EntityGroupSpec extends VeoSpec {
         processGroup.members = [p1, p2] as Set
 
         then: "an exception is thrown"
-        // Test disabled.
-        // TODO VEO-384 restore guard clause when adding members from other clients to a group
-        //thrown ClientBoundaryViolationException;
-        notThrown ClientBoundaryViolationException
+        thrown ClientBoundaryViolationException
     }
 
     def "A group can return its members"() {
