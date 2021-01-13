@@ -98,7 +98,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
         if (Scenario.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScenarioController.class).getScenario(ANY_AUTH,
-                                                                         id)).withRel(ControlController.URL_BASE_PATH)
+                                                                         id)).withRel(ScenarioController.URL_BASE_PATH)
                                                                              .getHref();
         }
         if (Incident.class.isAssignableFrom(type)) {
@@ -150,7 +150,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
         if (Scenario.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScenarioController.class).createSearch(ANY_AUTH,
-                                                                          ANY_SEARCH)).withRel(ControlController.URL_BASE_PATH)
+                                                                          ANY_SEARCH)).withRel(ScenarioController.URL_BASE_PATH)
                                                                                       .getHref();
         }
         if (Incident.class.isAssignableFrom(type)) {
