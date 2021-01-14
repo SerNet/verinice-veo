@@ -60,6 +60,7 @@ import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -78,6 +79,7 @@ import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
@@ -159,14 +161,16 @@ public class AssetController extends AbstractEntityController implements AssetRi
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        final GetAssetsUseCase.InputData inputData = new GetAssetsUseCase.InputData(client,
-                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
-        return useCaseInteractor.execute(getAssetsUseCase, inputData, output -> {
-            return output.getEntities()
-                         .stream()
-                         .map(a -> FullAssetDto.from(a, referenceAssembler))
-                         .collect(Collectors.toList());
-        });
+        return getAssets(GetEntitiesInputMapper.map(client, unitUuid, displayName));
+    }
+
+    private CompletableFuture<List<FullAssetDto>> getAssets(
+            GetEntitiesUseCase.InputData inputData) {
+        return useCaseInteractor.execute(getAssetsUseCase, inputData, output -> output.getEntities()
+                                                                                      .stream()
+                                                                                      .map(a -> FullAssetDto.from(a,
+                                                                                                                  referenceAssembler))
+                                                                                      .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/{id}")
@@ -296,13 +300,9 @@ public class AssetController extends AbstractEntityController implements AssetRi
     public @Valid CompletableFuture<List<FullAssetDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search
-        // usecase:
         try {
-            return getAssets(auth, SearchQueryDto.decodeFromSearchId(searchId)
-                                                 .getUnitId(),
-                             SearchQueryDto.decodeFromSearchId(searchId)
-                                           .getDisplayName());
+            return getAssets(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+                                                        SearchQueryDto.decodeFromSearchId(searchId)));
         } catch (IOException e) {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;

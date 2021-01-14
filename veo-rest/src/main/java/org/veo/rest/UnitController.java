@@ -131,6 +131,7 @@ public class UnitController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
+        // TODO VEO-425 apply display name filter.
         final GetUnitsUseCase.InputData inputData = new GetUnitsUseCase.InputData(client,
                 Optional.ofNullable(parentUuid));
 
@@ -238,11 +239,20 @@ public class UnitController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullUnitDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search
-        // usecase:
+        // TODO VEO-425 Use custom search query DTO & criteria API, apply display name
+        // filter and allow recursive parent unit filter.
         try {
-            var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
-            return getUnits(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());
+            var dto = SearchQueryDto.decodeFromSearchId(searchId);
+            // TODO VEO-425 Apply all unit id values (as IN condition).
+            if (dto.getUnitId() != null && !dto.getUnitId().values.isEmpty()) {
+                return getUnits(auth, dto.getUnitId()
+                                         .getValues()
+                                         .iterator()
+                                         .next(),
+                                null);
+            }
+            return getUnits(auth, null, null);
+
         } catch (IOException e) {
             log.error("Could not decode search URL.", e.getLocalizedMessage());
             throw new IllegalArgumentException("Could not decode search URL.");

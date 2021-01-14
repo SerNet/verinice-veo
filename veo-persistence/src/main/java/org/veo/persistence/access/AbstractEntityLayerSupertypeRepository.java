@@ -31,6 +31,7 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
+import org.veo.core.usecase.repository.EntityLayerSupertypeQuery;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
@@ -45,8 +46,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
         extends AbstractModelObjectRepository<T, S> implements EntityLayerSupertypeRepository<T> {
 
     protected final EntityLayerSupertypeDataRepository<S> dataRepository;
-
-    final CustomLinkDataRepository linkDataRepository;
+    private final CustomLinkDataRepository linkDataRepository;
 
     final ScopeDataRepository scopeDataRepository;
 
@@ -57,6 +57,11 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
         this.dataRepository = dataRepository;
         this.linkDataRepository = linkDataRepository;
         this.scopeDataRepository = scopeDataRepository;
+    }
+
+    @Override
+    public EntityLayerSupertypeQuery<T> query(Client client) {
+        return new EntityLayerSupertypeQueryImpl<>(dataRepository, client);
     }
 
     @Override

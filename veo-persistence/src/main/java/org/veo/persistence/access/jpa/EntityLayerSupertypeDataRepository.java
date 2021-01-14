@@ -23,14 +23,17 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 
 public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSupertypeData>
-        extends JpaRepository<T, String> {
+        extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
 
     Collection<T> findByNameContainingIgnoreCase(String search);
 
@@ -42,6 +45,12 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     @Override
     @Nonnull
     Optional<T> findById(@Nonnull String id);
+
+    @Override
+    @Nonnull
+    @Transactional(readOnly = true)
+    @EntityGraph(EntityLayerSupertypeData.FULL_AGGREGATE_GRAPH)
+    List<T> findAll(Specification<T> specification);
 
     /**
      * Find all entities of the repository's type in the given units. (This includes

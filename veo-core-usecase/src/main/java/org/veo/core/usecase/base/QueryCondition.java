@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Jochen Kemnade.
+ * Copyright (c) 2021 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,27 +14,19 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.repository;
+package org.veo.core.usecase.base;
 
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
-        extends Repository<T, Key<UUID>> {
-
-    public List<T> findByClient(Client client);
-
-    public List<T> findByUnits(Set<Unit> units);
-
-    public List<T> findByLinkTarget(EntityLayerSupertype entity);
-
-    public void deleteByUnit(Unit owner);
-
-    public EntityLayerSupertypeQuery<T> query(Client client);
+/**
+ * A set of values to be matched against in a query. The condition is true if
+ * the tested value is equal to any of the values in the set.
+ */
+@Data
+@AllArgsConstructor
+public class QueryCondition<TValue> {
+    private Set<TValue> values;
 }

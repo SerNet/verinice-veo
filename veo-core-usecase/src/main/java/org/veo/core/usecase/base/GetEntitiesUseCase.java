@@ -17,7 +17,8 @@
 package org.veo.core.usecase.base;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -61,39 +62,47 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
                                                        .getId())
                                         .orElseThrow(() -> new NotFoundException(
                                                 "Invalid client ID"));
-        if (input.getUnitUuid()
-                 .isEmpty()) {
-            return new OutputData<>(
-                    filterByDisplayName(repository.findByClient(client), input.getDisplayName()));
-        } else {
-            var units = unitHierarchyProvider.findAllInRoot(Key.uuidFrom(input.getUnitUuid()
-                                                                              .get()));
-            return new OutputData<>(
-                    filterByDisplayName(repository.findByUnits(units), input.getDisplayName()));
+        var query = repository.query(client);
+
+        if (input.getUnitUuid() != null) {
+            query.whereUnitIn(input.getUnitUuid()
+                                   .getValues()
+                                   .stream()
+                                   .flatMap((
+                                           Key<UUID> rootUnitId) -> unitHierarchyProvider.findAllInRoot(rootUnitId)
+                                                                                         .stream())
+                                   .collect(Collectors.toSet()));
         }
+
+        var result = query.execute();
+
+        if (input.getDisplayName() != null) {
+            result = filterByDisplayName(result, input.getDisplayName()
+                                                      .getValues());
+        }
+
+        return new OutputData<>(result);
     }
 
-    private List<T> filterByDisplayName(List<T> modelObjects, Optional<String> displayName) {
-        if (displayName.isEmpty())
-            return modelObjects;
+    private List<T> filterByDisplayName(List<T> modelObjects, Set<String> displayNames) {
         return modelObjects.stream()
-                           .filter(t -> matchesDisplayName(t, displayName))
+                           .filter(mo -> displayNames.stream()
+                                                     .anyMatch(dn -> matchesDisplayName(mo, dn)))
                            .collect(Collectors.toList());
     }
 
-    private boolean matchesDisplayName(T t, Optional<String> displayName) {
+    private boolean matchesDisplayName(T t, String displayName) {
         return t.getDisplayName()
                 .toUpperCase()
-                .contains(displayName.get()
-                                     .toUpperCase());
+                .contains(displayName.toUpperCase());
     }
 
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
-        Optional<String> unitUuid;
-        Optional<String> displayName;
+        QueryCondition<Key<UUID>> unitUuid;
+        QueryCondition<String> displayName;
     }
 
     @Valid

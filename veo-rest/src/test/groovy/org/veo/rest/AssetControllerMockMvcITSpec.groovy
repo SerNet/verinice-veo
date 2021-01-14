@@ -267,7 +267,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "search an asset"() {
         given: "a search request body"
         Map search = [
-            unitId: unit.id.uuidValue(),
+            unitId: [
+                values: [
+                    unit.id.uuidValue()
+                ]
+            ],
         ]
 
         and: "a saved asset"

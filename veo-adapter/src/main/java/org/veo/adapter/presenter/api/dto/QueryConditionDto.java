@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Jochen Kemnade.
+ * Copyright (c) 2021 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,27 +14,16 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.repository;
+package org.veo.adapter.presenter.api.dto;
 
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
-public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
-        extends Repository<T, Key<UUID>> {
-
-    public List<T> findByClient(Client client);
-
-    public List<T> findByUnits(Set<Unit> units);
-
-    public List<T> findByLinkTarget(EntityLayerSupertype entity);
-
-    public void deleteByUnit(Unit owner);
-
-    public EntityLayerSupertypeQuery<T> query(Client client);
+@Data
+@Schema(description = "A condition for a search query.")
+public class QueryConditionDto<T> {
+    @Schema(description = "Search results must match any of these values.")
+    public Set<T> values;
 }

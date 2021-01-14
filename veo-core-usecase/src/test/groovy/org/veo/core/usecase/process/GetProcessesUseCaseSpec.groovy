@@ -21,13 +21,20 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
+import org.veo.core.usecase.base.QueryCondition
+import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
 import org.veo.core.usecase.repository.ProcessRepository
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
+    EntityLayerSupertypeQuery<Process> query = Mock()
 
     GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider)
+
+    def setup() {
+        processRepository.query(existingClient) >> query
+    }
 
     def "retrieve all processes for a client"() {
         given:
@@ -37,10 +44,11 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.getId() >> id
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, null, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * processRepository.findByClient(existingClient) >> [process]
+        1 * query.execute() >> [process]
+
         output.entities*.id == [id]
     }
 
@@ -53,12 +61,14 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.of(existingUnit.id.uuidValue()),
-                Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, Mock(QueryCondition) {
+            getValues() >> [existingUnit.id]
+        }, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
-        1 * processRepository.findByUnits(existingUnitHierarchyMembers) >> [process]
+        1 * query.whereUnitIn(existingUnitHierarchyMembers)
+        1 * query.execute() >> [process]
         output.entities*.id == [id]
     }
 }

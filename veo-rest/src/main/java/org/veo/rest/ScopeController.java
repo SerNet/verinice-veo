@@ -56,6 +56,7 @@ import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
+import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -142,14 +143,18 @@ public class ScopeController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        final GetEntitiesUseCase.InputData inputData = new GetEntitiesUseCase.InputData(client,
-                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
+        final GetEntitiesUseCase.InputData inputData = GetEntitiesInputMapper.map(client, unitUuid,
+                                                                                  displayName);
+        return getScopes(inputData);
+    }
+
+    private CompletableFuture<List<FullScopeDto>> getScopes(
+            GetEntitiesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getScopesUseCase, inputData, output -> output.getEntities()
                                                                                       .stream()
                                                                                       .map(u -> FullScopeDto.from(u,
                                                                                                                   referenceAssembler))
                                                                                       .collect(Collectors.toList()));
-
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -277,13 +282,9 @@ public class ScopeController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullScopeDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search
-        // usecase:
         try {
-            return getScopes(auth, SearchQueryDto.decodeFromSearchId(searchId)
-                                                 .getUnitId(),
-                             SearchQueryDto.decodeFromSearchId(searchId)
-                                           .getDisplayName());
+            return getScopes(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+                                                        SearchQueryDto.decodeFromSearchId(searchId)));
         } catch (IOException e) {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;

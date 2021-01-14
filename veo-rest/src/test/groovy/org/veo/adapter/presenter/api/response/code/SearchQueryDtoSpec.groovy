@@ -17,43 +17,42 @@
 package org.veo.adapter.presenter.api.response.code
 
 import org.veo.adapter.presenter.api.dto.SearchQueryDto
+import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto
 
 import spock.lang.Specification
 
 class SearchQueryDtoSpec extends Specification {
 
-
-    public static final String ENCODED = "q1Yqzcss8UxRslIyNLQwTE4zNNVNSbE00jU2NjfTTTIyNtJNSzFLMrCwTDNJMrVU0lFKySwuyEms9EvMTVWyyivNyakFAA=="
+    def unitUuid = UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes).toString()
 
     def "encode search query"() {
         given: "a search query"
         def q = SearchQueryDto.builder()
-                .unitId(UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes).toString())
+                .unitId(new UuidQueryConditionDto().tap{
+                    values = [unitUuid] as Set
+                })
                 .build()
 
         when: "it is encoded as an ID string"
         def searchId = q.getSearchId()
 
-        then: "encoding worked as expected"
-        searchId == ENCODED
-    }
+        then: "a search ID is created"
+        searchId != null
 
-    def "decode search query"() {
-        given: "a search id"
-        String searchId = ENCODED
-
-        when: "it is decoded into a search query"
-        def query = SearchQueryDto.decodeFromSearchId(searchId)
+        when: "it is decoded back into a search query"
+        def decodedQuery = SearchQueryDto.decodeFromSearchId(searchId)
 
         then: "the query is reconstructed correctly"
-        query.getUnitId() == UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes).toString()
-        query.getDisplayName() == null
+        decodedQuery.getUnitId().values == [unitUuid] as Set
+        decodedQuery.getDisplayName() == null
     }
 
     def "encoded search query must not contain reserved URI characters"() {
         given: "a search object that leads to a '/' character in base64 encoding:"
         def q = SearchQueryDto.builder()
-                .unitId("59c9e163-88e5-4ebd-886a-2b21470bd19d")
+                .unitId(new UuidQueryConditionDto().tap{
+                    values = [unitUuid] as Set
+                })
                 .build()
 
         when: "it is encoded as an ID string"

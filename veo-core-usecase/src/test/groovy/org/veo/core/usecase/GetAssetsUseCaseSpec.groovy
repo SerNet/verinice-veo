@@ -18,15 +18,23 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Key
+import org.veo.core.entity.Person
 import org.veo.core.usecase.asset.GetAssetsUseCase
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
+import org.veo.core.usecase.base.QueryCondition
 import org.veo.core.usecase.repository.AssetRepository
+import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
 
 class GetAssetsUseCaseSpec extends UseCaseSpec {
 
     AssetRepository assetRepository = Mock()
+    EntityLayerSupertypeQuery<Person> query = Mock()
 
     GetAssetsUseCase usecase = new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider)
+
+    def setup() {
+        assetRepository.query(existingClient) >> query
+    }
 
     def "retrieve all assets for a client"() {
         given:
@@ -36,10 +44,10 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, null, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * assetRepository.findByClient(existingClient) >> [asset]
+        1 * query.execute() >> [asset]
         output.entities*.id == [id]
     }
 
@@ -52,15 +60,14 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient,
-                Optional.of(existingUnit.id.uuidValue()),
-                Optional.empty()
-                )
-                )
+        def output = usecase.execute(new InputData(existingClient, Mock(QueryCondition) {
+            getValues() >> [existingUnit.id]
+        }, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
-        1 * assetRepository.findByUnits(existingUnitHierarchyMembers) >> [asset]
+        1 * query.whereUnitIn(existingUnitHierarchyMembers)
+        1 * query.execute() >> [asset]
         output.entities*.id == [id]
     }
 }

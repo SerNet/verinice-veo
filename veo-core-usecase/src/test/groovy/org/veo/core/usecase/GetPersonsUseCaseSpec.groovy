@@ -18,31 +18,36 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
+import org.veo.core.usecase.base.QueryCondition
 import org.veo.core.usecase.person.GetPersonsUseCase
+import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
 import org.veo.core.usecase.repository.PersonRepository
 
 class GetPersonsUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
+    EntityLayerSupertypeQuery<Person> query = Mock()
 
     GetPersonsUseCase usecase = new GetPersonsUseCase(clientRepository, personRepository, unitHierarchyProvider)
+
+    def setup() {
+        personRepository.query(existingClient) >> query
+    }
 
     def "retrieve all persons for a client"() {
         given:
 
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, null, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * personRepository.findByClient(existingClient) >> [person]
+        1 * query.execute() >> [person]
         output.entities*.id == [id]
     }
 
@@ -57,13 +62,15 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
         }
         when:
         def output = usecase.execute(new InputData(existingClient,
-                Optional.of(existingUnit.id.uuidValue()),
-                Optional.empty()))
+                Mock(QueryCondition) {
+                    getValues() >> [existingUnit.id]
+                }, null))
         then:
 
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
-        1 * personRepository.findByUnits(existingUnitHierarchyMembers) >> [person]
+        1 * query.whereUnitIn(existingUnitHierarchyMembers)
+        1 * query.execute() >> [person]
         output.entities*.id == [id]
     }
 }

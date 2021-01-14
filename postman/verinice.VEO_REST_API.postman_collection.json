@@ -6148,7 +6148,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"unitId\": \"{{unitId}}\"\n}",
+              "raw": "{\n    \"unitId\": {\"values\": [\"{{unitId}}\"]}\n}",
               "options": {
                 "raw": {
                   "language": "json"

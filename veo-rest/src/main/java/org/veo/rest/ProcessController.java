@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -57,6 +56,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -66,6 +66,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.process.CreateProcessUseCase;
@@ -252,15 +253,17 @@ public class ProcessController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        final GetProcessesUseCase.InputData inputData = new GetProcessesUseCase.InputData(client,
-                Optional.ofNullable(parentUuid), Optional.ofNullable(displayName));
+        return getProcesses(GetEntitiesInputMapper.map(client, parentUuid, displayName));
+    }
 
-        return useCaseInteractor.execute(getProcessesUseCase, inputData, output -> {
-            return output.getEntities()
-                         .stream()
-                         .map(u -> FullProcessDto.from(u, referenceAssembler))
-                         .collect(Collectors.toList());
-        });
+    private CompletableFuture<List<FullProcessDto>> getProcesses(
+            GetEntitiesUseCase.InputData inputData) {
+        return useCaseInteractor.execute(getProcessesUseCase, inputData,
+                                         output -> output.getEntities()
+                                                         .stream()
+                                                         .map(u -> FullProcessDto.from(u,
+                                                                                       referenceAssembler))
+                                                         .collect(Collectors.toList()));
     }
 
     @Override
@@ -274,11 +277,9 @@ public class ProcessController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullProcessDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search
-        // usecase:
         try {
-            var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
-            return getProcesses(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());
+            return getProcesses(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+                                                           SearchQueryDto.decodeFromSearchId(searchId)));
         } catch (IOException e) {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;

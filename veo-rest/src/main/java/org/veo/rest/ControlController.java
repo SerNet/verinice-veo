@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -58,6 +57,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -67,6 +67,7 @@ import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
@@ -135,15 +136,17 @@ public class ControlController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        final GetControlsUseCase.InputData inputData = new GetControlsUseCase.InputData(client,
-                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
-        return useCaseInteractor.execute(getControlsUseCase, inputData, output -> {
-            return output.getEntities()
-                         .stream()
-                         .map(u -> FullControlDto.from(u, referenceAssembler))
-                         .collect(Collectors.toList());
+        return getControls(GetEntitiesInputMapper.map(client, unitUuid, displayName));
+    }
 
-        });
+    private CompletableFuture<List<FullControlDto>> getControls(
+            GetEntitiesUseCase.InputData inputData) {
+        return useCaseInteractor.execute(getControlsUseCase, inputData,
+                                         output -> output.getEntities()
+                                                         .stream()
+                                                         .map(u -> FullControlDto.from(u,
+                                                                                       referenceAssembler))
+                                                         .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -269,11 +272,9 @@ public class ControlController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullControlDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search
-        // usecase:
         try {
-            var searchQuery = SearchQueryDto.decodeFromSearchId(searchId);
-            return getControls(auth, searchQuery.getUnitId(), searchQuery.getDisplayName());
+            return getControls(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+                                                          SearchQueryDto.decodeFromSearchId(searchId)));
         } catch (IOException e) {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;

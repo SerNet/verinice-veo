@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Jochen Kemnade.
+ * Copyright (c) 2020 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -18,23 +18,18 @@ package org.veo.core.usecase.repository;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
-public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
-        extends Repository<T, Key<UUID>> {
+/**
+ * A dynamic database query for retrieving {@link EntityLayerSupertype} objects.
+ *
+ * @param <T>
+ *            Entity type
+ */
+public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
+    void whereUnitIn(Set<Unit> units);
 
-    public List<T> findByClient(Client client);
-
-    public List<T> findByUnits(Set<Unit> units);
-
-    public List<T> findByLinkTarget(EntityLayerSupertype entity);
-
-    public void deleteByUnit(Unit owner);
-
-    public EntityLayerSupertypeQuery<T> query(Client client);
+    List<T> execute();
 }

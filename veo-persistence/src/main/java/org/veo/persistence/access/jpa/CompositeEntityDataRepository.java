@@ -36,6 +36,9 @@ public interface CompositeEntityDataRepository<T extends EntityLayerSupertypeDat
     //@formatter:on
     List<T> findDistinctByParts_DbId_In(Set<String> dbIds);
 
+    // TODO VEO-448 override findAll(Specification<> spec) using an entity graph
+    // that fetches parts.
+
     //@formatter:off
     @Query("select e from #{#entityName} as e "
             + "left join fetch e.customAspects "

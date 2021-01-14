@@ -18,52 +18,56 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Control
 import org.veo.core.entity.Key
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
+import org.veo.core.usecase.base.QueryCondition
 import org.veo.core.usecase.control.GetControlsUseCase
 import org.veo.core.usecase.repository.ControlRepository
+import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
 
 class GetControlsUseCaseSpec extends UseCaseSpec {
 
     ControlRepository controlRepository = Mock()
+    EntityLayerSupertypeQuery<Control> query = Mock()
 
     GetControlsUseCase usecase = new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider)
 
+    def setup() {
+        controlRepository.query(existingClient) >> query
+    }
+
     def "retrieve all controls for a client"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Control control = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Optional.empty(), Optional.empty()))
+        def output = usecase.execute(new InputData(existingClient, null, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * controlRepository.findByClient(existingClient) >> [control]
+        1 * query.execute() >> [control]
         output.entities*.id == [id]
     }
 
 
     def "retrieve all controls for a unit"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def id = Key.newUuid()
         Control control = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
         when:
-        def output = usecase.execute(
-                new InputData(existingClient, Optional.of(existingUnit.id.uuidValue()),
-                Optional.empty()
-                )
-                )
+        def output = usecase.execute(new InputData(existingClient,
+                Mock(QueryCondition) {
+                    getValues() >> [existingUnit.id]
+                }, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
-        1 * controlRepository.findByUnits(existingUnitHierarchyMembers) >> [control]
+        1 * query.whereUnitIn(existingUnitHierarchyMembers)
+        1 * query.execute() >> [control]
         output.entities*.id == [id]
     }
 }

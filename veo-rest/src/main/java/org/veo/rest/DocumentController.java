@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -57,6 +56,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -66,6 +66,7 @@ import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.document.CreateDocumentUseCase;
@@ -134,8 +135,11 @@ public class DocumentController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        final GetDocumentsUseCase.InputData inputData = new GetDocumentsUseCase.InputData(client,
-                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
+        return getDocuments(GetEntitiesInputMapper.map(client, unitUuid, displayName));
+    }
+
+    private CompletableFuture<List<FullDocumentDto>> getDocuments(
+            GetEntitiesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getDocumentsUseCase, inputData,
                                          output -> output.getEntities()
                                                          .stream()
@@ -258,13 +262,9 @@ public class DocumentController extends AbstractEntityController {
     @Operation(summary = "Finds documents for the search.")
     public @Valid CompletableFuture<List<FullDocumentDto>> runSearch(
             @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search
-        // usecase:
         try {
-            return getDocuments(auth, SearchQueryDto.decodeFromSearchId(searchId)
-                                                    .getUnitId(),
-                                SearchQueryDto.decodeFromSearchId(searchId)
-                                              .getDisplayName());
+            return getDocuments(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+                                                           SearchQueryDto.decodeFromSearchId(searchId)));
         } catch (IOException e) {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;

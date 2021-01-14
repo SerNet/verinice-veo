@@ -27,6 +27,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
@@ -46,9 +49,24 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
+@NamedEntityGraph(name = EntityLayerSupertypeData.FULL_AGGREGATE_GRAPH,
+                  attributeNodes = {
+                          @NamedAttributeNode(value = "customAspects",
+                                              subgraph = "customAspectGraph"),
+                          @NamedAttributeNode(value = "domains"),
+                          @NamedAttributeNode(value = "links"),
+                          @NamedAttributeNode(value = "subTypeAspects") },
+                  subgraphs = {
+                          @NamedSubgraph(name = "customAspectGraph",
+                                         attributeNodes = {
+                                                 @NamedAttributeNode(value = "applicableTo"),
+                                                 // TODO VEO-448 make dataProperties LAZY and fetch
+                                                 // dataProperties.stringListValue here
+                                                 @NamedAttributeNode(value = "dataProperties"), }) })
 public abstract class EntityLayerSupertypeData extends BaseModelObjectData
         implements NameableData, EntityLayerSupertype {
 
+    public static final String FULL_AGGREGATE_GRAPH = "fullAggregateGraph";
     @NotNull
     @Column(name = "name")
     @ToString.Include

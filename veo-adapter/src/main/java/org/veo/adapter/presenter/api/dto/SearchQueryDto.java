@@ -26,15 +26,11 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterOutputStream;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-import org.veo.adapter.presenter.api.Patterns;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -56,20 +52,11 @@ import lombok.Value;
 @JsonDeserialize(builder = SearchQueryDto.SearchQueryDtoBuilder.class)
 public class SearchQueryDto {
 
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
     @Schema(description = "The ID of the unit of which the searches elements must be a member.")
-    String unitId;
+    UuidQueryConditionDto unitId;
 
-    @Size(min = 3, max = 255)
     @Schema(description = "A substring of the displayName of an entity.")
-    String displayName;
-
-    // TODO VEO-38 implement search by displayName and possibly other fields
-
-    public SearchQueryDto(String unitId, String displayName) {
-        this.unitId = unitId;
-        this.displayName = displayName;
-    }
+    QueryConditionDto<String> displayName;
 
     /**
      * Encodes this search query as a base64url-encoded, compressed string. This

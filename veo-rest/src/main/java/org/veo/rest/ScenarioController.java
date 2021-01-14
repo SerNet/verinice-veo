@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -57,6 +56,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -66,6 +66,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
@@ -134,14 +135,17 @@ public class ScenarioController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        final GetScenariosUseCase.InputData inputData = new GetScenariosUseCase.InputData(client,
-                Optional.ofNullable(unitUuid), Optional.ofNullable(displayName));
-        return useCaseInteractor.execute(getScenariosUseCase, inputData, output -> {
-            return output.getEntities()
-                         .stream()
-                         .map(a -> FullScenarioDto.from(a, referenceAssembler))
-                         .collect(Collectors.toList());
-        });
+        return getScenarios(GetEntitiesInputMapper.map(client, unitUuid, displayName));
+    }
+
+    private CompletableFuture<List<FullScenarioDto>> getScenarios(
+            GetEntitiesUseCase.InputData inputData) {
+        return useCaseInteractor.execute(getScenariosUseCase, inputData,
+                                         output -> output.getEntities()
+                                                         .stream()
+                                                         .map(a -> FullScenarioDto.from(a,
+                                                                                        referenceAssembler))
+                                                         .collect(Collectors.toList()));
     }
 
     @GetMapping(value = "/{id}")
@@ -269,13 +273,9 @@ public class ScenarioController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullScenarioDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search
-        // usecase:
         try {
-            return getScenarios(auth, SearchQueryDto.decodeFromSearchId(searchId)
-                                                    .getUnitId(),
-                                SearchQueryDto.decodeFromSearchId(searchId)
-                                              .getDisplayName());
+            return getScenarios(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+                                                           SearchQueryDto.decodeFromSearchId(searchId)));
         } catch (IOException e) {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;
