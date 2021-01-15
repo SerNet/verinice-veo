@@ -23,7 +23,6 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
@@ -126,8 +125,6 @@ class BasicCrudITSpec extends VeoMvcSpec {
         then:
         result != null
         when:
-        // FIXME VEO-242: remove the need to delete the process before deleting the unit
-        delete("/processes/$processId")
         delete("/units/$unitId")
         then:
         notThrown(Exception)
