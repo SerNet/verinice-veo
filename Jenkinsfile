@@ -41,6 +41,7 @@ pipeline {
             agent {
                 docker {
                     image imageForGradleStages
+                    alwaysPull true
                     args dockerArgsForGradleStages
                 }
             }
@@ -56,6 +57,7 @@ pipeline {
             agent {
                 docker {
                     image imageForGradleStages
+                    alwaysPull true
                     args dockerArgsForGradleStages
                 }
             }
@@ -69,6 +71,7 @@ pipeline {
             agent {
                 docker {
                     image imageForGradleStages
+                    alwaysPull true
                     args dockerArgsForGradleStages
                 }
             }
@@ -82,6 +85,7 @@ pipeline {
             agent {
                 docker {
                     image imageForGradleStages
+                    alwaysPull true
                     args dockerArgsForGradleStages
                 }
             }
@@ -93,6 +97,7 @@ pipeline {
             agent {
                 docker {
                     image imageForGradleStages
+                    alwaysPull true
                     args dockerArgsForGradleStages
                 }
             }
