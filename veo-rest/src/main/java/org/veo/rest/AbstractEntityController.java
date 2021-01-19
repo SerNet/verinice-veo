@@ -53,7 +53,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 
-// TODO: see VEO-115
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 @Slf4j
 public abstract class AbstractEntityController {
