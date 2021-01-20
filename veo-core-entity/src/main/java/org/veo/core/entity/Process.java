@@ -19,7 +19,7 @@ package org.veo.core.entity;
 /**
  * A process is a series of business activites that use specific assets.
  */
-public interface Process extends EntityLayerSupertype {
+public interface Process extends EntityLayerSupertype, CompositeEntity<Process> {
 
     @Override
     default Class<? extends ModelObject> getModelInterface() {

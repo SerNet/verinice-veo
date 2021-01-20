@@ -18,17 +18,9 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
-import org.veo.core.entity.Unit;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,7 +33,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Person", description = "Schema for Person")
-public abstract class AbstractPersonDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractPersonDto extends CompositeEntityDto<Person> {
 
     @Override
     @Schema(description = "The name for the Person.", example = "Mia Musterfrau")
@@ -63,12 +55,6 @@ public abstract class AbstractPersonDto extends AbstractEntityLayerSupertypeDto 
     }
 
     @Override
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
-    public Set<ModelObjectReference<Domain>> getDomains() {
-        return super.getDomains();
-    }
-
-    @Override
     @Schema(description = "The links for the Person.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
@@ -79,12 +65,4 @@ public abstract class AbstractPersonDto extends AbstractEntityLayerSupertypeDto 
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();
     }
-
-    @Override
-    @Schema(implementation = ModelObjectReferenceOwner.class)
-    public ModelObjectReference<Unit> getOwner() {
-        return super.getOwner();
-    }
-
-    public abstract Person toEntity(DtoToEntityContext context);
 }

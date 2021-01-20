@@ -16,16 +16,32 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Asset;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "asset")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class AssetData extends EntityLayerSupertypeData implements Asset {
+
+    @ManyToMany(targetEntity = AssetData.class,
+                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "asset_parts",
+               joinColumns = @JoinColumn(name = "composite_id"),
+               inverseJoinColumns = @JoinColumn(name = "part_id"))
+    @Getter
+    private final Set<Asset> parts = new HashSet<>();
 
 }

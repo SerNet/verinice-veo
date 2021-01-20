@@ -154,7 +154,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "retrieve all incidents for a unit"() {
-        given: "a saved asset"
+        given: "a saved incident"
         def incident = newIncident(unit) {
             name = 'Test incident-1'
         }
@@ -182,19 +182,15 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieving all incidents for a unit does not return groups"() {
-        given: "a saved incident and a saved incident group"
-
-        def incident = newIncident(unit) {
-            name = 'Test incident-1'
-        }
-
-        def incidentGroup = newIncidentGroup(unit) {
-            name = 'Group 1'
-        }
-
+    def "retrieving all incidents for a unit returns composite entities and their parts"() {
+        given: "a saved incident and a composite incident containing it"
         txTemplate.execute {
-            [incident, incidentGroup].collect(incidentRepository.&save)
+            incidentRepository.save(newIncident(unit) {
+                name = 'Test composite incident-1'
+                parts <<  newIncident(unit) {
+                    name = 'Test incident-1'
+                }
+            })
         }
 
         when: "a request is made to the server"
@@ -205,8 +201,11 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         when:
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         then:
-        result.size == 1
-        result.first().name == 'Test incident-1'
+        result.size == 2
+        result*.name as Set == [
+            'Test incident-1',
+            'Test composite incident-1'
+        ] as Set
     }
 
     @WithUserDetails("user@domain.example")
@@ -307,5 +306,73 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         put("/incidents/$id", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can put back incident with parts"() {
+        given: "a saved incident and a composite"
+
+        def incident = txTemplate.execute {
+            incidentRepository.save(newIncident(unit) {
+                name = 'Test incident'
+            })
+        }
+        Map request = [
+            name: 'Composite incident',
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ],
+            parts: [
+                [targetUri : "http://localhost/incidents/${incident.id.uuidValue()}"]
+            ]
+        ]
+
+
+        def id = parseJson(post("/incidents/", request)).resourceId
+        def getResult = get("/incidents/$id")
+
+        expect: "putting the retrieved incident back to be successful"
+        put("/incidents/$id", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "deleting composite entity leaves parts and containers intact"() {
+        given: "Incident a, b, and C where a ∈ b, a ∈ c, b ∈ c"
+        def (a,b,c) = txTemplate.execute {
+            def a = incidentRepository.save(newIncident(unit))
+            def b = incidentRepository.save(newIncident(unit) {
+                parts << a
+            })
+            def c = incidentRepository.save(newIncident(unit) {
+                parts << b << a
+            })
+            [a, b, c]
+        }
+
+        when: "the server is asked to delete b"
+        def results = delete("/incidents/${b.id.uuidValue()}")
+
+        then: "b is deleted"
+        results.andExpect(status().isOk())
+        incidentRepository.findById(b.id).empty
+
+        and: "a and c are left intact"
+        incidentRepository.findById(a.id).with {
+            assert it.present
+            assert it.get().id == a.id
+        }
+        def incidentFromDb = txTemplate.execute {
+            return incidentRepository.findById(c.id).with {
+                assert it.present
+                it.get().with {
+                    assert parts.size() == 1
+                    assert parts.first().id == a.id
+                }
+                it.get()
+            }
+        }
+        incidentFromDb.id == c.id
     }
 }

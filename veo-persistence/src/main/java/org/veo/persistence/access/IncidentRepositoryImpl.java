@@ -22,17 +22,18 @@ import org.veo.core.entity.Incident;
 import org.veo.core.usecase.repository.IncidentRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.IncidentDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.IncidentData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
 @Repository
 public class IncidentRepositoryImpl
-        extends AbstractEntityLayerSupertypeRepository<Incident, IncidentData>
+        extends AbstractCompositeEntityRepositoryImpl<Incident, IncidentData>
         implements IncidentRepository {
 
     public IncidentRepositoryImpl(IncidentDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ScopeDataRepository scopeDataRepository) {
+        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }

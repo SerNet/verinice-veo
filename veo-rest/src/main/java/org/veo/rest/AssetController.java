@@ -52,12 +52,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -80,6 +82,7 @@ import org.veo.rest.security.ApplicationUser;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -170,6 +173,30 @@ public class AssetController extends AbstractEntityController {
                                                                .body(assetDto));
     }
 
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    @Operation(summary = "Loads the parts of an asset")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                         description = "Parts loaded",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
+            @ApiResponse(responseCode = "404", description = "Asset not found") })
+    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+        Client client = getAuthenticatedClient(auth);
+        return useCaseInteractor.execute(getAssetUseCase,
+                                         new GetAssetUseCase.InputData(Key.uuidFrom(uuid), client),
+                                         output -> {
+                                             Asset scope = output.getAsset();
+                                             return scope.getParts()
+                                                         .stream()
+                                                         .map(part -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
+                                                                                                           part))
+                                                         .collect(Collectors.toList());
+                                         });
+    }
+
     @PostMapping()
     @Operation(summary = "Creates an asset")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Asset created") })
@@ -243,7 +270,8 @@ public class AssetController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullAssetDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-38 replace this placeholder implementation with a search usecase:
+        // TODO VEO-38 replace this placeholder implementation with a search
+        // usecase:
         try {
             return getAssets(auth, SearchQueryDto.decodeFromSearchId(searchId)
                                                  .getUnitId(),

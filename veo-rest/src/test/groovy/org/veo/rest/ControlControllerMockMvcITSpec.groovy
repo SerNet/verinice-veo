@@ -213,6 +213,40 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
+
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve a composite control with parts"() {
+        given: "a saved composite control with two parts"
+        Control c1 = newControl(unit) {
+            name = "c1"
+        }
+        Control c2 = newControl(unit) {
+            name = "c2"
+        }
+
+        def compositeControl = txTemplate.execute {
+            controlRepository.save(newControl(unit) {
+                name = 'Test composite control'
+                parts = [c1, c2]
+            })
+        }
+
+        when: "the server is queried for the composite control"
+        def results = get("/controls/${compositeControl.id.uuidValue()}")
+
+        then: "the composite control is found"
+        results.andExpect(status().isOk())
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.name == 'Test composite control'
+        result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        result.parts.size() == 2
+        result.parts*.displayName as Set == [
+            '- c1 (Test unit)',
+            '- c2 (Test unit)'] as Set
+    }
+
+
     @WithUserDetails("user@domain.example")
     def "retrieve all controls for a unit"() {
         given: "a saved asset"
@@ -243,19 +277,17 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieveíng all controls for a unit does not return groups"() {
-        given: "a saved control and a saved control group"
+    def "retrieving all controls for a unit returns composite entities and their parts"() {
+        given: "a saved control  and a composite document containing it"
 
-        def control = newControl(unit) {
-            name = 'Test control-1'
-        }
-
-        def controlGroup = newControlGroup(unit) {
-            name = 'Group 1'
-        }
 
         txTemplate.execute {
-            [control, controlGroup].collect(controlRepository.&save)
+            controlRepository.save(newControl(unit) {
+                name = 'Test composite control-1'
+                parts <<  newControl(unit) {
+                    name = 'Test control-1'
+                }
+            })
         }
 
         when: "a request is made to the server"
@@ -266,8 +298,11 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         when:
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         then:
-        result.size == 1
-        result.first().name == 'Test control-1'
+        result.size == 2
+        result*.name as Set == [
+            'Test control-1',
+            'Test composite control-1'
+        ] as Set
     }
 
     @WithUserDetails("user@domain.example")

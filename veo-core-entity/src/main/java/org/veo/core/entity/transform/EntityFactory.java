@@ -26,22 +26,13 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.groups.AssetGroup;
-import org.veo.core.entity.groups.ControlGroup;
-import org.veo.core.entity.groups.DocumentGroup;
-import org.veo.core.entity.groups.IncidentGroup;
-import org.veo.core.entity.groups.PersonGroup;
-import org.veo.core.entity.groups.ProcessGroup;
-import org.veo.core.entity.groups.ScenarioGroup;
-import org.veo.core.entity.groups.Scope;
 
 /**
  * @author urszeidler
@@ -75,22 +66,6 @@ public interface EntityFactory {
 
     CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource);
-
-    ModelGroup<?> createGroup(GroupType groupType, Key<UUID> key, String name, Unit unit);
-
-    PersonGroup createPersonGroup(Key<UUID> id, String name, Unit unit);
-
-    AssetGroup createAssetGroup(Key<UUID> id, String name, Unit unit);
-
-    ProcessGroup createProcessGroup(Key<UUID> id, String name, Unit unit);
-
-    DocumentGroup createDocumentGroup(Key<UUID> id, String name, Unit unit);
-
-    ControlGroup createControlGroup(Key<UUID> id, String name, Unit unit);
-
-    IncidentGroup createIncidentGroup(Key<UUID> id, String name, Unit unit);
-
-    ScenarioGroup createScenarioGroup(Key<UUID> id, String name, Unit unit);
 
     Scope createScope(Key<UUID> key, String name, Unit owner);
 }

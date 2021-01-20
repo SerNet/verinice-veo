@@ -25,11 +25,24 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 
-import org.veo.core.entity.*
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
+import org.veo.core.entity.CompositeEntity
+import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Key
+import org.veo.core.entity.Person
+import org.veo.core.entity.Process
+import org.veo.core.entity.Scope
+import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned.Lifecycle
-import org.veo.core.entity.groups.PersonGroup
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.access.*
+import org.veo.persistence.access.AssetRepositoryImpl
+import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.PersonRepositoryImpl
+import org.veo.persistence.access.ProcessRepositoryImpl
+import org.veo.persistence.access.ScopeRepositoryImpl
+import org.veo.persistence.access.UnitRepositoryImpl
 
 @SpringBootTest(classes = DataSourcePerformanceITSpec.class)
 @ComponentScan("org.veo")
@@ -53,7 +66,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     private ProcessRepositoryImpl processRepository
 
     @Autowired
-    private EntityGroupRepositoryImpl entityGroupRepository
+    private ScopeRepositoryImpl scopeRepository
 
     @Autowired
     private EntityFactory entityFactory
@@ -91,7 +104,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertSelectCount(1)
     }
 
-    def "SQL performance for saving 1 process with 2 links to 1 asset and 1 personGroup"() {
+    def "SQL performance for saving 1 process with 2 links to 1 asset and 1 composite person"() {
         given:
         createClient()
 
@@ -101,9 +114,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(7)
-        assertUpdateCount(1)
-        assertSelectCount(7)
+        assertInsertCount(5)
+        assertUpdateCount(0)
+        assertSelectCount(5)
     }
 
 
@@ -153,13 +166,34 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertSelectCount(11)
     }
 
-    def "SQL performance for saving 1 group of 2 persons"() {
+    def "SQL performance for saving 1 composite person with 2 parts"() {
         given:
         createClient()
 
         when:
         reset()
-        savePersonGroup("personGroup1")
+        savePerson("composite person 1", [
+            newPerson(unit),
+            newPerson(unit)
+        ])
+
+        then:
+        assertDeleteCount(0)
+        assertInsertCount(2)
+        assertUpdateCount(1)
+        assertSelectCount(3)
+    }
+
+    def "SQL performance for saving 1 scope with 2 persons"() {
+        given:
+        createClient()
+
+        when:
+        reset()
+        saveScope("Scope 1", [
+            newPerson(unit),
+            newPerson(unit)
+        ])
 
         then:
         assertDeleteCount(0)
@@ -169,20 +203,80 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     }
 
 
-    def "SQL performance for saving 1 group with 100 subgroups"() {
+    def "SQL performance for saving 1 scope with 100 persons"() {
         given:
         createClient()
-        def group = savePersonGroup("parentgroup")
 
         when:
         reset()
-        savePersonSubGroups(100, "subgroup", group as PersonGroup)
+        saveScope("Scope 1",(1..100).collect{
+            newPerson(unit)
+        })
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(211)
-        assertUpdateCount(4)
-        assertSelectCount(313)
+        assertInsertCount(9)
+        assertUpdateCount(1)
+        assertSelectCount(101)
+    }
+
+    def "SQL performance for saving 1 scope with 100 persons with 2 parts each"() {
+        given:
+        createClient()
+
+        when:
+        reset()
+        saveScope("Scope 1",(1..100).collect{
+            newPerson(unit) {
+                parts = [
+                    newPerson(unit),
+                    newPerson(unit)
+                ]
+            }
+        })
+
+        then:
+        assertDeleteCount(0)
+        assertInsertCount(22)
+        assertUpdateCount(5)
+        assertSelectCount(301)
+    }
+
+    def "SQL performance for saving 1 scope with 10 persons with 10 parts each"() {
+        given:
+        createClient()
+
+        when:
+        reset()
+        saveScope("Scope 1",(1..10).collect{
+            newPerson(unit) {
+                parts =(1..10).collect{
+                    newPerson(unit)
+                }
+            }
+        })
+
+        then:
+        assertDeleteCount(0)
+        assertInsertCount(10)
+        assertUpdateCount(2)
+        assertSelectCount(111)
+    }
+
+    def "SQL performance for adding 100 persons with 2 parts each to an existing scope"() {
+        given:
+        createClient()
+        def scope = saveScope("scope")
+
+        when:
+        reset()
+        saveWithAddedCompositePersons(100, "person", scope )
+
+        then:
+        assertDeleteCount(0)
+        assertInsertCount(21)
+        assertUpdateCount(5)
+        assertSelectCount(305)
     }
 
     def "SQL performance for selecting units of a client"() {
@@ -219,26 +313,29 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertSelectCount(2)
     }
 
-    def "SQL performance for deleting 1 unit with 100 groups of 2 persons each"() {
+    def "SQL performance for deleting 1 unit with 100 persons of 2 parts each"() {
         given:
         createClient()
-        def group = savePersonGroup("parentgroup")
-        savePersonSubGroups(100, "subgroup", group as PersonGroup)
+        100.times {
+            savePerson("person $it", [
+                newPerson(unit),
+                newPerson(unit)
+            ])
+        }
 
         when:
         reset()
-        entityGroupRepository.deleteByUnit(unit)
         personRepository.deleteByUnit(unit)
         unitRepository.delete(unit)
 
         then:
-        assertDeleteCount(222)
+        assertDeleteCount(16)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(6)
+        assertSelectCount(5)
     }
 
-    def "SQL performance for deleting a unit with 1 asset, 1 process and 1 persongroup linked to each other"() {
+    def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
         given:
         createClient()
         createLinkedEntities()
@@ -254,10 +351,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 0
 
         and:
-        assertDeleteCount(25)
+        assertDeleteCount(19)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(24)
+        assertSelectCount(28)
     }
 
 
@@ -273,7 +370,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         when:
         reset()
-        units.each { it.addToDomains(domain2) }
+        units.each {
+            it.addToDomains(domain2)
+        }
         unitRepository.saveAll(units)
 
         then:
@@ -311,9 +410,16 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     Process saveProcess(String processName) {
-        return processRepository.save(newProcess(unit).with {
+        return processRepository.save(newProcess(unit).tap {
             name = processName
-            it
+        })
+    }
+
+    @Transactional
+    Scope saveScope(String name, List<CompositeEntity<EntityLayerSupertype>> members = []) {
+        return scopeRepository.save(newScope(unit).tap {
+            it.name = name
+            it.members = members
         })
     }
 
@@ -324,18 +430,16 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             name = "process1"
             it
         }
-        def personGroup = savePersonGroup("persongroup1")
+        def person = savePerson("person")
 
-        def link1 = entityFactory.createCustomLink("aLink", process, asset).with {
+        def link1 = entityFactory.createCustomLink("aLink", process, asset).tap {
             type = "aLink"
             applicableTo = ["Process"] as Set
-            it
         }
 
-        def link2 = entityFactory.createCustomLink("anotherLink", process, personGroup).with {
+        def link2 = entityFactory.createCustomLink("anotherLink", process, person).tap {
             type = "anotherLink"
             applicableTo = ["Process"] as Set
-            it
         }
 
         process.setLinks([link1, link2] as Set)
@@ -343,50 +447,45 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     }
 
     @Transactional
-    Person savePersonGroup(String groupName) {
-        def personGroupId = Key.newUuid()
-        def john = newPerson(unit)
-        def jane = newPerson(unit)
-        def personGroup = entityFactory.createPersonGroup(personGroupId, groupName, unit)
+    Person savePerson(String name, List<Person> parts = []) {
+        def personId = Key.newUuid()
+        def person = entityFactory.createPerson(personId, name, unit)
 
-        personGroup.with {
-            id = personGroupId
-            members = [john, jane]
+        person.with {
+            id = personId
+            it.parts = parts
             state = Lifecycle.CREATING
             it
         }
-        personGroup.version(USERNAME, null)
-        return personRepository.save(personGroup)
+        person.version(USERNAME, null)
+        return personRepository.save(person)
     }
 
     @Transactional
-    def savePersonSubGroups(int count, String baseName, PersonGroup group) {
-        def subGroups = []
-        for (i in 0..<count) {
-            def personGroupId = Key.newUuid()
+    def saveWithAddedCompositePersons(int count, String baseName, Scope scope ) {
+        def compositePersons = (0..<count).collect {
+            def personId = Key.newUuid()
             def dolly = newPerson(unit)
             def minime = newPerson(unit)
-            def subGroup = entityFactory.createPersonGroup(personGroupId, baseName+count, unit)
-            subGroup.with {
-                members = [dolly, minime]
+            def person = entityFactory.createPerson(personId, baseName+count, unit)
+            person.tap {
+                parts = [dolly, minime]
                 state = Lifecycle.CREATING
-                it
+                version(USERNAME, null)
             }
-            subGroup.version(USERNAME, null)
-            subGroups.add(subGroup)
         }
-        group.getMembers().addAll(subGroups)
-        personRepository.save(group)
+
+        scope.members.addAll(compositePersons)
+        scopeRepository.save(scope)
     }
 
     @Transactional
     def saveProcessWithCustomAspects(int count) {
         def process = newProcess(unit)
         for (i in 0..<count) {
-            CustomProperties cp = entityFactory.createCustomProperties().with {
+            CustomProperties cp = entityFactory.createCustomProperties().tap {
                 type = "aType"
                 applicableTo = ["Process"] as Set
-                it
             }
             process.addToCustomAspects(cp)
         }
@@ -397,9 +496,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     HashSet<Unit> createClientUnits(int count) {
         def units = new HashSet<Unit>()
         for (i in 0..<count) {
-            def unit = newUnit(client).with {
+            def unit = newUnit(client).tap {
                 name = "unit" + count
-                it
             }
             units.add(unitRepository.save(unit))
         }
@@ -414,10 +512,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     @Transactional
     void createSubUnits(int count) {
         for (i in 0..<count) {
-            def unit = newUnit(client).with {
+            def unit = newUnit(client).tap {
                 name = "unit" + count
                 parent = unit
-                it
             }
             unitRepository.save(unit)
         }
@@ -435,10 +532,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         for (i in 0..<count) {
             values.add("value_" + i)
         }
-        CustomProperties cp = entityFactory.createCustomProperties().with {
+        CustomProperties cp = entityFactory.createCustomProperties().tap {
             type = "aType"
             applicableTo = ["Process"] as Set
-            it
         }
         cp.setProperty(PROP_KEY, values as List)
         process.addToCustomAspects(cp)
@@ -456,7 +552,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     def createLinkedEntities() {
-        def personGroup = savePersonGroup("parentgroup") // creates group with 2 persons
+        def compositePerson = savePerson("parentperson", [
+            newPerson(unit),
+            newPerson(unit)
+        ]) // creates person with 2 parts
 
         def asset = newAsset(unit)
         asset = assetRepository.save(asset)
@@ -467,40 +566,35 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def process = newProcess(unit)
         process = processRepository.save(process)
 
-        def link_person_asset = entityFactory.createCustomLink("link1", personGroup, asset).with {
+        def link_person_asset = entityFactory.createCustomLink("link1", compositePerson, asset).tap {
             type = "type1"
             applicableTo = ["Person"] as Set
-            it
         }
-        personGroup.addToLinks(link_person_asset)
-        personGroup = personRepository.save(personGroup)
+        compositePerson.addToLinks(link_person_asset)
+        compositePerson = personRepository.save(compositePerson)
 
-        def link_asset_person = entityFactory.createCustomLink("link2", asset, personGroup).with {
+        def link_asset_person = entityFactory.createCustomLink("link2", asset, compositePerson).tap {
             type = "type2"
             applicableTo = ["Asset"] as Set
-            it
         }
-        def link_asset_process = entityFactory.createCustomLink("link3", asset, process).with {
+        def link_asset_process = entityFactory.createCustomLink("link3", asset, process).tap {
             type = "type3"
             applicableTo = ["Asset"] as Set
-            it
         }
         asset.addToLinks(link_asset_process)
         asset.addToLinks(link_asset_person)
         asset = assetRepository.save(asset)
 
-        def link_process_person = entityFactory.createCustomLink("link4", process, personGroup).with {
+        def link_process_person = entityFactory.createCustomLink("link4", process, compositePerson).tap {
             type = "type4"
             applicableTo = ["Process"] as Set
-            it
         }
         process.addToLinks(link_process_person)
         process = processRepository.save(process)
 
-        def link_asset_asset = entityFactory.createCustomLink("link5", asset, asset2).with {
+        def link_asset_asset = entityFactory.createCustomLink("link5", asset, asset2).tap {
             type = "type5"
             applicableTo = ["Asset"] as Set
-            it
         }
         asset.addToLinks(link_asset_asset)
         asset = assetRepository.save(asset)
@@ -508,10 +602,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     def deleteUnit() {
-        entityGroupRepository.deleteByUnit(unit)
         assetRepository.deleteByUnit(unit)
         personRepository.deleteByUnit(unit)
         processRepository.deleteByUnit(unit)
+        scopeRepository.deleteByUnit(unit)
         unitRepository.delete(unit)
     }
 }

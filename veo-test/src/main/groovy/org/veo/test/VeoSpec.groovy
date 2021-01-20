@@ -28,21 +28,13 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Nameable
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
+import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
-import org.veo.core.entity.groups.AssetGroup
-import org.veo.core.entity.groups.ControlGroup
-import org.veo.core.entity.groups.DocumentGroup
-import org.veo.core.entity.groups.IncidentGroup
-import org.veo.core.entity.groups.PersonGroup
-import org.veo.core.entity.groups.ProcessGroup
-import org.veo.core.entity.groups.ScenarioGroup
-import org.veo.core.entity.groups.Scope
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
@@ -52,15 +44,8 @@ import org.veo.persistence.entity.jpa.IncidentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
+import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.UnitData
-import org.veo.persistence.entity.jpa.groups.AssetGroupData
-import org.veo.persistence.entity.jpa.groups.ControlGroupData
-import org.veo.persistence.entity.jpa.groups.DocumentGroupData
-import org.veo.persistence.entity.jpa.groups.IncidentGroupData
-import org.veo.persistence.entity.jpa.groups.PersonGroupData
-import org.veo.persistence.entity.jpa.groups.ProcessGroupData
-import org.veo.persistence.entity.jpa.groups.ScenarioGroupData
-import org.veo.persistence.entity.jpa.groups.ScopeData
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -80,15 +65,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static AssetGroupData newAssetGroup(Unit owner, @DelegatesTo(value = AssetGroup.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.AssetGroup") Closure init = null) {
-        return new AssetGroupData().tap {
-            id = Key.newUuid()
-            it.owner = owner
-            VeoSpec.execute(it, init)
-            VeoSpec.initModelGroup(it)
-        }
-    }
 
     static ClientData newClient(@DelegatesTo(value = Client.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Client") Closure init = null) {
@@ -112,15 +88,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ControlGroupData newControlGroup(Unit owner, @DelegatesTo(value = ControlGroup.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ControlGroup") Closure init = null) {
-        return new ControlGroupData().tap {
-            id = Key.newUuid()
-            it.owner = owner
-            VeoSpec.execute(it, init)
-            VeoSpec.initModelGroup(it)
-        }
-    }
 
     static DocumentData newDocument(Unit owner, @DelegatesTo(value = Document.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Document") Closure init = null) {
@@ -132,15 +99,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static DocumentGroupData newDocumentGroup(Unit owner, @DelegatesTo(value = DocumentGroup.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.DocumentGroup") Closure init = null) {
-        return new DocumentGroupData().tap {
-            id = Key.newUuid()
-            it.owner = owner
-            VeoSpec.execute(it, init)
-            VeoSpec.initModelGroup(it)
-        }
-    }
+
 
     static IncidentData newIncident(Unit owner, @DelegatesTo(value = Incident.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Incident") Closure init = null) {
@@ -152,15 +111,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static IncidentGroupData newIncidentGroup(Unit owner, @DelegatesTo(value = IncidentGroup.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.IncidentGroup") Closure init = null) {
-        return new IncidentGroupData().tap {
-            id = Key.newUuid()
-            it.owner = owner
-            VeoSpec.execute(it, init)
-            VeoSpec.initModelGroup(it)
-        }
-    }
 
     static ScenarioData newScenario(Unit owner, @DelegatesTo(value = Scenario.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scenario") Closure init = null) {
@@ -172,15 +122,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ScenarioGroupData newScenarioGroup(Unit owner, @DelegatesTo(value = ScenarioGroup.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ScenarioGroup") Closure init = null) {
-        return new ScenarioGroupData().tap {
-            id = Key.newUuid()
-            it.owner = owner
-            VeoSpec.execute(it, init)
-            VeoSpec.initModelGroup(it)
-        }
-    }
 
     static DomainData newDomain(@DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure init = null) {
@@ -202,15 +143,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static PersonGroupData newPersonGroup(Unit owner, @DelegatesTo(value = PersonGroup.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.PersonGroup") Closure init = null) {
-        return new PersonGroupData().tap {
-            id = Key.newUuid()
-            it.owner = owner
-            VeoSpec.execute(it, init)
-            VeoSpec.initModelGroup(it)
-        }
-    }
+
 
     static ProcessData newProcess(Unit owner, @DelegatesTo(value = Process.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Process") Closure init = null) {
@@ -222,18 +155,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ProcessGroupData newProcessGroup(Unit owner, @DelegatesTo(value = ProcessGroup.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ProcessGroup") Closure init = null) {
-        return new ProcessGroupData().tap {
-            id = Key.newUuid()
-            it.owner = owner
-            VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
-        }
-    }
 
     static ScopeData newScope(Unit owner, @DelegatesTo(value = Scope.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ModelGroup") Closure init = null) {
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scope") Closure init = null) {
         return new ScopeData().tap {
             id = Key.newUuid()
             it.owner = owner
@@ -281,12 +205,7 @@ abstract class VeoSpec extends Specification {
         version(target)
     }
 
-    private static def initModelGroup(ModelGroup<? extends EntityLayerSupertype> group) {
-        initEntityLayerSupertype(group)
-        if(group.members == null) {
-            group.members = new HashSet<>()
-        }
-    }
+
 
     private static def version(Versioned target) {
         if(target.createdBy == null) {

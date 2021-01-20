@@ -16,12 +16,20 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.ModelObject;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "control")
@@ -33,5 +41,13 @@ public class ControlData extends EntityLayerSupertypeData implements Control {
     public Class<? extends ModelObject> getModelInterface() {
         return Control.class;
     }
+
+    @ManyToMany(targetEntity = ControlData.class,
+                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "control_parts",
+               joinColumns = @JoinColumn(name = "composite_id"),
+               inverseJoinColumns = @JoinColumn(name = "part_id"))
+    @Getter
+    private final Set<Control> parts = new HashSet<>();
 
 }

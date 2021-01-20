@@ -22,16 +22,17 @@ import org.veo.core.entity.Control;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
 @Repository
 public class ControlRepositoryImpl extends
-        AbstractEntityLayerSupertypeRepository<Control, ControlData> implements ControlRepository {
+        AbstractCompositeEntityRepositoryImpl<Control, ControlData> implements ControlRepository {
 
     public ControlRepositoryImpl(ControlDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ScopeDataRepository scopeDataRepository) {
+        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }

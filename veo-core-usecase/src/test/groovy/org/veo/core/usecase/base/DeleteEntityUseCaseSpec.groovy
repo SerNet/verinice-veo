@@ -23,6 +23,7 @@ import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
+import org.veo.core.entity.Scope
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.DeleteEntityUseCase.InputData
 import org.veo.core.usecase.repository.AssetRepository
@@ -30,6 +31,7 @@ import org.veo.core.usecase.repository.ControlRepository
 import org.veo.core.usecase.repository.DocumentRepository
 import org.veo.core.usecase.repository.PersonRepository
 import org.veo.core.usecase.repository.ProcessRepository
+import org.veo.core.usecase.repository.ScopeRepository
 
 public class DeleteEntityUseCaseSpec extends UseCaseSpec {
 
@@ -38,6 +40,8 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
     DocumentRepository documentRepository = Mock()
     PersonRepository personRepository = Mock()
     ProcessRepository processRepository = Mock()
+    ScopeRepository scopeRepository = Mock()
+
 
     def usecase = new DeleteEntityUseCase(repositoryProvider)
 
@@ -47,6 +51,7 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
         repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentRepository
         repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personRepository
         repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processRepository
+        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scope) >> scopeRepository
     }
 
     def "Delete a process" () {
@@ -91,6 +96,29 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
         }
         1 * personRepository.findById(id) >> Optional.of(person)
         1 * personRepository.deleteById(id)
+    }
+
+    def "Delete a scope"() {
+        given:
+        def scopeId = Key.newUuid()
+        Scope scope = Mock() {
+            getOwner() >> existingUnit
+            getId() >> scopeId
+        }
+        when:
+        def output = usecase.execute(new InputData(Scope, scopeId, existingClient))
+        then:
+        [
+            assetRepository,
+            controlRepository,
+            documentRepository,
+            personRepository,
+            processRepository
+        ].each {
+            0 * it.findByLinkTarget(_)
+        }
+        1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
+        1 * scopeRepository.deleteById(scopeId)
     }
 
     def "Delete a document that is a link target" () {

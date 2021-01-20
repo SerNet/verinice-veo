@@ -33,15 +33,16 @@ import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
+import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
+import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
-import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
@@ -50,21 +51,13 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.groups.AssetGroup;
-import org.veo.core.entity.groups.ControlGroup;
-import org.veo.core.entity.groups.DocumentGroup;
-import org.veo.core.entity.groups.IncidentGroup;
-import org.veo.core.entity.groups.PersonGroup;
-import org.veo.core.entity.groups.ProcessGroup;
-import org.veo.core.entity.groups.ScenarioGroup;
-import org.veo.core.entity.groups.Scope;
 import org.veo.core.entity.transform.EntityFactory;
 
 /**
@@ -78,15 +71,7 @@ public final class DtoToEntityTransformer {
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createPerson(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
-        return target;
-    }
-
-    public static PersonGroup transformDto2PersonGroup(DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Person> source, Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createPersonGroup(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
@@ -95,15 +80,7 @@ public final class DtoToEntityTransformer {
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createAsset(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
-        return target;
-    }
-
-    public static AssetGroup transformDto2AssetGroup(DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Asset> source, Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createAssetGroup(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
@@ -112,15 +89,7 @@ public final class DtoToEntityTransformer {
             AbstractProcessDto source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createProcess(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
-        return target;
-    }
-
-    public static ProcessGroup transformDto2ProcessGroup(DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Process> source, Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createProcessGroup(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
@@ -129,15 +98,7 @@ public final class DtoToEntityTransformer {
             AbstractDocumentDto source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createDocument(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
-        return target;
-    }
-
-    public static DocumentGroup transformDto2DocumentGroup(DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Document> source, Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createDocumentGroup(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
@@ -146,15 +107,7 @@ public final class DtoToEntityTransformer {
             AbstractControlDto source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createControl(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
-        return target;
-    }
-
-    public static ControlGroup transformDto2ControlGroup(DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Control> source, Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createControlGroup(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
@@ -163,15 +116,7 @@ public final class DtoToEntityTransformer {
             AbstractIncidentDto source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createIncident(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
-        return target;
-    }
-
-    public static IncidentGroup transformDto2IncidentGroup(DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Incident> source, Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createIncidentGroup(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
@@ -180,23 +125,19 @@ public final class DtoToEntityTransformer {
             AbstractScenarioDto source, Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createScenario(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
+        mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
-    public static ScenarioGroup transformDto2ScenarioGroup(DtoToEntityContext tcontext,
-            EntityLayerSupertypeGroupDto<Scenario> source, Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createScenarioGroup(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
-        return target;
-    }
-
-    public static Scope transformDto2Scope(DtoToEntityContext tcontext, FullScopeDto source,
+    public static Scope transformDto2Scope(DtoToEntityContext tcontext, AbstractScopeDto source,
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createScope(key, source.getName(), null);
-        mapEntityLayerSupertypeGroup(tcontext, source, target);
+        mapEntityLayerSupertype(tcontext, source, target);
+        target.setMembers(source.getMembers()
+                                .stream()
+                                .map(tcontext::resolve)
+                                .collect(Collectors.toSet()));
         return target;
     }
 
@@ -273,14 +214,13 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    private static <T extends EntityLayerSupertype> void mapEntityLayerSupertypeGroup(
-            DtoToEntityContext tcontext, EntityLayerSupertypeGroupDto<T> source,
-            ModelGroup<T> target) {
+    private static <T extends EntityLayerSupertype> void mapCompositeEntity(
+            DtoToEntityContext tcontext, CompositeEntityDto<T> source, CompositeEntity<T> target) {
         mapEntityLayerSupertype(tcontext, source, target);
-        target.setMembers(source.getMembers()
-                                .stream()
-                                .map(tcontext::resolve)
-                                .collect(Collectors.toSet()));
+        target.setParts(source.getParts()
+                              .stream()
+                              .map(tcontext::resolve)
+                              .collect(Collectors.toSet()));
     }
 
     private static <TDto extends EntityLayerSupertypeDto, TEntity extends EntityLayerSupertype> void mapEntityLayerSupertype(

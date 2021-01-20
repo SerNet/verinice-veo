@@ -18,6 +18,5 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.ProcessData;
 
-public interface ProcessDataRepository extends EntityLayerSupertypeDataRepository<ProcessData> {
-
+public interface ProcessDataRepository extends CompositeEntityDataRepository<ProcessData> {
 }

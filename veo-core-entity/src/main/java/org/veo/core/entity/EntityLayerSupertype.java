@@ -112,7 +112,8 @@ public interface EntityLayerSupertype extends ModelObject {
 
     @Override
     default String getDisplayName() {
-        // TODO VEO-284 Use configurable format template & placeholders, optimize owner
+        // TODO VEO-284 Use configurable format template & placeholders,
+        // optimize owner
         // retrieval performance.
         var format = new DisplayNameFormat<>("%s - %s (%s)",
                 List.of(new AbbreviationPlaceholder<>(), new NamePlaceholder<>(),

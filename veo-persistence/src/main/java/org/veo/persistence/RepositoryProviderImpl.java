@@ -29,18 +29,17 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.core.usecase.repository.DocumentRepository;
 import org.veo.core.usecase.repository.DomainRepository;
-import org.veo.core.usecase.repository.EntityGroupRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.repository.IncidentRepository;
 import org.veo.core.usecase.repository.PersonRepository;
@@ -48,6 +47,7 @@ import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.core.usecase.repository.ScenarioRepository;
+import org.veo.core.usecase.repository.ScopeRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 
 @Service
@@ -84,7 +84,7 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     private UnitRepository unitRepository;
 
     @Autowired
-    private EntityGroupRepository entityGroupRepository;
+    private ScopeRepository scopeRepository;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -108,8 +108,8 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     @Override
     public <T extends EntityLayerSupertype> EntityLayerSupertypeRepository<T> getEntityLayerSupertypeRepositoryFor(
             Class<T> entityType) {
-        if (ModelGroup.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) entityGroupRepository;
+        if (Scope.class.isAssignableFrom(entityType)) {
+            return (EntityLayerSupertypeRepository<T>) scopeRepository;
         }
         if (Person.class.isAssignableFrom(entityType)) {
             return (EntityLayerSupertypeRepository<T>) personRepository;

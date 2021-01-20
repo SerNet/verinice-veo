@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.veo.core.entity.groups.Scope;
-
 /**
  * This class contains translations from/to all known resource collections to
  * their names/URIs.
@@ -49,7 +47,7 @@ public final class EntityTypeNames {
     public static final String DOCUMENTS = "documents";
     public static final String DOMAINS = "domains";
     public static final String INCIDENTS = "incidents";
-    public static final String GROUPS = "groups";
+    public static final String SCOPES = "scopes";
     public static final String PERSONS = "persons";
     public static final String PROCESSES = "processes";
     public static final String UNITS = "units";
@@ -57,7 +55,7 @@ public final class EntityTypeNames {
 
     public static final Set<String> KNOWN_COLLECTION_NAMES = Set.of(PERSONS, PROCESSES, CONTROLS,
                                                                     DOCUMENTS, ASSETS, UNITS,
-                                                                    SCENARIOS, INCIDENTS, GROUPS,
+                                                                    SCENARIOS, INCIDENTS, SCOPES,
                                                                     DOMAINS);
     private static final Map<Class<? extends ModelObject>, String> typeToCollection = Map.ofEntries(Map.entry(Person.class,
                                                                                                               PERSONS),
@@ -73,8 +71,8 @@ public final class EntityTypeNames {
                                                                                                               SCENARIOS),
                                                                                                     Map.entry(Asset.class,
                                                                                                               ASSETS),
-                                                                                                    Map.entry(ModelGroup.class,
-                                                                                                              GROUPS),
+                                                                                                    Map.entry(Scope.class,
+                                                                                                              SCOPES),
                                                                                                     Map.entry(Client.class,
                                                                                                               CLIENTS),
                                                                                                     Map.entry(Unit.class,

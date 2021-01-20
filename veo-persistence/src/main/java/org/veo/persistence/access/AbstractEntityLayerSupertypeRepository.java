@@ -18,6 +18,7 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -28,13 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.BaseModelObjectData;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ScopeData;
 
 @Transactional(readOnly = true)
 abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>
@@ -44,12 +48,15 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
 
     final CustomLinkDataRepository linkDataRepository;
 
-    public AbstractEntityLayerSupertypeRepository(
-            EntityLayerSupertypeDataRepository<S> dataRepository, ModelObjectValidation validation,
-            CustomLinkDataRepository linkDataRepository) {
+    final ScopeDataRepository scopeDataRepository;
+
+    AbstractEntityLayerSupertypeRepository(EntityLayerSupertypeDataRepository<S> dataRepository,
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation);
         this.dataRepository = dataRepository;
         this.linkDataRepository = linkDataRepository;
+        this.scopeDataRepository = scopeDataRepository;
     }
 
     @Override
@@ -76,6 +83,11 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
                                 .map(BaseModelObjectData::getDbId)
                                 .collect(Collectors.toSet());
         var links = linkDataRepository.findLinksByTargetIds(entityIDs);
+
+        // remove the unit's entities from scope members:
+        var scopes = scopeDataRepository.findDistinctByMembersIn(entities);
+        scopes.forEach(scope -> scope.removeMembers(new HashSet<>(entities)));
+
         // using deleteAll() to utilize batching and optimistic locking:
         linkDataRepository.deleteAll(links);
         dataRepository.deleteAll(entities);
@@ -91,8 +103,16 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     @Override
     @Transactional
     public void deleteById(Key<UUID> id) {
+        // remove links to element:
         var links = linkDataRepository.findLinksByTargetIds(singleton(id.uuidValue()));
         linkDataRepository.deleteAll(links);
+
+        // remove element from scope members:
+        Set<Scope> scopes = scopeDataRepository.findDistinctByMembers_DbId_In(singleton(id.uuidValue()));
+        scopes.stream()
+              .map(ScopeData.class::cast)
+              .forEach(scopeData -> scopeData.removeMemberById(id));
+
         dataRepository.deleteById(id.uuidValue());
     }
 

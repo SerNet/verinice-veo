@@ -18,6 +18,5 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.IncidentData;
 
-public interface IncidentDataRepository extends EntityLayerSupertypeDataRepository<IncidentData> {
-
+public interface IncidentDataRepository extends CompositeEntityDataRepository<IncidentData> {
 }

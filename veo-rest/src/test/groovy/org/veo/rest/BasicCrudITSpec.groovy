@@ -34,12 +34,12 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
+
     @Autowired
     private EntityDataFactory entityFactory
 
     @Autowired
     private ProcessRepositoryImpl processRepository
-
 
     @Autowired
     TransactionTemplate txTemplate
@@ -115,11 +115,19 @@ class BasicCrudITSpec extends VeoMvcSpec {
         links.first().target.id.uuidValue() == assetId
         when:
 
-        result = parseJson(post('/groups', [
-            name : 'My CRUD group',
-            type : 'Asset',
+        result = parseJson(post('/scopes', [
+            name : 'My CRUD scope',
             owner: [
                 targetUri: "/units/$unitId"
+            ],
+            members: [
+                [
+                    targetUri: "/assets/$assetId"
+                ],
+                [
+                    targetUri: "/processes/$processId"
+                ],
+
             ]
         ]))
         then:

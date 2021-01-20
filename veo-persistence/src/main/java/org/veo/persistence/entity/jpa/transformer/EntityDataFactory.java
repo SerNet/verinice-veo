@@ -27,22 +27,13 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.GroupType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.groups.AssetGroup;
-import org.veo.core.entity.groups.ControlGroup;
-import org.veo.core.entity.groups.DocumentGroup;
-import org.veo.core.entity.groups.IncidentGroup;
-import org.veo.core.entity.groups.PersonGroup;
-import org.veo.core.entity.groups.ProcessGroup;
-import org.veo.core.entity.groups.ScenarioGroup;
-import org.veo.core.entity.groups.Scope;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ClientData;
@@ -55,15 +46,8 @@ import org.veo.persistence.entity.jpa.IncidentData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ScenarioData;
+import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.UnitData;
-import org.veo.persistence.entity.jpa.groups.AssetGroupData;
-import org.veo.persistence.entity.jpa.groups.ControlGroupData;
-import org.veo.persistence.entity.jpa.groups.DocumentGroupData;
-import org.veo.persistence.entity.jpa.groups.IncidentGroupData;
-import org.veo.persistence.entity.jpa.groups.PersonGroupData;
-import org.veo.persistence.entity.jpa.groups.ProcessGroupData;
-import org.veo.persistence.entity.jpa.groups.ScenarioGroupData;
-import org.veo.persistence.entity.jpa.groups.ScopeData;
 
 /**
  * @author urszeidler
@@ -165,105 +149,12 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public ModelGroup<?> createGroup(GroupType groupType, Key<UUID> key, String name, Unit unit) {
-        return createGroupInstance(groupType, key, name, unit);
-    }
-
-    @Override
-    public PersonGroup createPersonGroup(Key<UUID> key, String name, Unit owner) {
-        var group = new PersonGroupData();
-        group.setId(key);
-        group.setName(name);
-        group.setOwner(owner);
-        return group;
-    }
-
-    @Override
-    public AssetGroup createAssetGroup(Key<UUID> key, String name, Unit owner) {
-        var group = new AssetGroupData();
-        group.setId(key);
-        group.setName(name);
-        group.setOwner(owner);
-        return group;
-    }
-
-    @Override
-    public ProcessGroup createProcessGroup(Key<UUID> key, String name, Unit owner) {
-        var group = new ProcessGroupData();
-        group.setId(key);
-        group.setName(name);
-        group.setOwner(owner);
-        return group;
-    }
-
-    @Override
-    public DocumentGroup createDocumentGroup(Key<UUID> key, String name, Unit owner) {
-        var group = new DocumentGroupData();
-        group.setId(key);
-        group.setName(name);
-        group.setOwner(owner);
-        return group;
-    }
-
-    @Override
-    public ControlGroup createControlGroup(Key<UUID> key, String name, Unit owner) {
-        var group = new ControlGroupData();
-        group.setId(key);
-        group.setName(name);
-        group.setOwner(owner);
-        return group;
-    }
-
-    @Override
-    public IncidentGroup createIncidentGroup(Key<UUID> key, String name, Unit owner) {
-        var group = new IncidentGroupData();
-        group.setId(key);
-        group.setName(name);
-        group.setOwner(owner);
-        return group;
-    }
-
-    @Override
-    public ScenarioGroup createScenarioGroup(Key<UUID> key, String name, Unit owner) {
-        var group = new ScenarioGroupData();
-        group.setId(key);
-        group.setName(name);
-        group.setOwner(owner);
-        return group;
-    }
-
-    @Override
     public Scope createScope(Key<UUID> key, String name, Unit owner) {
         var group = new ScopeData();
         group.setId(key);
         group.setName(name);
         group.setOwner(owner);
         return group;
-    }
-
-    private ModelGroup<?> createGroupInstance(GroupType groupType, Key<UUID> key, String name,
-            Unit unit) {
-        switch (groupType) {// TODO: check does these come from the same
-                            // classloader?
-        case Person:
-            return createPersonGroup(key, name, unit);
-        case Document:
-            return createDocumentGroup(key, name, unit);
-        case Asset:
-            return createAssetGroup(key, name, unit);
-        case Process:
-            return createProcessGroup(key, name, unit);
-        case Control:
-            return createControlGroup(key, name, unit);
-        case Incident:
-            return createIncidentGroup(key, name, unit);
-        case Scenario:
-            return createScenarioGroup(key, name, unit);
-        case Scope:
-            return createScope(key, name, unit);
-        default:
-            throw new IllegalArgumentException("No such Group for: " + groupType);
-        }
     }
 
     private void setEntityLayerData(EntityLayerSupertype entityLayerSupertype, Key<UUID> newUuid,

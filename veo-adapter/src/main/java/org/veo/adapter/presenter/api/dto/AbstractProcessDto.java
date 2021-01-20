@@ -18,17 +18,9 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.Unit;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,7 +35,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Process", description = "Schema for Process")
-public abstract class AbstractProcessDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractProcessDto extends CompositeEntityDto<Process> {
+
     @Override
     @Schema(description = "The name for the Process.", example = "Two-factor authentication")
     public String getName() {
@@ -64,12 +57,6 @@ public abstract class AbstractProcessDto extends AbstractEntityLayerSupertypeDto
     }
 
     @Override
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
-    public Set<ModelObjectReference<Domain>> getDomains() {
-        return super.getDomains();
-    }
-
-    @Override
     @Schema(description = "The links for the Process.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
@@ -80,13 +67,4 @@ public abstract class AbstractProcessDto extends AbstractEntityLayerSupertypeDto
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();
     }
-
-    @Override
-    @Schema(implementation = ModelObjectReferenceOwner.class)
-    public ModelObjectReference<Unit> getOwner() {
-        return super.getOwner();
-    }
-
-    @Override
-    public abstract Process toEntity(DtoToEntityContext context);
 }

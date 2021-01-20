@@ -41,7 +41,9 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.usecase.repository.ClientRepository;
+import org.veo.core.usecase.repository.RepositoryProvider;
 import org.veo.rest.common.ReferenceAssemblerImpl;
 import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -51,12 +53,19 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 
+// TODO: see VEO-115
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 @Slf4j
 public abstract class AbstractEntityController {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Autowired
+    private RepositoryProvider repositoryProvider;
+
+    @Autowired
+    private EntityFactory entityFactory;
 
     @Autowired
     ReferenceAssemblerImpl referenceAssembler;
@@ -78,7 +87,7 @@ public abstract class AbstractEntityController {
     @PostMapping(value = "/searches")
     @Operation(summary = "Creates a new search with the given search criteria.")
     public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
-            @Parameter(hidden = true) Authentication auth,
+            @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @RequestBody SearchQueryDto search) {
         return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
     }

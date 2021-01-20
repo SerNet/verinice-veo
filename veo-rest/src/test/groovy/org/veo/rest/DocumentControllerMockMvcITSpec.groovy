@@ -153,7 +153,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "retrieve all documents for a unit"() {
-        given: "a saved asset"
+        given: "a saved document"
         def document = newDocument(unit) {
             name = 'Test document-1'
         }
@@ -181,19 +181,16 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieving all documents for a unit does not return groups"() {
-        given: "a saved document and a saved document group"
-
-        def document = newDocument(unit) {
-            name = 'Test document-1'
-        }
-
-        def documentGroup = newDocumentGroup(unit) {
-            name = 'Group 1'
-        }
+    def "retrieving all documents for a unit returns composite entities and their parts"() {
+        given: "a saved document and a composite document containing it"
 
         txTemplate.execute {
-            [document, documentGroup].collect(documentRepository.&save)
+            documentRepository.save( newDocument(unit) {
+                name = 'Test composite document-1'
+                parts << newDocument(unit) {
+                    name = 'Test document-1'
+                }
+            })
         }
 
         when: "a request is made to the server"
@@ -204,8 +201,11 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         when:
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         then:
-        result.size == 1
-        result.first().name == 'Test document-1'
+        result.size == 2
+        result*.name as Set == [
+            'Test document-1',
+            'Test composite document-1'
+        ] as Set
     }
 
     @WithUserDetails("user@domain.example")
@@ -302,5 +302,33 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         put("/documents/$id", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "deleting a part of a composite document does not delete the composite itself"() {
+        given: "a document and a composite that contains it"
+        def document = txTemplate.execute {
+            documentRepository.save(newDocument(unit))
+        }
+        def composite = txTemplate.execute {
+            documentRepository.save(newDocument(unit) {
+                parts = [document]
+            })
+        }
+
+        when: "a delete request is sent to the server"
+        def results = delete("/documents/${document.id.uuidValue()}")
+
+        then: "the document is deleted"
+        results.andExpect(status().isOk())
+        documentRepository.findById(document.id).empty
+
+        expect: "the composite is retrieved with no parts"
+        txTemplate.execute {
+            def proxy = documentRepository.findById(composite.id)
+            assert !proxy.empty
+            assert proxy.get().parts.empty
+            proxy
+        }
     }
 }

@@ -16,19 +16,18 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
-import java.util.Collections;
-import java.util.Set;
-
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.dto.AbstractEntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelGroup;
-import org.veo.core.entity.groups.Scope;
+import org.veo.core.entity.Scope;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -37,8 +36,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullScopeDto extends AbstractEntityLayerSupertypeDto
-        implements FullEntityLayerSupertypeGroupDto<ModelGroup<?>> {
+public class FullScopeDto extends AbstractScopeDto implements IdentifiableDto {
 
     @Pattern(regexp = Patterns.UUID,
              flags = Pattern.Flag.CASE_INSENSITIVE,
@@ -48,16 +46,8 @@ public class FullScopeDto extends AbstractEntityLayerSupertypeDto
     @ToString.Include
     private String id;
 
-    private Set<ModelObjectReference<ModelGroup<?>>> members = Collections.emptySet();
-
-    @Override
-    public Set<ModelObjectReference<ModelGroup<?>>> getMembers() {
-        return members;
-    }
-
-    @Override
-    public void setMembers(Set<ModelObjectReference<ModelGroup<?>>> members) {
-        this.members = members;
+    public static FullScopeDto from(@Valid Scope scope, ReferenceAssembler assembler) {
+        return EntityToDtoTransformer.transformScope2Dto(assembler, scope);
     }
 
     public Scope toEntity(DtoToEntityContext tcontext) {

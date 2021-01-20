@@ -20,7 +20,7 @@ package org.veo.core.entity;
  * An asset describes a part in the unit. It could be a physical element like a
  * computer, but also something not physical like a software for example.
  */
-public interface Asset extends EntityLayerSupertype {
+public interface Asset extends EntityLayerSupertype, CompositeEntity<Asset> {
 
     @Override
     default String getModelType() {

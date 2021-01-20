@@ -20,7 +20,7 @@ package org.veo.core.entity;
  * NIST: Threat Scenario: A set of discrete threat events, associated with a
  * specific threat source or multiple threat sources, partially ordered in time.
  */
-public interface Scenario extends EntityLayerSupertype {
+public interface Scenario extends EntityLayerSupertype, CompositeEntity<Scenario> {
 
     @Override
     default String getModelType() {

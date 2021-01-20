@@ -138,6 +138,53 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.message == 'Asset created successfully.'
     }
 
+
+    @WithUserDetails("user@domain.example")
+    def "create a composite asset with parts"() {
+        given: "an exsting asset and a request body"
+        def asset = txTemplate.execute {
+            assetRepository.save(newAsset(unit) {
+                name = 'Test asset'
+            })
+        }
+        Map request = [
+            name: 'My Assets',
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ],
+            parts: [
+                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]]
+        ]
+
+        when: "the request is sent"
+
+        def results = post('/assets', request)
+
+        then: "the composite asset is created and a status code returned"
+        results.andExpect(status().isCreated())
+
+        and: "the location of the new composite asset is returned"
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.success == true
+        def resourceId = result.resourceId
+        resourceId != null
+        resourceId != ''
+        result.message == 'Asset created successfully.'
+        when: "the server is queried for the asset"
+        results = get("/assets/${resourceId}")
+
+        then: "the asset is found"
+        results.andExpect(status().isOk())
+        when: "the returned content is parsed"
+        result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the expected name is present"
+        result.name == 'My Assets'
+        and: "the composite asset contains the other asset"
+        result.parts.size() == 1
+        result.parts.first().displayName == '- Test asset (Test unit)'
+    }
+
+
     @WithUserDetails("user@domain.example")
     def "retrieve an asset"() {
         given: "a saved asset"
@@ -189,6 +236,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 resourcesUri: "http://localhost/units{?parent,displayName}"
             ],
             subType: [:],
+            parts: [],
             createdBy: "me",
             createdAt: "2020-09-01T00:00:00Z",
             updatedBy: "you",
@@ -582,6 +630,29 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "deleting a composite asset does not delete its parts"() {
+
+        given: "an asset and a composite that contains it"
+        def asset = txTemplate.execute {
+            assetRepository.save(newAsset(unit))
+        }
+        def composite = txTemplate.execute {
+            assetRepository.save(newAsset(unit) {
+                parts = [asset]
+            })
+        }
+        when: "a delete request is sent to the server"
+
+        def results = delete("/assets/${composite.id.uuidValue()}")
+
+        then: "the composite is deleted"
+        results.andExpect(status().isOk())
+        assetRepository.findById(composite.id).empty
+        and: "the asset is not deleted"
+        !assetRepository.findById(asset.id).empty
+    }
+
+    @WithUserDetails("user@domain.example")
     def "can't put an asset with another asset's ID"() {
         given: "two assets"
         def asset1 = txTemplate.execute({
@@ -614,6 +685,35 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name",
             owner: [targetUri: "/units/"+unit.id.uuidValue()]
         ])).resourceId
+        def getResult = get("/assets/$id")
+
+        expect: "putting the retrieved asset back to be successful"
+        put("/assets/$id", parseJson(getResult), [
+            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can put back asset with parts"() {
+        given: "a saved asset and a composite"
+
+        def asset = txTemplate.execute {
+            assetRepository.save(newAsset(unit) {
+                name = 'Test asset'
+            })
+        }
+        Map request = [
+            name: 'Composite asset',
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ],
+            parts: [
+                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+            ]
+        ]
+
+
+        def id = parseJson(post("/assets/", request)).resourceId
         def getResult = get("/assets/$id")
 
         expect: "putting the retrieved asset back to be successful"

@@ -35,9 +35,9 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * providers might have one unit for each client that is using the software. A
  * unit always belongs to exactly one client. This means that every entity also
  * transitively belongs to exactly one client. Units cannot be moved between
- * clients. The <code>EntityGroup</code> object is much more flexible and the
- * preferred choice to group entities together for business modeling purposes.
- * Units should exclusively be used to model ownership and high-level access
+ * clients. The {@link Scope} object is much more flexible and the preferred
+ * choice to group entities together for business modeling purposes. Units
+ * should exclusively be used to model ownership and high-level access
  * restrictions.
  */
 public interface Unit extends ModelObject {

@@ -29,6 +29,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -99,7 +100,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
 
     @WithUserDetails("user@domain.example")
-    def "create an scenario"() {
+    def "create a scenario"() {
         given: "a request body"
 
         Map request = [
@@ -127,7 +128,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve an scenario"() {
+    def "retrieve a scenario"() {
         given: "a saved scenario"
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
@@ -182,19 +183,17 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieving all scenarios for a unit does not return groups"() {
-        given: "a saved scenario and a saved scenario group"
+    def "retrieving all scenarios for a unit returns composite entities and their parts"() {
+        given: "a saved scenario  and a composite document containing it"
 
-        def scenario = newScenario(unit) {
-            name = 'Test scenario-1'
-        }
-
-        def scenarioGroup = newScenarioGroup(unit) {
-            name = 'Group 1'
-        }
 
         txTemplate.execute {
-            [scenario, scenarioGroup].collect(scenarioDataRepository.&save)
+            scenarioRepository.save(newScenario(unit) {
+                name = 'Test composite scenario-1'
+                parts <<  newScenario(unit) {
+                    name = 'Test scenario-1'
+                }
+            })
         }
 
         when: "a request is made to the server"
@@ -205,12 +204,15 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         when:
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         then:
-        result.size == 1
-        result.first().name == 'Test scenario-1'
+        result.size == 2
+        result*.name as Set == [
+            'Test scenario-1',
+            'Test composite scenario-1'
+        ] as Set
     }
 
     @WithUserDetails("user@domain.example")
-    def "put an scenario"() {
+    def "put a scenario"() {
         given: "a saved scenario"
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
@@ -251,7 +253,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "delete an scenario"() {
+    def "delete a scenario"() {
 
         given: "an existing scenario"
         def scenario = txTemplate.execute {
@@ -269,7 +271,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "can't put an scenario with another scenario's ID"() {
+    def "can't put a scenario with another scenario's ID"() {
         given: "two scenarios"
         def scenario1 = txTemplate.execute({
             scenarioDataRepository.save(newScenario(unit, {
@@ -307,5 +309,35 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         put("/scenarios/$id", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve a composite scenario's parts"() {
+        given: "a saved scenario group with two parts"
+        Scenario s1 = newScenario(unit) {
+            name = "s1"
+        }
+        Scenario s2 = newScenario(unit) {
+            name = "s2"
+        }
+
+        def compositeScenario = txTemplate.execute {
+            scenarioRepository.save(newScenario(unit) {
+                name = 'Test composite scenario'
+                parts << s1 << s2
+            })
+        }
+
+        when: "the server is queried for the scenario's parts"
+        def results = get("/scenarios/${compositeScenario.id.uuidValue()}/parts")
+
+        then: "the parts are found"
+        results.andExpect(status().isOk())
+        when:
+        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then:
+        result.size == 2
+        result.sort{it.name}.first().name == 's1'
+        result.sort{it.name}[1].name == 's2'
     }
 }

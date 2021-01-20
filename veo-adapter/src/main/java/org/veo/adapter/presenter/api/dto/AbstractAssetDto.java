@@ -18,15 +18,9 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Unit;
+import org.veo.core.entity.Asset;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,7 +33,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Asset", description = "Schema for Asset")
-public abstract class AbstractAssetDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> {
 
     @Override
     @Schema(description = "The name for the Asset.", example = "Mail Server")
@@ -60,12 +54,6 @@ public abstract class AbstractAssetDto extends AbstractEntityLayerSupertypeDto {
     }
 
     @Override
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
-    public Set<ModelObjectReference<Domain>> getDomains() {
-        return super.getDomains();
-    }
-
-    @Override
     @Schema(description = "The links for the Asset.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
@@ -75,11 +63,5 @@ public abstract class AbstractAssetDto extends AbstractEntityLayerSupertypeDto {
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();
-    }
-
-    @Override
-    @Schema(implementation = ModelObjectReferenceOwner.class)
-    public ModelObjectReference<Unit> getOwner() {
-        return super.getOwner();
     }
 }

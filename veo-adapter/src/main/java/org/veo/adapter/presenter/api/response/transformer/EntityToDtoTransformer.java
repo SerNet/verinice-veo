@@ -28,33 +28,27 @@ import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
-import org.veo.adapter.presenter.api.dto.full.FullAssetGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullClientDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
-import org.veo.adapter.presenter.api.dto.full.FullControlGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
-import org.veo.adapter.presenter.api.dto.full.FullDocumentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullEntityLayerSupertypeGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
-import org.veo.adapter.presenter.api.dto.full.FullIncidentGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
-import org.veo.adapter.presenter.api.dto.full.FullPersonGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
-import org.veo.adapter.presenter.api.dto.full.FullProcessGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
-import org.veo.adapter.presenter.api.dto.full.FullScenarioGroupDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
@@ -62,22 +56,14 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.ModelGroup;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
-import org.veo.core.entity.groups.AssetGroup;
-import org.veo.core.entity.groups.ControlGroup;
-import org.veo.core.entity.groups.DocumentGroup;
-import org.veo.core.entity.groups.IncidentGroup;
-import org.veo.core.entity.groups.PersonGroup;
-import org.veo.core.entity.groups.ProcessGroup;
-import org.veo.core.entity.groups.ScenarioGroup;
-import org.veo.core.entity.groups.Scope;
 
 /**
  * A collection of transform functions to transform entities to Dto back and
@@ -87,9 +73,7 @@ public final class EntityToDtoTransformer {
 
     public static EntityLayerSupertypeDto transform2Dto(ReferenceAssembler referenceAssembler,
             EntityLayerSupertype source) {
-        if (source instanceof ModelGroup) {
-            return transformGroup2Dto(referenceAssembler, (ModelGroup<?>) source);
-        }
+
         if (source instanceof Person) {
             return transformPerson2Dto(referenceAssembler, (Person) source);
         }
@@ -111,33 +95,6 @@ public final class EntityToDtoTransformer {
         if (source instanceof Scenario) {
             return transformScenario2Dto(referenceAssembler, (Scenario) source);
         }
-        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
-                                                                                      .getSimpleName());
-    }
-
-    public static FullEntityLayerSupertypeGroupDto<?> transformGroup2Dto(
-            ReferenceAssembler referenceAssembler, ModelGroup<?> source) {
-        if (source instanceof PersonGroup) {
-            return transformPersonGroup2Dto(referenceAssembler, (PersonGroup) source);
-        }
-        if (source instanceof AssetGroup) {
-            return transformAssetGroup2Dto(referenceAssembler, (AssetGroup) source);
-        }
-        if (source instanceof IncidentGroup) {
-            return transformIncidentGroup2Dto(referenceAssembler, (IncidentGroup) source);
-        }
-        if (source instanceof ScenarioGroup) {
-            return transformScenarioGroup2Dto(referenceAssembler, (ScenarioGroup) source);
-        }
-        if (source instanceof ProcessGroup) {
-            return transformProcessGroup2Dto(referenceAssembler, (ProcessGroup) source);
-        }
-        if (source instanceof DocumentGroup) {
-            return transformDocumentGroup2Dto(referenceAssembler, (DocumentGroup) source);
-        }
-        if (source instanceof ControlGroup) {
-            return transformControlGroup2Dto(referenceAssembler, (ControlGroup) source);
-        }
         if (source instanceof Scope) {
             return transformScope2Dto(referenceAssembler, (Scope) source);
         }
@@ -145,29 +102,12 @@ public final class EntityToDtoTransformer {
                                                                                       .getSimpleName());
     }
 
-    public static FullPersonGroupDto transformPersonGroup2Dto(ReferenceAssembler referenceAssembler,
-            PersonGroup source) {
-        FullPersonGroupDto target = new FullPersonGroupDto();
-        mapModelGroup(referenceAssembler, source, target);
-        return target;
-    }
-
     // Person ->
     // PersonDto
     public static FullPersonDto transformPerson2Dto(ReferenceAssembler referenceAssembler,
             Person source) {
-        if (source instanceof ModelGroup<?>) {
-            return transformPersonGroup2Dto(referenceAssembler, (PersonGroup) source);
-        }
         FullPersonDto target = new FullPersonDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
-        return target;
-    }
-
-    public static FullAssetGroupDto transformAssetGroup2Dto(ReferenceAssembler referenceAssembler,
-            AssetGroup source) {
-        FullAssetGroupDto target = new FullAssetGroupDto();
-        mapModelGroup(referenceAssembler, source, target);
+        mapCompositeEntity(referenceAssembler, source, target);
         return target;
     }
 
@@ -175,14 +115,7 @@ public final class EntityToDtoTransformer {
     public static FullAssetDto transformAsset2Dto(ReferenceAssembler referenceAssembler,
             Asset source) {
         FullAssetDto target = new FullAssetDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
-        return target;
-    }
-
-    public static FullProcessGroupDto transformProcessGroup2Dto(
-            ReferenceAssembler referenceAssembler, ProcessGroup source) {
-        FullProcessGroupDto target = new FullProcessGroupDto();
-        mapModelGroup(referenceAssembler, source, target);
+        mapCompositeEntity(referenceAssembler, source, target);
         return target;
     }
 
@@ -191,14 +124,7 @@ public final class EntityToDtoTransformer {
     public static FullProcessDto transformProcess2Dto(ReferenceAssembler referenceAssembler,
             Process source) {
         FullProcessDto target = new FullProcessDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
-        return target;
-    }
-
-    public static FullDocumentGroupDto transformDocumentGroup2Dto(
-            ReferenceAssembler referenceAssembler, DocumentGroup source) {
-        FullDocumentGroupDto target = new FullDocumentGroupDto();
-        mapModelGroup(referenceAssembler, source, target);
+        mapCompositeEntity(referenceAssembler, source, target);
         return target;
     }
 
@@ -207,14 +133,7 @@ public final class EntityToDtoTransformer {
     public static FullDocumentDto transformDocument2Dto(ReferenceAssembler referenceAssembler,
             Document source) {
         FullDocumentDto target = new FullDocumentDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
-        return target;
-    }
-
-    public static FullControlGroupDto transformControlGroup2Dto(
-            ReferenceAssembler referenceAssembler, ControlGroup source) {
-        FullControlGroupDto target = new FullControlGroupDto();
-        mapModelGroup(referenceAssembler, source, target);
+        mapCompositeEntity(referenceAssembler, source, target);
         return target;
     }
 
@@ -223,7 +142,7 @@ public final class EntityToDtoTransformer {
     public static FullControlDto transformControl2Dto(ReferenceAssembler referenceAssembler,
             Control source) {
         FullControlDto target = new FullControlDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
+        mapCompositeEntity(referenceAssembler, source, target);
         return target;
     }
 
@@ -232,14 +151,7 @@ public final class EntityToDtoTransformer {
     public static FullIncidentDto transformIncident2Dto(ReferenceAssembler referenceAssembler,
             Incident source) {
         FullIncidentDto target = new FullIncidentDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
-        return target;
-    }
-
-    public static FullIncidentGroupDto transformIncidentGroup2Dto(
-            ReferenceAssembler referenceAssembler, IncidentGroup source) {
-        FullIncidentGroupDto target = new FullIncidentGroupDto();
-        mapModelGroup(referenceAssembler, source, target);
+        mapCompositeEntity(referenceAssembler, source, target);
         return target;
     }
 
@@ -248,21 +160,17 @@ public final class EntityToDtoTransformer {
     public static FullScenarioDto transformScenario2Dto(ReferenceAssembler referenceAssembler,
             Scenario source) {
         FullScenarioDto target = new FullScenarioDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
+        mapCompositeEntity(referenceAssembler, source, target);
         return target;
     }
 
-    public static FullScenarioGroupDto transformScenarioGroup2Dto(
-            ReferenceAssembler referenceAssembler, ScenarioGroup source) {
-        FullScenarioGroupDto target = new FullScenarioGroupDto();
-        mapModelGroup(referenceAssembler, source, target);
-        return target;
-    }
-
-    private static FullEntityLayerSupertypeGroupDto<?> transformScope2Dto(
-            ReferenceAssembler referenceAssembler, Scope source) {
+    // Scope ->
+    // ScopeDto
+    public static FullScopeDto transformScope2Dto(ReferenceAssembler referenceAssembler,
+            Scope source) {
         FullScopeDto target = new FullScopeDto();
-        mapModelGroup(referenceAssembler, source, target);
+        mapEntityLayerSupertype(referenceAssembler, source, target);
+        target.setMembers(convertReferenceSet(source.getMembers(), referenceAssembler));
         return target;
     }
 
@@ -353,11 +261,10 @@ public final class EntityToDtoTransformer {
         }
     }
 
-    private static <TEntity extends EntityLayerSupertype> void mapModelGroup(
-            ReferenceAssembler referenceAssembler, ModelGroup<TEntity> source,
-            FullEntityLayerSupertypeGroupDto<TEntity> target) {
+    private static <TEntity extends EntityLayerSupertype, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(
+            ReferenceAssembler referenceAssembler, CompositeEntity<TEntity> source, TDto target) {
         mapEntityLayerSupertype(referenceAssembler, source, target);
-        target.setMembers(convertReferenceSet(source.getMembers(), referenceAssembler));
+        target.setParts(convertReferenceSet(source.getParts(), referenceAssembler));
     }
 
     // CustomProperties ->

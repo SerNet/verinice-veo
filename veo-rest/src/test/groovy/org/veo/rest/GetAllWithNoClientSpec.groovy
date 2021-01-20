@@ -76,10 +76,10 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve all groups"() {
+    def "retrieve all scopes"() {
         when: "if the client was not created and request is made to the server"
 
-        def results = get("/groups?type=Process")
+        def results = get("/scopes")
 
         then: "an empty result is returned"
 

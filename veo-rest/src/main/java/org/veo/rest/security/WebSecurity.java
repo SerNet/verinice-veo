@@ -46,40 +46,36 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         // @formatter:off
         // Keep the formatter off or you will never understand what this does.
         // #whitespacematters #pythonmeetsjava.
-        http.csrf()
-                .disable()
-            .cors()
+        http.csrf().disable().cors()
 
-            // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled for
-            // swagger-ui. We cannot disable it.
-            // Make sure that no critical API can be accessed by an anonymous user!
-            // .anonymous()
-            //     .disable()
+                // Anonymous access (a user with role "ROLE_ANONYMOUS" must be
+                // enabled for
+                // swagger-ui. We cannot disable it.
+                // Make sure that no critical API can be accessed by an
+                // anonymous user!
+                // .anonymous()
+                // .disable()
 
-            .and()
-            .authorizeRequests()
-            .antMatchers("/actuator/**")
-            .permitAll()
+                .and().authorizeRequests().antMatchers("/actuator/**").permitAll()
 
-            .and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-            .and()
-            .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/", "/v2/api-docs/**", "/v3/api-docs/**", "/swagger.json",
-                         "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
-                         "/swagger-ui/**")
-                    .permitAll()
-                .antMatchers("/units/**", "/assets/**", "/controls/**", "/groups/**", "persons/**",
-                             "/processes/**", "/schemas/**", "/translations/**")
-                    .hasAuthority("SCOPE_veo-user")
-                .anyRequest()
-                    .authenticated() // CAUTION: this includes anonymous users, see above
+                .and().authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/", "/v2/api-docs/**", "/v3/api-docs/**",
+                        "/swagger.json", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
+                        "/swagger-ui/**")
+                .permitAll()
+                .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "persons/**",
+                        "/processes/**", "/schemas/**", "/translations/**")
+                .hasAuthority("SCOPE_veo-user").anyRequest().authenticated() // CAUTION:
+                                                                             // this
+                                                                             // includes
+                                                                             // anonymous
+                                                                             // users,
+                                                                             // see
+                                                                             // above
 
-            .and()
-            .oauth2ResourceServer()
-                .jwt();
+                .and().oauth2ResourceServer().jwt();
 
         // @formatter:on
     }

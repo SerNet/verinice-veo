@@ -41,13 +41,9 @@ import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
+import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.SubTypeAspectData
 import org.veo.persistence.entity.jpa.UnitData
-import org.veo.persistence.entity.jpa.groups.AssetGroupData
-import org.veo.persistence.entity.jpa.groups.ControlGroupData
-import org.veo.persistence.entity.jpa.groups.DocumentGroupData
-import org.veo.persistence.entity.jpa.groups.PersonGroupData
-import org.veo.persistence.entity.jpa.groups.ProcessGroupData
 
 @SpringBootTest(classes = IdentityConsistencyITSpec.class)
 @ComponentScan("org.veo")
@@ -204,50 +200,12 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
     }
 
     @Transactional
-    def "The identity of the entity 'controlgroup' is consistent over state transitions"() {
+    def "The identity of the entity 'scope' is consistent over state transitions"() {
         when:
-        testIdentityConsistency(ControlGroupData.class, newControlGroup(unit))
+        testIdentityConsistency(ScopeData.class, newScope(unit))
 
         then:
         notThrown(Exception)
-    }
-
-    @Transactional
-    def "The identity of the entity 'assetgroup' is consistent over state transitions"() {
-        when:
-        testIdentityConsistency(AssetGroupData.class, newAssetGroup(unit))
-
-        then:
-        notThrown(Exception)
-    }
-
-    @Transactional
-    def "The identity of the entity 'persongroup' is consistent over state transitions"() {
-        when:
-        testIdentityConsistency(PersonGroupData.class, newPersonGroup(unit))
-
-        then:
-        notThrown(Exception)
-    }
-
-    @Transactional
-    def "The identity of the entity 'documentgroup' is consistent over state transitions"() {
-        when:
-        testIdentityConsistency(DocumentGroupData.class, newDocumentGroup(unit))
-
-        then:
-        notThrown(Exception)
-    }
-
-    @Transactional
-    def "The identity of the entity 'processgroup' is consistent over state transitions"() {
-        when:
-        def group = newProcessGroup(unit)
-        testIdentityConsistency(ProcessGroupData.class, group)
-
-        then:
-        notThrown(Exception)
-        group != newProcessGroup(unit)
     }
 
     @Transactional

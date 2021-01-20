@@ -22,16 +22,16 @@ import org.veo.core.entity.Asset;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
 @Repository
-public class AssetRepositoryImpl extends AbstractEntityLayerSupertypeRepository<Asset, AssetData>
+public class AssetRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<Asset, AssetData>
         implements AssetRepository {
 
     public AssetRepositoryImpl(AssetDataRepository dataRepository, ModelObjectValidation validation,
-            CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
+            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
+        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }

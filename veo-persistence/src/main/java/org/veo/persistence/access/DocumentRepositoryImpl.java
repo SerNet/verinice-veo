@@ -22,17 +22,18 @@ import org.veo.core.entity.Document;
 import org.veo.core.usecase.repository.DocumentRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.DocumentDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
 @Repository
 public class DocumentRepositoryImpl
-        extends AbstractEntityLayerSupertypeRepository<Document, DocumentData>
+        extends AbstractCompositeEntityRepositoryImpl<Document, DocumentData>
         implements DocumentRepository {
 
     public DocumentRepositoryImpl(DocumentDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ScopeDataRepository scopeDataRepository) {
+        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }

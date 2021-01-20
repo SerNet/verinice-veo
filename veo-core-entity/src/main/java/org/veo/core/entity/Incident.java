@@ -19,7 +19,7 @@ package org.veo.core.entity;
 /**
  * Something that happened.
  */
-public interface Incident extends EntityLayerSupertype {
+public interface Incident extends EntityLayerSupertype, CompositeEntity<Incident> {
 
     @Override
     default String getModelType() {

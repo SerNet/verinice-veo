@@ -25,16 +25,16 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
+import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
-import org.veo.core.entity.groups.Scope
 import org.veo.core.usecase.repository.AssetRepository
 import org.veo.core.usecase.repository.ControlRepository
 import org.veo.core.usecase.repository.DocumentRepository
-import org.veo.core.usecase.repository.EntityGroupRepository
 import org.veo.core.usecase.repository.IncidentRepository
 import org.veo.core.usecase.repository.PersonRepository
 import org.veo.core.usecase.repository.ProcessRepository
 import org.veo.core.usecase.repository.ScenarioRepository
+import org.veo.core.usecase.repository.ScopeRepository
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 
 public class DeleteUnitUseCaseSpec extends UseCaseSpec {
@@ -45,38 +45,38 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         existingUnit.id >> uid
         existingUnit.client >> existingClient
         Unit subUnit = Mock(Unit)
-        def assetReporitory = Mock(AssetRepository)
-        def controlReporitory = Mock(ControlRepository)
-        def documentReporitory = Mock(DocumentRepository)
-        def incidentReporitory = Mock(IncidentRepository)
-        def personReporitory = Mock(PersonRepository)
-        def processReporitory = Mock(ProcessRepository)
-        def scenarioReporitory = Mock(ScenarioRepository)
-        def entityGroupRepository = Mock(EntityGroupRepository)
+        def assetRepository = Mock(AssetRepository)
+        def controlRepository = Mock(ControlRepository)
+        def documentRepository = Mock(DocumentRepository)
+        def incidentRepository = Mock(IncidentRepository)
+        def personRepository = Mock(PersonRepository)
+        def processRepository = Mock(ProcessRepository)
+        def scenarioRepository = Mock(ScenarioRepository)
+        def scopeRepository = Mock(ScopeRepository)
         when: "the unit is deleted"
         def input = new DeleteUnitUseCase.InputData(existingUnit.getId(), existingClient)
         def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider)
         usecase.execute(input)
 
         then: "the client for the unit is retrieved"
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Asset) >> assetReporitory
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Control) >> controlReporitory
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentReporitory
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Incident) >> incidentReporitory
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personReporitory
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processReporitory
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scenario) >> scenarioReporitory
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scope) >> entityGroupRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Asset) >> assetRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Control) >> controlRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Incident) >> incidentRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scenario) >> scenarioRepository
+        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scope) >> scopeRepository
         1 * clientRepository.findById(_) >> Optional.of(existingClient)
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-        1 * entityGroupRepository.deleteByUnit(existingUnit)
-        1 * assetReporitory.deleteByUnit(existingUnit)
-        1 * controlReporitory.deleteByUnit(existingUnit)
-        1 * documentReporitory.deleteByUnit(existingUnit)
-        1 * incidentReporitory.deleteByUnit(existingUnit)
-        1 * personReporitory.deleteByUnit(existingUnit)
-        1 * processReporitory.deleteByUnit(existingUnit)
-        1 * scenarioReporitory.deleteByUnit(existingUnit)
+        1 * scopeRepository.deleteByUnit(existingUnit)
+        1 * assetRepository.deleteByUnit(existingUnit)
+        1 * controlRepository.deleteByUnit(existingUnit)
+        1 * documentRepository.deleteByUnit(existingUnit)
+        1 * incidentRepository.deleteByUnit(existingUnit)
+        1 * personRepository.deleteByUnit(existingUnit)
+        1 * processRepository.deleteByUnit(existingUnit)
+        1 * scenarioRepository.deleteByUnit(existingUnit)
         and: "the unit is deleted"
         1 * unitRepository.delete(_)
     }

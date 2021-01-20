@@ -20,8 +20,8 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
 import org.veo.core.entity.Incident
-import org.veo.core.entity.ModelGroup
 import org.veo.core.entity.Scenario
+import org.veo.core.entity.Scope
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -38,7 +38,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         url | parsedId
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454' | '40331ed5-be07-4c69-bf99-553811ce5454'
         'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
-        'http://localhost:9000/groups/59d3c21d-2f21-4085-950d-1273056d664a' | '59d3c21d-2f21-4085-950d-1273056d664a'
+        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a' | '59d3c21d-2f21-4085-950d-1273056d664a'
         'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509' | 'f05ab334-c605-456e-8a78-9e1bc85b8509'
         'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
     }
@@ -51,7 +51,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         url | type
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454' | Asset
         'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | Control
-        'http://localhost:9000/groups/59d3c21d-2f21-4085-950d-1273056d664a' | ModelGroup
+        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a' | Scope
         'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509' | Scenario
         'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | Incident
     }
@@ -66,7 +66,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         Control| 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | '/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
         Scenario| 'f05ab334-c605-456e-8a78-9e1bc85b8509'|  '/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'
         Incident| '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
-        ModelGroup | '59d3c21d-2f21-4085-950d-1273056d664a' | '/groups/59d3c21d-2f21-4085-950d-1273056d664a'
+        Scope | '59d3c21d-2f21-4085-950d-1273056d664a' | '/scopes/59d3c21d-2f21-4085-950d-1273056d664a'
     }
 
     @Unroll
@@ -79,7 +79,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         Control| '/controls{?unit,displayName}'
         Scenario| '/scenarios{?unit,displayName}'
         Incident| '/incidents{?unit,displayName}'
-        ModelGroup | '/groups{?unit}'
+        Scope | '/scopes{?unit,displayName}'
     }
 
     @Unroll
@@ -92,6 +92,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Control| '/controls/searches'
         Scenario| '/scenarios/searches'
         Incident| '/incidents/searches'
-        ModelGroup | '/groups/searches'
+        Scope | '/scopes/searches'
     }
 }

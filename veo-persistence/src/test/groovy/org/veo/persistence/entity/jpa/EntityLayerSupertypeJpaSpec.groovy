@@ -22,7 +22,7 @@ import javax.persistence.PersistenceContext
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.jpa.AssetDataRepository
-import org.veo.persistence.access.jpa.EntityGroupDataRepository
+import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
@@ -33,7 +33,7 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
     AssetDataRepository assetRepository
 
     @Autowired
-    EntityGroupDataRepository entityGroupDataRepository
+    ScopeDataRepository scopeDataRepository
 
 
     @Autowired
@@ -78,63 +78,52 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         }
     }
 
-    def 'finding entities by owners excludes groups'() {
-        given: "a normal asset and an asset group, both from the same owner"
-        assetRepository.save(newAsset(owner0) {
-            name = "normal"
+    def 'finding entities by owners includes composites and their parts'() {
+        given: "a normal asset and an asset composite, both from the same owner"
+        def part = assetRepository.save(newAsset(owner0) {
+            name = "part"
         })
-        assetRepository.save(newAssetGroup(owner0) {
-            name = "group"
+        assetRepository.save(newAsset(owner0) {
+            name = "whole"
+            parts = [part]
         })
 
         when: "querying the owner's assets"
         def result = assetRepository.findByUnits([owner0.dbId] as Set)
 
-        then: "only the normal asset is returned"
-        result.size() == 1
-        result[0].name == "normal"
-    }
-
-    def 'finds entity groups by owners'() {
-        given: "three asset groups from different owners"
-        assetRepository.save(newAssetGroup(owner0) {
-            name = "group 0"
-        })
-        assetRepository.save(newAssetGroup(owner1) {
-            name = "group 1"
-        })
-        assetRepository.save(newAssetGroup(owner2) {
-            name = "group 2"
-        })
-
-        when: "querying groups from the first two owners"
-        def result = entityGroupDataRepository.findByUnits([owner0.dbId, owner1.dbId] as Set)
-
-        then: "only the first two owners' groups are returned"
+        then: "the asset composite and its part are returned"
         with(result.sort {
             it.name
         }) {
             size() == 2
-            it[0].name == "group 0"
-            it[1].name == "group 1"
+            result[0].name == "part"
+            result[1].name == "whole"
         }
     }
 
-    def 'finding entity groups by owners excludes normal entities'() {
-        given: "a normal asset and an asset group, both from the same owner"
+    def 'finds entity composites by owners'() {
+        given: "three asset composites from different owners"
         assetRepository.save(newAsset(owner0) {
-            name = "normal"
+            name = "composite 0"
         })
-        assetRepository.save(newAssetGroup(owner0) {
-            name = "group"
+        assetRepository.save(newAsset(owner1) {
+            name = "composite 1"
+        })
+        assetRepository.save(newAsset(owner2) {
+            name = "composite 2"
         })
 
-        when: "querying the owner's asset groups"
-        def result = entityGroupDataRepository.findByUnits([owner0.dbId] as Set)
+        when: "querying composites from the first two owners"
+        def result = assetRepository.findByUnits([owner0.dbId, owner1.dbId] as Set)
 
-        then: "only the group is returned"
-        result.size() == 1
-        result[0].name == "group"
+        then: "only the first two owners' composites are returned"
+        with(result.sort {
+            it.name
+        }) {
+            size() == 2
+            it[0].name == "composite 0"
+            it[1].name == "composite 1"
+        }
     }
 
     def 'increment version id'() {

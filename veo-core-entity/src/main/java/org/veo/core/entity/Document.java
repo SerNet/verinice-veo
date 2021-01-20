@@ -19,7 +19,7 @@ package org.veo.core.entity;
 /**
  * A Document is a specification, a contract or a reference.
  */
-public interface Document extends EntityLayerSupertype {
+public interface Document extends EntityLayerSupertype, CompositeEntity<Document> {
 
     @Override
     default String getModelType() {

@@ -28,11 +28,11 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
-import org.veo.persistence.access.jpa.EntityGroupDataRepository
 import org.veo.persistence.access.jpa.IncidentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.ScenarioDataRepository
+import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.test.VeoSpec
 
@@ -72,7 +72,7 @@ abstract class VeoSpringSpec extends VeoSpec {
     ProcessDataRepository processDataRepository
 
     @Autowired
-    EntityGroupDataRepository entityGroupDataRepository
+    ScopeDataRepository scopeDataRepository
 
     @Autowired
     TransactionTemplate txTemplate
@@ -86,14 +86,15 @@ abstract class VeoSpringSpec extends VeoSpec {
                 incidentDataRepository,
                 scenarioDataRepository,
                 personDataRepository,
-                processDataRepository
+                processDataRepository,
+                scopeDataRepository
             ].each {
                 it.findAll().forEach {
                     it.links.clear()
                 }
             }
             [
-                entityGroupDataRepository,
+                scopeDataRepository,
                 assetDataRepository,
                 controlDataRepository,
                 documentDataRepository,

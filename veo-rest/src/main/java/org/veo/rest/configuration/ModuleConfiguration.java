@@ -38,11 +38,6 @@ import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
-import org.veo.core.usecase.group.CreateGroupUseCase;
-import org.veo.core.usecase.group.DeleteGroupUseCase;
-import org.veo.core.usecase.group.GetGroupUseCase;
-import org.veo.core.usecase.group.GetGroupsUseCase;
-import org.veo.core.usecase.group.PutGroupUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
@@ -63,6 +58,10 @@ import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
 import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
+import org.veo.core.usecase.scope.CreateScopeUseCase;
+import org.veo.core.usecase.scope.GetScopeUseCase;
+import org.veo.core.usecase.scope.GetScopesUseCase;
+import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -72,11 +71,11 @@ import org.veo.persistence.access.AssetRepositoryImpl;
 import org.veo.persistence.access.ClientRepositoryImpl;
 import org.veo.persistence.access.ControlRepositoryImpl;
 import org.veo.persistence.access.DocumentRepositoryImpl;
-import org.veo.persistence.access.EntityGroupRepositoryImpl;
 import org.veo.persistence.access.IncidentRepositoryImpl;
 import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
 import org.veo.persistence.access.ScenarioRepositoryImpl;
+import org.veo.persistence.access.ScopeRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 
@@ -274,39 +273,30 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public CreateGroupUseCase getCreateGroupUseCase(UnitRepository unitRepository,
-            EntityGroupRepositoryImpl entityGroupRepository) {
-        return new CreateGroupUseCase(unitRepository, entityGroupRepository, getEntityFactory());
+    public CreateScopeUseCase createScopeUseCase(UnitRepositoryImpl unitRepository,
+            ScopeRepositoryImpl scopeRepository) {
+        return new CreateScopeUseCase(unitRepository, scopeRepository);
     }
 
     @Bean
-    public GetGroupUseCase getGroupUseCase(EntityGroupRepositoryImpl entityGroupRepository,
-            UnitRepository unitRepository) {
-        return new GetGroupUseCase(entityGroupRepository);
+    public GetScopeUseCase getScopeUseCase(ScopeRepositoryImpl scopeRepository) {
+        return new GetScopeUseCase(scopeRepository);
     }
 
     @Bean
-    public GetGroupsUseCase getGroupsUseCase(ClientRepositoryImpl clientRepository,
-            UnitHierarchyProvider unitHierarchyProvider,
-            EntityGroupRepositoryImpl entityGroupRepository) {
-        return new GetGroupsUseCase(clientRepository, entityGroupRepository, unitHierarchyProvider);
+    public GetScopesUseCase getScopesUseCase(ClientRepositoryImpl clientRepository,
+            ScopeRepositoryImpl scopeRepository, UnitHierarchyProvider unitHierarchyProvider) {
+        return new GetScopesUseCase(clientRepository, scopeRepository, unitHierarchyProvider);
     }
 
     @Bean
-    public DeleteGroupUseCase getDeleteGroupUseCase(
-            EntityGroupRepositoryImpl entityGroupRepository) {
-        return new DeleteGroupUseCase(entityGroupRepository);
-    }
-
-    @Bean
-    public PutGroupUseCase putGroupUseCase(EntityGroupRepositoryImpl entityGroupRepository) {
-        return new PutGroupUseCase(entityGroupRepository);
+    public UpdateScopeUseCase updateScopeUseCase(ScopeRepositoryImpl scopeRepository) {
+        return new UpdateScopeUseCase(scopeRepository);
     }
 
     @Bean
     public DeleteEntityUseCase deleteEntityUseCase(RepositoryProvider repositoryProvider) {
         return new DeleteEntityUseCase(repositoryProvider);
-
     }
 
     @Bean

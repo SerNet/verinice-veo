@@ -18,6 +18,6 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.AssetData;
 
-public interface AssetDataRepository extends EntityLayerSupertypeDataRepository<AssetData> {
+public interface AssetDataRepository extends CompositeEntityDataRepository<AssetData> {
 
 }

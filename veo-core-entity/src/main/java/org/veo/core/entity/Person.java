@@ -20,7 +20,7 @@ package org.veo.core.entity;
  * Person represents a natural person such as an employee. Persons will have
  * responsibilities assigned for other domain objects.
  */
-public interface Person extends EntityLayerSupertype {
+public interface Person extends EntityLayerSupertype, CompositeEntity<Person> {
 
     @Override
     default String getModelType() {

@@ -22,17 +22,18 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.usecase.repository.ScenarioRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScenarioDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ScenarioData;
 
 @Repository
 public class ScenarioRepositoryImpl
-        extends AbstractEntityLayerSupertypeRepository<Scenario, ScenarioData>
+        extends AbstractCompositeEntityRepositoryImpl<Scenario, ScenarioData>
         implements ScenarioRepository {
 
     public ScenarioRepositoryImpl(ScenarioDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ScopeDataRepository scopeDataRepository) {
+        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }

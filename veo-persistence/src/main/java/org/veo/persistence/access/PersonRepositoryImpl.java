@@ -22,16 +22,17 @@ import org.veo.core.entity.Person;
 import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.PersonData;
 
 @Repository
-public class PersonRepositoryImpl extends AbstractEntityLayerSupertypeRepository<Person, PersonData>
+public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<Person, PersonData>
         implements PersonRepository {
 
     public PersonRepositoryImpl(PersonDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ScopeDataRepository scopeDataRepository) {
+        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }

@@ -22,16 +22,17 @@ import org.veo.core.entity.Process;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ProcessData;
 
 @Repository
 public class ProcessRepositoryImpl extends
-        AbstractEntityLayerSupertypeRepository<Process, ProcessData> implements ProcessRepository {
+        AbstractCompositeEntityRepositoryImpl<Process, ProcessData> implements ProcessRepository {
 
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository) {
-        super(dataRepository, validation, linkDataRepository);
+            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ScopeDataRepository scopeDataRepository) {
+        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }
