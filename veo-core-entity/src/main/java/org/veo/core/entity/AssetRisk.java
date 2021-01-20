@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2020 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,22 +14,30 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access.jpa;
+package org.veo.core.entity;
 
-import java.util.Set;
+import javax.annotation.Nullable;
 
-import org.springframework.transaction.annotation.Transactional;
+/**
+ * Based on the definition of the term 'risk' from NIST 800-37:
+ * <p>
+ * "Risk: A measure of the extent to which an entity is threatened by a
+ * potential circumstance or event, [...]",
+ * <p>
+ * this class links an asset ('entity' in the above definition) to a scenario
+ * ('circumstance or event').
+ * <p>
+ * The asset may be representing a single asset or a group of assets to
+ * facilitate modelling the system-of-systems / system-of-interest (SoI) for the
+ * observed risk.
+ */
+public interface AssetRisk extends AbstractRisk {
 
-import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.PersonData;
-import org.veo.persistence.entity.jpa.ScenarioData;
+    Asset getAsset();
 
-@Transactional(readOnly = true)
-public interface AssetDataRepository extends CompositeEntityDataRepository<AssetData> {
-    Set<AssetData> findDistinctByRisks_ScenarioIn(Set<ScenarioData> causes);
+    @Override
+    AssetRisk mitigate(@Nullable Control control);
 
-    Set<AssetData> findDistinctByRisks_Mitigation_In(Set<ControlData> controls);
-
-    Set<AssetData> findDistinctByRisks_RiskOwner_In(Set<PersonData> persons);
+    @Override
+    AssetRisk appoint(@Nullable Person riskOwner);
 }

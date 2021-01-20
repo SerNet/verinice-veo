@@ -37,6 +37,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -52,9 +53,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
@@ -64,9 +67,14 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
+import org.veo.core.usecase.asset.DeleteAssetRiskUseCase;
+import org.veo.core.usecase.asset.GetAssetRiskUseCase;
+import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
+import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -95,12 +103,22 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(AssetController.URL_BASE_PATH)
 @Slf4j
-public class AssetController extends AbstractEntityController {
+public class AssetController extends AbstractEntityController implements AssetRiskResource {
+
+    private final DeleteAssetRiskUseCase deleteAssetRiskUseCase;
+    private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
+    @Autowired
+    ReferenceAssembler urlAssembler;
+    private final GetAssetRisksUseCase getAssetRisksUseCase;
 
     public AssetController(UseCaseInteractorImpl useCaseInteractor, GetAssetUseCase getAssetUseCase,
             GetAssetsUseCase getAssetsUseCase, CreateAssetUseCase createAssetUseCase,
             UpdateAssetUseCase updateAssetUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            DtoToEntityContextFactory dtoToEntityContextFactory,
+            CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
+            DeleteAssetRiskUseCase deleteAssetRiskUseCase,
+            UpdateAssetRiskUseCase updateAssetRiskUseCase,
+            GetAssetRisksUseCase getAssetRisksUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getAssetUseCase = getAssetUseCase;
         this.getAssetsUseCase = getAssetsUseCase;
@@ -108,6 +126,11 @@ public class AssetController extends AbstractEntityController {
         this.updateAssetUseCase = updateAssetUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
         this.dtoToEntityContextFactory = dtoToEntityContextFactory;
+        this.createAssetRiskUseCase = createAssetRiskUseCase;
+        this.getAssetRiskUseCase = getAssetRiskUseCase;
+        this.deleteAssetRiskUseCase = deleteAssetRiskUseCase;
+        this.updateAssetRiskUseCase = updateAssetRiskUseCase;
+        this.getAssetRisksUseCase = getAssetRisksUseCase;
     }
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.ASSETS;
@@ -119,6 +142,8 @@ public class AssetController extends AbstractEntityController {
     private final GetAssetsUseCase getAssetsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final DtoToEntityContextFactory dtoToEntityContextFactory;
+    private final CreateAssetRiskUseCase createAssetRiskUseCase;
+    private final GetAssetRiskUseCase getAssetRiskUseCase;
 
     @GetMapping
     @Operation(summary = "Loads all assets")
@@ -203,6 +228,7 @@ public class AssetController extends AbstractEntityController {
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateAssetDto dto) {
+
         return useCaseInteractor.execute(createAssetUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Asset>>) () -> {
                                              Client client = getClient(user);
@@ -281,5 +307,92 @@ public class AssetController extends AbstractEntityController {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;
         }
+    }
+
+    @Override
+    public @Valid CompletableFuture<List<AssetRiskDto>> getRisks(
+            @Parameter(hidden = true) ApplicationUser user, String assetId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new GetAssetRisksUseCase.InputData(client, Key.uuidFrom(assetId));
+
+        return useCaseInteractor.execute(getAssetRisksUseCase, input, output -> {
+            return output.getAssetRisks()
+                         .stream()
+                         .map(risk -> AssetRiskDto.from(risk, referenceAssembler))
+                         .collect(Collectors.toList());
+        });
+    }
+
+    @Override
+    public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> getRisk(
+            @Parameter(hidden = true) ApplicationUser user, String assetId, String scenarioId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new GetAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId),
+                Key.uuidFrom(scenarioId));
+
+        var riskFuture = useCaseInteractor.execute(getAssetRiskUseCase, input, output -> {
+            return AssetRiskDto.from(output.getAssetRisk(), referenceAssembler);
+        });
+
+        return riskFuture.thenApply(riskDto -> ResponseEntity.ok()
+                                                             .eTag(ETag.from(riskDto.getAsset()
+                                                                                    .getId(),
+                                                                             riskDto.getScenario()
+                                                                                    .getId(),
+                                                                             riskDto.getVersion()))
+                                                             .body(riskDto));
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(ApplicationUser user,
+            @Valid @NotNull AssetRiskDto dto, String assetId) {
+
+        var input = new CreateAssetRiskUseCase.InputData(getClient(user.getClientId()),
+                Key.uuidFrom(assetId), urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()));
+
+        return useCaseInteractor.execute(createAssetRiskUseCase, input, output -> {
+            var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getAssetRisk()
+                                                                     .getAsset()
+                                                                     .getId()
+                                                                     .uuidValue(),
+                                    AssetRiskResource.RESOURCE_NAME);
+            var body = new ApiResponseBody(true, Optional.of(output.getAssetRisk()
+                                                                   .getScenario()
+                                                                   .getId()
+                                                                   .uuidValue()),
+                    "Asset risk created successfully.", "");
+            return RestApiResponse.created(url, body);
+        });
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(ApplicationUser user,
+            String assetId, String scenarioId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new DeleteAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId),
+                Key.uuidFrom(scenarioId));
+
+        return useCaseInteractor.execute(deleteAssetRiskUseCase, input,
+                                         output -> ResponseEntity.ok()
+                                                                 .build());
+    }
+
+    @Override
+    public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(ApplicationUser user,
+            String assetId, String scenarioId, @Valid @NotNull AssetRiskDto dto, String eTag) {
+
+        var input = new UpdateAssetRiskUseCase.InputData(getClient(user.getClientId()),
+                Key.uuidFrom(assetId), urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()), eTag);
+
+        // update risk and return saved risk with updated ETag, timestamps etc.:
+        return useCaseInteractor.execute(updateAssetRiskUseCase, input, output -> null)
+                                .thenCompose(o -> this.getRisk(user, assetId, scenarioId));
     }
 }

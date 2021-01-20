@@ -16,22 +16,60 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import static java.util.Collections.singleton;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Scenario;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.PersonData;
+import org.veo.persistence.entity.jpa.ScenarioData;
 
 @Repository
 public class AssetRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<Asset, AssetData>
         implements AssetRepository {
 
+    private AssetDataRepository assetDataRepository;
+
     public AssetRepositoryImpl(AssetDataRepository dataRepository, ModelObjectValidation validation,
             CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+        this.assetDataRepository = dataRepository;
+    }
+
+    @Override
+    public Set<Asset> findByRisk(Scenario cause) {
+        return assetDataRepository.findDistinctByRisks_ScenarioIn(singleton((ScenarioData) cause))
+                                  .stream()
+                                  .map(assetData -> (Asset) assetData)
+                                  .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Asset> findByRisk(Control mitigatedBy) {
+        return assetDataRepository.findDistinctByRisks_Mitigation_In(singleton((ControlData) mitigatedBy))
+                                  .stream()
+                                  .map(assetData -> (Asset) assetData)
+                                  .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Asset> findByRisk(Person riskOwner) {
+        return assetDataRepository.findDistinctByRisks_RiskOwner_In(singleton((PersonData) riskOwner))
+                                  .stream()
+                                  .map(assetData -> (Asset) assetData)
+                                  .collect(Collectors.toSet());
     }
 }

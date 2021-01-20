@@ -16,13 +16,9 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.transaction.Transactional
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -33,7 +29,6 @@ import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 @SpringBootTest(classes = ClientRepositorySpec.class)

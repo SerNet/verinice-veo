@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "316b037d-55a8-4148-8f58-3d454a4bb709",
+    "_postman_id": "be6aa115-4ce3-4af9-8c9a-c81f2e1900f3",
     "name": "verinice.VEO REST API",
     "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -1737,39 +1737,6 @@
           },
           "response": [
             {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Asset loaded",
               "originalRequest": {
                 "method": "GET",
@@ -1801,6 +1768,39 @@
               ],
               "cookie": [],
               "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
+            },
+            {
+              "name": "Asset not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/assets/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -2644,39 +2644,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -2699,6 +2666,39 @@
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -2750,39 +2750,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -2805,6 +2772,39 @@
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -4149,39 +4149,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -4204,6 +4171,39 @@
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -4781,39 +4781,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit loaded",
               "originalRequest": {
                 "method": "GET",
@@ -4845,6 +4812,39 @@
               ],
               "cookie": [],
               "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
             }
           ]
         },
@@ -5348,39 +5348,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -5403,6 +5370,39 @@
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -5666,39 +5666,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -5721,6 +5688,39 @@
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -5878,39 +5878,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -5933,6 +5900,39 @@
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -6234,39 +6234,6 @@
           },
           "response": [
             {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
               "name": "Unit deleted",
               "originalRequest": {
                 "method": "DELETE",
@@ -6289,6 +6256,39 @@
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
               "_postman_previewlanguage": "text",
               "header": [
                 {
@@ -7035,6 +7035,1269 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Risk tests",
+      "item": [
+        {
+          "name": "Create a unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"unitId\", resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('unitName', 'My Unit');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/units",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/units",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "\"<object>\""
+            }
+          ]
+        },
+        {
+          "name": "Load the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returned unit has the correct values\", function () {",
+                  "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"unitId\"));",
+                  "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"unitName\"));",
+                  "});",
+                  "var eTag = extractTextBetweenQuotes(pm.response.headers.get(\"ETag\"));",
+                  "pm.test(\"ETag header is a string\", function () {",
+                  "    pm.expect(eTag).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"unitETag\", eTag);",
+                  "",
+                  "pm.collectionVariables.set(\"domainUri\", jsonData.domains[0].targetUri);",
+                  "",
+                  "function extractTextBetweenQuotes(str){",
+                  "  const matches = str.match(/\"(.*?)\"/);",
+                  "  return matches",
+                  "    ? matches[1]",
+                  "    : str;",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/units/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit loaded",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create an asset inside the unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('assetName', 'My Asset');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('assetId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"domains\" : [{\"targetUri\": \"{{domainUri}}\"}]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a composite asset inside the unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('compositeAssetName', 'My composite Asset');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('compositeAssetId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{compositeAssetName}}\",\n    \"owner\": { \"targetUri\": \"/units/{{unitId}}\" },\n    \"domains\": [{ \"targetUri\": \"{{domainUri}}\" }],\n    \"parts\": [{ \"targetUri\": \"/assets/{{assetId}}\" }]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a scenario  inside the unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('scenarioName', 'My Scenario');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('scenarioId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{scenarioName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/scenarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "scenarios"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a composite scenario inside the unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('compositeScenarioName', 'My composite Scenario');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('compositeScenarioId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{compositeScenarioName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"parts\": [\n        {\n            \"targetUri\": \"/scenarios/{{scenarioId}}\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/scenarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "scenarios"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a person inside the unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('personName', 'My Person');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('personId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a composite person inside the unit",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set('compositePersonName', 'My composite Person');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('compositePersonId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{compositePersonName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"parts\": [\n        {\n            \"targetUri\": \"/persons/{{personId}}\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/persons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "persons"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a risk for the asset",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('scopeId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"scenario\": { \"targetUri\": \"/scenarios/{{scenarioId}}\" },\n    \"domains\": [{ \"targetUri\": \"{{domainUri}}\" }]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets/{{assetId}}/risks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                "{{assetId}}",
+                "risks"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Load the risk",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Returned risk has the correct values\", function () {",
+                  "    pm.expect(jsonData._self).to.equal(\"/assets/\" + pm.collectionVariables.get(\"assetId\")",
+                  "        + \"/risks/\" + pm.collectionVariables.get(\"scenarioId\"));",
+                  "});",
+                  "pm.environment.set(\"riskResponse\", jsonData);",
+                  "",
+                  "var eTag = extractTextBetweenQuotes(pm.response.headers.get(\"ETag\"));",
+                  "pm.test(\"ETag header is a string\", function () {",
+                  "    pm.expect(eTag).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set(\"riskETag\", eTag);",
+                  "",
+                  "",
+                  "function extractTextBetweenQuotes(str){",
+                  "  const matches = str.match(/\"(.*?)\"/);",
+                  "  return matches",
+                  "    ? matches[1]",
+                  "    : str;",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/assets/{{assetId}}/risks/{{scenarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                "{{assetId}}",
+                "risks",
+                "{{scenarioId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update the risk with a risk owner",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var body = pm.environment.get(\"riskResponse\");",
+                  "body.riskOwner = {",
+                  "    targetUri: \"/persons/\" + pm.collectionVariables.get(\"personId\"),",
+                  "};",
+                  "",
+                  "pm.environment.set(\"riskPutBody\", JSON.stringify(body));",
+                  "",
+                  "// wait 1 sec to make sure that update-timestamp is past creation timestamp:",
+                  "//setTimeout(function(){}, 5000);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "pm.test(\"Returned risk has the correct values\", function () {",
+                  "    pm.expect(jsonData.riskOwner).to.exist;",
+                  "    pm.expect(Date.parse(jsonData.updatedAt)).greaterThan(Date.parse(jsonData.createdAt));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "If-Match",
+                "value": "{{riskETag}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{riskPutBody}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets/{{assetId}}/risks/{{scenarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                "{{assetId}}",
+                "risks",
+                "{{scenarioId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Create a risk for the asset composite",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "var resourceId = jsonData.resourceId;",
+                  "pm.test(\"Resource ID is a string\", function () {",
+                  "    pm.expect(resourceId).to.be.a('string')",
+                  "});",
+                  "pm.collectionVariables.set('scopeId', resourceId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"scenario\": { \"targetUri\": \"/scenarios/{{compositeScenarioId}}\" },\n    \"domains\": [{ \"targetUri\": \"{{domainUri}}\" }]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assets/{{compositeAssetId}}/risks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assets",
+                "{{compositeAssetId}}",
+                "risks"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the scenario",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "If-Match",
+                "type": "text",
+                "value": "{{riskETag}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/scenarios/{{scenarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "scenarios",
+                "{{scenarioId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Asset created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assets",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assets"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete the work unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Unit not found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            },
+            {
+              "name": "Unit deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/units/:uuid",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "units",
+                    ":uuid"
+                  ],
+                  "variable": [
+                    {
+                      "key": "uuid"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "cookie": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
     }
   ],
   "auth": {
@@ -7195,6 +8458,58 @@
     },
     {
       "key": "controlETag",
+      "value": ""
+    },
+    {
+      "key": "domainUri",
+      "value": ""
+    },
+    {
+      "key": "compositeAssetName",
+      "value": ""
+    },
+    {
+      "key": "compositeAssetId",
+      "value": ""
+    },
+    {
+      "key": "scenarioName",
+      "value": ""
+    },
+    {
+      "key": "scenarioId",
+      "value": ""
+    },
+    {
+      "key": "compositeScenarioName",
+      "value": ""
+    },
+    {
+      "key": "compositeScenarioId",
+      "value": ""
+    },
+    {
+      "key": "compositePersonName",
+      "value": ""
+    },
+    {
+      "key": "compositePersonId",
+      "value": ""
+    },
+    {
+      "key": "scopeName",
+      "value": ""
+    },
+    {
+      "key": "scopeId",
+      "value": ""
+    },
+    {
+      "key": "riskResponse",
+      "value": ""
+    },
+    {
+      "key": "riskETag",
       "value": ""
     }
   ]

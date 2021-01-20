@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,18 +40,23 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
             + "left join fetch e.domains " + "left join fetch e.subTypeAspects "
             + "left join fetch e.links " + "where e.dbId = ?1")
     @Override
-    Optional<T> findById(String id);
+    @Nonnull
+    Optional<T> findById(@Nonnull String id);
 
     /**
-     * Find all entities of the repository's type in the given units. This includes
-     * normal and group types, i.e. 'Person' as well as 'PersonGroup' instances.
+     * Find all entities of the repository's type in the given units. (This includes
+     * composites.)
      *
      * @param unitIds
      *            a list of units' UUIDs
      */
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
+    //@formatter:off
+    @Query("select e from #{#entityName} as e "
+            + "left join fetch e.customAspects "
+            + "left join fetch e.links "
+            + "left join fetch e.subTypeAspects "
             + "where e.owner.dbId IN ?1")
+    //@formatter:on
     @Transactional(readOnly = true)
     Set<T> findByUnits(Set<String> unitIds);
 

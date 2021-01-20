@@ -16,7 +16,11 @@
  ******************************************************************************/
 package org.veo.core
 
-import static com.vladmihalcea.sql.SQLStatementCountValidator.*
+import static com.vladmihalcea.sql.SQLStatementCountValidator.assertDeleteCount
+import static com.vladmihalcea.sql.SQLStatementCountValidator.assertInsertCount
+import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount
+import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount
+import static com.vladmihalcea.sql.SQLStatementCountValidator.reset
 
 import javax.transaction.Transactional
 
@@ -332,7 +336,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(16)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(5)
+        assertSelectCount(7)
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
@@ -354,10 +358,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(19)
         assertInsertCount(0)
         assertUpdateCount(0)
-        assertSelectCount(28)
+        assertSelectCount(32)
     }
-
-
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
         given:

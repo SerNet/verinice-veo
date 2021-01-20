@@ -22,10 +22,6 @@ import static org.hamcrest.Matchers.not
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import javax.transaction.Transactional
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -37,20 +33,14 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
-import org.veo.core.entity.Versioned
 import org.veo.core.usecase.common.ETag
-import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.PersonRepositoryImpl
-import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
-import groovy.transform.CompileStatic
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.

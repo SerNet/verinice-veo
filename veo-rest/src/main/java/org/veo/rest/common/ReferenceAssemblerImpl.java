@@ -16,27 +16,37 @@
  ******************************************************************************/
 package org.veo.rest.common;
 
+import static java.lang.String.format;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
+import static org.veo.rest.ControllerConstants.ANY_USER;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.AssetRisk;
+import org.veo.core.entity.CompoundKeyEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -44,6 +54,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.rest.AssetController;
+import org.veo.rest.AssetRiskResource;
 import org.veo.rest.ControlController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.PersonController;
@@ -114,6 +125,21 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
 
         return "";
+    }
+
+    @Override
+    @SuppressFBWarnings // ignore warning on call to method proxy factory
+    public String targetReferenceOf(Class<? extends CompoundKeyEntity> type, String id1,
+            String id2) {
+        if (AssetRisk.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(AssetController.class).getRisk(ANY_USER, id1,
+                                                                  id2)).withRel(AssetController.URL_BASE_PATH
+                                                                          + AssetRiskResource.RELPATH)
+                                                                       .getHref();
+        }
+        throw new NotImplementedException(
+                format("Cannot create compound-id reference to entity " + "%s.",
+                       type.getSimpleName()));
     }
 
     @Override
@@ -226,6 +252,20 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         return matcher.group("resourceId");
     }
 
+    @Override
+    public Key<UUID> toKey(ModelObjectReference<? extends ModelObject> reference) {
+        if (reference == null)
+            return null;
+        return Key.uuidFrom(parseId(reference.getTargetUri()));
+    }
+
+    @Override
+    public Set<Key<UUID>> toKeys(Set<? extends ModelObjectReference<?>> references) {
+        return references.stream()
+                         .map(this::toKey)
+                         .collect(Collectors.toSet());
+    }
+
     private Optional<String> readCollectionName(String uriString) {
         return EntityTypeNames.getKnownCollectionNames()
                               .stream()
@@ -260,9 +300,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             var uri = new URI(uriString);
             return uri.getPath();
         } catch (URISyntaxException e) {
-            log.error(String.format("Could not parse URI for element: %s", uriString), e);
+            log.error(format("Could not parse URI for element: %s", uriString), e);
             throw new IllegalArgumentException(
-                    String.format("Could not parse URI for element: %s", uriString));
+                    format("Could not parse URI for element: %s", uriString));
         }
     }
 
@@ -270,7 +310,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         try {
             return new URL(uriString).getPath();
         } catch (MalformedURLException e) {
-            log.info(String.format("Reference is not a valid URL: %s", uriString));
+            log.info(format("Reference is not a valid URL: %s", uriString));
             throw e;
         }
     }

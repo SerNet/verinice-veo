@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
-
 import org.veo.adapter.presenter.api.dto.SearchQueryDto
 
 import spock.lang.Specification

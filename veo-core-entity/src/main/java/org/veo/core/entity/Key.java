@@ -84,12 +84,9 @@ public class Key<T> {
      * @return
      */
     public static Set<Key<UUID>> uuidsFrom(Set<String> values) {
-     // @formatter:off
-        return values
-                .stream()
-                .map(v -> (Key.uuidFrom(v)))
-                .collect(Collectors.toSet()) ;
-     // @formatter:on
+        return values.stream()
+                     .map(v -> (Key.uuidFrom(v)))
+                     .collect(Collectors.toSet());
     }
 
     /**

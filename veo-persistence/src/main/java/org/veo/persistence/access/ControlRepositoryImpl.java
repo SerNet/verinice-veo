@@ -16,10 +16,19 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import static java.util.Collections.singleton;
+
+import java.util.Set;
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.ControlRepository;
+import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -30,9 +39,41 @@ import org.veo.persistence.entity.jpa.ModelObjectValidation;
 public class ControlRepositoryImpl extends
         AbstractCompositeEntityRepositoryImpl<Control, ControlData> implements ControlRepository {
 
+    private final AssetDataRepository assetDataRepository;
+
     public ControlRepositoryImpl(ControlDataRepository dataRepository,
             ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
+            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+        this.assetDataRepository = assetDataRepository;
+    }
+
+    @Override
+    public void deleteById(Key<UUID> id) {
+        delete(dataRepository.findById(id.uuidValue())
+                             .orElseThrow());
+    }
+
+    @Override
+    public void delete(Control control) {
+        removeFromRisks(singleton((ControlData) control));
+        super.deleteById(control.getId());
+    }
+
+    private void removeFromRisks(Set<ControlData> controls) {
+        // remove association to control from risks:
+        assetDataRepository.findDistinctByRisks_Mitigation_In(controls)
+                           .stream()
+                           .flatMap(assetData -> assetData.getRisks()
+                                                          .stream())
+                           .filter(risk -> controls.contains(risk.getMitigation()))
+                           .forEach(risk -> risk.mitigate(null));
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUnit(Unit owner) {
+        removeFromRisks(dataRepository.findByUnits(singleton(owner.getDbId())));
+        super.deleteByUnit(owner);
     }
 }

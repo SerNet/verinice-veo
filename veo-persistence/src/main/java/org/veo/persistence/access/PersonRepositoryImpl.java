@@ -16,10 +16,19 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import org.springframework.stereotype.Repository;
+import static java.util.Collections.singleton;
 
+import java.util.Set;
+import java.util.UUID;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.PersonRepository;
+import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -30,9 +39,41 @@ import org.veo.persistence.entity.jpa.PersonData;
 public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<Person, PersonData>
         implements PersonRepository {
 
+    private final AssetDataRepository assetDataRepository;
+
     public PersonRepositoryImpl(PersonDataRepository dataRepository,
             ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
+            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+        this.assetDataRepository = assetDataRepository;
+    }
+
+    @Override
+    public void deleteById(Key<UUID> id) {
+        delete(dataRepository.findById(id.uuidValue())
+                             .orElseThrow());
+    }
+
+    @Override
+    public void delete(Person person) {
+        removeFromRisks(singleton((PersonData) person));
+        super.deleteById(person.getId());
+    }
+
+    private void removeFromRisks(Set<PersonData> persons) {
+        // remove association to person from risks:
+        assetDataRepository.findDistinctByRisks_RiskOwner_In(persons)
+                           .stream()
+                           .flatMap(assetData -> assetData.getRisks()
+                                                          .stream())
+                           .filter(risk -> persons.contains(risk.getRiskOwner()))
+                           .forEach(risk -> risk.appoint(null));
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUnit(Unit owner) {
+        removeFromRisks(dataRepository.findByUnits(singleton(owner.getDbId())));
+        super.deleteByUnit(owner);
     }
 }

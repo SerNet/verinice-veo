@@ -24,9 +24,14 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFact
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EntitySchemaService;
+import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
+import org.veo.core.usecase.asset.DeleteAssetRiskUseCase;
+import org.veo.core.usecase.asset.GetAssetRiskUseCase;
+import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
+import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
@@ -50,9 +55,14 @@ import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
+import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.ClientRepository;
+import org.veo.core.usecase.repository.ControlRepository;
+import org.veo.core.usecase.repository.DomainRepository;
+import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.repository.ScenarioRepository;
 import org.veo.core.usecase.repository.UnitRepository;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
@@ -78,6 +88,7 @@ import org.veo.persistence.access.ScenarioRepositoryImpl;
 import org.veo.persistence.access.ScopeRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
+import org.veo.rest.security.AuthAwareImpl;
 
 /**
  * This configuration takes care of wiring classes from core modules
@@ -91,6 +102,28 @@ public class ModuleConfiguration {
     public CreateAssetUseCase createAssetUseCase(UnitRepositoryImpl unitRepository,
             AssetRepositoryImpl assetRepository) {
         return new CreateAssetUseCase(unitRepository, assetRepository);
+    }
+
+    @Bean
+    public CreateAssetRiskUseCase createAssetRiskUseCase(AssetRepository assetRepository,
+            ScenarioRepository scenarioRepository, ControlRepository controlRepository,
+            PersonRepository personRepository, DomainRepository domainRepository) {
+        return new CreateAssetRiskUseCase(assetRepository, scenarioRepository, controlRepository,
+                personRepository, domainRepository);
+    }
+
+    @Bean
+    public UpdateAssetRiskUseCase updateAssetRiskUseCase(AssetRepository assetRepository,
+            ScenarioRepository scenarioRepository, ControlRepository controlRepository,
+            PersonRepository personRepository, DomainRepository domainRepository) {
+        return new UpdateAssetRiskUseCase(assetRepository, scenarioRepository, controlRepository,
+                personRepository, domainRepository);
+
+    }
+
+    @Bean
+    public DeleteAssetRiskUseCase deleteAssetRiskUseCase(AssetRepository assetRepository) {
+        return new DeleteAssetRiskUseCase(assetRepository);
     }
 
     @Bean
@@ -325,5 +358,21 @@ public class ModuleConfiguration {
             EntitySchemaService entitySchemaService, RepositoryProvider repositoryProvider) {
         return new DtoToEntityContextFactory(subTypeTransformer, entityFactory, entitySchemaService,
                 repositoryProvider);
+    }
+
+    @Bean
+    public GetAssetRiskUseCase getAssetRiskUseCase(ScenarioRepository scenarioRepository,
+            AssetRepository assetRepository) {
+        return new GetAssetRiskUseCase(assetRepository, scenarioRepository);
+    }
+
+    @Bean
+    public GetAssetRisksUseCase getAssetRisksUseCase(AssetRepository assetRepository) {
+        return new GetAssetRisksUseCase(assetRepository);
+    }
+
+    @Bean
+    public AuthAwareImpl authAwareImpl() {
+        return new AuthAwareImpl();
     }
 }

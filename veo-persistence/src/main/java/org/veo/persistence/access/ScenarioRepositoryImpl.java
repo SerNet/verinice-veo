@@ -16,10 +16,19 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import org.springframework.stereotype.Repository;
+import static java.util.Collections.singleton;
 
+import java.util.Set;
+import java.util.UUID;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.ScenarioRepository;
+import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -31,9 +40,39 @@ public class ScenarioRepositoryImpl
         extends AbstractCompositeEntityRepositoryImpl<Scenario, ScenarioData>
         implements ScenarioRepository {
 
+    private final AssetDataRepository assetDataRepository;
+
     public ScenarioRepositoryImpl(ScenarioDataRepository dataRepository,
             ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
+            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+        this.assetDataRepository = assetDataRepository;
+    }
+
+    @Override
+    public void delete(Scenario scenario) {
+        removeRisks(singleton((ScenarioData) scenario));
+        super.deleteById(scenario.getId());
+    }
+
+    private void removeRisks(Set<ScenarioData> scenarios) {
+        // remove risks associated with these scenarios:
+        var assets = assetDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
+        assets.forEach(assetData -> scenarios.forEach(scenario -> assetData.getRisk(scenario)
+                                                                           .orElseThrow()
+                                                                           .remove()));
+    }
+
+    @Override
+    public void deleteById(Key<UUID> id) {
+        delete(dataRepository.findById(id.uuidValue())
+                             .orElseThrow());
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUnit(Unit owner) {
+        removeRisks(dataRepository.findByUnits(singleton(owner.getDbId())));
+        super.deleteByUnit(owner);
     }
 }

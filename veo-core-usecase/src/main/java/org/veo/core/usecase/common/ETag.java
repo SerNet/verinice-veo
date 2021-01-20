@@ -36,21 +36,29 @@ public final class ETag {
         // do not instantiate, use public static methods
     }
 
-    public static final String from(String id, long version) {
+    public static String from(String id, long version) {
         try {
-            String hash = createSHA256Hash(id + "_" + salt + "_" + Long.toString(version));
-            return hash;
+            return createSHA256Hash(id + "_" + salt + "_" + Long.toString(version));
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public static final boolean matches(String id, long version, String eTag) {
+    public static String from(String compoundId1, String compundId2, long version) {
+        return from(compoundId1 + "_" + compundId2, version);
+    }
+
+    public static boolean matches(String id, long version, String eTag) {
         if (id == null || eTag == null) {
             return false;
         }
         String hash = from(id, version);
         return hash.equalsIgnoreCase(eTag);
+    }
+
+    public static boolean matches(String compoundId1, String compundId2, long version,
+            String eTag) {
+        return matches(compoundId1 + "_" + compundId2, version, eTag);
     }
 
     private static String createSHA256Hash(String s) throws NoSuchAlgorithmException {

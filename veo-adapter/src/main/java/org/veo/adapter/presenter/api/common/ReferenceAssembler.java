@@ -16,6 +16,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import java.util.Set;
+import java.util.UUID;
+
+import org.veo.core.entity.CompoundKeyEntity;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 
 /**
@@ -36,6 +41,24 @@ public interface ReferenceAssembler {
      * @return the URI of the specific target object
      */
     String targetReferenceOf(Class<? extends ModelObject> type, String id);
+
+    /**
+     * Returns an absolute reference to the target object, where the target object
+     * is identified using a compound key.
+     *
+     * I.e. the URI to an object with a compound ID could look like this
+     * "/risks/<ASSET-UUID>/<SCENARIO-UUID>"
+     *
+     * @param type
+     *            the model object type
+     * @param id1
+     *            the first foreign key of the compound key
+     * @param id2
+     *            the second foreign key of the compound key
+     *
+     * @return the URI of the specific target object
+     */
+    String targetReferenceOf(Class<? extends CompoundKeyEntity> type, String id1, String id2);
 
     /**
      * Returns a reference to a collection of searches for the target type. Searches
@@ -73,8 +96,16 @@ public interface ReferenceAssembler {
      *
      * @param uri
      *            the URI which may be a URL
-     *
-     * @return
      */
     String parseId(String uri);
+
+    /**
+     * Transforms the given adapter layer reference to an entity key.
+     */
+    Key<UUID> toKey(ModelObjectReference<? extends ModelObject> reference);
+
+    /**
+     * Transforms the given adapter layer references to entity keys.
+     */
+    Set<Key<UUID>> toKeys(Set<? extends ModelObjectReference<?>> references);
 }

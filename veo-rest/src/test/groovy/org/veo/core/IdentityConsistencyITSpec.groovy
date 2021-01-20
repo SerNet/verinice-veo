@@ -34,6 +34,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.AssetData
+import org.veo.persistence.entity.jpa.AssetRiskData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomLinkData
@@ -248,6 +249,27 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         and: "two different entities are not equal"
         aspect != new CustomPropertiesData()
+    }
+
+    @Transactional
+    def "The identity of AssetRiskData is consistent over state transitions"() {
+        given:
+        def asset = newAsset(unit)
+        def scenario = newScenario(unit)
+        def domain = newDomain {name = "domain1"}
+        client.addToDomains(domain)
+        asset.addToDomains(domain)
+        clientRepository.save(client)
+        assetDataRepository.save(asset)
+        scenarioDataRepository.save(scenario)
+        entityManager.flush()
+
+        when:
+        def risk = asset.newRisk(scenario, domain)
+        testIdentityConsistency(AssetRiskData.class, risk)
+
+        then:
+        notThrown(Exception)
     }
 
     @Transactional

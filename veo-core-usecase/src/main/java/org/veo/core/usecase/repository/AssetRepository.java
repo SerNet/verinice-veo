@@ -16,7 +16,12 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
+import java.util.Set;
+
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Scenario;
 
 /**
  * A repository for <code>Asset</code> entities.
@@ -26,4 +31,19 @@ import org.veo.core.entity.Asset;
  */
 public interface AssetRepository extends EntityLayerSupertypeRepository<Asset> {
 
+    /**
+     * Retrieves assets that have risks resulting from the given scenario.
+     */
+    Set<Asset> findByRisk(Scenario cause);
+
+    /**
+     * Retrieves assets that have risks that are mitigated by the given control.
+     */
+    Set<Asset> findByRisk(Control mitigatedBy);
+
+    /**
+     * Retrieves assets that have risks for which the given person is the risk
+     * owner.
+     */
+    Set<Asset> findByRisk(Person riskOwner);
 }

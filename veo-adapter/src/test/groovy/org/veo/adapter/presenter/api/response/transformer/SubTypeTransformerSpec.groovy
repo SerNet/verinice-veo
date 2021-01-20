@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype

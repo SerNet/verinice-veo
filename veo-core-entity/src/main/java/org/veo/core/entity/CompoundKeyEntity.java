@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2021 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,22 +14,11 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access.jpa;
+package org.veo.core.entity;
 
-import java.util.Set;
-
-import org.springframework.transaction.annotation.Transactional;
-
-import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.PersonData;
-import org.veo.persistence.entity.jpa.ScenarioData;
-
-@Transactional(readOnly = true)
-public interface AssetDataRepository extends CompositeEntityDataRepository<AssetData> {
-    Set<AssetData> findDistinctByRisks_ScenarioIn(Set<ScenarioData> causes);
-
-    Set<AssetData> findDistinctByRisks_Mitigation_In(Set<ControlData> controls);
-
-    Set<AssetData> findDistinctByRisks_RiskOwner_In(Set<PersonData> persons);
+/**
+ * Marker interface for entities that use a compound key. Can be used to achieve
+ * type safety in methods that map entity IDs between layers.
+ */
+public interface CompoundKeyEntity {
 }
