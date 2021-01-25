@@ -116,6 +116,35 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         validationMessages.empty
     }
 
+    @WithUserDetails("user@domain.example")
+    def "created scope with member conforms to schema"() {
+        given: "the scope schema and a scope with one member"
+        def schema = getSchema("scope")
+        def memberAssetId = parseJson(post("/assets", [
+            name: "member",
+            owner: [
+                targetUri: "/units/"+unitId,
+            ]])).resourceId
+        def scopeId = parseJson(post("/scopes", [
+            name: "scope",
+            owner: [
+                targetUri: "/units/"+unitId,
+            ],
+            members: [
+                [
+                    targetUri: "/assets/$memberAssetId"
+                ]
+            ]
+        ])).resourceId
+        def scope = new ObjectMapper().readTree(get("/scopes/$scopeId").andReturn().response.contentAsString)
+
+        when: "validating the scope JSON"
+        def validationMessages = schema.validate(scope)
+
+        then:
+        validationMessages.empty
+    }
+
     private JsonSchema getSchema(String type) {
         def schemaString = entitySchemaService.findSchema(type, Collections.emptyList());
         return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7).getSchema(schemaString)
