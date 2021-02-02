@@ -46,7 +46,7 @@ class AssetRiskSpec extends VeoSpec {
         risk.mitigate(control)
 
         then: "the risk references all entities"
-        risk.asset == asset
+        risk.entity == asset
         risk.scenario == scenario
         risk.mitigation == control
     }
@@ -62,7 +62,7 @@ class AssetRiskSpec extends VeoSpec {
         def risk = asset.newRisk(scenario, domain1)
 
         then: "the reference to a control may be left missing"
-        risk.asset == asset
+        risk.entity == asset
         risk.scenario == scenario
     }
 
@@ -100,7 +100,7 @@ class AssetRiskSpec extends VeoSpec {
         risk.appoint(person)
 
         then: "the person is present"
-        risk.asset == asset
+        risk.entity == asset
         risk.scenario == scenario
         risk.riskOwner == person
     }
@@ -120,7 +120,7 @@ class AssetRiskSpec extends VeoSpec {
         risk.appoint(personComposite)
 
         then: "the personComposite is present"
-        risk.asset == asset
+        risk.entity == asset
         risk.scenario == scenario
         risk.riskOwner == personComposite
         risk.riskOwner.parts.first() == person
@@ -142,10 +142,10 @@ class AssetRiskSpec extends VeoSpec {
         def risk = assetComposite.newRisk(scenario, domain1)
 
         then: "the composite of assets is a valid reference"
-        risk.asset == assetComposite
-        risk.asset.name == "assetcomposite"
-        risk.asset.parts.contains(asset1)
-        risk.asset.parts.contains(asset2)
+        risk.entity == assetComposite
+        risk.entity.name == "assetcomposite"
+        risk.entity.parts.contains(asset1)
+        risk.entity.parts.contains(asset2)
     }
 
     def "The risk may apply to a composite of scenarios"() {

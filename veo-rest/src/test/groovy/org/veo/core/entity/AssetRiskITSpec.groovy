@@ -123,7 +123,7 @@ class AssetRiskITSpec extends VeoSpringSpec {
         retrievedRisk1 == risk
         retrievedRisk1.scenario == scenario1
         retrievedRisk1.domains.first() == domain1
-        retrievedRisk1.asset == asset1
+        retrievedRisk1.entity == asset1
         retrievedRisk1.scenario == scenario1
         def riskData = (AssetRiskData) retrievedRisk1
         riskData.createdAt != null
@@ -141,7 +141,7 @@ class AssetRiskITSpec extends VeoSpringSpec {
             def retrievedAsset = assetRepository.findByRisk(control1).first()
             def retrievedRisk = retrievedAsset.risks.first()
             assert retrievedRisk.mitigation == control1
-            assert retrievedRisk.asset == asset1
+            assert retrievedRisk.entity == asset1
             return retrievedRisk
         }
 
@@ -161,7 +161,7 @@ class AssetRiskITSpec extends VeoSpringSpec {
             def retrievedRisk2 = retrievedAsset.risks.first()
             assert retrievedRisk2.mitigation == control1
             assert retrievedRisk2.riskOwner == person1
-            assert retrievedRisk2.asset == asset1
+            assert retrievedRisk2.entity == asset1
             return retrievedRisk2
         }
 

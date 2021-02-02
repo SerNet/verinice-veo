@@ -16,20 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.Set;
-
-import org.springframework.transaction.annotation.Transactional;
-
 import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.PersonData;
-import org.veo.persistence.entity.jpa.ScenarioData;
 
-@Transactional(readOnly = true)
-public interface AssetDataRepository extends CompositeEntityDataRepository<AssetData> {
-    Set<AssetData> findDistinctByRisks_ScenarioIn(Set<ScenarioData> causes);
-
-    Set<AssetData> findDistinctByRisks_Mitigation_In(Set<ControlData> controls);
-
-    Set<AssetData> findDistinctByRisks_RiskOwner_In(Set<PersonData> persons);
+public interface AssetDataRepository extends RiskAffectedDataRepository<AssetData> {
 }

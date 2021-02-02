@@ -21,13 +21,13 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -37,6 +37,7 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.ModelConsistencyException;
 
@@ -49,13 +50,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@MappedSuperclass
+@Entity(name = "abstractriskdata")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public abstract class AbstractRiskData extends VersionedData implements AbstractRisk {
+public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
+        extends VersionedData implements AbstractRisk<T, R> {
 
     @Id
     @ToString.Include
@@ -84,9 +86,26 @@ public abstract class AbstractRiskData extends VersionedData implements Abstract
     @Setter(AccessLevel.PRIVATE)
     private Person riskOwner;
 
+    @NotNull
+    @NonNull
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = RiskAffectedData.class, optional = false)
+    @EqualsAndHashCode.Include
+    @Setter(AccessLevel.PRIVATE)
+    private T entity;
+
     @Override
     public boolean addToDomains(Domain aDomain) {
+        checkDomain(aDomain);
         return domains.add(aDomain);
+    }
+
+    private void checkDomain(Domain aDomain) {
+        if (!getEntity().getDomains()
+                        .contains(aDomain)) {
+            throw new ModelConsistencyException(
+                    "The provided domain '%s' is not yet known to the entity",
+                    aDomain.getDisplayName());
+        }
     }
 
     @Override
@@ -106,15 +125,15 @@ public abstract class AbstractRiskData extends VersionedData implements Abstract
     }
 
     @Override
-    public AbstractRiskData mitigate(@Nullable Control control) {
+    public R mitigate(@Nullable Control control) {
         setMitigation(control);
-        return this;
+        return (R) this;
     }
 
     @Override
-    public AbstractRiskData appoint(@Nullable Person riskOwner) {
+    public R appoint(@Nullable Person riskOwner) {
         setRiskOwner(riskOwner);
-        return this;
+        return (R) this;
     }
 
 }

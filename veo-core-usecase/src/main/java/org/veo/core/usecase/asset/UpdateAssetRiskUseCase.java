@@ -71,7 +71,7 @@ public class UpdateAssetRiskUseCase extends AssetRiskUseCase {
     }
 
     private void checkETag(AssetRisk risk, InputData input) {
-        var assetId = risk.getAsset()
+        var assetId = risk.getEntity()
                           .getId()
                           .uuidValue();
         var scenarioId = risk.getScenario()

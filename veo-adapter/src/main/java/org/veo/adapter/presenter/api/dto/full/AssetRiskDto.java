@@ -69,7 +69,7 @@ public class AssetRiskDto extends AbstractRiskDto {
 
     public static AssetRiskDto from(@Valid AssetRisk risk, ReferenceAssembler referenceAssembler) {
         return AssetRiskDto.builder()
-                           .asset(ModelObjectReference.from(risk.getAsset(), referenceAssembler))
+                           .asset(ModelObjectReference.from(risk.getEntity(), referenceAssembler))
                            .scenario(ModelObjectReference.from(risk.getScenario(),
                                                                referenceAssembler))
                            .riskOwner(ModelObjectReference.from(risk.getRiskOwner(),
@@ -88,7 +88,7 @@ public class AssetRiskDto extends AbstractRiskDto {
                                         .map(o -> ModelObjectReference.from(o, referenceAssembler))
                                         .collect(Collectors.toSet()))
                            .self(referenceAssembler.targetReferenceOf(AssetRisk.class,
-                                                                      risk.getAsset()
+                                                                      risk.getEntity()
                                                                           .getId()
                                                                           .uuidValue(),
                                                                       risk.getScenario()

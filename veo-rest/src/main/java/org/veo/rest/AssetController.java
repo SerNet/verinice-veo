@@ -351,7 +351,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
 
         return useCaseInteractor.execute(createAssetRiskUseCase, input, output -> {
             var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getAssetRisk()
-                                                                     .getAsset()
+                                                                     .getEntity()
                                                                      .getId()
                                                                      .uuidValue(),
                                     AssetRiskResource.RESOURCE_NAME);

@@ -14,17 +14,26 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.repository;
+package org.veo.persistence.access.jpa;
 
-import org.veo.core.entity.Asset;
-import org.veo.core.entity.AssetRisk;
+import java.util.Set;
 
-/**
- * A repository for <code>Asset</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface AssetRepository extends RiskAffectedRepository<Asset, AssetRisk> {
+import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.persistence.entity.jpa.ControlData;
+import org.veo.persistence.entity.jpa.PersonData;
+import org.veo.persistence.entity.jpa.RiskAffectedData;
+import org.veo.persistence.entity.jpa.ScenarioData;
+
+@Transactional(readOnly = true)
+@NoRepositoryBean
+public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
+        extends CompositeEntityDataRepository<T> {
+
+    Set<T> findDistinctByRisks_ScenarioIn(Set<ScenarioData> causes);
+
+    Set<T> findDistinctByRisks_Mitigation_In(Set<ControlData> controls);
+
+    Set<T> findDistinctByRisks_RiskOwner_In(Set<PersonData> persons);
 }

@@ -39,7 +39,8 @@ import lombok.NonNull;
  * NIST 800-30 terms this would be the information owner - not the risk
  * assessor). This is also optional.
  */
-public interface AbstractRisk extends CompoundKeyEntity, Versioned {
+public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
+        extends CompoundKeyEntity, Versioned {
 
     Set<Domain> getDomains();
 
@@ -57,7 +58,7 @@ public interface AbstractRisk extends CompoundKeyEntity, Versioned {
      * @param control
      *            the mitigating control or {@code null} for no control.
      */
-    AbstractRisk mitigate(@Nullable Control control);
+    R mitigate(@Nullable Control control);
 
     Scenario getScenario();
 
@@ -71,12 +72,17 @@ public interface AbstractRisk extends CompoundKeyEntity, Versioned {
      *            the person who should be the new risk owner for this risk or
      *            {@code null} to appoint no one.
      */
-    AbstractRisk appoint(@Nullable Person riskOwner);
+    R appoint(@Nullable Person riskOwner);
 
     /**
      * Remove this risk from its associated entity.
      *
      * @return {@code true} if the risk could be removed. {@code false} otherwise.
      */
-    boolean remove();
+    default boolean remove() {
+        return getEntity().removeRisk(this);
+    }
+
+    T getEntity();
+
 }

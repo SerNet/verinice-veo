@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2021 Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -21,34 +21,47 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
-import org.veo.core.entity.Asset;
-import org.veo.core.entity.AssetRisk;
+import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 
-@Entity(name = "asset")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Asset {
+@Data
+@Entity
+public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
+        extends EntityLayerSupertypeData implements RiskAffected<T, R> {
 
-    @ManyToMany(targetEntity = AssetData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "asset_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Getter
-    private final Set<Asset> parts = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = AbstractRiskData.class,
+               mappedBy = "entity",
+               fetch = FetchType.LAZY)
+    private final Set<R> risks = new HashSet<>();
 
     @Override
-    AssetRiskData createRisk(Scenario scenario) {
-        return new AssetRiskData(this, scenario);
+    public Set<R> getRisks() {
+        return risks;
     }
 
+    @Override
+    public R newRisk(Scenario scenario, Domain domain) {
+        scenario.checkSameClient(getOwner().getClient());
+        isDomainValid(domain);
+
+        var riskData = createRisk(scenario);
+        riskData.addToDomains(domain);
+        addRisk((R) riskData);
+        return (R) riskData;
+    }
+
+    abstract AbstractRiskData<T, R> createRisk(Scenario scenario);
 }

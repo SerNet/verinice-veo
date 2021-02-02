@@ -16,26 +16,19 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.annotation.Nullable;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.exception.ModelConsistencyException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "assetrisk")
@@ -43,49 +36,12 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AssetRiskData extends AbstractRiskData implements AssetRisk {
+public class AssetRiskData extends AbstractRiskData<Asset, AssetRisk> implements AssetRisk {
 
-    AssetRiskData(@NotNull @NonNull Asset asset, @NotNull Scenario scenario, Domain domain) {
-        super(scenario);
-        this.asset = asset;
-        addToDomains(domain);
-    }
-
-    @Override
-    public final boolean addToDomains(Domain aDomain) {
-        checkDomain(aDomain);
-        return super.addToDomains(aDomain);
-    }
-
-    private void checkDomain(Domain aDomain) {
-        if (!asset.getDomains()
-                  .contains(aDomain)) {
-            throw new ModelConsistencyException(
-                    "The provided domain '%s' is not yet known to the" + " asset.",
-                    aDomain.getDisplayName());
-        }
-    }
-
-    @NotNull
-    @NonNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = AssetData.class, optional = false)
-    @EqualsAndHashCode.Include
-    @Setter(AccessLevel.PRIVATE)
-    private Asset asset;
-
-    @Override
-    public boolean remove() {
-        return this.asset.removeRisk(this);
-    }
-
-    @Override
-    public AssetRiskData mitigate(@Nullable Control control) {
-        return (AssetRiskData) super.mitigate(control);
-    }
-
-    @Override
-    public AssetRiskData appoint(@Nullable Person riskOwner) {
-        return (AssetRiskData) super.appoint(riskOwner);
+    // see https://github.com/rzwitserloot/lombok/issues/1134
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
+    AssetRiskData(@NotNull @NonNull Asset asset, @NotNull Scenario scenario) {
+        super(scenario, asset);
     }
 
 }

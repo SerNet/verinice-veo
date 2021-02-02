@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import javax.annotation.Nullable;
-
 /**
  * Based on the definition of the term 'risk' from NIST 800-37:
  * <p>
@@ -31,13 +29,6 @@ import javax.annotation.Nullable;
  * facilitate modelling the system-of-systems / system-of-interest (SoI) for the
  * observed risk.
  */
-public interface AssetRisk extends AbstractRisk {
+public interface AssetRisk extends AbstractRisk<Asset, AssetRisk> {
 
-    Asset getAsset();
-
-    @Override
-    AssetRisk mitigate(@Nullable Control control);
-
-    @Override
-    AssetRisk appoint(@Nullable Person riskOwner);
 }
