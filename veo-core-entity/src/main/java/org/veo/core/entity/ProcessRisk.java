@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Urs Zeidler.
+ * Copyright (c) 2020 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,17 +14,20 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
-
-import org.veo.core.entity.Asset;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
-import org.veo.core.usecase.repository.AssetRepository;
+package org.veo.core.entity;
 
 /**
- * @author urszeidler
+ * Based on the definition of the term 'risk' from NIST 800-37:
+ * <p>
+ * "Risk: A measure of the extent to which an entity is threatened by a
+ * potential circumstance or event, [...]",
+ * <p>
+ * this class links an process ('entity' in the above definition) to a scenario
+ * ('circumstance or event').
+ * <p>
+ * The process may be representing a single process or a group of processes to
+ * facilitate modelling subprocesses affected by the observed risk.
  */
-public class UpdateAssetUseCase extends ModifyEntityUseCase<Asset> {
-    public UpdateAssetUseCase(AssetRepository assetRepository) {
-        super(assetRepository);
-    }
+public interface ProcessRisk extends AbstractRisk<Process, ProcessRisk> {
+
 }

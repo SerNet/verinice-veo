@@ -31,6 +31,7 @@ import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
+import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.PersonData;
@@ -40,12 +41,15 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
         implements PersonRepository {
 
     private final AssetDataRepository assetDataRepository;
+    private final ProcessDataRepository processDataRepository;
 
     public PersonRepositoryImpl(PersonDataRepository dataRepository,
             ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository) {
+            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository,
+            ProcessDataRepository processDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
         this.assetDataRepository = assetDataRepository;
+        this.processDataRepository = processDataRepository;
     }
 
     @Override
@@ -68,6 +72,13 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
                                                           .stream())
                            .filter(risk -> persons.contains(risk.getRiskOwner()))
                            .forEach(risk -> risk.appoint(null));
+
+        processDataRepository.findDistinctByRisks_RiskOwner_In(persons)
+                             .stream()
+                             .flatMap(processData -> processData.getRisks()
+                                                                .stream())
+                             .filter(risk -> persons.contains(risk.getRiskOwner()))
+                             .forEach(risk -> risk.appoint(null));
     }
 
     @Override

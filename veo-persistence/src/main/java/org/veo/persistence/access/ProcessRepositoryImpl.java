@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.ProcessRisk;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
@@ -27,8 +28,9 @@ import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ProcessData;
 
 @Repository
-public class ProcessRepositoryImpl extends
-        AbstractCompositeEntityRepositoryImpl<Process, ProcessData> implements ProcessRepository {
+public class ProcessRepositoryImpl
+        extends AbstractRiskAffectedRepository<Process, ProcessRisk, ProcessData>
+        implements ProcessRepository {
 
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository,
             ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,

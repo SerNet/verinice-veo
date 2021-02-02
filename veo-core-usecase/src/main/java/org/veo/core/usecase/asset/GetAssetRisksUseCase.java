@@ -16,51 +16,13 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.List;
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.AssetRepository;
+import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.risk.GetRisksUseCase;
 
-import lombok.Value;
-
-public class GetAssetRisksUseCase implements
-        TransactionalUseCase<GetAssetRisksUseCase.InputData, GetAssetRisksUseCase.OutputData> {
-
-    private final AssetRepository assetRepository;
-
-    public GetAssetRisksUseCase(AssetRepository assetRepository) {
-        this.assetRepository = assetRepository;
-    }
-
-    @Transactional
-    public OutputData execute(InputData input) {
-        var asset = assetRepository.findById(input.assetRef)
-                                   .orElseThrow();
-
-        asset.checkSameClient(input.authenticatedClient);
-
-        return new OutputData(List.copyOf(asset.getRisks()));
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        Key<UUID> assetRef;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        List<AssetRisk> assetRisks;
+public class GetAssetRisksUseCase extends GetRisksUseCase<Asset, AssetRisk> {
+    public GetAssetRisksUseCase(RepositoryProvider repositoryProvider) {
+        super(repositoryProvider, Asset.class);
     }
 }

@@ -30,6 +30,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.ScenarioRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
@@ -41,12 +42,15 @@ public class ScenarioRepositoryImpl
         implements ScenarioRepository {
 
     private final AssetDataRepository assetDataRepository;
+    private final ProcessDataRepository processDataRepository;
 
     public ScenarioRepositoryImpl(ScenarioDataRepository dataRepository,
             ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository) {
+            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository,
+            ProcessDataRepository processDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
         this.assetDataRepository = assetDataRepository;
+        this.processDataRepository = processDataRepository;
     }
 
     @Override
@@ -61,6 +65,11 @@ public class ScenarioRepositoryImpl
         assets.forEach(assetData -> scenarios.forEach(scenario -> assetData.getRisk(scenario)
                                                                            .orElseThrow()
                                                                            .remove()));
+
+        var processes = processDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
+        processes.forEach(processData -> scenarios.forEach(scenario -> processData.getRisk(scenario)
+                                                                                  .orElseThrow()
+                                                                                  .remove()));
     }
 
     @Override

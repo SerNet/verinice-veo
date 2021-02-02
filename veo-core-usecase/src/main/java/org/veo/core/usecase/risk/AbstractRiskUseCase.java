@@ -14,7 +14,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
+package org.veo.core.usecase.risk;
 
 import java.util.Optional;
 import java.util.Set;
@@ -23,63 +23,53 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 
-import org.veo.core.entity.AssetRisk;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.AssetRepository;
-import org.veo.core.usecase.repository.ControlRepository;
-import org.veo.core.usecase.repository.DomainRepository;
-import org.veo.core.usecase.repository.PersonRepository;
-import org.veo.core.usecase.repository.ScenarioRepository;
+import org.veo.core.usecase.repository.RepositoryProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-public abstract class AssetRiskUseCase
-        implements TransactionalUseCase<AssetRiskUseCase.InputData, AssetRiskUseCase.OutputData> {
+public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
+        implements
+        TransactionalUseCase<AbstractRiskUseCase.InputData, AbstractRiskUseCase.OutputData<R>> {
 
-    protected final AssetRepository assetRepository;
-    protected final ControlRepository controlRepository;
-    protected final PersonRepository personRepository;
-    protected final ScenarioRepository scenarioRepository;
-    protected final DomainRepository domainRepository;
+    private final RepositoryProvider repositoryProvider;
 
-    public AssetRiskUseCase(AssetRepository assetRepository, ControlRepository controlRepository,
-            PersonRepository personRepository, ScenarioRepository scenarioRepository,
-            DomainRepository domainRepository) {
-        this.assetRepository = assetRepository;
-        this.controlRepository = controlRepository;
-        this.personRepository = personRepository;
-        this.scenarioRepository = scenarioRepository;
-        this.domainRepository = domainRepository;
+    public AbstractRiskUseCase(RepositoryProvider repositoryProvider) {
+        this.repositoryProvider = repositoryProvider;
     }
 
-    protected AssetRisk applyOptionalInput(InputData input, AssetRisk risk) {
-        var updatedRisk = risk;
-
+    protected R applyOptionalInput(InputData input, R risk) {
         if (input.getControlRef()
                  .isPresent()) {
-            var control = controlRepository.findById(input.getControlRef()
-                                                          .get())
-                                           .orElseThrow();
+            var control = repositoryProvider.getRepositoryFor(Control.class)
+                                            .findById(input.getControlRef()
+                                                           .get())
+                                            .orElseThrow();
             control.checkSameClient(input.getAuthenticatedClient());
-            updatedRisk = updatedRisk.mitigate(control);
+            risk.mitigate(control);
         }
 
         if (input.getRiskOwnerRef()
                  .isPresent()) {
-            var riskOwner = personRepository.findById(input.getRiskOwnerRef()
-                                                           .get())
-                                            .orElseThrow();
+            var riskOwner = repositoryProvider.getRepositoryFor(Person.class)
+                                              .findById(input.getRiskOwnerRef()
+                                                             .get())
+                                              .orElseThrow();
             riskOwner.checkSameClient(input.getAuthenticatedClient());
-            updatedRisk = updatedRisk.appoint(riskOwner);
+            risk.appoint(riskOwner);
         }
 
-        return updatedRisk;
+        return risk;
     }
 
     protected void checkClients(Client authenticatedClient, Set<Domain> domains) {
@@ -94,7 +84,7 @@ public abstract class AssetRiskUseCase
     @AllArgsConstructor
     public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
-        Key<UUID> assetRef;
+        Key<UUID> riskAffectedRef;
         Key<UUID> scenarioRef;
         Set<Key<UUID>> domainRefs;
         @Nullable
@@ -105,10 +95,11 @@ public abstract class AssetRiskUseCase
         @Nullable
         String eTag;
 
-        public InputData(Client authenticatedClient, Key<UUID> assetRef, Key<UUID> scenarioRef,
-                Set<Key<UUID>> domainRefs, Key<UUID> controlRef, Key<UUID> riskOwnerRef) {
-            this(authenticatedClient, assetRef, scenarioRef, domainRefs, controlRef, riskOwnerRef,
-                    null);
+        public InputData(Client authenticatedClient, Key<UUID> riskAffectedRef,
+                Key<UUID> scenarioRef, Set<Key<UUID>> domainRefs, Key<UUID> controlRef,
+                Key<UUID> riskOwnerRef) {
+            this(authenticatedClient, riskAffectedRef, scenarioRef, domainRefs, controlRef,
+                    riskOwnerRef, null);
         }
 
         public Optional<Key<UUID>> getControlRef() {
@@ -122,8 +113,8 @@ public abstract class AssetRiskUseCase
 
     @Valid
     @Value
-    public static class OutputData implements UseCase.OutputData {
+    public static class OutputData<R extends AbstractRisk<?, ?>> implements UseCase.OutputData {
         @Valid
-        AssetRisk assetRisk;
+        R risk;
     }
 }

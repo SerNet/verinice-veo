@@ -16,60 +16,13 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.AssetRepository;
-import org.veo.core.usecase.repository.ScenarioRepository;
+import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.risk.GetRiskUseCase;
 
-import lombok.Value;
-
-public class GetAssetRiskUseCase implements
-        TransactionalUseCase<GetAssetRiskUseCase.InputData, GetAssetRiskUseCase.OutputData> {
-
-    private final AssetRepository assetRepository;
-
-    private final ScenarioRepository scenarioRepository;
-
-    public GetAssetRiskUseCase(AssetRepository assetRepository,
-            ScenarioRepository scenarioRepository) {
-        this.assetRepository = assetRepository;
-        this.scenarioRepository = scenarioRepository;
-    }
-
-    @Transactional
-    public OutputData execute(InputData input) {
-        var asset = assetRepository.findById(input.assetRef)
-                                   .orElseThrow();
-        var scenario = scenarioRepository.findById(input.scenarioRef)
-                                         .orElseThrow();
-
-        asset.checkSameClient(input.authenticatedClient);
-        scenario.checkSameClient(input.authenticatedClient);
-
-        return new OutputData(asset.getRisk(scenario)
-                                   .orElseThrow());
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        Key<UUID> assetRef;
-        Key<UUID> scenarioRef;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        AssetRisk assetRisk;
+public class GetAssetRiskUseCase extends GetRiskUseCase<Asset, AssetRisk> {
+    public GetAssetRiskUseCase(RepositoryProvider repositoryProvider) {
+        super(repositoryProvider, Asset.class);
     }
 }

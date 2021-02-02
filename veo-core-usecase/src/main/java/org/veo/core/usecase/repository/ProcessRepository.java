@@ -17,6 +17,7 @@
 package org.veo.core.usecase.repository;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.ProcessRisk;
 
 /**
  * A repository for <code>Process</code> entities.
@@ -24,6 +25,6 @@ import org.veo.core.entity.Process;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface ProcessRepository extends EntityLayerSupertypeRepository<Process> {
+public interface ProcessRepository extends RiskAffectedRepository<Process, ProcessRisk> {
 
 }

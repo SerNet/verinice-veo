@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Urs Zeidler.
+ * Copyright (c) 2020 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,17 +14,15 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
+package org.veo.core.usecase.process;
 
-import org.veo.core.entity.Asset;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
-import org.veo.core.usecase.repository.AssetRepository;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.ProcessRisk;
+import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.risk.UpdateRiskUseCase;
 
-/**
- * @author urszeidler
- */
-public class UpdateAssetUseCase extends ModifyEntityUseCase<Asset> {
-    public UpdateAssetUseCase(AssetRepository assetRepository) {
-        super(assetRepository);
+public class UpdateProcessRiskUseCase extends UpdateRiskUseCase<Process, ProcessRisk> {
+    public UpdateProcessRiskUseCase(RepositoryProvider repositoryProvider) {
+        super(repositoryProvider, Process.class);
     }
 }

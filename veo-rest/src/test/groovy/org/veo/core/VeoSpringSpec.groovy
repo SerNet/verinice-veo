@@ -86,13 +86,13 @@ abstract class VeoSpringSpec extends VeoSpec {
     def setup() {
         txTemplate.execute {
             [
+                processDataRepository,
                 assetDataRepository,
                 controlDataRepository,
                 documentDataRepository,
                 incidentDataRepository,
                 scenarioDataRepository,
                 personDataRepository,
-                processDataRepository,
                 scopeDataRepository
             ].each {
                 it.findAll().forEach {
@@ -102,12 +102,12 @@ abstract class VeoSpringSpec extends VeoSpec {
             [
                 scopeDataRepository,
                 assetDataRepository,
+                processDataRepository,
                 controlDataRepository,
                 documentDataRepository,
                 incidentDataRepository,
                 scenarioDataRepository,
                 personDataRepository,
-                processDataRepository,
                 unitDataRepository,
                 clientDataRepository,
                 eventStoreDataRepository,

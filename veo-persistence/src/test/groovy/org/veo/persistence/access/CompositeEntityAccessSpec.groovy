@@ -103,12 +103,12 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
         unit = unitRepository.save(newUnit(client))
 
         assetRepository = new AssetRepositoryImpl(assetDataRepository, validationMock, linkDataRepository, scopeDataRepository)
-        controlRepository = new ControlRepositoryImpl(controlDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository)
+        controlRepository = new ControlRepositoryImpl(controlDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository)
         documentRepository = new DocumentRepositoryImpl(documentDataRepository, validationMock, linkDataRepository, scopeDataRepository)
         incidentRepository = new IncidentRepositoryImpl(incidentDataRepository, validationMock, linkDataRepository, scopeDataRepository)
-        personRepository = new PersonRepositoryImpl(personDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository)
+        personRepository = new PersonRepositoryImpl(personDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository)
         processRepository = new ProcessRepositoryImpl(processDataRepository, validationMock, linkDataRepository, scopeDataRepository)
-        scenarioRepository = new ScenarioRepositoryImpl(scenarioDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository)
+        scenarioRepository = new ScenarioRepositoryImpl(scenarioDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository)
     }
 
     @Unroll

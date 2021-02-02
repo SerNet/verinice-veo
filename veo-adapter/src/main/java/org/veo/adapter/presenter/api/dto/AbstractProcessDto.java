@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Transfer object for complete Processs.
+ * Transfer object for complete Processes.
  * <p>
  * Contains all information of the Process.
  */

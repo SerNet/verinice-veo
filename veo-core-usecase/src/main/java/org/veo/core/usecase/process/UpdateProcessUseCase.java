@@ -24,7 +24,6 @@ import org.veo.core.usecase.repository.ProcessRepository;
  * Update a persisted process object.
  */
 public class UpdateProcessUseCase extends ModifyEntityUseCase<Process> {
-
     public UpdateProcessUseCase(ProcessRepository processRepository) {
         super(processRepository);
     }

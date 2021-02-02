@@ -31,6 +31,7 @@ import org.veo.core.usecase.repository.ControlRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
@@ -40,12 +41,15 @@ public class ControlRepositoryImpl extends
         AbstractCompositeEntityRepositoryImpl<Control, ControlData> implements ControlRepository {
 
     private final AssetDataRepository assetDataRepository;
+    private final ProcessDataRepository processDataRepository;
 
     public ControlRepositoryImpl(ControlDataRepository dataRepository,
             ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository) {
+            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository,
+            ProcessDataRepository processDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
         this.assetDataRepository = assetDataRepository;
+        this.processDataRepository = processDataRepository;
     }
 
     @Override
@@ -68,6 +72,13 @@ public class ControlRepositoryImpl extends
                                                           .stream())
                            .filter(risk -> controls.contains(risk.getMitigation()))
                            .forEach(risk -> risk.mitigate(null));
+
+        processDataRepository.findDistinctByRisks_Mitigation_In(controls)
+                             .stream()
+                             .flatMap(processData -> processData.getRisks()
+                                                                .stream())
+                             .filter(risk -> controls.contains(risk.getMitigation()))
+                             .forEach(risk -> risk.mitigate(null));
     }
 
     @Override

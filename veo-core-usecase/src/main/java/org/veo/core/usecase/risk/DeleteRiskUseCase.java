@@ -14,7 +14,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
+package org.veo.core.usecase.risk;
 
 import java.util.UUID;
 
@@ -23,31 +23,33 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.AssetRepository;
+import org.veo.core.usecase.repository.RepositoryProvider;
 
 import lombok.Value;
 
-public class DeleteAssetRiskUseCase
-        implements TransactionalUseCase<DeleteAssetRiskUseCase.InputData, UseCase.EmptyOutput> {
+public class DeleteRiskUseCase
+        implements TransactionalUseCase<DeleteRiskUseCase.InputData, UseCase.EmptyOutput> {
 
-    private final AssetRepository assetRepository;
+    private final RepositoryProvider repositoryProvider;
 
-    public DeleteAssetRiskUseCase(AssetRepository assetRepository) {
-        this.assetRepository = assetRepository;
+    public DeleteRiskUseCase(RepositoryProvider repositoryProvider) {
+        this.repositoryProvider = repositoryProvider;
     }
 
     @Transactional
     @Override
     public EmptyOutput execute(InputData input) {
-        var asset = assetRepository.findById(input.getAssetRef())
-                                   .orElseThrow();
+        var riskAffected = repositoryProvider.getRepositoryFor(input.entityClass)
+                                             .findById(input.getRiskAffectedRef())
+                                             .orElseThrow();
 
-        asset.checkSameClient(input.authenticatedClient);
-        asset.getRisk(input.scenarioRef)
-             .orElseThrow()
-             .remove();
+        riskAffected.checkSameClient(input.authenticatedClient);
+        riskAffected.getRisk(input.scenarioRef)
+                    .orElseThrow()
+                    .remove();
 
         return EmptyOutput.INSTANCE;
     }
@@ -55,8 +57,9 @@ public class DeleteAssetRiskUseCase
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
+        Class<? extends RiskAffected<?, ?>> entityClass;
         Client authenticatedClient;
-        Key<UUID> assetRef;
+        Key<UUID> riskAffectedRef;
         Key<UUID> scenarioRef;
     }
 }

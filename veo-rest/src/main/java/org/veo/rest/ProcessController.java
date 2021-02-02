@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -53,10 +55,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
@@ -68,10 +72,15 @@ import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
+import org.veo.core.usecase.process.GetProcessRiskUseCase;
+import org.veo.core.usecase.process.GetProcessRisksUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
+import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
+import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -94,7 +103,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ProcessController.URL_BASE_PATH)
 @Slf4j
-public class ProcessController extends AbstractEntityController {
+public class ProcessController extends AbstractEntityController implements ProcessRiskResource {
 
     public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
 
@@ -104,17 +113,34 @@ public class ProcessController extends AbstractEntityController {
     private final UpdateProcessUseCase updateProcessUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final GetProcessesUseCase getProcessesUseCase;
+    private final GetProcessRiskUseCase getProcessRiskUseCase;
+    private final CreateProcessRiskUseCase createProcessRiskUseCase;
+    private final GetProcessRisksUseCase getProcessRisksUseCase;
+    private final DeleteRiskUseCase deleteRiskUseCase;
+    private final UpdateProcessRiskUseCase updateProcessRiskUseCase;
+
+    @Autowired
+    ReferenceAssembler urlAssembler;
 
     public ProcessController(UseCaseInteractor useCaseInteractor,
             CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
             UpdateProcessUseCase putProcessUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            GetProcessesUseCase getProcessesUseCase) {
+            GetProcessesUseCase getProcessesUseCase,
+            CreateProcessRiskUseCase createProcessRiskUseCase,
+            GetProcessRiskUseCase getProcessRiskUseCase,
+            GetProcessRisksUseCase getProcessRisksUseCase, DeleteRiskUseCase deleteRiskUseCase,
+            UpdateProcessRiskUseCase updateProcessRiskUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createProcessUseCase = createProcessUseCase;
         this.getProcessUseCase = getProcessUseCase;
         this.updateProcessUseCase = putProcessUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
         this.getProcessesUseCase = getProcessesUseCase;
+        this.createProcessRiskUseCase = createProcessRiskUseCase;
+        this.getProcessRiskUseCase = getProcessRiskUseCase;
+        this.getProcessRisksUseCase = getProcessRisksUseCase;
+        this.deleteRiskUseCase = deleteRiskUseCase;
+        this.updateProcessRiskUseCase = updateProcessRiskUseCase;
     }
 
     /**
@@ -130,14 +156,9 @@ public class ProcessController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
         CompletableFuture<FullProcessDto> processFuture = useCaseInteractor.execute(getProcessUseCase,
-                                                                                    new Supplier<GetProcessUseCase.InputData>() {
-                                                                                        @Override
-                                                                                        public org.veo.core.usecase.process.GetProcessUseCase.InputData get() {
-                                                                                            return new GetProcessUseCase.InputData(
-                                                                                                    Key.uuidFrom(id),
-                                                                                                    getAuthenticatedClient(auth));
-                                                                                        }
-                                                                                    }
+                                                                                    (Supplier<GetProcessUseCase.InputData>) () -> new GetProcessUseCase.InputData(
+                                                                                            Key.uuidFrom(id),
+                                                                                            getAuthenticatedClient(auth))
 
                                                                                     ,
                                                                                     output -> entityToDtoTransformer.transformProcess2Dto(output.getProcess()));
@@ -234,7 +255,7 @@ public class ProcessController extends AbstractEntityController {
     }
 
     @GetMapping
-    @Operation(summary = "Loads all processs")
+    @Operation(summary = "Loads all processes")
     public @Valid CompletableFuture<List<FullProcessDto>> getProcesses(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid,
@@ -278,5 +299,91 @@ public class ProcessController extends AbstractEntityController {
             log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
             return null;
         }
+    }
+
+    @Override
+    public @Valid CompletableFuture<List<ProcessRiskDto>> getRisks(
+            @Parameter(hidden = true) ApplicationUser user, String processId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new GetProcessRisksUseCase.InputData(client, Key.uuidFrom(processId));
+
+        return useCaseInteractor.execute(getProcessRisksUseCase, input, output -> {
+            return output.getRisks()
+                         .stream()
+                         .map(risk -> ProcessRiskDto.from(risk, referenceAssembler))
+                         .collect(Collectors.toList());
+        });
+    }
+
+    @Override
+    public @Valid CompletableFuture<ResponseEntity<ProcessRiskDto>> getRisk(
+            @Parameter(hidden = true) ApplicationUser user, String processId, String scenarioId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new GetProcessRiskUseCase.InputData(client, Key.uuidFrom(processId),
+                Key.uuidFrom(scenarioId));
+
+        var riskFuture = useCaseInteractor.execute(getProcessRiskUseCase, input,
+                                                   output -> ProcessRiskDto.from(output.getRisk(),
+                                                                                 referenceAssembler));
+
+        return riskFuture.thenApply(riskDto -> ResponseEntity.ok()
+                                                             .eTag(ETag.from(riskDto.getProcess()
+                                                                                    .getId(),
+                                                                             riskDto.getScenario()
+                                                                                    .getId(),
+                                                                             riskDto.getVersion()))
+                                                             .body(riskDto));
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(ApplicationUser user,
+            @Valid @NotNull ProcessRiskDto dto, String processId) {
+
+        var input = new CreateProcessRiskUseCase.InputData(getClient(user.getClientId()),
+                Key.uuidFrom(processId), urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()));
+
+        return useCaseInteractor.execute(createProcessRiskUseCase, input, output -> {
+            var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
+                                                                     .getEntity()
+                                                                     .getId()
+                                                                     .uuidValue(),
+                                    ProcessRiskResource.RESOURCE_NAME);
+            var body = new ApiResponseBody(true, Optional.of(output.getRisk()
+                                                                   .getScenario()
+                                                                   .getId()
+                                                                   .uuidValue()),
+                    "Process risk created successfully.", "");
+            return RestApiResponse.created(url, body);
+        });
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(ApplicationUser user,
+            String processId, String scenarioId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new DeleteRiskUseCase.InputData(Process.class, client, Key.uuidFrom(processId),
+                Key.uuidFrom(scenarioId));
+
+        return useCaseInteractor.execute(deleteRiskUseCase, input, output -> ResponseEntity.ok()
+                                                                                           .build());
+    }
+
+    @Override
+    public @Valid CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(ApplicationUser user,
+            String processId, String scenarioId, @Valid @NotNull ProcessRiskDto dto, String eTag) {
+
+        var input = new UpdateProcessRiskUseCase.InputData(getClient(user.getClientId()),
+                Key.uuidFrom(processId), urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()), eTag);
+
+        // update risk and return saved risk with updated ETag, timestamps etc.:
+        return useCaseInteractor.execute(updateProcessRiskUseCase, input, output -> null)
+                                .thenCompose(o -> this.getRisk(user, processId, scenarioId));
     }
 }

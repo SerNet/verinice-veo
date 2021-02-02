@@ -67,7 +67,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
-import org.veo.core.usecase.asset.DeleteAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
@@ -78,8 +77,8 @@ import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -102,7 +101,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AssetController extends AbstractEntityController implements AssetRiskResource {
 
-    private final DeleteAssetRiskUseCase deleteAssetRiskUseCase;
+    private final DeleteRiskUseCase deleteRiskUseCase;
     private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
     private final GetAssetRisksUseCase getAssetRisksUseCase;
 
@@ -110,8 +109,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
             GetAssetsUseCase getAssetsUseCase, CreateAssetUseCase createAssetUseCase,
             UpdateAssetUseCase updateAssetUseCase, DeleteEntityUseCase deleteEntityUseCase,
             CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
-            DeleteAssetRiskUseCase deleteAssetRiskUseCase,
-            UpdateAssetRiskUseCase updateAssetRiskUseCase,
+            DeleteRiskUseCase deleteRiskUseCase, UpdateAssetRiskUseCase updateAssetRiskUseCase,
             GetAssetRisksUseCase getAssetRisksUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getAssetUseCase = getAssetUseCase;
@@ -121,7 +119,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
         this.deleteEntityUseCase = deleteEntityUseCase;
         this.createAssetRiskUseCase = createAssetRiskUseCase;
         this.getAssetRiskUseCase = getAssetRiskUseCase;
-        this.deleteAssetRiskUseCase = deleteAssetRiskUseCase;
+        this.deleteRiskUseCase = deleteRiskUseCase;
         this.updateAssetRiskUseCase = updateAssetRiskUseCase;
         this.getAssetRisksUseCase = getAssetRisksUseCase;
     }
@@ -245,20 +243,14 @@ public class AssetController extends AbstractEntityController implements AssetRi
             @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
         assetDto.applyResourceId(id);
         return useCaseInteractor.execute(updateAssetUseCase,
-                                         new Supplier<ModifyEntityUseCase.InputData<Asset>>() {
-
-                                             @Override
-                                             public InputData<Asset> get() {
-                                                 Client client = getClient(user);
-                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
-                                                 return new ModifyEntityUseCase.InputData<Asset>(
-                                                         dtoToEntityTransformer.transformDto2Asset(assetDto,
-                                                                                                   modelObjectReferenceResolver),
-                                                         client, eTag, user.getUsername());
-                                             }
-                                         }
-
-                                         ,
+                                         (Supplier<ModifyEntityUseCase.InputData<Asset>>) () -> {
+                                             Client client = getClient(user);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             return new ModifyEntityUseCase.InputData<>(
+                                                     dtoToEntityTransformer.transformDto2Asset(assetDto,
+                                                                                               modelObjectReferenceResolver),
+                                                     client, eTag, user.getUsername());
+                                         },
                                          output -> entityToDtoTransformer.transformAsset2Dto(output.getEntity()));
     }
 
@@ -306,7 +298,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
         var input = new GetAssetRisksUseCase.InputData(client, Key.uuidFrom(assetId));
 
         return useCaseInteractor.execute(getAssetRisksUseCase, input, output -> {
-            return output.getAssetRisks()
+            return output.getRisks()
                          .stream()
                          .map(risk -> AssetRiskDto.from(risk, referenceAssembler))
                          .collect(Collectors.toList());
@@ -321,9 +313,9 @@ public class AssetController extends AbstractEntityController implements AssetRi
         var input = new GetAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId),
                 Key.uuidFrom(scenarioId));
 
-        var riskFuture = useCaseInteractor.execute(getAssetRiskUseCase, input, output -> {
-            return AssetRiskDto.from(output.getAssetRisk(), referenceAssembler);
-        });
+        var riskFuture = useCaseInteractor.execute(getAssetRiskUseCase, input,
+                                                   output -> AssetRiskDto.from(output.getRisk(),
+                                                                               referenceAssembler));
 
         return riskFuture.thenApply(riskDto -> ResponseEntity.ok()
                                                              .eTag(ETag.from(riskDto.getAsset()
@@ -344,12 +336,12 @@ public class AssetController extends AbstractEntityController implements AssetRi
                 urlAssembler.toKey(dto.getRiskOwner()));
 
         return useCaseInteractor.execute(createAssetRiskUseCase, input, output -> {
-            var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getAssetRisk()
+            var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
                                                                      .getEntity()
                                                                      .getId()
                                                                      .uuidValue(),
                                     AssetRiskResource.RESOURCE_NAME);
-            var body = new ApiResponseBody(true, Optional.of(output.getAssetRisk()
+            var body = new ApiResponseBody(true, Optional.of(output.getRisk()
                                                                    .getScenario()
                                                                    .getId()
                                                                    .uuidValue()),
@@ -363,12 +355,11 @@ public class AssetController extends AbstractEntityController implements AssetRi
             String assetId, String scenarioId) {
 
         Client client = getClient(user.getClientId());
-        var input = new DeleteAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId),
+        var input = new DeleteRiskUseCase.InputData(Asset.class, client, Key.uuidFrom(assetId),
                 Key.uuidFrom(scenarioId));
 
-        return useCaseInteractor.execute(deleteAssetRiskUseCase, input,
-                                         output -> ResponseEntity.ok()
-                                                                 .build());
+        return useCaseInteractor.execute(deleteRiskUseCase, input, output -> ResponseEntity.ok()
+                                                                                           .build());
     }
 
     @Override

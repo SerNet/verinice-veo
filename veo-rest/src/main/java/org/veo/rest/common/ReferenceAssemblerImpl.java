@@ -52,6 +52,7 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
@@ -62,6 +63,7 @@ import org.veo.rest.DocumentController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.PersonController;
 import org.veo.rest.ProcessController;
+import org.veo.rest.ProcessRiskResource;
 import org.veo.rest.ScenarioController;
 import org.veo.rest.ScopeController;
 import org.veo.rest.UnitController;
@@ -148,6 +150,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                   id2)).withRel(AssetController.URL_BASE_PATH
                                                                           + AssetRiskResource.RELPATH)
                                                                        .getHref();
+        } else if (ProcessRisk.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(ProcessController.class).getRisk(ANY_USER, id1,
+                                                                    id2)).withRel(ProcessController.URL_BASE_PATH
+                                                                            + ProcessRiskResource.RELPATH)
+                                                                         .getHref();
         }
         throw new NotImplementedException(
                 format("Cannot create compound-id reference to entity " + "%s.",

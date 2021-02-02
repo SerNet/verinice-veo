@@ -43,7 +43,6 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
-import org.veo.core.usecase.asset.DeleteAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
@@ -68,19 +67,19 @@ import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
+import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
+import org.veo.core.usecase.process.GetProcessRiskUseCase;
+import org.veo.core.usecase.process.GetProcessRisksUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
+import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
-import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.ControlRepository;
-import org.veo.core.usecase.repository.DomainRepository;
-import org.veo.core.usecase.repository.PersonRepository;
 import org.veo.core.usecase.repository.ProcessRepository;
 import org.veo.core.usecase.repository.RepositoryProvider;
-import org.veo.core.usecase.repository.ScenarioRepository;
 import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
@@ -127,25 +126,13 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public CreateAssetRiskUseCase createAssetRiskUseCase(AssetRepository assetRepository,
-            ScenarioRepository scenarioRepository, ControlRepository controlRepository,
-            PersonRepository personRepository, DomainRepository domainRepository) {
-        return new CreateAssetRiskUseCase(assetRepository, scenarioRepository, controlRepository,
-                personRepository, domainRepository);
+    public CreateAssetRiskUseCase createAssetRiskUseCase(RepositoryProvider repositoryProvider) {
+        return new CreateAssetRiskUseCase(repositoryProvider);
     }
 
     @Bean
-    public UpdateAssetRiskUseCase updateAssetRiskUseCase(AssetRepository assetRepository,
-            ScenarioRepository scenarioRepository, ControlRepository controlRepository,
-            PersonRepository personRepository, DomainRepository domainRepository) {
-        return new UpdateAssetRiskUseCase(assetRepository, scenarioRepository, controlRepository,
-                personRepository, domainRepository);
-
-    }
-
-    @Bean
-    public DeleteAssetRiskUseCase deleteAssetRiskUseCase(AssetRepository assetRepository) {
-        return new DeleteAssetRiskUseCase(assetRepository);
+    public UpdateAssetRiskUseCase updateAssetRiskUseCase(RepositoryProvider repositoryProvider) {
+        return new UpdateAssetRiskUseCase(repositoryProvider);
     }
 
     @Bean
@@ -262,8 +249,30 @@ public class ModuleConfiguration {
     }
 
     @Bean
+    public CreateProcessRiskUseCase createProcessRiskUseCase(
+            RepositoryProvider repositoryProvider) {
+        return new CreateProcessRiskUseCase(repositoryProvider);
+    }
+
+    @Bean
     public GetProcessUseCase getProcessUseCase(ProcessRepositoryImpl processRepository) {
         return new GetProcessUseCase(processRepository);
+    }
+
+    @Bean
+    public GetProcessRiskUseCase getProcessRiskUseCase(RepositoryProvider repositoryProvider) {
+        return new GetProcessRiskUseCase(repositoryProvider);
+    }
+
+    @Bean
+    public GetProcessRisksUseCase getProcessRisksUseCase(RepositoryProvider repositoryProvider) {
+        return new GetProcessRisksUseCase(repositoryProvider);
+    }
+
+    @Bean
+    public UpdateProcessRiskUseCase updateProcessRiskUseCase(
+            RepositoryProvider repositoryProvider) {
+        return new UpdateProcessRiskUseCase(repositoryProvider);
     }
 
     @Bean
@@ -355,6 +364,11 @@ public class ModuleConfiguration {
     }
 
     @Bean
+    public DeleteRiskUseCase deleteRiskUseCase(RepositoryProvider repositoryProvider) {
+        return new DeleteRiskUseCase(repositoryProvider);
+    }
+
+    @Bean
     public EntitySchemaService getSchemaService() throws IOException {
         return new EntitySchemaServiceClassPathImpl();
     }
@@ -375,14 +389,13 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public GetAssetRiskUseCase getAssetRiskUseCase(ScenarioRepository scenarioRepository,
-            AssetRepository assetRepository) {
-        return new GetAssetRiskUseCase(assetRepository, scenarioRepository);
+    public GetAssetRiskUseCase getAssetRiskUseCase(RepositoryProvider repositoryProvider) {
+        return new GetAssetRiskUseCase(repositoryProvider);
     }
 
     @Bean
-    public GetAssetRisksUseCase getAssetRisksUseCase(AssetRepository assetRepository) {
-        return new GetAssetRisksUseCase(assetRepository);
+    public GetAssetRisksUseCase getAssetRisksUseCase(RepositoryProvider repositoryProvider) {
+        return new GetAssetRisksUseCase(repositoryProvider);
     }
 
     @Bean

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2020 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,38 +16,31 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.ToString;
 
-@Entity(name = "process")
+@Entity(name = "processrisk")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
+@Data
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> implements ProcessRisk {
 
-    @ManyToMany(targetEntity = ProcessData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "process_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Getter
-    private final Set<Process> parts = new HashSet<>();
-
-    @Override
-    ProcessRiskData createRisk(Scenario scenario) {
-        return new ProcessRiskData(this, scenario);
+    // see https://github.com/rzwitserloot/lombok/issues/1134
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
+    ProcessRiskData(@NotNull @NonNull Process process, @NotNull Scenario scenario) {
+        super(scenario, process);
     }
 }

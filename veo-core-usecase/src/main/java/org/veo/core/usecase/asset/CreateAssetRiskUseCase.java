@@ -16,46 +16,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import javax.transaction.Transactional;
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.AssetRisk;
+import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.usecase.risk.CreateRiskUseCase;
 
-import org.veo.core.usecase.repository.AssetRepository;
-import org.veo.core.usecase.repository.ControlRepository;
-import org.veo.core.usecase.repository.DomainRepository;
-import org.veo.core.usecase.repository.PersonRepository;
-import org.veo.core.usecase.repository.ScenarioRepository;
+public class CreateAssetRiskUseCase extends CreateRiskUseCase<Asset, AssetRisk> {
 
-public class CreateAssetRiskUseCase extends AssetRiskUseCase {
-
-    public CreateAssetRiskUseCase(AssetRepository assetRepository,
-            ScenarioRepository scenarioRepository, ControlRepository controlRepository,
-            PersonRepository personRepository, DomainRepository domainRepository) {
-        super(assetRepository, controlRepository, personRepository, scenarioRepository,
-                domainRepository);
+    public CreateAssetRiskUseCase(RepositoryProvider repositoryProvider) {
+        super(Asset.class, repositoryProvider);
     }
-
-    @Transactional
-    @Override
-    public OutputData execute(InputData input) {
-        // Retrieve the necessary entities for the requested operation:
-        var asset = assetRepository.findById(input.getAssetRef())
-                                   .orElseThrow();
-
-        var scenario = scenarioRepository.findById(input.getScenarioRef())
-                                         .orElseThrow();
-
-        var domains = domainRepository.getByIds(input.getDomainRefs());
-
-        // Validate security constraints:
-        asset.checkSameClient(input.getAuthenticatedClient());
-        scenario.checkSameClient(input.getAuthenticatedClient());
-        checkClients(input.getAuthenticatedClient(), domains);
-
-        // Apply requested operation:
-        var risk = asset.newRisk(scenario, domains);
-
-        risk = applyOptionalInput(input, risk);
-
-        return new OutputData(risk);
-    }
-
 }

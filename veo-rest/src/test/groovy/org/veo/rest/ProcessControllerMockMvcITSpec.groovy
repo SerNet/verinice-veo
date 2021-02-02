@@ -18,6 +18,8 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import java.time.Instant
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -25,6 +27,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.util.NestedServletException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
@@ -35,9 +38,13 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
+import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
+import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -60,7 +67,16 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     private ClientRepositoryImpl clientRepository
 
     @Autowired
+    private ControlRepositoryImpl controlRepository
+
+    @Autowired
     private ProcessRepositoryImpl processRepository
+
+    @Autowired
+    private PersonRepositoryImpl personRepository
+
+    @Autowired
+    private ScenarioRepositoryImpl scenarioRepository
 
     @Autowired
     private UnitRepositoryImpl unitRepository
@@ -101,6 +117,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             unit = newUnit(client) {
                 name = "Test unit"
             }
+
+            clientRepository.save(client)
 
             unit2 = newUnit(client) {
                 name = "Test unit2"
@@ -700,5 +718,237 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         put("/processes/$id", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "A risk can be created for a process"() {
+        given: "saved entities"
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                name = 'New process-2'
+                domains = [domain1] as Set
+            })
+        }
+        def scenario = txTemplate.execute {
+            scenarioDataRepository.save(newScenario(unit) {
+                domains = [domain1] as Set
+            })
+        }
+
+        when: "a new risk can be created successfully"
+        def result= post("/processes/"+process.id.uuidValue()+"/risks", [
+            scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
+            domains: [
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+        ] as Map)
+
+        then:
+        result.andExpect(status().isCreated())
+        def json = parseJson(result)
+        json.with {
+            resourceId != null
+            resourceId.length() == 36
+            success == true
+            message == "Process risk created successfully."
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "A risk can be retrieved for a process"() {
+        given: "a process risk"
+        def beforeCreation = Instant.now()
+        def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+
+        when: "the risk is requested"
+        def getResult = parseJson(
+                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
+                true)
+                )
+
+        then: "the correct object is returned"
+        getResult != null
+        with(getResult) {
+            it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
+            it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
+            it.scenario.targetUri ==~ /.*${postResult.resourceId}.*/
+            it.domains.first().displayName == this.domain1.displayName
+            it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            Instant.parse(it.createdAt) > beforeCreation
+            Instant.parse(it.updatedAt) > beforeCreation
+            it.createdBy == "user@domain.example"
+            it.updatedBy == "user@domain.example"
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "A list of risks can be retrieved for a process"() {
+        given: "A process with multiple risks"
+        def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+        def scenario2 = txTemplate.execute {
+            scenarioDataRepository.save(newScenario(unit) {
+                domains = [domain1] as Set
+            })
+        }
+        def scenario3 = txTemplate.execute {
+            scenarioDataRepository.save(newScenario(unit) {
+                domains = [domain1] as Set
+            })
+        }
+        post("/processes/"+process.id.uuidValue()+"/risks", [
+            scenario: [ targetUri: '/scenarios/'+ scenario2.id.uuidValue() ],
+            domains: [
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+        ] as Map)
+        post("/processes/"+process.id.uuidValue()+"/risks", [
+            scenario: [ targetUri: '/scenarios/'+ scenario3.id.uuidValue() ],
+            domains: [
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+        ] as Map)
+
+        when: "The risks are queried"
+        def getResult = parseJson(
+                get("/processes/${process.id.uuidValue()}/risks/"))
+
+        then: "The risks are retreived"
+        getResult.size == 3
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "A risk can be deleted"() {
+        given: "a process risk"
+        def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+
+        when: "the risk is deleted"
+        def result = delete("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}", true)
+
+        then: "the risk has been removed"
+        result.andExpect(status().isOk())
+        processRepository.findByRisk(scenario).isEmpty()
+
+        and: "all referenced objects are still present"
+        processRepository.findById(process.id).isPresent()
+        scenarioRepository.findById(scenario.id).isPresent()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "A risk can be updated with new information"() {
+        given: "a process risk and additional entities"
+        def beforeCreation = Instant.now()
+        def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+
+        def person = txTemplate.execute {
+            personRepository.save(newPerson(unit) {
+                name = 'New person-1'
+                domains = [domain1] as Set
+            })
+        }
+
+        def control = txTemplate.execute {
+            controlRepository.save(newControl(unit) {
+                name = 'New control-1'
+                domains = [domain1] as Set
+            })
+        }
+
+        and: "the created risk is retrieved"
+        def getResponse = get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
+                true)
+        def getResult = parseJson(getResponse)
+        String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
+
+
+        when: "The risk is updated"
+        def beforeUpdate = Instant.now()
+        def putBody = getResult + [
+            mitigation: [targetUri: '/controls/' + control.id.uuidValue()],
+            riskOwner: [targetUri: '/persons/' + person.id.uuidValue()]
+        ]
+        Map headers = [
+            'If-Match': eTag
+        ]
+
+        def putResult =
+                put("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}",
+                putBody as Map, headers, true)
+
+        and: "the risk is retrieved again"
+        def riskJson = parseJson(
+                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
+                true)
+                )
+
+        then: "the information was persisted"
+        eTag.length() > 0
+        riskJson != null
+        with(riskJson) {
+            it.mitigation.targetUri ==~ /.*${control.id.uuidValue()}.*/
+            it.riskOwner.targetUri ==~ /.*${person.id.uuidValue()}.*/
+            it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
+            it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
+            it.domains.first().displayName == this.domain1.displayName
+            it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            Instant.parse(it.createdAt) > beforeCreation
+            Instant.parse(it.createdAt) < beforeUpdate
+            Instant.parse(it.updatedAt) > beforeUpdate
+            it.createdBy == "user@domain.example"
+            it.updatedBy == "user@domain.example"
+        }
+
+        when: "the person and control are removed"
+        beforeUpdate = Instant.now()
+        delete("/persons/${person.id.uuidValue()}")
+        delete("/controls/${control.id.uuidValue()}")
+        riskJson = parseJson(
+                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
+                true)
+                )
+
+        then: "their references are removed from the risk"
+        riskJson != null
+        with(riskJson) {
+            it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
+            it.mitigation == null
+            it.riskOwner == null
+            Instant.parse(it.createdAt) > beforeCreation
+            Instant.parse(it.createdAt) < beforeUpdate
+            Instant.parse(it.updatedAt) > beforeUpdate
+            it.createdBy == "user@domain.example"
+            it.updatedBy == "user@domain.example"
+        }
+
+        when: "the scenario is removed"
+        delete("/scenarios/${scenario.id.uuidValue()}")
+
+        and: "the risk is requested"
+        get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
+                false)
+
+        then: "the risk was removed as well"
+        def e = thrown NestedServletException
+        e.getCause() instanceof NoSuchElementException
+    }
+
+    private List createRisk() {
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                domains = [domain1] as Set
+            })
+        }
+        def scenario = txTemplate.execute {
+            scenarioDataRepository.save(newScenario(unit) {
+                domains = [domain1] as Set
+            })
+        }
+        def postResult = parseJson(
+                post("/processes/" + process.id.uuidValue() + "/risks", [
+                    scenario: [targetUri: '/scenarios/' + scenario.id.uuidValue()],
+                    domains : [
+                        [targetUri: '/domains/' + domain1.id.uuidValue()]]
+                ]))
+        return [
+            process,
+            scenario,
+            postResult
+        ]
     }
 }

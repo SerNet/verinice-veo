@@ -336,7 +336,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(16)
         assertInsertCount(11)
         assertUpdateCount(0)
-        assertSelectCount(10)
+        assertSelectCount(11)
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
@@ -358,7 +358,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(19)
         assertInsertCount(4)
         assertUpdateCount(0)
-        assertSelectCount(39)
+        assertSelectCount(41)
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
