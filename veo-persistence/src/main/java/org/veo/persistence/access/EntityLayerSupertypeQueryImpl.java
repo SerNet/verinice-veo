@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
@@ -54,6 +55,14 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     public void whereUnitIn(Set<Unit> units) {
         mySpec = mySpec.and((root, query, criteriaBuilder) -> in(root.get("owner"), units,
                                                                  criteriaBuilder));
+    }
+
+    @Override
+    public void whereSubTypeIn(Set<String> values) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)
+                                           .get("subType"),
+                                       values, criteriaBuilder));
     }
 
     @Override

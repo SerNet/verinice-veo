@@ -627,6 +627,37 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
     }
 
+    @WithUserDetails("user@domain.example")
+    def "filter processes by sub type"() {
+        given: "one VT and one process without a sub type"
+
+        txTemplate.execute {
+            processRepository.save(newProcess(unit) {
+                name = 'Test process-1'
+                setSubType(domain, 'VT')
+            })
+            processRepository.save(newProcess(unit) {
+                name = 'Test process-2'
+            })
+        }
+
+        when: "the sub type param is omitted"
+        def result = parseJson(get("/processes"))
+        then: "both processes are returned"
+        result.size == 2
+
+        when: "VT processes are queried"
+        result = parseJson(get("/processes?subType=VT"))
+        then: "only the VT process is returned"
+        result.size == 1
+        result.first().name == 'Test process-1'
+
+        when: "processes without a sub type are queried"
+        result = parseJson(get("/processes?subType="))
+        then: "only the process without a sub type is returned"
+        result.size == 1
+        result.first().name == 'Test process-2'
+    }
 
     @WithUserDetails("user@domain.example")
     def "can't put a process with another process's ID"() {

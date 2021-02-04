@@ -58,6 +58,9 @@ public class SearchQueryDto {
     @Schema(description = "A substring of the displayName of an entity.")
     QueryConditionDto<String> displayName;
 
+    @Schema(description = "An entity's sub type.")
+    QueryConditionDto<String> subType;
+
     /**
      * Encodes this search query as a base64url-encoded, compressed string. This
      * representation only contains unreserved URI characters (see RFC 3986 section

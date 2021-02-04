@@ -32,4 +32,6 @@ public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
     void whereUnitIn(Set<Unit> units);
 
     List<T> execute();
+
+    void whereSubTypeIn(Set<String> values);
 }

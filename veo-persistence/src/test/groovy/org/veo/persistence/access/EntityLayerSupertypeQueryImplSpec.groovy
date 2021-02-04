@@ -105,6 +105,64 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
         result[1].name == "3rd process"
     }
 
+    def 'queries by sub type'() {
+        given:
+        def domain = domainRepository.save(newDomain {owner = client})
+
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "a"
+                setSubType(domain, "VT")
+            },
+            newProcess(unit) {
+                name = "b"
+                setSubType(domain, "VT")
+            },
+            newProcess(unit) {
+                name = "c"
+            }
+        ])
+
+        when:
+        query.whereSubTypeIn(["VT"] as Set)
+        def result = query.execute()
+        then:
+        result.size() == 2
+        with(result.sort{it.name}) {
+            it[0].name == "a"
+            it[1].name == "b"
+        }
+    }
+
+    def 'finds processes with no sub type'() {
+        given:
+        def domain = domainRepository.save(newDomain {owner = client})
+
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "a"
+                setSubType(domain, "VT")
+            },
+            newProcess(unit) {
+                name = "b"
+                setSubType(domain, null)
+            },
+            newProcess(unit) {
+                name = "c"
+            }
+        ])
+
+        when:
+        query.whereSubTypeIn([null] as Set)
+        def result = query.execute()
+        then:
+        result.size() == 2
+        with(result.sort{it.name}) {
+            it[0].name == "b"
+            it[1].name == "c"
+        }
+    }
+
     def 'queries by unit & client'() {
         given:
         def client2 = clientDataRepository.save(newClient {})

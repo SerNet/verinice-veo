@@ -44,7 +44,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.getId() >> id
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null))
+        def output = usecase.execute(new InputData(existingClient, null, null, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute() >> [process]
@@ -53,7 +53,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
     }
 
 
-    def "retrieve all processes for a unit"() {
+    def "apply query conditions"() {
         given:
         def id = Key.newUuid()
         Process process = Mock() {
@@ -63,11 +63,16 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         when:
         def output = usecase.execute(new InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        }, null))
+        },
+        null,
+        Mock(QueryCondition) {
+            getValues() >> ["subType 1", "subType 2"]
+        }))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
+        1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
         1 * query.execute() >> [process]
         output.entities*.id == [id]
     }

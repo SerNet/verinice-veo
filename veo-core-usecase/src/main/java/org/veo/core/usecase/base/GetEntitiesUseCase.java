@@ -73,6 +73,10 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
                                                                                          .stream())
                                    .collect(Collectors.toSet()));
         }
+        if (input.getSubType() != null) {
+            query.whereSubTypeIn(input.getSubType()
+                                      .getValues());
+        }
 
         var result = query.execute();
 
@@ -103,6 +107,7 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
         Client authenticatedClient;
         QueryCondition<Key<UUID>> unitUuid;
         QueryCondition<String> displayName;
+        QueryCondition<String> subType;
     }
 
     @Valid

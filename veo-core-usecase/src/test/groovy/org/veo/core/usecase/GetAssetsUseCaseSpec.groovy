@@ -44,7 +44,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null))
+        def output = usecase.execute(new InputData(existingClient, null, null, null))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute() >> [asset]
@@ -52,7 +52,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
     }
 
 
-    def "retrieve all assets for a unit"() {
+    def "apply query conditions"() {
         given:
         def id = Key.newUuid()
         Asset asset = Mock() {
@@ -60,13 +60,19 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, Mock(QueryCondition) {
-            getValues() >> [existingUnit.id]
-        }, null))
+        def output = usecase.execute(new InputData(existingClient,
+                Mock(QueryCondition) {
+                    getValues() >> [existingUnit.id]
+                },
+                null,
+                Mock(QueryCondition) {
+                    getValues() >> ["subType 1", "subType 2"]
+                }))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
+        1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
         1 * query.execute() >> [asset]
         output.entities*.id == [id]
     }

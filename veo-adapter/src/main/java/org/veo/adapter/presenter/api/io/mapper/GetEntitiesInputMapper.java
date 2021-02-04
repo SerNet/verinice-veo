@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.io.mapper;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,14 +32,15 @@ import org.veo.core.usecase.base.QueryCondition;
 public class GetEntitiesInputMapper {
 
     public static GetEntitiesUseCase.InputData map(Client client, String unitUuid,
-            String displayName) {
+            String displayName, String subType) {
         return new GetEntitiesUseCase.InputData(client, createUuidCondition(unitUuid),
-                createStringFilter(displayName));
+                createStringFilter(displayName), createNonEmptyCondition(subType));
     }
 
     public static GetEntitiesUseCase.InputData map(Client client, SearchQueryDto searchQuery) {
         return new GetEntitiesUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
-                transformCondition(searchQuery.getDisplayName()));
+                transformCondition(searchQuery.getDisplayName()),
+                transformCondition(searchQuery.getSubType()));
     }
 
     private static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
@@ -55,6 +57,17 @@ public class GetEntitiesInputMapper {
             return new QueryCondition<>(filterDto.values);
         }
         return null;
+    }
+
+    private static QueryCondition<String> createNonEmptyCondition(String value) {
+        if (value == null) {
+            return null;
+        }
+        // Empty string -> match against null.
+        if (value.equals("")) {
+            return new QueryCondition<>(Collections.singleton(null));
+        }
+        return new QueryCondition<>(Set.of(value));
     }
 
     private static QueryCondition<String> createStringFilter(String value) {

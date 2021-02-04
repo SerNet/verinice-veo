@@ -20,6 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
@@ -127,7 +128,8 @@ public class IncidentController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
             @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
-                                         required = false) String displayName) {
+                                         required = false) String displayName,
+            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);
@@ -135,7 +137,7 @@ public class IncidentController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        return getIncidents(GetEntitiesInputMapper.map(client, unitUuid, displayName));
+        return getIncidents(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType));
     }
 
     private CompletableFuture<List<FullIncidentDto>> getIncidents(

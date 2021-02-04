@@ -80,11 +80,11 @@ class ReferenceAssemblerImplSpec extends Specification {
         referenceAssembler.resourcesReferenceOf(type) == reference
         where:
         type     | reference
-        Asset    | '/assets{?unit,displayName}'
-        Control  | '/controls{?unit,displayName}'
-        Scenario | '/scenarios{?unit,displayName}'
-        Incident | '/incidents{?unit,displayName}'
-        Scope    | '/scopes{?unit,displayName}'
+        Asset    | '/assets{?unit,displayName,subType}'
+        Control  | '/controls{?unit,displayName,subType}'
+        Scenario | '/scenarios{?unit,displayName,subType}'
+        Incident | '/incidents{?unit,displayName,subType}'
+        Scope    | '/scopes{?unit,displayName,subType}'
     }
 
     @Unroll

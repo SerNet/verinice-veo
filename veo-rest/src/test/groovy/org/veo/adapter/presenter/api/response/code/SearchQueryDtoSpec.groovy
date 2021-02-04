@@ -22,6 +22,7 @@ import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto
 import spock.lang.Specification
 
 class SearchQueryDtoSpec extends Specification {
+    def LEGACY_SEARCH_ID = "q1Yqzcss8UxRsqpWKkvMKU0tVrKKVjI0tDBMTjM01U1JsTTSNTY2N9NNMjI20k1LMUsysLBMM0kytVSKrdVRSsksLshJrPRLzE1VssorzcmpBQA="
 
     def unitUuid = UUID.nameUUIDFromBytes("testing testing 1,2,3".bytes).toString()
 
@@ -62,5 +63,13 @@ class SearchQueryDtoSpec extends Specification {
         // Note: '=' will be percent-encoded in a URL but is unproblematic and therefore used
         // by base64url as padding character, see RFC 4648 sec. 5.
         searchId ==~ /^[a-zA-Z0-9\-._~=]*$/
+    }
+
+    def "legacy search query DTO can still be decoded"() {
+        when:
+        def decoded = SearchQueryDto.decodeFromSearchId(LEGACY_SEARCH_ID)
+        then:
+        decoded != null
+        decoded.unitId.values == [unitUuid] as Set
     }
 }
