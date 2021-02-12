@@ -32,7 +32,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
     UpdateScopeUseCase usecase = new UpdateScopeUseCase(scopeRepository)
     @Unroll
-    def "update a scope scope"() {
+    def "update a scope"() {
         given:
         def repository = Mock(ScopeRepository)
         def scopeId = Key.newUuid()
