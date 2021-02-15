@@ -350,6 +350,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             "http://localhost/assets/${sourceAsset.id.uuidValue()}"
         ]
         result.links.mypreciouslink.applicableTo[0] == ['Asset']
+
+        when: "all assets are queried"
+        def allAssets = parseJson(get("/assets"))
+        then: "the asset with the link is retrieved"
+        allAssets.sort{it.name}.first() == result
     }
 
     @WithUserDetails("user@domain.example")

@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -229,7 +230,10 @@ public final class EntityToDtoTransformer {
     public static CustomLinkDto transformCustomLink2Dto(ReferenceAssembler referenceAssembler,
             CustomLink source) {
         var target = new CustomLinkDto();
-        target.setApplicableTo(source.getApplicableTo());
+        // Copying the set triggers lazy loading right here while the transaction is
+        // still open, avoiding a LazyInit exception during serialization.
+        // TODO VEO-448 Join fetch applicableTo.
+        target.setApplicableTo(new HashSet<>(source.getApplicableTo()));
         mapNameableProperties(source, target);
 
         target.setAttributes(source.getAllProperties());
@@ -271,7 +275,10 @@ public final class EntityToDtoTransformer {
     // CustomPropertiesDto
     public static CustomPropertiesDto transformCustomProperties2Dto(CustomProperties source) {
         var target = new CustomPropertiesDto();
-        target.setApplicableTo(source.getApplicableTo());
+        // Copying the set triggers lazy loading right here while the transaction is
+        // still open, avoiding a LazyInit exception during serialization.
+        // TODO VEO-448 Join fetch applicableTo.
+        target.setApplicableTo(new HashSet<>(source.getApplicableTo()));
 
         target.setAttributes(source.getAllProperties());
         return target;
