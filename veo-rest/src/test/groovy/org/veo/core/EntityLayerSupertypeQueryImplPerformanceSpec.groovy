@@ -112,7 +112,7 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
         }
 
         // TODO: VEO-448 Reduce query selects to 2 by joining all that is EAGER now.
-        // assertSelectCount(setupSelectCount + 2)
+        // assertSelectCount(2)
         assertSelectCount(2 + testProcessCount)
     }
 }
