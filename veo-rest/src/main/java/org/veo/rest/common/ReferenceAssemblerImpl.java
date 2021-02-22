@@ -43,6 +43,7 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CompoundKeyEntity;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
@@ -56,6 +57,7 @@ import org.veo.core.entity.Unit;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetRiskResource;
 import org.veo.rest.ControlController;
+import org.veo.rest.DocumentController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.PersonController;
 import org.veo.rest.ProcessController;
@@ -86,6 +88,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             return linkTo(methodOn(AssetController.class).getAsset(ANY_AUTH,
                                                                    id)).withRel(AssetController.URL_BASE_PATH)
                                                                        .getHref();
+        }
+        if (Document.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(DocumentController.class).getDocument(ANY_AUTH,
+                                                                         id)).withRel(DocumentController.URL_BASE_PATH)
+                                                                             .getHref();
         }
         if (Unit.class.isAssignableFrom(type)) {
             return linkTo(methodOn(UnitController.class).getUnit(ANY_AUTH,
