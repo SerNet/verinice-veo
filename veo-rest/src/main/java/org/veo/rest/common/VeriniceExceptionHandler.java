@@ -23,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
@@ -31,8 +30,11 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.rest.DeviatingIdException;
 
+import lombok.extern.slf4j.Slf4j;
+
 @ControllerAdvice
-public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
+@Slf4j
+public class VeriniceExceptionHandler {
 
     @ExceptionHandler({ DomainException.class })
     protected ResponseEntity<ApiResponseBody> handle(DomainException exception) {
@@ -65,6 +67,7 @@ public class VeriniceExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {
+        log.error(exception.getMessage(), exception);
         return new ResponseEntity<>(
                 new ApiResponseBody(false, Optional.empty(), exception.getMessage()), status);
     }
