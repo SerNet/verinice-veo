@@ -65,6 +65,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
@@ -77,7 +78,6 @@ import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -99,7 +99,7 @@ public class PersonController extends AbstractEntityController {
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.PERSONS;
 
-    private final UseCaseInteractorImpl useCaseInteractor;
+    private final UseCaseInteractor useCaseInteractor;
     private final CreatePersonUseCase createPersonUseCase;
     private final GetPersonUseCase getPersonUseCase;
     private final GetPersonsUseCase getPersonsUseCase;
@@ -107,7 +107,7 @@ public class PersonController extends AbstractEntityController {
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
-    public PersonController(UseCaseInteractorImpl useCaseInteractor,
+    public PersonController(UseCaseInteractor useCaseInteractor,
             CreatePersonUseCase createPersonUseCase, GetPersonUseCase getPersonUseCase,
             GetPersonsUseCase getPersonsUseCase, UpdatePersonUseCase updatePersonUseCase,
             DeleteEntityUseCase deleteEntityUseCase,

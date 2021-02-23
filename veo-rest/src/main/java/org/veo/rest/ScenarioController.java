@@ -65,6 +65,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
@@ -77,7 +78,6 @@ import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -98,7 +98,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ScenarioController extends AbstractEntityController {
 
-    public ScenarioController(UseCaseInteractorImpl useCaseInteractor,
+    public ScenarioController(UseCaseInteractor useCaseInteractor,
             GetScenarioUseCase getScenarioUseCase, GetScenariosUseCase getScenariosUseCase,
             CreateScenarioUseCase createScenarioUseCase,
             UpdateScenarioUseCase updateScenarioUseCase, DeleteEntityUseCase deleteEntityUseCase,
@@ -114,7 +114,7 @@ public class ScenarioController extends AbstractEntityController {
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.SCENARIOS;
 
-    private final UseCaseInteractorImpl useCaseInteractor;
+    private final UseCaseInteractor useCaseInteractor;
     private final CreateScenarioUseCase createScenarioUseCase;
     private final UpdateScenarioUseCase updateScenarioUseCase;
     private final GetScenarioUseCase getScenarioUseCase;

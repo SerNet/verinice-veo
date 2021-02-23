@@ -10,6 +10,10 @@ veo:
     # salt:
   logging:
     properties: 'spring.datasource.url,spring.jpa.database-platform'
+  threads:
+    corePoolSize: 2
+    maxPoolSize: 4
+    queueCapacity: 500
 
 spring:
   data:

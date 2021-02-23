@@ -16,11 +16,12 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.util.concurrent.Executor;
+import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -28,11 +29,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import org.veo.SpringPropertyLogger;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -88,6 +92,7 @@ public class RestApplication {
 
     public static final String SECURITY_SCHEME_OAUTH = "OAuth2";
     private static final Logger logger = LoggerFactory.getLogger("veo-rest application properties");
+    public static final String THREAD_NAME_PREFIX = "Verinice.VEO-Worker-";
 
     @Autowired
     private ApplicationContext appContext;
@@ -97,14 +102,23 @@ public class RestApplication {
     }
 
     @Bean
-    public Executor taskExecutor() {
+    public TaskExecutor threadPoolTaskExecutor(
+            @Value("${veo.threads.corePoolSize:2}") int corePoolSize,
+            @Value("${veo.threads.maxPoolSize:4}") int maxPoolSize,
+            @Value("${veo.threads.queueCapacity:500}") int queueCapacity) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(4);
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("Verinice.VEO-Worker-");
+        executor.setCorePoolSize(corePoolSize);
+        executor.setMaxPoolSize(maxPoolSize);
+        executor.setQueueCapacity(queueCapacity);
+        executor.setThreadNamePrefix(THREAD_NAME_PREFIX);
         executor.initialize();
-        return executor;
+        return new DelegatingSecurityContextAsyncTaskExecutor(executor) {
+            @PreDestroy
+            @SuppressFBWarnings // suppress warning on bean destroy method
+            public void shutdown() {
+                executor.destroy();
+            }
+        };
     }
 
     @EventListener(ApplicationReadyEvent.class)

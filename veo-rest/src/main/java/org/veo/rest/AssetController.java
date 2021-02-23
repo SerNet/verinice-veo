@@ -69,6 +69,7 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.DeleteAssetRiskUseCase;
@@ -87,7 +88,6 @@ import org.veo.core.usecase.common.ETag;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -114,7 +114,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
     ReferenceAssembler urlAssembler;
     private final GetAssetRisksUseCase getAssetRisksUseCase;
 
-    public AssetController(UseCaseInteractorImpl useCaseInteractor, GetAssetUseCase getAssetUseCase,
+    public AssetController(UseCaseInteractor useCaseInteractor, GetAssetUseCase getAssetUseCase,
             GetAssetsUseCase getAssetsUseCase, CreateAssetUseCase createAssetUseCase,
             UpdateAssetUseCase updateAssetUseCase, DeleteEntityUseCase deleteEntityUseCase,
             DtoToEntityContextFactory dtoToEntityContextFactory,
@@ -138,7 +138,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.ASSETS;
 
-    private final UseCaseInteractorImpl useCaseInteractor;
+    private final UseCaseInteractor useCaseInteractor;
     private final CreateAssetUseCase createAssetUseCase;
     private final UpdateAssetUseCase updateAssetUseCase;
     private final GetAssetUseCase getAssetUseCase;

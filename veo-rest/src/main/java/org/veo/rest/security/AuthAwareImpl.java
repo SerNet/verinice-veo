@@ -24,14 +24,20 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class AuthAwareImpl implements AuditorAware<String> {
 
     @Override
     public @Nonnull Optional<String> getCurrentAuditor() {
-        return Optional.ofNullable(SecurityContextHolder.getContext()
-                                                        .getAuthentication())
-                       .map(Authentication::getPrincipal)
-                       .map(ApplicationUser::authenticatedUser)
-                       .map(ApplicationUser::getUsername);
+        var currentUser = Optional.ofNullable(SecurityContextHolder.getContext()
+                                                                   .getAuthentication())
+                                  .map(Authentication::getPrincipal)
+                                  .map(ApplicationUser::authenticatedUser)
+                                  .map(ApplicationUser::getUsername);
+        log.debug("Current auditor determined from SecurityContext as {}",
+                  currentUser.orElse("-MISSING-"));
+        return currentUser;
     }
 }

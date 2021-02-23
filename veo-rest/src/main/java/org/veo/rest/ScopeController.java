@@ -65,6 +65,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
@@ -77,7 +78,6 @@ import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -102,7 +102,7 @@ public class ScopeController extends AbstractEntityController {
 
     protected static final String TYPE_PARAM = "type";
 
-    private final UseCaseInteractorImpl useCaseInteractor;
+    private final UseCaseInteractor useCaseInteractor;
 
     private final CreateScopeUseCase createScopeUseCase;
     private final GetScopeUseCase getScopeUseCase;
@@ -111,7 +111,7 @@ public class ScopeController extends AbstractEntityController {
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
-    public ScopeController(UseCaseInteractorImpl useCaseInteractor,
+    public ScopeController(UseCaseInteractor useCaseInteractor,
             CreateScopeUseCase createScopeUseCase, GetScopeUseCase getScopeUseCase,
             GetScopesUseCase getScopesUseCase, UpdateScopeUseCase updateScopeUseCase,
             DeleteEntityUseCase deleteEntityUseCase,

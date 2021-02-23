@@ -65,6 +65,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
@@ -77,7 +78,6 @@ import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -101,7 +101,7 @@ public class ProcessController extends AbstractEntityController {
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.PROCESSES;
 
-    private final UseCaseInteractorImpl useCaseInteractor;
+    private final UseCaseInteractor useCaseInteractor;
     private final CreateProcessUseCase createProcessUseCase;
     private final GetProcessUseCase getProcessUseCase;
     private final UpdateProcessUseCase updateProcessUseCase;
@@ -109,7 +109,7 @@ public class ProcessController extends AbstractEntityController {
     private final GetProcessesUseCase getProcessesUseCase;
     private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
-    public ProcessController(UseCaseInteractorImpl useCaseInteractor,
+    public ProcessController(UseCaseInteractor useCaseInteractor,
             CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
             UpdateProcessUseCase putProcessUseCase, DeleteEntityUseCase deleteEntityUseCase,
             GetProcessesUseCase getProcessesUseCase,

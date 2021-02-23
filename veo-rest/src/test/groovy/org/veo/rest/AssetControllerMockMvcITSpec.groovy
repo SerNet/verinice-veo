@@ -796,7 +796,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the correct object is returned"
         getResult != null
-        getResult.with {
+        with(getResult) {
             it.asset.targetUri ==~ /.*${asset.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${postResult.resourceId}.*/
@@ -804,6 +804,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             it._self ==~ /.*assets\/${asset.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.updatedAt) > beforeCreation
+            it.createdBy == "user@domain.example"
+            it.updatedBy == "user@domain.example"
         }
     }
 
@@ -917,6 +919,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.createdAt) < beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
+            it.createdBy == "user@domain.example"
+            it.updatedBy == "user@domain.example"
         }
 
         when: "the person and control are removed"
@@ -937,6 +941,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.createdAt) < beforeUpdate
             Instant.parse(it.updatedAt) > beforeUpdate
+            it.createdBy == "user@domain.example"
+            it.updatedBy == "user@domain.example"
         }
 
         when: "the scenario is removed"

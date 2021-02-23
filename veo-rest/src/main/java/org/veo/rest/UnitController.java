@@ -62,6 +62,7 @@ import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -72,7 +73,6 @@ import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -103,7 +103,7 @@ public class UnitController extends AbstractEntityController {
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.UNITS;
 
-    private final UseCaseInteractorImpl useCaseInteractor;
+    private final UseCaseInteractor useCaseInteractor;
     private final CreateUnitUseCase createUnitUseCase;
     private final GetUnitUseCase getUnitUseCase;
     private final UpdateUnitUseCase putUnitUseCase;

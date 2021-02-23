@@ -65,6 +65,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
@@ -77,7 +78,6 @@ import org.veo.core.usecase.incident.UpdateIncidentUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.interactor.UseCaseInteractorImpl;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -98,7 +98,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IncidentController extends AbstractEntityController {
 
-    public IncidentController(UseCaseInteractorImpl useCaseInteractor,
+    public IncidentController(UseCaseInteractor useCaseInteractor,
             GetIncidentUseCase getIncidentUseCase, GetIncidentsUseCase getIncidentsUseCase,
             CreateIncidentUseCase createIncidentUseCase,
             UpdateIncidentUseCase updateIncidentUseCase, DeleteEntityUseCase deleteEntityUseCase,
@@ -114,7 +114,7 @@ public class IncidentController extends AbstractEntityController {
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.INCIDENTS;
 
-    private final UseCaseInteractorImpl useCaseInteractor;
+    private final UseCaseInteractor useCaseInteractor;
     private final CreateIncidentUseCase createIncidentUseCase;
     private final UpdateIncidentUseCase updateIncidentUseCase;
     private final GetIncidentUseCase getIncidentUseCase;
