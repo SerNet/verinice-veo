@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import javax.annotation.PreDestroy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +34,6 @@ import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecu
 
 import org.veo.SpringPropertyLogger;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -112,13 +109,13 @@ public class RestApplication {
         executor.setQueueCapacity(queueCapacity);
         executor.setThreadNamePrefix(THREAD_NAME_PREFIX);
         executor.initialize();
-        return new DelegatingSecurityContextAsyncTaskExecutor(executor) {
-            @PreDestroy
-            @SuppressFBWarnings // suppress warning on bean destroy method
-            public void shutdown() {
-                executor.destroy();
-            }
-        };
+        return executor;
+    }
+
+    @Bean
+    public DelegatingSecurityContextAsyncTaskExecutor taskExecutor(
+            ThreadPoolTaskExecutor delegate) {
+        return new DelegatingSecurityContextAsyncTaskExecutor(delegate);
     }
 
     @EventListener(ApplicationReadyEvent.class)
