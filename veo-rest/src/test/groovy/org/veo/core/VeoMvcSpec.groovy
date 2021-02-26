@@ -122,6 +122,14 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     def parseJson(ResultActions resultActions) {
-        new JsonSlurper().parseText(resultActions.andReturn().response.contentAsString)
+        parseJson(resultActions.andReturn().response.contentAsString)
+    }
+
+    def parseJson(String json) {
+        new JsonSlurper().parseText(json)
+    }
+
+    String getETag(ResultActions resultActions) {
+        return getTextBetweenQuotes(resultActions.andReturn().response.getHeader("ETag"))
     }
 }

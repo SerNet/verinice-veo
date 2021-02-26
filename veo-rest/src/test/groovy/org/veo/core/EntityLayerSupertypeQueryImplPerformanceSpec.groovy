@@ -68,7 +68,7 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
     def setup() {
         client = clientRepository.save(newClient {})
         unit = unitRepository.save(newUnit(client))
-        domain = domainRepository.save(newDomain {owner = client})
+        domain = domainRepository.save(newDomain {owner = this.client})
     }
 
     def "query efficiently fetches results"() {
@@ -83,11 +83,13 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
                 domains = [domain] as Set
                 customAspects = [
                     new CustomPropertiesData().tap {
+                        it.applicableTo = []
                         it.type = "my_custom_aspect"
                         it.setProperty("foo", "bar")
                     }] as Set
                 links = [
                     new CustomLinkData().tap {
+                        it.applicableTo = []
                         it.name = "no_name"
                         it.type = "my_little_link"
                         it.target = asset

@@ -178,7 +178,7 @@ class AssetRiskITSpec extends VeoSpringSpec {
             version(USERNAME, null)
         })
         def domain = domainRepository.save(newDomain{
-            owner = client
+            owner = this.client
             version(USERNAME, null)
         })
 

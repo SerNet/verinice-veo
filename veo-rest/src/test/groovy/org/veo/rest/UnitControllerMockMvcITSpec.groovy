@@ -80,7 +80,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             id = clientId
         })
         domain = domainRepository.save(newDomain {
-            owner = client
+            owner = this.client
             description = "ISO/IEC"
             abbreviation = "ISO"
             name = "27001"

@@ -40,7 +40,7 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * should exclusively be used to model ownership and high-level access
  * restrictions.
  */
-public interface Unit extends ModelObject {
+public interface Unit extends ModelObject, ClientOwned {
 
     Client getClient();
 

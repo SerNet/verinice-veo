@@ -16,23 +16,28 @@
  ******************************************************************************/
 package org.veo.persistence;
 
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Customize JPA test environment.
+ * Provides current user or a fallback value.
  */
-@TestConfiguration
-public class JpaTestConfig {
+@Component
+@Slf4j
+public class LenientCurrentUserProviderImpl implements CurrentUserProvider {
 
-    @Bean
-    public DummyAuthAwareImpl authAwareImpl() {
-        return new DummyAuthAwareImpl();
+    private final AuditorAware<String> auditorAware;
+
+    public LenientCurrentUserProviderImpl(AuditorAware<String> auditorAware) {
+        this.auditorAware = auditorAware;
     }
 
-    @Bean
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
+    @Override
+    public String getUsername() {
+        return auditorAware.getCurrentAuditor()
+                           .orElse("MISSING - You're bypassing the controller and "
+                                   + "accessing repositories directly, aren't you?");
     }
 }

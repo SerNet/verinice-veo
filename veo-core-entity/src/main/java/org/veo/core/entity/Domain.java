@@ -20,7 +20,7 @@ package org.veo.core.entity;
  * The domain should be referenced by the domain objects if applicable. It
  * defines a standard, a best practice or a company-specific context.
  */
-public interface Domain extends ModelObject {
+public interface Domain extends ModelObject, ClientOwned {
 
     Boolean isActive();
 
@@ -39,6 +39,10 @@ public interface Domain extends ModelObject {
     void setOwner(Client owner);
 
     Client getOwner();
+
+    default Client getClient() {
+        return getOwner();
+    }
 
     default <T extends EntityLayerSupertype> void validateSubType(
             Class<? extends ModelObject> entityType, String subType)

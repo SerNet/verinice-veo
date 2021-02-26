@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,6 +33,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import org.veo.persistence.CurrentUserProvider;
+import org.veo.persistence.LenientCurrentUserProviderImpl;
 
 /**
  * This class bundles custom API security configurations.
@@ -106,5 +111,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
 
         return new CustomUserDetailsManager(List.of(basicUser, adminUser));
+    }
+
+    @Bean
+    @Primary
+    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
+        return new LenientCurrentUserProviderImpl(auditorAware);
     }
 }

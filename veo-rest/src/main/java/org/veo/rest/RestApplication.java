@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
@@ -84,7 +85,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
                                                    url = "https://www.gnu.org/licenses/lgpl-3.0.de.html"),
                                 contact = @Contact(url = "http://verinice.com",
                                                    email = "verinice@sernet.de")))
-
+@EnableScheduling
 public class RestApplication {
 
     public static final String SECURITY_SCHEME_OAUTH = "OAuth2";

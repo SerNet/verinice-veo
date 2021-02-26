@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Alexander Koderman.
+ * Copyright (c) 2021 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,23 +16,6 @@
  ******************************************************************************/
 package org.veo.persistence;
 
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.AuditorAware;
-
-/**
- * Customize JPA test environment.
- */
-@TestConfiguration
-public class JpaTestConfig {
-
-    @Bean
-    public DummyAuthAwareImpl authAwareImpl() {
-        return new DummyAuthAwareImpl();
-    }
-
-    @Bean
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
-    }
+public interface CurrentUserProvider {
+    String getUsername();
 }

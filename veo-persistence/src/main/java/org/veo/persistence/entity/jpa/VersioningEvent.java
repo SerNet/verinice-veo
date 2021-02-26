@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Alexander Koderman.
+ * Copyright (c) 2021 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,25 +14,31 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence;
+package org.veo.persistence.entity.jpa;
 
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.AuditorAware;
+import org.veo.core.entity.ModelObject;
+
+import lombok.Getter;
 
 /**
- * Customize JPA test environment.
+ * This event should be triggered by the persistence layer when a
+ * {@link ModelObject} is being persisted, updated or removed.
  */
-@TestConfiguration
-public class JpaTestConfig {
+public class VersioningEvent {
+    @Getter
+    private final ModelObject entity;
+    @Getter
+    private final Type type;
+    @Getter
+    private final String author;
 
-    @Bean
-    public DummyAuthAwareImpl authAwareImpl() {
-        return new DummyAuthAwareImpl();
+    public VersioningEvent(ModelObject entity, Type type, String author) {
+        this.entity = entity;
+        this.type = type;
+        this.author = author;
     }
 
-    @Bean
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
+    public enum Type {
+        PERSIST, UPDATE, REMOVE
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Alexander Koderman.
+ * Copyright (c) 2021 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,25 +14,27 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence;
+package org.veo.persistence.access;
 
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.AuditorAware;
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
 
-/**
- * Customize JPA test environment.
- */
-@TestConfiguration
-public class JpaTestConfig {
+import org.veo.core.entity.StoredEvent;
 
-    @Bean
-    public DummyAuthAwareImpl authAwareImpl() {
-        return new DummyAuthAwareImpl();
-    }
+public interface StoredEventRepository {
+    StoredEvent save(StoredEvent event);
 
-    @Bean
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
-    }
+    Set<StoredEvent> findAll();
+
+    void remove(StoredEvent event);
+
+    /**
+     * Retrieves unprocessed stored events, oldest first.
+     *
+     * @param maxLockTime
+     *            Locked events are only included if they've been locked before this
+     *            point in time.
+     */
+    List<StoredEvent> findPendingEvents(Instant maxLockTime);
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Alexander Koderman.
+ * Copyright (c) 2021 Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,25 +14,21 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence;
+package org.veo.persistence.access.jpa;
 
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.AuditorAware;
+import java.time.Instant;
+import java.util.List;
 
-/**
- * Customize JPA test environment.
- */
-@TestConfiguration
-public class JpaTestConfig {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
-    @Bean
-    public DummyAuthAwareImpl authAwareImpl() {
-        return new DummyAuthAwareImpl();
-    }
+import org.veo.core.entity.StoredEvent;
+import org.veo.persistence.entity.jpa.StoredEventData;
 
-    @Bean
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
-    }
+@Transactional(readOnly = true)
+public interface StoredEventDataRepository extends JpaRepository<StoredEventData, Long> {
+    @Query("select e from #{#entityName} as e "
+            + "where e.processed = false and (e.lockTime is null or e.lockTime < ?1) order by e.id")
+    List<StoredEvent> findPendingEvents(Instant maxLockTime);
 }

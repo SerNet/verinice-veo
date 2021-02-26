@@ -80,6 +80,23 @@ public final class EntityToDtoTransformer {
         this.referenceAssembler = referenceAssembler;
     }
 
+    public VersionedDto transform2Dto(Versioned source) {
+        if (source instanceof EntityLayerSupertype) {
+            return transform2Dto((EntityLayerSupertype) source);
+        }
+        if (source instanceof Client) {
+            return transformClient2Dto((Client) source);
+        }
+        if (source instanceof Domain) {
+            return transformDomain2Dto((Domain) source);
+        }
+        if (source instanceof Unit) {
+            return transformUnit2Dto((Unit) source);
+        }
+        throw new IllegalArgumentException("No transform method defined for " + source.getClass()
+                                                                                      .getSimpleName());
+    }
+
     public EntityLayerSupertypeDto transform2Dto(@Valid EntityLayerSupertype source) {
 
         if (source instanceof Person) {

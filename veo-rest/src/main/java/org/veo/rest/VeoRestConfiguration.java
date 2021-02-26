@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.time.Duration;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -24,12 +26,18 @@ import org.springframework.context.annotation.Configuration;
 
 import org.veo.core.usecase.common.ETag;
 
+import lombok.Getter;
+
 @Configuration
 @ComponentScan("org.veo")
 public class VeoRestConfiguration {
 
     @Value("${veo.etag.salt}")
     private String eTagSalt;
+
+    @Value("${veo.messages.publishing.lockExpirationMs:20000}")
+    @Getter
+    private Duration messagePublishingLockExpiration;
 
     @PostConstruct
     public void configureETagSalt() {

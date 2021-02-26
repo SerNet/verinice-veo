@@ -18,6 +18,11 @@ package org.veo.rest.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.data.domain.AuditorAware;
 
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -80,6 +85,7 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
+import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.access.AssetRepositoryImpl;
 import org.veo.persistence.access.ClientRepositoryImpl;
 import org.veo.persistence.access.ControlRepositoryImpl;
@@ -89,9 +95,13 @@ import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
 import org.veo.persistence.access.ScenarioRepositoryImpl;
 import org.veo.persistence.access.ScopeRepositoryImpl;
+import org.veo.persistence.access.StoredEventRepository;
+import org.veo.persistence.access.StoredEventRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
+import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
+import org.veo.rest.security.CurrentUserProviderImpl;
 
 /**
  * This configuration takes care of wiring classes from core modules
@@ -367,6 +377,12 @@ public class ModuleConfiguration {
     }
 
     @Bean
+    public StoredEventRepository storedEventRepository(
+            StoredEventDataRepository storedEventDataRepository) {
+        return new StoredEventRepositoryImpl(storedEventDataRepository);
+    }
+
+    @Bean
     public AuthAwareImpl authAwareImpl() {
         return new AuthAwareImpl();
     }
@@ -381,5 +397,18 @@ public class ModuleConfiguration {
             EntitySchemaService entitySchemaService, SubTypeTransformer subTypeTransformer) {
         return new DtoToEntityTransformer(entityFactory,
                 new EntitySchemaLoader(entitySchemaService), subTypeTransformer);
+    }
+
+    @Primary
+    @Bean(name = "applicationEventMulticaster")
+    public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
+        SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
+        eventMulticaster.setTaskExecutor(new SyncTaskExecutor());
+        return eventMulticaster;
+    }
+
+    @Bean
+    public CurrentUserProvider currentUserProvider(AuditorAware<String> auditorAware) {
+        return new CurrentUserProviderImpl(auditorAware);
     }
 }

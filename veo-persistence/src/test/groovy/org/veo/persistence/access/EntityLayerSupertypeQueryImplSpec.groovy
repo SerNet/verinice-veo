@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.persistence.access
 
-import javax.persistence.EntityManager
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
@@ -107,7 +105,7 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by sub type'() {
         given:
-        def domain = domainRepository.save(newDomain {owner = client})
+        def domain = domainRepository.save(newDomain {owner = this.client})
 
         processDataRepository.saveAll([
             newProcess(unit) {
@@ -136,7 +134,7 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
     def 'finds processes with no sub type'() {
         given:
-        def domain = domainRepository.save(newDomain {owner = client})
+        def domain = domainRepository.save(newDomain {owner = this.client})
 
         processDataRepository.saveAll([
             newProcess(unit) {

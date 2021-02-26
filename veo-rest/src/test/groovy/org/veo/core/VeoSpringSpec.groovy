@@ -33,6 +33,7 @@ import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.ScenarioDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
+import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.test.VeoSpec
 
@@ -75,6 +76,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     ScopeDataRepository scopeDataRepository
 
     @Autowired
+    StoredEventDataRepository eventStoreDataRepository
+
+    @Autowired
     TransactionTemplate txTemplate
 
     def setup() {
@@ -104,6 +108,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 processDataRepository,
                 unitDataRepository,
                 clientDataRepository,
+                eventStoreDataRepository,
             ]*.deleteAll()
         }
     }

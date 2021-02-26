@@ -32,7 +32,11 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * The abstract base model class. Used to prevent duplicating common methods in
  * model layer objects.
  */
-public interface EntityLayerSupertype extends ModelObject {
+public interface EntityLayerSupertype extends ModelObject, ClientOwned {
+
+    default Client getClient() {
+        return getOwner().getClient();
+    }
 
     /**
      * Add the given Domain to the collection domains.

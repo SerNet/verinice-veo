@@ -14,6 +14,10 @@ veo:
     corePoolSize: 2
     maxPoolSize: 4
     queueCapacity: 500
+  messages:
+    publishing:
+      lockExpirationMs: 20000
+      rateMs: 2000
 
 spring:
   data:
@@ -28,6 +32,7 @@ spring:
     open-in-view: false
     properties:
       hibernate:
+        order_inserts: true
         jdbc:
           # execute statements in batches:
           batch_size: 30

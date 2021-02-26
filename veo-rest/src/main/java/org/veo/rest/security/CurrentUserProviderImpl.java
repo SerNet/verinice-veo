@@ -14,25 +14,27 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence;
+package org.veo.rest.security;
 
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 
-/**
- * Customize JPA test environment.
- */
-@TestConfiguration
-public class JpaTestConfig {
+import org.veo.persistence.CurrentUserProvider;
 
-    @Bean
-    public DummyAuthAwareImpl authAwareImpl() {
-        return new DummyAuthAwareImpl();
+/**
+ * Strict {@link CurrentUserProvider} implementation that throws an exception
+ * when there is no user.
+ */
+public class CurrentUserProviderImpl implements CurrentUserProvider {
+
+    private final AuditorAware<String> auditorAware;
+
+    public CurrentUserProviderImpl(AuditorAware<String> auditorAware) {
+        this.auditorAware = auditorAware;
     }
 
-    @Bean
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
+    @Override
+    public String getUsername() {
+        return auditorAware.getCurrentAuditor()
+                           .orElseThrow();
     }
 }

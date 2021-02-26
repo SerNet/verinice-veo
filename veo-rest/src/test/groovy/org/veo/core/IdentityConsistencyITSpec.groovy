@@ -72,7 +72,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
     def setup() {
         client = clientRepository.save(newClient())
         domain = newDomain() {
-            owner = client
+            owner = this.client
         }
         unit = newUnit(this.client)
         domainRepository.save(this.domain)
@@ -257,7 +257,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         def scenario = newScenario(unit)
         def domain = newDomain {
             name = "domain1"
-            owner = client
+            owner = this.client
         }
         domainRepository.save(domain)
         client.addToDomains(domain)
