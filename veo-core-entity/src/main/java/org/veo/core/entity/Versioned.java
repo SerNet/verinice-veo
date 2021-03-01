@@ -51,14 +51,6 @@ public interface Versioned {
     }
 
     /**
-     * Map the type to a String.
-     *
-     * @see ModelPackage
-     * @return
-     */
-    String getModelType();
-
-    /**
      * @see Lifecycle
      */
     Lifecycle getState();

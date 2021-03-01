@@ -25,6 +25,14 @@ import java.util.UUID;
 public interface ModelObject extends Nameable, Versioned {
     Key<UUID> getId();
 
+    /**
+     * Map the type to a String.
+     *
+     * @see ModelPackage
+     * @return
+     */
+    String getModelType();
+
     void setId(Key<UUID> id);
 
     String getDbId();
