@@ -43,8 +43,8 @@ public class SameClientSpecification<T extends EntityLayerSupertype>
 
     @Override
     public boolean isSatisfiedBy(T entity) {
-        // return client.hasUnit(entity.getUnit());
-        return false;// TODO:CHECK
+        return isSatisfiedBy(entity.getOwner()
+                                   .getClient());
     }
 
     @Override

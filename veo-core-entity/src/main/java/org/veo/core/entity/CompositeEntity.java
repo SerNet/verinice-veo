@@ -19,6 +19,8 @@ package org.veo.core.entity;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.entity.specification.EntitySpecification;
+
 /**
  * An entity whose parts can optionally be modeled as well
  *
@@ -28,6 +30,10 @@ import java.util.UUID;
 public interface CompositeEntity<T extends EntityLayerSupertype> extends EntityLayerSupertype {
 
     Set<T> getParts();
+
+    default Set<T> findPartsFulfilling(EntitySpecification<T> specification) {
+        return specification.selectSatisfyingElementsFrom(getParts());
+    }
 
     default boolean addPart(T part) {
         return getParts().add(part);

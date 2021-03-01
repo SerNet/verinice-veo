@@ -24,6 +24,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.specification.InvalidUnitException
 import org.veo.core.entity.specification.SameClientSpecification
 import org.veo.test.VeoSpec
 
@@ -65,7 +66,7 @@ class CompositeEntitySpec extends VeoSpec {
         newAsset(unit)
 
         then: "an exception is thrown"
-        thrown InvalidUnitException;
+        thrown InvalidUnitException
     }
 
     def "A composite can contain assets"() {
@@ -237,24 +238,10 @@ class CompositeEntitySpec extends VeoSpec {
         processComposite.parts = [p1, p2] as Set
 
         then: "the composite can be queried using the specification"
-        // TODO VEO-385 restore filtering by specifications to composites
-        //processComposite.findMembersFulfilling(spec1).size() == 2;
-        //processComposite.findMembersFulfilling(spec2).size() == 0;
+        processComposite.findPartsFulfilling(spec1).size() == 2
+        processComposite.findPartsFulfilling(spec2).size() == 0
 
-        // instead we have to do this:
-        processComposite.parts.stream()
-                .filter({ spec1.isSatisfiedBy(it.owner.client) })
-                .toSet()
-                .size() == 2
-        processComposite.parts.stream()
-                .filter({ spec2.isSatisfiedBy(it.owner.client) })
-                .toSet()
-                .size() == 0
-
-        // Not working because of broken method "isSatisfiedBy(T entity)" in SameClientSpecification:
-        //        spec1.selectSatisfyingElementsFrom(
-        //                processComposite.parts.stream().map{ p -> p.owner.client } as Set
-        //            ).size() == 2
+        spec1.selectSatisfyingElementsFrom(processComposite.parts).size() == 2
     }
 
     /*
