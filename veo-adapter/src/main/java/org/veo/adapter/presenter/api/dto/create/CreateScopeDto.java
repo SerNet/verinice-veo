@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Scope;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,10 +24,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public final class CreateScopeDto extends AbstractScopeDto {
-    @Override
-    public Scope toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2Scope(tcontext, this, null);
-
-    }
 
 }

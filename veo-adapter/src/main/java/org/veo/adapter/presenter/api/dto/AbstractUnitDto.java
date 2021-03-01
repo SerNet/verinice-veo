@@ -28,7 +28,6 @@ import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
@@ -41,6 +40,7 @@ import lombok.Data;
  * Base transfer object for Units. Contains common data for all Unit DTOs.
  */
 @Data
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractUnitDto implements NameableDto, VersionedDto {
 
     @NotNull(message = "A name must be present.")
@@ -89,6 +89,4 @@ public abstract class AbstractUnitDto implements NameableDto, VersionedDto {
 
     @JsonIgnore
     private long version;
-
-    public abstract Unit toEntity(DtoToEntityContext context);
 }

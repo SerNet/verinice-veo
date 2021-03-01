@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Control;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +25,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public final class CreateControlDto extends AbstractControlDto {
 
-    public Control toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2Control(tcontext, this, null);
-    }
 }

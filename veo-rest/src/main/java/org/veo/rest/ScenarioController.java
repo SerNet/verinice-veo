@@ -209,8 +209,10 @@ public class ScenarioController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dto.toEntity(tcontext), client,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Scenario(tcontext,
+                                                                                                  dto,
+                                                                                                  null),
+                                                     client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
@@ -234,8 +236,10 @@ public class ScenarioController extends AbstractEntityController {
                                                  Client client = getClient(user);
                                                  DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                                  return new InputData<Scenario>(
-                                                         scenarioDto.toEntity(tcontext), client,
-                                                         eTag, user.getUsername());
+                                                         dtoToEntityTransformer.transformDto2Scenario(tcontext,
+                                                                                                      scenarioDto,
+                                                                                                      Key.uuidFrom(scenarioDto.getId())),
+                                                         client, eTag, user.getUsername());
                                              }
                                          }
 

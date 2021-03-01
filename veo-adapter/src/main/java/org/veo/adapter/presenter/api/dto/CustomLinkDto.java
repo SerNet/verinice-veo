@@ -20,10 +20,6 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
-import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.EntityLayerSupertype;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -61,8 +57,4 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
     @Schema(required = true, implementation = ModelObjectReferenceCustomLinkTarget.class)
     private ModelObjectReference<EntityLayerSupertype> target;
 
-    public CustomLink toEntity(DtoToEntityContext tcontext, String type,
-            EntitySchema entitySchema) {
-        return DtoToEntityTransformer.transformDto2CustomLink(tcontext, this, type, entitySchema);
-    }
 }

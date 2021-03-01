@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Asset;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +25,4 @@ import lombok.EqualsAndHashCode;
 @Data
 public final class CreateAssetDto extends AbstractAssetDto {
 
-    public Asset toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2Asset(tcontext, this, null);
-    }
 }

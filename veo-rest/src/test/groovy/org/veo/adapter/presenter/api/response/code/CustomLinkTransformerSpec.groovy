@@ -20,6 +20,7 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntitySchema
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
@@ -33,6 +34,7 @@ class CustomLinkTransformerSpec extends Specification {
 
     def referenceAssembler = Mock(ReferenceAssembler)
     def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler)
+    def dtoToEntityTransformer = new DtoToEntityTransformer()
 
     def "transform custom link entity to DTO"() {
         given: "a custom link"
@@ -85,7 +87,7 @@ class CustomLinkTransformerSpec extends Specification {
         }
 
         when: "transforming it to an entity"
-        def entity = linkDto.toEntity(context, "good type", schema)
+        def entity = dtoToEntityTransformer.transformDto2CustomLink(context,linkDto, "good type", schema)
 
         then: "all properties are transformed"
         1 * context.factory.createCustomLink("good name", targetAsset, null) >> newLink

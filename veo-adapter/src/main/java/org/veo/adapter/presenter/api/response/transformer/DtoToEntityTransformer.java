@@ -40,6 +40,7 @@ import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeEntity;
@@ -67,7 +68,7 @@ import org.veo.core.entity.transform.EntityFactory;
 public final class DtoToEntityTransformer {
 
     // PersonDto->Person
-    public static Person transformDto2Person(DtoToEntityContext tcontext, AbstractPersonDto source,
+    public Person transformDto2Person(DtoToEntityContext tcontext, AbstractPersonDto source,
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createPerson(key, source.getName(), null);
@@ -76,7 +77,7 @@ public final class DtoToEntityTransformer {
     }
 
     // AssetDto->Asset
-    public static Asset transformDto2Asset(DtoToEntityContext tcontext, AbstractAssetDto source,
+    public Asset transformDto2Asset(DtoToEntityContext tcontext, AbstractAssetDto source,
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createAsset(key, source.getName(), null);
@@ -85,8 +86,8 @@ public final class DtoToEntityTransformer {
     }
 
     // ProcessDto->Process
-    public static Process transformDto2Process(DtoToEntityContext tcontext,
-            AbstractProcessDto source, Key<UUID> key) {
+    public Process transformDto2Process(DtoToEntityContext tcontext, AbstractProcessDto source,
+            Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createProcess(key, source.getName(), null);
         mapCompositeEntity(tcontext, source, target);
@@ -94,8 +95,8 @@ public final class DtoToEntityTransformer {
     }
 
     // DocumentDto->Document
-    public static Document transformDto2Document(DtoToEntityContext tcontext,
-            AbstractDocumentDto source, Key<UUID> key) {
+    public Document transformDto2Document(DtoToEntityContext tcontext, AbstractDocumentDto source,
+            Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createDocument(key, source.getName(), null);
         mapCompositeEntity(tcontext, source, target);
@@ -103,8 +104,8 @@ public final class DtoToEntityTransformer {
     }
 
     // ControlDto->Control
-    public static Control transformDto2Control(DtoToEntityContext tcontext,
-            AbstractControlDto source, Key<UUID> key) {
+    public Control transformDto2Control(DtoToEntityContext tcontext, AbstractControlDto source,
+            Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createControl(key, source.getName(), null);
         mapCompositeEntity(tcontext, source, target);
@@ -112,8 +113,8 @@ public final class DtoToEntityTransformer {
     }
 
     // IncidentDto->Incident
-    public static Incident transformDto2Incident(DtoToEntityContext tcontext,
-            AbstractIncidentDto source, Key<UUID> key) {
+    public Incident transformDto2Incident(DtoToEntityContext tcontext, AbstractIncidentDto source,
+            Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createIncident(key, source.getName(), null);
         mapCompositeEntity(tcontext, source, target);
@@ -121,15 +122,15 @@ public final class DtoToEntityTransformer {
     }
 
     // ScenarioDto->Scenario
-    public static Scenario transformDto2Scenario(DtoToEntityContext tcontext,
-            AbstractScenarioDto source, Key<UUID> key) {
+    public Scenario transformDto2Scenario(DtoToEntityContext tcontext, AbstractScenarioDto source,
+            Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createScenario(key, source.getName(), null);
         mapCompositeEntity(tcontext, source, target);
         return target;
     }
 
-    public static Scope transformDto2Scope(DtoToEntityContext tcontext, AbstractScopeDto source,
+    public Scope transformDto2Scope(DtoToEntityContext tcontext, AbstractScopeDto source,
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createScope(key, source.getName(), null);
@@ -142,19 +143,23 @@ public final class DtoToEntityTransformer {
     }
 
     // ClientDto->Client
-    public static Client transformDto2Client(DtoToEntityContext tcontext, AbstractClientDto source,
+    public Client transformDto2Client(DtoToEntityContext tcontext, AbstractClientDto source,
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createClient(key, source.getName());
         target.setId(key);
         target.setName(source.getName());
-        target.setDomains(convertSet(source.getDomains(), e -> e.toEntity(tcontext)));
+        target.setDomains(convertSet(source.getDomains(),
+                                     e -> transformDto2Domain(tcontext, e,
+                                                              e instanceof IdentifiableDto
+                                                                      ? Key.uuidFrom(((IdentifiableDto) e).getId())
+                                                                      : null)));
 
         return target;
     }
 
     // DomainDto->Domain
-    public static Domain transformDto2Domain(DtoToEntityContext tcontext, AbstractDomainDto source,
+    public Domain transformDto2Domain(DtoToEntityContext tcontext, AbstractDomainDto source,
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createDomain(key, source.getName());
@@ -166,7 +171,7 @@ public final class DtoToEntityTransformer {
     }
 
     // UnitDto->Unit
-    public static Unit transformDto2Unit(DtoToEntityContext tcontext, AbstractUnitDto source,
+    public Unit transformDto2Unit(DtoToEntityContext tcontext, AbstractUnitDto source,
             Key<UUID> key) {
         var target = tcontext.getFactory()
                              .createUnit(key, source.getName(), null);
@@ -185,8 +190,8 @@ public final class DtoToEntityTransformer {
     }
 
     // CustomLinkDto->CustomLink
-    public static CustomLink transformDto2CustomLink(DtoToEntityContext tcontext,
-            CustomLinkDto source, String type, EntitySchema entitySchema) {
+    public CustomLink transformDto2CustomLink(DtoToEntityContext tcontext, CustomLinkDto source,
+            String type, EntitySchema entitySchema) {
         EntityLayerSupertype linkTarget = null;
         if (source.getTarget() != null) {
             linkTarget = tcontext.resolve(source.getTarget());
@@ -205,7 +210,7 @@ public final class DtoToEntityTransformer {
     }
 
     // CustomPropertiesDto->CustomProperties
-    public static CustomProperties transformDto2CustomProperties(EntityFactory factory,
+    public CustomProperties transformDto2CustomProperties(EntityFactory factory,
             CustomPropertiesDto source, String type, EntitySchema entitySchema) {
         var target = factory.createCustomProperties();
         target.setApplicableTo(source.getApplicableTo());
@@ -214,8 +219,8 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    private static <T extends EntityLayerSupertype> void mapCompositeEntity(
-            DtoToEntityContext tcontext, CompositeEntityDto<T> source, CompositeEntity<T> target) {
+    private <T extends EntityLayerSupertype> void mapCompositeEntity(DtoToEntityContext tcontext,
+            CompositeEntityDto<T> source, CompositeEntity<T> target) {
         mapEntityLayerSupertype(tcontext, source, target);
         target.setParts(source.getParts()
                               .stream()
@@ -223,7 +228,7 @@ public final class DtoToEntityTransformer {
                               .collect(Collectors.toSet()));
     }
 
-    private static <TDto extends EntityLayerSupertypeDto, TEntity extends EntityLayerSupertype> void mapEntityLayerSupertype(
+    private <TDto extends EntityLayerSupertypeDto, TEntity extends EntityLayerSupertype> void mapEntityLayerSupertype(
             DtoToEntityContext tcontext, TDto source, TEntity target) {
         mapNameableProperties(source, target);
         target.setDomains(convertSet(source.getDomains(), tcontext::resolve));
@@ -237,7 +242,7 @@ public final class DtoToEntityTransformer {
         }
     }
 
-    private static Set<CustomLink> mapLinks(DtoToEntityContext context, EntityLayerSupertype entity,
+    private Set<CustomLink> mapLinks(DtoToEntityContext context, EntityLayerSupertype entity,
             EntityLayerSupertypeDto dto, EntitySchema entitySchema) {
         return dto.getLinks()
                   .entrySet()
@@ -245,9 +250,10 @@ public final class DtoToEntityTransformer {
                   .flatMap(entry -> entry.getValue()
                                          .stream()
                                          .map(linktDto -> {
-                                             var customLink = linktDto.toEntity(context,
-                                                                                entry.getKey(),
-                                                                                entitySchema);
+                                             var customLink = transformDto2CustomLink(context,
+                                                                                      linktDto,
+                                                                                      entry.getKey(),
+                                                                                      entitySchema);
                                              customLink.setSource(entity);
                                              return customLink;
                                          }))
@@ -270,17 +276,14 @@ public final class DtoToEntityTransformer {
         return new HashSet<>();
     }
 
-    private static Set<CustomProperties> mapCustomAspects(EntityLayerSupertypeDto dto,
+    private Set<CustomProperties> mapCustomAspects(EntityLayerSupertypeDto dto,
             EntityFactory factory, EntitySchema entitySchema) {
         return dto.getCustomAspects()
                   .entrySet()
                   .stream()
-                  .map(entry -> entry.getValue()
-                                     .toEntity(factory, entry.getKey(), entitySchema))
+                  .map(entry -> transformDto2CustomProperties(factory, entry.getValue(),
+                                                              entry.getKey(), entitySchema))
                   .collect(Collectors.toSet());
-    }
-
-    private DtoToEntityTransformer() {
     }
 
 }

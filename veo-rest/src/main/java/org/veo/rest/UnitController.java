@@ -205,8 +205,10 @@ public class UnitController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new UpdateUnitUseCase.InputData(
-                                                     unitDto.toEntity(tcontext), client, eTag,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Unit(tcontext,
+                                                                                              unitDto,
+                                                                                              Key.uuidFrom(unitDto.getId())),
+                                                     client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
     }

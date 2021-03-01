@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Person;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,8 +25,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public final class CreatePersonDto extends AbstractPersonDto {
 
-    @Override
-    public Person toEntity(DtoToEntityContext context) {
-        return DtoToEntityTransformer.transformDto2Person(context, this, null);
-    }
 }

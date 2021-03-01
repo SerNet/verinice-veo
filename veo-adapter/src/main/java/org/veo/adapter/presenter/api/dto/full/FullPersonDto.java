@@ -21,10 +21,6 @@ import javax.validation.constraints.Pattern;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Person;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,7 +37,4 @@ public class FullPersonDto extends AbstractPersonDto implements IdentifiableDto 
     @ToString.Include
     private String id;
 
-    public Person toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2Person(tcontext, this, Key.uuidFrom(id));
-    }
 }

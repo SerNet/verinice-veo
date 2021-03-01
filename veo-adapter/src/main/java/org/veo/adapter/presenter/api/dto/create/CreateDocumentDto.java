@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Document;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,8 +25,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public final class CreateDocumentDto extends AbstractDocumentDto {
 
-    @Override
-    public Document toEntity(DtoToEntityContext context) {
-        return DtoToEntityTransformer.transformDto2Document(context, this, null);
-    }
 }

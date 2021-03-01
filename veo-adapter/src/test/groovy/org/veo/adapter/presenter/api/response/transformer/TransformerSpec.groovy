@@ -47,6 +47,7 @@ class TransformerSpec extends Specification {
     def mUnitId = null
 
     def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler))
+    def dtoToEntityTransformer = new DtoToEntityTransformer()
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -136,7 +137,7 @@ class TransformerSpec extends Specification {
             it.context >> new HashMap<>()
             it.factory >> factory
         }
-        def unit = unitDto.toEntity(context)
+        def unit = dtoToEntityTransformer.transformDto2Unit(context, unitDto, Key.uuidFrom(unitDto.id))
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId
@@ -205,7 +206,7 @@ class TransformerSpec extends Specification {
             it.context >> new HashMap<>()
             it.factory >> factory
         }
-        def client = clientDto.toEntity(context)
+        def client = dtoToEntityTransformer.transformDto2Client(context, clientDto, Key.uuidFrom(clientDto.id))
 
         then: "the client contains all relevant fields"
         client.id.uuidValue() == clientId

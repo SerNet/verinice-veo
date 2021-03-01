@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Incident;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +25,4 @@ import lombok.EqualsAndHashCode;
 @Data
 public final class CreateIncidentDto extends AbstractIncidentDto {
 
-    public Incident toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2Incident(tcontext, this, null);
-    }
 }

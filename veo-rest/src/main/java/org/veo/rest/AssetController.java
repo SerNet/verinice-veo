@@ -236,8 +236,10 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dto.toEntity(tcontext), client,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Asset(tcontext,
+                                                                                               dto,
+                                                                                               null),
+                                                     client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
@@ -261,8 +263,10 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                                  Client client = getClient(user);
                                                  DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                                  return new ModifyEntityUseCase.InputData<Asset>(
-                                                         assetDto.toEntity(tcontext), client, eTag,
-                                                         user.getUsername());
+                                                         dtoToEntityTransformer.transformDto2Asset(tcontext,
+                                                                                                   assetDto,
+                                                                                                   Key.uuidFrom(assetDto.getId())),
+                                                         client, eTag, user.getUsername());
                                              }
                                          }
 

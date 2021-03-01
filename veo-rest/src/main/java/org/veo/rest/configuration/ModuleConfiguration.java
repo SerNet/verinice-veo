@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
@@ -381,5 +382,10 @@ public class ModuleConfiguration {
     @Bean
     public EntityToDtoTransformer entityToDtoTransformer(ReferenceAssembler referenceAssembler) {
         return new EntityToDtoTransformer(referenceAssembler);
+    }
+
+    @Bean
+    public DtoToEntityTransformer dtoToEntityTransformer() {
+        return new DtoToEntityTransformer();
     }
 }

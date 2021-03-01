@@ -186,8 +186,10 @@ public class ProcessController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dto.toEntity(tcontext), client,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Process(tcontext,
+                                                                                                 dto,
+                                                                                                 null),
+                                                     client, user.getUsername());
                                          }
 
                                          , output -> {
@@ -214,8 +216,10 @@ public class ProcessController extends AbstractEntityController {
                                                  DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
 
                                                  return new ModifyEntityUseCase.InputData<Process>(
-                                                         processDto.toEntity(tcontext), client,
-                                                         eTag, user.getUsername());
+                                                         dtoToEntityTransformer.transformDto2Process(tcontext,
+                                                                                                     processDto,
+                                                                                                     Key.uuidFrom(processDto.getId())),
+                                                         client, eTag, user.getUsername());
                                              }
                                          }
 

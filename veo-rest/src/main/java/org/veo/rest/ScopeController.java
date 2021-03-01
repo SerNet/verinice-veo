@@ -216,8 +216,10 @@ public class ScopeController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     createScopeDto.toEntity(tcontext), client,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Scope(tcontext,
+                                                                                               createScopeDto,
+                                                                                               null),
+                                                     client, user.getUsername());
                                          }, output -> {
                                              Scope scope = output.getEntity();
                                              Optional<String> scopeId = scope.getId() == null
@@ -247,8 +249,10 @@ public class ScopeController extends AbstractEntityController {
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
 
                                              return new UpdateScopeUseCase.InputData<>(
-                                                     scopeDto.toEntity(tcontext), client, eTag,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Scope(tcontext,
+                                                                                               scopeDto,
+                                                                                               Key.uuidFrom(scopeDto.getId())),
+                                                     client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));
     }

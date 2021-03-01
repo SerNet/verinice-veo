@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -73,6 +74,9 @@ public abstract class AbstractEntityController {
 
     @Autowired
     EntityToDtoTransformer entityToDtoTransformer;
+
+    @Autowired
+    DtoToEntityTransformer dtoToEntityTransformer;
 
     public AbstractEntityController() {
         super();

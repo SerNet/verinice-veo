@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Scenario;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +25,4 @@ import lombok.EqualsAndHashCode;
 @Data
 public final class CreateScenarioDto extends AbstractScenarioDto {
 
-    public Scenario toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2Scenario(tcontext, this, null);
-    }
 }

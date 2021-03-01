@@ -22,8 +22,6 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.core.entity.Domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -83,5 +81,4 @@ public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
         return active;
     }
 
-    public abstract Domain toEntity(DtoToEntityContext tcontext);
 }

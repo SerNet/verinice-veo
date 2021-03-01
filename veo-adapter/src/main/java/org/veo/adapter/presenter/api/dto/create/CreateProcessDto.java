@@ -17,9 +17,6 @@
 package org.veo.adapter.presenter.api.dto.create;
 
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Process;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,8 +25,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public final class CreateProcessDto extends AbstractProcessDto {
 
-    @Override
-    public Process toEntity(DtoToEntityContext context) {
-        return DtoToEntityTransformer.transformDto2Process(context, this, null);
-    }
 }

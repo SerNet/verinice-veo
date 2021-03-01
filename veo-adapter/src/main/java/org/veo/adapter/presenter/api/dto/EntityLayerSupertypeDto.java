@@ -21,9 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
 
 public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
@@ -43,8 +41,6 @@ public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
     Map<String, CustomPropertiesDto> getCustomAspects();
 
     void setCustomAspects(Map<String, CustomPropertiesDto> customAspects);
-
-    EntityLayerSupertype toEntity(DtoToEntityContext context);
 
     Map<String, String> getSubType();
 

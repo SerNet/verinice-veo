@@ -206,8 +206,10 @@ public class PersonController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dto.toEntity(tcontext), client,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Person(tcontext,
+                                                                                                dto,
+                                                                                                null),
+                                                     client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
@@ -232,8 +234,10 @@ public class PersonController extends AbstractEntityController {
                                                  Client client = getClient(user);
                                                  DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                                  return new ModifyEntityUseCase.InputData<Person>(
-                                                         personDto.toEntity(tcontext), client, eTag,
-                                                         user.getUsername());
+                                                         dtoToEntityTransformer.transformDto2Person(tcontext,
+                                                                                                    personDto,
+                                                                                                    Key.uuidFrom(personDto.getId())),
+                                                         client, eTag, user.getUsername());
                                              }
                                          },
 

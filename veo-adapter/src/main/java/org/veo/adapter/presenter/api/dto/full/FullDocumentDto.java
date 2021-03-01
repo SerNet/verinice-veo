@@ -21,10 +21,6 @@ import javax.validation.constraints.Pattern;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Document;
-import org.veo.core.entity.Key;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,7 +37,4 @@ public class FullDocumentDto extends AbstractDocumentDto implements Identifiable
     @ToString.Include
     private String id;
 
-    public Document toEntity(DtoToEntityContext tcontext) {
-        return DtoToEntityTransformer.transformDto2Document(tcontext, this, Key.uuidFrom(id));
-    }
 }

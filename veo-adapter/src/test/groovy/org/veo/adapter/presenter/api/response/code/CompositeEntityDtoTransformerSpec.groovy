@@ -22,6 +22,7 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer
 import org.veo.core.entity.Asset
@@ -41,6 +42,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
 
     def refAssembler = Mock(ReferenceAssembler)
     def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler)
+    def dtoToEntityTransformer = new DtoToEntityTransformer()
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -161,7 +163,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         }
 
         when: "transforming the DTO to an entity"
-        def result = compositeAssetDto.toEntity(context)
+        def result = dtoToEntityTransformer.transformDto2Asset(context, compositeAssetDto, Key.uuidFrom(compositeAssetDto.id))
 
         then: "the composite entity is transformed with parts"
         1 * context.factory.createAsset(compositeAssetId, "Composite Asset", null) >> newCompositeAssetEntity

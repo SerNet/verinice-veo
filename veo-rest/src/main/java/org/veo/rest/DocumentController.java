@@ -206,8 +206,10 @@ public class DocumentController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dto.toEntity(tcontext), client,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Document(tcontext,
+                                                                                                  dto,
+                                                                                                  null),
+                                                     client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
@@ -227,7 +229,10 @@ public class DocumentController extends AbstractEntityController {
                                          (Supplier<InputData<Document>>) () -> {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
-                                             return new InputData<>(documentDto.toEntity(tcontext),
+                                             return new InputData<>(
+                                                     dtoToEntityTransformer.transformDto2Document(tcontext,
+                                                                                                  documentDto,
+                                                                                                  Key.uuidFrom(documentDto.getId())),
                                                      client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformDocument2Dto(output.getEntity()));

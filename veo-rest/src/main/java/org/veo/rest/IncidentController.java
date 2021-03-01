@@ -209,8 +209,10 @@ public class IncidentController extends AbstractEntityController {
                                              Client client = getClient(user);
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dto.toEntity(tcontext), client,
-                                                     user.getUsername());
+                                                     dtoToEntityTransformer.transformDto2Incident(tcontext,
+                                                                                                  dto,
+                                                                                                  null),
+                                                     client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);
@@ -234,8 +236,10 @@ public class IncidentController extends AbstractEntityController {
                                                  Client client = getClient(user);
                                                  DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                                  return new InputData<Incident>(
-                                                         incidentDto.toEntity(tcontext), client,
-                                                         eTag, user.getUsername());
+                                                         dtoToEntityTransformer.transformDto2Incident(tcontext,
+                                                                                                      incidentDto,
+                                                                                                      Key.uuidFrom(incidentDto.getId())),
+                                                         client, eTag, user.getUsername());
                                              }
                                          }
 
