@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.EntityTypeNames;
@@ -145,8 +144,7 @@ public class DocumentController extends AbstractEntityController {
         return useCaseInteractor.execute(getDocumentsUseCase, inputData,
                                          output -> output.getEntities()
                                                          .stream()
-                                                         .map(a -> FullDocumentDto.from(a,
-                                                                                        referenceAssembler))
+                                                         .map(a -> entityToDtoTransformer.transformDocument2Dto(a))
                                                          .collect(Collectors.toList()));
     }
 
@@ -167,8 +165,7 @@ public class DocumentController extends AbstractEntityController {
                                                                                       new GetDocumentUseCase.InputData(
                                                                                               Key.uuidFrom(id),
                                                                                               client),
-                                                                                      output -> FullDocumentDto.from(output.getDocument(),
-                                                                                                                     referenceAssembler));
+                                                                                      output -> entityToDtoTransformer.transformDocument2Dto(output.getDocument()));
 
         return documentFuture.thenApply(documentDto -> ResponseEntity.ok()
                                                                      .eTag(ETag.from(documentDto.getId(),
@@ -193,8 +190,7 @@ public class DocumentController extends AbstractEntityController {
                     Document scope = output.getDocument();
                     return scope.getParts()
                                 .stream()
-                                .map(part -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
-                                                                                  part))
+                                .map(part -> entityToDtoTransformer.transform2Dto(part))
                                 .collect(Collectors.toList());
                 });
     }
@@ -233,8 +229,8 @@ public class DocumentController extends AbstractEntityController {
                                              DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
                                              return new InputData<>(documentDto.toEntity(tcontext),
                                                      client, eTag, user.getUsername());
-                                         }, output -> FullDocumentDto.from(output.getEntity(),
-                                                                           referenceAssembler));
+                                         },
+                                         output -> entityToDtoTransformer.transformDocument2Dto(output.getEntity()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

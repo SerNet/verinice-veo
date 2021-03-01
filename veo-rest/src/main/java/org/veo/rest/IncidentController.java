@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
@@ -145,8 +144,7 @@ public class IncidentController extends AbstractEntityController {
         return useCaseInteractor.execute(getIncidentsUseCase, inputData,
                                          output -> output.getEntities()
                                                          .stream()
-                                                         .map(a -> FullIncidentDto.from(a,
-                                                                                        referenceAssembler))
+                                                         .map(a -> entityToDtoTransformer.transformIncident2Dto(a))
                                                          .collect(Collectors.toList()));
     }
 
@@ -169,8 +167,7 @@ public class IncidentController extends AbstractEntityController {
                                                                                               Key.uuidFrom(id),
                                                                                               client),
                                                                                       output -> {
-                                                                                          return FullIncidentDto.from(output.getIncident(),
-                                                                                                                      referenceAssembler);
+                                                                                          return entityToDtoTransformer.transformIncident2Dto(output.getIncident());
                                                                                       });
 
         return incidentFuture.thenApply(incidentDto -> ResponseEntity.ok()
@@ -196,8 +193,7 @@ public class IncidentController extends AbstractEntityController {
                     Incident scope = output.getIncident();
                     return scope.getParts()
                                 .stream()
-                                .map(part -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
-                                                                                  part))
+                                .map(part -> entityToDtoTransformer.transform2Dto(part))
                                 .collect(Collectors.toList());
                 });
     }
@@ -243,8 +239,8 @@ public class IncidentController extends AbstractEntityController {
                                              }
                                          }
 
-                                         , output -> FullIncidentDto.from(output.getEntity(),
-                                                                          referenceAssembler));
+                                         ,
+                                         output -> entityToDtoTransformer.transformIncident2Dto(output.getEntity()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

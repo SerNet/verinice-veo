@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -146,8 +145,7 @@ public class ProcessController extends AbstractEntityController {
                                                                                     }
 
                                                                                     ,
-                                                                                    output -> FullProcessDto.from(output.getProcess(),
-                                                                                                                  referenceAssembler));
+                                                                                    output -> entityToDtoTransformer.transformProcess2Dto(output.getProcess()));
 
         return processFuture.thenApply(processDto -> ResponseEntity.ok()
                                                                    .eTag(ETag.from(processDto.getId(),
@@ -172,8 +170,7 @@ public class ProcessController extends AbstractEntityController {
                     Process scope = output.getProcess();
                     return scope.getParts()
                                 .stream()
-                                .map(part -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
-                                                                                  part))
+                                .map(part -> entityToDtoTransformer.transform2Dto(part))
                                 .collect(Collectors.toList());
                 });
     }
@@ -222,8 +219,8 @@ public class ProcessController extends AbstractEntityController {
                                              }
                                          }
 
-                                         , output -> FullProcessDto.from(output.getEntity(),
-                                                                         referenceAssembler));
+                                         ,
+                                         output -> entityToDtoTransformer.transformProcess2Dto(output.getEntity()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
@@ -263,8 +260,7 @@ public class ProcessController extends AbstractEntityController {
         return useCaseInteractor.execute(getProcessesUseCase, inputData,
                                          output -> output.getEntities()
                                                          .stream()
-                                                         .map(u -> FullProcessDto.from(u,
-                                                                                       referenceAssembler))
+                                                         .map(u -> entityToDtoTransformer.transformProcess2Dto(u))
                                                          .collect(Collectors.toList()));
     }
 

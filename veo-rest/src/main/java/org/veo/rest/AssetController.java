@@ -64,7 +64,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -170,8 +169,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
             GetEntitiesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getAssetsUseCase, inputData, output -> output.getEntities()
                                                                                       .stream()
-                                                                                      .map(a -> FullAssetDto.from(a,
-                                                                                                                  referenceAssembler))
+                                                                                      .map(a -> entityToDtoTransformer.transformAsset2Dto(a))
                                                                                       .collect(Collectors.toList()));
     }
 
@@ -194,8 +192,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                                                                         Key.uuidFrom(id),
                                                                                         client),
                                                                                 output -> {
-                                                                                    return FullAssetDto.from(output.getAsset(),
-                                                                                                             referenceAssembler);
+                                                                                    return entityToDtoTransformer.transformAsset2Dto(output.getAsset());
                                                                                 });
 
         return assetFuture.thenApply(assetDto -> ResponseEntity.ok()
@@ -222,8 +219,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                              Asset scope = output.getAsset();
                                              return scope.getParts()
                                                          .stream()
-                                                         .map(part -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
-                                                                                                           part))
+                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
                                                          .collect(Collectors.toList());
                                          });
     }
@@ -270,8 +266,8 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                              }
                                          }
 
-                                         , output -> FullAssetDto.from(output.getEntity(),
-                                                                       referenceAssembler));
+                                         ,
+                                         output -> entityToDtoTransformer.transformAsset2Dto(output.getEntity()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

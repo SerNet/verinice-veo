@@ -16,16 +16,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 
@@ -45,10 +42,6 @@ public class FullPersonDto extends AbstractPersonDto implements IdentifiableDto 
             example = "adf037f1-0089-48ad-9177-92269918758b")
     @ToString.Include
     private String id;
-
-    public static FullPersonDto from(@Valid Person asset, ReferenceAssembler assembler) {
-        return EntityToDtoTransformer.transformPerson2Dto(assembler, asset);
-    }
 
     public Person toEntity(DtoToEntityContext tcontext) {
         return DtoToEntityTransformer.transformDto2Person(tcontext, this, Key.uuidFrom(id));

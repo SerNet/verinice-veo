@@ -138,7 +138,7 @@ public class UnitController extends AbstractEntityController {
         return useCaseInteractor.execute(getUnitsUseCase, inputData, output -> {
             return output.getUnits()
                          .stream()
-                         .map(u -> FullUnitDto.from(u, referenceAssembler))
+                         .map(u -> entityToDtoTransformer.transformUnit2Dto(u))
                          .collect(Collectors.toList());
         });
     }
@@ -160,8 +160,7 @@ public class UnitController extends AbstractEntityController {
                                                                               new GetUnitUseCase.InputData(
                                                                                       Key.uuidFrom(id),
                                                                                       getAuthenticatedClient(auth)),
-                                                                              output -> FullUnitDto.from(output.getUnit(),
-                                                                                                         referenceAssembler));
+                                                                              output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
         return unitFuture.thenApply(unitDto -> ResponseEntity.ok()
                                                              .eTag(ETag.from(unitDto.getId(),
                                                                              unitDto.getVersion()))
@@ -208,8 +207,8 @@ public class UnitController extends AbstractEntityController {
                                              return new UpdateUnitUseCase.InputData(
                                                      unitDto.toEntity(tcontext), client, eTag,
                                                      user.getUsername());
-                                         }, output -> FullUnitDto.from(output.getUnit(),
-                                                                       referenceAssembler));
+                                         },
+                                         output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
     }
 
     @Async
@@ -239,7 +238,8 @@ public class UnitController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullUnitDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId) {
-        // TODO VEO-425 Use custom search query DTO & criteria API, apply display name
+        // TODO VEO-425 Use custom search query DTO & criteria API, apply
+        // display name
         // filter and allow recursive parent unit filter.
         try {
             var dto = SearchQueryDto.decodeFromSearchId(searchId);

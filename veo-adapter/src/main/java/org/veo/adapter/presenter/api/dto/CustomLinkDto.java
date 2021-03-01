@@ -16,16 +16,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.EntityLayerSupertype;
 
@@ -63,11 +60,6 @@ public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
     @ToString.Include
     @Schema(required = true, implementation = ModelObjectReferenceCustomLinkTarget.class)
     private ModelObjectReference<EntityLayerSupertype> target;
-
-    public static CustomLinkDto from(@Valid CustomLink customLink,
-            ReferenceAssembler referenceAssembler) {
-        return EntityToDtoTransformer.transformCustomLink2Dto(referenceAssembler, customLink);
-    }
 
     public CustomLink toEntity(DtoToEntityContext tcontext, String type,
             EntitySchema entitySchema) {

@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -145,8 +144,7 @@ public class ScenarioController extends AbstractEntityController {
         return useCaseInteractor.execute(getScenariosUseCase, inputData,
                                          output -> output.getEntities()
                                                          .stream()
-                                                         .map(a -> FullScenarioDto.from(a,
-                                                                                        referenceAssembler))
+                                                         .map(a -> entityToDtoTransformer.transformScenario2Dto(a))
                                                          .collect(Collectors.toList()));
     }
 
@@ -169,8 +167,7 @@ public class ScenarioController extends AbstractEntityController {
                                                                                               Key.uuidFrom(id),
                                                                                               client),
                                                                                       output -> {
-                                                                                          return FullScenarioDto.from(output.getScenario(),
-                                                                                                                      referenceAssembler);
+                                                                                          return entityToDtoTransformer.transformScenario2Dto(output.getScenario());
                                                                                       });
 
         return scenarioFuture.thenApply(scenarioDto -> ResponseEntity.ok()
@@ -196,8 +193,7 @@ public class ScenarioController extends AbstractEntityController {
                     Scenario scope = output.getScenario();
                     return scope.getParts()
                                 .stream()
-                                .map(part -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
-                                                                                  part))
+                                .map(part -> entityToDtoTransformer.transform2Dto(part))
                                 .collect(Collectors.toList());
                 });
     }
@@ -243,8 +239,8 @@ public class ScenarioController extends AbstractEntityController {
                                              }
                                          }
 
-                                         , output -> FullScenarioDto.from(output.getEntity(),
-                                                                          referenceAssembler));
+                                         ,
+                                         output -> entityToDtoTransformer.transformScenario2Dto(output.getEntity()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

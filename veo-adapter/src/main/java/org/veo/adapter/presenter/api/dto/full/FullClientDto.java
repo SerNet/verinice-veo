@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
@@ -24,7 +23,6 @@ import org.veo.adapter.presenter.api.dto.AbstractClientDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 
@@ -44,10 +42,6 @@ public class FullClientDto extends AbstractClientDto implements IdentifiableDto 
             example = "adf037f1-0089-48ad-9177-92269918758b")
     @ToString.Include
     private String id;
-
-    public static FullClientDto from(@Valid Client asset) {
-        return EntityToDtoTransformer.transformClient2Dto(asset);
-    }
 
     public Client toEntity(DtoToEntityContext tcontext) {
         return DtoToEntityTransformer.transformDto2Client(tcontext, this, Key.uuidFrom(id));

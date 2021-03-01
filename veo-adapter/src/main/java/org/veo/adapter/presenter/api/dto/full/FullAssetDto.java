@@ -16,16 +16,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Key;
 
@@ -45,10 +42,6 @@ public class FullAssetDto extends AbstractAssetDto implements IdentifiableDto {
             example = "adf037f1-0089-48ad-9177-92269918758b")
     @ToString.Include
     private String id;
-
-    public static FullAssetDto from(@Valid Asset asset, ReferenceAssembler referenceAssembler) {
-        return EntityToDtoTransformer.transformAsset2Dto(referenceAssembler, asset);
-    }
 
     public Asset toEntity(DtoToEntityContext tcontext) {
         return DtoToEntityTransformer.transformDto2Asset(tcontext, this, Key.uuidFrom(id));

@@ -27,6 +27,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
@@ -72,32 +74,37 @@ import org.veo.core.entity.Versioned;
  */
 public final class EntityToDtoTransformer {
 
-    public static EntityLayerSupertypeDto transform2Dto(ReferenceAssembler referenceAssembler,
-            EntityLayerSupertype source) {
+    private final ReferenceAssembler referenceAssembler;
+
+    public EntityToDtoTransformer(ReferenceAssembler referenceAssembler) {
+        this.referenceAssembler = referenceAssembler;
+    }
+
+    public EntityLayerSupertypeDto transform2Dto(@Valid EntityLayerSupertype source) {
 
         if (source instanceof Person) {
-            return transformPerson2Dto(referenceAssembler, (Person) source);
+            return transformPerson2Dto((Person) source);
         }
         if (source instanceof Asset) {
-            return transformAsset2Dto(referenceAssembler, (Asset) source);
+            return transformAsset2Dto((Asset) source);
         }
         if (source instanceof Process) {
-            return transformProcess2Dto(referenceAssembler, (Process) source);
+            return transformProcess2Dto((Process) source);
         }
         if (source instanceof Document) {
-            return transformDocument2Dto(referenceAssembler, (Document) source);
+            return transformDocument2Dto((Document) source);
         }
         if (source instanceof Control) {
-            return transformControl2Dto(referenceAssembler, (Control) source);
+            return transformControl2Dto((Control) source);
         }
         if (source instanceof Incident) {
-            return transformIncident2Dto(referenceAssembler, (Incident) source);
+            return transformIncident2Dto((Incident) source);
         }
         if (source instanceof Scenario) {
-            return transformScenario2Dto(referenceAssembler, (Scenario) source);
+            return transformScenario2Dto((Scenario) source);
         }
         if (source instanceof Scope) {
-            return transformScope2Dto(referenceAssembler, (Scope) source);
+            return transformScope2Dto((Scope) source);
         }
         throw new IllegalArgumentException("No transform method defined for " + source.getClass()
                                                                                       .getSimpleName());
@@ -105,92 +112,83 @@ public final class EntityToDtoTransformer {
 
     // Person ->
     // PersonDto
-    public static FullPersonDto transformPerson2Dto(ReferenceAssembler referenceAssembler,
-            Person source) {
+    public FullPersonDto transformPerson2Dto(@Valid Person source) {
         FullPersonDto target = new FullPersonDto();
-        mapCompositeEntity(referenceAssembler, source, target);
+        mapCompositeEntity(source, target);
         return target;
     }
 
     // Asset -> AssetDto
-    public static FullAssetDto transformAsset2Dto(ReferenceAssembler referenceAssembler,
-            Asset source) {
+    public FullAssetDto transformAsset2Dto(@Valid Asset source) {
         FullAssetDto target = new FullAssetDto();
-        mapCompositeEntity(referenceAssembler, source, target);
+        mapCompositeEntity(source, target);
         return target;
     }
 
     // Process ->
     // ProcessDto
-    public static FullProcessDto transformProcess2Dto(ReferenceAssembler referenceAssembler,
-            Process source) {
+    public FullProcessDto transformProcess2Dto(@Valid Process source) {
         FullProcessDto target = new FullProcessDto();
-        mapCompositeEntity(referenceAssembler, source, target);
+        mapCompositeEntity(source, target);
         return target;
     }
 
     // Document ->
     // DocumentDto
-    public static FullDocumentDto transformDocument2Dto(ReferenceAssembler referenceAssembler,
-            Document source) {
+    public FullDocumentDto transformDocument2Dto(@Valid Document source) {
         FullDocumentDto target = new FullDocumentDto();
-        mapCompositeEntity(referenceAssembler, source, target);
+        mapCompositeEntity(source, target);
         return target;
     }
 
     // Control ->
     // ControlDto
-    public static FullControlDto transformControl2Dto(ReferenceAssembler referenceAssembler,
-            Control source) {
+    public FullControlDto transformControl2Dto(@Valid Control source) {
         FullControlDto target = new FullControlDto();
-        mapCompositeEntity(referenceAssembler, source, target);
+        mapCompositeEntity(source, target);
         return target;
     }
 
     // Incident ->
     // IncidentDto
-    public static FullIncidentDto transformIncident2Dto(ReferenceAssembler referenceAssembler,
-            Incident source) {
+    public FullIncidentDto transformIncident2Dto(@Valid Incident source) {
         FullIncidentDto target = new FullIncidentDto();
-        mapCompositeEntity(referenceAssembler, source, target);
+        mapCompositeEntity(source, target);
         return target;
     }
 
     // Scenario ->
     // ScenarioDto
-    public static FullScenarioDto transformScenario2Dto(ReferenceAssembler referenceAssembler,
-            Scenario source) {
+    public FullScenarioDto transformScenario2Dto(@Valid Scenario source) {
         FullScenarioDto target = new FullScenarioDto();
-        mapCompositeEntity(referenceAssembler, source, target);
+        mapCompositeEntity(source, target);
         return target;
     }
 
     // Scope ->
     // ScopeDto
-    public static FullScopeDto transformScope2Dto(ReferenceAssembler referenceAssembler,
-            Scope source) {
+    public FullScopeDto transformScope2Dto(@Valid Scope source) {
         FullScopeDto target = new FullScopeDto();
-        mapEntityLayerSupertype(referenceAssembler, source, target);
-        target.setMembers(convertReferenceSet(source.getMembers(), referenceAssembler));
+        mapEntityLayerSupertype(source, target);
+        target.setMembers(convertReferenceSet(source.getMembers()));
         return target;
     }
 
     // Client ->
     // ClientDto
-    public static FullClientDto transformClient2Dto(Client source) {
+    public FullClientDto transformClient2Dto(@Valid Client source) {
         var target = new FullClientDto();
         target.setId(source.getId()
                            .uuidValue());
         target.setVersion(source.getVersion());
         target.setName(source.getName());
-        target.setDomains(convertSet(source.getDomains(),
-                                     EntityToDtoTransformer::transformDomain2Dto));
+        target.setDomains(convertSet(source.getDomains(), this::transformDomain2Dto));
         return target;
     }
 
     // Domain ->
     // DomainDto
-    public static FullDomainDto transformDomain2Dto(Domain source) {
+    public FullDomainDto transformDomain2Dto(@Valid Domain source) {
         var target = new FullDomainDto();
         target.setId(source.getId()
                            .uuidValue());
@@ -203,8 +201,7 @@ public final class EntityToDtoTransformer {
     }
 
     // Unit -> UnitDto
-    public static FullUnitDto transformUnit2Dto(ReferenceAssembler referenceAssembler,
-            Unit source) {
+    public FullUnitDto transformUnit2Dto(@Valid Unit source) {
         var target = new FullUnitDto();
         target.setId(source.getId()
                            .uuidValue());
@@ -214,7 +211,7 @@ public final class EntityToDtoTransformer {
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
 
-        target.setDomains(convertReferenceSet(source.getDomains(), referenceAssembler));
+        target.setDomains(convertReferenceSet(source.getDomains()));
         if (source.getClient() != null) {
             target.setClient(ModelObjectReference.from(source.getClient(), referenceAssembler));
         }
@@ -227,10 +224,10 @@ public final class EntityToDtoTransformer {
 
     // CustomLink ->
     // CustomLinkDto
-    public static CustomLinkDto transformCustomLink2Dto(ReferenceAssembler referenceAssembler,
-            CustomLink source) {
+    public CustomLinkDto transformCustomLink2Dto(@Valid CustomLink source) {
         var target = new CustomLinkDto();
-        // Copying the set triggers lazy loading right here while the transaction is
+        // Copying the set triggers lazy loading right here while the
+        // transaction is
         // still open, avoiding a LazyInit exception during serialization.
         // TODO VEO-448 Join fetch applicableTo.
         target.setApplicableTo(new HashSet<>(source.getApplicableTo()));
@@ -246,16 +243,16 @@ public final class EntityToDtoTransformer {
 
     }
 
-    private static <TDto extends EntityLayerSupertypeDto & IdentifiableDto> void mapEntityLayerSupertype(
-            ReferenceAssembler referenceAssembler, EntityLayerSupertype source, TDto target) {
+    private <TDto extends EntityLayerSupertypeDto & IdentifiableDto> void mapEntityLayerSupertype(
+            EntityLayerSupertype source, TDto target) {
         target.setId(source.getId()
                            .uuidValue());
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
 
-        target.setDomains(convertReferenceSet(source.getDomains(), referenceAssembler));
-        target.setLinks(mapLinks(source.getLinks(), referenceAssembler));
+        target.setDomains(convertReferenceSet(source.getDomains()));
+        target.setLinks(mapLinks(source.getLinks()));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects()));
         // TODO VEO-382 inject AspectTransformer
         new SubTypeTransformer().mapSubTypesToDto(source, target);
@@ -265,17 +262,18 @@ public final class EntityToDtoTransformer {
         }
     }
 
-    private static <TEntity extends EntityLayerSupertype, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(
-            ReferenceAssembler referenceAssembler, CompositeEntity<TEntity> source, TDto target) {
-        mapEntityLayerSupertype(referenceAssembler, source, target);
-        target.setParts(convertReferenceSet(source.getParts(), referenceAssembler));
+    private <TEntity extends EntityLayerSupertype, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(
+            CompositeEntity<TEntity> source, TDto target) {
+        mapEntityLayerSupertype(source, target);
+        target.setParts(convertReferenceSet(source.getParts()));
     }
 
     // CustomProperties ->
     // CustomPropertiesDto
-    public static CustomPropertiesDto transformCustomProperties2Dto(CustomProperties source) {
+    public CustomPropertiesDto transformCustomProperties2Dto(@Valid CustomProperties source) {
         var target = new CustomPropertiesDto();
-        // Copying the set triggers lazy loading right here while the transaction is
+        // Copying the set triggers lazy loading right here while the
+        // transaction is
         // still open, avoiding a LazyInit exception during serialization.
         // TODO VEO-448 Join fetch applicableTo.
         target.setApplicableTo(new HashSet<>(source.getApplicableTo()));
@@ -305,33 +303,27 @@ public final class EntityToDtoTransformer {
                     .collect(Collectors.toSet());
     }
 
-    private static <T extends ModelObject> Set<ModelObjectReference<T>> convertReferenceSet(
-            Set<T> domains, ReferenceAssembler referenceAssembler) {
+    private <T extends ModelObject> Set<ModelObjectReference<T>> convertReferenceSet(
+            Set<T> domains) {
         return domains.stream()
                       .map(o -> ModelObjectReference.from(o, referenceAssembler))
                       .collect(Collectors.toSet());
     }
 
-    private static Map<String, List<CustomLinkDto>> mapLinks(Set<CustomLink> links,
-            ReferenceAssembler referenceAssembler) {
+    private Map<String, List<CustomLinkDto>> mapLinks(Set<CustomLink> links) {
         return links.stream()
                     .collect(groupingBy(CustomLink::getType))
                     .entrySet()
                     .stream()
                     .collect(toMap(Map.Entry::getKey, entry -> entry.getValue()
                                                                     .stream()
-                                                                    .map(link -> transformCustomLink2Dto(referenceAssembler,
-                                                                                                         link))
+                                                                    .map(link -> transformCustomLink2Dto(link))
                                                                     .collect(toList())));
     }
 
-    private static Map<String, CustomPropertiesDto> mapCustomAspects(
-            Set<CustomProperties> customAspects) {
+    private Map<String, CustomPropertiesDto> mapCustomAspects(Set<CustomProperties> customAspects) {
         return customAspects.stream()
                             .collect(toMap(CustomProperties::getType,
-                                           EntityToDtoTransformer::transformCustomProperties2Dto));
-    }
-
-    private EntityToDtoTransformer() {
+                                           this::transformCustomProperties2Dto));
     }
 }

@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -155,8 +154,7 @@ public class ScopeController extends AbstractEntityController {
             GetEntitiesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getScopesUseCase, inputData, output -> output.getEntities()
                                                                                       .stream()
-                                                                                      .map(u -> FullScopeDto.from(u,
-                                                                                                                  referenceAssembler))
+                                                                                      .map(u -> entityToDtoTransformer.transformScope2Dto(u))
                                                                                       .collect(Collectors.toList()));
     }
 
@@ -177,8 +175,7 @@ public class ScopeController extends AbstractEntityController {
                                                                                 new GetScopeUseCase.InputData(
                                                                                         Key.uuidFrom(uuid),
                                                                                         client),
-                                                                                output -> FullScopeDto.from(output.getScope(),
-                                                                                                            referenceAssembler));
+                                                                                output -> entityToDtoTransformer.transformScope2Dto(output.getScope()));
         return scopeFuture.thenApply(scopeDto -> ResponseEntity.ok()
                                                                .eTag(ETag.from(scopeDto.getId(),
                                                                                scopeDto.getVersion()))
@@ -203,8 +200,7 @@ public class ScopeController extends AbstractEntityController {
                                              Scope scope = output.getScope();
                                              return scope.getMembers()
                                                          .stream()
-                                                         .map(member -> EntityToDtoTransformer.transform2Dto(referenceAssembler,
-                                                                                                             member))
+                                                         .map(member -> entityToDtoTransformer.transform2Dto(member))
                                                          .collect(Collectors.toList());
                                          });
     }
@@ -253,8 +249,8 @@ public class ScopeController extends AbstractEntityController {
                                              return new UpdateScopeUseCase.InputData<>(
                                                      scopeDto.toEntity(tcontext), client, eTag,
                                                      user.getUsername());
-                                         }, output -> FullScopeDto.from(output.getEntity(),
-                                                                        referenceAssembler));
+                                         },
+                                         output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));
     }
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

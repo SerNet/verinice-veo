@@ -79,8 +79,9 @@ public class CustomPropertiesDto {
 
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
-    public static CustomPropertiesDto from(@Valid CustomProperties control) {
-        return EntityToDtoTransformer.transformCustomProperties2Dto(control);
+    public static CustomPropertiesDto from(@Valid CustomProperties control,
+            EntityToDtoTransformer entityToDtoTransformer) {
+        return entityToDtoTransformer.transformCustomProperties2Dto(control);
     }
 
     // maybe this is the best way to handle this.

@@ -20,7 +20,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.EntitySchemaService;
@@ -374,5 +376,10 @@ public class ModuleConfiguration {
     @Bean
     public AuthAwareImpl authAwareImpl() {
         return new AuthAwareImpl();
+    }
+
+    @Bean
+    public EntityToDtoTransformer entityToDtoTransformer(ReferenceAssembler referenceAssembler) {
+        return new EntityToDtoTransformer(referenceAssembler);
     }
 }

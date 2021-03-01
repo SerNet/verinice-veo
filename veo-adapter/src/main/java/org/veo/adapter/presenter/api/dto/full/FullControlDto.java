@@ -16,16 +16,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 
@@ -45,11 +42,6 @@ public class FullControlDto extends AbstractControlDto implements IdentifiableDt
             example = "adf037f1-0089-48ad-9177-92269918758b")
     @ToString.Include
     private String id;
-
-    public static FullControlDto from(@Valid Control control,
-            ReferenceAssembler referenceAssembler) {
-        return EntityToDtoTransformer.transformControl2Dto(referenceAssembler, control);
-    }
 
     public Control toEntity(DtoToEntityContext tcontext) {
         return DtoToEntityTransformer.transformDto2Control(tcontext, this, Key.uuidFrom(id));
