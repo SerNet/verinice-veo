@@ -22,6 +22,7 @@ import javax.persistence.PersistenceContext
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.jpa.AssetDataRepository
+import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
@@ -39,6 +40,9 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
     @Autowired
     UnitDataRepository unitRepository
 
+    @Autowired
+    ClientDataRepository clientRepository
+
     @PersistenceContext
     private EntityManager entityManager
 
@@ -47,9 +51,10 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
     UnitData owner2
 
     def setup() {
-        owner0 = unitRepository.save(newUnit(null))
-        owner1 = unitRepository.save(newUnit(null))
-        owner2 = unitRepository.save(newUnit(null))
+        def client = clientRepository.save(newClient())
+        owner0 = unitRepository.save(newUnit(client))
+        owner1 = unitRepository.save(newUnit(client))
+        owner2 = unitRepository.save(newUnit(client))
     }
 
     def 'finds entities by owners'() {

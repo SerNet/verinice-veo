@@ -657,13 +657,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "deleting a composite asset does not delete its parts"() {
 
         given: "an asset and a composite that contains it"
-        def asset = txTemplate.execute {
-            assetRepository.save(newAsset(unit))
-        }
-        def composite = txTemplate.execute {
-            assetRepository.save(newAsset(unit) {
+        def (asset, composite) = txTemplate.execute {
+            def asset = assetRepository.save(newAsset(unit))
+            def composite = assetRepository.save(newAsset(unit) {
                 parts = [asset]
             })
+            [asset, composite]
         }
         when: "a delete request is sent to the server"
 

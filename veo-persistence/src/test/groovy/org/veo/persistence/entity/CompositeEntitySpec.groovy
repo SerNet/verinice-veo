@@ -171,16 +171,14 @@ class CompositeEntitySpec extends VeoSpec {
         composite.parts.first() == composite
     }
 
-    @Ignore("TODO VEO-384 restore guard clause when adding parts from other clients to a composite")
     def "A composite cannot be created with elements from different clients"() {
         given: "a set of two processes from different clients"
         Client client2 = newClient()
-        Unit unit2 = newUnit(client)
-        unit2.client = client2
+        Unit unit2 = newUnit(client2)
 
         def processes = [
             newProcess(unit),
-            newProcess(unit)
+            newProcess(unit2)
         ] as Set
 
         when: "a composite is reinstantiated with the processes:"
@@ -191,13 +189,12 @@ class CompositeEntitySpec extends VeoSpec {
         thrown ClientBoundaryViolationException
     }
 
-    @Ignore("TODO VEO-384 restore guard clause when adding parts from other clients to a composite")
     def "A composite part from another client cannot be added"() {
         given: "a set of two processes from different clients"
         Client client2 = newClient()
-        Unit unit2 = newUnit(client)
+        Unit unit2 = newUnit(client2)
         def p1 = newProcess(unit)
-        def p2 = newProcess(unit)
+        def p2 = newProcess(unit2)
 
         when: "a new composite is created"
         def processComposite = newProcess(unit)

@@ -308,13 +308,12 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "deleting a part of a composite document does not delete the composite itself"() {
         given: "a document and a composite that contains it"
-        def document = txTemplate.execute {
-            documentRepository.save(newDocument(unit))
-        }
-        def composite = txTemplate.execute {
-            documentRepository.save(newDocument(unit) {
+        def (document, composite) = txTemplate.execute {
+            def document = documentRepository.save(newDocument(unit))
+            def composite = documentRepository.save(newDocument(unit) {
                 parts = [document]
             })
+            [document, composite]
         }
 
         when: "a delete request is sent to the server"
