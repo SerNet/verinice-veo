@@ -146,7 +146,6 @@ class TransformerSpec extends Specification {
 
     def "Transform Client to ClientDto"() {
         given: "A Client with a unit"
-        def unit = createUnit()
 
         Domain domain = Mock()
         domain.getName()>>domainName
@@ -159,7 +158,6 @@ class TransformerSpec extends Specification {
         Client client = Mock()
         client.getId()>>Key.uuidFrom(clientId)
         client.getDomains() >> [domain]
-        client.getUnits()>>[unit]
         client.getName()>> clientName
         client.getCreatedAt() >> Instant.now()
         client.getUpdatedAt() >> Instant.now()
@@ -168,8 +166,11 @@ class TransformerSpec extends Specification {
         def clientDto = entityToDtoTransformer.transformClient2Dto(client)
 
         then: "The DTO contains all required data"
-        unit.id.uuidValue() == unitId
-        unit.name == unitName
+        clientDto.id == clientId
+        clientDto.name == clientName
+        clientDto.domains.size() == 1
+        clientDto.domains.first().id == domainId
+
     }
 
     def "Transform ClientDto to Client"() {
