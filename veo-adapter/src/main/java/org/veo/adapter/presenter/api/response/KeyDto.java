@@ -31,7 +31,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class KeyDto {
 
     @Pattern(regexp = Patterns.UUID,
-             flags = Pattern.Flag.CASE_INSENSITIVE,
              message = "ID can be null (for new entities) or a valid UUID string following RFC 4122. If a UUID is"
                      + "given during creation of a new entity, it will be used as ID for the generated object. "
                      + "When the same UUID is already present in the system an error will be raised instead.")
