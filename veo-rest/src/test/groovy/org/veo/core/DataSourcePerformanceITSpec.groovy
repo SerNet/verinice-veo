@@ -400,6 +400,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         client = clientRepository.save(client)
         unit = unitRepository.save(unit)
+        unit.client = client
     }
 
     @Transactional
