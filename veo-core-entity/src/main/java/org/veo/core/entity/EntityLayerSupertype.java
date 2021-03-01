@@ -17,6 +17,7 @@
 package org.veo.core.entity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -103,7 +104,11 @@ public interface EntityLayerSupertype extends ModelObject {
      *             which the entity belongs
      */
     default void checkSameClient(Client client) {
-        if (!(new SameClientSpecification<>(client).isSatisfiedBy(getOwner().getClient()))) {
+        Objects.requireNonNull(client, "client must not be null");
+        Unit thisEntitysOwner = Objects.requireNonNull(getOwner(), "No owner set for " + this);
+        Client thisEntitysClient = Objects.requireNonNull(thisEntitysOwner.getClient(),
+                                                          "No client set for " + thisEntitysOwner);
+        if (!(new SameClientSpecification<>(client).isSatisfiedBy(thisEntitysClient))) {
             throw new ClientBoundaryViolationException("The client boundary would be "
                     + "violated by the attempted operation on element: " + toString()
                     + " from client " + client.toString());
