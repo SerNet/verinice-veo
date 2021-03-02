@@ -166,10 +166,10 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         }
 
         when: "transforming the DTO to an entity"
-        def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, Key.uuidFrom(compositeAssetDto.id), modelObjectReferenceResolver)
+        def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, modelObjectReferenceResolver)
 
         then: "the composite entity is transformed with parts"
-        1 * factory.createAsset(compositeAssetId, "Composite Asset", null) >> newCompositeAssetEntity
+        1 * factory.createAsset("Composite Asset", null) >> newCompositeAssetEntity
         1 * modelObjectReferenceResolver.resolve(asset1Ref) >> asset1
         1 * modelObjectReferenceResolver.resolve(asset2Ref) >> asset2
         result == newCompositeAssetEntity

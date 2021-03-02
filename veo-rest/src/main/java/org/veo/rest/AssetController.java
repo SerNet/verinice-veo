@@ -232,7 +232,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Asset(dto,
-                                                                                               null,
+
                                                                                                modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
@@ -259,7 +259,6 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                                  ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Asset>(
                                                          dtoToEntityTransformer.transformDto2Asset(assetDto,
-                                                                                                   Key.uuidFrom(assetDto.getId()),
                                                                                                    modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }

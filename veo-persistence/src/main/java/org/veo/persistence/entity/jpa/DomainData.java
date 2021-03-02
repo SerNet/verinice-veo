@@ -18,8 +18,12 @@ package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -32,6 +36,12 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class DomainData extends BaseModelObjectData implements NameableData, Domain {
+
+    @Id
+    @ToString.Include
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String dbId;
 
     @NotNull
     @ToString.Include

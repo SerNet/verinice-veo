@@ -35,6 +35,7 @@ import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.repository.ScenarioRepository
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -72,6 +73,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     private ScopeRepositoryImpl scopeRepository
 
     @Autowired
+    private DomainRepositoryImpl domainRepository
+
+    @Autowired
     TransactionTemplate txTemplate
 
     private Unit unit
@@ -82,22 +86,23 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
+            def client = clientRepository.save(newClient {
+                id = clientId
+            })
+
+            domain = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
+            })
 
-            domain1 = newDomain {
+            domain1 = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
-
-            def client = newClient {
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
+            })
 
             unit = newUnit(client) {
                 name = "Test unit"

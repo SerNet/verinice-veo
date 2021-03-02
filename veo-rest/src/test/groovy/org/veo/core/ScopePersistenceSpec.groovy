@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -50,18 +49,14 @@ class ScopePersistenceSpec extends VeoSpringSpec {
 
     def "save a scope"() {
         given: "a client and a unit"
-        def client = newClient()
-        def unit = newUnit(client)
-        clientRepository.save(client)
-        unitRepository.save(unit)
+        def client = clientRepository.save(newClient())
+        def unit = unitRepository.save(newUnit(client))
 
         when:
-        def scopeId = Key.newUuid()
-
         def john = newPerson(unit)
         def jane = newPerson(unit)
 
-        def scope = factory.createScope(scopeId, 'My scope', unit)
+        def scope = factory.createScope( 'My scope', unit)
         scope.version("user", null)
 
         scope.with {
@@ -75,7 +70,7 @@ class ScopePersistenceSpec extends VeoSpringSpec {
         scope.members  == [john, jane] as Set
 
         when:
-        scope = scopeRepository.findById(scopeId)
+        scope = scopeRepository.findById(scope.id)
         then:
         scope.present
         scope.get().name == 'My scope'

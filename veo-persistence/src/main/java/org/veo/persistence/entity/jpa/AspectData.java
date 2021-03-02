@@ -16,14 +16,15 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.UUID;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
@@ -50,8 +51,9 @@ public abstract class AspectData implements Aspect {
 
     @Id
     @ToString.Include
-    private String dbId = UUID.randomUUID()
-                              .toString();
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String dbId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)

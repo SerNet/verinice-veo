@@ -133,10 +133,10 @@ class TransformerSpec extends Specification {
         u.name >> unitName
 
 
-        factory.createUnit(_,_,_) >> u
+        factory.createUnit(_,_) >> u
 
         when: "The parent unit DTO is transformed into a unit"
-        def unit = dtoToEntityTransformer.transformDto2Unit( unitDto, Key.uuidFrom(unitDto.id), modelObjectReferenceResolver)
+        def unit = dtoToEntityTransformer.transformDto2Unit( unitDto, modelObjectReferenceResolver)
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId
@@ -196,8 +196,8 @@ class TransformerSpec extends Specification {
         c.name >> clientName
         c.domains >> [d]
 
-        factory.createClient(c.id,clientName) >> c
-        factory.createDomain(d.id,domainName) >> d
+        factory.createClient(c.id, clientName) >> c
+        factory.createDomain(domainName) >> d
 
         when: "the DTO is transformed into a Client"
 

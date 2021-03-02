@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.entity.Domain
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.DomainDataRepository
 
 class AspectJpaSpec extends AbstractJpaSpec {
     @Autowired
@@ -30,15 +31,22 @@ class AspectJpaSpec extends AbstractJpaSpec {
     @Autowired
     ClientDataRepository clientDataRepository
 
+    @Autowired
+    DomainDataRepository domainRepository
+
     Domain domain0
     Domain domain1
 
     def setup() {
-        domain0 = newDomain {}
-        domain1 = newDomain {}
-        clientDataRepository.save(newClient {
-            domains = [domain0, domain1]
+        def client = clientDataRepository.save(newClient())
+        domain0 = domainRepository.save(newDomain{
+            owner = client
         })
+        domain1 = domainRepository.save(newDomain{
+            owner = client
+        })
+        client.domains = [domain0, domain1]
+        client = clientDataRepository.save(client)
     }
 
     def 'aspect is inserted'() {
@@ -66,7 +74,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
         when: "changing the sub type for domain 1, saving & retrieving"
         asset.setSubType(domain1, "tar")
         assetRepository.save(asset)
-        def retrievedAsset = assetRepository.findById(asset.dbId);
+        def retrievedAsset = assetRepository.findById(asset.dbId)
         then: "the new sub type has been applied"
         with(retrievedAsset.get().subTypeAspects.sort{it.subType}) {
             size() == 2

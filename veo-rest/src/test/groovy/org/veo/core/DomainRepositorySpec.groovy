@@ -24,6 +24,7 @@ import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.Domain
 import org.veo.persistence.access.DomainRepositoryImpl
+import org.veo.persistence.access.jpa.DomainDataRepository
 
 @SpringBootTest(classes = DomainRepositorySpec.class)
 @ComponentScan("org.veo")
@@ -31,6 +32,9 @@ class DomainRepositorySpec extends VeoSpringSpec {
 
     @Autowired
     private DomainRepositoryImpl domainRepository
+
+    @Autowired
+    private DomainDataRepository domainDataRepository
 
 
     def "cannot violate the composition association between Client and Domain"() {
@@ -47,10 +51,7 @@ class DomainRepositorySpec extends VeoSpringSpec {
         then: "an exception is raised"
         thrown(ConstraintViolationException)
 
-        when: "the domain is loaded"
-        def savedDomain = domainRepository.findById(domain.id)
-
-        then: "it was not saved"
-        savedDomain.isEmpty()
+        and: "it was not saved"
+        domainDataRepository.findAll().empty
     }
 }

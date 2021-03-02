@@ -212,7 +212,6 @@ public class ScopeController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scope(createScopeDto,
-                                                                                               null,
                                                                                                modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
@@ -244,7 +243,6 @@ public class ScopeController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new UpdateScopeUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scope(scopeDto,
-                                                                                               Key.uuidFrom(scopeDto.getId()),
                                                                                                modelObjectReferenceResolver),
                                                      client, eTag, user.getUsername());
                                          },

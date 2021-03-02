@@ -37,8 +37,8 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -66,6 +66,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     private ControlRepositoryImpl controlRepository
 
     @Autowired
+    private DomainRepositoryImpl domainRepository
+
+    @Autowired
     TransactionTemplate txTemplate
 
     private Unit unit
@@ -76,30 +79,27 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
+            def client = clientRepository.save(newClient {
+                id = clientId
+            })
+
+            domain = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
+            })
 
-            domain1 = newDomain {
+            domain1 = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
+            })
 
-            def client= newClient {
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
-
-            unit = newUnit(client) {
+            unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
-            }
-
-            unit.client = client
-            clientRepository.save(client)
-            unitRepository.save(unit)
+            })
         }
         ETag.setSalt(salt)
     }
@@ -331,7 +331,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(control.id.uuidValue(), 1)
+            'If-Match': ETag.from(control.id.uuidValue(), control.version)
         ]
         def results = put("/controls/${control.id.uuidValue()}", request, headers)
 
@@ -389,7 +389,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(control.id.uuidValue(), 1)
+            'If-Match': ETag.from(control.id.uuidValue(), control.version)
         ]
         def results = put("/controls/${control.id.uuidValue()}", request, headers)
 

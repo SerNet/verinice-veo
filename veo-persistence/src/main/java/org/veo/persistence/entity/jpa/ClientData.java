@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import org.veo.core.entity.Client;
@@ -37,6 +38,10 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ClientData extends BaseModelObjectData implements Client {
+
+    @Id
+    @ToString.Include
+    private String dbId;
 
     @Column(name = "name")
     @ToString.Include

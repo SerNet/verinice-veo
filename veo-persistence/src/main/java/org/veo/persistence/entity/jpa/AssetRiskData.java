@@ -26,7 +26,6 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.ModelConsistencyException;
@@ -49,8 +48,6 @@ public class AssetRiskData extends AbstractRiskData implements AssetRisk {
     AssetRiskData(@NotNull @NonNull Asset asset, @NotNull Scenario scenario, Domain domain) {
         super(scenario);
         this.asset = asset;
-        setDbId(Key.newUuid()
-                   .uuidValue());
         setVersion(0);
         addToDomains(domain);
     }

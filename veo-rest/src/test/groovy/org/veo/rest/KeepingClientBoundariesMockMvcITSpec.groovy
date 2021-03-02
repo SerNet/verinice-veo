@@ -83,24 +83,17 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
 
-            client = newClient {
+            client = clientRepository.save(newClient {
+                id = clientId
                 name = "Test Client"
-            }
-            client.id = clientId
+            })
 
-            unit = newUnit(client) {
+            unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
-            }
-            unit.id = Key.newUuid()
+            })
 
-            clientRepository.save(client)
-            unitRepository.save(unit)
-
-            otherClient = newClient()
-            clientRepository.save(otherClient)
-
-            otherClientsUnit = newUnit(otherClient)
-            unitRepository.save(otherClientsUnit)
+            otherClient = clientRepository.save(newClient())
+            otherClientsUnit = unitRepository.save(newUnit(otherClient))
         }
         ETag.setSalt(salt)
     }

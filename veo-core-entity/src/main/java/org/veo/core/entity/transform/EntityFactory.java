@@ -40,32 +40,32 @@ import org.veo.core.entity.Unit;
 public interface EntityFactory {
     CustomProperties createCustomProperties();
 
-    Person createPerson(Key<UUID> id, String name, Unit unit);
+    Person createPerson(String name, Unit unit);
 
-    Process createProcess(Key<UUID> id, String name, Unit unit);
+    Process createProcess(String name, Unit unit);
 
     Client createClient(Key<UUID> id, String name);
 
-    Asset createAsset(Key<UUID> id, String name, Unit unit);
+    Asset createAsset(String name, Unit unit);
 
-    Control createControl(Key<UUID> id, String name, Unit unit);
+    Control createControl(String name, Unit unit);
 
-    Incident createIncident(Key<UUID> key, String name, Unit unit);
+    Incident createIncident(String name, Unit unit);
 
-    Scenario createScenario(Key<UUID> key, String name, Unit unit);
+    Scenario createScenario(String name, Unit unit);
 
-    Unit createUnit(Key<UUID> id, String name, Unit unit);
+    Unit createUnit(String name, Unit unit);
 
-    Document createDocument(Key<UUID> id, String name, Unit parent);
+    Document createDocument(String name, Unit parent);
 
     /**
      * Reconstitutes a domain without the reference to its owning client. Adding it
      * to a client is the caller's responsibility.
      */
-    Domain createDomain(Key<UUID> id, String name);
+    Domain createDomain(String name);
 
     CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource);
 
-    Scope createScope(Key<UUID> key, String name, Unit owner);
+    Scope createScope(String name, Unit owner);
 }

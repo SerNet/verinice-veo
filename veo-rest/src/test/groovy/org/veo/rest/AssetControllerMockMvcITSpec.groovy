@@ -41,6 +41,7 @@ import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -82,6 +83,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     private UnitRepositoryImpl unitRepository
 
     @Autowired
+    private DomainRepositoryImpl domainRepository
+
+    @Autowired
     TransactionTemplate txTemplate
 
     private Unit unit
@@ -93,34 +97,32 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
+            def client= clientRepository.save(newClient {
+                id = clientId
+            })
+
+            domain = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
+            })
 
-            domain1 = newDomain {
+            domain1 = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
+            })
 
-            def client= newClient {
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
 
-            unit = newUnit(client) {
+            unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
-            }
+            })
 
-            unit2 = newUnit(client) {
+            unit2 = unitRepository.save(newUnit(client) {
                 name = "Unit2"
-            }
-
-            clientRepository.save(client)
-            unitRepository.save(unit)
-            unitRepository.save(unit2)
+            })
         }
         ETag.setSalt(salt)
     }
@@ -517,7 +519,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(asset.id.uuidValue(), 1)
+            'If-Match': ETag.from(asset.id.uuidValue(), asset.version)
         ]
         def results = put("/assets/${asset.id.uuidValue()}", request, headers)
 
@@ -578,7 +580,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(asset.id.uuidValue(), 1)
+            'If-Match': ETag.from(asset.id.uuidValue(), asset.version)
         ]
 
         def results = put("/assets/${asset.id.uuidValue()}",request, headers)

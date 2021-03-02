@@ -33,6 +33,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.IncidentRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -62,6 +63,9 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     private IncidentRepositoryImpl incidentRepository
 
     @Autowired
+    private DomainRepositoryImpl domainRepository
+
+    @Autowired
     TransactionTemplate txTemplate
 
     private Unit unit
@@ -72,20 +76,21 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
+            def client = clientRepository.save(newClient {
+                id = clientId
+            })
+
+            domain = domainRepository.save(newDomain {
+                owner = client
                 abbreviation = "D"
                 name = "Domain"
-            }
+            })
 
-            domain1 = newDomain {
+            domain1 = domainRepository.save(newDomain {
+                owner = client
                 abbreviation = "D1"
                 name = "Domain 1"
-            }
-
-            def client= newClient {
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
+            })
 
             unit = newUnit(client) {
                 name = "Test unit"
@@ -237,7 +242,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(incident.id.uuidValue(), 1)
+            'If-Match': ETag.from(incident.id.uuidValue(), incident.version)
         ]
         def results = put("/incidents/${incident.id.uuidValue()}", request, headers)
 

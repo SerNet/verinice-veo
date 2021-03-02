@@ -34,7 +34,7 @@ class AssetSpec extends VeoSpec {
     def setup() {
         entityFactory = new EntityDataFactory()
         this.client = entityFactory.createClient(Key.newUuid(), "client")
-        this.unit = entityFactory.createUnit(Key.newUuid(), "unit", null)
+        this.unit = entityFactory.createUnit("unit", null)
         this.unit.setClient(client)
     }
 

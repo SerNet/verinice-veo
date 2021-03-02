@@ -183,7 +183,6 @@ public class ProcessController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Process(dto,
-                                                                                                 null,
                                                                                                  modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }
@@ -212,7 +211,6 @@ public class ProcessController extends AbstractEntityController {
                                                  ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Process>(
                                                          dtoToEntityTransformer.transformDto2Process(processDto,
-                                                                                                     Key.uuidFrom(processDto.getId()),
                                                                                                      modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }

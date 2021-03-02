@@ -47,8 +47,8 @@ class CompositeEntityJpaSpec extends AbstractJpaSpec {
     Unit unit
 
     def setup() {
-        client = newClient()
-        unit = newUnit(client)
+        client = clientRepository.save(newClient())
+        unit = unitRepository.save(newUnit(client))
     }
 
     def "circular composites are supported"() {
@@ -59,8 +59,6 @@ class CompositeEntityJpaSpec extends AbstractJpaSpec {
                 parts = [composite1]
             }
             composite1.addPart(composite2)
-            clientRepository.save(client)
-            unitRepository.save(unit)
             assetDataRepository.save(composite1).id.uuidValue()
         }
 

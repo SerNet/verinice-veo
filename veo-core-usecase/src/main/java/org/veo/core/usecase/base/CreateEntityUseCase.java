@@ -49,7 +49,6 @@ public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> 
     public CreateEntityUseCase.OutputData<TEntity> execute(
             CreateEntityUseCase.InputData<TEntity> input) {
         var entity = input.getNewEntity();
-        entity.setId(Key.newUuid());
         Unit unit = unitRepository.findById(entity.getOwner()
                                                   .getId())
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",

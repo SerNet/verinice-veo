@@ -29,6 +29,7 @@ import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 @SpringBootTest(classes = ClientRepositorySpec.class)
@@ -41,20 +42,23 @@ class ClientRepositorySpec extends VeoSpringSpec {
     @Autowired
     private UnitRepositoryImpl unitRepository
 
+    @Autowired
+    private DomainRepositoryImpl domainRepository
+
     def "create a simple client and a domain together"() {
 
         given: "a domain and a client"
+        Client client = repository.save(newClient {
+            name = "Demo Client"
+        })
+
         Domain domain = newDomain {
+            owner = client
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
         }
-
-        Client client = newClient {
-            name = "Demo Client"
-            domains = [domain] as Set
-        }
-
+        client.addToDomains(domain)
         repository.save(client)
 
         when: "the client is retrieved from the database"
@@ -92,19 +96,17 @@ class ClientRepositorySpec extends VeoSpringSpec {
         given: "a domain and a client"
 
         Key clientId = Key.newUuid()
+        Client client = repository.save(newClient {
+            id = clientId
+        })
         Domain domain = newDomain {
+            owner = client
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
         }
-
-        Client client = newClient {
-            id = clientId
-            setDomains(([domain] as Set))
-        }
-
+        client.addToDomains(domain)
         repository.save(client)
-
         when: "loaded from db"
 
         Optional<Client> newClient = repository.findById(clientId)
@@ -132,17 +134,18 @@ class ClientRepositorySpec extends VeoSpringSpec {
         given: "a domain and a client"
 
         Key clientId = Key.newUuid()
-        Domain domain = newDomain {
+        Client client = repository.save(newClient{
+            id = clientId
+        })
+        Domain domain = domainRepository.save(newDomain {
+            owner = client
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
-        }
+        })
+        client.addToDomains(domain)
+        client = repository.save(client)
 
-
-        Client client = newClient{
-            id = clientId
-            domains = ([domain] as Set)
-        }
 
         Unit unit = newUnit(client) {
             name = "u1"
@@ -167,7 +170,8 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         when:"save and load the client"
 
-        repository.save(client)
+        client = repository.save(client)
+        unit.client = client
         unitRepository.save(unit)
 
         Client newClient = repository.findById(clientId).get()

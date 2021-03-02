@@ -25,6 +25,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
 import org.veo.core.usecase.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WebMvcSecurityConfiguration])
@@ -33,6 +34,9 @@ class SubTypeMvcSpec extends VeoMvcSpec {
 
     @Autowired
     ClientRepositoryImpl clientRepository
+
+    @Autowired
+    DomainRepositoryImpl domainRepository
 
     @Autowired
     UnitRepository unitRepository
@@ -45,11 +49,13 @@ class SubTypeMvcSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            def domain = newDomain {}
             def client = clientRepository.save(newClient {
                 id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-                domains = [domain]
             })
+            def domain = domainRepository.save(newDomain {
+                owner = client
+            })
+            client.addToDomains(domain)
             domainId = domain.id.uuidValue()
             unitId = unitRepository.save(newUnit(client)).id.uuidValue()
         }

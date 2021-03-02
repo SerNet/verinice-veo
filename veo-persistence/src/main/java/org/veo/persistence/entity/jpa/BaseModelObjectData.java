@@ -16,11 +16,9 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import static java.util.Objects.requireNonNullElse;
-
+import java.util.Optional;
 import java.util.UUID;
 
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import org.veo.core.entity.Key;
@@ -41,18 +39,16 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public abstract class BaseModelObjectData extends VersionedData implements ModelObject {
 
-    @Id
-    @ToString.Include
-    private String dbId;
-
     @Override
     public Key<UUID> getId() {
-        return Key.uuidFrom(dbId);
+        return Key.uuidFrom(getDbId());
     }
 
     @Override
     public void setId(Key<UUID> id) {
-        this.dbId = requireNonNullElse(id, Key.NIL_UUID).uuidValue();
+        setDbId(Optional.ofNullable(id)
+                        .map(Key::uuidValue)
+                        .orElse(null));
     }
 
     @Override
@@ -71,6 +67,7 @@ public abstract class BaseModelObjectData extends VersionedData implements Model
         // (persisted and detached) entities have an identity. JPA requires that
         // an entity's identity remains the same over all state changes.
         // Therefore a transient entity must never equal another entity.
+        String dbId = getDbId();
         return dbId != null && dbId.equals(other.getDbId());
     }
 

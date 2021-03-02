@@ -37,6 +37,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
@@ -63,6 +64,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     private ClientRepositoryImpl repository
 
     @Autowired
+    private DomainRepositoryImpl domainRepository
+
+    @Autowired
     private TransactionTemplate txTemplate
 
     private Client client
@@ -72,16 +76,16 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
-        domain = newDomain {
+        client = repository.save(newClient {
+            id = clientId
+        })
+        domain = domainRepository.save(newDomain {
+            owner = client
             description = "ISO/IEC"
             abbreviation = "ISO"
             name = "27001"
-        }
-
-        client = repository.save(newClient {
-            id = clientId
-            domains = [domain] as Set
         })
+        client.addToDomains(domain)
     }
 
     @WithUserDetails("user@domain.example")
@@ -329,7 +333,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "trying to update the parent with an empty sub unit list"
-        def parentUnitETag = parseETag(get("/units/$parentUnitId"));
+        def parentUnitETag = parseETag(get("/units/$parentUnitId"))
         put("/units/$parentUnitId", [
             id: parentUnitId,
             name: "parent",

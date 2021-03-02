@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -33,6 +34,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -66,6 +68,8 @@ public abstract class AbstractRiskData implements AbstractRisk {
 
     @Id
     @ToString.Include
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
 
     @ToString.Include

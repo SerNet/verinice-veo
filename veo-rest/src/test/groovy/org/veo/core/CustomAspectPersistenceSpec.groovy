@@ -59,13 +59,12 @@ class CustomAspectPersistenceSpec extends VeoSpec {
             applicableTo = ['Asset'] as Set
         }
 
-        Client client = newClient()
+        Client client = clientRepository.save(newClient())
         Unit unit = newUnit(client)
         Asset asset = newAsset(unit) {
             customAspects = [cp] as Set
         }
 
-        clientRepository.save(client)
         unitRepository.save(unit)
         assetRepository.save(asset)
 

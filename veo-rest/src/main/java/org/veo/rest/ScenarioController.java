@@ -205,7 +205,6 @@ public class ScenarioController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scenario(dto,
-                                                                                                  null,
                                                                                                   modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
@@ -232,7 +231,6 @@ public class ScenarioController extends AbstractEntityController {
                                                  ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new InputData<Scenario>(
                                                          dtoToEntityTransformer.transformDto2Scenario(scenarioDto,
-                                                                                                      Key.uuidFrom(scenarioDto.getId()),
                                                                                                       modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }

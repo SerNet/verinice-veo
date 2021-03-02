@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.NameableInputData
@@ -47,8 +46,8 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.empty()
         1 * entityFactory.createClient(_,_) >> existingClient
         1 * existingClient.version(USER_NAME, null)
-        1 * entityFactory.createUnit(_,_,_) >> newUnit1
-        1 * entityFactory.createDomain(_,_) >> existingDomain
+        1 * entityFactory.createUnit(_,_) >> newUnit1
+        1 * entityFactory.createDomain(_) >> existingDomain
 
         and: "a new client was then correctly created and stored"
         1 * newUnit1.version(USER_NAME, null)
@@ -71,7 +70,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         newUnit1.name >> "New unit"
         newUnit1.parent >> existingUnit
 
-        entityFactory.createUnit(_,_,_) >> newUnit1
+        entityFactory.createUnit(_,_) >> newUnit1
 
         and: "a parent unit in an existing client"
         def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), USER_NAME)

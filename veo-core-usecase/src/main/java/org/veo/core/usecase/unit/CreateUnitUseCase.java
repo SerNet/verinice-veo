@@ -83,8 +83,7 @@ public class CreateUnitUseCase
      */
     // TODO VEO-227
     private Domain defaultDomain(String user) {
-        var domian = entityFactory.createDomain(Key.newUuid(),
-                                                "Placeholder domain - see issue VEO-227");
+        var domian = entityFactory.createDomain("Placeholder domain - see issue VEO-227");
         domian.version(user, null);
         return domian;
     }
@@ -104,8 +103,8 @@ public class CreateUnitUseCase
         Unit newUnit;
         if (input.getParentUnitId()
                  .isEmpty()) {
-            newUnit = entityFactory.createUnit(Key.newUuid(), input.getNameableInput()
-                                                                   .getName(),
+            newUnit = entityFactory.createUnit(input.getNameableInput()
+                                                    .getName(),
                                                null);
         } else {
             Unit parentUnit = unitRepository.findById(input.getParentUnitId()
@@ -114,8 +113,8 @@ public class CreateUnitUseCase
                                                     "Parent unit %s was not found",
                                                     input.getParentUnitId()
                                                          .get()));
-            newUnit = entityFactory.createUnit(Key.newUuid(), input.getNameableInput()
-                                                                   .getName(),
+            newUnit = entityFactory.createUnit(input.getNameableInput()
+                                                    .getName(),
                                                parentUnit);
         }
         newUnit.setAbbreviation(input.getNameableInput()
@@ -131,13 +130,13 @@ public class CreateUnitUseCase
     }
 
     private Client createNewClient(InputData input) {
-        // By default, the client is created with the unit's name, description and
-        // abbreviation:
+        // By default, the client is created with the unit's name, description,
+        // and abbreviation:
         Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
                                                                              .getName());
         client.version(input.username, null);
-        // TODO VEO-227 It is currently not possible to create a new domain using REST
-        // resources,
+        // TODO VEO-227 It is currently not possible to create a new domain
+        // using REST resources,
         // so we have to use one default domain for a new client:
         client.addToDomains(defaultDomain(input.getUsername()));
         return clientRepository.save(client);

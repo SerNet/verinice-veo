@@ -49,7 +49,6 @@ class CompositeEntitySpec extends VeoSpec {
         composite.version("user", null)
 
         then: "the composite is initialized as expected"
-        composite.id != null
         composite.name == "New composite"
         composite.state == Versioned.Lifecycle.CREATING
         composite.version == 0L

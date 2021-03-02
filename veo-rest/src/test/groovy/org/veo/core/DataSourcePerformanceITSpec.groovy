@@ -34,7 +34,6 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeEntity
 import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.EntityLayerSupertype
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
@@ -43,6 +42,7 @@ import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
@@ -73,6 +73,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     private ScopeRepositoryImpl scopeRepository
 
     @Autowired
+    private DomainRepositoryImpl domainRepository
+
+    @Autowired
     private EntityFactory entityFactory
 
     private Client client
@@ -89,7 +92,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(4)
-        assertUpdateCount(1)
+        assertUpdateCount(2)
         assertSelectCount(4)
     }
 
@@ -105,7 +108,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(1)
         assertUpdateCount(0)
-        assertSelectCount(1)
+        assertSelectCount(0)
     }
 
     def "SQL performance for saving 1 process with 2 links to 1 asset and 1 composite person"() {
@@ -120,7 +123,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(5)
         assertUpdateCount(0)
-        assertSelectCount(5)
+        assertSelectCount(0)
     }
 
 
@@ -136,7 +139,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(3)
         assertUpdateCount(0)
-        assertSelectCount(2)
+        assertSelectCount(0)
     }
 
     def "SQL performance for saving 1 process with 1 customAspect with 10 array properties"() {
@@ -151,7 +154,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(5)
         assertUpdateCount(0)
-        assertSelectCount(3)
+        assertSelectCount(0)
     }
 
     def "SQL performance for putting 1 string value in 1 customAspect with 10 existing values"() {
@@ -184,8 +187,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(2)
-        assertUpdateCount(1)
-        assertSelectCount(3)
+        assertUpdateCount(0)
+        assertSelectCount(0)
     }
 
     def "SQL performance for saving 1 scope with 2 persons"() {
@@ -202,8 +205,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(3)
-        assertUpdateCount(1)
-        assertSelectCount(3)
+        assertUpdateCount(0)
+        assertSelectCount(0)
     }
 
 
@@ -220,8 +223,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(9)
-        assertUpdateCount(1)
-        assertSelectCount(101)
+        assertUpdateCount(0)
+        assertSelectCount(0)
     }
 
     def "SQL performance for saving 1 scope with 100 persons with 2 parts each"() {
@@ -242,8 +245,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(22)
-        assertUpdateCount(5)
-        assertSelectCount(301)
+        assertUpdateCount(0)
+        assertSelectCount(0)
     }
 
     def "SQL performance for saving 1 scope with 10 persons with 10 parts each"() {
@@ -263,8 +266,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         then:
         assertDeleteCount(0)
         assertInsertCount(10)
-        assertUpdateCount(2)
-        assertSelectCount(111)
+        assertUpdateCount(0)
+        assertSelectCount(0)
     }
 
     def "SQL performance for adding 100 persons with 2 parts each to an existing scope"() {
@@ -280,7 +283,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(21)
         assertUpdateCount(5)
-        assertSelectCount(305)
+        assertSelectCount(5)
     }
 
     def "SQL performance for selecting units of a client"() {
@@ -365,8 +368,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         given:
         createClient()
         def units = createClientUnits(2)
-        def domain2 = entityFactory.createDomain(Key.newUuid(), "domain2")
+        def domain2 = entityFactory.createDomain("domain2").tap{
+            owner = client
+        }
         domain2.version(USERNAME, null)
+        domainRepository.save(domain2)
         client.addToDomains(domain2)
         client = clientRepository.save(client)
 
@@ -386,19 +392,22 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     void createClient() {
-        def domain = entityFactory.createDomain(Key.newUuid(), "domain1")
+        client = clientRepository.save(newClient())
+        def domain = domainRepository.save(newDomain{
+            owner = client
+            name = "domain1"
+        })
         domain.version(USERNAME, null)
 
-        client = entityFactory.createClient(Key.newUuid(), "client")
         client.addToDomains(domain)
         client.version(USERNAME, null)
+        client = clientRepository.save(client)
 
-        unit = entityFactory.createUnit(Key.newUuid(), "unit1",null)
+        unit = entityFactory.createUnit("unit1",null)
         unit.setClient(client)
         unit.addToDomains(domain)
         unit.version(USERNAME, null)
 
-        client = clientRepository.save(client)
         unit = unitRepository.save(unit)
         unit.client = client
     }
@@ -451,11 +460,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     Person savePerson(String name, List<Person> parts = []) {
-        def personId = Key.newUuid()
-        def person = entityFactory.createPerson(personId, name, unit)
+        def person = entityFactory.createPerson(name, unit)
 
         person.with {
-            id = personId
             it.parts = parts
             state = Lifecycle.CREATING
             it
@@ -467,10 +474,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     @Transactional
     def saveWithAddedCompositePersons(int count, String baseName, Scope scope ) {
         def compositePersons = (0..<count).collect {
-            def personId = Key.newUuid()
             def dolly = newPerson(unit)
             def minime = newPerson(unit)
-            def person = entityFactory.createPerson(personId, baseName+count, unit)
+            def person = entityFactory.createPerson(baseName+count, unit)
             person.tap {
                 parts = [dolly, minime]
                 state = Lifecycle.CREATING

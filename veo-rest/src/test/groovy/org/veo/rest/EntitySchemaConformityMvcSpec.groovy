@@ -43,15 +43,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     @Autowired
     ClientRepository clientRepository
 
-    String unitId = UUID.randomUUID().toString()
+    String unitId
 
     def setup() {
         def client = clientRepository.save(newClient {
             dbId = WebMvcSecurityConfiguration.TESTCLIENT_UUID
         })
-        unitRepository.save(newUnit(client) {
-            dbId = unitId
-        })
+        unitId = unitRepository.save(newUnit(client)).dbId
     }
 
     @WithUserDetails("user@domain.example")
@@ -146,7 +144,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     }
 
     private JsonSchema getSchema(String type) {
-        def schemaString = entitySchemaService.findSchema(type, Collections.emptyList());
+        def schemaString = entitySchemaService.findSchema(type, Collections.emptyList())
         return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7).getSchema(schemaString)
     }
 }

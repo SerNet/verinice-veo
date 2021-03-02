@@ -60,7 +60,7 @@ class CustomLinkPersistenceSpec extends VeoSpec {
     def "create an asset with a customLink and save-load it"() {
         given: "a person and an asset"
 
-        Client client = newClient()
+        Client client = clientRepository.save(newClient())
         Unit unit = newUnit(client)
         Person person = newPerson(unit)
         Asset asset = newAsset(unit)
@@ -72,7 +72,6 @@ class CustomLinkPersistenceSpec extends VeoSpec {
 
         asset.setLinks([cp] as Set)
 
-        clientRepository.save(client)
         unitRepository.save(unit)
         personRepository.save(person)
         assetRepository.save(asset)

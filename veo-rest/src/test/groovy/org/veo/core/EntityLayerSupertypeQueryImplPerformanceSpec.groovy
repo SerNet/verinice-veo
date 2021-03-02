@@ -75,10 +75,9 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
         given:
         reset()
         final def testProcessCount = 10
-        final def setupSelectCount = 3 + testProcessCount * 5
 
         def asset = assetRepository.save(newAsset(unit))
-        def processes = new HashSet<ProcessData>();
+        def processes = new HashSet<ProcessData>()
         for(int i = 0; i < testProcessCount; i++) {
             processes.add(newProcess(unit) {
                 domains = [domain] as Set
@@ -98,7 +97,7 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
             })
         }
         processRepository.saveAll(processes)
-        assertSelectCount(setupSelectCount)
+        assertSelectCount(0)
 
         when:
         def result = processRepository.query(client).execute()
@@ -114,6 +113,6 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
 
         // TODO: VEO-448 Reduce query selects to 2 by joining all that is EAGER now.
         // assertSelectCount(setupSelectCount + 2)
-        assertSelectCount(setupSelectCount + 2 + testProcessCount)
+        assertSelectCount(2 + testProcessCount)
     }
 }

@@ -203,7 +203,6 @@ public class UnitController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new UpdateUnitUseCase.InputData(
                                                      dtoToEntityTransformer.transformDto2Unit(unitDto,
-                                                                                              Key.uuidFrom(unitDto.getId()),
                                                                                               modelObjectReferenceResolver),
                                                      client, eTag, user.getUsername());
                                          },

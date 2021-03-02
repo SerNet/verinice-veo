@@ -35,6 +35,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -65,6 +66,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     private UnitRepositoryImpl unitRepository
 
     @Autowired
+    private DomainRepositoryImpl domainRepository
+
+    @Autowired
     TransactionTemplate txTemplate
 
     private Unit unit
@@ -76,28 +80,27 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            domain = newDomain {
+            def client = clientRepository.save(newClient {
+                id = clientId
+            })
+
+            domain = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
+            })
 
-            domain1 = newDomain {
+            domain1 = domainRepository.save(newDomain {
+                owner = client
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
                 name = "ISO"
-            }
-
-            def client = newClient {
-                id = clientId
-                domains = [domain, domain1] as Set
-            }
+            })
 
             unit = newUnit(client) {
                 name = "Test unit"
             }
-
-            clientRepository.save(client)
 
             unit2 = newUnit(client) {
                 name = "Test unit2"
@@ -246,7 +249,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(process.id.uuidValue(), 1)
+            'If-Match': ETag.from(process.id.uuidValue(), process.version)
         ]
         def results = put("/processes/${process.id.uuidValue()}", request, headers)
 
@@ -327,7 +330,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(process.id.uuidValue(), 1)
+            'If-Match': ETag.from(process.id.uuidValue(), process.version)
         ]
         def results = put("/processes/${process.id.uuidValue()}", request, headers)
 
@@ -404,7 +407,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
         Map headers = [
-            'If-Match': ETag.from(process.id.uuidValue(), 1)
+            'If-Match': ETag.from(process.id.uuidValue(), process.version)
         ]
         def results = put("/processes/${process.id.uuidValue()}", request, headers)
 

@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
-import org.veo.core.entity.Key
 import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -50,18 +49,15 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
 
     def "save a composite person"() {
         given: "a client and a unit"
-        def client = newClient()
-        def unit = newUnit(client)
-        clientRepository.save(client)
-        unitRepository.save(unit)
+        def client = clientRepository.save(newClient())
+        def unit = unitRepository.save(newUnit(client))
 
         when:
-        def compositePersonId = Key.newUuid()
 
         def john = newPerson(unit)
         def jane = newPerson(unit)
 
-        def compositePerson = factory.createPerson(compositePersonId, 'My composite person', unit)
+        def compositePerson = factory.createPerson('My composite person', unit)
         compositePerson.version("user", null)
 
         compositePerson.with {
@@ -75,7 +71,7 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
         compositePerson.parts  == [john, jane] as Set
 
         when:
-        compositePerson = personRepository.findById(compositePersonId)
+        compositePerson = personRepository.findById(compositePerson.id)
         then:
         compositePerson.present
         compositePerson.get().name == 'My composite person'

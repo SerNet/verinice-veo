@@ -73,23 +73,23 @@ class AssetRiskITSpec extends VeoSpringSpec {
     }
 
     private Control control(String name) {
-        entityFactory.createControl(Key.newUuid(), name, unit)
+        entityFactory.createControl( name, unit)
     }
 
     private Scenario scenario(String name) {
-        entityFactory.createScenario(Key.newUuid(), name, unit)
+        entityFactory.createScenario( name, unit)
     }
 
     private Asset asset(String name) {
-        entityFactory.createAsset(Key.newUuid(), name, unit)
+        entityFactory.createAsset( name, unit)
     }
 
     private Domain domain(String name) {
-        entityFactory.createDomain(Key.newUuid(), name)
+        entityFactory.createDomain( name)
     }
 
     private Person person(String name) {
-        entityFactory.createPerson(Key.newUuid(), name, unit)
+        entityFactory.createPerson( name, unit)
     }
 
     def "a risk can be modified persistently"() {
@@ -174,20 +174,18 @@ class AssetRiskITSpec extends VeoSpringSpec {
 
     @Transactional
     void createClient() {
-        def domain = entityFactory.createDomain(Key.newUuid(), "domain1")
-        domain.version(USERNAME, null)
+        client = clientRepository.save(newClient{
+            version(USERNAME, null)
+        })
+        def domain = domainRepository.save(newDomain{
+            owner = client
+            version(USERNAME, null)
+        })
 
-        client = entityFactory.createClient(Key.newUuid(), "client")
-        client.addToDomains(domain)
-        client.version(USERNAME, null)
-
-        unit = entityFactory.createUnit(Key.newUuid(), "unit1", null)
-        unit.setClient(client)
-        unit.addToDomains(domain)
-        unit.version(USERNAME, null)
-
-        client = clientRepository.save(client)
-        unit = unitRepository.save(unit)
+        unit = unitRepository.save(newUnit(client) {
+            addToDomains(domain)
+            version(USERNAME, null)
+        })
     }
 
     @Transactional

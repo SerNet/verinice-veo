@@ -205,7 +205,6 @@ public class ControlController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Control(dto,
-                                                                                                 null,
                                                                                                  modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
@@ -233,7 +232,6 @@ public class ControlController extends AbstractEntityController {
                                                  ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Control>(
                                                          dtoToEntityTransformer.transformDto2Control(controlDto,
-                                                                                                     Key.uuidFrom(controlDto.getId()),
                                                                                                      modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }

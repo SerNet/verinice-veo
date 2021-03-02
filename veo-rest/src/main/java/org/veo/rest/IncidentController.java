@@ -205,7 +205,6 @@ public class IncidentController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Incident(dto,
-                                                                                                  null,
                                                                                                   modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
@@ -232,7 +231,6 @@ public class IncidentController extends AbstractEntityController {
                                                  ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new InputData<Incident>(
                                                          dtoToEntityTransformer.transformDto2Incident(incidentDto,
-                                                                                                      Key.uuidFrom(incidentDto.getId()),
                                                                                                       modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }

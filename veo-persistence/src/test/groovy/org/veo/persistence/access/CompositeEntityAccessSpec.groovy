@@ -99,8 +99,8 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
     Unit unit
 
     def setup() {
-        client = newClient()
-        unit = newUnit(client)
+        client = clientRepository.save(newClient())
+        unit = unitRepository.save(newUnit(client))
 
         assetRepository = new AssetRepositoryImpl(assetDataRepository, validationMock, linkDataRepository, scopeDataRepository)
         controlRepository = new ControlRepositoryImpl(controlDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository)
@@ -123,8 +123,6 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
             members << composite
         }
         txTemplate.execute {
-            clientRepository.save(client)
-            unitRepository.save(unit)
             typeRepository.save(composite)
             scopeDataRepository.save(scope)
         }

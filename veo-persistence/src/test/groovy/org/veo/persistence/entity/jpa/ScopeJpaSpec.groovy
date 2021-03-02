@@ -56,8 +56,8 @@ class ScopeJpaSpec extends AbstractJpaSpec {
     PersonData personComposite
 
     def setup() {
-        client = newClient()
-        unit = newUnit(client)
+        client = clientRepository.save(newClient())
+        unit = unitRepository.save(newUnit(client))
         asset = newAsset(unit)
         assetComposite = newAsset(unit) {
             parts = [asset]
@@ -70,6 +70,9 @@ class ScopeJpaSpec extends AbstractJpaSpec {
 
     def "save and load a scope"() {
         when:"saving a scope with subcomposites and elements"
+        assetComposite = assetDataRepository.save(assetComposite)
+        personComposite = personDataRepository.save(personComposite)
+
         def scope = newScope(unit) {
             members = [
                 assetComposite,
@@ -77,8 +80,6 @@ class ScopeJpaSpec extends AbstractJpaSpec {
             ]
         }
         def scopeId = txTemplate.execute {
-            clientRepository.save(client)
-            unitRepository.save(unit)
             scopeDataRepository.save(scope).id.uuidValue()
         }
 
@@ -100,8 +101,6 @@ class ScopeJpaSpec extends AbstractJpaSpec {
     def "delete a scope containing composites"() {
         given: "A nested structure of scopes, composites and entities"
         def scope = txTemplate.execute {
-            clientRepository.save(client)
-            unitRepository.save(unit)
             assetDataRepository.save(assetComposite)
             personDataRepository.save(personComposite)
             scopeDataRepository.save(newScope(unit) {
@@ -135,8 +134,6 @@ class ScopeJpaSpec extends AbstractJpaSpec {
     def "delete composites that are memebers of a scope"() {
         given: "A nested structure of scopes, composites and entities"
         def scope = txTemplate.execute {
-            clientRepository.save(client)
-            unitRepository.save(unit)
             assetComposite = assetDataRepository.save(assetComposite)
             asset = assetDataRepository.save(asset)
             personComposite = personDataRepository.save(personComposite)

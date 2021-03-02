@@ -60,16 +60,16 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Person createPerson(Key<UUID> id, String name, Unit unit) {
+    public Person createPerson(String name, Unit unit) {
         Person person = new PersonData();
-        setEntityLayerData(person, id, name, unit);
+        setEntityLayerData(person, name, unit);
         return person;
     }
 
     @Override
-    public Process createProcess(Key<UUID> id, String name, Unit unit) {
+    public Process createProcess(String name, Unit unit) {
         Process process = new ProcessData();
-        setEntityLayerData(process, id, name, unit);
+        setEntityLayerData(process, name, unit);
         return process;
     }
 
@@ -83,37 +83,36 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Asset createAsset(Key<UUID> id, String name, Unit unit) {
+    public Asset createAsset(String name, Unit unit) {
         Asset asset = new AssetData();
-        setEntityLayerData(asset, id, name, unit);
+        setEntityLayerData(asset, name, unit);
         return asset;
     }
 
     @Override
-    public Control createControl(Key<UUID> id, String name, Unit unit) {
+    public Control createControl(String name, Unit unit) {
         Control control = new ControlData();
-        setEntityLayerData(control, id, name, unit);
+        setEntityLayerData(control, name, unit);
         return control;
     }
 
     @Override
-    public Incident createIncident(Key<UUID> id, String name, Unit unit) {
+    public Incident createIncident(String name, Unit unit) {
         Incident incident = new IncidentData();
-        setEntityLayerData(incident, id, name, unit);
+        setEntityLayerData(incident, name, unit);
         return incident;
     }
 
     @Override
-    public Scenario createScenario(Key<UUID> id, String name, Unit unit) {
+    public Scenario createScenario(String name, Unit unit) {
         Scenario scenario = new ScenarioData();
-        setEntityLayerData(scenario, id, name, unit);
+        setEntityLayerData(scenario, name, unit);
         return scenario;
     }
 
     @Override
-    public Unit createUnit(Key<UUID> id, String name, Unit parent) {
+    public Unit createUnit(String name, Unit parent) {
         Unit unit = new UnitData();
-        unit.setId(id);
         unit.setName(name);
         unit.setParent(parent);
         if (parent != null) {
@@ -124,16 +123,15 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Document createDocument(Key<UUID> id, String name, Unit parent) {
+    public Document createDocument(String name, Unit parent) {
         Document document = new DocumentData();
-        setEntityLayerData(document, id, name, parent);
+        setEntityLayerData(document, name, parent);
         return document;
     }
 
     @Override
-    public Domain createDomain(Key<UUID> id, String name) {
+    public Domain createDomain(String name) {
         Domain domain = new DomainData();
-        domain.setId(id);
         domain.setName(name);
         return domain;
     }
@@ -149,17 +147,15 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Scope createScope(Key<UUID> key, String name, Unit owner) {
+    public Scope createScope(String name, Unit owner) {
         var group = new ScopeData();
-        group.setId(key);
         group.setName(name);
         group.setOwner(owner);
         return group;
     }
 
-    private void setEntityLayerData(EntityLayerSupertype entityLayerSupertype, Key<UUID> newUuid,
-            String name, Unit unit) {
-        entityLayerSupertype.setId(newUuid);
+    private void setEntityLayerData(EntityLayerSupertype entityLayerSupertype, String name,
+            Unit unit) {
         entityLayerSupertype.setName(name);
         entityLayerSupertype.setOwner(unit);
     }

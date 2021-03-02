@@ -202,7 +202,6 @@ public class DocumentController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Document(dto,
-                                                                                                  null,
                                                                                                   modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
@@ -226,7 +225,6 @@ public class DocumentController extends AbstractEntityController {
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new InputData<>(
                                                      dtoToEntityTransformer.transformDto2Document(documentDto,
-                                                                                                  Key.uuidFrom(documentDto.getId()),
                                                                                                   modelObjectReferenceResolver),
                                                      client, eTag, user.getUsername());
                                          },

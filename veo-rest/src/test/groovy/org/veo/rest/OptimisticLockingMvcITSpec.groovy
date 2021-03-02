@@ -61,16 +61,13 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            def client = newClient {
+            def client = clientRepository.save(newClient {
                 id = clientId
-            }
+            })
 
-            unit = newUnit(client) {
+            unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
-            }
-
-            clientRepository.save(client)
-            unitRepository.save(unit)
+            })
         }
         ETag.setSalt(salt)
     }
