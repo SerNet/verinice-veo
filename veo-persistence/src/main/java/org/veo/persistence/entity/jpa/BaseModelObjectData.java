@@ -26,17 +26,19 @@ import javax.persistence.MappedSuperclass;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
  * @author urszeidler
  */
 @MappedSuperclass
-@EqualsAndHashCode(of = "dbId", callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 public abstract class BaseModelObjectData extends VersionedData implements ModelObject {
 
     @Id
@@ -52,4 +54,29 @@ public abstract class BaseModelObjectData extends VersionedData implements Model
     public void setId(Key<UUID> id) {
         this.dbId = requireNonNullElse(id, Key.NIL_UUID).uuidValue();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
+        if (this == o)
+            return true;
+
+        if (!(o instanceof BaseModelObjectData))
+            return false;
+
+        BaseModelObjectData other = (BaseModelObjectData) o;
+        // Transient (unmanaged) entities have an ID of 'null'. Only managed
+        // (persisted and detached) entities have an identity. JPA requires that
+        // an entity's identity remains the same over all state changes.
+        // Therefore a transient entity must never equal another entity.
+        return dbId != null && dbId.equals(other.getDbId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 }
