@@ -222,7 +222,7 @@ public class IncidentController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @NotNull @RequestBody FullIncidentDto incidentDto) {
-        applyId(id, incidentDto);
+        incidentDto.applyResourceId(id);
         return useCaseInteractor.execute(updateIncidentUseCase,
                                          new Supplier<InputData<Incident>>() {
 

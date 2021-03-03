@@ -202,7 +202,7 @@ public class ProcessController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @RequestBody FullProcessDto processDto) {
-        applyId(id, processDto);
+        processDto.applyResourceId(id);
         return useCaseInteractor.execute(updateProcessUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Process>>() {
 

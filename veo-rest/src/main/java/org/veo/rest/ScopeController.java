@@ -237,7 +237,7 @@ public class ScopeController extends AbstractEntityController {
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullScopeDto scopeDto) {
-        applyId(uuid, scopeDto);
+        scopeDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updateScopeUseCase,
                                          (Supplier<ModifyEntityUseCase.InputData<Scope>>) () -> {
                                              Client client = getClient(user);

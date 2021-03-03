@@ -14,7 +14,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest;
+package org.veo.adapter.presenter.api;
 
 /**
  * Exception that should be thrown when a PUT request body contains an ID that

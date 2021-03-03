@@ -249,7 +249,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
-        applyId(id, assetDto);
+        assetDto.applyResourceId(id);
         return useCaseInteractor.execute(updateAssetUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Asset>>() {
 

@@ -222,7 +222,7 @@ public class ScenarioController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @NotNull @RequestBody FullScenarioDto scenarioDto) {
-        applyId(id, scenarioDto);
+        scenarioDto.applyResourceId(id);
         return useCaseInteractor.execute(updateScenarioUseCase,
                                          new Supplier<InputData<Scenario>>() {
 

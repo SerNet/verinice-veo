@@ -221,7 +221,7 @@ public class PersonController extends AbstractEntityController {
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullPersonDto personDto) {
-        applyId(uuid, personDto);
+        personDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updatePersonUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Person>>() {
 

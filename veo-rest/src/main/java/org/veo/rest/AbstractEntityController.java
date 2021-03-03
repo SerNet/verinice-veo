@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
@@ -100,15 +99,6 @@ public abstract class AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @Valid @RequestBody SearchQueryDto search) {
         return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
-    }
-
-    protected void applyId(String resourceId, IdentifiableDto dto) {
-        var dtoId = dto.getId();
-        if (dtoId != null && !dtoId.equals(resourceId)) {
-            throw new DeviatingIdException(
-                    String.format("DTO ID %s does not match resource ID %s", dtoId, resourceId));
-        }
-        dto.setId(resourceId);
     }
 
     protected Client getClient(String clientId) {

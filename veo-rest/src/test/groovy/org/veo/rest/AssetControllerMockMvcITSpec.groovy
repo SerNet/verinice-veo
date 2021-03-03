@@ -29,6 +29,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.util.NestedServletException
 
+import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink

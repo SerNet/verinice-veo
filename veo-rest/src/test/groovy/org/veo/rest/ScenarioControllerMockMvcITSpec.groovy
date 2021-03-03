@@ -26,6 +26,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key

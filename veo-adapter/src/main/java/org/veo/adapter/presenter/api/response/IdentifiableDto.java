@@ -16,8 +16,26 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import org.veo.adapter.presenter.api.DeviatingIdException;
+
 public interface IdentifiableDto {
     String getId();
 
     void setId(String id);
+
+    /**
+     * Applies resource ID from resource location to this DTO.
+     *
+     * @throws DeviatingIdException
+     *             if this DTO already has an ID that deviates from given resource
+     *             ID.
+     */
+    default void applyResourceId(String resourceId) {
+        var dtoId = getId();
+        if (dtoId != null && !dtoId.equals(resourceId)) {
+            throw new DeviatingIdException(
+                    String.format("DTO ID %s does not match resource ID %s", dtoId, resourceId));
+        }
+        setId(resourceId);
+    }
 }

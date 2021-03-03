@@ -24,11 +24,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.common.ETagMismatchException;
-import org.veo.rest.DeviatingIdException;
 
 import lombok.extern.slf4j.Slf4j;
 

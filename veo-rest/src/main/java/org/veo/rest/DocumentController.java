@@ -219,7 +219,7 @@ public class DocumentController extends AbstractEntityController {
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @NotNull @RequestBody FullDocumentDto documentDto) {
-        applyId(id, documentDto);
+        documentDto.applyResourceId(id);
         return useCaseInteractor.execute(updateDocumentUseCase,
                                          (Supplier<InputData<Document>>) () -> {
                                              Client client = getClient(user);

@@ -223,7 +223,7 @@ public class ControlController extends AbstractEntityController {
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody FullControlDto controlDto) {
-        applyId(uuid, controlDto);
+        controlDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updateControlUseCase,
                                          new Supplier<ModifyEntityUseCase.InputData<Control>>() {
 
