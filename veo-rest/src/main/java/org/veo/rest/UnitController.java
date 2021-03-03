@@ -196,7 +196,7 @@ public class UnitController extends AbstractEntityController {
     public CompletableFuture<FullUnitDto> updateUnit(@Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
             @PathVariable String id, @Valid @RequestBody FullUnitDto unitDto) {
-
+        unitDto.applyResourceId(id);
         return useCaseInteractor.execute(putUnitUseCase,
                                          (Supplier<ChangeUnitUseCase.InputData>) () -> {
                                              Client client = getClient(user);

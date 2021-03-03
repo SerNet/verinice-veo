@@ -29,6 +29,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -477,5 +478,30 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         put("/units/$id", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can't put a unit with another unit's ID"() {
+        given: "two units"
+        def unit1 = txTemplate.execute({
+            unitDataRepository.save(newUnit(client, {
+                name = "old name 1"
+            }))
+        })
+        def unit2 = txTemplate.execute({
+            unitDataRepository.save(newUnit(client, {
+                name = "old name 2"
+            }))
+        })
+        when: "a put request tries to update unit 1 using the ID of unit 2"
+        Map headers = [
+            'If-Match': parseETag(get("/units/${unit1.id.uuidValue()}"))
+        ]
+        put("/units/${unit2.id.uuidValue()}", [
+            id: unit1.id.uuidValue(),
+            name: "new name 1"
+        ], headers, false)
+        then: "an exception is thrown"
+        thrown(DeviatingIdException)
     }
 }
