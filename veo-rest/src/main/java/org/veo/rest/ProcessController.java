@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -58,8 +59,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -106,20 +105,17 @@ public class ProcessController extends AbstractEntityController {
     private final UpdateProcessUseCase updateProcessUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
     private final GetProcessesUseCase getProcessesUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     public ProcessController(UseCaseInteractor useCaseInteractor,
             CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
             UpdateProcessUseCase putProcessUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            GetProcessesUseCase getProcessesUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            GetProcessesUseCase getProcessesUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createProcessUseCase = createProcessUseCase;
         this.getProcessUseCase = getProcessUseCase;
         this.updateProcessUseCase = putProcessUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
         this.getProcessesUseCase = getProcessesUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     /**
@@ -184,11 +180,11 @@ public class ProcessController extends AbstractEntityController {
         return useCaseInteractor.execute(createProcessUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Process>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Process(tcontext,
-                                                                                                 dto,
-                                                                                                 null),
+                                                     dtoToEntityTransformer.transformDto2Process(dto,
+                                                                                                 null,
+                                                                                                 modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }
 
@@ -213,12 +209,11 @@ public class ProcessController extends AbstractEntityController {
                                              @Override
                                              public ModifyEntityUseCase.InputData<Process> get() {
                                                  Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
-
+                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Process>(
-                                                         dtoToEntityTransformer.transformDto2Process(tcontext,
-                                                                                                     processDto,
-                                                                                                     Key.uuidFrom(processDto.getId())),
+                                                         dtoToEntityTransformer.transformDto2Process(processDto,
+                                                                                                     Key.uuidFrom(processDto.getId()),
+                                                                                                     modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          }

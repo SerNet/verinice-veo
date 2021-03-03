@@ -26,7 +26,7 @@ import org.veo.core.service.EntitySchemaService;
 import io.swagger.v3.core.util.Json;
 
 /** Loader that loads {@link EntitySchema} instances. */
-class EntitySchemaLoader {
+public class EntitySchemaLoader {
     private final EntitySchemaService entitySchemaService;
 
     public EntitySchemaLoader(EntitySchemaService entitySchemaService) {

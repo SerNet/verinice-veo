@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
@@ -59,8 +60,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.EntityTypeNames;
@@ -106,20 +105,17 @@ public class ControlController extends AbstractEntityController {
     private final GetControlsUseCase getControlsUseCase;
     private final UpdateControlUseCase updateControlUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     public ControlController(UseCaseInteractor useCaseInteractor,
             CreateControlUseCase createControlUseCase, GetControlUseCase getControlUseCase,
             GetControlsUseCase getControlsUseCase, UpdateControlUseCase updateControlUseCase,
-            DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            DeleteEntityUseCase deleteEntityUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createControlUseCase = createControlUseCase;
         this.getControlUseCase = getControlUseCase;
         this.getControlsUseCase = getControlsUseCase;
         this.updateControlUseCase = updateControlUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     @GetMapping
@@ -206,11 +202,11 @@ public class ControlController extends AbstractEntityController {
                                          (Supplier<CreateEntityUseCase.InputData<Control>>) () -> {
 
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Control(tcontext,
-                                                                                                 dto,
-                                                                                                 null),
+                                                     dtoToEntityTransformer.transformDto2Control(dto,
+                                                                                                 null,
+                                                                                                 modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -234,11 +230,11 @@ public class ControlController extends AbstractEntityController {
                                              @Override
                                              public InputData<Control> get() {
                                                  Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Control>(
-                                                         dtoToEntityTransformer.transformDto2Control(tcontext,
-                                                                                                     controlDto,
-                                                                                                     Key.uuidFrom(controlDto.getId())),
+                                                         dtoToEntityTransformer.transformDto2Control(controlDto,
+                                                                                                     Key.uuidFrom(controlDto.getId()),
+                                                                                                     modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }
 

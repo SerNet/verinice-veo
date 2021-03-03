@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
@@ -62,8 +63,6 @@ import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -116,7 +115,6 @@ public class AssetController extends AbstractEntityController implements AssetRi
     public AssetController(UseCaseInteractor useCaseInteractor, GetAssetUseCase getAssetUseCase,
             GetAssetsUseCase getAssetsUseCase, CreateAssetUseCase createAssetUseCase,
             UpdateAssetUseCase updateAssetUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory,
             CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
             DeleteAssetRiskUseCase deleteAssetRiskUseCase,
             UpdateAssetRiskUseCase updateAssetRiskUseCase,
@@ -127,7 +125,6 @@ public class AssetController extends AbstractEntityController implements AssetRi
         this.createAssetUseCase = createAssetUseCase;
         this.updateAssetUseCase = updateAssetUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
         this.createAssetRiskUseCase = createAssetRiskUseCase;
         this.getAssetRiskUseCase = getAssetRiskUseCase;
         this.deleteAssetRiskUseCase = deleteAssetRiskUseCase;
@@ -143,7 +140,6 @@ public class AssetController extends AbstractEntityController implements AssetRi
     private final GetAssetUseCase getAssetUseCase;
     private final GetAssetsUseCase getAssetsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
     private final CreateAssetRiskUseCase createAssetRiskUseCase;
     private final GetAssetRiskUseCase getAssetRiskUseCase;
 
@@ -234,11 +230,11 @@ public class AssetController extends AbstractEntityController implements AssetRi
         return useCaseInteractor.execute(createAssetUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Asset>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Asset(tcontext,
-                                                                                               dto,
-                                                                                               null),
+                                                     dtoToEntityTransformer.transformDto2Asset(dto,
+                                                                                               null,
+                                                                                               modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -261,11 +257,11 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                              @Override
                                              public InputData<Asset> get() {
                                                  Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Asset>(
-                                                         dtoToEntityTransformer.transformDto2Asset(tcontext,
-                                                                                                   assetDto,
-                                                                                                   Key.uuidFrom(assetDto.getId())),
+                                                         dtoToEntityTransformer.transformDto2Asset(assetDto,
+                                                                                                   Key.uuidFrom(assetDto.getId()),
+                                                                                                   modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          }

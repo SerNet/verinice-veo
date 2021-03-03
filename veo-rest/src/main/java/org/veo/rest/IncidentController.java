@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -58,8 +59,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateIncidentDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
@@ -100,15 +99,13 @@ public class IncidentController extends AbstractEntityController {
     public IncidentController(UseCaseInteractor useCaseInteractor,
             GetIncidentUseCase getIncidentUseCase, GetIncidentsUseCase getIncidentsUseCase,
             CreateIncidentUseCase createIncidentUseCase,
-            UpdateIncidentUseCase updateIncidentUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            UpdateIncidentUseCase updateIncidentUseCase, DeleteEntityUseCase deleteEntityUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getIncidentUseCase = getIncidentUseCase;
         this.getIncidentsUseCase = getIncidentsUseCase;
         this.createIncidentUseCase = createIncidentUseCase;
         this.updateIncidentUseCase = updateIncidentUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.INCIDENTS;
@@ -119,7 +116,6 @@ public class IncidentController extends AbstractEntityController {
     private final GetIncidentUseCase getIncidentUseCase;
     private final GetIncidentsUseCase getIncidentsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     @GetMapping
     @Operation(summary = "Loads all incidents")
@@ -207,11 +203,11 @@ public class IncidentController extends AbstractEntityController {
         return useCaseInteractor.execute(createIncidentUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Incident>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Incident(tcontext,
-                                                                                                  dto,
-                                                                                                  null),
+                                                     dtoToEntityTransformer.transformDto2Incident(dto,
+                                                                                                  null,
+                                                                                                  modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -234,11 +230,11 @@ public class IncidentController extends AbstractEntityController {
                                              @Override
                                              public InputData<Incident> get() {
                                                  Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new InputData<Incident>(
-                                                         dtoToEntityTransformer.transformDto2Incident(tcontext,
-                                                                                                      incidentDto,
-                                                                                                      Key.uuidFrom(incidentDto.getId())),
+                                                         dtoToEntityTransformer.transformDto2Incident(incidentDto,
+                                                                                                      Key.uuidFrom(incidentDto.getId()),
+                                                                                                      modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          }

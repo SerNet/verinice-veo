@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
@@ -356,14 +356,6 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public DtoToEntityContextFactory dtoToEntityContextFactory(
-            SubTypeTransformer subTypeTransformer, EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService, RepositoryProvider repositoryProvider) {
-        return new DtoToEntityContextFactory(subTypeTransformer, entityFactory, entitySchemaService,
-                repositoryProvider);
-    }
-
-    @Bean
     public GetAssetRiskUseCase getAssetRiskUseCase(ScenarioRepository scenarioRepository,
             AssetRepository assetRepository) {
         return new GetAssetRiskUseCase(assetRepository, scenarioRepository);
@@ -385,7 +377,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public DtoToEntityTransformer dtoToEntityTransformer() {
-        return new DtoToEntityTransformer();
+    public DtoToEntityTransformer dtoToEntityTransformer(EntityFactory entityFactory,
+            EntitySchemaService entitySchemaService, SubTypeTransformer subTypeTransformer) {
+        return new DtoToEntityTransformer(entityFactory,
+                new EntitySchemaLoader(entitySchemaService), subTypeTransformer);
     }
 }

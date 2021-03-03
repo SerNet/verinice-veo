@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractClientDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
@@ -67,102 +68,100 @@ import org.veo.core.entity.transform.EntityFactory;
  */
 public final class DtoToEntityTransformer {
 
+    public DtoToEntityTransformer(EntityFactory entityFactory,
+            EntitySchemaLoader entitySchemaLoader, SubTypeTransformer subTypeTransformer) {
+        this.factory = entityFactory;
+        this.entitySchemaLoader = entitySchemaLoader;
+        this.subTypeTransformer = subTypeTransformer;
+    }
+
+    private final EntityFactory factory;
+    private final EntitySchemaLoader entitySchemaLoader;
+    private final SubTypeTransformer subTypeTransformer;
+
     // PersonDto->Person
-    public Person transformDto2Person(DtoToEntityContext tcontext, AbstractPersonDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createPerson(key, source.getName(), null);
-        mapCompositeEntity(tcontext, source, target);
+    public Person transformDto2Person(AbstractPersonDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createPerson(key, source.getName(), null);
+        mapCompositeEntity(source, target, modelObjectReferenceResolver);
         return target;
     }
 
     // AssetDto->Asset
-    public Asset transformDto2Asset(DtoToEntityContext tcontext, AbstractAssetDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createAsset(key, source.getName(), null);
-        mapCompositeEntity(tcontext, source, target);
+    public Asset transformDto2Asset(AbstractAssetDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createAsset(key, source.getName(), null);
+        mapCompositeEntity(source, target, modelObjectReferenceResolver);
         return target;
     }
 
     // ProcessDto->Process
-    public Process transformDto2Process(DtoToEntityContext tcontext, AbstractProcessDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createProcess(key, source.getName(), null);
-        mapCompositeEntity(tcontext, source, target);
+    public Process transformDto2Process(AbstractProcessDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createProcess(key, source.getName(), null);
+        mapCompositeEntity(source, target, modelObjectReferenceResolver);
         return target;
     }
 
     // DocumentDto->Document
-    public Document transformDto2Document(DtoToEntityContext tcontext, AbstractDocumentDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createDocument(key, source.getName(), null);
-        mapCompositeEntity(tcontext, source, target);
+    public Document transformDto2Document(AbstractDocumentDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createDocument(key, source.getName(), null);
+        mapCompositeEntity(source, target, modelObjectReferenceResolver);
         return target;
     }
 
     // ControlDto->Control
-    public Control transformDto2Control(DtoToEntityContext tcontext, AbstractControlDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createControl(key, source.getName(), null);
-        mapCompositeEntity(tcontext, source, target);
+    public Control transformDto2Control(AbstractControlDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createControl(key, source.getName(), null);
+        mapCompositeEntity(source, target, modelObjectReferenceResolver);
         return target;
     }
 
     // IncidentDto->Incident
-    public Incident transformDto2Incident(DtoToEntityContext tcontext, AbstractIncidentDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createIncident(key, source.getName(), null);
-        mapCompositeEntity(tcontext, source, target);
+    public Incident transformDto2Incident(AbstractIncidentDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createIncident(key, source.getName(), null);
+        mapCompositeEntity(source, target, modelObjectReferenceResolver);
         return target;
     }
 
     // ScenarioDto->Scenario
-    public Scenario transformDto2Scenario(DtoToEntityContext tcontext, AbstractScenarioDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createScenario(key, source.getName(), null);
-        mapCompositeEntity(tcontext, source, target);
+    public Scenario transformDto2Scenario(AbstractScenarioDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createScenario(key, source.getName(), null);
+        mapCompositeEntity(source, target, modelObjectReferenceResolver);
         return target;
     }
 
-    public Scope transformDto2Scope(DtoToEntityContext tcontext, AbstractScopeDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createScope(key, source.getName(), null);
-        mapEntityLayerSupertype(tcontext, source, target);
+    public Scope transformDto2Scope(AbstractScopeDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createScope(key, source.getName(), null);
+        mapEntityLayerSupertype(source, target, modelObjectReferenceResolver);
         target.setMembers(source.getMembers()
                                 .stream()
-                                .map(tcontext::resolve)
+                                .map(modelObjectReferenceResolver::resolve)
                                 .collect(Collectors.toSet()));
         return target;
     }
 
     // ClientDto->Client
-    public Client transformDto2Client(DtoToEntityContext tcontext, AbstractClientDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createClient(key, source.getName());
+    public Client transformDto2Client(AbstractClientDto source, Key<UUID> key) {
+        var target = factory.createClient(key, source.getName());
         target.setId(key);
         target.setName(source.getName());
         target.setDomains(convertSet(source.getDomains(),
-                                     e -> transformDto2Domain(tcontext, e,
-                                                              e instanceof IdentifiableDto
-                                                                      ? Key.uuidFrom(((IdentifiableDto) e).getId())
-                                                                      : null)));
+                                     e -> transformDto2Domain(e, e instanceof IdentifiableDto
+                                             ? Key.uuidFrom(((IdentifiableDto) e).getId())
+                                             : null)));
 
         return target;
     }
 
     // DomainDto->Domain
-    public Domain transformDto2Domain(DtoToEntityContext tcontext, AbstractDomainDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createDomain(key, source.getName());
+    public Domain transformDto2Domain(AbstractDomainDto source, Key<UUID> key) {
+        var target = factory.createDomain(key, source.getName());
         target.setId(key);
         mapNameableProperties(source, target);
         target.setActive(source.isActive());
@@ -171,34 +170,32 @@ public final class DtoToEntityTransformer {
     }
 
     // UnitDto->Unit
-    public Unit transformDto2Unit(DtoToEntityContext tcontext, AbstractUnitDto source,
-            Key<UUID> key) {
-        var target = tcontext.getFactory()
-                             .createUnit(key, source.getName(), null);
+    public Unit transformDto2Unit(AbstractUnitDto source, Key<UUID> key,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createUnit(key, source.getName(), null);
         target.setId(key);
         mapNameableProperties(source, target);
 
-        target.setDomains(convertSet(source.getDomains(), tcontext::resolve));
+        target.setDomains(convertSet(source.getDomains(), modelObjectReferenceResolver::resolve));
         if (source.getClient() != null) {
-            target.setClient(tcontext.resolve(source.getClient()));
+            target.setClient(modelObjectReferenceResolver.resolve(source.getClient()));
         }
         if (source.getParent() != null) {
-            target.setParent(tcontext.resolve(source.getParent()));
+            target.setParent(modelObjectReferenceResolver.resolve(source.getParent()));
         }
 
         return target;
     }
 
     // CustomLinkDto->CustomLink
-    public CustomLink transformDto2CustomLink(DtoToEntityContext tcontext, CustomLinkDto source,
-            String type, EntitySchema entitySchema) {
+    public CustomLink transformDto2CustomLink(CustomLinkDto source, String type,
+            EntitySchema entitySchema, ModelObjectReferenceResolver modelObjectReferenceResolver) {
         EntityLayerSupertype linkTarget = null;
         if (source.getTarget() != null) {
-            linkTarget = tcontext.resolve(source.getTarget());
+            linkTarget = modelObjectReferenceResolver.resolve(source.getTarget());
         }
 
-        var target = tcontext.getFactory()
-                             .createCustomLink(source.getName(), linkTarget, null);
+        var target = factory.createCustomLink(source.getName(), linkTarget, null);
 
         target.setApplicableTo(source.getApplicableTo());
         target.setType(type);
@@ -219,41 +216,41 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    private <T extends EntityLayerSupertype> void mapCompositeEntity(DtoToEntityContext tcontext,
-            CompositeEntityDto<T> source, CompositeEntity<T> target) {
-        mapEntityLayerSupertype(tcontext, source, target);
+    private <T extends EntityLayerSupertype> void mapCompositeEntity(CompositeEntityDto<T> source,
+            CompositeEntity<T> target, ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        mapEntityLayerSupertype(source, target, modelObjectReferenceResolver);
         target.setParts(source.getParts()
                               .stream()
-                              .map(tcontext::resolve)
+                              .map(modelObjectReferenceResolver::resolve)
                               .collect(Collectors.toSet()));
     }
 
     private <TDto extends EntityLayerSupertypeDto, TEntity extends EntityLayerSupertype> void mapEntityLayerSupertype(
-            DtoToEntityContext tcontext, TDto source, TEntity target) {
+            TDto source, TEntity target,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
         mapNameableProperties(source, target);
-        target.setDomains(convertSet(source.getDomains(), tcontext::resolve));
-        tcontext.getSubTypeTransformer()
-                .mapSubTypesToEntity(source, target);
-        var entitySchema = tcontext.loadEntitySchema(target.getModelType());
-        target.setLinks(mapLinks(tcontext, target, source, entitySchema));
-        target.setCustomAspects(mapCustomAspects(source, tcontext.getFactory(), entitySchema));
+        target.setDomains(convertSet(source.getDomains(), modelObjectReferenceResolver::resolve));
+        subTypeTransformer.mapSubTypesToEntity(source, target);
+        var entitySchema = loadEntitySchema(target.getModelType());
+        target.setLinks(mapLinks(target, source, entitySchema, modelObjectReferenceResolver));
+        target.setCustomAspects(mapCustomAspects(source, factory, entitySchema));
         if (source.getOwner() != null) {
-            target.setOwner(tcontext.resolve(source.getOwner()));
+            target.setOwner(modelObjectReferenceResolver.resolve(source.getOwner()));
         }
     }
 
-    private Set<CustomLink> mapLinks(DtoToEntityContext context, EntityLayerSupertype entity,
-            EntityLayerSupertypeDto dto, EntitySchema entitySchema) {
+    private Set<CustomLink> mapLinks(EntityLayerSupertype entity, EntityLayerSupertypeDto dto,
+            EntitySchema entitySchema, ModelObjectReferenceResolver modelObjectReferenceResolver) {
         return dto.getLinks()
                   .entrySet()
                   .stream()
                   .flatMap(entry -> entry.getValue()
                                          .stream()
                                          .map(linktDto -> {
-                                             var customLink = transformDto2CustomLink(context,
-                                                                                      linktDto,
+                                             var customLink = transformDto2CustomLink(linktDto,
                                                                                       entry.getKey(),
-                                                                                      entitySchema);
+                                                                                      entitySchema,
+                                                                                      modelObjectReferenceResolver);
                                              customLink.setSource(entity);
                                              return customLink;
                                          }))
@@ -284,6 +281,10 @@ public final class DtoToEntityTransformer {
                   .map(entry -> transformDto2CustomProperties(factory, entry.getValue(),
                                                               entry.getKey(), entitySchema))
                   .collect(Collectors.toSet());
+    }
+
+    private EntitySchema loadEntitySchema(String entityType) {
+        return entitySchemaLoader.load(entityType);
     }
 
 }

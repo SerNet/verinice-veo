@@ -51,13 +51,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
@@ -109,7 +108,6 @@ public class UnitController extends AbstractEntityController {
     private final UpdateUnitUseCase putUnitUseCase;
     private final DeleteUnitUseCase deleteUnitUseCase;
     private final GetUnitsUseCase getUnitsUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     @GetMapping
     @Operation(summary = "Loads all units")
@@ -203,11 +201,11 @@ public class UnitController extends AbstractEntityController {
         return useCaseInteractor.execute(putUnitUseCase,
                                          (Supplier<ChangeUnitUseCase.InputData>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new UpdateUnitUseCase.InputData(
-                                                     dtoToEntityTransformer.transformDto2Unit(tcontext,
-                                                                                              unitDto,
-                                                                                              Key.uuidFrom(unitDto.getId())),
+                                                     dtoToEntityTransformer.transformDto2Unit(unitDto,
+                                                                                              Key.uuidFrom(unitDto.getId()),
+                                                                                              modelObjectReferenceResolver),
                                                      client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));

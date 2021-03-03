@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
@@ -123,6 +124,10 @@ public abstract class AbstractEntityController {
 
     protected Client getClient(ApplicationUser user) {
         return getClient(user.getClientId());
+    }
+
+    protected ModelObjectReferenceResolver createModelObjectReferenceResolver(Client client) {
+        return new ModelObjectReferenceResolver(repositoryProvider, client);
     }
 
     protected abstract String buildSearchUri(String searchId);

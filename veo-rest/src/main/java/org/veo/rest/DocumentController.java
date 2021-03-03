@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -58,8 +59,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.EntityTypeNames;
@@ -100,15 +99,13 @@ public class DocumentController extends AbstractEntityController {
     public DocumentController(UseCaseInteractor useCaseInteractor,
             GetDocumentUseCase getDocumentUseCase, GetDocumentsUseCase getDocumentsUseCase,
             CreateDocumentUseCase createDocumentUseCase,
-            UpdateDocumentUseCase updateDocumentUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            UpdateDocumentUseCase updateDocumentUseCase, DeleteEntityUseCase deleteEntityUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getDocumentUseCase = getDocumentUseCase;
         this.getDocumentsUseCase = getDocumentsUseCase;
         this.createDocumentUseCase = createDocumentUseCase;
         this.updateDocumentUseCase = updateDocumentUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.DOCUMENTS;
@@ -119,7 +116,6 @@ public class DocumentController extends AbstractEntityController {
     private final GetDocumentUseCase getDocumentUseCase;
     private final GetDocumentsUseCase getDocumentsUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     @GetMapping
     @Operation(summary = "Loads all documents")
@@ -204,11 +200,11 @@ public class DocumentController extends AbstractEntityController {
         return useCaseInteractor.execute(createDocumentUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Document>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Document(tcontext,
-                                                                                                  dto,
-                                                                                                  null),
+                                                     dtoToEntityTransformer.transformDto2Document(dto,
+                                                                                                  null,
+                                                                                                  modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -228,11 +224,11 @@ public class DocumentController extends AbstractEntityController {
         return useCaseInteractor.execute(updateDocumentUseCase,
                                          (Supplier<InputData<Document>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Document(tcontext,
-                                                                                                  documentDto,
-                                                                                                  Key.uuidFrom(documentDto.getId())),
+                                                     dtoToEntityTransformer.transformDto2Document(documentDto,
+                                                                                                  Key.uuidFrom(documentDto.getId()),
+                                                                                                  modelObjectReferenceResolver),
                                                      client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformDocument2Dto(output.getEntity()));

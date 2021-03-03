@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -58,8 +59,6 @@ import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -104,20 +103,17 @@ public class PersonController extends AbstractEntityController {
     private final GetPersonsUseCase getPersonsUseCase;
     private final UpdatePersonUseCase updatePersonUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     public PersonController(UseCaseInteractor useCaseInteractor,
             CreatePersonUseCase createPersonUseCase, GetPersonUseCase getPersonUseCase,
             GetPersonsUseCase getPersonsUseCase, UpdatePersonUseCase updatePersonUseCase,
-            DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            DeleteEntityUseCase deleteEntityUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createPersonUseCase = createPersonUseCase;
         this.getPersonUseCase = getPersonUseCase;
         this.getPersonsUseCase = getPersonsUseCase;
         this.updatePersonUseCase = updatePersonUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     @GetMapping
@@ -204,11 +200,11 @@ public class PersonController extends AbstractEntityController {
         return useCaseInteractor.execute(createPersonUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Person>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Person(tcontext,
-                                                                                                dto,
-                                                                                                null),
+                                                     dtoToEntityTransformer.transformDto2Person(dto,
+                                                                                                null,
+                                                                                                modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -232,11 +228,11 @@ public class PersonController extends AbstractEntityController {
                                              @Override
                                              public org.veo.core.usecase.base.ModifyEntityUseCase.InputData<Person> get() {
                                                  Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Person>(
-                                                         dtoToEntityTransformer.transformDto2Person(tcontext,
-                                                                                                    personDto,
-                                                                                                    Key.uuidFrom(personDto.getId())),
+                                                         dtoToEntityTransformer.transformDto2Person(personDto,
+                                                                                                    Key.uuidFrom(personDto.getId()),
+                                                                                                    modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          },

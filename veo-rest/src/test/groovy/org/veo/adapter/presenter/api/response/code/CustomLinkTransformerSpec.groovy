@@ -16,13 +16,14 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
+import org.veo.adapter.ModelObjectReferenceResolver
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntitySchema
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
+import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
@@ -33,8 +34,12 @@ import spock.lang.Specification
 class CustomLinkTransformerSpec extends Specification {
 
     def referenceAssembler = Mock(ReferenceAssembler)
+    def factory = Mock(EntityFactory)
+    def subTypeTransformer = Mock(SubTypeTransformer)
+    def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
     def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler)
-    def dtoToEntityTransformer = new DtoToEntityTransformer()
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, subTypeTransformer)
+
 
     def "transform custom link entity to DTO"() {
         given: "a custom link"
@@ -74,23 +79,23 @@ class CustomLinkTransformerSpec extends Specification {
         def newLink = Mock(CustomLink)
         def schema = Mock(EntitySchema)
         def linkDto = new CustomLinkDto().tap {
-            applicableTo = ["asset", "process"]
+            applicableTo = [
+                "asset",
+                "process"
+            ]
             name = "good name"
             target = ModelObjectReference.from(targetAsset, Mock(ReferenceAssembler))
             attributes = [
                 "foo": "bar"
             ]
         }
-        def context = Mock(DtoToEntityContext) {
-            it.resolve(linkDto.target) >> targetAsset
-            it.factory >> Mock(EntityFactory)
-        }
 
         when: "transforming it to an entity"
-        def entity = dtoToEntityTransformer.transformDto2CustomLink(context,linkDto, "good type", schema)
+        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "good type", schema, modelObjectReferenceResolver)
 
         then: "all properties are transformed"
-        1 * context.factory.createCustomLink("good name", targetAsset, null) >> newLink
+        1 * modelObjectReferenceResolver.resolve(linkDto.target) >> targetAsset
+        1 * factory.createCustomLink("good name", targetAsset, null) >> newLink
         entity == newLink
         1 * newLink.setType("good type")
         1 * newLink.setApplicableTo(Set.of("asset", "process"))

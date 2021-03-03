@@ -18,11 +18,12 @@ package org.veo.adapter.presenter.api.response.code
 
 import java.time.Instant
 
+import org.veo.adapter.ModelObjectReferenceResolver
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
+import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer
 import org.veo.core.entity.Asset
@@ -41,8 +42,12 @@ class CompositeEntityDtoTransformerSpec extends Specification {
     def subUnitId = "fb329c3e-b87b-44d2-a680-e2d12539f3f7"
 
     def refAssembler = Mock(ReferenceAssembler)
+    def factory = Mock(EntityFactory)
+    def subTypeTransformer = Mock(SubTypeTransformer)
+    def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
+    def entitySchemaLoader = Mock(EntitySchemaLoader)
     def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler)
-    def dtoToEntityTransformer = new DtoToEntityTransformer()
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, entitySchemaLoader, subTypeTransformer)
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -91,7 +96,6 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         compositeAsset.getCreatedAt() >> Instant.now()
         compositeAsset.getUpdatedAt() >> Instant.now()
 
-
         when: "the composite entity is transformed into a DTO"
         def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
 
@@ -133,7 +137,9 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         def compositeAssetDto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
         then: "the DTO contains references to both parts"
         compositeAssetDto.parts.size() == 2
-        compositeAssetDto.parts.sort { it.displayName }*.displayName == [
+        compositeAssetDto.parts.sort {
+            it.displayName
+        }*.displayName == [
             asset1.displayName,
             asset2.displayName
         ]
@@ -148,10 +154,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         def newCompositeAssetEntity = Mock(Asset) {
             it.modelType >> EntityTypeNames.ASSET
         }
-        def context = Mock(DtoToEntityContext) {
-            it.factory >> Mock(EntityFactory)
-            it.subTypeTransformer >> Mock(SubTypeTransformer)
-        }
+
         def compositeAssetId = Key.newUuid()
         def compositeAssetDto = new FullAssetDto().tap {
             id = compositeAssetId.uuidValue()
@@ -163,15 +166,15 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         }
 
         when: "transforming the DTO to an entity"
-        def result = dtoToEntityTransformer.transformDto2Asset(context, compositeAssetDto, Key.uuidFrom(compositeAssetDto.id))
+        def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, Key.uuidFrom(compositeAssetDto.id), modelObjectReferenceResolver)
 
         then: "the composite entity is transformed with parts"
-        1 * context.factory.createAsset(compositeAssetId, "Composite Asset", null) >> newCompositeAssetEntity
-        1 * context.resolve(asset1Ref) >> asset1
-        1 * context.resolve(asset2Ref) >> asset2
+        1 * factory.createAsset(compositeAssetId, "Composite Asset", null) >> newCompositeAssetEntity
+        1 * modelObjectReferenceResolver.resolve(asset1Ref) >> asset1
+        1 * modelObjectReferenceResolver.resolve(asset2Ref) >> asset2
         result == newCompositeAssetEntity
         1 * newCompositeAssetEntity.setParts([asset1, asset2].toSet())
-        1 * context.subTypeTransformer.mapSubTypesToEntity(compositeAssetDto, newCompositeAssetEntity)
+        1 * subTypeTransformer.mapSubTypesToEntity(compositeAssetDto, newCompositeAssetEntity)
     }
 
     def "Transform composite entity that contains itself"() {

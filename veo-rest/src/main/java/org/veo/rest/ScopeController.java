@@ -52,14 +52,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -108,20 +107,17 @@ public class ScopeController extends AbstractEntityController {
     private final GetScopesUseCase getScopesUseCase;
     private final UpdateScopeUseCase updateScopeUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     public ScopeController(UseCaseInteractor useCaseInteractor,
             CreateScopeUseCase createScopeUseCase, GetScopeUseCase getScopeUseCase,
             GetScopesUseCase getScopesUseCase, UpdateScopeUseCase updateScopeUseCase,
-            DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            DeleteEntityUseCase deleteEntityUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createScopeUseCase = createScopeUseCase;
         this.getScopeUseCase = getScopeUseCase;
         this.getScopesUseCase = getScopesUseCase;
         this.updateScopeUseCase = updateScopeUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     @GetMapping
@@ -214,11 +210,11 @@ public class ScopeController extends AbstractEntityController {
         return useCaseInteractor.execute(createScopeUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Scope>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Scope(tcontext,
-                                                                                               createScopeDto,
-                                                                                               null),
+                                                     dtoToEntityTransformer.transformDto2Scope(createScopeDto,
+                                                                                               null,
+                                                                                               modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
                                              Scope scope = output.getEntity();
@@ -246,12 +242,11 @@ public class ScopeController extends AbstractEntityController {
         return useCaseInteractor.execute(updateScopeUseCase,
                                          (Supplier<ModifyEntityUseCase.InputData<Scope>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
-
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new UpdateScopeUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Scope(tcontext,
-                                                                                               scopeDto,
-                                                                                               Key.uuidFrom(scopeDto.getId())),
+                                                     dtoToEntityTransformer.transformDto2Scope(scopeDto,
+                                                                                               Key.uuidFrom(scopeDto.getId()),
+                                                                                               modelObjectReferenceResolver),
                                                      client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));

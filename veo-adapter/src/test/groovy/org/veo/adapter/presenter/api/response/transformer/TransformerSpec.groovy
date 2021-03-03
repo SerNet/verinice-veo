@@ -18,6 +18,7 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import java.time.Instant
 
+import org.veo.adapter.ModelObjectReferenceResolver
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
@@ -46,8 +47,11 @@ class TransformerSpec extends Specification {
     def domainDescription = "This is a domain."
     def mUnitId = null
 
+    def factory = Mock(EntityFactory)
+
     def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler))
-    def dtoToEntityTransformer = new DtoToEntityTransformer()
+    def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, null)
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -129,15 +133,10 @@ class TransformerSpec extends Specification {
         u.name >> unitName
 
 
-        def factory = Mock(EntityFactory)
         factory.createUnit(_,_,_) >> u
 
         when: "The parent unit DTO is transformed into a unit"
-        def context = Mock(DtoToEntityContext) {
-            it.context >> new HashMap<>()
-            it.factory >> factory
-        }
-        def unit = dtoToEntityTransformer.transformDto2Unit(context, unitDto, Key.uuidFrom(unitDto.id))
+        def unit = dtoToEntityTransformer.transformDto2Unit( unitDto, Key.uuidFrom(unitDto.id), modelObjectReferenceResolver)
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId
@@ -197,16 +196,12 @@ class TransformerSpec extends Specification {
         c.name >> clientName
         c.domains >> [d]
 
-        def factory = Mock(EntityFactory)
         factory.createClient(c.id,clientName) >> c
         factory.createDomain(d.id,domainName) >> d
 
         when: "the DTO is transformed into a Client"
-        def context = Mock(DtoToEntityContext) {
-            it.context >> new HashMap<>()
-            it.factory >> factory
-        }
-        def client = dtoToEntityTransformer.transformDto2Client(context, clientDto, Key.uuidFrom(clientDto.id))
+
+        def client = dtoToEntityTransformer.transformDto2Client(clientDto, Key.uuidFrom(clientDto.id))
 
         then: "the client contains all relevant fields"
         client.id.uuidValue() == clientId

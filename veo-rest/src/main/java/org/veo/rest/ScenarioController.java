@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -58,8 +59,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContext;
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityContextFactory;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
@@ -100,15 +99,13 @@ public class ScenarioController extends AbstractEntityController {
     public ScenarioController(UseCaseInteractor useCaseInteractor,
             GetScenarioUseCase getScenarioUseCase, GetScenariosUseCase getScenariosUseCase,
             CreateScenarioUseCase createScenarioUseCase,
-            UpdateScenarioUseCase updateScenarioUseCase, DeleteEntityUseCase deleteEntityUseCase,
-            DtoToEntityContextFactory dtoToEntityContextFactory) {
+            UpdateScenarioUseCase updateScenarioUseCase, DeleteEntityUseCase deleteEntityUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getScenarioUseCase = getScenarioUseCase;
         this.getScenariosUseCase = getScenariosUseCase;
         this.createScenarioUseCase = createScenarioUseCase;
         this.updateScenarioUseCase = updateScenarioUseCase;
         this.deleteEntityUseCase = deleteEntityUseCase;
-        this.dtoToEntityContextFactory = dtoToEntityContextFactory;
     }
 
     public static final String URL_BASE_PATH = "/" + EntityTypeNames.SCENARIOS;
@@ -119,7 +116,6 @@ public class ScenarioController extends AbstractEntityController {
     private final GetScenarioUseCase getScenarioUseCase;
     private final GetScenariosUseCase getScenariosUseCase;
     private final DeleteEntityUseCase deleteEntityUseCase;
-    private final DtoToEntityContextFactory dtoToEntityContextFactory;
 
     @GetMapping
     @Operation(summary = "Loads all scenarios")
@@ -207,11 +203,11 @@ public class ScenarioController extends AbstractEntityController {
         return useCaseInteractor.execute(createScenarioUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Scenario>>) () -> {
                                              Client client = getClient(user);
-                                             DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Scenario(tcontext,
-                                                                                                  dto,
-                                                                                                  null),
+                                                     dtoToEntityTransformer.transformDto2Scenario(dto,
+                                                                                                  null,
+                                                                                                  modelObjectReferenceResolver),
                                                      client, user.getUsername());
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -234,11 +230,11 @@ public class ScenarioController extends AbstractEntityController {
                                              @Override
                                              public InputData<Scenario> get() {
                                                  Client client = getClient(user);
-                                                 DtoToEntityContext tcontext = dtoToEntityContextFactory.create(client);
+                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                                  return new InputData<Scenario>(
-                                                         dtoToEntityTransformer.transformDto2Scenario(tcontext,
-                                                                                                      scenarioDto,
-                                                                                                      Key.uuidFrom(scenarioDto.getId())),
+                                                         dtoToEntityTransformer.transformDto2Scenario(scenarioDto,
+                                                                                                      Key.uuidFrom(scenarioDto.getId()),
+                                                                                                      modelObjectReferenceResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          }
