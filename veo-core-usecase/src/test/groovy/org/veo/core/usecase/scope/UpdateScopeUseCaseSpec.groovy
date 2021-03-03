@@ -18,7 +18,6 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyEntityUseCase
 import org.veo.core.usecase.common.ETag
@@ -35,7 +34,6 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
     @Unroll
     def "update a scope scope"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def repository = Mock(ScopeRepository)
         def scopeId = Key.newUuid()
         def scope = Mock(Scope)

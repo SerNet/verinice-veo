@@ -18,7 +18,6 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.base.ModifyEntityUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.person.UpdatePersonUseCase
@@ -32,7 +31,6 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
     def "update a person"() {
         given:
-        TransformTargetToEntityContext targetToEntityContexte = Mock()
         def id = Key.newUuid()
         Person person = Mock()
         person.id >> id

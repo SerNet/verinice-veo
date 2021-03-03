@@ -18,7 +18,6 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.repository.ScopeRepository
 
@@ -32,7 +31,6 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
     @Unroll
     def "retrieve a scope"() {
         given:
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         def repository = Mock(ScopeRepository)
         def scopeId = Key.newUuid()
         def scope = Mock(Scope) {

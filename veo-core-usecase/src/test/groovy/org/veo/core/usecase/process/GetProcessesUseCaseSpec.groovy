@@ -18,7 +18,6 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
-import org.veo.core.entity.transform.TransformTargetToEntityContext
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
@@ -39,7 +38,6 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
     def "retrieve all processes for a client"() {
         given:
         def id = Key.newUuid()
-        TransformTargetToEntityContext targetToEntityContext = Mock()
         Process process = Mock()
         process.getOwner() >> existingUnit
         process.getId() >> id
