@@ -37,7 +37,6 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -80,8 +79,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    @Autowired
-    private EntityDataFactory entityFactory
 
     def setup() {
         txTemplate.execute {
@@ -360,9 +357,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a scope with custom properties"() {
         given: "a saved scope"
 
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("my.new.type")
-        cp.setApplicableTo(['Asset'] as Set)
+        CustomProperties cp = newCustomProperties("my.new.type") {
+            applicableTo = ['Asset'] as Set
+        }
 
         def scope = txTemplate.execute {
             scopeRepository.save(newScope(unit) {

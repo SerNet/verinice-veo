@@ -20,30 +20,22 @@ import java.time.Instant
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.SameClientSpecification
-import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.test.VeoSpec
 
 import spock.lang.Ignore
 
 class CompositeEntitySpec extends VeoSpec {
-    EntityFactory entityFactory
-
     Client client
-
     Unit unit
 
     def setup() {
-        entityFactory = new EntityDataFactory()
-        this.client = entityFactory.createClient(Key.newUuid(), "client")
-        this.unit = entityFactory.createUnit(Key.newUuid(), "unit", null)
-        this.unit.client = client
+        this.client = newClient()
+        this.unit = newUnit(client)
     }
 
 
@@ -52,7 +44,7 @@ class CompositeEntitySpec extends VeoSpec {
         Instant beforeCreation = Instant.now()
 
         when: "a new composite object is created"
-        Asset composite = entityFactory.createAsset(Key.newUuid(), "New composite", this.unit)
+        Asset composite = newAsset(unit) {name = "New composite"}
         composite.version("user", null)
 
         then: "the composite is initialized as expected"
@@ -70,7 +62,7 @@ class CompositeEntitySpec extends VeoSpec {
     @Ignore("TODO VEO-427 prevent creation of entities with no unit")
     def "A composite must have a unit" () {
         when: "a composite is created with no unit"
-        entityFactory.createAssetComposite(Key.newUuid(), "unit", null)
+        newAsset(unit)
 
         then: "an exception is thrown"
         thrown InvalidUnitException;
@@ -79,13 +71,14 @@ class CompositeEntitySpec extends VeoSpec {
     def "A composite can contain assets"() {
         given: "a set of two assets"
         Set assets = Set.of(
-                entityFactory.createAsset(Key.newUuid(), "asset 1", unit),
-                entityFactory.createAsset(Key.newUuid(), "asset 2", unit),
+                newAsset(unit),
+                newAsset(unit),
                 )
 
         when: "a composite is reinstantiated with the assets:"
-        def assetComposite = entityFactory.createAsset(Key.newUuid(), "composite1", unit)
-        assetComposite.parts = assets
+        def assetComposite = newAsset(unit) {
+            parts = assets
+        }
 
         then: "the composite contains the assets"
         assetComposite.parts.size() == 2
@@ -95,13 +88,14 @@ class CompositeEntitySpec extends VeoSpec {
     def "A composite can contain processes"() {
         given: "a set of two processes"
         def processes = [
-            entityFactory.createProcess(Key.newUuid(), "process 1", unit),
-            entityFactory.createProcess(Key.newUuid(), "process 2", unit)
+            newProcess(unit),
+            newProcess(unit)
         ] as Set
 
         when: "a composite is reinstantiated with the processes:"
-        def processComposite = entityFactory.createProcess(Key.newUuid(), "processComposite", unit)
-        processComposite.parts = processes
+        def processComposite = newProcess(unit) {
+            parts = processes
+        }
 
         then: "the composite contains the processes"
         processComposite.parts.size() == 2
@@ -110,13 +104,14 @@ class CompositeEntitySpec extends VeoSpec {
     // Note: this could be prevented from working with @TypeChecked
     def "A composite can only contain objects of the same type"() {
         given: "two objects of different types"
-        def process = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
-        def asset = entityFactory.createAsset(Key.newUuid(), "asset 1", unit)
+        def process = newProcess(unit)
+        def asset = newAsset(unit)
         Set newMembers = Set.of(process, asset)
 
         when: "a composite is created with objects of two different types"
-        def processComposite = entityFactory.createProcess(Key.newUuid(), "processComposite", unit)
-        processComposite.parts = newMembers
+        def processComposite = newProcess(unit) {
+            parts = newMembers
+        }
 
         then: "an exception should be thrown - but is not because Java is not a fully statically typed language"
         processComposite.parts.size() == 2
@@ -126,16 +121,19 @@ class CompositeEntitySpec extends VeoSpec {
 
     def "A composite can contain sub-composites of identical types"() {
         given: "two composites of identical types"
-        Process processComposite1 = entityFactory.createProcess(Key.newUuid(), "processcomposite 1", unit)
-        processComposite1.addPart(entityFactory.createProcess(Key.newUuid(), "process1", unit))
-        Process processComposite2 = entityFactory.createProcess(Key.newUuid(), "processcomposite 2", unit)
-        processComposite2.addPart(entityFactory.createProcess(Key.newUuid(), "process2", unit))
+        Process processComposite1 = newProcess(unit) {
+            addPart(newProcess(unit))
+        }
+        Process processComposite2 = newProcess(unit) {
+            addPart(newProcess(unit))
+        }
 
         when: "a composite is created with those subcomposites"
-        def topProcessComposite = entityFactory.createProcess(Key.newUuid(), "topprocesscomposite", unit)
-        topProcessComposite.parts = [
-            processComposite1,
-            processComposite2] as Set<Process>
+        def topProcessComposite = newProcess(unit) {
+            parts = [
+                processComposite1,
+                processComposite2] as Set<Process>
+        }
 
         then: "the composite contains both subcomposites"
         topProcessComposite.parts.size() == 2
@@ -143,10 +141,10 @@ class CompositeEntitySpec extends VeoSpec {
 
     def "A composite can contain a subcomposite that contains itself"() {
         given: "a subcomposite of identical types"
-        def subComposite = entityFactory.createProcess(Key.newUuid(), "subcomposite", unit)
+        def subComposite = newProcess(unit)
 
         when: "a new composite is created with this subcomposite"
-        def topComposite = entityFactory.createProcess(Key.newUuid(), "topcomposite", unit)
+        def topComposite = newProcess(unit)
         topComposite.addPart(subComposite)
 
         and: "the composite itself is added to the subcomposite"
@@ -162,7 +160,7 @@ class CompositeEntitySpec extends VeoSpec {
 
     def "A composite could contain itself"() {
         given: "a new empty composite"
-        def composite = entityFactory.createProcess(Key.newUuid(), "subcomposite", unit)
+        def composite = newProcess(unit)
 
         when: "the composite is added to itself as a subcomposite"
         composite.addPart(composite)
@@ -175,17 +173,17 @@ class CompositeEntitySpec extends VeoSpec {
     @Ignore("TODO VEO-384 restore guard clause when adding parts from other clients to a composite")
     def "A composite cannot be created with elements from different clients"() {
         given: "a set of two processes from different clients"
-        Client client2 = entityFactory.createClient(Key.newUuid(), "client 2")
-        Unit unit2 = entityFactory.createUnit(Key.newUuid(), "unit 2", null)
+        Client client2 = newClient()
+        Unit unit2 = newUnit(client)
         unit2.client = client2
 
         def processes = [
-            entityFactory.createProcess(Key.newUuid(), "process 1", unit),
-            entityFactory.createProcess(Key.newUuid(), "process 2", unit2)
+            newProcess(unit),
+            newProcess(unit)
         ] as Set
 
         when: "a composite is reinstantiated with the processes:"
-        def composite = entityFactory.createProcess(Key.newUuid(), "composite", null)
+        def composite = newProcess(unit)
         composite.parts = processes
 
         then: "an exception is thrown"
@@ -195,13 +193,13 @@ class CompositeEntitySpec extends VeoSpec {
     @Ignore("TODO VEO-384 restore guard clause when adding parts from other clients to a composite")
     def "A composite part from another client cannot be added"() {
         given: "a set of two processes from different clients"
-        Client client2 = entityFactory.createClient(Key.newUuid(), "client 2")
-        Unit unit2 = entityFactory.createUnit(Key.newUuid(), "unit 2", null)
-        def p1 = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
-        def p2 = entityFactory.createProcess(Key.newUuid(), "process 2", unit2)
+        Client client2 = newClient()
+        Unit unit2 = newUnit(client)
+        def p1 = newProcess(unit)
+        def p2 = newProcess(unit)
 
         when: "a new composite is created"
-        def processComposite = entityFactory.createProcess(Key.newUuid(), "processcomposite", unit)
+        def processComposite = newProcess(unit)
 
         and: "the two processes are added"
         processComposite.parts = [p1, p2] as Set
@@ -212,11 +210,11 @@ class CompositeEntitySpec extends VeoSpec {
 
     def "A composite can return its parts"() {
         given: "a set of two processes"
-        def p1 = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
-        def p2 = entityFactory.createProcess(Key.newUuid(), "process 2", unit)
+        def p1 = newProcess(unit)
+        def p2 = newProcess(unit)
 
         when: "a composite is reinstantiated with the processes:"
-        def processComposite = entityFactory.createProcess(Key.newUuid(), "processcomposite", unit)
+        def processComposite = newProcess(unit)
         processComposite.parts = [p1, p2] as Set
 
         then: "the composite can be queried for its parts"
@@ -227,15 +225,15 @@ class CompositeEntitySpec extends VeoSpec {
 
     def "A composite can return parts that fulfill a specification"() {
         given: "a set of two processes"
-        def p1 = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
-        def p2 = entityFactory.createProcess(Key.newUuid(), "process 2", unit)
+        def p1 = newProcess(unit)
+        def p2 = newProcess(unit)
 
         and: "a specification"
         def spec1 = new SameClientSpecification(client)
-        def spec2 = new SameClientSpecification(entityFactory.createClient(Key.newUuid(), "client2"))
+        def spec2 = new SameClientSpecification(newClient())
 
         when: "a composite is reinstantiated with the processes"
-        def processComposite = entityFactory.createProcess(Key.newUuid(), "processcomposite", unit)
+        def processComposite = newProcess(unit)
         processComposite.parts = [p1, p2] as Set
 
         then: "the composite can be queried using the specification"
@@ -266,30 +264,30 @@ class CompositeEntitySpec extends VeoSpec {
      */
     def "A composite can be used just like a single element of the same type"() {
         given: "a set of two processes"
-        def p1 = entityFactory.createProcess(Key.newUuid(), "process 1", unit)
-        def p2 = entityFactory.createProcess(Key.newUuid(), "process 2", unit)
+        def p1 = newProcess(unit)
+        def p2 = newProcess(unit)
 
-        def link = entityFactory.createCustomLink("aLink", p1, p2)
+        def link = newCustomLink(p2, p1)
         p1.addToLinks(link)
 
-        def customAspect = entityFactory.createCustomProperties()
-        customAspect.type = "type"
-        customAspect.applicableTo = [Process.typeName] as Set
+        def customAspect = newCustomProperties("type") {
+            applicableTo = [Process.typeName] as Set
+        }
         p1.addToCustomAspects(customAspect)
 
         when: "a composite is reinstantiated with the processes:"
-        def processComposite = entityFactory.createProcess(Key.newUuid(), "processcomposite", unit)
+        def processComposite = newProcess(unit)
         processComposite.parts = [p1, p2] as Set
 
         and: "another object should be compared"
-        def p3 = entityFactory.createProcess(Key.newUuid(), "process 3", unit)
+        def p3 = newProcess(unit)
 
-        def customAspect2 = entityFactory.createCustomProperties()
-        customAspect2.type = "type2"
-        customAspect2.applicableTo = [Process.typeName] as Set
+        def customAspect2 = newCustomProperties("type2") {
+            applicableTo = [Process.typeName] as Set
+        }
         p3.addToCustomAspects(customAspect2)
 
-        def link2 = entityFactory.createCustomLink("aLink2", p3, p2)
+        def link2 = newCustomLink(p2, p3)
         p3.addToLinks(link2)
 
         then: "the same method can be called on the composite (branch node) or element (leaf node)"

@@ -36,7 +36,6 @@ import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -65,8 +64,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     TransactionTemplate txTemplate
-    @Autowired
-    private EntityDataFactory entityFactory
 
     private Unit unit
     private Domain domain
@@ -229,9 +226,9 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a person with custom properties"() {
         given: "a saved person"
 
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("my.new.type")
-        cp.setApplicableTo(['Person'] as Set)
+        CustomProperties cp = newCustomProperties("my.new.type") {
+            applicableTo = ['Person'] as Set
+        }
 
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {

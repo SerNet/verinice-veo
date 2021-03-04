@@ -26,7 +26,6 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WebMvcSecurityConfiguration])
@@ -34,9 +33,6 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
-
-    @Autowired
-    private EntityDataFactory entityFactory
 
     @Autowired
     private ProcessRepositoryImpl processRepository

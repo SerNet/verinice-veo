@@ -36,7 +36,6 @@ import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -73,9 +72,6 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     TransactionTemplate txTemplate
-
-    @Autowired
-    private EntityDataFactory entityFactory
 
     private Client client
     private Client otherClient

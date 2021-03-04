@@ -38,7 +38,6 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -65,9 +64,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private TransactionTemplate txTemplate
-
-    @Autowired
-    private EntityDataFactory entityFactory
 
     private Client client
 

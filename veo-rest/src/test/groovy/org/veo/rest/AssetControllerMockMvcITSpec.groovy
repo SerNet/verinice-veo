@@ -45,7 +45,6 @@ import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ScenarioData
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -84,9 +83,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     TransactionTemplate txTemplate
-
-    @Autowired
-    private EntityDataFactory entityFactory
 
     private Unit unit
     private Unit unit2
@@ -208,9 +204,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve an asset"() {
         given: "a saved asset"
 
-        CustomProperties simpleProps = entityFactory.createCustomProperties()
-        simpleProps.setType("simpleAspect")
-        simpleProps.setProperty("simpleProp", "simpleValue")
+        CustomProperties simpleProps = newCustomProperties("simpleAspect") {
+            it.setProperty("simpleProp", "simpleValue")
+        }
 
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
@@ -276,9 +272,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         and: "a saved asset"
-        CustomProperties simpleProps = entityFactory.createCustomProperties()
-        simpleProps.setType("simpleAspect")
-        simpleProps.setProperty("simpleProp", "simpleValue")
+        CustomProperties simpleProps = newCustomProperties("simpleAspect") {
+            it.setProperty("simpleProp", "simpleValue")
+        }
 
         def asset = newAsset(unit) {
         }
@@ -311,9 +307,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve an asset with a link"() {
         given: "a saved asset"
 
-        CustomProperties simpleProps = entityFactory.createCustomProperties()
-        simpleProps.setType("simpleAspect")
-        simpleProps.setProperty("simpleProp", "simpleValue")
+        CustomProperties simpleProps = newCustomProperties("simpleAspect") {
+            it.setProperty("simpleProp", "simpleValue")
+        }
 
         def sourceAsset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
@@ -325,9 +321,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             customAspects = [simpleProps] as Set
         }
 
-        CustomLink link = entityFactory.createCustomLink("requires", sourceAsset, targetAsset)
-        link.setType("mypreciouslink")
-        link.setApplicableTo(["Asset"] as Set)
+        CustomLink link = newCustomLink(sourceAsset, targetAsset) {
+            type = "mypreciouslink"
+            applicableTo = ["Asset"] as Set
+        }
         targetAsset.links.add(link)
 
         targetAsset = txTemplate.execute {
@@ -537,9 +534,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "put an asset with custom properties"() {
         given: "a saved asset"
 
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("my.new.type")
-        cp.setApplicableTo(['Asset'] as Set)
+        CustomProperties cp = newCustomProperties("my.new.type") {
+            applicableTo = ['Asset'] as Set
+        }
 
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
@@ -632,7 +629,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "delete an asset that is a link target"() {
-
         given: "two assets with a link between them"
 
         def targetAsset = txTemplate.execute {
@@ -646,7 +642,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 domains = [domain1] as Set
             })
         }
-        CustomLink link = entityFactory.createCustomLink("requires", targetAsset, sourceAsset)
+        CustomLink link = newCustomLink(sourceAsset, targetAsset)
         sourceAsset.links =[link] as Set
 
         when: "a delete request is sent to the server for link target"

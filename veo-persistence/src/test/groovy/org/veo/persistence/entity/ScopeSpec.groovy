@@ -18,26 +18,19 @@ package org.veo.persistence.entity
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.ScopeData
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.test.VeoSpec
 
 class ScopeSpec extends VeoSpec {
-    EntityFactory entityFactory
-
     Client client
 
     Unit unit
 
     def setup() {
-        entityFactory = new EntityDataFactory()
-        this.client = entityFactory.createClient(Key.newUuid(), "client")
-        this.unit = entityFactory.createUnit(Key.newUuid(), "unit", null)
-        this.unit.setClient(client)
+        this.client = newClient()
+        this.unit = newUnit(client)
     }
 
     def "A scope can contain composites of different types"() {

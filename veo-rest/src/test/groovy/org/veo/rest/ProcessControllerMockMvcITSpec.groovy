@@ -37,7 +37,6 @@ import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -67,8 +66,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     TransactionTemplate txTemplate
-    @Autowired
-    private EntityDataFactory entityFactory
 
     private Unit unit
     private Unit unit2
@@ -284,9 +281,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a process with custom aspect"() {
         given: "a saved process"
 
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("my.new.type")
-        cp.setApplicableTo(['Process'] as Set)
+        CustomProperties cp = newCustomProperties("my.new.type") {
+            applicableTo = ['Process'] as Set
+        }
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
@@ -363,10 +360,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "overwrite a custom aspect attribute"() {
         given: "a saved process"
 
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("process_SensitiveData")
-        cp.setApplicableTo(['Process'] as Set)
-        cp.setProperty('process_SensitiveData_comment', 'old comment')
+        CustomProperties cp = newCustomProperties("process_SensitiveData") {
+            applicableTo = ['Process'] as Set
+            it.setProperty('process_SensitiveData_comment', 'old comment')
+        }
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {

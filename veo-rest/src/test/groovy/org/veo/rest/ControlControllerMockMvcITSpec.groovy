@@ -39,7 +39,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.CustomPropertiesData
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -68,8 +67,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     TransactionTemplate txTemplate
-    @Autowired
-    private EntityDataFactory entityFactory
 
     private Unit unit
     private Domain domain
@@ -351,9 +348,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a control with custom properties"() {
         given: "a saved control"
 
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType("my.new.type")
-        cp.setApplicableTo(['Control'] as Set)
+        def cp = newCustomProperties("my.new.type") {
+            it.setApplicableTo(['Control'] as Set)
+        }
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
@@ -409,9 +406,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a control with a string property that is too long"() {
         given: "a saved control"
 
-        CustomProperties cp = new CustomPropertiesData()
-        cp.setType("my.new.type")
-        cp.setApplicableTo(['Control'] as Set)
+        CustomProperties cp = newCustomProperties("my.new.type") {
+            applicableTo = ['Control'] as Set
+        }
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {

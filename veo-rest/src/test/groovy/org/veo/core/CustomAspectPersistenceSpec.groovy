@@ -35,7 +35,6 @@ import org.veo.core.entity.Unit
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.test.VeoSpec
 
 @SpringBootTest(classes = CustomAspectPersistenceSpec.class
@@ -52,15 +51,13 @@ class CustomAspectPersistenceSpec extends VeoSpec {
     private UnitRepositoryImpl unitRepository
     @Autowired
     private AssetRepositoryImpl assetRepository
-    @Autowired
-    private EntityDataFactory entityFactory
 
     def "create an asset with a customAspect and save-load it"() {
         given: "a Unit and an asset"
 
-        CustomProperties cp = entityFactory.createCustomProperties()
-        cp.setType('my.new.linktype')
-        cp.setApplicableTo(['Asset'] as Set)
+        CustomProperties cp = newCustomProperties('my.new.linktype') {
+            applicableTo = ['Asset'] as Set
+        }
 
         Client client = newClient()
         Unit unit = newUnit(client)
@@ -135,10 +132,10 @@ class CustomAspectPersistenceSpec extends VeoSpec {
 
         when: "add properties of type list string"
 
-        CustomProperties aspect = entityFactory.createCustomProperties()
-        aspect.setType('my_new_asset_custom_aspect')
-        aspect.setApplicableTo(['Asset'] as Set)
-        aspect.setProperty('l1', ['e1', 'e2'])
+        CustomProperties aspect = newCustomProperties('my_new_asset_custom_aspect') {
+            applicableTo = ['Asset'] as Set
+            it.setProperty('l1', ['e1', 'e2'])
+        }
 
         asset.getCustomAspects().clear()
         asset.getCustomAspects().add(aspect)

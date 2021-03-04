@@ -18,13 +18,10 @@ package org.veo.core.entity
 
 import org.veo.core.entity.code.ModelValidationException
 import org.veo.core.entity.code.ModelValidator
-import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.test.VeoSpec
 
 // generateValidatorTest
 class ModelValidatorSpec extends VeoSpec {
-    private EntityFactory entityFactory = new EntityDataFactory()
 
     def "a properly initialized Person instance passes validation"() {
         given : "a valid modelobject"

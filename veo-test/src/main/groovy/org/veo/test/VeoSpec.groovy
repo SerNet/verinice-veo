@@ -23,12 +23,14 @@ import java.util.regex.Pattern
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
+import org.veo.core.entity.CustomLink
+import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
-import org.veo.core.entity.Nameable
+import org.veo.core.entity.ModelObject
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
@@ -39,6 +41,8 @@ import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
+import org.veo.persistence.entity.jpa.CustomLinkData
+import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.DomainData
 import org.veo.persistence.entity.jpa.IncidentData
@@ -162,6 +166,24 @@ abstract class VeoSpec extends Specification {
         }
     }
 
+    static CustomPropertiesData newCustomProperties(String type, @DelegatesTo(value = CustomProperties.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomProperties") Closure init = null) {
+        return factory.createCustomProperties().tap{
+            it.type = type
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static CustomLinkData newCustomLink(EntityLayerSupertype linkSource, EntityLayerSupertype linkTarget, @DelegatesTo(value = CustomLink.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
+        return factory.createCustomLink(null, linkSource, linkTarget).tap{
+            VeoSpec.execute(it, init)
+            if(it.name == null) {
+                it.name = "link from $linkSource.name to $linkTarget.name"
+            }
+        }
+    }
+
     private static def execute(Object target, Closure init) {
         if (init != null) {
             init.delegate = target
@@ -170,7 +192,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    private static def name(Nameable target) {
+    private static def name(ModelObject target) {
         if (target.name == null) {
             target.name = target.modelType + " " + target.id
         }

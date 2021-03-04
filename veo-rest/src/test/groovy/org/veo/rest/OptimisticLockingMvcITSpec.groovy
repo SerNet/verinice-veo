@@ -31,7 +31,6 @@ import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.common.ETagMismatchException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -55,9 +54,6 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private UnitRepositoryImpl unitRepository
-
-    @Autowired
-    private EntityDataFactory entityFactory
 
     private Unit unit
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
