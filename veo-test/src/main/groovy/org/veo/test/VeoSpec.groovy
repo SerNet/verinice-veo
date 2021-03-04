@@ -35,6 +35,7 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
@@ -46,6 +47,7 @@ import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.UnitData
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
@@ -55,11 +57,11 @@ import spock.lang.Specification
  * Base class for veo specifications
  */
 abstract class VeoSpec extends Specification {
+    private static EntityFactory factory = new EntityDataFactory()
+
     static AssetData newAsset(Unit owner, @DelegatesTo(value = Asset.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Asset") Closure init = null) {
-        return new AssetData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createAsset(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -68,8 +70,7 @@ abstract class VeoSpec extends Specification {
 
     static ClientData newClient(@DelegatesTo(value = Client.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Client") Closure init = null) {
-        return new ClientData().tap {
-            id = Key.newUuid()
+        return factory.createClient(Key.newUuid(), null).tap {
             VeoSpec.execute(it, init)
             if (it.name == null) {
                 it.name = it.modelType + it.id
@@ -80,9 +81,7 @@ abstract class VeoSpec extends Specification {
 
     static ControlData newControl(Unit owner, @DelegatesTo(value = Control.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Control") Closure init = null) {
-        return new ControlData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createControl(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -91,9 +90,7 @@ abstract class VeoSpec extends Specification {
 
     static DocumentData newDocument(Unit owner, @DelegatesTo(value = Document.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Document") Closure init = null) {
-        return new DocumentData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createDocument(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -103,9 +100,7 @@ abstract class VeoSpec extends Specification {
 
     static IncidentData newIncident(Unit owner, @DelegatesTo(value = Incident.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Incident") Closure init = null) {
-        return new IncidentData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createIncident(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -114,9 +109,7 @@ abstract class VeoSpec extends Specification {
 
     static ScenarioData newScenario(Unit owner, @DelegatesTo(value = Scenario.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scenario") Closure init = null) {
-        return new ScenarioData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createScenario(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -125,8 +118,7 @@ abstract class VeoSpec extends Specification {
 
     static DomainData newDomain(@DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure init = null) {
-        return new DomainData().tap {
-            id = Key.newUuid()
+        return factory.createDomain(Key.newUuid(), null).tap {
             VeoSpec.execute(it, init)
             name(it)
             version(it)
@@ -135,9 +127,7 @@ abstract class VeoSpec extends Specification {
 
     static PersonData newPerson(Unit owner, @DelegatesTo(value = Person.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Person") Closure init = null) {
-        return new PersonData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createPerson(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -147,9 +137,7 @@ abstract class VeoSpec extends Specification {
 
     static ProcessData newProcess(Unit owner, @DelegatesTo(value = Process.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Process") Closure init = null) {
-        return new ProcessData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createProcess(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -158,9 +146,7 @@ abstract class VeoSpec extends Specification {
 
     static ScopeData newScope(Unit owner, @DelegatesTo(value = Scope.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scope") Closure init = null) {
-        return new ScopeData().tap {
-            id = Key.newUuid()
-            it.owner = owner
+        return factory.createScope(Key.newUuid(), null, owner).tap {
             VeoSpec.execute(it, init)
             VeoSpec.initEntityLayerSupertype(it)
         }
@@ -168,8 +154,7 @@ abstract class VeoSpec extends Specification {
 
     static UnitData newUnit(Client client, @DelegatesTo(value = Unit.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Unit") Closure init = null) {
-        return new UnitData().tap {
-            id = Key.newUuid()
+        return factory.createUnit(Key.newUuid(), null, null).tap {
             it.client = client
             VeoSpec.execute(it, init)
             name(it)
