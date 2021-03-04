@@ -78,7 +78,6 @@ import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -269,7 +268,6 @@ public class ScopeController extends AbstractEntityController {
     }
 
     @Override
-    @SuppressFBWarnings // ignore warning on call to method proxy factory
     protected String buildSearchUri(String id) {
         return linkTo(methodOn(ScopeController.class).runSearch(ANY_AUTH, id)).withSelfRel()
                                                                               .getHref();

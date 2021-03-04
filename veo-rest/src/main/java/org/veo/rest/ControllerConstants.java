@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -28,7 +29,8 @@ import org.veo.rest.security.ApplicationUser;
 public final class ControllerConstants {
 
     // Placeholder objects to generate method proxies for HATEOAS URLs:
-    public static final Authentication ANY_AUTH = null;
+    public static final Authentication ANY_AUTH = new UsernamePasswordAuthenticationToken(null,
+            null);
     public static final ApplicationUser ANY_USER = null;
     public static final SearchQueryDto ANY_SEARCH = null;
     public static final String ANY_STRING = null;
