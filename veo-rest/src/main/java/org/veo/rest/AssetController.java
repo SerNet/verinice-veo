@@ -38,7 +38,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -55,7 +54,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
@@ -106,8 +104,6 @@ public class AssetController extends AbstractEntityController implements AssetRi
 
     private final DeleteAssetRiskUseCase deleteAssetRiskUseCase;
     private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
-    @Autowired
-    ReferenceAssembler urlAssembler;
     private final GetAssetRisksUseCase getAssetRisksUseCase;
 
     public AssetController(UseCaseInteractor useCaseInteractor, GetAssetUseCase getAssetUseCase,
@@ -231,7 +227,6 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                              ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Asset(dto,
-
                                                                                                modelObjectReferenceResolver),
                                                      client);
                                          }, output -> {
