@@ -53,7 +53,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 // Other scopes could be used to secure individual methods.
 public interface EntitySchemaResource {
 
-    public static final String URL_BASE_PATH = "/schemas";
+    String URL_BASE_PATH = "/schemas";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Returns a list of all available entity schemas.")
@@ -61,8 +61,8 @@ public interface EntitySchemaResource {
             @ApiResponse(responseCode = "200",
                          description = "Schemas returned",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) })
-    public @Valid SchemaIdentifiersDTO getSchemas(
-            @Parameter(required = false, hidden = true) Authentication auth);
+    @Valid
+    SchemaIdentifiersDTO getSchemas(@Parameter(hidden = true) Authentication auth);
 
     // @formatter:off
     @GetMapping(value = "/{type:[\\w]+}")
@@ -74,15 +74,13 @@ public interface EntitySchemaResource {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "404", description = "Schema not found")
     })
-    public ResponseEntity<String> getSchema(
+    ResponseEntity<String> getSchema(
 
-            @Parameter(required = false, hidden = true) Authentication auth,
+            @Parameter(hidden = true) Authentication auth,
 
             @Parameter(required = true,
-                allowEmptyValue = false,
                 description = "The entity for which the schema will be returned.",
                 example = "process",
-                allowReserved = false,
                 schema = @Schema(
                     type = "string",
                     allowableValues = {"process", "asset", "person", "control"},
@@ -92,16 +90,14 @@ public interface EntitySchemaResource {
             @PathVariable String type,
 
             @Parameter(required = true,
-                allowEmptyValue = false,
                 description = "A list of domains. Attributes of these domains will be returned for the given entity type.",
                 example = "GDPR,ISO_27001",
-                allowReserved = false,
                 schema = @Schema(
                     type = "string",
                     description = "List of domain identifiers - must not contain any reserved characters "
                             + "defined in RFC 3986."
                 )
             )
-            @RequestParam(value = "domains", required = true) List<String> domains);
+            @RequestParam(value = "domains") List<String> domains);
     // @formatter:on
 }

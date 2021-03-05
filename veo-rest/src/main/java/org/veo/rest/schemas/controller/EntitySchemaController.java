@@ -45,9 +45,6 @@ import lombok.RequiredArgsConstructor;
 public class EntitySchemaController implements EntitySchemaResource {
 
     private final EntitySchemaService schemaService;
-    // TODO need the new meta-schema to validate
-    // private final SchemaValidator validator;
-    // private final LinkSchemaValidator linkValidator;
 
     @Override
     public ResponseEntity<String> getSchema(Authentication auth, @PathVariable String type,
