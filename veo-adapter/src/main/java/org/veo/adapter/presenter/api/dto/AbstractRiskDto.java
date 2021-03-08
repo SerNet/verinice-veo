@@ -48,7 +48,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @Valid
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractRiskDto {
+public abstract class AbstractRiskDto implements VersionedDto {
 
     @Valid
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))

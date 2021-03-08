@@ -16,13 +16,11 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,16 +28,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
@@ -61,21 +53,15 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
 @Data
-@EntityListeners({ AuditingEntityListener.class })
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public abstract class AbstractRiskData implements AbstractRisk {
+public abstract class AbstractRiskData extends VersionedData implements AbstractRisk {
 
     @Id
     @ToString.Include
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
-
-    @ToString.Include
-    @Version
-    @Setter(AccessLevel.PACKAGE)
-    private long version;
 
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
@@ -97,18 +83,6 @@ public abstract class AbstractRiskData implements AbstractRisk {
     @JoinColumn(name = "person_id")
     @Setter(AccessLevel.PRIVATE)
     private Person riskOwner;
-
-    @CreatedDate
-    private Date createdOn;
-
-    @LastModifiedDate
-    private Date lastModified;
-
-    @LastModifiedBy
-    private String lastModifiedBy;
-
-    @CreatedBy
-    private String createdBy;
 
     @Override
     public boolean addToDomains(Domain aDomain) {

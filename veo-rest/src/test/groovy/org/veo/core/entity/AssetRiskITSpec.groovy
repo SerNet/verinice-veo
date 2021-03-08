@@ -126,8 +126,8 @@ class AssetRiskITSpec extends VeoSpringSpec {
         retrievedRisk1.asset == asset1
         retrievedRisk1.scenario == scenario1
         def riskData = (AssetRiskData) retrievedRisk1
-        riskData.createdOn != null
-        riskData.lastModified != null
+        riskData.createdAt != null
+        riskData.updatedAt != null
 
         when: "a control is added"
         txTemplate.execute{

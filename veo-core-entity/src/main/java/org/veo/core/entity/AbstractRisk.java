@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Date;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -40,7 +39,7 @@ import lombok.NonNull;
  * NIST 800-30 terms this would be the information owner - not the risk
  * assessor). This is also optional.
  */
-public interface AbstractRisk extends CompoundKeyEntity {
+public interface AbstractRisk extends CompoundKeyEntity, Versioned {
 
     Set<Domain> getDomains();
 
@@ -73,16 +72,6 @@ public interface AbstractRisk extends CompoundKeyEntity {
      *            {@code null} to appoint no one.
      */
     AbstractRisk appoint(@Nullable Person riskOwner);
-
-    public Date getCreatedOn();
-
-    public Date getLastModified();
-
-    public String getLastModifiedBy();
-
-    public String getCreatedBy();
-
-    public long getVersion();
 
     /**
      * Remove this risk from its associated entity.
