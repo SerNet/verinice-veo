@@ -18,6 +18,7 @@ package org.veo.core.usecase.base;
 
 import java.util.UUID;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
@@ -25,6 +26,7 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.Repository;
 import org.veo.core.usecase.repository.UnitRepository;
@@ -32,7 +34,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 import lombok.Value;
 
 public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> implements
-        UseCase<CreateEntityUseCase.InputData<TEntity>, CreateEntityUseCase.OutputData<TEntity>> {
+        TransactionalUseCase<CreateEntityUseCase.InputData<TEntity>, CreateEntityUseCase.OutputData<TEntity>> {
     private final UnitRepository unitRepository;
     private final Repository<TEntity, Key<UUID>> entityRepo;
 
@@ -43,6 +45,7 @@ public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> 
     }
 
     @Override
+    @Transactional(Transactional.TxType.REQUIRED)
     public CreateEntityUseCase.OutputData<TEntity> execute(
             CreateEntityUseCase.InputData<TEntity> input) {
         var entity = input.getNewEntity();

@@ -24,6 +24,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.DocumentRepository;
 
@@ -32,8 +33,8 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted document object.
  */
-public class GetDocumentUseCase
-        implements UseCase<GetDocumentUseCase.InputData, GetDocumentUseCase.OutputData> {
+public class GetDocumentUseCase implements
+        TransactionalUseCase<GetDocumentUseCase.InputData, GetDocumentUseCase.OutputData> {
 
     private final DocumentRepository repository;
 

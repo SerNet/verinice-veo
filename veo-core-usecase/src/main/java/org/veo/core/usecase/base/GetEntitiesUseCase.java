@@ -27,6 +27,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
@@ -36,8 +37,8 @@ import lombok.Value;
 /**
  * Reinstantiate persisted entity objects.
  */
-public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype>
-        implements UseCase<GetEntitiesUseCase.InputData, GetEntitiesUseCase.OutputData<T>> {
+public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> implements
+        TransactionalUseCase<GetEntitiesUseCase.InputData, GetEntitiesUseCase.OutputData<T>> {
 
     private final EntityLayerSupertypeRepository<T> repository;
     private final ClientRepository clientRepository;

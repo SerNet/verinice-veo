@@ -25,6 +25,7 @@ import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 import org.veo.core.usecase.repository.ClientRepository;
@@ -33,7 +34,8 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-public class DeleteUnitUseCase implements UseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
+public class DeleteUnitUseCase
+        implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
 
     private final ClientRepository clientRepository;
     private final RepositoryProvider repositoryProvider;

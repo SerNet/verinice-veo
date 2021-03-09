@@ -19,8 +19,6 @@ package org.veo.core.usecase;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.transaction.Transactional;
-
 /**
  * Superclass for all use cases. Each use case must provide an implementation of
  * input and output data structures.
@@ -43,7 +41,6 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
      * Override this Method and annotate it with @Transactional in the concrete
      * usescase when you need to transform the input and/or the output.
      */
-    @Transactional(Transactional.TxType.REQUIRED)
     default <R> R executeAndTransformResult(Supplier<I> inputSupplier,
             Function<O, R> resultMapper) {
         return resultMapper.apply(execute(inputSupplier.get()));
@@ -56,7 +53,6 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
      * Override this Method and annotate it with @Transactional in the concrete use
      * case when you need to transform only the output.
      */
-    @Transactional(Transactional.TxType.REQUIRED)
     default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
         return resultMapper.apply(execute(input));
     }

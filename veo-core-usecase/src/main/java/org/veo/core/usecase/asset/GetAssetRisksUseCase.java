@@ -25,13 +25,14 @@ import javax.validation.Valid;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 
 import lombok.Value;
 
-public class GetAssetRisksUseCase
-        implements UseCase<GetAssetRisksUseCase.InputData, GetAssetRisksUseCase.OutputData> {
+public class GetAssetRisksUseCase implements
+        TransactionalUseCase<GetAssetRisksUseCase.InputData, GetAssetRisksUseCase.OutputData> {
 
     private final AssetRepository assetRepository;
 

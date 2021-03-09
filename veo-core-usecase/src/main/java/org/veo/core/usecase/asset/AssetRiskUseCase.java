@@ -28,6 +28,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 import org.veo.core.usecase.repository.ControlRepository;
@@ -39,7 +40,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 public abstract class AssetRiskUseCase
-        implements UseCase<AssetRiskUseCase.InputData, AssetRiskUseCase.OutputData> {
+        implements TransactionalUseCase<AssetRiskUseCase.InputData, AssetRiskUseCase.OutputData> {
 
     protected final AssetRepository assetRepository;
     protected final ControlRepository controlRepository;

@@ -28,6 +28,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned.Lifecycle;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.repository.ClientRepository;
@@ -50,7 +51,7 @@ import lombok.Value;
  */
 // @Log
 public class CreateUnitUseCase
-        implements UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
+        implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
 
     private final ClientRepository clientRepository;
     private final UnitRepository unitRepository;

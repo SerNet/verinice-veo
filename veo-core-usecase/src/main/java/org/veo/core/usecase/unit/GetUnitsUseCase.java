@@ -26,6 +26,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.core.usecase.repository.UnitRepository;
@@ -36,7 +37,7 @@ import lombok.Value;
  * Reinstantiate a persisted unit object.
  */
 public class GetUnitsUseCase
-        implements UseCase<GetUnitsUseCase.InputData, GetUnitsUseCase.OutputData> {
+        implements TransactionalUseCase<GetUnitsUseCase.InputData, GetUnitsUseCase.OutputData> {
 
     private final ClientRepository repository;
     private final UnitRepository unitRepository;

@@ -24,6 +24,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.IncidentRepository;
 
@@ -32,8 +33,8 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted incident object.
  */
-public class GetIncidentUseCase
-        implements UseCase<GetIncidentUseCase.InputData, GetIncidentUseCase.OutputData> {
+public class GetIncidentUseCase implements
+        TransactionalUseCase<GetIncidentUseCase.InputData, GetIncidentUseCase.OutputData> {
 
     private final IncidentRepository repository;
 

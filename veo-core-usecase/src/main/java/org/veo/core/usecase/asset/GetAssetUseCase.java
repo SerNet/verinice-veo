@@ -24,13 +24,14 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 
 import lombok.Value;
 
 public class GetAssetUseCase
-        implements UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
+        implements TransactionalUseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
 
     private final AssetRepository repository;
 

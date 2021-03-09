@@ -22,6 +22,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
@@ -37,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class ChangeUnitUseCase
-        implements UseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
+        implements TransactionalUseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
 

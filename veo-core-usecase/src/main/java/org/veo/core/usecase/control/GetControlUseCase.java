@@ -24,6 +24,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ControlRepository;
 
@@ -33,7 +34,7 @@ import lombok.Value;
  * Reinstantiate a persisted control object.
  */
 public class GetControlUseCase
-        implements UseCase<GetControlUseCase.InputData, GetControlUseCase.OutputData> {
+        implements TransactionalUseCase<GetControlUseCase.InputData, GetControlUseCase.OutputData> {
 
     private final ControlRepository repository;
 

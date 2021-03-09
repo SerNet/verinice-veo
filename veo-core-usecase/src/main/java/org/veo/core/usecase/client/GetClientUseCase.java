@@ -25,6 +25,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.ClientRepository;
 
@@ -34,7 +35,7 @@ import lombok.Value;
  * Reinstantiate a persisted client object.
  */
 public class GetClientUseCase
-        implements UseCase<GetClientUseCase.InputData, GetClientUseCase.OutputData> {
+        implements TransactionalUseCase<GetClientUseCase.InputData, GetClientUseCase.OutputData> {
 
     private final ClientRepository repository;
 

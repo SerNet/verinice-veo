@@ -23,13 +23,14 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.repository.AssetRepository;
 
 import lombok.Value;
 
 public class DeleteAssetRiskUseCase
-        implements UseCase<DeleteAssetRiskUseCase.InputData, UseCase.EmptyOutput> {
+        implements TransactionalUseCase<DeleteAssetRiskUseCase.InputData, UseCase.EmptyOutput> {
 
     private final AssetRepository assetRepository;
 
