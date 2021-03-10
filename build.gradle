@@ -25,6 +25,7 @@ allprojects  {
             eclipse().configFile(rootProject.file('misc/eclipse/java-format.xml'))
             importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             addStep org.veo.LicenseHeaderStep.create(currentUserName)
+            addStep org.veo.NoWildcardImportsStep.create()
             removeUnusedImports()
             trimTrailingWhitespace()
             replaceRegex('Consecutive empty block comment lines', /( *\*\n){2,}/, '*\n')
@@ -37,6 +38,7 @@ allprojects  {
         groovy {
             target 'src/**/*.groovy', 'buildSrc/**/*.groovy'
             addStep org.veo.LicenseHeaderStep.create(currentUserName)
+            addStep org.veo.NoWildcardImportsStep.create()
             greclipse()
             importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             indentWithSpaces(4)
