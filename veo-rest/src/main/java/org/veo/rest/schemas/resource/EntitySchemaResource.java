@@ -29,6 +29,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
+import org.veo.core.entity.Incident;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.service.SchemaIdentifiersDTO;
 import org.veo.rest.RestApplication;
 
@@ -80,10 +88,12 @@ public interface EntitySchemaResource {
 
             @Parameter(required = true,
                 description = "The entity for which the schema will be returned.",
-                example = "process",
+                example = Process.SINGULAR_TERM,
                 schema = @Schema(
                     type = "string",
-                    allowableValues = {"process", "asset", "person", "control"},
+                    allowableValues = { Asset.SINGULAR_TERM, Control.SINGULAR_TERM, Document.SINGULAR_TERM,
+                            Incident.SINGULAR_TERM, Person.SINGULAR_TERM, Process.SINGULAR_TERM, Scenario.SINGULAR_TERM,
+                            Scope.SINGULAR_TERM },
                     description = "A valid entity type identifier."
                 )
             )

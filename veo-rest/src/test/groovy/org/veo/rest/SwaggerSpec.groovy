@@ -22,9 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.MockMvc
 
 import org.veo.core.VeoSpringSpec
+import org.veo.core.entity.ModelObjectType
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -102,6 +104,19 @@ class SwaggerSpec extends VeoSpringSpec {
         def ownerReferenceSchema = parsedApiDocs.components.schemas.OwnerReference
         then:
         ownerReferenceSchema.required.contains('targetUri')
+    }
+
+    def "allowed entity schema types are listed"() {
+        given: "existing entity types"
+        def schemaTypes = ModelObjectType.ENTITY_TYPES
+                .collect{it.simpleName}
+                .collect{it[0].toLowerCase() + it.substring(1)}
+                .sort()
+
+        when: "fetching allowed schemas from OpenAPI parameter doc"
+        List<String> allowedTypes = parsedApiDocs.paths["/schemas/{type}"].get.parameters[0].schema.enum
+        then: "they also contain all entity types"
+        allowedTypes.sort() == schemaTypes
     }
 
     @Memoized
