@@ -203,7 +203,7 @@ public class DocumentController extends AbstractEntityController {
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Document(dto,
                                                                                                   modelObjectReferenceResolver),
-                                                     client, user.getUsername());
+                                                     client);
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);

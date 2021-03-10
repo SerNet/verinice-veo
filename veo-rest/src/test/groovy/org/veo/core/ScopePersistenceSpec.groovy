@@ -56,8 +56,7 @@ class ScopePersistenceSpec extends VeoSpringSpec {
         def john = newPerson(unit)
         def jane = newPerson(unit)
 
-        def scope = factory.createScope( 'My scope', unit)
-        scope.version("user", null)
+        def scope = factory.createScope('My scope', unit)
 
         scope.with {
             members = [john, jane]

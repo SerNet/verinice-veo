@@ -179,8 +179,7 @@ public class UnitController extends AbstractEntityController {
 
         return useCaseInteractor.execute(createUnitUseCase,
                                          CreateUnitInputMapper.map(createUnitDto,
-                                                                   user.getClientId(),
-                                                                   user.getUsername()),
+                                                                   user.getClientId()),
                                          output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getUnit());
                                              return RestApiResponse.created(URL_BASE_PATH, body);

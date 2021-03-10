@@ -46,7 +46,6 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
     private EntityFactory factory
 
 
-
     def "save a composite person"() {
         given: "a client and a unit"
         def client = clientRepository.save(newClient())
@@ -58,7 +57,6 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
         def jane = newPerson(unit)
 
         def compositePerson = factory.createPerson('My composite person', unit)
-        compositePerson.version("user", null)
 
         compositePerson.with {
             parts = [john, jane]

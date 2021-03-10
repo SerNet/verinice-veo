@@ -56,7 +56,6 @@ public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> 
                                                 .getId()
                                                 .uuidValue()));
         unit.checkSameClient(input.authenticatedClient);
-        entity.version(input.username, null);
         return new CreateEntityUseCase.OutputData<>(entityRepo.save(entity));
     }
 
@@ -65,7 +64,6 @@ public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> 
     public static class InputData<TEntity> implements UseCase.InputData {
         TEntity newEntity;
         Client authenticatedClient;
-        String username;
     }
 
     @Valid

@@ -66,8 +66,6 @@ class AssetRiskITSpec extends VeoSpringSpec {
 
     Unit unit
 
-    String USERNAME = "LeChuck"
-
     def setup() {
         createClient()
     }
@@ -174,49 +172,40 @@ class AssetRiskITSpec extends VeoSpringSpec {
 
     @Transactional
     void createClient() {
-        client = clientRepository.save(newClient{
-            version(USERNAME, null)
-        })
+        client = clientRepository.save(newClient())
         def domain = domainRepository.save(newDomain{
             owner = this.client
-            version(USERNAME, null)
         })
 
         unit = unitRepository.save(newUnit(client) {
             addToDomains(domain)
-            version(USERNAME, null)
         })
     }
 
     @Transactional
     Asset insertAsset(Asset asset) {
-        asset.version(USERNAME, null)
         assetRepository.save(asset)
     }
 
     @Transactional
     Person insertPerson(Person person) {
-        person.version(USERNAME, null)
         personRepository.save(person)
     }
 
     @Transactional
     Scenario insertScenario(Scenario scenario) {
-        scenario.version(USERNAME,null)
         scenarioRepository.save(scenario)
     }
 
     @Transactional
     Domain insertDomain(Domain domain) {
         domain.setOwner(client)
-        domain.version(USERNAME, null)
         domainRepository.save(domain)
     }
 
     @Transactional
     Control insertControl(Control control) {
         control.setOwner(unit)
-        control.version(USERNAME, null)
         controlRepository.save(control)
     }
 

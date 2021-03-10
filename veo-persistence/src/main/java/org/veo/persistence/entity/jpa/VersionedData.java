@@ -19,9 +19,16 @@ package org.veo.persistence.entity.jpa;
 import java.time.Instant;
 
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import org.veo.core.entity.Versioned;
 
@@ -34,6 +41,7 @@ import lombok.ToString;
 @MappedSuperclass
 @ToString(onlyExplicitlyIncluded = true)
 @Data
+@EntityListeners({ AuditingEntityListener.class })
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod") // PMD does not see Lombok's methods
 public abstract class VersionedData implements Versioned {
     @ToString.Include
@@ -46,15 +54,19 @@ public abstract class VersionedData implements Versioned {
     private @NotNull Lifecycle state = Lifecycle.CREATING;
 
     @Column(name = "created_at", nullable = false)
+    @CreatedDate
     private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
     private Instant updatedAt;
 
     @Column(name = "created_by", nullable = false)
+    @CreatedBy
     private String createdBy;
 
     @Column(name = "updated_by", nullable = false)
+    @LastModifiedBy
     private String updatedBy;
 
     @Column(name = "valid_until", nullable = true)

@@ -184,7 +184,7 @@ public class ProcessController extends AbstractEntityController {
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Process(dto,
                                                                                                  modelObjectReferenceResolver),
-                                                     client, user.getUsername());
+                                                     client);
                                          }
 
                                          , output -> {

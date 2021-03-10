@@ -23,7 +23,6 @@ import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
 
 public class CreateUnitUseCaseSpec extends UseCaseSpec {
-    static final String USER_NAME = "john"
     CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
 
     def "Create new unit in a new client" () {
@@ -37,7 +36,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         and: "a clientId that does not yet exist"
         def newClientId = Key.newUuid()
-        def input = new InputData(namedInput, newClientId, Optional.empty(), USER_NAME)
+        def input = new InputData(namedInput, newClientId, Optional.empty())
 
         when: "the use case to create a unit is executed"
         def newUnit = usecase.execute(input).getUnit()
@@ -45,12 +44,10 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         then: "a client was first searched but not found"
         1 * clientRepository.findById(_) >> Optional.empty()
         1 * entityFactory.createClient(_,_) >> existingClient
-        1 * existingClient.version(USER_NAME, null)
         1 * entityFactory.createUnit(_,_) >> newUnit1
         1 * entityFactory.createDomain(_) >> existingDomain
 
         and: "a new client was then correctly created and stored"
-        1 * newUnit1.version(USER_NAME, null)
         1 * unitRepository.save(_) >> newUnit1
         1 * clientRepository.save(_) >> existingClient
 
@@ -73,7 +70,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         entityFactory.createUnit(_,_) >> newUnit1
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), USER_NAME)
+        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
 
         when: "the use case to create a unit is executed"
         def newUnit = usecase.execute(input).getUnit()
@@ -82,7 +79,6 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "a new client was then correctly created and stored"
-        1 * newUnit1.version(USER_NAME, null)
         1 * unitRepository.save(_) >> newUnit1
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
 

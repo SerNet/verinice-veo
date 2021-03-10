@@ -46,7 +46,6 @@ class CompositeEntitySpec extends VeoSpec {
 
         when: "a new composite object is created"
         Asset composite = newAsset(unit) {name = "New composite"}
-        composite.version("user", null)
 
         then: "the composite is initialized as expected"
         composite.name == "New composite"

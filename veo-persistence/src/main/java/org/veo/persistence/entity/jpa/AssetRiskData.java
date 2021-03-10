@@ -48,7 +48,6 @@ public class AssetRiskData extends AbstractRiskData implements AssetRisk {
     AssetRiskData(@NotNull @NonNull Asset asset, @NotNull Scenario scenario, Domain domain) {
         super(scenario);
         this.asset = asset;
-        setVersion(0);
         addToDomains(domain);
     }
 

@@ -84,13 +84,14 @@ class CustomLinkPersistenceSpec extends VeoSpec {
         savedAsset.present
 
         when: "add some properties"
-
+        Asset assetData = savedAsset.get()
+        cp = assetData.links.first()
         cp.setProperty("my.key.1", "my test value 1")
         cp.setProperty("my.key.2", "my test value 2")
 
-        assetRepository.save(asset)
+        assetRepository.save(savedAsset.get())
 
-        Asset assetData = assetRepository.findById(asset.id).get()
+        assetData = assetRepository.findById(asset.id).get()
         then: "The properties are also transformed"
 
         assetData.getLinks().size() == 1
@@ -105,26 +106,28 @@ class CustomLinkPersistenceSpec extends VeoSpec {
 
         cp.setProperty("my.key.3", 10)
 
-        assetRepository.save(asset)
+        assetRepository.save(assetData)
         savedAsset = assetRepository.findById(asset.id)
         then:
         savedAsset.present
         when:
-        CustomProperties savedCp = savedAsset.get().getLinks().first()
+        assetData = savedAsset.get()
+        CustomProperties savedCp = assetData.getLinks().first()
 
         then: "numbers also"
         savedCp.doubleProperties["my.key.3"] == 10
 
         when: "add properties of type date"
 
-        cp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00Z"))
+        savedCp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00Z"))
 
-        assetRepository.save(asset)
+        assetRepository.save(assetData)
         savedAsset = assetRepository.findById(asset.id)
         then:
         savedAsset.present
         when:
-        savedCp = savedAsset.get().getLinks().first()
+        assetData = savedAsset.get()
+        savedCp = assetData.getLinks().first()
 
         then: "date also"
         savedCp.getOffsetDateTimeProperties().get("my.key.4") == OffsetDateTime.parse("2020-02-02T00:00:00Z")

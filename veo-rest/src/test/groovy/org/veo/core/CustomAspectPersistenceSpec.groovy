@@ -76,38 +76,42 @@ class CustomAspectPersistenceSpec extends VeoSpec {
 
 
         when: "add some properties"
-
+        def assetData = savedAsset.get()
+        cp = assetData.customAspects.first()
         cp.setProperty("my.key.1", "my test value 1")
         cp.setProperty("my.key.2", "my test value 2")
 
-
-        assetRepository.save(asset)
+        assetRepository.save(assetData)
 
         savedAsset = assetRepository.findById(asset.id)
         then:
         savedAsset.present
         when:
-        Asset assetData = savedAsset.get()
+        assetData = savedAsset.get()
         then: "The properties are also transformed"
 
         assetData.getCustomAspects().size() == 1
-        assetData.getCustomAspects().first().getType().equals(cp.getType())
+        when:
+        cp = assetData.getCustomAspects().first()
+        then:
+        cp.getType().equals(cp.getType())
 
-        assetData.getCustomAspects().first().stringProperties.size() == 2
-        assetData.getCustomAspects().first().stringProperties["my.key.1"] == "my test value 1"
-        assetData.getCustomAspects().first().stringProperties["my.key.2"] == "my test value 2"
+        cp.stringProperties.size() == 2
+        cp.stringProperties["my.key.1"] == "my test value 1"
+        cp.stringProperties["my.key.2"] == "my test value 2"
 
         when: "add properties of type number"
 
         cp.setProperty("my.key.3",(Integer) 10)
 
-        assetRepository.save(asset)
+        assetRepository.save(assetData)
 
         savedAsset = assetRepository.findById(asset.id)
         then:
         savedAsset.present
         when:
-        CustomProperties savedCp = savedAsset.get().getCustomAspects().first()
+        assetData = savedAsset.get()
+        CustomProperties savedCp = assetData.getCustomAspects().first()
 
         then: "numbers also"
         savedCp.doubleProperties.size() == 1
@@ -117,13 +121,14 @@ class CustomAspectPersistenceSpec extends VeoSpec {
 
         cp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00Z"))
 
-        assetRepository.save(asset)
+        assetRepository.save(assetData)
 
         savedAsset = assetRepository.findById(asset.id)
         then:
         savedAsset.present
         when:
-        savedCp = savedAsset.get().getCustomAspects().first()
+        assetData = savedAsset.get()
+        savedCp = assetData.getCustomAspects().first()
 
         then: "date also"
         savedCp.getOffsetDateTimeProperties().size() == 1
@@ -136,16 +141,17 @@ class CustomAspectPersistenceSpec extends VeoSpec {
             it.setProperty('l1', ['e1', 'e2'])
         }
 
-        asset.getCustomAspects().clear()
-        asset.getCustomAspects().add(aspect)
+        assetData.getCustomAspects().clear()
+        assetData.getCustomAspects().add(aspect)
 
-        assetRepository.save(asset)
+        assetRepository.save(assetData)
 
         savedAsset = assetRepository.findById(asset.id)
         then:
         savedAsset.present
         when:
-        CustomProperties savedAspect = savedAsset.get().getCustomAspects().first()
+        assetData = savedAsset.get()
+        CustomProperties savedAspect = assetData.getCustomAspects().first()
 
         then: "list also"
 

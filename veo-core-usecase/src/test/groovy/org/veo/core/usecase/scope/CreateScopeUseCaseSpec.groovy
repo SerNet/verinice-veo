@@ -26,7 +26,6 @@ import spock.lang.Unroll
 
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 
-    public static final String USER_NAME = "john"
     ScopeRepository entityScopeRepository = Mock()
 
     CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository,entityScopeRepository)
@@ -41,11 +40,10 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scope.owner >> unit
 
         when:
-        def output = usecase.execute(new CreateEntityUseCase.InputData( scope, existingClient, USER_NAME))
+        def output = usecase.execute(new CreateEntityUseCase.InputData( scope, existingClient))
 
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-        1 *  scope.version(USER_NAME, null)
         1 * entityScopeRepository.save(_) >> { it[0] }
         when:
         def scope1 = output.entity

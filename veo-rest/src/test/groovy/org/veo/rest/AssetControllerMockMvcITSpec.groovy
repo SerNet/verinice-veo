@@ -214,10 +214,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(unit) {
                 name = 'Test asset-1'
                 customAspects = [simpleProps] as Set
-                createdBy = "me"
-                createdAt = Instant.parse("2020-09-01T00:00:00Z")
-                updatedBy = "you"
-                updatedAt = Instant.parse("2020-09-02T00:00:00Z")
             })
         }
 
@@ -254,10 +250,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             subType: [:],
             parts: [],
-            createdBy: "me",
-            createdAt: "2020-09-01T00:00:00Z",
-            updatedBy: "you",
-            updatedAt: "2020-09-02T00:00:00Z"
+            createdBy: "user@domain.example",
+            createdAt: asset.createdAt.toString(),
+            updatedBy: "user@domain.example",
+            updatedAt: asset.updatedAt.toString()
         ]
     }
 

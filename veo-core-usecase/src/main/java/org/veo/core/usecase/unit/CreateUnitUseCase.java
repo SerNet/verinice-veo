@@ -82,9 +82,8 @@ public class CreateUnitUseCase
      *         once it is implemented
      */
     // TODO VEO-227
-    private Domain defaultDomain(String user) {
+    private Domain defaultDomain() {
         var domian = entityFactory.createDomain("Placeholder domain - see issue VEO-227");
-        domian.version(user, null);
         return domian;
     }
 
@@ -124,7 +123,6 @@ public class CreateUnitUseCase
         newUnit.setState(Lifecycle.STORED_CURRENT);
         newUnit.setClient(client);
         newUnit.addToDomains(client.getDomains());
-        newUnit.version(input.username, null);
         Unit save = unitRepository.save(newUnit);
         return new OutputData(save);
     }
@@ -134,11 +132,10 @@ public class CreateUnitUseCase
         // and abbreviation:
         Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
                                                                              .getName());
-        client.version(input.username, null);
         // TODO VEO-227 It is currently not possible to create a new domain
         // using REST resources,
         // so we have to use one default domain for a new client:
-        client.addToDomains(defaultDomain(input.getUsername()));
+        client.addToDomains(defaultDomain());
         return clientRepository.save(client);
     }
 
@@ -148,7 +145,6 @@ public class CreateUnitUseCase
         NameableInputData nameableInput;
         Key<UUID> clientId;
         Optional<Key<UUID>> parentUnitId;
-        String username;
     }
 
     @Valid

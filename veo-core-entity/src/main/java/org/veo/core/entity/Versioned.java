@@ -113,27 +113,24 @@ public interface Versioned {
     void setVersion(long version);
 
     /**
-     * Sets versioning properties on this entity. Call before saving this entity (as
-     * insert or update).
+     * Copy versioning properties from another entity. This needs to be used when
+     * trying to update an entity with a new instance, which should generally be
+     * avoided, so this method is deprecated.
      *
      * @param username
      *            User who authors this creation / update.
      * @param storedEntity
-     *            The old existing version of this entity (pass null when creating
-     *            this as a new entity).
+     *            The old existing version of this entity, must not be null
+     * @deprecated deprecated to encourage usage of the proper entity update
+     *             strategy
      */
+    @Deprecated
     default void version(String username, Versioned storedEntity) {
         var now = Instant.now();
         setUpdatedAt(now);
         setUpdatedBy(username);
-        if (storedEntity != null) {
-            setCreatedAt(storedEntity.getCreatedAt());
-            setCreatedBy(storedEntity.getCreatedBy());
-            setVersion(storedEntity.getVersion());
-        } else {
-            setCreatedAt(now);
-            setCreatedBy(username);
-            setVersion(0);
-        }
+        setCreatedAt(storedEntity.getCreatedAt());
+        setCreatedBy(storedEntity.getCreatedBy());
+        setVersion(storedEntity.getVersion());
     }
 }

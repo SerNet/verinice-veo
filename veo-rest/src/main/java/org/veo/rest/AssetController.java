@@ -234,7 +234,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
                                                      dtoToEntityTransformer.transformDto2Asset(dto,
 
                                                                                                modelObjectReferenceResolver),
-                                                     client, user.getUsername());
+                                                     client);
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);

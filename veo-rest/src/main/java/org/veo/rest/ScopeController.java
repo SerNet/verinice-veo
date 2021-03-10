@@ -213,7 +213,7 @@ public class ScopeController extends AbstractEntityController {
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scope(createScopeDto,
                                                                                                modelObjectReferenceResolver),
-                                                     client, user.getUsername());
+                                                     client);
                                          }, output -> {
                                              Scope scope = output.getEntity();
                                              Optional<String> scopeId = scope.getId() == null

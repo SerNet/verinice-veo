@@ -34,7 +34,6 @@ class ProcessConstraintSpec extends Specification {
         Key<UUID> id = Key.newUuid()
         def processData = new ProcessData()
         processData.id = id
-        processData.version("john.doe", null)
 
         when: "the process is saved using the repository"
         def errors = validator.validate(processData)

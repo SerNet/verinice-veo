@@ -81,9 +81,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     private Client client
     private Unit unit
 
-    static final String USERNAME = "Guybrush"
-
-
     def "SQL performance for saving a new domain, client and unit"() {
         when:
         reset()
@@ -91,8 +88,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(8)
-        assertUpdateCount(2)
+        assertInsertCount(7)
+        assertUpdateCount(0)
         assertSelectCount(4)
     }
 
@@ -371,7 +368,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def domain2 = entityFactory.createDomain("domain2").tap{
             owner = this.client
         }
-        domain2.version(USERNAME, null)
         domainRepository.save(domain2)
         client.addToDomains(domain2)
         client = clientRepository.save(client)
@@ -397,16 +393,13 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             owner = this.client
             name = "domain1"
         })
-        domain.version(USERNAME, null)
 
         client.addToDomains(domain)
-        client.version(USERNAME, null)
         client = clientRepository.save(client)
 
         unit = entityFactory.createUnit("unit1",null)
         unit.setClient(client)
         unit.addToDomains(domain)
-        unit.version(USERNAME, null)
 
         unit = unitRepository.save(unit)
         unit.client = this.client
@@ -467,7 +460,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             state = Lifecycle.CREATING
             it
         }
-        person.version(USERNAME, null)
         return personRepository.save(person)
     }
 
@@ -480,7 +472,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             person.tap {
                 parts = [dolly, minime]
                 state = Lifecycle.CREATING
-                version(USERNAME, null)
             }
         }
 

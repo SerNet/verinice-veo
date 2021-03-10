@@ -206,7 +206,7 @@ public class ScenarioController extends AbstractEntityController {
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scenario(dto,
                                                                                                   modelObjectReferenceResolver),
-                                                     client, user.getUsername());
+                                                     client);
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
                                              return RestApiResponse.created(URL_BASE_PATH, body);

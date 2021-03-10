@@ -23,7 +23,6 @@ import org.veo.core.usecase.repository.PersonRepository
 
 public class CreatePersonUseCaseSpec extends UseCaseSpec {
 
-    static final String USER_NAME = "jane"
     PersonRepository personRepository = Mock()
 
     CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository)
@@ -35,9 +34,8 @@ public class CreatePersonUseCaseSpec extends UseCaseSpec {
         p.owner >> existingUnit
 
         when:
-        def output = usecase.execute(new CreateEntityUseCase.InputData(p, existingClient, USER_NAME))
+        def output = usecase.execute(new CreateEntityUseCase.InputData(p, existingClient))
         then:
-        1 * p.version(USER_NAME, null)
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * personRepository.save(p) >> p
         output.entity != null
