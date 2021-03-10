@@ -33,7 +33,7 @@ import lombok.Value;
  * Reinstantiate a persisted document object.
  */
 public class GetDocumentUseCase
-        extends UseCase<GetDocumentUseCase.InputData, GetDocumentUseCase.OutputData> {
+        implements UseCase<GetDocumentUseCase.InputData, GetDocumentUseCase.OutputData> {
 
     private final DocumentRepository repository;
 

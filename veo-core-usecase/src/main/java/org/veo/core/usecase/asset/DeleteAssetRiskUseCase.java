@@ -29,7 +29,7 @@ import org.veo.core.usecase.repository.AssetRepository;
 import lombok.Value;
 
 public class DeleteAssetRiskUseCase
-        extends UseCase<DeleteAssetRiskUseCase.InputData, UseCase.EmptyOutput> {
+        implements UseCase<DeleteAssetRiskUseCase.InputData, UseCase.EmptyOutput> {
 
     private final AssetRepository assetRepository;
 

@@ -33,7 +33,7 @@ import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 
-public class DeleteUnitUseCase extends UseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
+public class DeleteUnitUseCase implements UseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
 
     private final ClientRepository clientRepository;
     private final RepositoryProvider repositoryProvider;
@@ -41,7 +41,6 @@ public class DeleteUnitUseCase extends UseCase<DeleteUnitUseCase.InputData, Empt
 
     public DeleteUnitUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
             RepositoryProvider repositoryProvider) {
-        super();
         this.clientRepository = clientRepository;
         this.repositoryProvider = repositoryProvider;
         this.unitRepository = unitRepository;

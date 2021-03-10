@@ -33,7 +33,7 @@ import lombok.Value;
  * Reinstantiate a persisted control object.
  */
 public class GetControlUseCase
-        extends UseCase<GetControlUseCase.InputData, GetControlUseCase.OutputData> {
+        implements UseCase<GetControlUseCase.InputData, GetControlUseCase.OutputData> {
 
     private final ControlRepository repository;
 

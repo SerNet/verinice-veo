@@ -32,7 +32,8 @@ import lombok.Value;
 /**
  * Reinstantiate a persisted unit object.
  */
-public class GetUnitUseCase extends UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
+public class GetUnitUseCase
+        implements UseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
 
     private final UnitRepository repository;
 

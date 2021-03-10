@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class ChangeUnitUseCase
-        extends UseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
+        implements UseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
 
     private final UnitRepository unitRepository;
 

@@ -50,7 +50,7 @@ import lombok.Value;
  */
 // @Log
 public class CreateUnitUseCase
-        extends UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
+        implements UseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
 
     private final ClientRepository clientRepository;
     private final UnitRepository unitRepository;

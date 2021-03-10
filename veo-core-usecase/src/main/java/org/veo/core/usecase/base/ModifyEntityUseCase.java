@@ -28,7 +28,7 @@ import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 import lombok.Value;
 
 public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype>
-        extends UseCase<ModifyEntityUseCase.InputData<T>, ModifyEntityUseCase.OutputData<T>> {
+        implements UseCase<ModifyEntityUseCase.InputData<T>, ModifyEntityUseCase.OutputData<T>> {
 
     private final EntityLayerSupertypeRepository<T> repo;
 

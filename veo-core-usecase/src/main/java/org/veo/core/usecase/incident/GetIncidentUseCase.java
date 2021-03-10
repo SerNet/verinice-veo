@@ -33,7 +33,7 @@ import lombok.Value;
  * Reinstantiate a persisted incident object.
  */
 public class GetIncidentUseCase
-        extends UseCase<GetIncidentUseCase.InputData, GetIncidentUseCase.OutputData> {
+        implements UseCase<GetIncidentUseCase.InputData, GetIncidentUseCase.OutputData> {
 
     private final IncidentRepository repository;
 

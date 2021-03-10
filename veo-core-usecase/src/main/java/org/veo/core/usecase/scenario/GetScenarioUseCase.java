@@ -33,7 +33,7 @@ import lombok.Value;
  * Reinstantiate a persisted scenario object.
  */
 public class GetScenarioUseCase
-        extends UseCase<GetScenarioUseCase.InputData, GetScenarioUseCase.OutputData> {
+        implements UseCase<GetScenarioUseCase.InputData, GetScenarioUseCase.OutputData> {
 
     private final ScenarioRepository repository;
 

@@ -30,7 +30,7 @@ import org.veo.core.usecase.repository.ScopeRepository;
 import lombok.Value;
 
 public class GetScopeUseCase
-        extends UseCase<GetScopeUseCase.InputData, GetScopeUseCase.OutputData> {
+        implements UseCase<GetScopeUseCase.InputData, GetScopeUseCase.OutputData> {
 
     private final ScopeRepository scopeRepository;
 

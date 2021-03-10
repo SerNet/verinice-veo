@@ -39,7 +39,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 public abstract class AssetRiskUseCase
-        extends UseCase<AssetRiskUseCase.InputData, AssetRiskUseCase.OutputData> {
+        implements UseCase<AssetRiskUseCase.InputData, AssetRiskUseCase.OutputData> {
 
     protected final AssetRepository assetRepository;
     protected final ControlRepository controlRepository;

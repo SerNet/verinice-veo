@@ -30,7 +30,7 @@ import org.veo.core.usecase.repository.AssetRepository;
 import lombok.Value;
 
 public class GetAssetUseCase
-        extends UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
+        implements UseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
 
     private final AssetRepository repository;
 
