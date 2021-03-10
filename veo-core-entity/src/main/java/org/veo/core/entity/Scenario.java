@@ -22,9 +22,12 @@ package org.veo.core.entity;
  */
 public interface Scenario extends EntityLayerSupertype, CompositeEntity<Scenario> {
 
+    String SINGULAR_TERM = "scenario";
+    String PLURAL_TERM = "scenarios";
+
     @Override
     default String getModelType() {
-        return EntityTypeNames.SCENARIO;
+        return SINGULAR_TERM;
     }
 
     @Override

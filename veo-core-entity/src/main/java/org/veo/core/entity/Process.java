@@ -21,6 +21,9 @@ package org.veo.core.entity;
  */
 public interface Process extends EntityLayerSupertype, CompositeEntity<Process> {
 
+    String SINGULAR_TERM = "process";
+    String PLURAL_TERM = "processes";
+
     @Override
     default Class<? extends ModelObject> getModelInterface() {
         return Process.class;
@@ -28,7 +31,7 @@ public interface Process extends EntityLayerSupertype, CompositeEntity<Process> 
 
     @Override
     default String getModelType() {
-        return EntityTypeNames.PROCESS;
+        return SINGULAR_TERM;
     }
 
 }

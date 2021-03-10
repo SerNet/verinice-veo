@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.usecase.UseCaseInteractor;
@@ -95,7 +94,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ScopeController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.SCOPES;
+    public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
     protected static final String TYPE_PARAM = "type";
 

@@ -65,7 +65,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
@@ -131,7 +130,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
         this.getAssetRisksUseCase = getAssetRisksUseCase;
     }
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.ASSETS;
+    public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreateAssetUseCase createAssetUseCase;

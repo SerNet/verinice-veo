@@ -21,8 +21,11 @@ package org.veo.core.entity;
  */
 public interface Control extends EntityLayerSupertype, CompositeEntity<Control> {
 
+    String SINGULAR_TERM = "control";
+    String PLURAL_TERM = "controls";
+
     @Override
     default String getModelType() {
-        return EntityTypeNames.CONTROL;
+        return SINGULAR_TERM;
     }
 }

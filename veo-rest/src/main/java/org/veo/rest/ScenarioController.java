@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.usecase.UseCaseInteractor;
@@ -107,7 +106,7 @@ public class ScenarioController extends AbstractEntityController {
         this.deleteEntityUseCase = deleteEntityUseCase;
     }
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.SCENARIOS;
+    public static final String URL_BASE_PATH = "/" + Scenario.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreateScenarioUseCase createScenarioUseCase;

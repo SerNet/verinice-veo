@@ -22,6 +22,9 @@ package org.veo.core.entity;
  */
 public interface Domain extends ModelObject, ClientOwned {
 
+    String SINGULAR_TERM = "domain";
+    String PLURAL_TERM = "domains";
+
     Boolean isActive();
 
     void setActive(Boolean aActive);
@@ -33,7 +36,7 @@ public interface Domain extends ModelObject, ClientOwned {
 
     @Override
     default String getModelType() {
-        return EntityTypeNames.DOMAIN;
+        return SINGULAR_TERM;
     }
 
     void setOwner(Client owner);

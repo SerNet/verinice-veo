@@ -21,8 +21,11 @@ package org.veo.core.entity;
  */
 public interface Document extends EntityLayerSupertype, CompositeEntity<Document> {
 
+    String SINGULAR_TERM = "document";
+    String PLURAL_TERM = "documents";
+
     @Override
     default String getModelType() {
-        return EntityTypeNames.DOCUMENT;
+        return SINGULAR_TERM;
     }
 }

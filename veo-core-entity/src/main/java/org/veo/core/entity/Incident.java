@@ -21,9 +21,12 @@ package org.veo.core.entity;
  */
 public interface Incident extends EntityLayerSupertype, CompositeEntity<Incident> {
 
+    String SINGULAR_TERM = "incident";
+    String PLURAL_TERM = "incidents";
+
     @Override
     default String getModelType() {
-        return EntityTypeNames.INCIDENT;
+        return SINGULAR_TERM;
     }
 
     @Override

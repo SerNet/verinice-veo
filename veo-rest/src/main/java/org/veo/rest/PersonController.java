@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.usecase.UseCaseInteractor;
@@ -95,7 +94,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PersonController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.PERSONS;
+    public static final String URL_BASE_PATH = "/" + Person.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreatePersonUseCase createPersonUseCase;

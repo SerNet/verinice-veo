@@ -59,8 +59,8 @@ import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
@@ -99,7 +99,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UnitController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.UNITS;
+    public static final String URL_BASE_PATH = "/" + Unit.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreateUnitUseCase createUnitUseCase;

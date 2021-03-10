@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
@@ -107,7 +106,7 @@ public class IncidentController extends AbstractEntityController {
         this.deleteEntityUseCase = deleteEntityUseCase;
     }
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.INCIDENTS;
+    public static final String URL_BASE_PATH = "/" + Incident.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreateIncidentUseCase createIncidentUseCase;

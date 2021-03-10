@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.veo.core.entity.EntityTypeNames;
+import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.SchemaIdentifiersDTO;
@@ -41,9 +41,9 @@ import lombok.extern.slf4j.Slf4j;
 public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
     private static final String SCHEMA_FILES_PATH = "/schemas/entity/";
-    private static final Set<String> VALID_CLASS_NAMES = EntityTypeNames.ENTITY_CLASS_LIST.stream()
-                                                                                          .map(Class::getSimpleName)
-                                                                                          .collect(Collectors.toSet());
+    private static final Set<String> VALID_CLASS_NAMES = ModelObjectType.ENTITY_TYPES.stream()
+                                                                                     .map(Class::getSimpleName)
+                                                                                     .collect(Collectors.toSet());
 
     @Override
     public String findSchema(String type, List<String> domains) {

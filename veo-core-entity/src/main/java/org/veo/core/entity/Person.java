@@ -22,9 +22,12 @@ package org.veo.core.entity;
  */
 public interface Person extends EntityLayerSupertype, CompositeEntity<Person> {
 
+    String SINGULAR_TERM = "person";
+    String PLURAL_TERM = "persons";
+
     @Override
     default String getModelType() {
-        return EntityTypeNames.PERSON;
+        return SINGULAR_TERM;
     }
 
 }

@@ -42,6 +42,9 @@ import org.veo.core.entity.specification.SameClientSpecification;
  */
 public interface Unit extends ModelObject, ClientOwned {
 
+    String SINGULAR_TERM = "unit";
+    String PLURAL_TERM = "units";
+
     Client getClient();
 
     void setClient(Client aClient);
@@ -90,7 +93,7 @@ public interface Unit extends ModelObject, ClientOwned {
     }
 
     default String getModelType() {
-        return EntityTypeNames.UNIT;
+        return SINGULAR_TERM;
     }
 
     /**

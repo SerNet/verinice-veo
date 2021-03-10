@@ -27,7 +27,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Scope;
@@ -48,11 +47,6 @@ public class ScopeData extends EntityLayerSupertypeData implements Scope {
                inverseJoinColumns = @JoinColumn(name = "member_id"))
     @Getter
     private final Set<EntityLayerSupertype> members = new HashSet<>();
-
-    @Override
-    public String getModelType() {
-        return EntityTypeNames.SCOPE;
-    }
 
     @Override
     public Class<? extends ModelObject> getModelInterface() {

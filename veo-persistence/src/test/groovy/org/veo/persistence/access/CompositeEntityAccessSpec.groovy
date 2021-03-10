@@ -21,7 +21,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeEntity
-import org.veo.core.entity.EntityTypeNames
+import org.veo.core.entity.ModelObjectType
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.repository.AssetRepository
 import org.veo.core.usecase.repository.ControlRepository
@@ -143,6 +143,6 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
         persistedScope.get().members.empty
 
         where:
-        type << EntityTypeNames.getKnownEntityClasses().findAll{CompositeEntity.isAssignableFrom(it)}
+        type << ModelObjectType.ENTITY_TYPES.findAll{CompositeEntity.isAssignableFrom(it)}
     }
 }

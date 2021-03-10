@@ -62,7 +62,6 @@ import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
@@ -97,7 +96,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ControlController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.CONTROLS;
+    public static final String URL_BASE_PATH = "/" + Control.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreateControlUseCase createControlUseCase;

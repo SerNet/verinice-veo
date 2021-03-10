@@ -60,7 +60,6 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.usecase.UseCaseInteractor;
@@ -97,7 +96,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProcessController extends AbstractEntityController {
 
-    public static final String URL_BASE_PATH = "/" + EntityTypeNames.PROCESSES;
+    public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreateProcessUseCase createProcessUseCase;

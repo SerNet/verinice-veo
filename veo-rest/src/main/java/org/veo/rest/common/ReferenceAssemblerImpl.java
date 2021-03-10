@@ -45,10 +45,10 @@ import org.veo.core.entity.CompoundKeyEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
@@ -128,7 +128,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         // cannot
         // create a URL to them.
         if (Domain.class.isAssignableFrom(type)) {
-            return "/" + EntityTypeNames.getCollectionNameFor(type) + "/" + id;
+            return "/" + Domain.PLURAL_TERM + "/" + id;
         }
 
         return "";
@@ -252,14 +252,14 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     public Class<? extends ModelObject> parseType(String uriString) {
-        Optional<String> collectionName = readCollectionName(uriString);
-        return EntityTypeNames.getTypeForCollectionName(collectionName.orElseThrow());
+        Optional<String> term = readObjectTypePluralTerm(uriString);
+        return ModelObjectType.getTypeForPluralTerm(term.orElseThrow());
     }
 
     @Override
     public String parseId(String uriString) {
-        Optional<String> collectionName = readCollectionName(uriString);
-        var pat = Pattern.compile(String.join("", ".*/", collectionName.orElseThrow(), "/",
+        Optional<String> objectTypeTerm = readObjectTypePluralTerm(uriString);
+        var pat = Pattern.compile(String.join("", ".*/", objectTypeTerm.orElseThrow(), "/",
                                               "(?<resourceId>", UUID_REGEX, ").*"));
         var matcher = pat.matcher(uriString);
         matcher.find();
@@ -280,14 +280,15 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                          .collect(Collectors.toSet());
     }
 
-    private Optional<String> readCollectionName(String uriString) {
-        return EntityTypeNames.getKnownCollectionNames()
-                              .stream()
-                              .filter(t -> readUriString(uriString).matches(String.join("", ".*/",
-                                                                                        t, "/",
-                                                                                        UUID_REGEX,
-                                                                                        ".*")))
-                              .findFirst();
+    private Optional<String> readObjectTypePluralTerm(String uriString) {
+        return ModelObjectType.PLURAL_TERMS.stream()
+                                           .filter(t -> readUriString(uriString).matches(String.join("",
+                                                                                                     ".*/",
+                                                                                                     t,
+                                                                                                     "/",
+                                                                                                     UUID_REGEX,
+                                                                                                     ".*")))
+                                           .findFirst();
     }
 
     /**

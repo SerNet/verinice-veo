@@ -23,9 +23,12 @@ import java.util.Set;
  */
 public interface Scope extends EntityLayerSupertype {
 
+    String SINGULAR_TERM = "scope";
+    String PLURAL_TERM = "scopes";
+
     @Override
     default String getModelType() {
-        return EntityTypeNames.SCOPE;
+        return SINGULAR_TERM;
     }
 
     @Override

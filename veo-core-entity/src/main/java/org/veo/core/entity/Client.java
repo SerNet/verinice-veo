@@ -25,6 +25,9 @@ import java.util.Set;
  */
 public interface Client extends ModelObject {
 
+    String SINGULAR_TERM = "client";
+    String PLURAL_TERM = "clients";
+
     String getName();
 
     void setName(String aName);
@@ -54,6 +57,6 @@ public interface Client extends ModelObject {
 
     @Override
     default String getModelType() {
-        return EntityTypeNames.CLIENT;
+        return SINGULAR_TERM;
     }
 }

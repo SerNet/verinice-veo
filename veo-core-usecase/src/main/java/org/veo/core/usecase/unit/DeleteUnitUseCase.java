@@ -21,8 +21,8 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityTypeNames;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -66,9 +66,8 @@ public class DeleteUnitUseCase
 
     void removeObjectsInUnit(Unit unit) {
 
-        EntityTypeNames.getKnownEntityClasses()
-                       .forEach(clazz -> repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
-                                                           .deleteByUnit(unit));
+        ModelObjectType.ENTITY_TYPES.forEach(clazz -> repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
+                                                                        .deleteByUnit(unit));
 
     }
 

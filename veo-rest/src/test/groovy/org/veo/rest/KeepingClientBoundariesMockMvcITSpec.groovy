@@ -24,9 +24,13 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.EntityTypeNames
+import org.veo.core.entity.Control
 import org.veo.core.entity.Key
+import org.veo.core.entity.ModelObjectType
+import org.veo.core.entity.Person
+import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.common.ETag
@@ -101,7 +105,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create an asset in another client"() {
         when: "a post request tries to create an asset in another client"
-        postEntityInAnotherUnit("/" + EntityTypeNames.ASSETS,)
+        postEntityInAnotherUnit("/" + Asset.PLURAL_TERM,)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -109,7 +113,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create a control in another client"() {
         when: "a post request tries to create a control in another client"
-        postEntityInAnotherUnit("/" + EntityTypeNames.CONTROLS,)
+        postEntityInAnotherUnit("/" + Control.PLURAL_TERM,)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -117,7 +121,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create a person in another client"() {
         when: "a post request tries to create a person in another client"
-        postEntityInAnotherUnit("/" + EntityTypeNames.PERSONS,)
+        postEntityInAnotherUnit("/" + Person.PLURAL_TERM,)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -125,7 +129,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't create a process in another client"() {
         when: "a post request tries to create a process in another client"
-        postEntityInAnotherUnit("/" + EntityTypeNames.PROCESSES,)
+        postEntityInAnotherUnit("/" + Process.PLURAL_TERM,)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -142,7 +146,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(otherClientsUnit.id.uuidValue(), 0)
         ]
-        put("/" + EntityTypeNames.UNITS + "/" + otherClientsUnit.id.uuidValue() , [
+        put("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.id.uuidValue() , [
             id: '' + otherClientsUnit.id.uuidValue(),
             name: 'hijacked-unit',
             parent: [displayName: 'Test unit',
@@ -159,7 +163,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(otherClientsUnit))
         })
         when: "a put request tries to move the asset to the user's unit"
-        putEntityToAnotherUnit("/" + EntityTypeNames.ASSETS, otherClientsAsset.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Asset.PLURAL_TERM, otherClientsAsset.getId().uuidValue())
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -171,7 +175,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             controlRepository.save(newControl(otherClientsUnit))
         })
         when: "a put request tries to move the control to the user's unit"
-        putEntityToAnotherUnit("/" + EntityTypeNames.CONTROLS, otherClientsControl.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Control.PLURAL_TERM, otherClientsControl.getId().uuidValue())
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -183,7 +187,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             personRepository.save(newPerson(otherClientsUnit))
         })
         when: "a put request tries to move the person to the user's unit"
-        putEntityToAnotherUnit("/" + EntityTypeNames.PERSONS, otherClientsPerson.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Person.PLURAL_TERM, otherClientsPerson.getId().uuidValue())
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -195,7 +199,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             processRepository.save(newProcess(otherClientsUnit))
         })
         when: "a put request tries to move the process to the user's unit"
-        putEntityToAnotherUnit("/" + EntityTypeNames.PROCESSES, otherClientsProcess.getId().uuidValue())
+        putEntityToAnotherUnit("/" + Process.PLURAL_TERM, otherClientsProcess.getId().uuidValue())
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -207,7 +211,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             unitRepository.save(newUnit(otherClient))
         })
         when: "a delete request tries to delete the unit"
-        delete("/" + EntityTypeNames.UNITS + "/" + otherClientsUnit.getId().uuidValue(), false)
+        delete("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -219,7 +223,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(otherClientsUnit))
         })
         when: "a delete request tries to delete the asset"
-        delete("/" + EntityTypeNames.ASSETS + "/" + otherClientsAsset.getId().uuidValue(), false)
+        delete("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -231,7 +235,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             controlRepository.save(newControl(otherClientsUnit))
         })
         when: "a delete request tries to delete the control"
-        delete("/" + EntityTypeNames.CONTROLS + "/" + otherClientsControl.getId().uuidValue(), false)
+        delete("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -243,7 +247,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             personRepository.save(newPerson(otherClientsUnit))
         })
         when: "a delete request tries to delete the person"
-        delete("/" + EntityTypeNames.PERSONS + "/" + otherClientsPerson.getId().uuidValue(), false)
+        delete("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -255,7 +259,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             processRepository.save(newProcess(otherClientsUnit))
         })
         when: "a delete request tries to delete the process"
-        delete("/" + EntityTypeNames.PROCESSES + "/" + otherClientsProcess.getId().uuidValue(), false)
+        delete("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -267,7 +271,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(otherClientsUnit))
         })
         when: "a get request tries to get the asset"
-        get("/" + EntityTypeNames.ASSETS + "/" + otherClientsAsset.getId().uuidValue(), false)
+        get("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -279,7 +283,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             controlRepository.save(newControl(otherClientsUnit))
         })
         when: "aa get request tries to get the control"
-        get("/" + EntityTypeNames.CONTROLS + "/" + otherClientsControl.getId().uuidValue(), false)
+        get("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -291,7 +295,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             personRepository.save(newPerson(otherClientsUnit))
         })
         when: "a get request tries to get the person"
-        get("/" + EntityTypeNames.PERSONS + "/" + otherClientsPerson.getId().uuidValue(), false)
+        get("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -303,7 +307,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             processRepository.save(newProcess(otherClientsUnit))
         })
         when: "a get request tries to get the process"
-        get("/" + EntityTypeNames.PROCESSES + "/" + otherClientsProcess.getId().uuidValue(), false)
+        get("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -317,7 +321,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             unitRepository.save(unit)
         })
         when: "a get request tries to get the unit"
-        get("/" + EntityTypeNames.UNITS + "/" + otherClientsUnit.getId().uuidValue(), false)
+        get("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), false)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }

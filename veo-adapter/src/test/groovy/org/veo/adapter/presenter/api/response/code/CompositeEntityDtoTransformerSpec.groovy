@@ -28,7 +28,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
-import org.veo.core.entity.EntityTypeNames
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -129,7 +128,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
             it.modelInterface >> Asset.class
             it.createdAt >> Instant.now()
             it.updatedAt >> Instant.now()
-            it.modelType >> EntityTypeNames.ASSET
+            it.modelType >> Asset.SINGULAR_TERM
         }
 
 
@@ -152,7 +151,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         def asset1 = Mock(Asset)
         def asset2 = Mock(Asset)
         def newCompositeAssetEntity = Mock(Asset) {
-            it.modelType >> EntityTypeNames.ASSET
+            it.modelType >> Asset.SINGULAR_TERM
         }
 
         def compositeAssetId = Key.newUuid()

@@ -23,9 +23,12 @@ package org.veo.core.entity;
 public interface Asset
         extends EntityLayerSupertype, CompositeEntity<Asset>, RiskAffected<Asset, AssetRisk> {
 
+    String SINGULAR_TERM = "asset";
+    String PLURAL_TERM = "assets";
+
     @Override
     default String getModelType() {
-        return EntityTypeNames.ASSET;
+        return SINGULAR_TERM;
     }
 
     @Override
