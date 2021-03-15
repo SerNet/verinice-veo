@@ -72,7 +72,7 @@ public class CustomPropertiesData implements CustomProperties {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "applicableto")
-    private Set<String> applicableTo;
+    private Set<String> applicableTo = new HashSet<>();
 
     @ManyToMany(targetEntity = DomainData.class)
     final protected Set<Domain> domains = new HashSet<>();
