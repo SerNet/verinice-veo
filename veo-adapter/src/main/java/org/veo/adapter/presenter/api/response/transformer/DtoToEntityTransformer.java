@@ -19,12 +19,14 @@ package org.veo.adapter.presenter.api.response.transformer;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractClientDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
@@ -140,10 +142,17 @@ public final class DtoToEntityTransformer {
             ModelObjectReferenceResolver modelObjectReferenceResolver) {
         var target = factory.createScope(source.getName(), null);
         mapEntityLayerSupertype(source, target, modelObjectReferenceResolver);
-        target.setMembers(source.getMembers()
-                                .stream()
-                                .map(modelObjectReferenceResolver::resolve)
-                                .collect(Collectors.toSet()));
+        Set<ModelObjectReference<EntityLayerSupertype>> memberReferences = source.getMembers();
+        Map<Class<EntityLayerSupertype>, Set<ModelObjectReference<EntityLayerSupertype>>> memberReferencesByType = memberReferences.stream()
+                                                                                                                                   .collect(Collectors.groupingBy(ModelObjectReference::getType,
+                                                                                                                                                                  Collectors.toSet()));
+        Set<EntityLayerSupertype> members = memberReferencesByType.values()
+                                                                  .stream()
+                                                                  .flatMap(refs -> modelObjectReferenceResolver.resolve(refs)
+                                                                                                               .stream())
+                                                                  .collect(Collectors.toSet());
+
+        target.setMembers(members);
         return target;
     }
 
@@ -177,7 +186,7 @@ public final class DtoToEntityTransformer {
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
 
-        target.setDomains(convertSet(source.getDomains(), modelObjectReferenceResolver::resolve));
+        target.setDomains(modelObjectReferenceResolver.resolve(source.getDomains()));
         if (source.getClient() != null) {
             target.setClient(modelObjectReferenceResolver.resolve(source.getClient()));
         }
@@ -220,10 +229,7 @@ public final class DtoToEntityTransformer {
     private <T extends EntityLayerSupertype> void mapCompositeEntity(CompositeEntityDto<T> source,
             CompositeEntity<T> target, ModelObjectReferenceResolver modelObjectReferenceResolver) {
         mapEntityLayerSupertype(source, target, modelObjectReferenceResolver);
-        target.setParts(source.getParts()
-                              .stream()
-                              .map(modelObjectReferenceResolver::resolve)
-                              .collect(Collectors.toSet()));
+        target.setParts(modelObjectReferenceResolver.resolve(source.getParts()));
     }
 
     private <TDto extends EntityLayerSupertypeDto, TEntity extends EntityLayerSupertype> void mapEntityLayerSupertype(
@@ -231,7 +237,7 @@ public final class DtoToEntityTransformer {
             ModelObjectReferenceResolver modelObjectReferenceResolver) {
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
-        target.setDomains(convertSet(source.getDomains(), modelObjectReferenceResolver::resolve));
+        target.setDomains(modelObjectReferenceResolver.resolve(source.getDomains()));
         subTypeTransformer.mapSubTypesToEntity(source, target);
         var entitySchema = loadEntitySchema(target.getModelType());
         target.setLinks(mapLinks(target, source, entitySchema, modelObjectReferenceResolver));

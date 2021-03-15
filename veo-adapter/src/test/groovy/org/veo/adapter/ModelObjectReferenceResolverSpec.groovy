@@ -51,7 +51,7 @@ class ModelObjectReferenceResolverSpec extends Specification {
         when: "resolving references to the model objects"
         def result = referenceResolver.resolve(ModelObjectReference.from(asset, Mock(ReferenceAssembler)))
         then: "the asset is returned"
-        1 * assetRepo.findById(asset.id) >> Optional.of(asset)
+        1 * assetRepo.getByIds(Set.of(asset.id)) >> [asset]
         result == asset
         and: "the client was validated"
         1 * asset.checkSameClient(client)
@@ -64,6 +64,10 @@ class ModelObjectReferenceResolverSpec extends Specification {
             it.getModelInterface() >> Asset
         }
         def asset2 = Mock(Asset) {
+            it.id >> Key.newUuid()
+            it.getModelInterface() >> Asset
+        }
+        def asset3 = Mock(Asset) {
             it.id >> Key.newUuid()
             it.getModelInterface() >> Asset
         }
@@ -82,10 +86,10 @@ class ModelObjectReferenceResolverSpec extends Specification {
         referenceResolver.resolve(ModelObjectReference.from(person1, Mock(ReferenceAssembler)))
         referenceResolver.resolve(ModelObjectReference.from(person2, Mock(ReferenceAssembler)))
         then: "the entities are fetched from the repo"
-        1 * assetRepo.findById(asset1.id) >> Optional.of(asset1)
-        1 * assetRepo.findById(asset2.id) >> Optional.of(asset2)
-        1 * personRepo.findById(person1.id) >> Optional.of(person1)
-        1 * personRepo.findById(person2.id) >> Optional.of(person2)
+        1 * assetRepo.getByIds(Set.of(asset1.id)) >> [asset1]
+        1 * assetRepo.getByIds(Set.of(asset2.id)) >> [asset2]
+        1 * personRepo.getByIds(Set.of(person1.id)) >> [person1]
+        1 * personRepo.getByIds(Set.of(person2.id)) >> [person2]
 
         when: "resolving the references again"
         def retrievedAsset1 = referenceResolver.resolve(ModelObjectReference.from(asset1, Mock(ReferenceAssembler)))
@@ -93,14 +97,22 @@ class ModelObjectReferenceResolverSpec extends Specification {
         def retrievedPerson1 = referenceResolver.resolve(ModelObjectReference.from(person1, Mock(ReferenceAssembler)))
         def retrievedPerson2 = referenceResolver.resolve(ModelObjectReference.from(person2, Mock(ReferenceAssembler)))
         then: "they are not fetched again"
-        0 * assetRepo.findById(_)
-        0 * assetRepo.findById(_)
-        0 * personRepo.findById(_)
-        0 * personRepo.findById(_)
+        0 * assetRepo.getByIds(_)
+        0 * personRepo.getByIds(_)
         and: "they are returned from a cache"
         retrievedAsset1 == asset1
         retrievedAsset2 == asset2
         retrievedPerson1 == person1
         retrievedPerson2 == person2
+
+        when: "resolving a cached and an uncached reference"
+        def retrievedAssets = referenceResolver.resolve([
+            ModelObjectReference.from(asset1, Mock(ReferenceAssembler)),
+            ModelObjectReference.from(asset3, Mock(ReferenceAssembler))
+        ] as Set)
+        then: "only the uncached asset is fetched"
+        1 * assetRepo.getByIds(Set.of(asset3.id)) >> [asset3]
+        0 * assetRepo.getByIds(_)
+        retrievedAssets == [asset1, asset3] as Set
     }
 }

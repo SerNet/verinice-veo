@@ -170,8 +170,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
 
         then: "the composite entity is transformed with parts"
         1 * factory.createAsset("Composite Asset", null) >> newCompositeAssetEntity
-        1 * modelObjectReferenceResolver.resolve(asset1Ref) >> asset1
-        1 * modelObjectReferenceResolver.resolve(asset2Ref) >> asset2
+        1 * modelObjectReferenceResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
         result == newCompositeAssetEntity
         1 * newCompositeAssetEntity.setParts([asset1, asset2].toSet())
         1 * subTypeTransformer.mapSubTypesToEntity(compositeAssetDto, newCompositeAssetEntity)

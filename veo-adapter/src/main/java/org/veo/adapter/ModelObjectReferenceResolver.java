@@ -18,9 +18,15 @@ package org.veo.adapter;
 
 import static java.lang.String.format;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.core.entity.Client;
@@ -65,31 +71,89 @@ public class ModelObjectReferenceResolver {
      */
     public <TEntity extends ModelObject> TEntity resolve(
             ModelObjectReference<TEntity> objectReference) throws NotFoundException {
-        var entity = cache.get(objectReference);
-        if (entity != null) {
-            return (TEntity) entity;
-        }
-
-        Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(objectReference.getType());
-        entity = entityRepository.findById(Key.uuidFrom(objectReference.getId()))
-                                 .orElseThrow(() -> new NotFoundException("ref not found %s %s",
-                                         objectReference.getId(), objectReference.getType()));
-        if (entity instanceof Unit) {
-            ((Unit) entity).checkSameClient(client);
-        }
-        if (entity instanceof EntityLayerSupertype) {
-            ((EntityLayerSupertype) entity).checkSameClient(client);
-        }
-        if (entity instanceof Domain) {
-            if (!(new SameClientSpecification(client)).isSatisfiedBy(((Domain) entity).getOwner()))
-                throw new ClientBoundaryViolationException(
-                        format("The client boundary would be violated by the attempted operation "
-                                + "on element: %s",
-                               entity));
-        }
-        cache.put(objectReference, entity);
-        return (TEntity) entity;
+        return resolve(Collections.singleton(objectReference)).iterator()
+                                                              .next();
     }
 
-    // TODO VEO-344 BULK RESOLVE
+    /**
+     * Resolves the given references by fetching the target entities from a cache or
+     * a repository.
+     *
+     * @param objectReferences
+     *            referencing the desired entity
+     * @param <TEntity>
+     *            target entity type
+     * @throws NotFoundException
+     *             when one or more references cannot be resolved from the
+     *             repository.
+     * @throws org.veo.core.entity.specification.ClientBoundaryViolationException
+     *             when one or more entities do not belong to this resolver's
+     *             client.
+     */
+    public <TEntity extends ModelObject> Set<TEntity> resolve(
+            Set<ModelObjectReference<TEntity>> objectReferences) {
+        if (objectReferences.isEmpty()) {
+            return Collections.emptySet();
+        }
+        HashSet<TEntity> result = new HashSet<>(objectReferences.size());
+        HashSet<ModelObjectReference<TEntity>> copyOfReferences = new HashSet<>(objectReferences);
+        Iterator<ModelObjectReference<TEntity>> it = copyOfReferences.iterator();
+        while (it.hasNext()) {
+            ModelObjectReference<TEntity> ref = it.next();
+            ModelObject cachedEntry = cache.get(ref);
+            if (cachedEntry != null) {
+                result.add((TEntity) cachedEntry);
+                it.remove();
+            }
+        }
+        if (copyOfReferences.isEmpty()) {
+            return result;
+        }
+
+        Class<TEntity> entityType = objectReferences.iterator()
+                                                    .next()
+                                                    .getType();
+
+        Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(entityType);
+
+        Set<? extends ModelObject> entities = entityRepository.getByIds(copyOfReferences.stream()
+                                                                                        .map(ModelObjectReference::getId)
+                                                                                        .map(Key::uuidFrom)
+                                                                                        .collect(Collectors.toSet()));
+
+        Map<String, ModelObjectReference<TEntity>> copyOfReferencesById = copyOfReferences.stream()
+                                                                                          .collect(Collectors.toMap(ModelObjectReference::getId,
+                                                                                                                    Function.identity()));
+
+        entities.forEach(entity -> {
+            if (entity instanceof Unit) {
+                ((Unit) entity).checkSameClient(client);
+            }
+            if (entity instanceof EntityLayerSupertype) {
+                ((EntityLayerSupertype) entity).checkSameClient(client);
+            }
+            if (entity instanceof Domain) {
+                if (!(new SameClientSpecification<>(
+                        client)).isSatisfiedBy(((Domain) entity).getOwner()))
+                    throw new ClientBoundaryViolationException(
+                            format("The client boundary would be violated by the attempted operation "
+                                    + "on element: %s",
+                                   entity));
+            }
+            result.add((TEntity) entity);
+            ModelObjectReference<TEntity> reference = copyOfReferencesById.get(entity.getId()
+                                                                                     .uuidValue());
+            cache.put(reference, entity);
+            copyOfReferences.remove(reference);
+        });
+        if (!copyOfReferences.isEmpty()) {
+            throw new NotFoundException(
+                    "Unable to resolve references of type %s to objects: missing IDs: %s",
+                    entityType, copyOfReferences.stream()
+                                                .map(ModelObjectReference::getId)
+                                                .collect(Collectors.joining(", ")));
+        }
+        return result;
+    }
+
 }
