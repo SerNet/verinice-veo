@@ -41,6 +41,7 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.CompoundKeyEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -130,8 +131,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         if (Domain.class.isAssignableFrom(type)) {
             return "/" + Domain.PLURAL_TERM + "/" + id;
         }
+        // Some model object types have no endpoint.
+        if (Client.class.isAssignableFrom(type)) {
+            return null;
+        }
 
-        return "";
+        throw new NotImplementedException("Unsupported reference type " + type);
     }
 
     @Override
@@ -196,7 +201,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                           ANY_SEARCH)).withRel(IncidentController.URL_BASE_PATH)
                                                                                       .getHref();
         }
-        return "";
+        // Some model object types have no endpoint.
+        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)) {
+            return null;
+        }
+        throw new NotImplementedException(
+                "Unsupported search reference type " + type.getSimpleName());
     }
 
     @Override
@@ -255,10 +265,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                                                   .withSelfRel()
                                                                                                   .getHref();
         }
-        // all types not listed above do not support access to a resource
-        // collection.
-        // Returning 'null' as per the method contract:
-        return null;
+        // Some model object types have no endpoint.
+        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)) {
+            return null;
+        }
+        throw new NotImplementedException("Unsupported collection reference type " + type);
     }
 
     @Override

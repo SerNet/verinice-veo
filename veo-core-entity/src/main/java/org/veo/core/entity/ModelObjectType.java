@@ -57,11 +57,14 @@ public enum ModelObjectType {
                                                    .map(et -> et.pluralTerm)
                                                    .collect(Collectors.toSet());
 
-    public static Set<Class<? extends EntityLayerSupertype>> ENTITY_TYPES = Stream.of(values())
-                                                                                  .map(et -> et.type)
-                                                                                  .filter(EntityLayerSupertype.class::isAssignableFrom)
-                                                                                  .map(t -> (Class<? extends EntityLayerSupertype>) t)
-                                                                                  .collect(Collectors.toSet());
+    public static Set<Class<? extends ModelObject>> TYPES = Stream.of(values())
+                                                                  .map(et -> et.type)
+                                                                  .collect(Collectors.toSet());
+
+    public static Set<Class<? extends EntityLayerSupertype>> ENTITY_TYPES = TYPES.stream()
+                                                                                 .filter(EntityLayerSupertype.class::isAssignableFrom)
+                                                                                 .map(t -> (Class<? extends EntityLayerSupertype>) t)
+                                                                                 .collect(Collectors.toSet());
 
     public static Class<? extends ModelObject> getTypeForPluralTerm(String pluralTerm) {
         return Stream.of(values())

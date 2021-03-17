@@ -23,6 +23,7 @@ import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.Control
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
+import org.veo.core.entity.ModelObjectType
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 
@@ -147,6 +148,25 @@ class ReferenceAssemblerImplSpec extends Specification {
         Scenario | 'f05ab334-c605-456e-8a78-9e1bc85b8509' | '9079c8bd-a6d9-4f72-b22c-ae75716869bc'
         Incident | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | '63a372c9-e34d-4c40-aa83-ee9aa43c8e8c'
         Scope    | '59d3c21d-2f21-4085-950d-1273056d664a' | '5c70c0b8-5882-4eaf-8bf8-98f9f5a923ea'
+    }
+
+    @Unroll
+    def "creates and parses URLs for #type.simpleName"() {
+        when: "creating a target URL"
+        def targetUrl = referenceAssembler.targetReferenceOf(type, UUID.randomUUID().toString())
+        then: "it can be parsed back"
+        if(targetUrl != null) {
+            assert referenceAssembler.parseType(targetUrl) == type
+        }
+
+        when: "generating collection & search URLs"
+        referenceAssembler.resourcesReferenceOf(type)
+        referenceAssembler.searchesReferenceOf(type)
+        then:
+        notThrown(Exception)
+
+        where:
+        type << ModelObjectType.TYPES
     }
 
 
