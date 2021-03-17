@@ -161,6 +161,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                        ANY_SEARCH)).withRel(AssetController.URL_BASE_PATH)
                                                                                    .getHref();
         }
+        if (Document.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(DocumentController.class).createSearch(ANY_AUTH,
+                                                                          ANY_SEARCH)).withRel(AssetController.URL_BASE_PATH)
+                                                                                      .getHref();
+        }
         if (Unit.class.isAssignableFrom(type)) {
             return linkTo(methodOn(UnitController.class).createSearch(ANY_AUTH,
                                                                       ANY_SEARCH)).withRel(UnitController.URL_BASE_PATH)
@@ -208,6 +213,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                     ANY_STRING, ANY_STRING))
                                                                                             .withSelfRel()
                                                                                             .getHref();
+        }
+        if (Document.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(DocumentController.class).getDocuments(ANY_AUTH, ANY_STRING,
+                                                                          ANY_STRING, ANY_STRING))
+                                                                                                  .withSelfRel()
+                                                                                                  .getHref();
         }
         if (Unit.class.isAssignableFrom(type)) {
             return linkTo(methodOn(UnitController.class).getUnits(ANY_AUTH, ANY_STRING,
