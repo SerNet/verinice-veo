@@ -90,7 +90,7 @@ pipeline {
                 }
             }
             steps {
-                sh './gradlew --no-daemon build -x check'
+                sh './gradlew --no-daemon -PciBuildNumer=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
             }
         }
         stage('Analyze') {

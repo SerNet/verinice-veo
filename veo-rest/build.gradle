@@ -2,6 +2,10 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+plugins {
+    id "com.gorylenko.gradle-git-properties" version "2.2.4"
+}
+
 apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
 
@@ -46,6 +50,21 @@ bootRun {
     systemProperty 'veo.etag.salt', "zu#4Q8JKdy"
     if ( project.hasProperty('jvmArgs') ) {
         jvmArgs = (project.jvmArgs.split("\\s+") as List)
+    }
+}
+
+// create build-info.properties with build information
+springBoot {
+    buildInfo {
+        properties {
+            // add additional CI information when building in Jenkins
+            if (rootProject.hasProperty('ciBuildNumer')) {
+                additional = [
+                    'ci.buildnumber': rootProject.getProperty('ciBuildNumer'),
+                    'ci.jobname': rootProject.getProperty('ciJobName')
+                ]
+            }
+        }
     }
 }
 
