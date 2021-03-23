@@ -167,7 +167,20 @@
       "process_ResponsibleDepartment": "Verantwortlicher Fachbereich",
       "process_TypeOfDataProcessed": "Art der verarbeiteten Daten",
       "process_TypeOfDataTransmitted": "Art der übermittelten Daten",
-      "process_TypeOfSensitiveData": "Art besonders sensitiver Daten"
+      "process_TypeOfSensitiveData": "Art besonders sensitiver Daten",
+      "scope_commons_street": "Straße",
+      "scope_commons_number": "Hausnummer",
+      "scope_commons_postcode": "PLZ",
+      "scope_commons_city": "Ort",
+      "scope_commons_country": "Land",
+      "scope_thirdCountry_status": "Sitz des verantwortlichen außerhalb der EU?",
+      "scope_contactInformation_phone": "Telefon",
+      "scope_contactInformation_mobile": "Mobil",
+      "scope_contactInformation_fax": "Fax",
+      "scope_contactInformation_email": "E-Mail",
+      "scope_contactInformation_website": "Webseite",
+      "scope_person_headOfDataProcessing": "Leitung der Datenverarbeitung / IT",
+      "scope_person_management": "Leitung der verantwortlichen Stelle"
     },
     "en": {
       "abbreviation": "Abbreviation",

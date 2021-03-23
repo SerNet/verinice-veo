@@ -1,0 +1,90 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "applicableTo": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "attributes": {
+      "properties": {
+        "scope_contactInformation_email": {
+          "title": "E-Mail",
+          "type": "string"
+        },
+        "scope_contactInformation_fax": {
+          "title": "Fax",
+          "type": "string"
+        },
+        "scope_contactInformation_mobile": {
+          "title": "Mobile",
+          "type": "string"
+        },
+        "scope_contactInformation_phone": {
+          "title": "Phone",
+          "type": "string"
+        },
+        "scope_contactInformation_website": {
+          "format": "uri",
+          "title": "Website",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "domains": {
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced domain.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "title": "The list of domains in which this element is present.",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "id": {
+      "format": "regex",
+      "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+      "title": "The UUID to identify the element",
+      "type": "string"
+    },
+    "references": {
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced object.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced object.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ]
+      },
+      "type": "array"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "scope_contactInformation"
+      ]
+    }
+  },
+  "type": "object"
+}

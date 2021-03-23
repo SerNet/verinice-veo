@@ -41,7 +41,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
-import spock.lang.Ignore
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -160,7 +159,8 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: "/units/${unit.id.uuidValue()}"
             ],
             members: [
-                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]]
+                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+            ]
         ]
 
         when: "the request is sent"
@@ -358,7 +358,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
 
     @WithUserDetails("user@domain.example")
-    @Ignore("Re-add once we have custom property definitions for scopes")
     def "put a scope with custom properties"() {
         given: "a saved scope"
 
@@ -388,15 +387,15 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ], customAspects:
             [
-                'AssetCommons' :
+                'scope_commons' :
                 [
                     applicableTo: [
-                        "Asset"
+                        "Scope"
                     ],
                     domains: [],
                     attributes:  [
-                        assetNum:'001',
-                        assetPlatform:'9 3/4'
+                        scope_commons_number: '1',
+                        scope_commons_country: 'Germany'
                     ]
                 ]
             ]
@@ -404,14 +403,14 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the new scope data is sent to the server"
         Map headers = [
-            'If-Match': ETag.from(scope.id.uuidValue(), 1)
+            'If-Match': ETag.from(scope.id.uuidValue(), scope.version)
         ]
         def results = put("/scopes/${scope.id.uuidValue()}",request, headers)
 
         then: "the scope is found"
         results.andExpect(status().isOk())
         def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        result.name == 'New scope-2'
+        result.name == 'New scope 2'
         result.abbreviation == 's-2'
         result.domains.first().displayName == "${domain.abbreviation} ${domain.name}"
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
@@ -425,12 +424,12 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         then:
-        entity.name == 'New scope-2'
+        entity.name == 'New scope 2'
         entity.abbreviation == 's-2'
-        entity.customAspects.first().type == 'AssetCommons'
-        entity.customAspects.first().applicableTo == ['Asset'] as Set
-        entity.customAspects.first().stringProperties.assetNum == '001'
-        entity.customAspects.first().stringProperties.assetPlatform == '9 3/4'
+        entity.customAspects.first().type == 'scope_commons'
+        entity.customAspects.first().applicableTo == ['Scope'] as Set
+        entity.customAspects.first().stringProperties.scope_commons_number == '1'
+        entity.customAspects.first().stringProperties.scope_commons_country == 'Germany'
     }
 
 
@@ -488,7 +487,8 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: "/units/${unit.id.uuidValue()}"
             ],
             members: [
-                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]]
+                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+            ]
         ]
 
         def id = parseJson(post("/scopes", request)).resourceId
