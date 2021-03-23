@@ -55,22 +55,22 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
         when: "creating a person with different aspects"
         def personId = parseJson(post("/persons", [
             customAspects: [
-                PersonCommons: [
+                person_commons: [
                     applicableTo: [
                         "person"
                     ],
                     attributes: [
-                        personIsoAnrede: "personIsoAnredeHerr",
-                        personIsoSurname: "Mick"
+                        person_commons_salutation: "person_commons_salutation_mr",
+                        person_commons_surname: "Mick"
                     ],
                     domains: [],
                 ],
-                PersonInfosDsb: [
+                person_dataProtectionOfficer: [
                     applicableTo: [
                         "person"
                     ],
                     attributes: [
-                        fachkunde: true
+                        person_dataProtectionOfficer_expertise: true
                     ],
                     domains: [],
                 ]
@@ -82,9 +82,9 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
 
         then:
         with(retrievedPerson.customAspects) {
-            PersonCommons.attributes.personIsoAnrede == "personIsoAnredeHerr"
-            PersonCommons.attributes.personIsoSurname == "Mick"
-            PersonInfosDsb.attributes.fachkunde == true
+            person_commons.attributes.person_commons_salutation == "person_commons_salutation_mr"
+            person_commons.attributes.person_commons_surname == "Mick"
+            person_dataProtectionOfficer.attributes.person_dataProtectionOfficer_expertise == true
         }
     }
 }

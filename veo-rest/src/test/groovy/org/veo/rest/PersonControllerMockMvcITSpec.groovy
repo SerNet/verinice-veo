@@ -258,15 +258,15 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ], customAspects:
             [
-                'PersonCommons' :
+                'person_commons' :
                 [
                     applicableTo: [
                         "Person"
                     ],
                     domains: [],
                     attributes:  [
-                        personIsoAnrede:'personIsoAnredeFrau',
-                        personIsoSurname:'Schmidt'
+                        person_commons_salutation:'person_commons_salutation_ms',
+                        person_commons_surname:'Schmidt'
                     ]
                 ]
             ]
@@ -297,10 +297,10 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New person-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'PersonCommons'
+        entity.customAspects.first().type == 'person_commons'
         entity.customAspects.first().applicableTo == ['Person'] as Set
-        entity.customAspects.first().stringProperties.personIsoAnrede == 'personIsoAnredeFrau'
-        entity.customAspects.first().stringProperties.personIsoSurname == 'Schmidt'
+        entity.customAspects.first().stringProperties.person_commons_salutation == 'person_commons_salutation_ms'
+        entity.customAspects.first().stringProperties.person_commons_surname == 'Schmidt'
     }
 
     @WithUserDetails("user@domain.example")
