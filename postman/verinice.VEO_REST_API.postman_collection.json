@@ -61,39 +61,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "\"<object>\""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the unit",
@@ -148,74 +116,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all units",
@@ -253,41 +154,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Units loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "[\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n },\n {\n  \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n  \"name\": \"<add example here>\",\n  \"version\": 2,\n  \"validFrom\": \"1990-12-31T23:59:60Z\",\n  \"validUntil\": \"1990-12-31T23:59:60Z\",\n  \"abbreviation\": \"<add example here>\",\n  \"description\": \"<add example here>\",\n  \"riskvalues\": \"<add example here>\",\n  \"objects\": \"<add example here>\",\n  \"units\": \"<add example here>\",\n  \"parent\": {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  \"domains\": [\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   },\n   {\n    \"displayName\": \"My Unit\",\n    \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n   }\n  ]\n }\n]"
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the unit",
@@ -353,45 +220,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"<add example here>\",\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the unit concurrently",
@@ -452,45 +281,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"<add example here>\",\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create an asset inside the unit",
@@ -544,39 +335,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the asset",
@@ -634,74 +393,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all assets in the unit",
@@ -745,41 +437,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Updates the asset",
@@ -845,82 +503,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Asset updated",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the asset concurrently",
@@ -981,82 +564,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Asset updated",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a process that uses the asset",
@@ -1110,39 +618,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the process",
@@ -1198,41 +674,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the process",
@@ -1298,45 +740,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the process concurrently",
@@ -1397,45 +801,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all processes in the unit",
@@ -1479,41 +845,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a person inside the unit",
@@ -1567,39 +899,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all persons in the unit",
@@ -1643,41 +943,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the person",
@@ -1735,74 +1001,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the person",
@@ -1868,45 +1067,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the person concurrently",
@@ -1967,45 +1128,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a control inside the unit",
@@ -2059,39 +1182,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all controls in the unit",
@@ -2135,41 +1226,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the control",
@@ -2227,74 +1284,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the control",
@@ -2360,45 +1350,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Update the control concurrently",
@@ -2459,45 +1411,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"name\": \"Lock doors\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"version\": 2,\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"Lock doors\",\n    \"description\": \"Lock doors\",\n    \"domains\": [\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"EU GDPR 2016-05-04\",\n            \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\",\n    \"customAspects\": \"<object>\",\n    \"links\": \"<object>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the process",
@@ -2536,74 +1450,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the asset",
@@ -2642,74 +1489,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the person",
@@ -2748,74 +1528,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the control",
@@ -2854,74 +1567,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the unit",
@@ -2960,74 +1606,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a new work  unit",
@@ -3081,39 +1660,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "\"<object>\""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create an asset inside the unit for linking",
@@ -3167,39 +1714,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a process that uses the asset",
@@ -3253,39 +1768,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the process with properties",
@@ -3332,41 +1815,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a person inside the unit with properties",
@@ -3425,39 +1874,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the person with properties",
@@ -3506,74 +1923,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"href\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"href\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            },
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a control inside the unit with properties",
@@ -3627,39 +1977,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the control with properties",
@@ -3708,74 +2026,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create an asset inside the unit with properties",
@@ -3829,39 +2080,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the asset",
@@ -3909,41 +2128,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"Lock doors\",\n \"owner\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"Lock doors\",\n \"description\": \"Lock doors\",\n \"domains\": [\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"EU GDPR 2016-05-04\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>\"\n  }\n ],\n \"riskvalues\": \"<add example here>\",\n \"customAspects\": \"<object>\",\n \"links\": \"<object>\"\n}"
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a process VEO-271",
@@ -3997,39 +2182,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\",\n    \"assets\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"extinguishingTime\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/processes",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the process VEO-271",
@@ -4074,41 +2227,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/processes/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "processes",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the work unit",
@@ -4147,74 +2266,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         }
       ],
       "description": "Basic CRUD operations"
@@ -4274,39 +2326,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "\"<object>\""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a sub-unit",
@@ -4360,39 +2380,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "\"<object>\""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create an asset inside the sub-unit",
@@ -4446,39 +2434,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a process inside the sub-unit",
@@ -4532,39 +2488,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a person inside the sub-unit",
@@ -4618,39 +2542,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a control inside the sub-unit",
@@ -4704,39 +2596,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the unit",
@@ -4779,74 +2639,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"version\": 2,\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"validUntil\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all assets in the unit",
@@ -4890,41 +2683,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all processes in the unit",
@@ -4968,41 +2727,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all persons in the unit",
@@ -5046,41 +2771,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all controls in the unit",
@@ -5124,41 +2815,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load all assets in the sub-unit",
@@ -5202,41 +2859,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Loading assets with invalid unit fails",
@@ -5273,41 +2896,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "default response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/assets?parent=<string>",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ],
-                  "query": [
-                    {
-                      "key": "parent",
-                      "value": "<string>"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the asset",
@@ -5346,74 +2935,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the process",
@@ -5452,74 +2974,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the person",
@@ -5558,74 +3013,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the control",
@@ -5664,74 +3052,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the sub-unit",
@@ -5770,74 +3091,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the unit",
@@ -5876,74 +3130,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         }
       ]
     },
@@ -6002,39 +3189,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "\"<object>\""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create an asset inside the unit",
@@ -6088,39 +3243,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a search",
@@ -6232,74 +3355,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the unit",
@@ -6338,74 +3394,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         }
       ]
     },
@@ -6464,39 +3453,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "\"<object>\""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create an asset inside the unit",
@@ -6550,39 +3507,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a composite asset inside the unit",
@@ -6636,39 +3561,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a person inside the unit",
@@ -6722,39 +3615,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a composite person inside the unit",
@@ -6808,39 +3669,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a scope inside the unit",
@@ -6894,39 +3723,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the work unit",
@@ -6965,74 +3762,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         }
       ]
     },
@@ -7091,39 +3821,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"My unit\",\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"U-96\",\n    \"description\": \"This is currently the main and only unit for our organization.\",\n    \"riskvalues\": \"<add example here>\",\n    \"objects\": \"<add example here>\",\n    \"units\": \"<add example here>\",\n    \"parent\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ]\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/units",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "\"<object>\""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the unit",
@@ -7180,74 +3878,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit loaded",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:id",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":id"
-                  ],
-                  "variable": [
-                    {
-                      "key": "id"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n \"name\": \"<add example here>\",\n \"validFrom\": \"1990-12-31T23:59:60Z\",\n \"abbreviation\": \"<add example here>\",\n \"description\": \"<add example here>\",\n \"riskvalues\": \"<add example here>\",\n \"objects\": \"<add example here>\",\n \"units\": \"<add example here>\",\n \"parent\": {\n  \"displayName\": \"My Unit\",\n  \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n },\n \"domains\": [\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  },\n  {\n   \"displayName\": \"My Unit\",\n   \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n  }\n ]\n}"
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create an asset inside the unit",
@@ -7301,39 +3932,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a composite asset inside the unit",
@@ -7387,39 +3986,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a scenario  inside the unit",
@@ -7473,39 +4040,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a composite scenario inside the unit",
@@ -7559,39 +4094,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a person inside the unit",
@@ -7645,39 +4148,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a composite person inside the unit",
@@ -7731,39 +4202,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a risk for the asset",
@@ -7819,39 +4258,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Load the risk",
@@ -7977,39 +4384,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Create a risk for the asset composite",
@@ -8065,39 +4440,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the scenario",
@@ -8157,39 +4500,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Asset created",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"<add example here>\",\n    \"owner\": {\n        \"displayName\": \"My Unit\",\n        \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n    },\n    \"id\": \"adf037f1-0089-48ad-9177-92269918758b\",\n    \"validFrom\": \"1990-12-31T23:59:60Z\",\n    \"validUntil\": \"1990-12-31T23:59:60Z\",\n    \"abbreviation\": \"<add example here>\",\n    \"description\": \"<add example here>\",\n    \"domains\": [\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        },\n        {\n            \"displayName\": \"My Unit\",\n            \"targetUri\": \"http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>\"\n        }\n    ],\n    \"links\": \"<add example here>\",\n    \"customAspects\": \"<add example here>\",\n    \"riskvalues\": \"<add example here>\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/assets",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "assets"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "*/*"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         },
         {
           "name": "Delete the work unit",
@@ -8228,74 +4539,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "Unit not found",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            },
-            {
-              "name": "Unit deleted",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/units/:uuid",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "units",
-                    ":uuid"
-                  ],
-                  "variable": [
-                    {
-                      "key": "uuid"
-                    }
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "text",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "cookie": [],
-              "body": ""
-            }
-          ]
+          "response": []
         }
       ]
     }
