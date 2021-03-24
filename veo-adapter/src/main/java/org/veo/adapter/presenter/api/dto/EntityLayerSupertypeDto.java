@@ -45,4 +45,8 @@ public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
     Map<String, String> getSubType();
 
     void setSubType(Map<String, String> subType);
+
+    String getType();
+
+    void setType(String type);
 }

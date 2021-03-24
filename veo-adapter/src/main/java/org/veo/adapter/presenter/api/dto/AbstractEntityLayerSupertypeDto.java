@@ -112,4 +112,7 @@ public abstract class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
     @Schema(description = "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
             title = "SubType")
     private Map<String, String> subType = Collections.emptyMap();
+
+    @Schema(description = "Entity type identifier", accessMode = Schema.AccessMode.READ_ONLY)
+    private String type;
 }

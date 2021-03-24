@@ -267,7 +267,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the members are returned"
         membersResults.andExpect(status().isOk())
         when:
-        def membersResult =parseJson(membersResults)
+        def membersResult = parseJson(membersResults)
         then:
         membersResult.empty
 
@@ -281,6 +281,17 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         ])
         then:
         txTemplate.execute { scopeRepository.findById(scope.id).get().members.size() }  == 2
+
+        when: "querying the members again"
+        def members = parseJson(get("/scopes/${scope.id.uuidValue()}/members"))
+        then:
+        with(members.sort{it.name}) {
+            it.size() == 2
+            it[0].name == "Test asset"
+            it[0].type == "asset"
+            it[1].name == "Test scenario"
+            it[1].type == "scenario"
+        }
     }
 
     @WithUserDetails("user@domain.example")
