@@ -49,7 +49,7 @@ class TransformerSpec extends Specification {
 
     def factory = Mock(EntityFactory)
 
-    def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler))
+    def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler), Mock(SubTypeTransformer))
     def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
     def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, null)
 

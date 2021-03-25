@@ -75,9 +75,12 @@ import org.veo.core.entity.Versioned;
 public final class EntityToDtoTransformer {
 
     private final ReferenceAssembler referenceAssembler;
+    private final SubTypeTransformer subTypeTransformer;
 
-    public EntityToDtoTransformer(ReferenceAssembler referenceAssembler) {
+    public EntityToDtoTransformer(ReferenceAssembler referenceAssembler,
+            SubTypeTransformer subTypeTransformer) {
         this.referenceAssembler = referenceAssembler;
+        this.subTypeTransformer = subTypeTransformer;
     }
 
     public VersionedDto transform2Dto(Versioned source) {
@@ -272,8 +275,7 @@ public final class EntityToDtoTransformer {
         target.setLinks(mapLinks(source.getLinks()));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects()));
         target.setType(source.getModelType());
-        // TODO VEO-382 inject AspectTransformer
-        new SubTypeTransformer().mapSubTypesToDto(source, target);
+        subTypeTransformer.mapSubTypesToDto(source, target);
 
         if (source.getOwner() != null) {
             target.setOwner(ModelObjectReference.from(source.getOwner(), referenceAssembler));

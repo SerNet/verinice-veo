@@ -37,7 +37,7 @@ class CustomLinkTransformerSpec extends Specification {
     def factory = Mock(EntityFactory)
     def subTypeTransformer = Mock(SubTypeTransformer)
     def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
-    def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler)
+    def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler, subTypeTransformer)
     def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, subTypeTransformer)
 
 

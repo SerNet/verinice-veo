@@ -388,8 +388,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public EntityToDtoTransformer entityToDtoTransformer(ReferenceAssembler referenceAssembler) {
-        return new EntityToDtoTransformer(referenceAssembler);
+    public EntityToDtoTransformer entityToDtoTransformer(ReferenceAssembler referenceAssembler,
+            SubTypeTransformer subTypeTransformer) {
+        return new EntityToDtoTransformer(referenceAssembler, subTypeTransformer);
     }
 
     @Bean

@@ -45,7 +45,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
     def subTypeTransformer = Mock(SubTypeTransformer)
     def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
     def entitySchemaLoader = Mock(EntitySchemaLoader)
-    def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler)
+    def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler, subTypeTransformer)
     def dtoToEntityTransformer = new DtoToEntityTransformer(factory, entitySchemaLoader, subTypeTransformer)
 
     def createUnit() {
