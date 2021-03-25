@@ -31,6 +31,8 @@ import org.veo.core.usecase.UseCase.InputData;
 import org.veo.core.usecase.UseCase.OutputData;
 import org.veo.core.usecase.UseCaseInteractor;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Provides a use case interactor with asynchronous callback.
  *
@@ -43,12 +45,14 @@ import org.veo.core.usecase.UseCaseInteractor;
  */
 @Service
 @Validated
+@Slf4j
 public class UseCaseInteractorImpl implements UseCaseInteractor {
 
     @Override
     @Async
     public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
             UseCase<I, O> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper) {
+        log.info("Executing {} with {}", useCase, inputSupplier);
         return CompletableFuture.completedFuture(useCase.executeAndTransformResult(inputSupplier,
                                                                                    outputMapper));
     }
@@ -59,6 +63,8 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
             UseCase<I, O> useCase, @Valid I input, // TODO implement test to make sure all marked
                                                    // complex types in fields are validated
             Function<O, R> outputMapper) {
+        log.info("Executing {}", useCase);
+        log.debug("Input: {}", input);
         return CompletableFuture.completedFuture(useCase.executeAndTransformResult(input,
                                                                                    outputMapper));
     }
