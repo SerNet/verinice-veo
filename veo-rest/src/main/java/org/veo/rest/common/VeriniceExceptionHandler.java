@@ -67,7 +67,7 @@ public class VeriniceExceptionHandler {
     }
 
     private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {
-        log.error(exception.getMessage(), exception);
+        log.error("Error handling request", exception);
         return new ResponseEntity<>(
                 new ApiResponseBody(false, Optional.empty(), exception.getMessage()), status);
     }

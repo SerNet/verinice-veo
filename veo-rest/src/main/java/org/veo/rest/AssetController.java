@@ -285,7 +285,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
             return getAssets(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
                                                         SearchQueryDto.decodeFromSearchId(searchId)));
         } catch (IOException e) {
-            log.error(String.format("Could not decode search URL: %s", e.getLocalizedMessage()));
+            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
         }
     }

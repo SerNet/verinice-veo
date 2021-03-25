@@ -62,8 +62,8 @@ public class LinkImportTask implements Callable<LinkImportContext> {
                           context.getDestination());
             }
         } catch (Exception e) {
-            LOG.error("Error while importing link, start id: " + context.getSource() + ", end id: "
-                    + context.getDestination(), e);
+            LOG.error("Error while importing link, start id: {}, end id: {}", context.getSource(),
+                      context.getDestination(), e);
         }
         return context;
     }

@@ -344,7 +344,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             var uri = new URI(uriString);
             return uri.getPath();
         } catch (URISyntaxException e) {
-            log.error(format("Could not parse URI for element: %s", uriString), e);
+            log.error("Could not parse URI for element: {}", uriString, e);
             throw new IllegalArgumentException(
                     format("Could not parse URI for element: %s", uriString));
         }
@@ -354,7 +354,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         try {
             return new URL(uriString).getPath();
         } catch (MalformedURLException e) {
-            log.info(format("Reference is not a valid URL: %s", uriString));
+            log.info("Reference is not a valid URL: {}", uriString);
             throw e;
         }
     }

@@ -250,7 +250,7 @@ public class UnitController extends AbstractEntityController {
             return getUnits(auth, null, null);
 
         } catch (IOException e) {
-            log.error("Could not decode search URL.", e.getLocalizedMessage());
+            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             throw new IllegalArgumentException("Could not decode search URL.");
         }
     }

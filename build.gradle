@@ -178,6 +178,7 @@ subprojects {
     dependencies {
         compileOnly 'org.slf4j:slf4j-api'
         runtimeOnly 'ch.qos.logback:logback-classic'
+        spotbugsPlugins "jp.skypencil.findbugs.slf4j:bug-pattern:1.4.2@jar"
     }
 
     tasks.withType(JavaCompile) {

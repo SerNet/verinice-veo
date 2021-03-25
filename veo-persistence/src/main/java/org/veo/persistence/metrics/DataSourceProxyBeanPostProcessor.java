@@ -63,8 +63,8 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
                 HikariDataSource hikariData = (HikariDataSource) bean;
                 jdbcUrl = hikariData.getJdbcUrl();
             }
-            log.info("DataSource has been found: " + jdbcUrl + ". Logging queries and slow "
-                    + "queries " + "(> " + SLOW_THRESHOLD_MS + "ms)");
+            log.info("DataSource has been found: {}. Logging queries and slow queries (> {}ms)",
+                     jdbcUrl, SLOW_THRESHOLD_MS);
             final ProxyFactory proxyFactory = new ProxyFactory(bean);
             proxyFactory.setProxyTargetClass(true);
             proxyFactory.addAdvice(new ProxyDataSourceInterceptor((DataSource) bean,

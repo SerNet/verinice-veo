@@ -84,7 +84,7 @@ public class ElementImportTask implements Callable<ElementImportContext> {
                 LOG.debug("Import finished {}", logObject(getSyncObject()));
             }
         } catch (Exception e) {
-            LOG.error("Error while importing type: " + getSyncObject().getExtObjectType(), e);
+            LOG.error("Error while importing type: {}", getSyncObject().getExtObjectType(), e);
         }
         return context;
     }

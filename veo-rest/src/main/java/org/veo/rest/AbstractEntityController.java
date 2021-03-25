@@ -89,7 +89,7 @@ public abstract class AbstractEntityController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        log.error(ex.getMessage(), ex);
+        log.error("Error validating request", ex);
         return ex.getBindingResult()
                  .getAllErrors()
                  .stream()

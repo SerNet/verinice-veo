@@ -52,7 +52,7 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
             throw new IllegalArgumentException(
                     String.format("Type \"%s\" is not a valid schema.", type));
         }
-        log.debug("Getting static JSON schema file for type: " + type);
+        log.debug("Getting static JSON schema file for type: {}", type);
         return extract(SCHEMA_FILES_PATH + typeClassName + ".json");
     }
 
@@ -63,13 +63,13 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
     @Override
     public String findTranslations(Set<String> languages) {
-        log.debug("Getting full static translation file, ignoring requested language filter: "
-                + languages);
+        log.debug("Getting full static translation file, ignoring requested language filter: {}",
+                  languages);
         return extract("/lang/lang.json");
     }
 
     private String extract(final String file) {
-        log.debug("Loading file form classpath: " + file);
+        log.debug("Loading file form classpath: {}", file);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass()
                                                                               .getResourceAsStream(file),
                 StandardCharsets.UTF_8
