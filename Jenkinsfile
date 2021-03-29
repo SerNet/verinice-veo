@@ -176,7 +176,7 @@ pipeline {
                 anyOf { branch 'master'; branch 'develop' }
             }
             steps {
-                build job: 'verinice-veo-deployment/master', parameters: [string(name: 'environment', value: ['master':'k8s', 'develop':'k8s-develop'][env.GIT_BRANCH])]
+                build job: 'verinice-veo-deployment/master'
             }
         }
     }
