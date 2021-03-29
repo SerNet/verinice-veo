@@ -79,5 +79,17 @@
     }
   },
   "additionalProperties": false,
-  "required": []
+  "required": [],
+  "translations": {
+    "de": {
+      "process_AccessAuthorization_authorizationConcept": "Berechtigungskonzept?",
+      "process_AccessAuthorization_description": "Beschreibung des Berechtigungskonzepts",
+      "process_AccessAuthorization_Document": "Dokument"
+    },
+    "en": {
+      "process_AccessAuthorization_authorizationConcept": "Authorization concept?",
+      "process_AccessAuthorization_description": "Description of the authorization concept",
+      "process_AccessAuthorization_Document": "Document"
+    }
+  }
 }

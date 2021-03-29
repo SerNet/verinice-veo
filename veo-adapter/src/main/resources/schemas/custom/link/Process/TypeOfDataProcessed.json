@@ -101,6 +101,14 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ]
+    ],
+    "translations": {
+      "de": {
+        "process_TypeOfDataProcessed": "Art der verarbeiteten Daten"
+      },
+      "en": {
+        "process_TypeOfDataProcessed": "Type of data processed"
+      }
+    }
   }
 }

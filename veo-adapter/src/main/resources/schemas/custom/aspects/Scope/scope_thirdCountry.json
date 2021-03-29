@@ -69,5 +69,13 @@
       ]
     }
   },
+  "translations": {
+    "de": {
+      "scope_thirdCountry_status": "Sitz des verantwortlichen außerhalb der EU?"
+    },
+    "en": {
+      "scope_thirdCountry_status": "Location of the responsible party outside the EU?"
+    }
+  },
   "type": "object"
 }

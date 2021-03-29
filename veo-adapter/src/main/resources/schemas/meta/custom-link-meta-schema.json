@@ -9,7 +9,8 @@
   },
   "required": [
     "type",
-    "properties"
+    "properties",
+    "translations"
   ],
   "properties": {
     "type": {
@@ -399,6 +400,21 @@
         }
       },
       "additionalProperties": false
+    },
+    "translations": {
+      "type": "object",
+      "properties": {
+        "de": {
+          "type": "object"
+        },
+        "en": {
+          "type": "object"
+        },
+        "required": [
+          "de",
+          "en"
+        ]
+      }
     },
     "additionalProperties": {
       "type": "boolean",

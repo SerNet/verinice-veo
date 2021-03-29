@@ -27,12 +27,14 @@ import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.schemas.resource.TranslationsResource;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to UI translations in JSON format.
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TranslationController implements TranslationsResource {
 
     private final EntitySchemaService schemaService;
@@ -40,7 +42,10 @@ public class TranslationController implements TranslationsResource {
     @Override
     public ResponseEntity<String> getSchema(Authentication auth,
             @RequestParam(value = "languages", required = true) Set<String> languages) {
-        String t10n = schemaService.findTranslations(languages);
+        // TODO VEO-526: honor languages parameter
+        log.debug("Getting full static translation file, ignoring requested language filter: "
+                + languages);
+        String t10n = schemaService.findTranslations(Set.of("en", "de"));
         return ResponseEntity.ok()
                              .body(t10n);
     }

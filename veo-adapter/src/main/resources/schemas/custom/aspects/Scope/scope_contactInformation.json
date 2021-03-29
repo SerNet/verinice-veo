@@ -86,5 +86,21 @@
       ]
     }
   },
+  "translations": {
+    "de": {
+      "scope_contactInformation_phone": "Telefon",
+      "scope_contactInformation_mobile": "Mobil",
+      "scope_contactInformation_fax": "Fax",
+      "scope_contactInformation_email": "E-Mail",
+      "scope_contactInformation_website": "Webseite"
+    },
+    "en": {
+      "scope_contactInformation_phone": "Phone",
+      "scope_contactInformation_mobile": "Mobile",
+      "scope_contactInformation_fax": "Fax",
+      "scope_contactInformation_email": "E-mail",
+      "scope_contactInformation_website": "Website"
+    }
+  },
   "type": "object"
 }

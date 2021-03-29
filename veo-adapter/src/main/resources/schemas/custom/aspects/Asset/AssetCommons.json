@@ -101,5 +101,13 @@
     }
   },
   "additionalProperties": false,
-  "required": []
+  "required": [],
+  "translations": {
+    "de": {
+      
+    },
+    "en": {
+      
+    }
+  }
 }

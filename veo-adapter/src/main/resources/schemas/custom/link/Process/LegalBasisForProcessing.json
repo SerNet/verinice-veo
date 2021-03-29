@@ -101,6 +101,14 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ]
+    ],
+    "translations": {
+      "de": {
+        "process_LegalBasisForProcessingInThirdCountry": "Rechtsgrundlage Verarbeitung in Drittland"
+      },
+      "en": {
+        "process_LegalBasisForProcessingInThirdCountry": "Legal basis for processing in third country"
+      }
+    }
   }
 }

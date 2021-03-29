@@ -85,5 +85,21 @@
       ]
     }
   },
+  "translations": {
+    "de": {
+      "scope_commons_street": "Straße",
+      "scope_commons_number": "Hausnummer",
+      "scope_commons_postcode": "PLZ",
+      "scope_commons_city": "Ort",
+      "scope_commons_country": "Land"
+    },
+    "en": {
+      "scope_commons_street": "Street",
+      "scope_commons_number": "Number",
+      "scope_commons_postcode": "Postal code",
+      "scope_commons_city": "City",
+      "scope_commons_country": "Country"
+    }
+  },
   "type": "object"
 }

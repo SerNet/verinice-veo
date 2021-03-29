@@ -75,5 +75,15 @@
     }
   },
   "additionalProperties": false,
-  "required": []
+  "required": [],
+  "translations": {
+    "de": {
+      "process_GeneralInformation_tags": "Tags",
+      "process_GeneralInformation_document": "Dokument"
+    },
+    "en": {
+      "process_GeneralInformation_tags": "Tags",
+      "process_GeneralInformation_document": "Document"
+    }
+  }
 }

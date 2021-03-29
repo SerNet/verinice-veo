@@ -95,5 +95,33 @@
     }
   },
   "additionalProperties": false,
-  "required": []
+  "required": [],
+  "translations": {
+    "de": {
+      "process_ProcessingDetails_intendedPurpose": "Zweckbestimmung",
+      "process_ProcessingDetails_typeOfSurvey": "Art der Erhebung",
+      "process_ProcessingDetails_typeOfSurvey_newsurvey": "Neuerhebung",
+      "process_ProcessingDetails_typeOfSurvey_change": "Änderung",
+      "process_ProcessingDetails_operationalStage": "Betriebsstadium",
+      "process_ProcessingDetails_operationalStage_operation": "Operation",
+      "process_ProcessingDetails_operationalStage_planning": "Planung",
+      "process_ProcessingDetails_operationalStage_test": "Test",
+      "process_ProcessingDetails_operationalStage_rollout": "Roll-Out",
+      "process_ProcessingDetails_comment": "Bermerkung",
+      "process_ProcessingDetails_surveyConductedOn": "Erhebung durchgeführt am"
+    },
+    "en": {
+      "process_ProcessingDetails_intendedPurpose": "Intended purpose",
+      "process_ProcessingDetails_typeOfSurvey": "Type of survey",
+      "process_ProcessingDetails_typeOfSurvey_newsurvey": "New survey",
+      "process_ProcessingDetails_typeOfSurvey_change": "Change",
+      "process_ProcessingDetails_operationalStage": "Operational Stage",
+      "process_ProcessingDetails_operationalStage_operation": "Planning",
+      "process_ProcessingDetails_operationalStage_planning": "Operation",
+      "process_ProcessingDetails_operationalStage_test": "Test",
+      "process_ProcessingDetails_operationalStage_rollout": "Roll-Out",
+      "process_ProcessingDetails_comment": "Comment",
+      "process_ProcessingDetails_surveyConductedOn": "Survey conducted on"
+    }
+  }
 }

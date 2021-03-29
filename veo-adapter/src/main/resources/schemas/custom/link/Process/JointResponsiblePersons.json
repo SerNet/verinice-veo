@@ -101,6 +101,14 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ]
+    ],
+    "translations": {
+      "de": {
+        "process_jointResponsiblePersons": "Gemeinsame Verantwortliche"
+      },
+      "en": {
+        "process_jointResponsiblePersons": "Joint responsible persons"
+      }
+    }
   }
 }

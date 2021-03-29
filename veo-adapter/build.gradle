@@ -83,13 +83,15 @@ task checkTranslations {
     doLast {
         def langJson = new groovy.json.JsonSlurper().parse(langFile)
         def languagesToCheck = [
-            'German': langJson.lang.de,
-            'English': langJson.lang.en
+            'German': 'de',
+            'English': 'en'
         ]
 
-        def handleTranslationKey = {translationKey, location = null, isDummySchema = false->
-            languagesToCheck.each {lang, json->
-                def translation = json.remove(translationKey)
+        def handleTranslationKey = {translationKey, json, location = null, isDummySchema = false->
+            assert json != null, "No translations found for $location"
+            languagesToCheck.each {lang, code->
+                def translations = json[code]
+                def translation = translations.remove(translationKey)
                 if (translation == null) {
                     if (isDummySchema) {
                         logger.info("Missing $lang translation for $translationKey in dummy schema $location")
@@ -100,10 +102,19 @@ task checkTranslations {
             }
         }
 
+        def checkUnusedTransalations = { json, location ->
+            languagesToCheck.each {lang, code->
+                def translations = json[code]
+                translations.each {
+                    logger.warn("Unused $lang translation $it in $location")
+                }
+            }
+        }
+
         // ModelObject base attributes
-        handleTranslationKey('name', 'ModelObject base attributes')
-        handleTranslationKey('abbreviation', 'ModelObject base attributes')
-        handleTranslationKey('description', 'ModelObject base attributes')
+        handleTranslationKey('name', langJson.lang, 'ModelObject base attributes')
+        handleTranslationKey('abbreviation', langJson.lang, 'ModelObject base attributes')
+        handleTranslationKey('description', langJson.lang, 'ModelObject base attributes')
 
         customSchemaFiles.each { file->
             // FIXME remove dummy schema handling after VEO-363 and VEO-365 are done
@@ -115,7 +126,7 @@ task checkTranslations {
                 // relevant data is nested in link schemas
                 data = data.items
                 // link IDs should be translated, custom aspect IDs should not
-                handleTranslationKey(data.properties.type.enum.first(), "$file.name (custom link id)", isDummySchema)
+                handleTranslationKey(data.properties.type.enum.first(), data.translations, "$file.name (custom link id)", isDummySchema)
             }
 
             def properties = data.properties.attributes.properties
@@ -124,18 +135,16 @@ task checkTranslations {
 
             // custom aspect attribute ID / field in the editor
             properties.each {key, value->
-                handleTranslationKey(key, "$file.name (custom aspect/link attribute id)", isDummySchema)
+                handleTranslationKey(key, data.translations, "$file.name (custom aspect/link attribute id)", isDummySchema)
                 // custom aspect enum entry / value in drop-down
                 value.enum?.each {
-                    handleTranslationKey(it, "$file.name (custom aspect/link select value id)", isDummySchema)
+                    handleTranslationKey(it,  data.translations,"$file.name (custom aspect/link select value id)", isDummySchema)
                 }
             }
+            checkUnusedTransalations(data.translations, file.name)
         }
-        languagesToCheck.each {lang, json->
-            json.each {
-                logger.warn("Unused $lang translation $it")
-            }
-        }
+
+        checkUnusedTransalations(langJson.lang, 'lang.json')
     }
 }
 

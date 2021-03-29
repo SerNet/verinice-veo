@@ -109,6 +109,18 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ]
+    ],
+    "translations": {
+      "de": {
+        "process_LegalBasis": "Rechtsgrundlage",
+        "process_LegalBasis_explanation": "Erläuerung",
+        "process_LegalBasis_document": "Dokument"
+      },
+      "en": {
+        "process_LegalBasis": "Legal basis",
+        "process_LegalBasis_explanation": "Explanation",
+        "process_LegalBasis_document": "Document"
+      }
+    }
   }
 }

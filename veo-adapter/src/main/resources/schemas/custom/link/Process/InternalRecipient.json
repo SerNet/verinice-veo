@@ -113,6 +113,20 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ]
+    ],
+    "translations": {
+      "de": {
+        "process_InternalRecipientLink": "Empfänger Intern",
+        "process_InternalRecipient_purpose": "Zweck des internen Datentransfers",
+        "process_InternalRecipient_explanation": "Erläuterung",
+        "process_InternalRecipient_document": "Dokument"
+      },
+      "en": {
+        "process_InternalRecipientLink": "Internal recipient",
+        "process_InternalRecipient_purpose": "Purpose of the internal data transfer",
+        "process_InternalRecipient_explanation": "Explanation",
+        "process_InternalRecipient_document": "Document"
+      }
+    }
   }
 }

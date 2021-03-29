@@ -104,6 +104,16 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ]
+    ],
+    "translations": {
+      "de": {
+        "process_AffectedParties": "Betroffene",
+        "process_AffectedParties_supplementaryInformation": "Ergänzende Angaben"
+      },
+      "en": {
+        "process_AffectedParties": "Affected parties",
+        "process_AffectedParties_supplementaryInformation": "Supplementary information"
+      }
+    }
   }
 }

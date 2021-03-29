@@ -70,5 +70,13 @@
     }
   },
   "additionalProperties": false,
-  "required": []
+  "required": [],
+  "translations": {
+    "de": {
+      "process_ExternalRecipient_ExternalRecipient": "Empfänger Extern?"
+    },
+    "en": {
+      "process_ExternalRecipient_ExternalRecipient": "External Recipient?"
+    }
+  }
 }

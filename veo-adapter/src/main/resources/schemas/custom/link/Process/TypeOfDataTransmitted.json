@@ -101,6 +101,14 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ]
+    ],
+    "translations": {
+      "de": {
+        "process_TypeOfDataTransmitted": "Art der übermittelten Daten"
+      },
+      "en": {
+        "process_TypeOfDataTransmitted": "Type of data transmitted"
+      }
+    }
   }
 }

@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
+import java.io.IOException;
+
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -353,7 +355,7 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public EntitySchemaService getSchemaService() {
+    public EntitySchemaService getSchemaService() throws IOException {
         return new EntitySchemaServiceClassPathImpl();
     }
 
