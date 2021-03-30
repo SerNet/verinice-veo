@@ -22,6 +22,7 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '50', artifactNumToKeepStr: '5'))
+        timeout(time: 30, unit: 'MINUTES')
         sidebarLinks([
             [displayName: 'veoModel', iconFileName: 'document.gif', urlName: 'lastSuccessfulBuild/artifact/doc/model_doc/veoModel.html']
         ])
