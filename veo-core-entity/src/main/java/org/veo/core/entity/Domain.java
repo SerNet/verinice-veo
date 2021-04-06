@@ -49,17 +49,6 @@ public interface Domain extends ModelObject, ClientOwned {
 
     default void validateSubType(Class<? extends ModelObject> entityType, String subType)
             throws InvalidSubTypeException {
-        // No sub type is valid.
-        if (subType == null) {
-            return;
-        }
-        // TODO VEO-227 Make this dynamic. Process/VT is the only supported sub type in
-        // the Datenschutz domain.
-        if (entityType.isAssignableFrom(Process.class) && subType.equals("VT")) {
-            return;
-        }
-        throw new InvalidSubTypeException(
-                String.format("%s is not a valid sub type of %s in the domain %s", subType,
-                              entityType, getId()));
+        // TODO VEO-516: validate subtype
     }
 }
