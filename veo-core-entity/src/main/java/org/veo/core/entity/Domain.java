@@ -47,8 +47,7 @@ public interface Domain extends ModelObject, ClientOwned {
         return getOwner();
     }
 
-    default <T extends EntityLayerSupertype> void validateSubType(
-            Class<? extends ModelObject> entityType, String subType)
+    default void validateSubType(Class<? extends ModelObject> entityType, String subType)
             throws InvalidSubTypeException {
         // No sub type is valid.
         if (subType == null) {
