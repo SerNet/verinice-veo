@@ -190,7 +190,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": false
             }
           },
           "additionalProperties": true
