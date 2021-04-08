@@ -73,3 +73,64 @@ plugins.withId('eclipse'){
 }
 
 processResources.dependsOn(generateEntitySchemas)
+
+task checkTranslations {
+    def langFile = file('src/main/resources/lang/lang.json')
+    inputs.file langFile
+    def customSchemaFiles = fileTree(dir: 'src/main/resources/schemas/custom/', include: '**/*.json')
+    inputs.files customSchemaFiles
+
+    doLast {
+        def langJson = new groovy.json.JsonSlurper().parse(langFile)
+        def languagesToCheck = [
+            'German': langJson.lang.de,
+            'English': langJson.lang.en
+        ]
+
+        def handleTranslationKey = {translationKey, location = null->
+            languagesToCheck.each {lang, json->
+                def translation = json.remove(translationKey)
+                if (translation == null) {
+                    logger.warn("Missing $lang translation for $translationKey in $location")
+                }
+            }
+        }
+
+        // ModelObject base attributes
+        handleTranslationKey('name', 'ModelObject base attributes')
+        handleTranslationKey('abbreviation', 'ModelObject base attributes')
+        handleTranslationKey('description', 'ModelObject base attributes')
+
+        customSchemaFiles.each { file->
+            logger.info "Loading $file"
+            def data = new groovy.json.JsonSlurper().parse(file)
+            def isLinkSchema = data.items != null
+            if (isLinkSchema) {
+                // relevant data is nested in link schemas
+                data = data.items
+                // link IDs should be translated, custom aspect IDs should not
+                handleTranslationKey(data.properties.type.enum.first(), "$file.name (custom link id)")
+            }
+
+            def properties = data.properties.attributes.properties
+            def propertyNames = properties.keySet()
+            logger.info "property names: $propertyNames"
+
+            // custom aspect attribute ID / field in the editor
+            properties.each {key, value->
+                handleTranslationKey(key, "$file.name (custom aspect/link attribute id)")
+                // custom aspect enum entry / value in drop-down
+                value.enum?.each {
+                    handleTranslationKey(it, "$file.name (custom aspect/link select value id)")
+                }
+            }
+        }
+        languagesToCheck.each {lang, json->
+            json.each {
+                logger.warn("Unused $lang translation $it")
+            }
+        }
+    }
+}
+
+check.dependsOn checkTranslations
