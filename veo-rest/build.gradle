@@ -35,8 +35,8 @@ dependencies {
     runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-    testCompile "org.testcontainers:testcontainers"
-    testCompile "org.testcontainers:spock"
+    testImplementation "org.testcontainers:testcontainers"
+    testImplementation "org.testcontainers:spock"
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
