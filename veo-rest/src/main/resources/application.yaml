@@ -10,6 +10,10 @@ veo:
     # salt:
   logging:
     properties: 'spring.datasource.url,spring.jpa.database-platform'
+  message:
+    dispatch:
+      exchange: 'veo.entity_exchange'
+      routing-key-prefix: 'veo.message.'
   threads:
     corePoolSize: 2
     maxPoolSize: 4
@@ -18,6 +22,16 @@ veo:
     publishing:
       lockExpirationMs: 20000
       rateMs: 2000
+      confirmationWaitMs: 2000
+  #test:
+    #message:
+      #dispatch:
+        #routing_key_prefix: veo.testmessage.
+      #consume:
+          #queue: veo.entity_test_queue
+          #routing_key: veo.testmessage.#
+
+
 
 spring:
   data:
@@ -25,6 +39,8 @@ spring:
       detection-strategy: annotated
   jackson:
     default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
   jpa:
     hibernate:
       ddl-auto: update
@@ -41,16 +57,23 @@ spring:
         query:
           # prevent in-memory pagination when join fetching collections:
           fail_on_pagination_over_collection_fetch: true
-          # pad 'IN'-clauses to next power of 2 to improve statement caching:
+          # pad 'IN'-clauses to next power from 2 to improve statement caching:
           in_clause_parameter_padding: true
         connection:
-          # removes the necessity to acquire the db connection at the beginning of each
+          # removes the necessity to acquire the db connection at the beginning from each
           # transaction to check the autocommit status:
           # IMPORTANT: hikari.auto-commit=false must be set as well
           provider_disables_autocommit: true
   datasource:
     hikari:
       auto-commit: false
+  rabbitmq:
+    publisher-confirm-type: correlated
+    publisher-returns: false
+    #host: localhost
+    #port: 5672
+    #username: <username>
+    #password: <password>
 
   security:
     oauth2:
@@ -60,6 +83,7 @@ spring:
           issuer-uri: http://<AUTHSERVER>/auth/realms/<REALM>
           ## Auth Server private key location, i.e.: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
           jwk-set-uri: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
+
 
 ## Change log level for different packages:
 #logging:

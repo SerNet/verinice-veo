@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Alexander Koderman.
+ * Copyright (c) 2021 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,32 +14,14 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.service;
+
+import org.veo.core.entity.event.StoredEvent;
 
 /**
- * Domain events that have meaning within the business context of the
- * application extend and use this event class.
- *
- * @author akoderman
+ * Provides a mechanism for domain events to be published. Processes events from
+ * use cases and aggregate roots.
  */
-public abstract class DomainEvent {
-
-    private String source;
-
-    public String getSource() {
-        return source;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public DomainEvent(String source, String message) {
-        super();
-        this.source = source;
-        this.message = message;
-    }
-
-    private String message;
-
+public interface EventPublisher {
+    void publish(StoredEvent event);
 }

@@ -24,16 +24,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.veo.core.entity.StoredEvent;
+import org.veo.core.entity.event.StoredEvent;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class StoredEventData implements StoredEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @Column(length = 100000)
     private String content;
     private String routingKey;
@@ -41,13 +50,47 @@ public class StoredEventData implements StoredEvent {
     private Boolean processed = false;
     private Instant lockTime;
 
+    private Instant timestamp;
+
     @Override
-    public void setProcessed() {
+    public boolean markAsProcessed() {
+        if (processed)
+            return false;
         processed = true;
+        return true;
     }
 
     @Override
     public void lock() {
         lockTime = Instant.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
+        if (this == o)
+            return true;
+
+        if (!(o instanceof StoredEventData))
+            return false;
+
+        StoredEventData other = (StoredEventData) o;
+        // Transient (unmanaged) entities have an ID of 'null'. Only managed
+        // (persisted and detached) entities have an identity. JPA requires that
+        // an entity's identity remains the same over all state changes.
+        // Therefore a transient entity must never equal another entity.
+        Long dbId = getId();
+        return dbId != null && dbId.equals(other.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    public static StoredEventData newInstance(String content, String routingKey) {
+        return new StoredEventData(null, content, routingKey, false, null, Instant.now());
     }
 }

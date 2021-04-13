@@ -124,6 +124,8 @@ subprojects {
             dependency 'net.ttddyy:datasource-proxy:1.7'
             dependency 'com.vladmihalcea:db-util:1.0.5'
             dependency 'com.networknt:json-schema-validator:1.0.50'
+            dependency "org.testcontainers:testcontainers:1.15.2"
+            dependency "org.testcontainers:spock:1.15.2"
         }
     }
 

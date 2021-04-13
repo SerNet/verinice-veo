@@ -17,6 +17,7 @@
 package org.veo;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,6 +29,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.event.StoredEvent;
 import org.veo.persistence.access.StoredEventRepository;
 import org.veo.persistence.entity.jpa.StoredEventData;
 import org.veo.persistence.entity.jpa.VersioningEvent;
@@ -36,12 +38,17 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listens to {@link VersioningEvent}s from the persistence layer and saves them
- * as {@link org.veo.core.entity.StoredEvent}s.
+ * as {@link StoredEvent}s.
  */
 @Component
 @Slf4j
 public class VersioningEventListener {
-    private static final String ROUTING_KEY = "veo.message.entity_event";
+
+    @Value("${veo.dispatch.routing-key-prefix}")
+    private static String ROUTING_KEY_PREFIX;
+
+    private static final String ROUTING_KEY = "versioning_event";
+
     private final ObjectMapper objectMapper;
     private final StoredEventRepository storedEventRepository;
     private final ReferenceAssembler referenceAssembler;
@@ -66,9 +73,9 @@ public class VersioningEventListener {
                        .getId()
                        .uuidValue(),
                   event.getAuthor());
-        var storedEvent = new StoredEventData();
-        storedEvent.setContent(createJson(event.getEntity(), event.getType(), event.getAuthor()));
-        storedEvent.setRoutingKey(ROUTING_KEY);
+        var storedEvent = StoredEventData.newInstance(createJson(event.getEntity(), event.getType(),
+                                                                 event.getAuthor()),
+                                                      ROUTING_KEY_PREFIX + ROUTING_KEY);
         storedEventRepository.save(storedEvent);
     }
 

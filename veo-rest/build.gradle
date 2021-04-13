@@ -12,6 +12,7 @@ apply plugin: 'groovy'
 dependencies {
     implementation project(":veo-adapter")
     implementation project(":veo-persistence")
+    implementation project(":veo-message")
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
@@ -20,10 +21,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'io.jsonwebtoken:jjwt-api'
     implementation 'org.springdoc:springdoc-openapi-ui'
     implementation 'io.swagger.core.v3:swagger-core'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson'
@@ -32,6 +35,9 @@ dependencies {
     runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
+    testCompile "org.testcontainers:testcontainers"
+    testCompile "org.testcontainers:spock"
+
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -39,6 +45,7 @@ dependencies {
     testImplementation 'commons-codec:commons-codec'
     testImplementation 'com.vladmihalcea:db-util'
     testImplementation project(":veo-test")
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 bootRun {

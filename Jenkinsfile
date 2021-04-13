@@ -3,7 +3,7 @@
 // - Google Container Registry Auth0, google-container-registry-auth:0.3
 
 def imageForGradleStages = 'openjdk:11-jdk'
-def dockerArgsForGradleStages = '-e GRADLE_USER_HOME=$WORKSPACE/gradle-home -v $HOME/.gradle/caches:/gradle-cache:ro -e GRADLE_RO_DEP_CACHE=/gradle-cache'
+def dockerArgsForGradleStages = '-e GRADLE_USER_HOME=$WORKSPACE/gradle-home -v $HOME/.gradle/caches:/gradle-cache:ro -e GRADLE_RO_DEP_CACHE=/gradle-cache -v /var/run/docker.sock:/var/run/docker.sock --network="host" -u 1002:998'
 def projectVersion
 
 def withDockerNetwork(Closure inner) {
@@ -69,15 +69,23 @@ pipeline {
             }
         }
         stage('Test') {
+            environment {
+                def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
+                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
+                VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.TESTMESSAGE.${tag}."
+                VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_TEST_QUEUE_${tag}"
+                VEO_TEST_MESSAGE_CONSUME_ROUTING_KEY = "VEO.TESTMESSAGE.${tag}.#"
+            }
             agent {
                 docker {
+                    reuseNode true
                     image imageForGradleStages
                     alwaysPull true
                     args dockerArgsForGradleStages
                 }
             }
             steps {
-                sh './gradlew --no-daemon test'
+                sh 'export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && ./gradlew --no-daemon test'
                 jacoco classPattern: '**/build/classes/java/main'
                 junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
             }
@@ -135,6 +143,7 @@ pipeline {
         stage('Postman Tests') {
             environment {
                 KEYCLOAK_CREDS = credentials('veo_authentication_credentials')
+                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
             }
             agent any
             steps {
@@ -145,7 +154,7 @@ pipeline {
                             // TODO check for DB startup
                             sleep 5
                             veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
-                                sh "java -Dlogging.file.name=/veo/veo-rest.log -Dveo-basedir=/veo/veo-data -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
+                                sh "java -Dlogging.file.name=/veo/veo-rest.log -Dveo-basedir=/veo/veo-data -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dspring.rabbitmq.username=${env.RABBITMQ_CREDS_USR} -Dspring.rabbitmq.password=${env.RABBITMQ_CREDS_PSW} -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
                                 echo 'Waiting for application startup'
                                 timeout(1) {
                                     waitUntil {

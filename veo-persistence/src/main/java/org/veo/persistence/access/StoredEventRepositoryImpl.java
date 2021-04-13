@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
-import org.veo.core.entity.StoredEvent;
+import org.veo.core.entity.event.StoredEvent;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.StoredEventData;
 

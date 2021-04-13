@@ -14,7 +14,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.event;
 
 import java.time.Instant;
 
@@ -22,10 +22,21 @@ import java.time.Instant;
  * An event to be forwarded to an external message queue.
  */
 public interface StoredEvent {
+
+    /**
+     * @return Sequential identifier of this event.
+     */
+    Long getId();
+
     /**
      * @return Message payload.
      */
     String getContent();
+
+    /**
+     * @return The timestamp of this event
+     */
+    Instant getTimestamp();
 
     /**
      * @return Message queue routing key.
@@ -38,9 +49,16 @@ public interface StoredEvent {
     Boolean getProcessed();
 
     /**
-     * Tag this event as processed.
+     * Tag this event as having been processed. This usually means that it was
+     * successfully forwarded to a message queue and that publication was confirmed
+     * by the message broker. Events that are marked as processed should be ignored
+     * by workers.
+     *
+     * @return {@code true} if the event was marked as processed by this call.
+     *         Returns {@code false} if the event was already marked as processed
+     *         before.
      */
-    void setProcessed();
+    boolean markAsProcessed();
 
     /**
      * Lock this event for processing so other workers don't process it redundantly.

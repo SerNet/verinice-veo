@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Jonas Jordan.
+ * Copyright (c) 2021 Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,21 +14,27 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access.jpa;
+package org.veo.message;
 
-import java.time.Instant;
-import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.event.StoredEvent;
-import org.veo.persistence.entity.jpa.StoredEventData;
+import org.veo.core.service.EventPublisher;
 
-@Transactional(readOnly = true)
-public interface StoredEventDataRepository extends JpaRepository<StoredEventData, Long> {
-    @Query("select e from #{#entityName} as e "
-            + "where e.processed = false and (e.lockTime is null or e.lockTime < ?1) order by e.id")
-    List<StoredEvent> findPendingEvents(Instant maxLockTime);
+/**
+ * Implementation of a domain event publisher using Spring's
+ * {@code ApplicationEventPublisher}.
+ */
+@Service
+public class EventPublisherImpl implements EventPublisher {
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+    @Override
+    public void publish(StoredEvent event) {
+        publisher.publishEvent(event);
+    }
 }
