@@ -56,7 +56,7 @@ class TranslationControllerMockMvcSpec2 extends VeoSpringSpec {
 
         then: "a correct response is returned"
         response.status == OK.value()
-        results.andExpect(jsonPath('$.lang.de.assetNum').value("Anzahl"))
-        results.andExpect(jsonPath('$.lang.en.assetNum').value("Number"))
+        results.andExpect(jsonPath('$.lang.de.person_commons_city').value("Ort"))
+        results.andExpect(jsonPath('$.lang.en.person_commons_city').value("City"))
     }
 }
