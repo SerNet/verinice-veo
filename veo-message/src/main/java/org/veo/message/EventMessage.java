@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.veo.message;
 
-import java.util.Date;
+import java.time.Instant;
 
 import org.veo.core.entity.event.StoredEvent;
 
@@ -54,11 +54,10 @@ public class EventMessage {
     @EqualsAndHashCode.Include
     Long id;
 
-    // TODO VEO-510 Use Instant instead of Date
-    Date timestamp;
+    Instant timestamp;
 
     public static EventMessage from(StoredEvent event) {
         return new EventMessage(event.getRoutingKey(), event.getContent(), event.getId(),
-                event.getTimestamp() != null ? Date.from(event.getTimestamp()) : new Date());
+                event.getTimestamp() != null ? event.getTimestamp() : Instant.now());
     }
 }

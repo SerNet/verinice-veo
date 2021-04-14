@@ -16,6 +16,10 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -23,6 +27,9 @@ import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.data.domain.AuditorAware;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -411,5 +418,20 @@ public class ModuleConfiguration {
     @Bean
     public CurrentUserProvider currentUserProvider(AuditorAware<String> auditorAware) {
         return new CurrentUserProviderImpl(auditorAware);
+    }
+
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        return new Jackson2JsonMessageConverter(mapper);
+    }
+
+    @Bean
+    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(jsonMessageConverter());
+        template.setChannelTransacted(false);
+        return template;
     }
 }
