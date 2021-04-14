@@ -21,7 +21,6 @@ import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
-import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl
 import org.veo.core.service.EntitySchemaService
 
 import io.swagger.v3.core.util.Json
@@ -31,26 +30,31 @@ import spock.lang.Unroll
 class ClassPathMetaSchemaConformitySpec extends Specification {
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl()
 
+    def customAspectMetaSchema = getMetaSchema("custom-aspect-meta-schema.json")
+    def customLinkMetaSchema = getMetaSchema("custom-link-meta-schema.json")
+
     @Unroll
-    def "all custom aspects of #entitySchema.title schema conform to meta schema"() {
+    def "Custom aspect #aspect.id of #aspect.schema schema conform to meta schema"() {
         expect:
-        def customAspectMetaSchema = getMetaSchema("custom-aspect-meta-schema.json")
-        entitySchema.get("properties").get("customAspects").get("properties").forEach {
-            assert customAspectMetaSchema.validate(it).empty
-        }
+        customAspectMetaSchema.validate(aspect.data).empty
         where:
-        entitySchema << entitySchemas
+        aspect << entitySchemas.collect{entitySchema->
+            entitySchema.get("properties").get("customAspects").get("properties").fields().collect {field ->
+                [id: field.key, schema:entitySchema.title, data: field.value ]
+            }
+        }.flatten()
     }
 
     @Unroll
-    def "all custom links of #entitySchema.title schema conform to meta schema"() {
+    def "Custom link #link.id of #link.schema schema conform to meta schema"() {
         expect:
-        def customLinkMetaSchema = getMetaSchema("custom-link-meta-schema.json")
-        entitySchema.get("properties").get("links").get("properties").forEach {
-            assert customLinkMetaSchema.validate(it.get("items")).empty
-        }
+        customLinkMetaSchema.validate(link.data).empty
         where:
-        entitySchema << entitySchemas
+        link << entitySchemas.collect{entitySchema->
+            entitySchema.get("properties").get("links").get("properties").fields().collect {field ->
+                [id: field.key, schema:entitySchema.title, data: field.value.items ]
+            }
+        }.flatten()
     }
 
     @Unroll
@@ -65,7 +69,7 @@ class ClassPathMetaSchemaConformitySpec extends Specification {
 
     private JsonSchema getMetaSchema(String file) throws IOException {
         return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
-                .getSchema(getClass().getClassLoader().getResource("schemas/meta/"+file).openStream());
+                .getSchema(getClass().getClassLoader().getResource("schemas/meta/"+file).openStream())
     }
 
     private static List<JsonNode> getEntitySchemas() {
