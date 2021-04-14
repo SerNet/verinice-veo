@@ -3,7 +3,7 @@
 // - Google Container Registry Auth0, google-container-registry-auth:0.3
 
 def imageForGradleStages = 'openjdk:11-jdk'
-def dockerArgsForGradleStages = '-e GRADLE_USER_HOME=$WORKSPACE/gradle-home -v $HOME/.gradle/caches:/gradle-cache:ro -e GRADLE_RO_DEP_CACHE=/gradle-cache -v /var/run/docker.sock:/var/run/docker.sock --network="host" -u 1002:998'
+def dockerArgsForGradleStages = '-e GRADLE_USER_HOME=$WORKSPACE/gradle-home -v $HOME/.gradle/caches:/gradle-cache:ro -e GRADLE_RO_DEP_CACHE=/gradle-cache'
 def projectVersion
 
 def withDockerNetwork(Closure inner) {
