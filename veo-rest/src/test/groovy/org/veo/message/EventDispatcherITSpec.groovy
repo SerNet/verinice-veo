@@ -59,7 +59,7 @@ classes = [EventDispatcherITSpec.class,
 ]
 )
 @ComponentScan("org.veo")
-@ActiveProfiles(["test"])
+@ActiveProfiles(["test", "publishing-enabled"])
 @Testcontainers
 @IgnoreIf({
     Boolean.valueOf(env['CI'])

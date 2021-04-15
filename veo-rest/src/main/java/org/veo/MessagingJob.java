@@ -22,6 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
+@Profile("publishing-enabled")
 public class MessagingJob {
 
     /**
@@ -63,7 +65,6 @@ public class MessagingJob {
     }
 
     @Scheduled(fixedRateString = "${veo.messages.publishing.rateMs:2000}")
-    // FIXME VEO-509 Prevent parallel execution of scheduler instances
     public void sendMessages() {
         var sender = new EventSender();
         var retriever = new EventRetriever();

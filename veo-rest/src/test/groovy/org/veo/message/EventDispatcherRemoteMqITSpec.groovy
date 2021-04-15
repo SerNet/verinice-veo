@@ -54,7 +54,7 @@ classes = [EventDispatcherRemoteMqITSpec.class,
 ]
 )
 @ComponentScan("org.veo")
-@ActiveProfiles(["test"])
+@ActiveProfiles(["test", "publishing-enabled"])
 @Requires({
     Boolean.valueOf(env['CI'])
 })
