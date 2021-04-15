@@ -1756,7 +1756,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"process_TypeOfSensitiveData\": [\n            {\n                \"type\": \"process_TypeOfSensitiveData\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"process_SensitiveData\": {\n            \"type\": \"process_SensitiveData\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"process_SensitiveData_SensitiveData\": true,\n                \"process_SensitiveData_comment\": \"no comment\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"process_dataType\": [\n            {\n                \"type\": \"process_dataType\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"process_privacyImpactAssessment\": {\n            \"type\": \"process_privacyImpactAssessment\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"process_privacyImpactAssessment_approved\": true,\n                \"process_privacyImpactAssessment_approvedComment\": \"no comment\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -1784,8 +1784,8 @@
                   "pm.test(\"Returned process has the correct values\", function () {",
                   "    pm.expect(jsonData.id).to.equal(pm.collectionVariables.get(\"processId\"));",
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"processName\"))",
-                  "    pm.expect(jsonData.customAspects).to.have.property('process_SensitiveData');",
-                  "    pm.expect(jsonData.links).to.have.property('process_TypeOfSensitiveData');",
+                  "    pm.expect(jsonData.customAspects).to.have.property('process_privacyImpactAssessment');",
+                  "    pm.expect(jsonData.links).to.have.property('process_dataType');",
                   "});",
                   "",
                   ""
@@ -2167,7 +2167,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Verarbeitungstätigkeit 1\",\n    \"customAspects\": {\n        \"process_SensitiveData\": {\n            \"attributes\": {\n                \"process_SensitiveData_SensitiveData\": true\n            },\n            \"type\": \"process_SensitiveData\"\n        }\n    },\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"Verarbeitungstätigkeit 1\",\n    \"customAspects\": {\n        \"process_privacyImpactAssessment\": {\n            \"attributes\": {\n                \"process_privacyImpactAssessment_approved\": true\n            },\n            \"type\": \"process_privacyImpactAssessment\"\n        }\n    },\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",

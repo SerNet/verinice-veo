@@ -1,0 +1,112 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "applicableTo": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "attributes": {
+      "properties": {
+        "process_dataProcessing_document": {
+          "format": "uri",
+          "pattern": "^(https?|ftp)://",
+          "type": "string"
+        },
+        "process_dataProcessing_explanation": {
+          "type": "string"
+        },
+        "process_dataProcessing_intendedPurpose": {
+          "type": "string"
+        },
+        "process_dataProcessing_legalBasis": {
+          "items": {
+            "enum": [
+              "process_dataProcessing_legalBasis_Art6Abs2DSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs3DSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2litaDSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2litbDSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2litcDSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2litfDSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2litgDSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2lithDSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2litiDSGVO",
+              "process_dataProcessing_legalBasis_Art9Abs2litjDSGVO",
+              "process_dataProcessing_legalBasis_Art88DSGVO",
+              "process_dataProcessing_legalBasis_P26Abs1BDSG",
+              "process_dataProcessing_legalBasis_P26Abs2BDSG",
+              "process_dataProcessing_legalBasis_P26Abs4Satz1BDSG",
+              "process_dataProcessing_legalBasis_P4BDSG",
+              "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs1litcDSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs1litdDSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO",
+              "process_dataProcessing_legalBasis_others"
+            ]
+          },
+          "type": "array"
+        },
+        "process_dataProcessing_otherLegalBasis": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "domains": {
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced domain.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "title": "The list of domains in which this element is present.",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "id": {
+      "format": "regex",
+      "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+      "title": "The UUID to identify the element",
+      "type": "string"
+    },
+    "references": {
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced object.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced object.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ]
+      },
+      "type": "array"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "process_dataProcessing"
+      ]
+    }
+  },
+  "type": "object"
+}

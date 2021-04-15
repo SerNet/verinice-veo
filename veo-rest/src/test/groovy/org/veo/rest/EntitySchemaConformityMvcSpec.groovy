@@ -193,12 +193,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 targetUri: "/units/"+unitId
             ],
             links: [
-                process_AffectedParties: [
+                process_controller: [
                     [
                         attributes: [
-                            process_AffectedParties_supplementaryInformation: "strongly affected"
+                            process_controller_document: "http://example.org/doc"
                         ],
-                        name: "first affected party",
+                        name: "first controller",
                         target: [
                             targetUri: "/persons/$personId"
                         ]
@@ -206,9 +206,9 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 ]
             ],
             customAspects: [
-                process_InternalRecipient: [
+                process_accessAuthorization: [
                     attributes: [
-                        process_InternalRecipient_InternalRecipient: true
+                        process_accessAuthorization_concept: true
                     ]
                 ]
             ]

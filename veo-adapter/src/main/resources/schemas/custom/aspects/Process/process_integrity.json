@@ -1,0 +1,77 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "applicableTo": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "attributes": {
+      "properties": {
+        "process_integrity_impact": {
+          "enum": [
+            "process_integrity_impact_low",
+            "process_integrity_impact_normal",
+            "process_integrity_impact_high",
+            "process_integrity_impact_veryHigh"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "domains": {
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced domain.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "title": "The list of domains in which this element is present.",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "id": {
+      "format": "regex",
+      "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+      "title": "The UUID to identify the element",
+      "type": "string"
+    },
+    "references": {
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced object.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced object.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ]
+      },
+      "type": "array"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "process_integrity"
+      ]
+    }
+  },
+  "type": "object"
+}

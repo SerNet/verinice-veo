@@ -332,15 +332,15 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             customAspects:
             [
-                'process_SensitiveData' :
+                'process_privacyImpactAssessment' :
                 [
                     applicableTo: [
                         "Process"
                     ],
                     domains: [],
                     attributes: [
-                        process_SensitiveData_SensitiveData: true,
-                        process_SensitiveData_comment: 'no comment'
+                        process_privacyImpactAssessment_approved: true,
+                        process_privacyImpactAssessment_approvedComment: 'no comment'
                     ]
                 ]
 
@@ -372,19 +372,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'process_SensitiveData'
+        entity.customAspects.first().type == 'process_privacyImpactAssessment'
         entity.customAspects.first().applicableTo == ['Process'] as Set
-        entity.customAspects.first().booleanProperties.process_SensitiveData_SensitiveData
-        entity.customAspects.first().stringProperties.process_SensitiveData_comment == 'no comment'
+        entity.customAspects.first().booleanProperties.process_privacyImpactAssessment_approved
+        entity.customAspects.first().stringProperties.process_privacyImpactAssessment_approvedComment == 'no comment'
     }
 
     @WithUserDetails("user@domain.example")
     def "overwrite a custom aspect attribute"() {
         given: "a saved process"
 
-        CustomProperties cp = newCustomProperties("process_SensitiveData") {
+        CustomProperties cp = newCustomProperties("process_privacyImpactAssessment") {
             applicableTo = ['Process'] as Set
-            it.setProperty('process_SensitiveData_comment', 'old comment')
+            it.setProperty('process_privacyImpactAssessment_approvedComment', 'old comment')
         }
 
         def process = txTemplate.execute {
@@ -413,14 +413,14 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             customAspects:
             [
-                'process_SensitiveData' :
+                'process_privacyImpactAssessment' :
                 [
                     applicableTo: [
                         "Process"
                     ],
                     domains: [],
                     attributes: [
-                        process_SensitiveData_comment:'new comment'
+                        process_privacyImpactAssessment_approvedComment:'new comment'
                     ]
                 ]
             ]
@@ -449,9 +449,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'process_SensitiveData'
+        entity.customAspects.first().type == 'process_privacyImpactAssessment'
         entity.customAspects.first().applicableTo == ['Process'] as Set
-        entity.customAspects.first().stringProperties.process_SensitiveData_comment == 'new comment'
+        entity.customAspects.first().stringProperties.process_privacyImpactAssessment_approvedComment == 'new comment'
     }
 
     @WithUserDetails("user@domain.example")
@@ -500,7 +500,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             links:
             [
-                'process_DataCategories' : [
+                'process_dataType' : [
                     [
                         applicableTo: [
                             "Process"
@@ -508,15 +508,16 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                         name:'test link prcess->asset',
                         domains: [],
                         attributes: [
-                            process_DataCategories_dataOrigin: 'process_DataCategories_dataOrigin_direct',
-                            process_DataCategories_comment: 'ok'
+                            process_dataType_dataOrigin: 'process_dataType_dataOrigin_direct',
+                            process_dataType_transferPurpose: 'ok'
                         ],
                         target:
                         [
                             targetUri: '/assets/'+createAssetResult.resourceId,
                             displayName: 'test ddd'
                         ]
-                    ]]
+                    ]
+                ]
             ]
         ]
 
@@ -537,7 +538,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def links = result.links
         links.size() == 1
         and: 'there is one link of the expected type'
-        def linksOfExpectedType = links.'process_DataCategories'
+        def linksOfExpectedType = links.'process_dataType'
         linksOfExpectedType.size() == 1
         and: 'the expected link is present'
         linksOfExpectedType.first().name == 'test link prcess->asset'
@@ -559,7 +560,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue()
             ],
             links: [
-                'process_DataCategories': [
+                'process_dataType': [
                     [
                         name  : 'categories',
                         target:
@@ -576,7 +577,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             with(process.links) {
                 //need to be in the open session
                 size() == 1
-                first().type == 'process_DataCategories'
+                first().type == 'process_dataType'
                 first().name == 'categories'
                 first().target.id.uuidValue() == assetId
             }
@@ -740,7 +741,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def result= post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+            ]
         ] as Map)
 
         then:
@@ -798,12 +800,14 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario2.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+            ]
         ] as Map)
         post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario3.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+            ]
         ] as Map)
 
         when: "The risks are queried"
@@ -944,7 +948,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 post("/processes/" + process.id.uuidValue() + "/risks", [
                     scenario: [targetUri: '/scenarios/' + scenario.id.uuidValue()],
                     domains : [
-                        [targetUri: '/domains/' + domain1.id.uuidValue()]]
+                        [targetUri: '/domains/' + domain1.id.uuidValue()]
+                    ]
                 ]))
         return [
             process,

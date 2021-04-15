@@ -417,7 +417,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             links:
             [
-                'process_DataCategories' : [
+                'process_dataType' : [
                     [
                         applicableTo: [
                             "Process"
@@ -425,15 +425,16 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                         name:'test link prcess->asset',
                         domains: [],
                         attributes: [
-                            process_DataCategories_dataOrigin: 'process_DataCategories_dataOrigin_direct',
-                            process_DataCategories_comment: 'ok'
+                            process_dataType_dataOrigin: 'process_dataType_dataOrigin_direct',
+                            process_dataType_transferPurpose: 'ok'
                         ],
                         target:
                         [
                             targetUri: '/assets/'+createAssetResult.resourceId,
                             displayName: 'test ddd'
                         ]
-                    ]]
+                    ]
+                ]
             ]
         ]
 
