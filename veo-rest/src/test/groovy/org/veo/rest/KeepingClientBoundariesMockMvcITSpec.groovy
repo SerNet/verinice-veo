@@ -28,7 +28,6 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelObjectType
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit

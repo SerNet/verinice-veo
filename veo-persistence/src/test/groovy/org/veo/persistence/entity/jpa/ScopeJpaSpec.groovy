@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 

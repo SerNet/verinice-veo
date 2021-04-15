@@ -16,7 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import org.veo.persistence.entity.jpa.DomainData
+
 import org.veo.test.VeoSpec
 
 class ClientSpec extends VeoSpec{

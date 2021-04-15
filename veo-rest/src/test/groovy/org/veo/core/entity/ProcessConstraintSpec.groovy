@@ -22,6 +22,7 @@ import javax.validation.Validator
 import org.veo.persistence.entity.jpa.ProcessData
 
 import spock.lang.Specification
+
 /**
  * Test {@link ProcessData} property constraints.
  */
