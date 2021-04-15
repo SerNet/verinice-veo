@@ -108,45 +108,5 @@
       ]
     }
   },
-  "translations": {
-    "de": {
-      "person_commons_street": "Straße",
-      "person_commons_number": "Hausnummer",
-      "person_commons_postcode": "PLZ",
-      "person_commons_city": "Ort",
-      "person_commons_country": "Land",
-      "person_commons_salutation": "Anrede",
-      "person_commons_surname": "Vorname",
-      "person_commons_role": "Rolle",
-      "person_commons_salutation_ms": " Frau",
-      "person_commons_salutation_mr": " Herr",
-      "person_commons_role_management": "Geschäftsführung",
-      "person_commons_role_deputyManagement": "Stellvertretende Geschäftsführung",
-      "person_commons_role_headOfDataProcessing": "Leitung Datenverarbeitung/IT",
-      "person_commons_role_deputyHeadOfDataProcessing": "Stellvertretende Leitung Datenverarbeitung/IT",
-      "person_commons_role_dataProtectionOfficer": "Datenschutzbeauftragter",
-      "person_commons_role_deputyDataProtectionOfficer": "Stellvertretender Datenschutzbeauftragter",
-      "person_commons_role_responsibleRegulatoryAuthority": "Zuständige Aufsichtsbehörde"
-    },
-    "en": {
-      "person_commons_street": "Street",
-      "person_commons_number": "Number",
-      "person_commons_postcode": "Postal code",
-      "person_commons_city": "City",
-      "person_commons_country": "Country",
-      "person_commons_salutation": "Salutation",
-      "person_commons_surname": "First name",
-      "person_commons_role": "Role",
-      "person_commons_salutation_ms": "Frau",
-      "person_commons_salutation_mr": "Herr",
-      "person_commons_role_management": " Management",
-      "person_commons_role_deputyManagement": " Deputy management",
-      "person_commons_role_headOfDataProcessing": " Head of Data Processing/IT",
-      "person_commons_role_deputyHeadOfDataProcessing": " Deputy Head of Data Processing/IT",
-      "person_commons_role_dataProtectionOfficer": " Data Protection Officer",
-      "person_commons_role_deputyDataProtectionOfficer": " Deputy Data Protection Officer",
-      "person_commons_role_responsibleRegulatoryAuthority": " Zuständige Aufsichtsbehörde"
-    }
-  },
   "type": "object"
 }

@@ -101,14 +101,6 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ],
-    "translations": {
-      "de": {
-        "process_LegalBasisForProcessingSensitiveData": "Rechtsgrundlage für die Datenverarbeitung besonders sensitiver Daten"
-      },
-      "en": {
-        "process_LegalBasisForProcessingSensitiveData": "Legal basis for the processing of particularly sensitive data"
-      }
-    }
+    ]
   }
 }

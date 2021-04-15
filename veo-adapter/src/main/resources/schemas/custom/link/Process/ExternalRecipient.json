@@ -130,28 +130,6 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ],
-    "translations": {
-      "de": {
-        "process_ExternalRecipientLink": "Empfänger  Extern",
-        "process_ExternalRecipient_purpose": "Zweck des externen Datentransfers",
-        "process_ExternalRecipient_dataprocessingagreement": "Auftragsverarbeitung?",
-        "process_ExternalRecipient_thirdcountry": "Verarbeitung in Drittstaat?",
-        "process_ExternalRecipient_thirdcountryname": "Name des Drittstaates",
-        "process_ExternalRecipient_indication": "Angabe geeigneter Garantien",
-        "process_ExternalRecipient_explanation": "Erläuterung",
-        "process_ExternalRecipient_document": "Dokument"
-      },
-      "en": {
-        "process_ExternalRecipientLink": "External recipient",
-        "process_ExternalRecipient_purpose": "Purpose of the external data transfer",
-        "process_ExternalRecipient_dataprocessingagreement": "Data Processing Agreement?",
-        "process_ExternalRecipient_thirdcountry": "Processing in a third country?",
-        "process_ExternalRecipient_thirdcountryname": "Name of the third country?",
-        "process_ExternalRecipient_indication": "Indication of appropriate guarantees",
-        "process_ExternalRecipient_explanation": "Explanation",
-        "process_ExternalRecipient_document": "Document"
-      }
-    }
+    ]
   }
 }

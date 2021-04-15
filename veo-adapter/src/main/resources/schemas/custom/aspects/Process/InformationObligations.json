@@ -83,21 +83,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [],
-  "translations": {
-    "de": {
-      "process_InformationObligations_informationObligations": "Informationspflichten Art. 13, 14 DS-GVO",
-      "process_InformationObligations_informationObligations_done": "Erfolgt",
-      "process_InformationObligations_informationObligations_notdone": "Nicht erfolgt",
-      "process_InformationObligations_explanation": "Erläuterung",
-      "process_InformationObligations_document": "Dokument"
-    },
-    "en": {
-      "process_InformationObligations_informationObligations": "Information obligations Art. 13, 14 GDPR",
-      "process_InformationObligations_informationObligations_done": "Done",
-      "process_InformationObligations_informationObligations_notdone": "Not done",
-      "process_InformationObligations_explanation": "Explanation",
-      "process_InformationObligations_document": "Document"
-    }
-  }
+  "required": []
 }

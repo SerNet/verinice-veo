@@ -70,13 +70,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [],
-  "translations": {
-    "de": {
-      "process_JointControllership_jointResponsiblePersons": "Gemeinsame Verantwortliche?"
-    },
-    "en": {
-      "process_JointControllership_jointResponsiblePersons": "Joint Responsible Persons?"
-    }
-  }
+  "required": []
 }

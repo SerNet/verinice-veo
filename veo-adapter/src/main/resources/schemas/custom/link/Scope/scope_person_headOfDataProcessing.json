@@ -100,14 +100,6 @@
     "required": [
       "target"
     ],
-    "translations": {
-      "de": {
-        "scope_person_headOfDataProcessing": "Leitung der Datenverarbeitung / IT"
-      },
-      "en": {
-        "scope_person_headOfDataProcessing": "Head of data processing / IT"
-      }
-    },
     "type": "object"
   },
   "type": "array"

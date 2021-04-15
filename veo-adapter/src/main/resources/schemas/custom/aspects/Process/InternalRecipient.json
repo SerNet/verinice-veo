@@ -70,13 +70,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [],
-  "translations": {
-    "de": {
-      "process_InternalRecipient_InternalRecipient": "Empfänger Intern?"
-    },
-    "en": {
-      "process_InternalRecipient_InternalRecipient": "Internal Recipient?"
-    }
-  }
+  "required": []
 }

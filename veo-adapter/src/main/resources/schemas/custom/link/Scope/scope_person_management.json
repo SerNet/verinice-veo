@@ -100,14 +100,6 @@
     "required": [
       "target"
     ],
-    "translations": {
-      "de": {
-        "scope_person_management": "Leitung der verantwortlichen Stelle"
-      },
-      "en": {
-        "scope_person_management": "Management of the responsible body"
-      }
-    },
     "type": "object"
   },
   "type": "array"

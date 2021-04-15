@@ -82,19 +82,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [],
-  "translations": {
-    "de": {
-      "process_SensitiveData_SensitiveData": "Datenverarbeitung besonders sensitiver Daten?",
-      "process_SensitiveData_comment": "Bemerkungen",
-      "process_SensitiveData_notification3343GDPR": "Meldeverfahren Art. 33,34 DS-GVO?",
-      "process_SensitiveData_secrecy203STGB": "Schweigepflichtiger Personenkreis nach §203 StGB?"
-    },
-    "en": {
-      "process_SensitiveData_SensitiveData": "Data processing of particularly sensitive data?",
-      "process_SensitiveData_comment": "Comment",
-      "process_SensitiveData_notification3343GDPR": "Notification procedure Art. 33,34 GDPR?",
-      "process_SensitiveData_secrecy203STGB": "Persons subject to secrecy according to §203 StGB?"
-    }
-  }
+  "required": []
 }

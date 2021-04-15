@@ -101,14 +101,6 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ],
-    "translations": {
-      "de": {
-        "process_TypeOfSensitiveData": "Art besonders sensitiver Daten"
-      },
-      "en": {
-        "process_TypeOfSensitiveData": "Type of particularly sensitive data"
-      }
-    }
+    ]
   }
 }

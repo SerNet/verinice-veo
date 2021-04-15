@@ -56,20 +56,7 @@ class TranslationControllerMockMvcSpec2 extends VeoSpringSpec {
 
         then: "a correct response is returned"
         response.status == OK.value()
-        and: "it contains translations for base properties"
-        results.andExpect(jsonPath('$.lang.de.abbreviation').value("Abkürzung"))
-        results.andExpect(jsonPath('$.lang.en.abbreviation').value("Abbreviation"))
-        and: "it contains translations for custom aspect attributes"
         results.andExpect(jsonPath('$.lang.de.person_commons_city').value("Ort"))
         results.andExpect(jsonPath('$.lang.en.person_commons_city').value("City"))
-        and: "it contains translations for custom aspect attribute enum values"
-        results.andExpect(jsonPath('$.lang.de.person_dataProtectionOfficer_profession_lawyer').value("Jurist"))
-        results.andExpect(jsonPath('$.lang.en.person_dataProtectionOfficer_profession_lawyer').value("Lawyer"))
-        and: "it contains translations for custom link IDs"
-        results.andExpect(jsonPath('$.lang.de.scope_person_headOfDataProcessing').value("Leitung der Datenverarbeitung / IT"))
-        results.andExpect(jsonPath('$.lang.en.scope_person_headOfDataProcessing').value("Head of data processing / IT"))
-        and: "it contains translations for custom link attributes"
-        results.andExpect(jsonPath('$.lang.de.process_DataCategories_dataOrigin').value("Herkunft der Daten"))
-        results.andExpect(jsonPath('$.lang.en.process_DataCategories_dataOrigin').value("Data Origin"))
     }
 }

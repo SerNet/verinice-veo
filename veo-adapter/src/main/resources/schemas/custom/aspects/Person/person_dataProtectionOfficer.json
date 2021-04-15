@@ -103,35 +103,5 @@
       ]
     }
   },
-  "translations": {
-    "de": {
-      "person_dataProtectionOfficer_affiliation": "",
-      "person_dataProtectionOfficer_nomination": "Schriftliche Bestellung",
-      "person_dataProtectionOfficer_nominationEvidence": "Nachweis der Bestellung",
-      "person_dataProtectionOfficer_expertise": "Erforderliche Fachkunde und Zuverlässigkeit",
-      "person_dataProtectionOfficer_profession": "Berufsbezeichnung / Ausbildung",
-      "person_dataProtectionOfficer_other": "Sonstiges",
-      "person_dataProtectionOfficer_profession_lawyer": "Jurist",
-      "person_dataProtectionOfficer_profession_economist": "Wirtschaftswissenschaftler",
-      "person_dataProtectionOfficer_profession_itSpecialist": "Fachinformatiker",
-      "person_dataProtectionOfficer_profession_humanResourcesOfficer": "Personalsachbearbeiter",
-      "person_dataProtectionOfficer_affiliation_internal": "Intern",
-      "person_dataProtectionOfficer_affiliation_external": "Extern"
-    },
-    "en": {
-      "person_dataProtectionOfficer_affiliation": "Affiliation",
-      "person_dataProtectionOfficer_nomination": "Schriftliche Bestellung",
-      "person_dataProtectionOfficer_nominationEvidence": "Written order",
-      "person_dataProtectionOfficer_expertise": "Required expertise and reliability",
-      "person_dataProtectionOfficer_profession": "Job title / Education",
-      "person_dataProtectionOfficer_other": "Other",
-      "person_dataProtectionOfficer_profession_lawyer": "Lawyer",
-      "person_dataProtectionOfficer_profession_economist": "Economist",
-      "person_dataProtectionOfficer_profession_itSpecialist": "IT specialist",
-      "person_dataProtectionOfficer_profession_humanResourcesOfficer": "Human Resources Administrator",
-      "person_dataProtectionOfficer_affiliation_internal": "Internal",
-      "person_dataProtectionOfficer_affiliation_external": "External"
-    }
-  },
   "type": "object"
 }

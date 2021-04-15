@@ -116,26 +116,6 @@
     "additionalProperties": false,
     "required": [
       "target"
-    ],
-    "translations": {
-      "de": {
-        "process_DataCategories": "Art der verarbeiteten Daten",
-        "process_DataCategories_dataOrigin": "Herkunft der Daten",
-        "process_DataCategories_otherOrigin": "Sonstige Herkunft",
-        "process_DataCategories_comment": "Bemerkung",
-        "process_DataCategories_dataOrigin_direct": "Direkterhebung",
-        "process_DataCategories_dataOrigin_transmission": "Übermittlung",
-        "process_DataCategories_dataOrigin_other": "Sonstige"
-      },
-      "en": {
-        "process_DataCategories": "Type of data processed",
-        "process_DataCategories_dataOrigin": "Data Origin",
-        "process_DataCategories_otherOrigin": "Other Origin",
-        "process_DataCategories_comment": "Comment",
-        "process_DataCategories_dataOrigin_direct": "Direct collection",
-        "process_DataCategories_dataOrigin_transmission": "Transmission",
-        "process_DataCategories_dataOrigin_other": "Other"
-      }
-    }
+    ]
   }
 }

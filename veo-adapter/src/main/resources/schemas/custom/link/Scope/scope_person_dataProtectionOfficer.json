@@ -100,14 +100,6 @@
     "required": [
       "target"
     ],
-    "translations": {
-      "de": {
-        
-      },
-      "en": {
-        
-      }
-    },
     "type": "object"
   },
   "type": "array"
