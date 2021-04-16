@@ -44,8 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class VersioningEventListener {
 
-    @Value("${veo.dispatch.routing-key-prefix}")
-    private static String ROUTING_KEY_PREFIX;
+    @Value("${veo.message.dispatch.routing-key-prefix}")
+    private String ROUTING_KEY_PREFIX;
 
     private static final String ROUTING_KEY = "versioning_event";
 
