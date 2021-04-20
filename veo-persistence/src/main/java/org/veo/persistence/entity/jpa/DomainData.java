@@ -16,50 +16,36 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Entity(name = "domain")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class DomainData extends BaseModelObjectData implements NameableData, Domain {
+public class DomainData extends DomainTemplateData implements NameableData, Domain {
 
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
-
-    @NotNull
-    @ToString.Include
-    private String name;
-
-    private String abbreviation;
-
-    private String description;
-
-    private Boolean active;
-
+    @Column(name = "active")
+    private boolean active = true;
+    // one to one
+    @ManyToOne(targetEntity = DomainTemplateData.class)
+    private DomainTemplate domainTemplate;
     // This enforces the composition association Client-Domain
     @ManyToOne(targetEntity = ClientData.class, optional = false, fetch = FetchType.LAZY)
     @NotNull
     private Client owner;
 
     @Override
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 

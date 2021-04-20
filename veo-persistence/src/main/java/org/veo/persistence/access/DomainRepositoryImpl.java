@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2021 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,11 +16,14 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.usecase.repository.DomainRepository;
+import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 
@@ -28,8 +31,14 @@ import org.veo.persistence.entity.jpa.ModelObjectValidation;
 public class DomainRepositoryImpl extends AbstractModelObjectRepository<Domain, DomainData>
         implements DomainRepository {
 
-    public DomainRepositoryImpl(CrudRepository<DomainData, String> dataRepository,
-            ModelObjectValidation validation) {
-        super(dataRepository, validation);
+    public DomainRepositoryImpl(DomainDataRepository dataRepository,
+            ModelObjectValidation validator) {
+        super(dataRepository, validator);
     }
+
+    public List<Domain> findByClient(Client client) {
+        // TODO: VEO-498 Implement Domain Search
+        return null;
+    }
+
 }

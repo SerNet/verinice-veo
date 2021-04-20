@@ -28,6 +28,8 @@ class EntityLayerSupertypeSpec extends Specification {
         spy.name >> "Fun foo"
         spy.owner >> Mock(Unit) {
             it.name >> "Super unit"
+            it.isUnitType() >> true
+            it.asUnit() >> it
         }
         then: "all three elements appear in the display name"
         spy.displayName == "FF - Fun foo (Super unit)"
@@ -42,6 +44,8 @@ class EntityLayerSupertypeSpec extends Specification {
         spy.name >> "Fun foo"
         spy.owner >> Mock(Unit) {
             it.name >> "Super unit"
+            it.isUnitType() >> true
+            it.asUnit() >> it
         }
         then: "the abbreviation is omitted"
         spy.displayName == "- Fun foo (Super unit)"

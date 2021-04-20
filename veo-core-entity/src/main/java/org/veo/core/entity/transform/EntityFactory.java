@@ -19,12 +19,16 @@ package org.veo.core.entity.transform;
 import java.util.UUID;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -32,6 +36,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 
 /**
@@ -40,32 +45,50 @@ import org.veo.core.entity.Unit;
 public interface EntityFactory {
     CustomProperties createCustomProperties();
 
-    Person createPerson(String name, Unit unit);
+    Person createPerson(String name, ElementOwner unit);
 
-    Process createProcess(String name, Unit unit);
+    Process createProcess(String name, ElementOwner unit);
 
     Client createClient(Key<UUID> id, String name);
 
-    Asset createAsset(String name, Unit unit);
+    Asset createAsset(String name, ElementOwner unit);
 
-    Control createControl(String name, Unit unit);
+    Control createControl(String name, ElementOwner unit);
 
-    Incident createIncident(String name, Unit unit);
+    Incident createIncident(String name, ElementOwner unit);
 
-    Scenario createScenario(String name, Unit unit);
+    Scenario createScenario(String name, ElementOwner unit);
 
     Unit createUnit(String name, Unit unit);
 
-    Document createDocument(String name, Unit parent);
+    Document createDocument(String name, ElementOwner parent);
 
     /**
      * Reconstitutes a domain without the reference to its owning client. Adding it
      * to a client is the caller's responsibility.
      */
-    Domain createDomain(String name);
+    Domain createDomain(String name, String authority, String templateVersion, String revision);
 
     CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource);
 
-    Scope createScope(String name, Unit owner);
+    Scope createScope(String name, ElementOwner owner);
+
+    Catalog createCatalog(DomainTemplate owner);
+
+    Catalog createCatalog();
+
+    DomainTemplate createDomainTemplate(String name, String authority, String templateVersion,
+            String revision);
+
+    /**
+     * Creates a catalogItem and add it to the catalog. Careful this changes the
+     * catalog entity.
+     */
+    CatalogItem createCatalogItem(Catalog catalog);
+
+    CatalogItem createCatalogItem();
+
+    TailoringReference createTailoringReference();
+
 }

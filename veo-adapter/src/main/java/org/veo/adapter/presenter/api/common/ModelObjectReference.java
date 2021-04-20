@@ -19,18 +19,17 @@ package org.veo.adapter.presenter.api.common;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.veo.core.entity.Displayable;
 import org.veo.core.entity.ModelObject;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
-@Slf4j
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class ModelObjectReference<T extends ModelObject> implements IModelObjectReference {
 
@@ -73,15 +72,9 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
         if (entity == null)
             return null;
         Class<? extends ModelObject> modelInterface = entity.getModelInterface();
-        if (modelInterface != null) {
-            return new ModelObjectReference<T>(entity.getId()
-                                                     .uuidValue(),
-                    entity.getDisplayName(), (Class<T>) modelInterface, urlAssembler);
-        } else {
-            throw new IllegalArgumentException(
-                    "The given entity does not return an entity interface. " + entity.getClass()
-                                                                                     .getSimpleName());
-        }
+        return new ModelObjectReference<T>(entity.getId()
+                                                 .uuidValue(),
+                ((Displayable) entity).getDisplayName(), (Class<T>) modelInterface, urlAssembler);
     }
 
     public static <T extends ModelObject> ModelObjectReference<T> fromUri(String uri,

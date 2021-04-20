@@ -20,12 +20,16 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -33,20 +37,25 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.persistence.entity.jpa.CatalogData;
+import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.CustomLinkData;
 import org.veo.persistence.entity.jpa.CustomPropertiesData;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.DomainData;
+import org.veo.persistence.entity.jpa.DomainTemplateData;
 import org.veo.persistence.entity.jpa.IncidentData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
+import org.veo.persistence.entity.jpa.TailoringReferenceData;
 import org.veo.persistence.entity.jpa.UnitData;
 
 /**
@@ -60,14 +69,14 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Person createPerson(String name, Unit unit) {
+    public Person createPerson(String name, ElementOwner unit) {
         Person person = new PersonData();
         setEntityLayerData(person, name, unit);
         return person;
     }
 
     @Override
-    public Process createProcess(String name, Unit unit) {
+    public Process createProcess(String name, ElementOwner unit) {
         Process process = new ProcessData();
         setEntityLayerData(process, name, unit);
         return process;
@@ -83,28 +92,28 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Asset createAsset(String name, Unit unit) {
+    public Asset createAsset(String name, ElementOwner unit) {
         Asset asset = new AssetData();
         setEntityLayerData(asset, name, unit);
         return asset;
     }
 
     @Override
-    public Control createControl(String name, Unit unit) {
+    public Control createControl(String name, ElementOwner unit) {
         Control control = new ControlData();
         setEntityLayerData(control, name, unit);
         return control;
     }
 
     @Override
-    public Incident createIncident(String name, Unit unit) {
+    public Incident createIncident(String name, ElementOwner unit) {
         Incident incident = new IncidentData();
         setEntityLayerData(incident, name, unit);
         return incident;
     }
 
     @Override
-    public Scenario createScenario(String name, Unit unit) {
+    public Scenario createScenario(String name, ElementOwner unit) {
         Scenario scenario = new ScenarioData();
         setEntityLayerData(scenario, name, unit);
         return scenario;
@@ -123,16 +132,21 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Document createDocument(String name, Unit parent) {
+    public Document createDocument(String name, ElementOwner parent) {
         Document document = new DocumentData();
         setEntityLayerData(document, name, parent);
         return document;
     }
 
     @Override
-    public Domain createDomain(String name) {
+    public Domain createDomain(String name, String authority, String templateVersion,
+            String revision) {
         Domain domain = new DomainData();
         domain.setName(name);
+        domain.setAuthority(authority);
+        domain.setTemplateVersion(templateVersion);
+        domain.setRevision(revision);
+
         return domain;
     }
 
@@ -147,7 +161,7 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public Scope createScope(String name, Unit owner) {
+    public Scope createScope(String name, ElementOwner owner) {
         var group = new ScopeData();
         group.setName(name);
         group.setOwner(owner);
@@ -155,9 +169,55 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     private void setEntityLayerData(EntityLayerSupertype entityLayerSupertype, String name,
-            Unit unit) {
+            ElementOwner unit) {
         entityLayerSupertype.setName(name);
         entityLayerSupertype.setOwner(unit);
+    }
+
+    @Override
+    public Catalog createCatalog(DomainTemplate owner) {
+        Catalog catalog = createCatalog();
+        catalog.setDomainTemplate(owner);
+        owner.addToCatalogs(catalog);
+        return catalog;
+    }
+
+    @Override
+    public Catalog createCatalog() {
+        CatalogData catalogData = new CatalogData();
+        return catalogData;
+    }
+
+    @Override
+    public DomainTemplate createDomainTemplate(String name, String authority,
+            String templateVersion, String revision) {
+        DomainTemplate domain = new DomainTemplateData();
+        domain.setName(name);
+        domain.setAuthority(authority);
+        domain.setTemplateVersion(templateVersion);
+        domain.setRevision(revision);
+
+        return domain;
+    }
+
+    @Override
+    public CatalogItem createCatalogItem() {
+        return new CatalogItemData();
+    }
+
+    @Override
+    public CatalogItem createCatalogItem(Catalog catalog) {
+        CatalogItem catalogItem = createCatalogItem();
+        catalogItem.setCatalog(catalog);
+        catalog.getCatalogItems()
+               .add(catalogItem);
+        return catalogItem;
+    }
+
+    @Override
+    public TailoringReference createTailoringReference() {
+        TailoringReferenceData tailoringReference = new TailoringReferenceData();
+        return tailoringReference;
     }
 
 }

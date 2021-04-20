@@ -26,11 +26,11 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
 
@@ -59,10 +59,9 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> impleme
      */
     @Override
     public OutputData<T> execute(InputData input) {
-        Client client = clientRepository.findById(input.getAuthenticatedClient()
-                                                       .getId())
-                                        .orElseThrow(() -> new NotFoundException(
-                                                "Invalid client ID"));
+        Client client = UseCaseTools.checkClientExists(input.getAuthenticatedClient()
+                                                            .getId(),
+                                                       clientRepository);
         var query = repository.query(client);
 
         if (input.getUnitUuid() != null) {

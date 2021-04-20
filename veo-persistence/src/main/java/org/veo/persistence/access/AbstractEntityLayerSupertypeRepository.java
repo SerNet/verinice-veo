@@ -69,7 +69,6 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
         List<S> list = List.copyOf(dataRepository.findByOwner_Client_DbId(client.getId()
                                                                                 .uuidValue()));
         return (List<T>) list;
-
     }
 
     @Override

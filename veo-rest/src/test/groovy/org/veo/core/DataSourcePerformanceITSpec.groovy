@@ -90,7 +90,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(7)
         assertUpdateCount(0)
-        assertSelectCount(4)
+        assertSelectCount(5)
     }
 
     def "SQL performance for saving 1 process"() {
@@ -167,7 +167,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(1)
         assertUpdateCount(0)
-        assertSelectCount(11)
+        assertSelectCount(12)
     }
 
     def "SQL performance for saving 1 composite person with 2 parts"() {
@@ -280,7 +280,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(35)
         assertUpdateCount(5)
-        assertSelectCount(7)
+        assertSelectCount(8)
     }
 
     def "SQL performance for selecting units of a client"() {
@@ -365,10 +365,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         given:
         createClient()
         def units = createClientUnits(2)
-        def domain2 = entityFactory.createDomain("domain2").tap{
-            owner = this.client
-        }
+
+        def domain2 = entityFactory.createDomain("domain2","","","")
+        domain2.owner = this.client
+        domain2.authority = 'ta'
+        domain2.revision = '1'
+        domain2.templateVersion = '1.0'
         domainRepository.save(domain2)
+
         client.addToDomains(domain2)
         client = clientRepository.save(client)
 

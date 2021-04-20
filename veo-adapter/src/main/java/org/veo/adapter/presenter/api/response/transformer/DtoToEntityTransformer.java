@@ -171,7 +171,7 @@ public final class DtoToEntityTransformer {
 
     // DomainDto->Domain
     public Domain transformDto2Domain(AbstractDomainDto source, Key<UUID> key) {
-        var target = factory.createDomain(source.getName());
+        var target = factory.createDomain(source.getName(), "", "", "");
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
         target.setActive(source.isActive());

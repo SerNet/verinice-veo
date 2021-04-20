@@ -19,9 +19,11 @@ package org.veo.persistence.entity.jpa
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
+import org.veo.persistence.access.jpa.UnitDataRepository
 
 class AspectJpaSpec extends AbstractJpaSpec {
     @Autowired
@@ -33,11 +35,18 @@ class AspectJpaSpec extends AbstractJpaSpec {
     @Autowired
     DomainDataRepository domainRepository
 
+    @Autowired
+    UnitDataRepository unitRepository
+
     Domain domain0
     Domain domain1
+    Unit unit
 
     def setup() {
         def client = clientDataRepository.save(newClient())
+        unit = newUnit(client)
+        unit = unitRepository.save(unit)
+
         domain0 = domainRepository.save(newDomain{
             owner = client
         })
@@ -50,7 +59,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
 
     def 'aspect is inserted'() {
         given: "an asset with a sub type aspect"
-        def asset = newAsset(null) {
+        def asset = newAsset(unit) {
             setSubType(domain0, "foo")
         }
         when: "saving and retrieving the asset"
@@ -65,7 +74,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
 
     def 'aspect value can be changed'() {
         given: "a saved asset with two sub types for domains 0 & 1"
-        def asset = newAsset(null) {
+        def asset = newAsset(unit) {
             setSubType(domain0, "foo")
             setSubType(domain1, "bar")
         }

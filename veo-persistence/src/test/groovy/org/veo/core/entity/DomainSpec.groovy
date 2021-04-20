@@ -41,4 +41,33 @@ class DomainSpec extends VeoSpec {
         client.getDomains().size() == 1
         client.getDomains().first() == domain
     }
+
+    def "Create a new Domain linked with domain template"() {
+        given: "a domain name"
+        String name = 'Test domain'
+
+        when : "Domain is created"
+        Domain domain = newDomain() {
+            it.name = name
+        }
+
+        and: "the domain is added to a client"
+        def client = newClient() {
+            domains = [domain] as Set
+        }
+
+        and: "the domain template is linked"
+        def domainTemplate = newDomainTemplate() {
+            it.name = 'domain template'
+        }
+
+        domain.domainTemplate = domainTemplate
+
+        then: "domain is correct initatlized"
+        domain.getName().equals(name)
+        domain.owner == client
+        domain.domainTemplate == domainTemplate
+        client.getDomains().size() == 1
+        client.getDomains().first() == domain
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2021 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,8 +16,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 
@@ -36,4 +38,5 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public interface DomainRepository
         extends org.veo.core.repository.DomainRepository, Repository<Domain, Key<UUID>> {
 
+    public List<Domain> findByClient(Client client);
 }

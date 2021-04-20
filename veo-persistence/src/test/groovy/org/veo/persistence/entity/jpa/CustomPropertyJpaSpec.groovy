@@ -21,19 +21,35 @@ import javax.persistence.PersistenceContext
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.jpa.AssetDataRepository
+import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.custom.PropertyData
 
 class CustomPropertyJpaSpec extends AbstractJpaSpec {
     @Autowired
     AssetDataRepository assetRepository
 
+    @Autowired
+    UnitDataRepository unitRepository
+
+    @Autowired
+    ClientDataRepository clientDataRepository
+
     @PersistenceContext
     EntityManager entityManager
+    Unit unit
+
+    def setup() {
+        def client = clientDataRepository.save(newClient())
+        unit = newUnit(client)
+        unit = unitRepository.save(unit)
+    }
 
     def 'custom props are inserted'() {
         given:
-        def asset = newAsset(null) {
+        def asset = newAsset(unit) {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
@@ -58,7 +74,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
 
     def 'property type can be changed'() {
         given: 'a saved asset with a string prop'
-        def asset = newAsset(null) {
+        def asset = newAsset(unit) {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
@@ -85,7 +101,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
 
     def 'property can be removed'() {
         given: 'a saved asset with two props'
-        def asset = newAsset(null) {
+        def asset = newAsset(unit) {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
@@ -116,7 +132,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given:
         def stringLength = 18000
         def longString = "X" * stringLength
-        def asset = newAsset(null) {
+        def asset = newAsset(unit) {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),

@@ -41,11 +41,14 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
+import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompoundKeyEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
@@ -134,7 +137,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             return "/" + Domain.PLURAL_TERM + "/" + id;
         }
         // Some model object types have no endpoint.
-        if (Client.class.isAssignableFrom(type)) {
+        if (Client.class.isAssignableFrom(type) || Catalog.class.isAssignableFrom(type)
+                || CatalogItem.class.isAssignableFrom(type)
+                || DomainTemplate.class.isAssignableFrom(type)) {
             return null;
         }
 
@@ -209,7 +214,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                                       .getHref();
         }
         // Some model object types have no endpoint.
-        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)) {
+        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)
+                || Catalog.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)
+                || DomainTemplate.class.isAssignableFrom(type)) {
             return null;
         }
         throw new NotImplementedException(
@@ -273,7 +280,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                                                   .getHref();
         }
         // Some model object types have no endpoint.
-        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)) {
+        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)
+                || Catalog.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)
+                || DomainTemplate.class.isAssignableFrom(type)) {
             return null;
         }
         throw new NotImplementedException("Unsupported collection reference type " + type);

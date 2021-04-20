@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.event.StoredEvent;
@@ -90,9 +91,11 @@ public class VersioningEventListener {
                                .toString());
         tree.put("author", author);
         if (entity instanceof ClientOwned) {
-            tree.put("clientId", ((ClientOwned) entity).getClient()
-                                                       .getId()
-                                                       .uuidValue());
+            Client client = ((ClientOwned) entity).getClient();
+            if (client != null) {
+                tree.put("clientId", client.getId()
+                                           .uuidValue());
+            }
         }
         if (type != VersioningEvent.Type.REMOVE) {
             var dto = entityToDtoTransformer.transform2Dto(entity);

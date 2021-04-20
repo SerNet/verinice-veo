@@ -82,8 +82,8 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         entityFactory.createProcess( name, unit)
     }
 
-    private Domain domain(String name) {
-        entityFactory.createDomain( name)
+    private Domain domain(String name, String authority, String templateVersion, String revision) {
+        entityFactory.createDomain(name, authority, templateVersion, revision)
     }
 
     private Person person(String name) {
@@ -95,7 +95,7 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         given: "predefined entities"
         def process1 = process("process1")
         def scenario1 = scenario("scenario1")
-        def domain1 = domain("domain1")
+        def domain1 = domain("domain1", "a","1.0","1")
         process1.addToDomains(domain1)
         def control1 = control("control1")
         def person1 = person("person1")

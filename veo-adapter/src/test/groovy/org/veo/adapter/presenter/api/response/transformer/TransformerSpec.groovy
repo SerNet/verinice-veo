@@ -150,6 +150,9 @@ class TransformerSpec extends Specification {
         Domain domain = Mock()
         domain.getName()>>domainName
         domain.getId()>> Key.uuidFrom(domainId)
+        domain.getAuthority()>>'a'
+        domain.getTemplateVersion()>>'1.0'
+        domain.getRevision()>>'1'
         domain.getDescription()>> domainDescription
         domain.getCreatedAt() >> Instant.now()
         domain.getUpdatedAt() >> Instant.now()
@@ -197,7 +200,7 @@ class TransformerSpec extends Specification {
         c.domains >> [d]
 
         factory.createClient(c.id, clientName) >> c
-        factory.createDomain(domainName) >> d
+        factory.createDomain(domainName,_,_,_) >> d
 
         when: "the DTO is transformed into a Client"
 
@@ -211,7 +214,4 @@ class TransformerSpec extends Specification {
         client.domains.first().id.uuidValue() == domainId
         client.domains.first().name == domainName
     }
-
-
-
 }

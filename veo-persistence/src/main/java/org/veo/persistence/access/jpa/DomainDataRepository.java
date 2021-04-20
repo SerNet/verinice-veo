@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2021 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,15 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.Collection;
-
 import org.springframework.data.repository.CrudRepository;
 
-import org.veo.core.entity.Domain;
 import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends CrudRepository<DomainData, String> {
-
-    Collection<Domain> findByNameContainingIgnoreCase(String search);
 
 }

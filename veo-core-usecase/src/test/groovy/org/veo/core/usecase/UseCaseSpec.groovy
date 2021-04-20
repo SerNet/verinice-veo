@@ -34,6 +34,7 @@ import spock.lang.Specification
 abstract class UseCaseSpec extends Specification {
 
     Client existingClient
+    Client anotherClient
     Unit existingUnit
     Domain existingDomain
     Set<Unit> existingUnitHierarchyMembers
@@ -46,11 +47,17 @@ abstract class UseCaseSpec extends Specification {
     def setup() {
         existingDomain = Mock()
 
+        def id1 = Key.newUuid()
         Client client = Mock()
-        client.getId() >> Key.newUuid()
+        client.getId() >> id1
         client.getDomains() >> [existingDomain]
         client.getName()>> "Existing client"
         existingClient = client
+
+        def id2 = Key.newUuid()
+        anotherClient = Mock()
+        anotherClient.getId() >> id2
+        anotherClient.getName()>> "Another client"
 
         def id = Key.newUuid()
 

@@ -32,9 +32,14 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * The abstract base model class. Used to prevent duplicating common methods in
  * model layer objects.
  */
-public interface EntityLayerSupertype extends ModelObject, ClientOwned {
+public interface EntityLayerSupertype extends Nameable, ModelObject, ClientOwned, Catalogable {
 
+    /**
+     * Can be null when the owner is a catalogitem owned by a domain template.
+     */
     default Client getClient() {
+        if (getOwner() == null)
+            return null;// could be removed when VersioningEventListener gets fixed
         return getOwner().getClient();
     }
 
@@ -98,10 +103,6 @@ public interface EntityLayerSupertype extends ModelObject, ClientOwned {
 
     void setCustomAspects(Set<CustomProperties> aCustomAspects);
 
-    Unit getOwner();
-
-    void setOwner(Unit aOwner);
-
     /**
      * @throws ClientBoundaryViolationException
      *             if the passed client is not equal to the client in the unit to
@@ -109,9 +110,12 @@ public interface EntityLayerSupertype extends ModelObject, ClientOwned {
      */
     default void checkSameClient(Client client) {
         Objects.requireNonNull(client, "client must not be null");
-        Unit thisEntitysOwner = Objects.requireNonNull(getOwner(), "No owner set for " + this);
-        Client thisEntitysClient = Objects.requireNonNull(thisEntitysOwner.getClient(),
-                                                          "No client set for " + thisEntitysOwner);
+        Client thisEntitysClient = null;
+        ElementOwner thisEntitysOwner = Objects.requireNonNull(getOwner(),
+                                                               "No owner set for " + this);
+        thisEntitysClient = Objects.requireNonNull(thisEntitysOwner.getClient(),
+                                                   "No client set for " + thisEntitysOwner
+                                                           + " might be part of a domain template");
         if (!(new SameClientSpecification<>(client).isSatisfiedBy(thisEntitysClient))) {
             throw new ClientBoundaryViolationException("The client boundary would be "
                     + "violated by the attempted operation on element: " + toString()
@@ -124,9 +128,16 @@ public interface EntityLayerSupertype extends ModelObject, ClientOwned {
         // TODO VEO-284 Use configurable format template & placeholders,
         // optimize owner
         // retrieval performance.
-        var format = new DisplayNameFormat<>("%s - %s (%s)",
-                List.of(new AbbreviationPlaceholder<>(), new NamePlaceholder<>(),
-                        new OwnerPlaceholder(new NamePlaceholder<>())));
-        return format.render(this);
+        if (getOwner().isUnitType()) {
+            var format = new DisplayNameFormat<>("%s - %s (%s)",
+                    List.of(new AbbreviationPlaceholder<>(), new NamePlaceholder<>(),
+                            new OwnerPlaceholder(new NamePlaceholder<>())));
+            return format.render(this);
+        } else {
+            var format = new DisplayNameFormat<>("%s - %s",
+                    List.of(new AbbreviationPlaceholder<>(), new NamePlaceholder<>()));
+            return format.render(this);
+        }
+
     }
 }

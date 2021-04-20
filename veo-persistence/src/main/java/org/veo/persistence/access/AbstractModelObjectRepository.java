@@ -35,7 +35,7 @@ import org.veo.persistence.entity.jpa.ModelObjectValidation;
 @Transactional(readOnly = true)
 abstract class AbstractModelObjectRepository<T extends ModelObject, S extends BaseModelObjectData>
         implements Repository<T, Key<UUID>> {
-    private final CrudRepository<S, String> dataRepository;
+    protected final CrudRepository<S, String> dataRepository;
     protected final ModelObjectValidation validation;
 
     protected AbstractModelObjectRepository(CrudRepository<S, String> dataRepository,

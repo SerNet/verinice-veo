@@ -63,8 +63,9 @@ public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
     @JsonIgnore
     private long version;
 
-    @Schema(description = "The active for the Domain.")
-    private Boolean active;
+    // TODO: VEO-540 check if we want to expose this flag
+    @Schema(description = "The active flag the for the Domain, as domains don't get deleted.")
+    private boolean active;
 
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z",
@@ -77,7 +78,7 @@ public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
             accessMode = Schema.AccessMode.READ_ONLY)
     private String updatedBy;
 
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 

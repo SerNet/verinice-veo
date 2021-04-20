@@ -31,6 +31,7 @@ public class OwnerPlaceholder implements Placeholder<EntityLayerSupertype> {
 
     @Override
     public Object resolveValue(EntityLayerSupertype source) {
-        return unitPlaceholder.resolveValue(source.getOwner());
+        return unitPlaceholder.resolveValue(source.getOwner()
+                                                  .asUnit());
     }
 }

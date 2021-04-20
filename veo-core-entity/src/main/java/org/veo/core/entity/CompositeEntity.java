@@ -56,7 +56,8 @@ public interface CompositeEntity<T extends EntityLayerSupertype> extends EntityL
     }
 
     default void setParts(Set<T> parts) {
-        parts.forEach(part -> checkSameClient(part.getOwner()
+        parts.stream()
+             .forEach(part -> checkSameClient(part.getOwner()
                                                   .getClient()));
         getParts().clear();
         getParts().addAll(parts);

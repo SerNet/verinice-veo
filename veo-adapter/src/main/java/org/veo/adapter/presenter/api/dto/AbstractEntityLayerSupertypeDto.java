@@ -32,7 +32,7 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Unit;
+import org.veo.core.entity.ElementOwner;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -96,7 +96,7 @@ public abstract class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
 
     @NotNull(message = "An owner must be present.")
     @Schema(required = true, implementation = ModelObjectReferenceOwner.class)
-    private ModelObjectReference<Unit> owner;
+    private ModelObjectReference<ElementOwner> owner;
 
     @Valid
     @Schema(description = "Custom relations which do not affect the behavior.",

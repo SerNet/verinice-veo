@@ -23,15 +23,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -46,13 +42,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class UnitData extends BaseModelObjectData implements NameableData, Unit {
-
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
+public class UnitData extends ElementOwnerData implements NameableData, Unit {
 
     @NotNull
     @Column(name = "name")

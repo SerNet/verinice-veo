@@ -45,7 +45,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.empty()
         1 * entityFactory.createClient(_,_) >> existingClient
         1 * entityFactory.createUnit(_,_) >> newUnit1
-        1 * entityFactory.createDomain(_) >> existingDomain
+        1 * entityFactory.createDomain(_,_,_,_) >> existingDomain
 
         and: "a new client was then correctly created and stored"
         1 * unitRepository.save(_) >> newUnit1

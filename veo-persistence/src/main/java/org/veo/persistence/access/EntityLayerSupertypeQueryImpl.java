@@ -35,6 +35,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.usecase.repository.EntityLayerSupertypeQuery;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.entity.jpa.UnitData;
 
 /**
  * Implements {@link EntityLayerSupertypeQuery} using {@link Specification} API.
@@ -75,9 +76,10 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     }
 
     private Specification<TDataClass> createSpecification(Client client) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("owner")
-                                                                           .get("client"),
-                                                                       client);
+        return (root, query, criteriaBuilder) -> {
+            Path<UnitData> unit = criteriaBuilder.treat(root.join("owner"), UnitData.class);
+            return criteriaBuilder.equal(unit.get("client"), client);
+        };
     }
 
     private Predicate in(Path<Object> column, Set<?> values, CriteriaBuilder criteriaBuilder) {

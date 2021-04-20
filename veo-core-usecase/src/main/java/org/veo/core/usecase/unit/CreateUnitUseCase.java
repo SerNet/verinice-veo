@@ -83,8 +83,9 @@ public class CreateUnitUseCase
      */
     // TODO VEO-227
     private Domain defaultDomain() {
-        var domian = entityFactory.createDomain("Placeholder domain - see issue VEO-227");
-        return domian;
+        var domain = entityFactory.createDomain("Placeholder domain - see issue VEO-227", "self",
+                                                "0.0", "1");
+        return domain;
     }
 
     @Override

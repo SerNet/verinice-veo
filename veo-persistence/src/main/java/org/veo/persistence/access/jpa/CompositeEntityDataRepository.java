@@ -44,6 +44,7 @@ public interface CompositeEntityDataRepository<T extends EntityLayerSupertypeDat
             + "left join fetch e.customAspects "
             + "left join fetch e.links "
             + "left join fetch e.subTypeAspects "
+            + "left join fetch e.appliedCatalogItems "
             + "left join fetch e.parts "
             + "left join fetch e.domains "
             + "where e.owner.dbId IN ?1")

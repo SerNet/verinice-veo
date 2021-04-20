@@ -27,6 +27,7 @@ import javax.persistence.OneToMany;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
 import lombok.Data;
@@ -37,7 +38,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class ClientData extends BaseModelObjectData implements Client {
+public class ClientData extends BaseModelObjectData implements Client, Nameable {
 
     @Id
     @ToString.Include

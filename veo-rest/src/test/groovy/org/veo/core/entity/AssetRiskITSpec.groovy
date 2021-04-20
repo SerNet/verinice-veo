@@ -83,7 +83,7 @@ class AssetRiskITSpec extends VeoSpringSpec {
     }
 
     private Domain domain(String name) {
-        entityFactory.createDomain( name)
+        entityFactory.createDomain( name, "","","")
     }
 
     private Person person(String name) {

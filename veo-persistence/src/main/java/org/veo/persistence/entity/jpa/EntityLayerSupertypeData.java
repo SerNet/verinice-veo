@@ -24,24 +24,17 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
@@ -58,6 +51,7 @@ import lombok.ToString;
                           @NamedAttributeNode(value = "customAspects",
                                               subgraph = "customAspectGraph"),
                           @NamedAttributeNode(value = "domains"),
+                          @NamedAttributeNode(value = "appliedCatalogItems"),
                           @NamedAttributeNode(value = "links"),
                           @NamedAttributeNode(value = "subTypeAspects") },
                   subgraphs = {
@@ -67,14 +61,8 @@ import lombok.ToString;
                                                  // TODO VEO-448 make dataProperties LAZY and fetch
                                                  // dataProperties.stringListValue here
                                                  @NamedAttributeNode(value = "dataProperties"), }) })
-public abstract class EntityLayerSupertypeData extends BaseModelObjectData
+public abstract class EntityLayerSupertypeData extends CatalogableData
         implements NameableData, EntityLayerSupertype {
-
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
 
     public static final String FULL_AGGREGATE_GRAPH = "fullAggregateGraph";
     @NotNull
@@ -133,12 +121,6 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
         subTypeAspects.remove(aspect);
         subTypeAspects.add(aspect);
     }
-
-    // one to one entitylayersupertype-> unit
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
-    @JoinColumn(name = "owner_id")
-    private Unit owner;
 
     public void setLinks(Set<CustomLink> newLinks) {
         links.clear();
@@ -226,5 +208,4 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
         }
         return this.customAspects.remove(aCustomProperties);
     }
-
 }
