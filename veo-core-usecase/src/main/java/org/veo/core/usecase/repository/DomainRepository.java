@@ -21,12 +21,19 @@ import java.util.UUID;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A repository for <code>Domain</code> entities.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
+ *
+ * @deprecated use {@link org.veo.core.repository.DomainRepository}
  */
-public interface DomainRepository extends Repository<Domain, Key<UUID>> {
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface DomainRepository
+        extends org.veo.core.repository.DomainRepository, Repository<Domain, Key<UUID>> {
 
 }

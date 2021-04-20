@@ -28,11 +28,11 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned.Lifecycle;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 

@@ -17,9 +17,9 @@
 package org.veo.core.usecase.incident;
 
 import org.veo.core.entity.Incident;
+import org.veo.core.repository.IncidentRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.repository.IncidentRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 public class CreateIncidentUseCase extends CreateEntityUseCase<Incident> {
 

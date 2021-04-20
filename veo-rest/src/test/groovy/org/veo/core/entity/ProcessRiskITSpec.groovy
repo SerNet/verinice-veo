@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.usecase.repository.ControlRepository
+import org.veo.core.repository.ControlRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl

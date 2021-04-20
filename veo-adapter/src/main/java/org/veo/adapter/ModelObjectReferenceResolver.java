@@ -38,8 +38,8 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.SameClientSpecification;
-import org.veo.core.usecase.repository.Repository;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.repository.Repository;
+import org.veo.core.repository.RepositoryProvider;
 
 /**
  * Resolves {@link ModelObjectReference}s by fetching the target entity from a

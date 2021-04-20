@@ -25,12 +25,12 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.RepositoryProvider;
-import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 

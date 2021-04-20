@@ -16,9 +16,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /*
 * The repository provides access to business entities through a well-known interface.
@@ -31,22 +29,11 @@ import java.util.Set;
 * the repository does not just offer CRUD operations but
 * uses factories and builders to build entities to specification.
 * */
-public interface Repository<T, K> {
-
-    public T save(T entity);
-
-    public List<T> saveAll(Set<T> entities);
-
-    public Optional<T> findById(K id);
-
-    public List<T> findByName(String search);
-
-    public Set<T> getByIds(Set<K> ids);
-
-    public void delete(T entity);
-
-    public void deleteById(K id);
-
-    public boolean exists(K id);
+/**
+ * @deprecated use {@link org.veo.core.repository.Repository}
+ */
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface Repository<T, K> extends org.veo.core.repository.Repository<T, K> {
 
 }

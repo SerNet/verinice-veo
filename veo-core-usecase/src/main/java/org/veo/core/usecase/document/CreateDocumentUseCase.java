@@ -17,9 +17,9 @@
 package org.veo.core.usecase.document;
 
 import org.veo.core.entity.Document;
+import org.veo.core.repository.DocumentRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.repository.DocumentRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 public class CreateDocumentUseCase extends CreateEntityUseCase<Document> {
 

@@ -17,9 +17,9 @@
 package org.veo.core.usecase.control;
 
 import org.veo.core.entity.Control;
+import org.veo.core.repository.ControlRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.repository.ControlRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 public class CreateControlUseCase extends CreateEntityUseCase<Control> {
 

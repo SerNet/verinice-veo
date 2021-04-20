@@ -16,22 +16,20 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
-import java.util.List;
-import java.util.Set;
-
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Unit;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A dynamic database query for retrieving {@link EntityLayerSupertype} objects.
  *
  * @param <T>
  *            Entity type
+ * @deprecated use {@link org.veo.core.repository.EntityLayerSupertypeQuery}
  */
-public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
-    void whereUnitIn(Set<Unit> units);
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype>
+        extends org.veo.core.repository.EntityLayerSupertypeQuery<T> {
 
-    List<T> execute();
-
-    void whereSubTypeIn(Set<String> values);
 }

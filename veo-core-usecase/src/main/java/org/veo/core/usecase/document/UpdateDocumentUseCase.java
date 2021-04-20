@@ -17,8 +17,8 @@
 package org.veo.core.usecase.document;
 
 import org.veo.core.entity.Document;
+import org.veo.core.repository.DocumentRepository;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
-import org.veo.core.usecase.repository.DocumentRepository;
 
 public class UpdateDocumentUseCase extends ModifyEntityUseCase<Document> {
 

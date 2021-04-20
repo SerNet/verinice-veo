@@ -17,10 +17,10 @@
 package org.veo.core.usecase.scope;
 
 import org.veo.core.entity.Scope;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.ScopeRepository;
 
 /**
  * Reinstantiate persisted scope objects.

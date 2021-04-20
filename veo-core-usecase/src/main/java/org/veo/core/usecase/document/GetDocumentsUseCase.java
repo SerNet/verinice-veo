@@ -17,10 +17,10 @@
 package org.veo.core.usecase.document;
 
 import org.veo.core.entity.Document;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.DocumentRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.DocumentRepository;
 
 /**
  * Reinstantiate persisted document objects.

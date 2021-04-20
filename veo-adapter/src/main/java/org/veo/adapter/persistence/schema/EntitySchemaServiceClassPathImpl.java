@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.service.EntitySchemaService;
-import org.veo.core.service.SchemaIdentifiersDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,11 +82,10 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
     }
 
     @Override
-    public SchemaIdentifiersDTO listValidSchemaNames() {
-        return new SchemaIdentifiersDTO(VALID_CLASS_NAMES.stream()
-                                                         .map(s -> mapFirst(s,
-                                                                            Character::toLowerCase))
-                                                         .collect(Collectors.toList()));
+    public List<String> listValidSchemaNames() {
+        return VALID_CLASS_NAMES.stream()
+                                .map(s -> mapFirst(s, Character::toLowerCase))
+                                .collect(Collectors.toList());
     }
 
     private String mapFirst(String str, Function<Character, Character> f) {

@@ -18,12 +18,19 @@ package org.veo.core.usecase.repository;
 
 import org.veo.core.entity.Incident;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A repository for <code>Incident</code> entities.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
+ *
+ * @deprecated use {@link org.veo.core.repository.IncidentRepository}
  */
-public interface IncidentRepository extends EntityLayerSupertypeRepository<Incident> {
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface IncidentRepository extends org.veo.core.repository.IncidentRepository,
+        EntityLayerSupertypeRepository<Incident> {
 
 }

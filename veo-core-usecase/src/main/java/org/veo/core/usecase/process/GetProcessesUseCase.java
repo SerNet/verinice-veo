@@ -17,10 +17,10 @@
 package org.veo.core.usecase.process;
 
 import org.veo.core.entity.Process;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ProcessRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.ProcessRepository;
 
 /**
  * Reinstantiate persisted process objects.

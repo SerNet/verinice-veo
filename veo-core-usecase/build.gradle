@@ -3,6 +3,7 @@ apply plugin: 'java-library'
 
 dependencies {
 
+    api project(":veo-core-api")
     api project(":veo-core-entity")
     compileOnly 'org.projectlombok:lombok'
     compileOnly 'javax.validation:validation-api'

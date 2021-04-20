@@ -17,10 +17,10 @@
 package org.veo.core.usecase.person;
 
 import org.veo.core.entity.Person;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.PersonRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.PersonRepository;
 
 /**
  * Reinstantiate persisted person objects.

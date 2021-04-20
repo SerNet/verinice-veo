@@ -22,11 +22,11 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
-import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
-import org.veo.core.usecase.repository.RepositoryProvider;
 
 import lombok.Value;
 

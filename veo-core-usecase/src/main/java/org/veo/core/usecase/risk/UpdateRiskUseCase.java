@@ -24,9 +24,9 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
-import org.veo.core.usecase.repository.RepositoryProvider;
 
 public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
         extends AbstractRiskUseCase<T, R> {

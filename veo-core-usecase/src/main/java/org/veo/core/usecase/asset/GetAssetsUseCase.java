@@ -17,10 +17,10 @@
 package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.repository.AssetRepository;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-import org.veo.core.usecase.repository.AssetRepository;
-import org.veo.core.usecase.repository.ClientRepository;
 
 /**
  * Reinstantiate persisted asset objects.

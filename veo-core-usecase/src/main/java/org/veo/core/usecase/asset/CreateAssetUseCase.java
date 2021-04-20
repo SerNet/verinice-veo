@@ -17,9 +17,9 @@
 package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.repository.AssetRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.repository.AssetRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 public class CreateAssetUseCase extends CreateEntityUseCase<Asset> {
 

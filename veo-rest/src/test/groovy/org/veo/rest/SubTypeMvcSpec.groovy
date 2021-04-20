@@ -23,7 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
-import org.veo.core.usecase.repository.UnitRepository
+import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration

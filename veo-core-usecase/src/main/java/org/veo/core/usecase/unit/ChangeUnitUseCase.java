@@ -22,11 +22,11 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
-import org.veo.core.usecase.repository.UnitRepository;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;

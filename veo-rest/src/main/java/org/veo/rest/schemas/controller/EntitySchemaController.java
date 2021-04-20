@@ -26,8 +26,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.veo.adapter.presenter.api.dto.SchemaIdentifiersDTO;
 import org.veo.core.service.EntitySchemaService;
-import org.veo.core.service.SchemaIdentifiersDTO;
 import org.veo.rest.schemas.resource.EntitySchemaResource;
 import org.veo.rest.security.ApplicationUser;
 
@@ -69,6 +69,6 @@ public class EntitySchemaController implements EntitySchemaResource {
 
     @Override
     public SchemaIdentifiersDTO getSchemas(Authentication auth) {
-        return schemaService.listValidSchemaNames();
+        return new SchemaIdentifiersDTO(schemaService.listValidSchemaNames());
     }
 }

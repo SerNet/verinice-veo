@@ -16,25 +16,19 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 
-public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
-        extends Repository<T, Key<UUID>> {
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    public List<T> findByClient(Client client);
+/**
+ * @deprecated use {@link EntityLayerSupertypeRepository}
+ */
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype> extends
+        org.veo.core.repository.EntityLayerSupertypeRepository<T>, Repository<T, Key<UUID>> {
 
-    public List<T> findByUnits(Set<Unit> units);
-
-    public List<T> findByLinkTarget(EntityLayerSupertype entity);
-
-    public void deleteByUnit(Unit owner);
-
-    public EntityLayerSupertypeQuery<T> query(Client client);
 }

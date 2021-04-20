@@ -25,9 +25,9 @@ import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.repository.ClientRepository
+import org.veo.core.repository.UnitRepository
 import org.veo.core.service.EntitySchemaService
-import org.veo.core.usecase.repository.ClientRepository
-import org.veo.core.usecase.repository.UnitRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**

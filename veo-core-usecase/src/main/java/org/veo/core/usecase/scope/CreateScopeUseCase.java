@@ -17,9 +17,9 @@
 package org.veo.core.usecase.scope;
 
 import org.veo.core.entity.Scope;
+import org.veo.core.repository.ScopeRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.repository.ScopeRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 public class CreateScopeUseCase extends CreateEntityUseCase<Scope> {
 

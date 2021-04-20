@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Alexander Koderman.
+ * Copyright (c) 2019 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,25 +14,19 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.service;
+package org.veo.core.repository;
 
-import java.util.List;
+import java.util.UUID;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 
-import lombok.Data;
+/**
+ * A repository for <code>Client</code> entities.
+ *
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
+ */
+public interface ClientRepository extends Repository<Client, Key<UUID>> {
 
-@Data
-public class SchemaIdentifiersDTO {
-
-    @NotNull
-    @NotEmpty
-    @Size(min = 1, max = 10000)
-    private final List<String> knownSchemas;
-
-    public void addknownSchema(String name) {
-        this.knownSchemas.add(name);
-    }
 }

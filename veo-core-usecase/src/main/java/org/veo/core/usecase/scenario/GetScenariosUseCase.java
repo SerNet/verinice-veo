@@ -17,10 +17,10 @@
 package org.veo.core.usecase.scenario;
 
 import org.veo.core.entity.Scenario;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.ScenarioRepository;
 
 /**
  * Reinstantiate persisted scenario objects.

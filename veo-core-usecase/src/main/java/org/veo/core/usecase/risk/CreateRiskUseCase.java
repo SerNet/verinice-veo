@@ -22,7 +22,7 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.repository.RepositoryProvider;
 
 public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
         extends AbstractRiskUseCase<T, R> {

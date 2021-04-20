@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.presenter.api.dto.SchemaIdentifiersDTO;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -37,7 +38,6 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
-import org.veo.core.service.SchemaIdentifiersDTO;
 import org.veo.rest.RestApplication;
 
 import io.swagger.v3.oas.annotations.Operation;

@@ -18,12 +18,19 @@ package org.veo.core.usecase.repository;
 
 import org.veo.core.entity.Scenario;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A repository for <code>Scenario</code> entities.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
+ *
+ * @deprecated use {@link org.veo.core.repository.ScenarioRepository}
  */
-public interface ScenarioRepository extends EntityLayerSupertypeRepository<Scenario> {
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface ScenarioRepository extends org.veo.core.repository.ScenarioRepository,
+        EntityLayerSupertypeRepository<Scenario> {
 
 }

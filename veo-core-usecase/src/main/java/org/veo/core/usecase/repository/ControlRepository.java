@@ -18,12 +18,19 @@ package org.veo.core.usecase.repository;
 
 import org.veo.core.entity.Control;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A repository for <code>Control</code> entities.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
+ *
+ * @deprecated use {@link org.veo.core.repository.ControlRepository}
  */
-public interface ControlRepository extends EntityLayerSupertypeRepository<Control> {
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface ControlRepository
+        extends org.veo.core.repository.ControlRepository, EntityLayerSupertypeRepository<Control> {
 
 }

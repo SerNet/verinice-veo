@@ -73,7 +73,7 @@ class ClassPathMetaSchemaConformitySpec extends Specification {
     }
 
     private static List<JsonNode> getEntitySchemas() {
-        entitySchemaService.listValidSchemaNames().getKnownSchemas()
+        entitySchemaService.listValidSchemaNames()
                 .collect { entitySchemaService.findSchema(it, null) }
                 .collect {  Json.mapper().readTree(it) }
     }

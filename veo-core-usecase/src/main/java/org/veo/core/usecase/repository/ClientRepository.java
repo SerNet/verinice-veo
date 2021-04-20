@@ -21,12 +21,19 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A repository for <code>Client</code> entities.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
+ *
+ * @deprecated use {@link org.veo.core.repository.ClientRepository}
  */
-public interface ClientRepository extends Repository<Client, Key<UUID>> {
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface ClientRepository
+        extends org.veo.core.repository.ClientRepository, Repository<Client, Key<UUID>> {
 
 }

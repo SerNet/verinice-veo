@@ -17,9 +17,9 @@
 package org.veo.core.usecase.scenario;
 
 import org.veo.core.entity.Scenario;
+import org.veo.core.repository.ScenarioRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.repository.ScenarioRepository;
-import org.veo.core.usecase.repository.UnitRepository;
 
 public class CreateScenarioUseCase extends CreateEntityUseCase<Scenario> {
 

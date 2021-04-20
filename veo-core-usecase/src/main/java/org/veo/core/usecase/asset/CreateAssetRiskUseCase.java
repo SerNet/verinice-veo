@@ -18,7 +18,7 @@ package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.risk.CreateRiskUseCase;
 
 public class CreateAssetRiskUseCase extends CreateRiskUseCase<Asset, AssetRisk> {

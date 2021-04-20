@@ -18,7 +18,7 @@ package org.veo.core.usecase.process;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.risk.GetRisksUseCase;
 
 public class GetProcessRisksUseCase extends GetRisksUseCase<Process, ProcessRisk> {

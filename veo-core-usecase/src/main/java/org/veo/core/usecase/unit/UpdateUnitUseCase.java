@@ -17,7 +17,7 @@
 package org.veo.core.usecase.unit;
 
 import org.veo.core.entity.Unit;
-import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.repository.UnitRepository;
 
 public class UpdateUnitUseCase extends ChangeUnitUseCase {
 

@@ -24,9 +24,9 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.ScopeRepository;
 
 import lombok.Value;
 

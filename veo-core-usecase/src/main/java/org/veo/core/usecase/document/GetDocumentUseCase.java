@@ -24,9 +24,9 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.DocumentRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.repository.DocumentRepository;
 
 import lombok.Value;
 

@@ -21,7 +21,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
-import org.veo.core.usecase.repository.ClientRepository
+import org.veo.core.repository.ClientRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**

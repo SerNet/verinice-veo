@@ -16,35 +16,23 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
-import java.util.Set;
-
 import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.Control;
-import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.Scenario;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A repository for <code>RiskAffected</code> entities like Asset and Process.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
+ *
+ * @deprecated use {@link org.veo.core.repository.RiskAffectedRepository}
  */
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
 public interface RiskAffectedRepository<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends EntityLayerSupertypeRepository<T> {
-    /**
-     * Retrieves entities that have risks resulting from the given scenario.
-     */
-    Set<T> findByRisk(Scenario cause);
+        extends org.veo.core.repository.RiskAffectedRepository<T, R>,
+        EntityLayerSupertypeRepository<T> {
 
-    /**
-     * Retrieves entities that have risks that are mitigated by the given control.
-     */
-    Set<T> findByRisk(Control mitigatedBy);
-
-    /**
-     * Retrieves entities that have risks for which the given person is the risk
-     * owner.
-     */
-    Set<T> findByRisk(Person riskOwner);
 }

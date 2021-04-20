@@ -23,7 +23,7 @@ import java.util.UUID;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.repository.UnitRepository;
 
 /**
  * Provides data from within unit hierarchies.

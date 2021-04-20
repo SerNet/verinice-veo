@@ -20,11 +20,11 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.repository.EntityLayerSupertypeRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
-import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
 
 import lombok.Value;
 

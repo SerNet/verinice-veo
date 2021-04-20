@@ -17,10 +17,10 @@
 package org.veo.core.usecase.incident;
 
 import org.veo.core.entity.Incident;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.IncidentRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.IncidentRepository;
 
 /**
  * Reinstantiate persisted incident objects.

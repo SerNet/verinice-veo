@@ -16,23 +16,24 @@
  ******************************************************************************/
 package org.veo.core.usecase.repository;
 
-import java.util.List;
 import java.util.UUID;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * A repository for <code>Unit</code> entities.
  *
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
+ *
+ * @deprecated use {@link org.veo.core.repository.UnitRepository}
  */
-public interface UnitRepository extends Repository<Unit, Key<UUID>> {
-
-    public List<Unit> findByClient(Client client);
-
-    public List<Unit> findByParent(Unit parent);
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface UnitRepository
+        extends org.veo.core.repository.UnitRepository, Repository<Unit, Key<UUID>> {
 
 }

@@ -45,8 +45,8 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.RepositoryProvider;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.rest.common.ReferenceAssemblerImpl;
 import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;

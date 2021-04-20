@@ -22,11 +22,17 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * A service that helps to retrieve the correct {@link Repository} for a given
  * type
+ *
+ * @deprecated use {@link org.veo.core.repository.RepositoryProvider}
  */
-public interface RepositoryProvider {
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_INTERFACE")
+public interface RepositoryProvider extends org.veo.core.repository.RepositoryProvider {
 
     public <T extends EntityLayerSupertype> EntityLayerSupertypeRepository<T> getEntityLayerSupertypeRepositoryFor(
             Class<T> entityType);

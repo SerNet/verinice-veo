@@ -59,6 +59,6 @@ public interface EntitySchemaService {
      *
      * @return
      */
-    public SchemaIdentifiersDTO listValidSchemaNames();
+    public List<String> listValidSchemaNames();
 
 }

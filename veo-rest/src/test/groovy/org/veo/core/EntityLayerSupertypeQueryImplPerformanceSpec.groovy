@@ -29,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.repository.DomainRepository
+import org.veo.core.repository.DomainRepository
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl

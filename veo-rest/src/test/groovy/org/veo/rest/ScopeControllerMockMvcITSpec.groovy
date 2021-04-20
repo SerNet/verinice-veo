@@ -31,8 +31,8 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
+import org.veo.core.repository.ScenarioRepository
 import org.veo.core.usecase.common.ETag
-import org.veo.core.usecase.repository.ScenarioRepository
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
