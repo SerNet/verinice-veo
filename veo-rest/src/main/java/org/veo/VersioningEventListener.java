@@ -81,7 +81,7 @@ public class VersioningEventListener {
 
     private String createJson(ModelObject entity, VersioningEvent.Type type, String author) {
         var tree = objectMapper.createObjectNode();
-        tree.put("url", referenceAssembler.targetReferenceOf(entity.getModelInterface(),
+        tree.put("uri", referenceAssembler.targetReferenceOf(entity.getModelInterface(),
                                                              entity.getId()
                                                                    .uuidValue()));
         tree.put("type", convertType(type));

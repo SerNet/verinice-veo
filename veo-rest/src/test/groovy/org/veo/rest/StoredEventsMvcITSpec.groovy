@@ -81,7 +81,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         then: "a CREATION event is stored"
         with(getLatestStoredEventContent()) {
             type == "CREATION"
-            url == "/documents/$documentId"
+            uri == "/documents/$documentId"
             author == "user@domain.example"
             with(content) {
                 id == documentId
@@ -101,7 +101,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         then: "a MODIFICATION event is stored"
         with(getLatestStoredEventContent()) {
             type == "MODIFICATION"
-            url == "/documents/$documentId"
+            uri == "/documents/$documentId"
             author == "user@domain.example"
             with(content) {
                 id == documentId
@@ -115,7 +115,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         then: "a HARD_DELETION event is stored"
         with(getLatestStoredEventContent()) {
             type == "HARD_DELETION"
-            url == "/documents/$documentId"
+            uri == "/documents/$documentId"
             author == "user@domain.example"
             content == null
         }
