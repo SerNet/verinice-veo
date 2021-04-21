@@ -94,7 +94,7 @@ public abstract class AbstractEntityLayerSupertypeDto implements EntityLayerSupe
     @Valid
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
 
-    @NotNull(message = "A owner must be present.")
+    @NotNull(message = "An owner must be present.")
     @Schema(required = true, implementation = ModelObjectReferenceOwner.class)
     private ModelObjectReference<Unit> owner;
 
