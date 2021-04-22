@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.springframework.data.repository.NoRepositoryBean;
@@ -31,9 +32,9 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
         extends CompositeEntityDataRepository<T> {
 
-    Set<T> findDistinctByRisks_ScenarioIn(Set<ScenarioData> causes);
+    Set<T> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
 
-    Set<T> findDistinctByRisks_Mitigation_In(Set<ControlData> controls);
+    Set<T> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
 
-    Set<T> findDistinctByRisks_RiskOwner_In(Set<PersonData> persons);
+    Set<T> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
 }

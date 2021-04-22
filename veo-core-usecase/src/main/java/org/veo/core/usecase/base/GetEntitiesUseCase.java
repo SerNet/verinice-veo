@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -28,6 +30,8 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.PagedResult;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
@@ -78,14 +82,31 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> impleme
                                       .getValues());
         }
 
-        var result = query.execute();
-
         if (input.getDisplayName() != null) {
+            // TODO VEO-546 enable paged query with display name filter
+            var result = query.execute(PagingConfiguration.UNPAGED)
+                              .getResultPage();
+            int pageSize = input.getPagingConfiguration()
+                                .getPageSize();
             result = filterByDisplayName(result, input.getDisplayName()
                                                       .getValues());
+            result.sort(Comparator.comparing(EntityLayerSupertype::getDisplayName));
+            int numberOfResults = result.size();
+            int offsetStart = input.getPagingConfiguration()
+                                   .getPageNumber()
+                    * pageSize;
+            int offsetEnd = Math.min(numberOfResults, offsetStart + pageSize);
+            List<T> page = offsetEnd > numberOfResults || offsetStart > offsetEnd
+                    ? Collections.emptyList()
+                    : result.subList(offsetStart, offsetEnd);
+            int numberOfPages = numberOfResults == 0 ? 1
+                    : (int) Math.ceil((double) numberOfResults / (double) pageSize);
+            PagedResult<T> pagedResult = new PagedResult<>(input.getPagingConfiguration(), page,
+                    result.size(), numberOfPages);
+            return new OutputData<>(pagedResult);
+        } else {
+            return new OutputData<>(query.execute(input.getPagingConfiguration()));
         }
-
-        return new OutputData<>(result);
     }
 
     private List<T> filterByDisplayName(List<T> modelObjects, Set<String> displayNames) {
@@ -108,12 +129,13 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> impleme
         QueryCondition<Key<UUID>> unitUuid;
         QueryCondition<String> displayName;
         QueryCondition<String> subType;
+        PagingConfiguration pagingConfiguration;
     }
 
     @Valid
     @Value
     public static class OutputData<T> implements UseCase.OutputData {
         @Valid
-        List<T> entities;
+        PagedResult<T> entities;
     }
 }

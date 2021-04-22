@@ -18,6 +18,7 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Control
 import org.veo.core.entity.Key
+import org.veo.core.repository.PagingConfiguration
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
 import org.veo.core.usecase.control.GetControlsUseCase
@@ -28,6 +29,7 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
 
     ControlRepository controlRepository = Mock()
     EntityLayerSupertypeQuery<Control> query = Mock()
+    PagingConfiguration pagingConfiguration = Mock()
 
     GetControlsUseCase usecase = new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider)
 
@@ -43,11 +45,11 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null, null))
+        def output = usecase.execute(new InputData(existingClient, null, null, null,pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * query.execute() >> [control]
-        output.entities*.id == [id]
+        1 * query.execute(pagingConfiguration) >> singleResult(control, pagingConfiguration)
+        output.entities.resultPage*.id == [id]
     }
 
 
@@ -66,13 +68,13 @@ class GetControlsUseCaseSpec extends UseCaseSpec {
                 null,
                 Mock(QueryCondition) {
                     getValues() >> ["subType 1", "subType 2"]
-                }))
+                },pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
-        1 * query.execute() >> [control]
-        output.entities*.id == [id]
+        1 * query.execute(pagingConfiguration) >> singleResult(control, pagingConfiguration)
+        output.entities.resultPage*.id == [id]
     }
 }

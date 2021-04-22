@@ -40,6 +40,7 @@ import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -351,15 +352,15 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         then: "all entities are removed"
         with(personRepository.query(client)) {
             whereUnitIn([unit] as Set)
-            execute().empty
+            execute(PagingConfiguration.UNPAGED).totalResults == 0
         }
         with(assetRepository.query(client)) {
             whereUnitIn([unit] as Set)
-            execute().empty
+            execute(PagingConfiguration.UNPAGED).totalResults == 0
         }
         with(processRepository.query(client)) {
             whereUnitIn([unit] as Set)
-            execute().empty
+            execute(PagingConfiguration.UNPAGED).totalResults == 0
         }
         unitRepository.findByClient(client).size() == 0
 

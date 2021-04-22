@@ -30,6 +30,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.repository.DomainRepository
+import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
@@ -88,7 +89,8 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
                         it.applicableTo = []
                         it.type = "my_custom_aspect"
                         it.setProperty("foo", "bar")
-                    }] as Set
+                    }
+                ] as Set
                 links = [
                     new CustomLinkData().tap {
                         it.applicableTo = []
@@ -104,19 +106,19 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
         assertSelectCount(0)
 
         when:
-        def result = processRepository.query(client).execute()
+        def result = processRepository.query(client).execute(PagingConfiguration.UNPAGED)
 
         then: "all data has been fetched"
-        result.size() == testProcessCount
-        with(result[0]) {
+        result.totalResults == testProcessCount
+        with(result.resultPage[0]) {
             customAspects.first().stringProperties["foo"] == "bar"
             domains.first() != null
             getSubType(domain) != null
             links.first() != null
         }
 
-        // TODO: VEO-448 Reduce query selects to 2 by joining all that is EAGER now.
-        // assertSelectCount(2)
-        assertSelectCount(2 + testProcessCount)
+        // TODO: VEO-448 Reduce query selects to 3 by joining all that is EAGER now.
+        // assertSelectCount(3)
+        assertSelectCount(3 + testProcessCount)
     }
 }

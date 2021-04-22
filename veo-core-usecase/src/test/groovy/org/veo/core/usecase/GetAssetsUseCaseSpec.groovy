@@ -19,6 +19,7 @@ package org.veo.core.usecase
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.repository.PagingConfiguration
 import org.veo.core.usecase.asset.GetAssetsUseCase
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
@@ -29,6 +30,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
 
     AssetRepository assetRepository = Mock()
     EntityLayerSupertypeQuery<Person> query = Mock()
+    PagingConfiguration pagingConfiguration = Mock()
 
     GetAssetsUseCase usecase = new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider)
 
@@ -44,11 +46,11 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null, null))
+        def output = usecase.execute(new InputData(existingClient, null, null, null,pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * query.execute() >> [asset]
-        output.entities*.id == [id]
+        1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
+        output.entities.resultPage*.id == [id]
     }
 
 
@@ -67,13 +69,13 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
                 null,
                 Mock(QueryCondition) {
                     getValues() >> ["subType 1", "subType 2"]
-                }))
+                },pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
-        1 * query.execute() >> [asset]
-        output.entities*.id == [id]
+        1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
+        output.entities.resultPage*.id == [id]
     }
 }

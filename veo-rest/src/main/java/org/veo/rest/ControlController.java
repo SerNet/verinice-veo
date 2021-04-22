@@ -63,6 +63,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
@@ -133,13 +134,15 @@ public class ControlController extends AbstractEntityController {
             return CompletableFuture.supplyAsync(Collections::emptyList);
         }
 
-        return getControls(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType));
+        return getControls(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
+                                                      PagingConfiguration.UNPAGED));
     }
 
     private CompletableFuture<List<FullControlDto>> getControls(
             GetEntitiesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getControlsUseCase, inputData,
                                          output -> output.getEntities()
+                                                         .getResultPage()
                                                          .stream()
                                                          .map(u -> entityToDtoTransformer.transformControl2Dto(u))
                                                          .collect(Collectors.toList()));
@@ -270,7 +273,8 @@ public class ControlController extends AbstractEntityController {
             @PathVariable String searchId) {
         try {
             return getControls(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
-                                                          SearchQueryDto.decodeFromSearchId(searchId)));
+                                                          SearchQueryDto.decodeFromSearchId(searchId),
+                                                          PagingConfiguration.UNPAGED));
         } catch (IOException e) {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;

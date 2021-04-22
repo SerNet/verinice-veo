@@ -62,6 +62,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
@@ -141,13 +142,15 @@ public class ScopeController extends AbstractEntityController {
 
         final GetEntitiesUseCase.InputData inputData = GetEntitiesInputMapper.map(client, unitUuid,
                                                                                   displayName,
-                                                                                  subType);
+                                                                                  subType,
+                                                                                  PagingConfiguration.UNPAGED);
         return getScopes(inputData);
     }
 
     private CompletableFuture<List<FullScopeDto>> getScopes(
             GetEntitiesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getScopesUseCase, inputData, output -> output.getEntities()
+                                                                                      .getResultPage()
                                                                                       .stream()
                                                                                       .map(u -> entityToDtoTransformer.transformScope2Dto(u))
                                                                                       .collect(Collectors.toList()));
@@ -278,7 +281,8 @@ public class ScopeController extends AbstractEntityController {
             @PathVariable String searchId) {
         try {
             return getScopes(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
-                                                        SearchQueryDto.decodeFromSearchId(searchId)));
+                                                        SearchQueryDto.decodeFromSearchId(searchId),
+                                                        PagingConfiguration.UNPAGED));
         } catch (IOException e) {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;

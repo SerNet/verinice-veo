@@ -26,21 +26,24 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.QueryCondition;
 
 public class GetEntitiesInputMapper {
 
     public static GetEntitiesUseCase.InputData map(Client client, String unitUuid,
-            String displayName, String subType) {
+            String displayName, String subType, PagingConfiguration pagingConfiguration) {
         return new GetEntitiesUseCase.InputData(client, createUuidCondition(unitUuid),
-                createStringFilter(displayName), createNonEmptyCondition(subType));
+                createStringFilter(displayName), createNonEmptyCondition(subType),
+                pagingConfiguration);
     }
 
-    public static GetEntitiesUseCase.InputData map(Client client, SearchQueryDto searchQuery) {
+    public static GetEntitiesUseCase.InputData map(Client client, SearchQueryDto searchQuery,
+            PagingConfiguration pagingConfiguration) {
         return new GetEntitiesUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
                 transformCondition(searchQuery.getDisplayName()),
-                transformCondition(searchQuery.getSubType()));
+                transformCondition(searchQuery.getSubType()), pagingConfiguration);
     }
 
     private static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {

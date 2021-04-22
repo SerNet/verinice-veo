@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -26,12 +27,18 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
+import org.veo.core.repository.PagedResult;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.repository.EntityLayerSupertypeQuery;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
@@ -68,11 +75,16 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
 
     @Override
     @Transactional(readOnly = true)
-    public List<TInterface> execute() {
-        return dataRepository.findAll(mySpec)
-                             .stream()
-                             .map(e -> (TInterface) e)
-                             .collect(Collectors.toList());
+    public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
+        Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
+        List<String> ids = items.stream()
+                                .map(EntityLayerSupertype::getDbId)
+                                .collect(Collectors.toList());
+        List<TDataClass> fullyLoadedItems = dataRepository.findAllById(ids);
+        fullyLoadedItems.sort(Comparator.comparingInt(item -> ids.indexOf(item.getDbId())));
+
+        return new PagedResult<>(pagingConfiguration, (List<TInterface>) fullyLoadedItems,
+                items.getTotalElements(), items.getTotalPages());
     }
 
     private Specification<TDataClass> createSpecification(Client client) {
@@ -89,5 +101,14 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
         } else {
             return criteriaBuilder.isTrue(column.in(values));
         }
+    }
+
+    protected static Pageable toPageable(PagingConfiguration pagingConfiguration) {
+        return PageRequest.of(pagingConfiguration.getPageNumber(),
+                              pagingConfiguration.getPageSize(),
+                              pagingConfiguration.getSortOrder() == PagingConfiguration.SortOrder.ASCENDING
+                                      ? Direction.ASC
+                                      : Direction.DESC,
+                              pagingConfiguration.getSortColumn());
     }
 }

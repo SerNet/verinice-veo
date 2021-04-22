@@ -17,9 +17,14 @@
 package org.veo.persistence.access
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 import org.veo.core.entity.Asset
+import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
+import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
@@ -65,10 +70,10 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        def result = query.execute()
+        def result = query.execute(PagingConfiguration.UNPAGED)
         then:
-        result.size() == 1
-        result[0].name == "client process"
+        result.totalResults == 1
+        result.resultPage.first().name == "client process"
     }
 
     def 'queries all processes'() {
@@ -79,9 +84,9 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
             newProcess(unit)
         ])
         when:
-        def all = query.execute()
+        def all = query.execute(PagingConfiguration.UNPAGED)
         then:
-        all.size() == 3
+        all.totalResults == 3
     }
 
     def 'queries by units'() {
@@ -96,11 +101,14 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
         when:
         query.whereUnitIn([unit, unit3] as Set)
-        def result = query.execute().sort { it.name }
+        def result = query.execute(PagingConfiguration.UNPAGED)
         then:
-        result.size() == 2
-        result[0].name == "1st process"
-        result[1].name == "3rd process"
+        result.totalResults == 2
+        with(result.resultPage) {
+            it.size() == 2
+            it[0].name == "1st process"
+            it[1].name == "3rd process"
+        }
     }
 
     def 'queries by sub type'() {
@@ -123,10 +131,11 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
         when:
         query.whereSubTypeIn(["VT"] as Set)
-        def result = query.execute()
+        def result = query.execute(PagingConfiguration.UNPAGED)
         then:
-        result.size() == 2
-        with(result.sort{it.name}) {
+        result.totalResults == 2
+        with(result.resultPage) {
+            it.size() == 2
             it[0].name == "a"
             it[1].name == "b"
         }
@@ -152,10 +161,11 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
         when:
         query.whereSubTypeIn([null] as Set)
-        def result = query.execute()
+        def result = query.execute(PagingConfiguration.UNPAGED)
         then:
-        result.size() == 2
-        with(result.sort{it.name}) {
+        result.totalResults == 2
+        with(result.resultPage) {
+            it.size() == 2
             it[0].name == "b"
             it[1].name == "c"
         }
@@ -180,9 +190,79 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
         when:
         query.whereUnitIn([unit2, unit3] as Set)
-        def result = query.execute()
+        def result = query.execute(PagingConfiguration.UNPAGED)
         then:
-        result.size() == 1
-        result[0].name == "process 2"
+
+        result.totalResults == 1
+        result.resultPage.first().name == "process 2"
+    }
+
+    def 'sort results by different properties'() {
+        given: "three processes"
+
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "process 0"
+                description = 'y'
+            },
+            newProcess(unit) {
+                name = "process 1"
+                description = 'z'
+            },
+            newProcess(unit) {
+                name = "process 2"
+                description = 'x'
+            }
+        ])
+
+        when: "querying processes sorted by name ascending"
+        def result = query.execute(new PagingConfiguration(3, 0, 'name', SortOrder.ASCENDING))
+
+        then: "the sort order is correct"
+        with(result.resultPage) {
+            size() == 3
+            it[0].name == "process 0"
+            it[1].name == "process 1"
+            it[2].name == "process 2"
+        }
+
+        when: "querying processes sorted by name descending"
+        result = query.execute( new PagingConfiguration(3, 0, 'name', SortOrder.DESCENDING))
+
+        then: "the sort order is correct"
+        with(result.resultPage) {
+            size() == 3
+            it[0].name == "process 2"
+            it[1].name == "process 1"
+            it[2].name == "process 0"
+        }
+
+        when: "querying processes sorted by description ascending"
+        result = query.execute( new PagingConfiguration(3, 0, 'description', SortOrder.ASCENDING))
+
+        then: "the sort order is correct"
+        with(result.resultPage) {
+            size() == 3
+            it[0].name == "process 2"
+            it[1].name == "process 0"
+            it[2].name == "process 1"
+        }
+    }
+
+    def 'Paging configuration is correctly passed to data repository'() {
+        given: 'a repository'
+        AssetDataRepository dataRepository = Mock()
+        def query = new EntityLayerSupertypeQueryImpl<>(dataRepository, client)
+        when:
+        def result = query.execute(new PagingConfiguration(2, 0, 'foo', SortOrder.ASCENDING))
+        then:
+        1 * dataRepository.findAll(_, { Pageable pageable->
+            pageable.pageSize == 2
+            pageable.pageNumber == 0
+            pageable.sort.size() == 1
+            pageable.sort.first().ascending
+            pageable.sort.first().property == 'foo'
+        }) >> Page.empty()
+        1 * dataRepository.findAllById(_) >> []
     }
 }

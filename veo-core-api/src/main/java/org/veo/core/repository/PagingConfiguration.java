@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Jonas Jordan.
+ * Copyright (c) 2021 Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -16,21 +16,24 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Set;
-
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Unit;
+import lombok.Data;
 
 /**
- * A dynamic database query for retrieving {@link EntityLayerSupertype} objects.
- *
- * @param <T>
- *            Entity type
+ * Used to limit the results from a repository to a number of items
  */
-public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
-    void whereUnitIn(Set<Unit> units);
+@Data
+public class PagingConfiguration {
 
-    PagedResult<T> execute(PagingConfiguration pagingConfiguration);
+    public static final PagingConfiguration UNPAGED = new PagingConfiguration(Integer.MAX_VALUE, 0,
+            "name", SortOrder.ASCENDING);
 
-    void whereSubTypeIn(Set<String> values);
+    private final int pageSize;
+    private final int pageNumber;
+    private final String sortColumn;
+    private final SortOrder sortOrder;
+
+    public enum SortOrder {
+        ASCENDING, DESCENDING
+    }
+
 }

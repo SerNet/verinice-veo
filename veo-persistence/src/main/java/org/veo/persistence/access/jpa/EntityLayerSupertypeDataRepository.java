@@ -16,13 +16,14 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,10 +36,10 @@ import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSupertypeData>
         extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
 
-    Collection<T> findByNameContainingIgnoreCase(String search);
+    Page<T> findByNameContainingIgnoreCase(String search, Pageable pageable);
 
     @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1")
-    List<T> findByOwner_Client_DbId(String clientId); // NOPMD
+    Page<T> findByOwner_Client_DbId(String clientId, Pageable pageable); // NOPMD
 
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.domains " + "left join fetch e.subTypeAspects "
@@ -52,7 +53,14 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     @Nonnull
     @Transactional(readOnly = true)
     @EntityGraph(EntityLayerSupertypeData.FULL_AGGREGATE_GRAPH)
-    List<T> findAll(Specification<T> specification);
+    List<T> findAllById(Iterable<String> ids);
+
+    @Override
+    @Nonnull
+    @Transactional(readOnly = true)
+    // TODO use a projection to return only the IDs once
+    // https://github.com/spring-projects/spring-data-jpa/issues/1378 is fixed
+    Page<T> findAll(Specification<T> specification, Pageable pageable);
 
     /**
      * Find all entities of the repository's type in the given units. (This includes

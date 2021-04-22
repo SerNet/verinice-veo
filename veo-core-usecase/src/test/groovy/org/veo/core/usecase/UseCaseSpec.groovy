@@ -21,6 +21,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.repository.PagedResult
 import org.veo.core.usecase.base.UnitHierarchyProvider
 import org.veo.core.usecase.repository.ClientRepository
 import org.veo.core.usecase.repository.RepositoryProvider
@@ -67,7 +68,7 @@ abstract class UseCaseSpec extends Specification {
         existingUnit.getParent() >> null
         existingUnit.getName() >> "Existing unit"
         existingUnit.getId() >> id
-        existingUnit.getDbId() >> id.uuidValue();
+        existingUnit.getDbId() >> id.uuidValue()
         existingUnit.getVersion() >> 0
 
         existingUnitHierarchyMembers = [
@@ -77,5 +78,9 @@ abstract class UseCaseSpec extends Specification {
         ]
 
         client.createUnit(_)>>existingUnit
+    }
+
+    PagedResult singleResult(entity, pagingConfiguration) {
+        new PagedResult(pagingConfiguration,[entity],  1, 1)
     }
 }

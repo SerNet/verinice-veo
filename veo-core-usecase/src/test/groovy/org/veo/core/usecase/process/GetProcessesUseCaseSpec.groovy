@@ -18,6 +18,7 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.repository.PagingConfiguration
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
@@ -28,6 +29,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
     EntityLayerSupertypeQuery<Process> query = Mock()
+    PagingConfiguration pagingConfiguration = Mock()
 
     GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider)
 
@@ -42,12 +44,12 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.getId() >> id
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null, null))
+        def output = usecase.execute(new InputData(existingClient, null, null, null,pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
-        1 * query.execute() >> [process]
+        1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
 
-        output.entities*.id == [id]
+        output.entities.resultPage*.id == [id]
     }
 
 
@@ -65,13 +67,13 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         null,
         Mock(QueryCondition) {
             getValues() >> ["subType 1", "subType 2"]
-        }))
+        },pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
-        1 * query.execute() >> [process]
-        output.entities*.id == [id]
+        1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
+        output.entities.resultPage*.id == [id]
     }
 }
