@@ -19,7 +19,6 @@ package org.veo.persistence.access;
 import static java.util.Collections.singleton;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -64,22 +63,6 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
         return new EntityLayerSupertypeQueryImpl<>(dataRepository, client);
     }
 
-    @Override
-    public List<T> findByClient(Client client) {
-        List<S> list = List.copyOf(dataRepository.findByOwner_Client_DbId(client.getId()
-                                                                                .uuidValue()));
-        return (List<T>) list;
-    }
-
-    @Override
-    public List<T> findByUnits(Set<Unit> units) {
-        var unitIdSet = units.stream()
-                             .map(unit -> unit.getId()
-                                              .uuidValue())
-                             .collect(Collectors.toSet());
-        return (List<T>) List.copyOf(dataRepository.findByUnits(unitIdSet));
-    }
-
     @Transactional
     public void deleteByUnit(Unit owner) {
         var entities = dataRepository.findByUnits(singleton(owner.getDbId()));
@@ -95,13 +78,6 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
         // using deleteAll() to utilize batching and optimistic locking:
         linkDataRepository.deleteAll(links);
         dataRepository.deleteAll(entities);
-    }
-
-    public List<T> findByLinkTarget(EntityLayerSupertype entity) {
-        return (List<T>) dataRepository.findByLinks_Target_DbId(entity.getId()
-                                                                      .uuidValue())
-                                       .stream()
-                                       .collect(Collectors.toList());
     }
 
     @Override

@@ -39,8 +39,6 @@ public interface Repository<T, K> {
 
     public Optional<T> findById(K id);
 
-    public List<T> findByName(String search);
-
     public Set<T> getByIds(Set<K> ids);
 
     public void delete(T entity);

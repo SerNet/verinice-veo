@@ -349,9 +349,18 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         deleteUnit()
 
         then: "all entities are removed"
-        personRepository.findByUnits([unit] as Set).size() == 0
-        assetRepository.findByUnits([unit] as Set).size() == 0
-        processRepository.findByUnits([unit] as Set).size() == 0
+        with(personRepository.query(client)) {
+            whereUnitIn([unit] as Set)
+            execute().empty
+        }
+        with(assetRepository.query(client)) {
+            whereUnitIn([unit] as Set)
+            execute().empty
+        }
+        with(processRepository.query(client)) {
+            whereUnitIn([unit] as Set)
+            execute().empty
+        }
         unitRepository.findByClient(client).size() == 0
 
         and:

@@ -64,12 +64,6 @@ abstract class AbstractModelObjectRepository<T extends ModelObject, S extends Ba
     }
 
     @Override
-    public List<T> findByName(String search) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     @Transactional
     public void delete(T entity) {
         deleteById(entity.getId());

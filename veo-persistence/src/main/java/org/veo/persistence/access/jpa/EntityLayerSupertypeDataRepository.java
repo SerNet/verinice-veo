@@ -72,14 +72,4 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     @Transactional(readOnly = true)
     Set<T> findByUnits(Set<String> unitIds);
 
-    /**
-     * Returns all entities of the repository's type that have a link with the given
-     * UUID as target.
-     *
-     * @param uuidValue
-     *            the UUID value of the targetted entity
-     */
-    @Transactional(readOnly = true)
-    List<T> findByLinks_Target_DbId(String uuidValue);
-
 }

@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
@@ -27,12 +25,6 @@ import org.veo.core.entity.Unit;
 
 public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
         extends Repository<T, Key<UUID>> {
-
-    public List<T> findByClient(Client client);
-
-    public List<T> findByUnits(Set<Unit> units);
-
-    public List<T> findByLinkTarget(EntityLayerSupertype entity);
 
     public void deleteByUnit(Unit owner);
 
