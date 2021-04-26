@@ -83,6 +83,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             type == "CREATION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
+            changeNumber == 0
             with(content) {
                 id == documentId
                 name == "doc"
@@ -103,6 +104,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             type == "MODIFICATION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
+            changeNumber == 1
             with(content) {
                 id == documentId
                 name == "super doc"
@@ -117,6 +119,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             type == "HARD_DELETION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
+            changeNumber == 2
             content == null
         }
     }

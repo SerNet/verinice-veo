@@ -86,7 +86,7 @@ public class VersioningEventListener {
                                                              entity.getId()
                                                                    .uuidValue()));
         tree.put("type", convertType(type));
-        tree.put("version", entity.getVersion());
+        tree.put("changeNumber", getChangeNumber(entity, type));
         tree.put("time", entity.getUpdatedAt()
                                .toString());
         tree.put("author", author);
@@ -102,6 +102,18 @@ public class VersioningEventListener {
             tree.set("content", objectMapper.valueToTree(dto));
         }
         return tree.toString();
+    }
+
+    private long getChangeNumber(ModelObject entity, VersioningEvent.Type type) {
+        // We use the JPA version number as a base for our continuous change number.
+        // When updating an entity, JPA increments the version number after this event
+        // creation, so we must add 1 to the version number. We must also add 1 in case
+        // of a deletion, because JPA won't assign a new number for a deleted entity.
+        var changeNumber = entity.getVersion();
+        if (type != VersioningEvent.Type.PERSIST) {
+            changeNumber++;
+        }
+        return changeNumber;
     }
 
     private String convertType(VersioningEvent.Type type) {
