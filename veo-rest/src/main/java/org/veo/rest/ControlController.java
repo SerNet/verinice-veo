@@ -63,6 +63,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -158,7 +159,7 @@ public class ControlController extends AbstractEntityController {
         Client client = getAuthenticatedClient(auth);
 
         CompletableFuture<FullControlDto> controlFuture = useCaseInteractor.execute(getControlUseCase,
-                                                                                    new GetControlUseCase.InputData(
+                                                                                    new UseCase.IdAndClient(
                                                                                             Key.uuidFrom(uuid),
                                                                                             client),
                                                                                     output -> entityToDtoTransformer.transformControl2Dto(output.getControl()));
@@ -181,14 +182,15 @@ public class ControlController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getControlUseCase, new GetControlUseCase.InputData(
-                Key.uuidFrom(uuid), client), output -> {
-                    Control scope = output.getControl();
-                    return scope.getParts()
-                                .stream()
-                                .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                .collect(Collectors.toList());
-                });
+        return useCaseInteractor.execute(getControlUseCase,
+                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+                                         output -> {
+                                             Control scope = output.getControl();
+                                             return scope.getParts()
+                                                         .stream()
+                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
+                                                         .collect(Collectors.toList());
+                                         });
     }
 
     @PostMapping()

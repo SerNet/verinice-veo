@@ -64,6 +64,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
@@ -176,7 +177,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
         Client client = getClient(user.getClientId());
 
         CompletableFuture<FullAssetDto> assetFuture = useCaseInteractor.execute(getAssetUseCase,
-                                                                                new GetAssetUseCase.InputData(
+                                                                                new UseCase.IdAndClient(
                                                                                         Key.uuidFrom(id),
                                                                                         client),
                                                                                 output -> {
@@ -202,7 +203,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getAssetUseCase,
-                                         new GetAssetUseCase.InputData(Key.uuidFrom(uuid), client),
+                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
                                              Asset scope = output.getAsset();
                                              return scope.getParts()

@@ -19,7 +19,6 @@ package org.veo.core.usecase
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.usecase.person.GetPersonUseCase
-import org.veo.core.usecase.person.GetPersonUseCase.InputData
 import org.veo.core.usecase.repository.PersonRepository
 
 class GetPersonUseCaseSpec extends UseCaseSpec {
@@ -37,7 +36,7 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(id,  existingClient))
+        def output = usecase.execute(new UseCase.IdAndClient(id,  existingClient))
         then:
         1 * personRepository.findById(id) >> Optional.of(person)
         output.person != null

@@ -16,24 +16,22 @@
  ******************************************************************************/
 package org.veo.core.usecase.domaintemplate;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.UseCaseTools;
 import org.veo.core.usecase.repository.ClientRepository;
 
 import lombok.Value;
 
-public class GetDomainTemplateUseCase implements
-        TransactionalUseCase<GetDomainTemplateUseCase.InputData, GetDomainTemplateUseCase.OutputData> {
+public class GetDomainTemplateUseCase
+        implements TransactionalUseCase<IdAndClient, GetDomainTemplateUseCase.OutputData> {
     private final DomainTemplateService templateService;
     private final ClientRepository clientRepository;
 
@@ -44,7 +42,7 @@ public class GetDomainTemplateUseCase implements
     }
 
     @Override
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Client client = UseCaseTools.checkClientExists(input.getAuthenticatedClient()
                                                             .getId(),
                                                        clientRepository);
@@ -53,13 +51,6 @@ public class GetDomainTemplateUseCase implements
                                                        .orElseThrow(() -> new NotFoundException(
                                                                "Invalid domain template"));
         return new OutputData(domainTemplate);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

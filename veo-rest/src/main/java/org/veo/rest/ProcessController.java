@@ -66,6 +66,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -156,7 +157,7 @@ public class ProcessController extends AbstractEntityController implements Proce
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id) {
         CompletableFuture<FullProcessDto> processFuture = useCaseInteractor.execute(getProcessUseCase,
-                                                                                    (Supplier<GetProcessUseCase.InputData>) () -> new GetProcessUseCase.InputData(
+                                                                                    (Supplier<UseCase.IdAndClient>) () -> new UseCase.IdAndClient(
                                                                                             Key.uuidFrom(id),
                                                                                             getAuthenticatedClient(auth))
 
@@ -181,14 +182,15 @@ public class ProcessController extends AbstractEntityController implements Proce
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getProcessUseCase, new GetProcessUseCase.InputData(
-                Key.uuidFrom(uuid), client), output -> {
-                    Process scope = output.getProcess();
-                    return scope.getParts()
-                                .stream()
-                                .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                .collect(Collectors.toList());
-                });
+        return useCaseInteractor.execute(getProcessUseCase,
+                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+                                         output -> {
+                                             Process scope = output.getProcess();
+                                             return scope.getParts()
+                                                         .stream()
+                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
+                                                         .collect(Collectors.toList());
+                                         });
     }
 
     @PostMapping()

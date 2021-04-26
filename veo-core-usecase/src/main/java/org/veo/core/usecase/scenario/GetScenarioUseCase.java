@@ -16,25 +16,22 @@
  ******************************************************************************/
 package org.veo.core.usecase.scenario;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
 /**
  * Reinstantiate a persisted scenario object.
  */
-public class GetScenarioUseCase implements
-        TransactionalUseCase<GetScenarioUseCase.InputData, GetScenarioUseCase.OutputData> {
+public class GetScenarioUseCase
+        implements TransactionalUseCase<IdAndClient, GetScenarioUseCase.OutputData> {
 
     private final ScenarioRepository repository;
 
@@ -42,19 +39,12 @@ public class GetScenarioUseCase implements
         this.repository = repository;
     }
 
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Scenario scenario = repository.findById(input.getId())
                                       .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                     .uuidValue()));
-        scenario.checkSameClient(input.authenticatedClient);
+        scenario.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(scenario);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

@@ -18,8 +18,8 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.process.GetProcessUseCase.InputData
 import org.veo.core.usecase.repository.ProcessRepository
 
 class GetProcessUseCaseSpec extends UseCaseSpec {
@@ -36,7 +36,7 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
         process.getId() >> id
 
         when:
-        def output = usecase.execute(new InputData(id,  existingClient))
+        def output = usecase.execute(new UseCase.IdAndClient(id,  existingClient))
         then:
         1 * processRepository.findById(id) >> Optional.of(process)
         output.process != null

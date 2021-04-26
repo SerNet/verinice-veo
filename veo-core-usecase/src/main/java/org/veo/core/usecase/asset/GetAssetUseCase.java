@@ -16,22 +16,19 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
 public class GetAssetUseCase
-        implements TransactionalUseCase<GetAssetUseCase.InputData, GetAssetUseCase.OutputData> {
+        implements TransactionalUseCase<IdAndClient, GetAssetUseCase.OutputData> {
 
     private final AssetRepository repository;
 
@@ -39,19 +36,12 @@ public class GetAssetUseCase
         this.repository = repository;
     }
 
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Asset asset = repository.findById(input.getId())
                                 .orElseThrow(() -> new NotFoundException(input.getId()
                                                                               .uuidValue()));
-        asset.checkSameClient(input.authenticatedClient);
+        asset.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(asset);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

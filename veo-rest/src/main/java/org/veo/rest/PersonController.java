@@ -62,6 +62,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -156,7 +157,7 @@ public class PersonController extends AbstractEntityController {
         Client client = getAuthenticatedClient(auth);
 
         CompletableFuture<FullPersonDto> personFuture = useCaseInteractor.execute(getPersonUseCase,
-                                                                                  new GetPersonUseCase.InputData(
+                                                                                  new UseCase.IdAndClient(
                                                                                           Key.uuidFrom(uuid),
                                                                                           client),
                                                                                   output -> entityToDtoTransformer.transformPerson2Dto(output.getPerson()));
@@ -180,7 +181,7 @@ public class PersonController extends AbstractEntityController {
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getPersonUseCase,
-                                         new GetPersonUseCase.InputData(Key.uuidFrom(uuid), client),
+                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
                                              Person scope = output.getPerson();
                                              return scope.getParts()

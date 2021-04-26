@@ -62,6 +62,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Key;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -156,7 +157,7 @@ public class DocumentController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
 
         CompletableFuture<FullDocumentDto> documentFuture = useCaseInteractor.execute(getDocumentUseCase,
-                                                                                      new GetDocumentUseCase.InputData(
+                                                                                      new UseCase.IdAndClient(
                                                                                               Key.uuidFrom(id),
                                                                                               client),
                                                                                       output -> entityToDtoTransformer.transformDocument2Dto(output.getDocument()));
@@ -179,14 +180,15 @@ public class DocumentController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getDocumentUseCase, new GetDocumentUseCase.InputData(
-                Key.uuidFrom(uuid), client), output -> {
-                    Document scope = output.getDocument();
-                    return scope.getParts()
-                                .stream()
-                                .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                .collect(Collectors.toList());
-                });
+        return useCaseInteractor.execute(getDocumentUseCase,
+                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+                                         output -> {
+                                             Document scope = output.getDocument();
+                                             return scope.getParts()
+                                                         .stream()
+                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
+                                                         .collect(Collectors.toList());
+                                         });
     }
 
     @PostMapping()

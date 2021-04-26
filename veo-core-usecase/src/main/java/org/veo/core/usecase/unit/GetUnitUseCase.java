@@ -16,17 +16,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
@@ -34,7 +31,7 @@ import lombok.Value;
  * Reinstantiate a persisted unit object.
  */
 public class GetUnitUseCase
-        implements TransactionalUseCase<GetUnitUseCase.InputData, GetUnitUseCase.OutputData> {
+        implements TransactionalUseCase<IdAndClient, GetUnitUseCase.OutputData> {
 
     private final UnitRepository repository;
 
@@ -47,19 +44,12 @@ public class GetUnitUseCase
      * if the requested unit object was not found in the repository.
      */
     @Override
-    public OutputData execute(InputData input) {
-        Unit unit = repository.findById(input.getUnitId())
-                              .orElseThrow(() -> new NotFoundException(input.getUnitId()
+    public OutputData execute(IdAndClient input) {
+        Unit unit = repository.findById(input.getId())
+                              .orElseThrow(() -> new NotFoundException(input.getId()
                                                                             .uuidValue()));
-        unit.checkSameClient(input.authenticatedClient);
+        unit.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(unit);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> unitId;
-        Client authenticatedClient;
     }
 
     @Valid

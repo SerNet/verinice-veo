@@ -16,25 +16,22 @@
  ******************************************************************************/
 package org.veo.core.usecase.incident;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
 /**
  * Reinstantiate a persisted incident object.
  */
-public class GetIncidentUseCase implements
-        TransactionalUseCase<GetIncidentUseCase.InputData, GetIncidentUseCase.OutputData> {
+public class GetIncidentUseCase
+        implements TransactionalUseCase<IdAndClient, GetIncidentUseCase.OutputData> {
 
     private final IncidentRepository repository;
 
@@ -42,19 +39,12 @@ public class GetIncidentUseCase implements
         this.repository = repository;
     }
 
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Incident incident = repository.findById(input.getId())
                                       .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                     .uuidValue()));
-        incident.checkSameClient(input.authenticatedClient);
+        incident.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(incident);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

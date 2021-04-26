@@ -16,25 +16,22 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
 
-public class GetCatalogItemUseCase implements
-        TransactionalUseCase<GetCatalogItemUseCase.InputData, GetCatalogItemUseCase.OutputData> {
+public class GetCatalogItemUseCase
+        implements TransactionalUseCase<IdAndClient, GetCatalogItemUseCase.OutputData> {
     private final CatalogItemRepository repository;
 
     public GetCatalogItemUseCase(CatalogItemRepository repository) {
@@ -42,25 +39,18 @@ public class GetCatalogItemUseCase implements
     }
 
     @Override
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         CatalogItem catalogItem = repository.findById(input.getId())
                                             .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                           .uuidValue()));
 
         DomainTemplate domaintemplate = catalogItem.getCatalog()
                                                    .getDomainTemplate();
-        UseCaseTools.checkDomainBelongsToClient(input.authenticatedClient, domaintemplate);
+        UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domaintemplate);
         if (!((Domain) domaintemplate).isActive()) {
             throw new NotFoundException("Domain is inactive.");
         }
         return new OutputData(catalogItem);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

@@ -14,17 +14,14 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.domain;
+package org.veo.core.usecase.domain
 
-import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.DomainRepository
+import org.veo.core.usecase.UseCase.IdAndClient
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.domain.GetDomainUseCase
-import org.veo.core.usecase.domain.GetDomainUseCase.InputData
 import org.veo.core.usecase.repository.ClientRepository
 
 class GetDomainUseCaseSpec extends UseCaseSpec {
@@ -47,7 +44,7 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
     def "retrieve a domain"() {
         when :
         existingDomain.isActive() >> true
-        def output = usecase.execute(new InputData(existingDomainId,  existingClient))
+        def output = usecase.execute(new IdAndClient(existingDomainId,  existingClient))
         then:
         output.domain != null
         output.domain.id == existingDomainId
@@ -56,21 +53,21 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
     def "retrieve an inactive domain"() {
         when:
         existingDomain.isActive() >> false
-        def output = usecase.execute(new InputData(existingDomainId,  existingClient))
+        def output = usecase.execute(new IdAndClient(existingDomainId,  existingClient))
         then:
         thrown(NotFoundException)
     }
 
     def "retrieve a domain unknown client"() {
         when:
-        def output = usecase.execute(new InputData(existingDomainId,  anotherClient))
+        def output = usecase.execute(new IdAndClient(existingDomainId,  anotherClient))
         then:
         thrown(ClientBoundaryViolationException)
     }
 
     def "retrieve an unknown domain"() {
         when:
-        def output = usecase.execute(new InputData(Key.newUuid(),  existingClient))
+        def output = usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
         then:
         thrown(NotFoundException)
     }

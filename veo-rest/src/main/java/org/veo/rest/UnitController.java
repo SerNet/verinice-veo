@@ -61,6 +61,7 @@ import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
@@ -154,7 +155,7 @@ public class UnitController extends AbstractEntityController {
             @PathVariable String id) {
 
         CompletableFuture<FullUnitDto> unitFuture = useCaseInteractor.execute(getUnitUseCase,
-                                                                              new GetUnitUseCase.InputData(
+                                                                              new UseCase.IdAndClient(
                                                                                       Key.uuidFrom(id),
                                                                                       getAuthenticatedClient(auth)),
                                                                               output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));

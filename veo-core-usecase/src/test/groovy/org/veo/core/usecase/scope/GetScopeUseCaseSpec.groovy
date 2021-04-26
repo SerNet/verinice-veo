@@ -18,6 +18,7 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
+import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.repository.ScopeRepository
 
@@ -38,7 +39,7 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
             getId() >> scopeId
         }
         when:
-        def output = usecase.execute(new GetScopeUseCase.InputData(scopeId, existingClient))
+        def output = usecase.execute(new UseCase.IdAndClient(scopeId, existingClient))
         then:
         1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
         output.scope != null

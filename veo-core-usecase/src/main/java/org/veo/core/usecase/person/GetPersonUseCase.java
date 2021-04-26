@@ -16,17 +16,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.person;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
@@ -34,7 +31,7 @@ import lombok.Value;
  * Reinstantiate a persisted person object.
  */
 public class GetPersonUseCase
-        implements TransactionalUseCase<GetPersonUseCase.InputData, GetPersonUseCase.OutputData> {
+        implements TransactionalUseCase<IdAndClient, GetPersonUseCase.OutputData> {
 
     private final PersonRepository repository;
 
@@ -43,19 +40,12 @@ public class GetPersonUseCase
     }
 
     @Override
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Person person = repository.findById(input.getId())
                                   .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                 .uuidValue()));
-        person.checkSameClient(input.authenticatedClient);
+        person.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(person);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

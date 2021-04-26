@@ -16,8 +16,16 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import javax.validation.Valid;
+
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
+
+import lombok.Value;
 
 /**
  * Superclass for all use cases. Each use case must provide an implementation of
@@ -82,6 +90,13 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
         private EmptyOutput() {
 
         }
+    }
+
+    @Valid
+    @Value
+    public static class IdAndClient implements UseCase.InputData {
+        Key<UUID> id;
+        Client authenticatedClient;
     }
 
 }

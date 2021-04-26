@@ -14,7 +14,7 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.catalog;
+package org.veo.core.usecase.catalog
 
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.DomainTemplate
@@ -22,8 +22,8 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.CatalogRepository
+import org.veo.core.usecase.UseCase.IdAndClient
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.catalog.GetCatalogUseCase.InputData
 
 class GetCatalogUseCaseSpec extends UseCaseSpec {
 
@@ -58,7 +58,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new InputData(catalogId,  existingClient))
+        def output = usecase.execute(new IdAndClient(catalogId,  existingClient))
         then:
         output.catalog != null
         output.catalog.id == catalogId
@@ -67,7 +67,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for another client"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new InputData(catalogId,  anotherClient))
+        def output = usecase.execute(new IdAndClient(catalogId,  anotherClient))
         then:
         thrown(ClientBoundaryViolationException)
     }
@@ -75,7 +75,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for inactive domain"() {
         when:
         existingDomain.isActive() >> false
-        def output = usecase.execute(new InputData(catalogId,  existingClient))
+        def output = usecase.execute(new IdAndClient(catalogId,  existingClient))
         then:
         thrown(NotFoundException)
     }
@@ -83,7 +83,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve an unknown catalog"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new InputData(Key.newUuid(),  existingClient))
+        def output = usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
         then:
         thrown(NotFoundException)
     }
@@ -91,7 +91,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for domain template"() {
         anotherClient.getDomains() >> [domaintemplate]
         when:
-        def output = usecase.execute(new InputData(catalog1Id,  anotherClient))
+        def output = usecase.execute(new IdAndClient(catalog1Id,  anotherClient))
         then:
         thrown(IllegalArgumentException)
     }

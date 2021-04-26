@@ -62,6 +62,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -166,7 +167,7 @@ public class ScopeController extends AbstractEntityController {
         Client client = getAuthenticatedClient(auth);
 
         CompletableFuture<FullScopeDto> scopeFuture = useCaseInteractor.execute(getScopeUseCase,
-                                                                                new GetScopeUseCase.InputData(
+                                                                                new UseCase.IdAndClient(
                                                                                         Key.uuidFrom(uuid),
                                                                                         client),
                                                                                 output -> entityToDtoTransformer.transformScope2Dto(output.getScope()));
@@ -189,7 +190,7 @@ public class ScopeController extends AbstractEntityController {
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getScopeUseCase,
-                                         new GetScopeUseCase.InputData(Key.uuidFrom(uuid), client),
+                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
                                              Scope scope = output.getScope();
                                              return scope.getMembers()

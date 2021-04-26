@@ -16,25 +16,22 @@
  ******************************************************************************/
 package org.veo.core.usecase.document;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
 /**
  * Reinstantiate a persisted document object.
  */
-public class GetDocumentUseCase implements
-        TransactionalUseCase<GetDocumentUseCase.InputData, GetDocumentUseCase.OutputData> {
+public class GetDocumentUseCase
+        implements TransactionalUseCase<IdAndClient, GetDocumentUseCase.OutputData> {
 
     private final DocumentRepository repository;
 
@@ -42,19 +39,12 @@ public class GetDocumentUseCase implements
         this.repository = repository;
     }
 
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Document document = repository.findById(input.getId())
                                       .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                     .uuidValue()));
-        document.checkSameClient(input.authenticatedClient);
+        document.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(document);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

@@ -16,25 +16,22 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalog;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
 import org.veo.core.entity.Catalog;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
 
 public class GetCatalogUseCase
-        implements TransactionalUseCase<GetCatalogUseCase.InputData, GetCatalogUseCase.OutputData> {
+        implements TransactionalUseCase<IdAndClient, GetCatalogUseCase.OutputData> {
     private final CatalogRepository repository;
 
     public GetCatalogUseCase(CatalogRepository repository) {
@@ -42,7 +39,7 @@ public class GetCatalogUseCase
     }
 
     @Override
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Catalog catalog = repository.findById(input.getId())
                                     .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                   .uuidValue()));
@@ -52,13 +49,6 @@ public class GetCatalogUseCase
             throw new NotFoundException("Domain is inactive.");
         }
         return new OutputData(catalog);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

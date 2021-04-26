@@ -14,15 +14,14 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.domaintemplate;
+package org.veo.core.usecase.domaintemplate
 
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.service.DomainTemplateService
+import org.veo.core.usecase.UseCase.IdAndClient
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase
-import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase.InputData
 import org.veo.core.usecase.repository.ClientRepository
 
 
@@ -42,7 +41,7 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
         clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
 
         when:
-        def output = usecase.execute(new InputData(id,  existingClient))
+        def output = usecase.execute(new IdAndClient(id,  existingClient))
         then:
         output.domainTemplate != null
         output.domainTemplate.id == id
@@ -56,7 +55,7 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
 
         clientRepository.findById(existingClient.id) >> Optional.empty()
         when:
-        def output = usecase.execute(new InputData(id,  existingClient))
+        def output = usecase.execute(new IdAndClient(id,  existingClient))
         then:
         thrown(NotFoundException)
     }

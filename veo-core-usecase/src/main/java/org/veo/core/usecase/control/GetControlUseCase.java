@@ -16,17 +16,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
@@ -34,7 +31,7 @@ import lombok.Value;
  * Reinstantiate a persisted control object.
  */
 public class GetControlUseCase
-        implements TransactionalUseCase<GetControlUseCase.InputData, GetControlUseCase.OutputData> {
+        implements TransactionalUseCase<IdAndClient, GetControlUseCase.OutputData> {
 
     private final ControlRepository repository;
 
@@ -43,19 +40,12 @@ public class GetControlUseCase
     }
 
     @Override
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Control control = repository.findById(input.getId())
                                     .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                   .uuidValue()));
-        control.checkSameClient(input.authenticatedClient);
+        control.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(control);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

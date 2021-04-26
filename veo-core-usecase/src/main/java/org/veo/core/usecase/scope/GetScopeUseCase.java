@@ -16,22 +16,19 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
 public class GetScopeUseCase
-        implements TransactionalUseCase<GetScopeUseCase.InputData, GetScopeUseCase.OutputData> {
+        implements TransactionalUseCase<IdAndClient, GetScopeUseCase.OutputData> {
 
     private final ScopeRepository scopeRepository;
 
@@ -40,19 +37,12 @@ public class GetScopeUseCase
     }
 
     @Override
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Scope scope = scopeRepository.findById(input.getId())
                                      .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                    .uuidValue()));
-        scope.checkSameClient(input.authenticatedClient);
+        scope.checkSameClient(input.getAuthenticatedClient());
         return new OutputData(scope);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid

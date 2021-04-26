@@ -62,6 +62,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
@@ -157,7 +158,7 @@ public class ScenarioController extends AbstractEntityController {
         Client client = getClient(user.getClientId());
 
         CompletableFuture<FullScenarioDto> scenarioFuture = useCaseInteractor.execute(getScenarioUseCase,
-                                                                                      new GetScenarioUseCase.InputData(
+                                                                                      new UseCase.IdAndClient(
                                                                                               Key.uuidFrom(id),
                                                                                               client),
                                                                                       output -> {
@@ -182,14 +183,15 @@ public class ScenarioController extends AbstractEntityController {
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getScenarioUseCase, new GetScenarioUseCase.InputData(
-                Key.uuidFrom(uuid), client), output -> {
-                    Scenario scope = output.getScenario();
-                    return scope.getParts()
-                                .stream()
-                                .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                .collect(Collectors.toList());
-                });
+        return useCaseInteractor.execute(getScenarioUseCase,
+                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+                                         output -> {
+                                             Scenario scope = output.getScenario();
+                                             return scope.getParts()
+                                                         .stream()
+                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
+                                                         .collect(Collectors.toList());
+                                         });
     }
 
     @PostMapping()

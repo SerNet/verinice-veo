@@ -16,23 +16,20 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
 public class GetDomainUseCase
-        implements TransactionalUseCase<GetDomainUseCase.InputData, GetDomainUseCase.OutputData> {
+        implements TransactionalUseCase<IdAndClient, GetDomainUseCase.OutputData> {
     private final DomainRepository repository;
 
     public GetDomainUseCase(DomainRepository repository) {
@@ -40,11 +37,12 @@ public class GetDomainUseCase
     }
 
     @Override
-    public OutputData execute(InputData input) {
+    public OutputData execute(IdAndClient input) {
         Domain domain = repository.findById(input.getId())
                                   .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                 .uuidValue()));
-        if (!input.authenticatedClient.equals(domain.getOwner())) {
+        if (!input.getAuthenticatedClient()
+                  .equals(domain.getOwner())) {
             throw new ClientBoundaryViolationException(
                     "The domain is not accessable from this client.");
         }
@@ -52,13 +50,6 @@ public class GetDomainUseCase
             throw new NotFoundException("Domain is inactive.");
         }
         return new OutputData(domain);
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
     }
 
     @Valid
