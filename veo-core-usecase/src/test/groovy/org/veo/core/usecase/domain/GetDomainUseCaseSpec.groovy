@@ -22,12 +22,10 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.DomainRepository
 import org.veo.core.usecase.UseCase.IdAndClient
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.repository.ClientRepository
 
 class GetDomainUseCaseSpec extends UseCaseSpec {
 
     DomainRepository repository = Mock()
-    ClientRepository clientRepository = Mock()
     Key existingDomainId
 
     GetDomainUseCase usecase = new GetDomainUseCase(repository)

@@ -14,36 +14,25 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.domain;
+package org.veo.core.usecase.domain
 
-import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
-import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.repository.DomainRepository
-import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.domain.GetDomainsUseCase
 import org.veo.core.usecase.domain.GetDomainsUseCase.InputData
-import org.veo.core.usecase.repository.ClientRepository
 
 
 class GetDomainsUseCaseSpec extends UseCaseSpec {
 
-    DomainRepository repository = Mock()
     Key existingDomainId
 
-    GetDomainsUseCase usecase = new GetDomainsUseCase(repository)
+    GetDomainsUseCase usecase = new GetDomainsUseCase()
 
     def setup() {
         existingDomainId = Key.newUuid()
         existingDomain.getId() >> existingDomainId
         existingDomain.owner >> existingClient
         existingDomain.active >> true
-
-        repository.findById(existingDomainId) >> Optional.of(existingDomain)
-        repository.findById(_) >> Optional.empty()
     }
 
 

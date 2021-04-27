@@ -23,7 +23,6 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -31,12 +30,6 @@ import lombok.Value;
 
 public class GetDomainsUseCase
         implements TransactionalUseCase<GetDomainsUseCase.InputData, GetDomainsUseCase.OutputData> {
-
-    private final DomainRepository repository;
-
-    public GetDomainsUseCase(DomainRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public OutputData execute(InputData input) {
