@@ -277,10 +277,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         saveWithAddedCompositePersons(100, "person", scope )
 
         then:
-        assertDeleteCount(0)
+        assertDeleteCount(1)
         assertInsertCount(35)
         assertUpdateCount(5)
-        assertSelectCount(8)
+        assertSelectCount(7)
     }
 
     def "SQL performance for selecting units of a client"() {

@@ -49,7 +49,7 @@ public abstract class CatalogableData extends BaseModelObjectData implements Cat
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
 
-    @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
     private Set<CatalogItem> appliedCatalogItems;
 
     @NotNull
