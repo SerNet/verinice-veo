@@ -38,6 +38,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
@@ -57,6 +58,8 @@ import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
+import org.veo.core.usecase.domain.GetDomainUseCase;
+import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
@@ -394,6 +397,16 @@ public class ModuleConfiguration {
     @Bean
     public GetAssetRisksUseCase getAssetRisksUseCase(RepositoryProvider repositoryProvider) {
         return new GetAssetRisksUseCase(repositoryProvider);
+    }
+
+    @Bean
+    public GetDomainUseCase getDomainUseCase(DomainRepository domainRepository) {
+        return new GetDomainUseCase(domainRepository);
+    }
+
+    @Bean
+    public GetDomainsUseCase getDomainsUseCase() {
+        return new GetDomainsUseCase();
     }
 
     @Bean

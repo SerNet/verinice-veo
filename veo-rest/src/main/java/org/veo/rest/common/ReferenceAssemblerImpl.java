@@ -63,6 +63,7 @@ import org.veo.rest.AssetController;
 import org.veo.rest.AssetRiskResource;
 import org.veo.rest.ControlController;
 import org.veo.rest.DocumentController;
+import org.veo.rest.DomainController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.PersonController;
 import org.veo.rest.ProcessController;
@@ -130,11 +131,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                          id)).withRel(IncidentController.URL_BASE_PATH)
                                                                              .getHref();
         }
-        // FIXME VEO-227 There is no ressource endpoint for Domain objects so we
-        // cannot
-        // create a URL to them.
         if (Domain.class.isAssignableFrom(type)) {
-            return "/" + Domain.PLURAL_TERM + "/" + id;
+            return linkTo(methodOn(DomainController.class).getDomain(ANY_AUTH,
+                                                                     id)).withRel(DomainController.URL_BASE_PATH)
+                                                                         .getHref();
         }
         // Some model object types have no endpoint.
         if (Client.class.isAssignableFrom(type) || Catalog.class.isAssignableFrom(type)
@@ -213,9 +213,14 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                           ANY_SEARCH)).withRel(IncidentController.URL_BASE_PATH)
                                                                                       .getHref();
         }
+        if (Domain.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(DomainController.class).createSearch(ANY_AUTH,
+                                                                        ANY_SEARCH)).withRel(DomainController.URL_BASE_PATH)
+                                                                                    .getHref();
+        }
         // Some model object types have no endpoint.
-        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)
-                || Catalog.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)
+        if (Client.class.isAssignableFrom(type) || Catalog.class.isAssignableFrom(type)
+                || CatalogItem.class.isAssignableFrom(type)
                 || DomainTemplate.class.isAssignableFrom(type)) {
             return null;
         }
@@ -279,9 +284,13 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                                                   .withSelfRel()
                                                                                                   .getHref();
         }
+        if (Domain.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(DomainController.class).getDomains(ANY_AUTH)).withSelfRel()
+                                                                                .getHref();
+        }
         // Some model object types have no endpoint.
-        if (Client.class.isAssignableFrom(type) || Domain.class.isAssignableFrom(type)
-                || Catalog.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)
+        if (Client.class.isAssignableFrom(type) || Catalog.class.isAssignableFrom(type)
+                || CatalogItem.class.isAssignableFrom(type)
                 || DomainTemplate.class.isAssignableFrom(type)) {
             return null;
         }
