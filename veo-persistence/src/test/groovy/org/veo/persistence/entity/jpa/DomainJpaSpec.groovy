@@ -250,7 +250,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             referenceType = TailoringReferenceType.COPY
         }
 
-        item3.tailoringReference = [tr1]
+        item3.tailoringReferences = [tr1]
         item3 = catalogItemRepository.save(item3)
         control3 = item3.element
 
@@ -276,9 +276,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
             it[0].element.name == 'c1'
             it[1].element.name == 'c2'
             it[2].element.name == 'c3'
-            it[2].tailoringReference.size() == 1
-            it[2].tailoringReference[0].referenceType == TailoringReferenceType.COPY
-            it[2].tailoringReference[0].catalogItem.id == item2.id
+            it[2].tailoringReferences.size() == 1
+            it[2].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
+            it[2].tailoringReferences[0].catalogItem.id == item2.id
         }
     }
 
@@ -327,7 +327,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             catalogItem = item2
             referenceType = TailoringReferenceType.COPY
         }
-        item3.tailoringReference = [tr1]
+        item3.tailoringReferences = [tr1]
         item3 = catalogItemRepository.save(item3)
 
         Asset asset1 = newAsset(item4) {
@@ -344,7 +344,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
         item5.element = process1
         process1.setSubType(domain0, "Test")
-        item5.tailoringReference = [
+        item5.tailoringReferences = [
             newTailoringReference() {
                 catalogItem = item2
                 referenceType = TailoringReferenceType.COPY
@@ -382,14 +382,14 @@ class DomainJpaSpec extends AbstractJpaSpec {
             it[0].element.description == control1.description
             it[1].element.name == 'c2'
             it[2].element.name == 'c3'
-            it[2].tailoringReference.size() == 1
-            it[2].tailoringReference[0].referenceType == TailoringReferenceType.COPY
-            it[2].tailoringReference[0].catalogItem.id == item2.id
+            it[2].tailoringReferences.size() == 1
+            it[2].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
+            it[2].tailoringReferences[0].catalogItem.id == item2.id
             it[3].element.name == 'd1'
             it[3].element.parts.first().name == asset2.name
             it[4].element.name == 'p1'
             it[4].element.subTypeAspects.size() == 1
-            it[4].tailoringReference.size() == 2
+            it[4].tailoringReferences.size() == 2
         }
 
         when: "create entities linked to catalogItems"

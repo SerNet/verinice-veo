@@ -40,9 +40,9 @@ public interface CatalogItem extends ElementOwner {
     /**
      * All the tailoring references for this catalog item.
      */
-    Set<TailoringReference> getTailoringReference();
+    Set<TailoringReference> getTailoringReferences();
 
-    void setTailoringReference(Set<TailoringReference> aTailoringReference);
+    void setTailoringReferences(Set<TailoringReference> aTailoringReferences);
 
     /**
      * The catalogable is the template element which will applied. A copy of the

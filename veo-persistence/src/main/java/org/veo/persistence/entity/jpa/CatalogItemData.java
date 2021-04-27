@@ -48,13 +48,13 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
     @ManyToOne(targetEntity = CatalogData.class)
     private Catalog catalog;
 
-    @Column(name = "tailoringreference")
+    @Column(name = "tailoringreferences")
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = TailoringReferenceData.class,
                mappedBy = "owner",
                fetch = FetchType.LAZY)
-    private Set<TailoringReference> tailoringReference = new HashSet<>();
+    private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
     @ManyToOne(optional = true, targetEntity = CatalogableData.class, cascade = CascadeType.ALL)
     private Catalogable element;
