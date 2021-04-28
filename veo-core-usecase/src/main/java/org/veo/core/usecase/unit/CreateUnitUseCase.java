@@ -18,6 +18,7 @@
 package org.veo.core.usecase.unit;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
@@ -57,36 +59,14 @@ public class CreateUnitUseCase
     private final ClientRepository clientRepository;
     private final UnitRepository unitRepository;
     private final EntityFactory entityFactory;
+    private final DomainTemplateService domainTemplateService;
 
     public CreateUnitUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
-            EntityFactory entityFactory) {
+            EntityFactory entityFactory, DomainTemplateService domainTemplateService) {
         this.clientRepository = clientRepository;
         this.unitRepository = unitRepository;
         this.entityFactory = entityFactory;
-
-    }
-
-    /**
-     * Returns a default domain.
-     *
-     * See VEO-227.
-     *
-     * Until this is implemented, it is impossible to create a domain (required when
-     * creating a new client) using the existing REST endpoints. The existing tests
-     * only worked because they create a domain object using the domain repository
-     * directly.
-     *
-     * It is also impossible to add or remove domains using the REST endpoints.
-     * Therefore we need this singular domain as a placeholder.
-     *
-     * @return a placeholder domain that will be replaced by the first real domain
-     *         once it is implemented
-     */
-    // TODO VEO-227
-    private Domain defaultDomain() {
-        var domain = entityFactory.createDomain("Placeholder domain - see issue VEO-227", "self",
-                                                "0.0", "1");
-        return domain;
+        this.domainTemplateService = domainTemplateService;
     }
 
     @Override
@@ -134,10 +114,8 @@ public class CreateUnitUseCase
         // and abbreviation:
         Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
                                                                              .getName());
-        // TODO VEO-227 It is currently not possible to create a new domain
-        // using REST resources,
-        // so we have to use one default domain for a new client:
-        client.addToDomains(defaultDomain());
+        Set<Domain> domainFromTemplate = domainTemplateService.createDefaultDomains(client);
+        domainFromTemplate.forEach(dt -> client.addToDomains(dt));
         return clientRepository.save(client);
     }
 

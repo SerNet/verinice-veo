@@ -108,7 +108,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 6
         queryCounts.update == 0
-        queryCounts.select == 6
+        queryCounts.select == 7
     }
 
     def "SQL performance for saving 1 process"() {

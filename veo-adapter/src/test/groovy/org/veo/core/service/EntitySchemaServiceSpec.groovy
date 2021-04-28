@@ -24,7 +24,9 @@ import spock.lang.Specification
 
 class EntitySchemaServiceSpec extends Specification {
 
-    EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl()
+    private static final String SCHEMA_FILES_PATH = "/schemas/entity/";
+
+    EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl(SCHEMA_FILES_PATH)
 
     def "custom properties are contained in 'attributes' array"() {
         given: 'The control schema for with GDPR extensions'

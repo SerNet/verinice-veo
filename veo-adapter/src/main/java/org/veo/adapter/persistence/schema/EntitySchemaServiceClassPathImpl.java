@@ -26,10 +26,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.service.EntitySchemaService;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -40,10 +43,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
-    private static final String SCHEMA_FILES_PATH = "/schemas/entity/";
     private static final Set<String> VALID_CLASS_NAMES = ModelObjectType.ENTITY_TYPES.stream()
                                                                                      .map(Class::getSimpleName)
                                                                                      .collect(Collectors.toSet());
+    private final String schemaFilePath;
+
+    public EntitySchemaServiceClassPathImpl(@NonNull @NotNull String schemaFilePath) {
+        this.schemaFilePath = schemaFilePath;
+        log.info("Configured schema path for default domain: {}", this.schemaFilePath);
+    }
 
     @Override
     public String findSchema(String type, List<String> domains) {
@@ -52,8 +60,8 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
             throw new IllegalArgumentException(
                     String.format("Type \"%s\" is not a valid schema.", type));
         }
-        log.debug("Getting static JSON schema file for type: {}", type);
-        return extract(SCHEMA_FILES_PATH + typeClassName + ".json");
+        log.debug("Getting static JSON schema file for type: {} in path: {}", type, schemaFilePath);
+        return extract(schemaFilePath + typeClassName + ".json");
     }
 
     @Override

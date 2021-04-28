@@ -24,14 +24,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainTemplate;
@@ -48,8 +45,6 @@ import lombok.ToString;
 public class DomainTemplateData extends BaseModelObjectData implements DomainTemplate, Nameable {
     @Id
     @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
     @NotNull
     @Column(name = "name")

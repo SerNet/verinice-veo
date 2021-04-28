@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 
@@ -119,4 +120,6 @@ public interface EntityLayerSupertype
                     + " from client " + client.toString());
         }
     }
+
+    Set<SubTypeAspect> getSubTypeAspects();
 }

@@ -29,29 +29,41 @@ import java.util.stream.Collectors;
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
+import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
+import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
+import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
+import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
+import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
+import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
+import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
+import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -61,6 +73,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.transform.EntityFactory;
 
@@ -165,6 +178,57 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
+    public Domain transformDomainTemplateDto2Domain(AbstractDomainTemplateDto source,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createDomain(source.getName(), source.getAuthority(),
+                                          source.getTemplateVersion(), source.getRevision());
+        target.setActive(true);
+        mapDomainTemplate(source, modelObjectReferenceResolver, target);
+        return target;
+    }
+
+    public DomainTemplate transformDto2DomainTemplate(AbstractDomainTemplateDto source,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createDomainTemplate(source.getName(), source.getAuthority(),
+                                                  source.getTemplateVersion(), source.getRevision(),
+                                                  null);
+        mapIdentifiableProperties(source, target);
+        mapDomainTemplate(source, modelObjectReferenceResolver, target);
+
+        return target;
+    }
+
+    public Catalog transformDto2Catalog(AbstractCatalogDto source,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createCatalog(modelObjectReferenceResolver.resolve(source.getDomainTemplate()));
+        mapIdentifiableProperties(source, target);
+        mapNameableProperties(source, target);
+        if (source instanceof ReferenceCatalogDto) {
+            ReferenceCatalogDto catalogDto = (ReferenceCatalogDto) source;
+            target.setCatalogItems(modelObjectReferenceResolver.resolve(catalogDto.getCatalogItems()));
+        } else if (source instanceof CompositeCatalogDto) {
+            CompositeCatalogDto catalogDto = (CompositeCatalogDto) source;
+            target.setCatalogItems(convertSet(catalogDto.getCatalogItems(),
+                                              ci -> transformDto2CatalogItem(ci,
+                                                                             modelObjectReferenceResolver,
+                                                                             target)));
+        }
+
+        return target;
+    }
+
+    public TailoringReference transformDto2TailoringReference(AbstractTailoringReferenceDto source,
+            CatalogItem owner, ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        var target = factory.createTailoringReference(owner);
+        mapIdentifiableProperties(source, target);
+        if (source.getCatalogItem() != null) {
+            CatalogItem resolve = modelObjectReferenceResolver.resolve(source.getCatalogItem());
+            target.setCatalogItem(resolve);
+        }
+        target.setReferenceType(source.getReferenceType());
+        return target;
+    }
+
     // UnitDto->Unit
     public Unit transformDto2Unit(AbstractUnitDto source,
             ModelObjectReferenceResolver modelObjectReferenceResolver) {
@@ -209,6 +273,20 @@ public final class DtoToEntityTransformer {
         target.setType(type);
         entitySchema.validateCustomAspect(target);
         return target;
+    }
+
+    private void mapDomainTemplate(AbstractDomainTemplateDto source,
+            ModelObjectReferenceResolver modelObjectReferenceResolver, DomainTemplate target) {
+        mapNameableProperties(source, target);
+        if (source.getCatalogs() != null) {
+            target.setCatalogs(source.getCatalogs()
+                                     .stream()
+                                     .map(c -> transformDto2Catalog(c,
+                                                                    modelObjectReferenceResolver))
+                                     .collect(Collectors.toSet())
+
+            );
+        }
     }
 
     private <T extends EntityLayerSupertype> void mapCompositeEntity(CompositeEntityDto<T> source,
@@ -284,6 +362,54 @@ public final class DtoToEntityTransformer {
 
     private EntitySchema loadEntitySchema(String entityType) {
         return entitySchemaLoader.load(entityType);
+    }
+
+    public CatalogItem transformDto2CatalogItem(AbstractCatalogItemDto source,
+            ModelObjectReferenceResolver modelObjectReferenceResolver, Catalog catalog) {
+        var target = factory.createCatalogItem(catalog);
+        mapIdentifiableProperties(source, target);
+        target.setNamespace(source.getNamespace());
+        if (source instanceof CompositeCatalogItemDto) {
+            CompositeCatalogItemDto catalogitem = (CompositeCatalogItemDto) source;
+            CatalogableDto catalogableDto = catalogitem.getElement();
+            if (catalogableDto instanceof AbstractAssetDto) {
+                target.setElement(transformDto2Asset((AbstractAssetDto) catalogableDto,
+                                                     modelObjectReferenceResolver));
+            } else if (catalogableDto instanceof AbstractControlDto) {
+                target.setElement(transformDto2Control((AbstractControlDto) catalogableDto,
+                                                       modelObjectReferenceResolver));
+            } else if (catalogableDto instanceof AbstractDocumentDto) {
+                target.setElement(transformDto2Document((AbstractDocumentDto) catalogableDto,
+                                                        modelObjectReferenceResolver));
+            } else if (catalogableDto instanceof AbstractIncidentDto) {
+                target.setElement(transformDto2Incident((AbstractIncidentDto) catalogableDto,
+                                                        modelObjectReferenceResolver));
+            } else if (catalogableDto instanceof AbstractPersonDto) {
+                target.setElement(transformDto2Person((AbstractPersonDto) catalogableDto,
+                                                      modelObjectReferenceResolver));
+            } else if (catalogableDto instanceof AbstractProcessDto) {
+                target.setElement(transformDto2Process((AbstractProcessDto) catalogableDto,
+                                                       modelObjectReferenceResolver));
+            } else if (catalogableDto instanceof AbstractScenarioDto) {
+                target.setElement(transformDto2Scenario((AbstractScenarioDto) catalogableDto,
+                                                        modelObjectReferenceResolver));
+            }
+        } else if (source instanceof ReferenceCatalogItemDto) {
+            ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;
+            target.setElement(modelObjectReferenceResolver.resolve(catalogitem.getElement()));
+        }
+
+        if (target.getElement() != null) {
+            target.getElement()
+                  .setOwner(target);
+        }
+        target.getTailoringReferences()
+              .clear();
+        target.getTailoringReferences()
+              .addAll(convertSet(source.getTailoringReferences(),
+                                 tr -> transformDto2TailoringReference(tr, target,
+                                                                       modelObjectReferenceResolver)));
+        return target;
     }
 
 }

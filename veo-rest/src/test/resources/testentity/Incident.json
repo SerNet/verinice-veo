@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "abbreviation": {
+      "type": "string",
+      "description": "The abbreviation for the EntityLayerSupertype."
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
+    },
+    "createdBy": {
+      "type": "string",
+      "description": "The username of the user who created this object."
+    },
+    "customAspects": {
+      "type": "object",
+      "title": "CustomAspect",
+      "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
+      "properties": {
+        
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "The description for the EntityLayerSupertype."
+    },
+    "domains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "A friendly human readable title of the referenced domain."
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "type": "string",
+            "description": "The resource URL of the referenced domains."
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "description": "A reference to a domain"
+      }
+    },
+    "id": {
+      "type": "string",
+      "description": "ID must be a valid UUID string following RFC 4122."
+    },
+    "links": {
+      "type": "object",
+      "title": "CustomLink",
+      "description": "Custom relations which do not affect the behavior.",
+      "properties": {
+        
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "The name for the EntityLayerSupertype."
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "A friendly human readable title of the referenced unit."
+        },
+        "resourcesUri": {
+          "type": "string"
+        },
+        "searchesUri": {
+          "type": "string"
+        },
+        "targetUri": {
+          "type": "string",
+          "description": "The resource URL of the referenced unit."
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "description": "A reference to the unit containing this entity."
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "A friendly human readable title of the referenced entity."
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "type": "string",
+            "description": "The resource URL of the referenced entity."
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "description": "A reference to an entity's part"
+      }
+    },
+    "subType": {
+      "type": "object",
+      "title": "SubType",
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value."
+    },
+    "type": {
+      "type": "string",
+      "description": "Entity type identifier"
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
+    },
+    "updatedBy": {
+      "type": "string",
+      "description": "The username of the user who last updated this object."
+    }
+  },
+  "required": [
+    "name",
+    "owner"
+  ],
+  "title": "Incident",
+  "description": "Schema for Incident"
+}

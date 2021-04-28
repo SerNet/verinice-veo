@@ -30,7 +30,7 @@ class DomainTemplateSpec extends VeoSpec {
         String templateVersion = '1.0'
 
         when : "DomainTemplate is created"
-        DomainTemplate domainTemplate = newDomainTemplate() {
+        DomainTemplate domainTemplate = newDomainTemplate(Key.newUuid()) {
             it.name = name
             it.authority = auth
             it.templateVersion = templateVersion
@@ -39,8 +39,8 @@ class DomainTemplateSpec extends VeoSpec {
 
         then: "domain is correct initatlized"
         domainTemplate.getName().equals(name)
-        domainTemplate.getAuthority().equals(auth);
-        domainTemplate.getTemplateVersion().equals(templateVersion);
-        domainTemplate.getRevision().equals(rev);
+        domainTemplate.getAuthority().equals(auth)
+        domainTemplate.getTemplateVersion().equals(templateVersion)
+        domainTemplate.getRevision().equals(rev)
     }
 }

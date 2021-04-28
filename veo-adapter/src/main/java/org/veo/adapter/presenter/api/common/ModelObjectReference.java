@@ -34,7 +34,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ModelObjectReference<T extends ModelObject> implements IModelObjectReference {
 
     @JsonIgnore

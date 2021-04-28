@@ -15,37 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.service;
+package org.veo.core.repository;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 
-import lombok.Data;
-
-@Data
-public class DomainTemplateServiceImpl implements DomainTemplateService {
-
-    // TODO: VEO-502 Implement DomainTemplateServiceImpl
-    @Override
-    public List<DomainTemplate> getTemplates(Client client) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Optional<DomainTemplate> getTemplate(Client client, Key<UUID> key) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Domain createNewDomainFromTemplate(Client client, Key<UUID> templateId) {
-        return null;
-    }
-
+/**
+ * A repository for <code>DomainTemplate</code> entities.
+ *
+ * Implements basic CRUD operations from the superinterface and extends them
+ * with more specific methods - i.e. queries based on particular fields.
+ */
+public interface DomainTemplateRepository extends Repository<DomainTemplate, Key<UUID>> {
 }

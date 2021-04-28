@@ -20,7 +20,9 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.repository.ClientRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -33,11 +35,30 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
     @Autowired
     ClientRepository clientRepository
 
+    @Autowired
+    DomainTemplateServiceImpl domainTemplateService
+
+    def setup() {
+        //the VeoSpec setup Method clears all the data, so we need to reInitalize
+        txTemplate.execute {
+            domainTemplateService.reInitalizeAvailableDomainTemplates()
+        }
+
+    }
+
     @WithUserDetails("user@domain.example")
     def "create a new client"() {
         when: "posting a unit as a new client"
         post("/units", ["name": "nova"])
+
         then: "the client has been created"
         clientRepository.exists(Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID))
+
+        when: "we examine the client and the domain"
+        Client client = clientRepository.findById(Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)).get()
+
+        then: "the default domain is created"
+        client.domains.size() == 1
+        client.domains.first().domainTemplate.dbId == DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID
     }
 }

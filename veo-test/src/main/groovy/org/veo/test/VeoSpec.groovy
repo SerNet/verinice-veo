@@ -150,9 +150,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static DomainTemplateData newDomainTemplate(@DelegatesTo(value = DomainTemplate.class, strategy = Closure.DELEGATE_FIRST)
+    static DomainTemplateData newDomainTemplate(Key<UUID> id, @DelegatesTo(value = DomainTemplate.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.DomainTemplate") Closure init = null) {
-        return factory.createDomainTemplate(null,null,null,null).tap {
+        return factory.createDomainTemplate(null, null, null, null, id).tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)

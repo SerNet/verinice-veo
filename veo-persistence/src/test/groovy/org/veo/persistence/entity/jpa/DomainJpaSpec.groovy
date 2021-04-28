@@ -26,6 +26,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
@@ -153,7 +154,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.templateVersion == domain0.templateVersion
         d.revision == domain0.revision
         d.catalogs.size() == 1
-        d.catalogs.first().id == catalog.id
+        d.catalogs.first().id != null
         d.catalogs.first().domainTemplate == domain0
         d.catalogs.first().name == catalog.name
         d.catalogs.first().abbreviation == catalog.abbreviation
@@ -164,7 +165,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
     def 'domain with catalog and catalog items and a domain template'() {
         given: "the domain template and a catalog"
 
-        domainTemplate = newDomainTemplate()
+        domainTemplate = newDomainTemplate(Key.newUuid())
         domainTemplateRepository.save(domainTemplate)
 
 
@@ -179,6 +180,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         CatalogItem item3 = newCatalogItem(catalog)
 
         catalog.catalogItems = [item1, item2, item3]
+        domain0.addToCatalogs(catalog)
 
         when: "saving"
 
@@ -193,7 +195,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.templateVersion == domain0.templateVersion
         d.revision == domain0.revision
         d.catalogs.size() == 1
-        d.catalogs.first().id == catalog.id
+        d.catalogs.first().id != null
         d.catalogs.first().catalogItems.size() == 3
         d.domainTemplate == domainTemplate
     }
@@ -241,6 +243,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         control3 = item3.element
 
         catalog.catalogItems = [item1, item2, item3]
+        domain0.addToCatalogs(catalog)
 
         when: "saving"
         domain0 = repository.save(domain0)
@@ -270,8 +273,12 @@ class DomainJpaSpec extends AbstractJpaSpec {
     def 'domain with catalog with linked entities'() {
         given: "the domain template and a catalog"
 
-        domain0 = newDomain(client) {}
+        domain0 = newDomain(client)
         domain0 = repository.save(domain0)
+        Unit unit = newUnit(client)
+        unit = unitRepository.save(unit)
+        client = clientRepository.save(client)
+
         Catalog catalog = newCatalog(domain0) {
             name = 'a'
         }
@@ -283,10 +290,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         CatalogItem item3 = newCatalogItem(catalog)
         CatalogItem item4 = newCatalogItem(catalog)
         CatalogItem item5 = newCatalogItem(catalog)
-
-        Unit unit = newUnit(client)
-        unit = unitRepository.save(unit)
-        client = clientRepository.save(client)
 
         Control control1= newControl(item1) {
             name = 'c1'

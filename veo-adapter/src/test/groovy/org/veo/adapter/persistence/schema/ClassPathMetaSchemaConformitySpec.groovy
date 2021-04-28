@@ -28,7 +28,9 @@ import io.swagger.v3.core.util.Json
 import spock.lang.Specification
 
 class ClassPathMetaSchemaConformitySpec extends Specification {
-    static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl()
+    private static final String SCHEMA_FILES_PATH = "/schemas/entity/";
+
+    static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl(SCHEMA_FILES_PATH)
 
     def customAspectMetaSchema = getMetaSchema("custom-aspect-meta-schema.json")
     def customLinkMetaSchema = getMetaSchema("custom-link-meta-schema.json")

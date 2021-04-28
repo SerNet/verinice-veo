@@ -93,6 +93,15 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
         }
     }
 
+    public static final class EmptyInput implements InputData {
+
+        public static final EmptyInput INSTANCE = new EmptyInput();
+
+        private EmptyInput() {
+
+        }
+    }
+
     /**
      * A combination of an entity ID and a Client. This is used to specify an
      * element that is to be loaded in a client's context. The Client object is used

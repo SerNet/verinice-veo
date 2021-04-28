@@ -1,0 +1,106 @@
+{
+  "name": "DSGVO",
+  "abbreviation": "DSGVO",
+  "authority": "SERNET",
+  "templateVersion": "1.0",
+  "revision": "latest",
+  "catalogs": [
+    {
+      "name": "DVGO-Controls",
+      "domainTemplate": {
+        "targetUri": "/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824"
+      },
+      "catalogItems": [
+        {
+          "catalog": {
+            "targetUri": "/catalogs/70a7413d-e2a4-40c9-a5a9-9718eb3f5f97"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.c-1",
+          "element": {
+            "name": "Controll-1",
+            "abbreviation": "c-1",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+            "domains": [],
+            "owner": {
+              "targetUri": "/catalogitems/a1056116-5076-4041-90f1-3f6edff14420"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "subType": {
+              
+            },
+            "type": "control",
+            "parts": [],
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e063"
+          },
+          "id": "a1056116-5076-4041-90f1-3f6edff14420"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/70a7413d-e2a4-40c9-a5a9-9718eb3f5f97"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.c-2",
+          "element": {
+            "name": "Controll-2",
+            "abbreviation": "c-2",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+            "domains": [],
+            "owner": {
+              "targetUri": "/catalogitems/b9ee3e62-042b-451f-9b3c-e1ebcfb4b11c"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "subType": {
+              
+            },
+            "type": "control",
+            "parts": [],
+            "id": "4b7e4df3-2bfc-4f87-9b9c-764eaf07e063"
+          },
+          "id": "b9ee3e62-042b-451f-9b3c-e1ebcfb4b11c"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/70a7413d-e2a4-40c9-a5a9-9718eb3f5f97"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.c-3",
+          "element": {
+            "name": "Controll-3",
+            "abbreviation": "c-3",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
+            "domains": [],
+            "owner": {
+              "targetUri": "/catalogitems/f279deb9-ad17-4f6e-bf61-291abc7d826a"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "subType": {
+              
+            },
+            "type": "control",
+            "parts": [],
+            "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e061"
+          },
+          "id": "f279deb9-ad17-4f6e-bf61-291abc7d826a"
+        }
+      ],
+      "id": "70a7413d-e2a4-40c9-a5a9-9718eb3f5f97"
+    }
+  ],
+  "id": "f8ed22b1-b277-56ec-a2ce-0dbd94e24824"
+}

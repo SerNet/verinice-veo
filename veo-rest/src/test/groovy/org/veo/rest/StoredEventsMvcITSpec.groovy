@@ -294,7 +294,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         def numberOfStoredEventsBefore = storedEventRepository.findAll().size()
         println "Found $numberOfStoredEventsBefore events"
         when: "creating a domain template"
-        def domainTemplate = domainTemplateRepository.save(newDomainTemplate{
+        def domainTemplate = domainTemplateRepository.save(newDomainTemplate(Key.newUuid()) {
             templateVersion = '1'
             revision = ''
             authority = 'me'

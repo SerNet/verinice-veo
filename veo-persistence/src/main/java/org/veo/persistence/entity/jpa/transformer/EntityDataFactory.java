@@ -59,9 +59,6 @@ import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.TailoringReferenceData;
 import org.veo.persistence.entity.jpa.UnitData;
 
-/**
- * @author urszeidler
- */
 public class EntityDataFactory implements EntityFactory {
 
     @Override
@@ -143,6 +140,8 @@ public class EntityDataFactory implements EntityFactory {
     public Domain createDomain(String name, String authority, String templateVersion,
             String revision) {
         Domain domain = new DomainData();
+        domain.setDbId(Key.newUuid()
+                          .uuidValue());
         domain.setName(name);
         domain.setAuthority(authority);
         domain.setTemplateVersion(templateVersion);
@@ -185,14 +184,15 @@ public class EntityDataFactory implements EntityFactory {
 
     @Override
     public DomainTemplate createDomainTemplate(String name, String authority,
-            String templateVersion, String revision) {
-        DomainTemplate domain = new DomainTemplateData();
-        domain.setName(name);
-        domain.setAuthority(authority);
-        domain.setTemplateVersion(templateVersion);
-        domain.setRevision(revision);
+            String templateVersion, String revision, Key<UUID> id) {
+        DomainTemplate domainTemplate = new DomainTemplateData();
+        domainTemplate.setId(id);
+        domainTemplate.setName(name);
+        domainTemplate.setAuthority(authority);
+        domainTemplate.setTemplateVersion(templateVersion);
+        domainTemplate.setRevision(revision);
 
-        return domain;
+        return domainTemplate;
     }
 
     @Override
@@ -210,5 +210,4 @@ public class EntityDataFactory implements EntityFactory {
         tailoringReference.setOwner(catalogItem);
         return tailoringReference;
     }
-
 }

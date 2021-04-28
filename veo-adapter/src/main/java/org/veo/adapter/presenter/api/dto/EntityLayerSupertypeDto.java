@@ -25,7 +25,7 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
 
-public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
+public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto, CatalogableDto {
 
     Set<ModelObjectReference<Domain>> getDomains();
 

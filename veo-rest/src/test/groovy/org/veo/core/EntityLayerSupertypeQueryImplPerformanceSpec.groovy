@@ -110,6 +110,6 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
             links.first() != null
         }
 
-        QueryCountHolder.grandTotal.select == 3
+        QueryCountHolder.grandTotal.select == 4
     }
 }

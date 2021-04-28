@@ -19,22 +19,47 @@ package org.veo.core.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 
 /**
- * As domain template exist in the system space and are not directly bound to
- * any client. This service manage the access rights.
+ * A {@link DomainTemplate} exist in the system space and is not directly bound
+ * to any client. This service manages the access rights. It is responsible for
+ * creating a client domain from a domain template.
  */
 public interface DomainTemplateService {
+    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.0
+    static final String DSGVO_DOMAINTEMPLATE_UUID = "f8ed22b1-b277-56ec-a2ce-0dbd94e24824";
 
     List<DomainTemplate> getTemplates(Client client);
 
     Optional<DomainTemplate> getTemplate(Client client, Key<UUID> templateId);
 
-    Domain createNewDomainFromTemplate(Client client, Key<UUID> templateId);
+    /**
+     * Creates a domain from the given templateId for the given client. The client
+     * is used check the rights. No modification on the client is done.
+     *
+     * @throws NotFoundException
+     *             when the template doesn't exist
+     */
+    Domain createDomain(Client client, String templateId);
+
+    /**
+     * Creates the default domains for the given client. The client is used check
+     * the rights and what are the default domains. No modification on the client is
+     * done. Return Empty.set when client.getDomains().size()!=0.
+     */
+    Set<Domain> createDefaultDomains(Client client);
+
+    /**
+     * Reads the stored domaintemplates files and initialize the database when
+     * necessary.
+     */
+    void readTemplateFiles();
 }

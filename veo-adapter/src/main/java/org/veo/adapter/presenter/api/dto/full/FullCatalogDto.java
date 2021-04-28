@@ -20,7 +20,7 @@ package org.veo.adapter.presenter.api.dto.full;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
+import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +30,7 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCatalogDto extends AbstractCatalogDto implements IdentifiableDto {
+public class FullCatalogDto extends ReferenceCatalogDto implements IdentifiableDto {
 
     @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
     @Schema(description = "ID must be a valid UUID string following RFC 4122.",

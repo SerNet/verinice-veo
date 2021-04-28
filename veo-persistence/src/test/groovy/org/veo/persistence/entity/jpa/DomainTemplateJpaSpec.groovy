@@ -23,6 +23,7 @@ import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.Key
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -40,14 +41,13 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def setup() {
         factory = new EntityDataFactory()
-        //domain0 = newDomainTemplate {}
         domain1 = newDomain {}
     }
 
     def 'domainTemplate is inserted'() {
         given: "the domain template"
 
-        domain0 = newDomainTemplate {}
+        domain0 = newDomainTemplate(Key.newUuid())
 
         when: "saving"
 
@@ -65,7 +65,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate with catalog is inserted'() {
         given: "the domain template"
 
-        domain0 = newDomainTemplate {}
+        domain0 = newDomainTemplate(Key.newUuid())
 
         when: "saving"
 
@@ -89,7 +89,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate with catalog and catalog items'() {
         given: "the domain template and a catalog"
 
-        domain0 = newDomainTemplate()
+        domain0 = newDomainTemplate(Key.newUuid())
         Catalog catalog = newCatalog(domain0) {
             name = "a"
         }
@@ -111,8 +111,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
         d.revision == domain0.revision
-        d.catalogs.first().id == catalog.id
+        d.catalogs.first().id != null
         d.catalogs.first().catalogItems.size() == 3
     }
-
 }

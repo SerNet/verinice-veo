@@ -58,7 +58,7 @@ class DomainSpec extends VeoSpec {
         }
 
         and: "the domain template is linked"
-        def domainTemplate = newDomainTemplate() {
+        def domainTemplate = newDomainTemplate(Key.newUuid()) {
             it.name = 'domain template'
         }
 

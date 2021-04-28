@@ -103,7 +103,7 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
                targetEntity = SubTypeAspectData.class,
                mappedBy = "owner",
                fetch = FetchType.LAZY)
-    private Set<SubTypeAspectData> subTypeAspects = new HashSet<>();
+    private Set<SubTypeAspect> subTypeAspects = new HashSet<>();
 
     @Formula("case when abbreviation is null then concat(designator,' ',name) else concat(designator,' ',abbreviation,' ',name) end")
     @Setter(AccessLevel.NONE)

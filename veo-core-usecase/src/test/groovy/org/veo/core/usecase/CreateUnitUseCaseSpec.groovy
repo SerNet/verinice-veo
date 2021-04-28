@@ -17,16 +17,22 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
 
 public class CreateUnitUseCaseSpec extends UseCaseSpec {
-    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory)
+    DomainTemplateService domainTemplateService = Mock()
+
+    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService)
 
     def "Create new unit in a new client" () {
+        Domain domainFromTemplate = Mock()
+
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
         newUnit1.name >> "New unit"
@@ -46,7 +52,10 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.empty()
         1 * entityFactory.createClient(_,_) >> existingClient
         1 * entityFactory.createUnit(_,_) >> newUnit1
-        1 * entityFactory.createDomain(_,_,_,_) >> existingDomain
+
+        and: "the domainTemplate service is called and the domain is added"
+        1* domainTemplateService.createDefaultDomains(existingClient) >> Collections.singleton(domainFromTemplate)
+        1* existingClient.addToDomains(domainFromTemplate) >> true
 
         and: "a new client was then correctly created and stored"
         1 * unitRepository.save(_) >> newUnit1

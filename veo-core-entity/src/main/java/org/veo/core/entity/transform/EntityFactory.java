@@ -78,7 +78,7 @@ public interface EntityFactory {
     Catalog createCatalog(DomainTemplate owner);
 
     DomainTemplate createDomainTemplate(String name, String authority, String templateVersion,
-            String revision);
+            String revision, Key<UUID> id);
 
     /**
      * Creates a catalogItem and add it to the catalog. Careful this changes the

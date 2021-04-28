@@ -21,6 +21,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -38,10 +39,14 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
+import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.events.VeoEventPublisherImpl;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
@@ -68,6 +73,7 @@ import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
+import org.veo.core.usecase.domaintemplate.DomainTemplateInitalizeUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
@@ -314,8 +320,9 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateUnitUseCase getCreateUnitUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepositoryImpl unitRepository) {
-        return new CreateUnitUseCase(clientRepository, unitRepository, getEntityFactory());
+            UnitRepositoryImpl unitRepository, DomainTemplateService domainTemplateService) {
+        return new CreateUnitUseCase(clientRepository, unitRepository, getEntityFactory(),
+                domainTemplateService);
     }
 
     @Bean
@@ -379,8 +386,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public EntitySchemaService getSchemaService() {
-        return new EntitySchemaServiceClassPathImpl();
+    public EntitySchemaService getSchemaService(
+            @Value("${veo.entity_schemas_location:/schemas/entity/}") String schemaFilePath) {
+        return new EntitySchemaServiceClassPathImpl(schemaFilePath);
     }
 
     @Bean
@@ -495,5 +503,20 @@ public class ModuleConfiguration {
         template.setChannelTransacted(false);
         template.setMandatory(true);
         return template;
+    }
+
+    @Bean
+    public DomainTemplateServiceImpl domainTemplateService(
+            DomainTemplateRepository domainTemplateRepository,
+            DtoToEntityTransformer entityTransformer, EntityFactory factory,
+            DomainTemplateResource domainTemplateResource, VeoEventPublisherImpl ep) {
+        return new DomainTemplateServiceImpl(domainTemplateRepository, entityTransformer, factory,
+                ep, domainTemplateResource.getResources());
+    }
+
+    @Bean
+    public DomainTemplateInitalizeUseCase getDomainTemplateServiceInitalizeUseCase(
+            DomainTemplateService templateService) {
+        return new DomainTemplateInitalizeUseCase(templateService);
     }
 }

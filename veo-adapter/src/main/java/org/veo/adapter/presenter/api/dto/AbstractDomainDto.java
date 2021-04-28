@@ -26,6 +26,7 @@ import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomainCatalogs;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ModelObject;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -57,8 +58,24 @@ public abstract class AbstractDomainDto extends AbstractVersionedDto implements 
             required = false)
     private String description;
 
+    @NotNull(message = "An authority must be present.")
+    @Schema(description = "The authority for the DomainTemplate.", example = "ISO", required = true)
+    private String authority;
+
+    @NotNull(message = "A templateVersion must be present.")
+    @Schema(description = "The templateVersion for the DomainTemplate.",
+            example = "1.0",
+            required = true)
+    private String templateVersion;
+
+    @NotNull(message = "A revision must be present.")
+    @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
+    private String revision;
+
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomainCatalogs.class))
     private Set<ModelObjectReference<Catalog>> catalogs = new HashSet<>();
+
+    private ModelObjectReference<DomainTemplate> domainTemplate;
 
     @Override
     public Class<? extends ModelObject> getModelInterface() {
