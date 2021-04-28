@@ -16,10 +16,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,7 +30,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Entity(name = "catalogreference")
+@MappedSuperclass
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
@@ -44,7 +44,7 @@ public abstract class CatalogReferenceData extends BaseModelObjectData implement
     @ManyToOne(targetEntity = CatalogItemData.class)
     private CatalogItem catalogItem;
 
-    @ManyToOne(targetEntity = CatalogItemData.class)
+    @ManyToOne(targetEntity = CatalogItemData.class, optional = false)
     private CatalogItem owner;
 
 }

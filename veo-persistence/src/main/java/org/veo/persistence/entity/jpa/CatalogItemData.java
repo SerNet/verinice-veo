@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
@@ -45,7 +46,7 @@ import lombok.ToString;
 @Data
 public class CatalogItemData extends ElementOwnerData implements CatalogItem, ElementOwner {
 
-    @ManyToOne(targetEntity = CatalogData.class)
+    @ManyToOne(targetEntity = CatalogData.class, optional = false)
     private Catalog catalog;
 
     @Column(name = "tailoringreferences")
@@ -56,7 +57,10 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
                fetch = FetchType.LAZY)
     private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
-    @ManyToOne(optional = true, targetEntity = CatalogableData.class, cascade = CascadeType.ALL)
+    @OneToOne(optional = true,
+              targetEntity = CatalogableData.class,
+              cascade = CascadeType.ALL,
+              orphanRemoval = true)
     private Catalogable element;
 
     @Column(name = "updatereferences")

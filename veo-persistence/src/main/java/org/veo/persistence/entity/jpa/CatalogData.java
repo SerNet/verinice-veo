@@ -66,7 +66,7 @@ public class CatalogData extends BaseModelObjectData implements Catalog, Nameabl
     private Set<CatalogItem> catalogItems = new HashSet<>();
     // one to one
     @ToString.Exclude
-    @ManyToOne(targetEntity = DomainTemplateData.class)
+    @ManyToOne(targetEntity = DomainTemplateData.class, optional = false)
     @JoinColumn(name = "domaintemplate_id")
     private DomainTemplate domainTemplate;
 }
