@@ -201,13 +201,8 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CatalogItem createCatalogItem() {
-        return new CatalogItemData();
-    }
-
-    @Override
     public CatalogItem createCatalogItem(Catalog catalog) {
-        CatalogItem catalogItem = createCatalogItem();
+        CatalogItem catalogItem = new CatalogItemData();
         catalogItem.setCatalog(catalog);
         catalog.getCatalogItems()
                .add(catalogItem);
@@ -215,8 +210,9 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public TailoringReference createTailoringReference() {
+    public TailoringReference createTailoringReference(CatalogItem catalogItem) {
         TailoringReferenceData tailoringReference = new TailoringReferenceData();
+        tailoringReference.setOwner(catalogItem);
         return tailoringReference;
     }
 

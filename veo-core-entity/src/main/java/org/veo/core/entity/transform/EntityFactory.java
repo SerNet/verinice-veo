@@ -87,8 +87,6 @@ public interface EntityFactory {
      */
     CatalogItem createCatalogItem(Catalog catalog);
 
-    CatalogItem createCatalogItem();
-
-    TailoringReference createTailoringReference();
+    TailoringReference createTailoringReference(CatalogItem catalogItem);
 
 }

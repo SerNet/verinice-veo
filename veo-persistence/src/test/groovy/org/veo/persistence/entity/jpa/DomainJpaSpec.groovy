@@ -16,8 +16,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
-import java.time.Instant
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
@@ -31,7 +29,6 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
-import org.veo.core.entity.Versioned
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.CatalogItemDataRepository
@@ -44,20 +41,20 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
 class DomainJpaSpec extends AbstractJpaSpec {
     @Autowired
-    DomainTemplateDataRepository domainTemplateRepository;
+    DomainTemplateDataRepository domainTemplateRepository
     @Autowired
-    DomainDataRepository repository;
+    DomainDataRepository repository
     @Autowired
-    CatalogDataRepository catalogRepository;
+    CatalogDataRepository catalogRepository
     @Autowired
-    CatalogItemDataRepository catalogItemRepository;
+    CatalogItemDataRepository catalogItemRepository
     @Autowired
     ClientDataRepository clientRepository
     @Autowired
     UnitDataRepository unitRepository
     @Autowired
     ControlDataRepository controlRepository
-    EntityFactory factory;
+    EntityFactory factory
 
     Domain domain0
     DomainTemplate domainTemplate
@@ -65,8 +62,8 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def setup() {
         factory = new EntityDataFactory()
-        client = newClient();
-        client = clientRepository.save(client);
+        client = newClient()
+        client = clientRepository.save(client)
     }
 
     def 'domain is inserted'() {
@@ -143,9 +140,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
             domainTemplate = domain0
         }
         domain0.addToCatalogs(catalog)
-        CatalogItem item1 = newCatalogItem(catalog) {}
-        CatalogItem item2 = newCatalogItem(catalog) {}
-        CatalogItem item3 = newCatalogItem(catalog) {}
+        CatalogItem item1 = newCatalogItem(catalog)
+        CatalogItem item2 = newCatalogItem(catalog)
+        CatalogItem item3 = newCatalogItem(catalog)
 
         catalog.catalogItems = [item1, item2, item3]
 
@@ -184,9 +181,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
             domainTemplate = domain0
         }
         domain0.addToCatalogs(catalog)
-        CatalogItem item1 = newCatalogItem(catalog) {}
-        CatalogItem item2 = newCatalogItem(catalog) {}
-        CatalogItem item3 = newCatalogItem(catalog) {}
+        CatalogItem item1 = newCatalogItem(catalog)
+        CatalogItem item2 = newCatalogItem(catalog)
+        CatalogItem item3 = newCatalogItem(catalog)
 
         catalog.catalogItems = [item1, item2, item3]
 
@@ -245,7 +242,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
         item3.element = control3
 
-        TailoringReference tr1 = newTailoringReference() {
+        TailoringReference tr1 = newTailoringReference(item3) {
             catalogItem = item2
             referenceType = TailoringReferenceType.COPY
         }
@@ -295,11 +292,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
         domain0.addToCatalogs(catalog)
         catalog = catalogRepository.save(catalog)
 
-        CatalogItem item1 = newCatalogItem(catalog) {}
-        CatalogItem item2 = newCatalogItem(catalog) {}
-        CatalogItem item3 = newCatalogItem(catalog) {}
-        CatalogItem item4 = newCatalogItem(catalog) {}
-        CatalogItem item5 = newCatalogItem(catalog) {}
+        CatalogItem item1 = newCatalogItem(catalog)
+        CatalogItem item2 = newCatalogItem(catalog)
+        CatalogItem item3 = newCatalogItem(catalog)
+        CatalogItem item4 = newCatalogItem(catalog)
+        CatalogItem item5 = newCatalogItem(catalog)
 
         Unit unit = newUnit(client)
         unit = unitRepository.save(unit)
@@ -323,7 +320,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             name = 'c3'
         }
         item3.element = control3
-        TailoringReference tr1 = newTailoringReference() {
+        TailoringReference tr1 = newTailoringReference(item3) {
             catalogItem = item2
             referenceType = TailoringReferenceType.COPY
         }
@@ -345,11 +342,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
         item5.element = process1
         process1.setSubType(domain0, "Test")
         item5.tailoringReferences = [
-            newTailoringReference() {
+            newTailoringReference(item5) {
                 catalogItem = item2
                 referenceType = TailoringReferenceType.COPY
             },
-            newTailoringReference() {
+            newTailoringReference(item5) {
                 catalogItem = item3
                 referenceType = TailoringReferenceType.LINK
             }
@@ -359,7 +356,8 @@ class DomainJpaSpec extends AbstractJpaSpec {
             item2,
             item3,
             item4,
-            item5] as Set
+            item5
+        ] as Set
 
         when: "saving"
 
