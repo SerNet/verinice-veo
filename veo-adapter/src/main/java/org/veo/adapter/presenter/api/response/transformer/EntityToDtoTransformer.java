@@ -321,6 +321,7 @@ public final class EntityToDtoTransformer {
             EntityLayerSupertype source, TDto target) {
         target.setId(source.getId()
                            .uuidValue());
+        target.setDesignator(source.getDesignator());
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);

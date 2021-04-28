@@ -29,21 +29,19 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.Repository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
+@AllArgsConstructor
 public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> implements
         TransactionalUseCase<CreateEntityUseCase.InputData<TEntity>, CreateEntityUseCase.OutputData<TEntity>> {
     private final UnitRepository unitRepository;
     private final Repository<TEntity, Key<UUID>> entityRepo;
-
-    public CreateEntityUseCase(UnitRepository unitRepository,
-            Repository<TEntity, Key<UUID>> entityRepo) {
-        this.unitRepository = unitRepository;
-        this.entityRepo = entityRepo;
-    }
+    private final DesignatorService designatorService;
 
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
@@ -57,6 +55,7 @@ public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> 
                                                 .getId()
                                                 .uuidValue()));
         unit.checkSameClient(input.authenticatedClient);
+        designatorService.assignDesignator(entity, input.authenticatedClient);
         return new CreateEntityUseCase.OutputData<>(entityRepo.save(entity));
     }
 

@@ -20,11 +20,13 @@ package org.veo.core.usecase.person;
 import org.veo.core.entity.Person;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 public class CreatePersonUseCase extends CreateEntityUseCase<Person> {
 
-    public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository entityRepo) {
-        super(unitRepository, entityRepo);
+    public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository entityRepo,
+            DesignatorService designatorService) {
+        super(unitRepository, entityRepo, designatorService);
     }
 }

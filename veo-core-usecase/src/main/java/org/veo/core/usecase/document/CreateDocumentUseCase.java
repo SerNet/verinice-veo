@@ -20,11 +20,13 @@ package org.veo.core.usecase.document;
 import org.veo.core.entity.Document;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 public class CreateDocumentUseCase extends CreateEntityUseCase<Document> {
 
-    public CreateDocumentUseCase(UnitRepository unitRepository, DocumentRepository entityRepo) {
-        super(unitRepository, entityRepo);
+    public CreateDocumentUseCase(UnitRepository unitRepository, DocumentRepository entityRepo,
+            DesignatorService designatorService) {
+        super(unitRepository, entityRepo, designatorService);
     }
 }

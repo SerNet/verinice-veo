@@ -61,8 +61,9 @@ public class ProcessRiskDto extends AbstractRiskDto {
             @Valid ModelObjectReference<Person> riskOwner,
             @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
             @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
-            @Valid ModelObjectReference<Process> process, String self, long version) {
-        super(domains, scenario, mitigatedBy, riskOwner);
+            @Valid ModelObjectReference<Process> process, String self, long version,
+            String designator) {
+        super(designator, domains, scenario, mitigatedBy, riskOwner);
         this.process = process;
         this._self = self;
         setCreatedAt(createdAt);
@@ -75,6 +76,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
     public static ProcessRiskDto from(@Valid ProcessRisk risk,
             ReferenceAssembler referenceAssembler) {
         return ProcessRiskDto.builder()
+                             .designator(risk.getDesignator())
                              .process(ModelObjectReference.from(risk.getEntity(),
                                                                 referenceAssembler))
                              .scenario(ModelObjectReference.from(risk.getScenario(),

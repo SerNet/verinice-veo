@@ -66,6 +66,11 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
 
+    @NotNull
+    @Column(name = "designator")
+    @ToString.Include
+    private String designator;
+
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
     final private Set<Domain> domains = new HashSet<>();

@@ -20,10 +20,12 @@ package org.veo.core.usecase.process;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.risk.CreateRiskUseCase;
 
 public class CreateProcessRiskUseCase extends CreateRiskUseCase<Process, ProcessRisk> {
-    public CreateProcessRiskUseCase(RepositoryProvider repositoryProvider) {
-        super(Process.class, repositoryProvider);
+    public CreateProcessRiskUseCase(RepositoryProvider repositoryProvider,
+            DesignatorService designatorService) {
+        super(Process.class, repositoryProvider, designatorService);
     }
 }

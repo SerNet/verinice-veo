@@ -47,6 +47,13 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractRiskDto extends AbstractVersionedDto {
 
+    @Schema(description = "Compact human-readable identifier that is unique within the client.",
+            example = "A-155",
+            required = true,
+            accessMode = Schema.AccessMode.READ_ONLY)
+    @ToString.Include
+    private String designator;
+
     @Valid
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
     @Singular

@@ -40,8 +40,10 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.CatalogRepository;
+import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
@@ -128,13 +130,14 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateAssetUseCase createAssetUseCase(UnitRepositoryImpl unitRepository,
-            AssetRepositoryImpl assetRepository) {
-        return new CreateAssetUseCase(unitRepository, assetRepository);
+            AssetRepositoryImpl assetRepository, DesignatorService designatorService) {
+        return new CreateAssetUseCase(unitRepository, assetRepository, designatorService);
     }
 
     @Bean
-    public CreateAssetRiskUseCase createAssetRiskUseCase(RepositoryProvider repositoryProvider) {
-        return new CreateAssetRiskUseCase(repositoryProvider);
+    public CreateAssetRiskUseCase createAssetRiskUseCase(RepositoryProvider repositoryProvider,
+            DesignatorService designatorService) {
+        return new CreateAssetRiskUseCase(repositoryProvider, designatorService);
     }
 
     @Bean
@@ -160,8 +163,8 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateControlUseCase createControlUseCase(UnitRepositoryImpl unitRepository,
-            ControlRepositoryImpl controlRepository) {
-        return new CreateControlUseCase(unitRepository, controlRepository);
+            ControlRepositoryImpl controlRepository, DesignatorService designatorService) {
+        return new CreateControlUseCase(unitRepository, controlRepository, designatorService);
     }
 
     @Bean
@@ -182,8 +185,8 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateDocumentUseCase createDocumentUseCase(UnitRepositoryImpl unitRepository,
-            DocumentRepositoryImpl documentRepository) {
-        return new CreateDocumentUseCase(unitRepository, documentRepository);
+            DocumentRepositoryImpl documentRepository, DesignatorService designatorService) {
+        return new CreateDocumentUseCase(unitRepository, documentRepository, designatorService);
     }
 
     @Bean
@@ -205,8 +208,8 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateScenarioUseCase createScenarioUseCase(UnitRepositoryImpl unitRepository,
-            ScenarioRepositoryImpl scenarioRepository) {
-        return new CreateScenarioUseCase(unitRepository, scenarioRepository);
+            ScenarioRepositoryImpl scenarioRepository, DesignatorService designatorService) {
+        return new CreateScenarioUseCase(unitRepository, scenarioRepository, designatorService);
     }
 
     @Bean
@@ -228,8 +231,8 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateIncidentUseCase createIncidentUseCase(UnitRepositoryImpl unitRepository,
-            IncidentRepositoryImpl incidentRepository) {
-        return new CreateIncidentUseCase(unitRepository, incidentRepository);
+            IncidentRepositoryImpl incidentRepository, DesignatorService designatorService) {
+        return new CreateIncidentUseCase(unitRepository, incidentRepository, designatorService);
     }
 
     @Bean
@@ -251,14 +254,14 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateProcessUseCase createProcessUseCase(UnitRepositoryImpl unitRepository,
-            ProcessRepositoryImpl processRepository) {
-        return new CreateProcessUseCase(unitRepository, processRepository);
+            ProcessRepositoryImpl processRepository, DesignatorService designatorService) {
+        return new CreateProcessUseCase(unitRepository, processRepository, designatorService);
     }
 
     @Bean
-    public CreateProcessRiskUseCase createProcessRiskUseCase(
-            RepositoryProvider repositoryProvider) {
-        return new CreateProcessRiskUseCase(repositoryProvider);
+    public CreateProcessRiskUseCase createProcessRiskUseCase(RepositoryProvider repositoryProvider,
+            DesignatorService designatorService) {
+        return new CreateProcessRiskUseCase(repositoryProvider, designatorService);
     }
 
     @Bean
@@ -323,8 +326,8 @@ public class ModuleConfiguration {
 
     @Bean
     public CreatePersonUseCase createPersonUseCase(UnitRepositoryImpl unitRepository,
-            PersonRepositoryImpl personRepository) {
-        return new CreatePersonUseCase(unitRepository, personRepository);
+            PersonRepositoryImpl personRepository, DesignatorService designatorService) {
+        return new CreatePersonUseCase(unitRepository, personRepository, designatorService);
     }
 
     @Bean
@@ -345,8 +348,8 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateScopeUseCase createScopeUseCase(UnitRepositoryImpl unitRepository,
-            ScopeRepositoryImpl scopeRepository) {
-        return new CreateScopeUseCase(unitRepository, scopeRepository);
+            ScopeRepositoryImpl scopeRepository, DesignatorService designatorService) {
+        return new CreateScopeUseCase(unitRepository, scopeRepository, designatorService);
     }
 
     @Bean
@@ -470,6 +473,12 @@ public class ModuleConfiguration {
     @Bean
     public CurrentUserProvider currentUserProvider(AuditorAware<String> auditorAware) {
         return new CurrentUserProviderImpl(auditorAware);
+    }
+
+    @Bean
+    public DesignatorService designatorService(
+            DesignatorSequenceRepository designatorSequenceRepository) {
+        return new DesignatorService(designatorSequenceRepository);
     }
 
     @Bean

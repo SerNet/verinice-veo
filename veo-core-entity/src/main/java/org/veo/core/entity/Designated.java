@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2021  Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
+package org.veo.core.entity;
 
-import org.veo.core.entity.Asset;
-import org.veo.core.entity.AssetRisk;
-import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.risk.CreateRiskUseCase;
+public interface Designated {
+    /**
+     * @return A compact human-readable identifier that is unique within the client.
+     */
+    String getDesignator();
 
-public class CreateAssetRiskUseCase extends CreateRiskUseCase<Asset, AssetRisk> {
+    /**
+     * @param designator
+     *            A compact human-readable identifier that is unique within the
+     *            client.
+     */
+    void setDesignator(String designator);
 
-    public CreateAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        super(Asset.class, repositoryProvider, designatorService);
-    }
+    /**
+     * @return A 3-character designator that is constant for the entity type (or
+     *         family of entity types) and acts as a prefix to the individual object
+     *         designators.
+     */
+    String getTypeDesignator();
 }

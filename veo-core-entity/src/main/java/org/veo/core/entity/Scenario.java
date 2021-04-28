@@ -25,6 +25,7 @@ public interface Scenario extends EntityLayerSupertype, CompositeEntity<Scenario
 
     String SINGULAR_TERM = "scenario";
     String PLURAL_TERM = "scenarios";
+    String TYPE_DESIGNATOR = "SCN";
 
     @Override
     default String getModelType() {
@@ -34,5 +35,10 @@ public interface Scenario extends EntityLayerSupertype, CompositeEntity<Scenario
     @Override
     default Class<? extends ModelObject> getModelInterface() {
         return Scenario.class;
+    }
+
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
     }
 }

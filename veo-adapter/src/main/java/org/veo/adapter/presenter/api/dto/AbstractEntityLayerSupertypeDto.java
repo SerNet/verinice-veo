@@ -53,6 +53,13 @@ public abstract class AbstractEntityLayerSupertypeDto extends AbstractVersionedD
     @ToString.Include
     private String name;
 
+    @Schema(description = "Compact human-readable identifier that is unique within the client.",
+            example = "A-155",
+            required = true,
+            accessMode = Schema.AccessMode.READ_ONLY)
+    @ToString.Include
+    private String designator;
+
     @Schema(description = "The abbreviation for the EntityLayerSupertype.",
             example = "Lock doors",
             required = false)

@@ -41,7 +41,14 @@ import lombok.NonNull;
  * assessor). This is also optional.
  */
 public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends CompoundKeyEntity, Versioned {
+        extends CompoundKeyEntity, Designated, Versioned {
+
+    String TYPE_DESIGNATOR = "RSK";
+
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
+    }
 
     Set<Domain> getDomains();
 

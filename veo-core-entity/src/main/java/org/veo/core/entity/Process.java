@@ -25,6 +25,7 @@ public interface Process
 
     String SINGULAR_TERM = "process";
     String PLURAL_TERM = "processes";
+    String TYPE_DESIGNATOR = "PRO";
 
     @Override
     default Class<? extends ModelObject> getModelInterface() {
@@ -34,5 +35,10 @@ public interface Process
     @Override
     default String getModelType() {
         return SINGULAR_TERM;
+    }
+
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
     }
 }

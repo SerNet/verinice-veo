@@ -24,9 +24,15 @@ public interface Document extends EntityLayerSupertype, CompositeEntity<Document
 
     String SINGULAR_TERM = "document";
     String PLURAL_TERM = "documents";
+    String TYPE_DESIGNATOR = "DOC";
 
     @Override
     default String getModelType() {
         return SINGULAR_TERM;
+    }
+
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
     }
 }

@@ -24,6 +24,7 @@ public interface Incident extends EntityLayerSupertype, CompositeEntity<Incident
 
     String SINGULAR_TERM = "incident";
     String PLURAL_TERM = "incidents";
+    String TYPE_DESIGNATOR = "INC";
 
     @Override
     default String getModelType() {
@@ -33,5 +34,10 @@ public interface Incident extends EntityLayerSupertype, CompositeEntity<Incident
     @Override
     default Class<? extends ModelObject> getModelInterface() {
         return Incident.class;
+    }
+
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
     }
 }

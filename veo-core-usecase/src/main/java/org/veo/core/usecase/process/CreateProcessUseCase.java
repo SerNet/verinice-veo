@@ -20,6 +20,7 @@ package org.veo.core.usecase.process;
 import org.veo.core.entity.Process;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 /**
@@ -27,7 +28,8 @@ import org.veo.core.usecase.base.CreateEntityUseCase;
  */
 public class CreateProcessUseCase extends CreateEntityUseCase<Process> {
 
-    public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository entityRepo) {
-        super(unitRepository, entityRepo);
+    public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository entityRepo,
+            DesignatorService designatorService) {
+        super(unitRepository, entityRepo, designatorService);
     }
 }

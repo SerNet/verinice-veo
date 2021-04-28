@@ -47,6 +47,8 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype> implem
         checkETag(storedEntity, input);
         entity.version(input.username, storedEntity);
         checkClientBoundaries(input, storedEntity);
+        // The designator is read-only so it must stay the same.
+        entity.setDesignator(storedEntity.getDesignator());
         return new OutputData<T>(repo.save(entity));
     }
 

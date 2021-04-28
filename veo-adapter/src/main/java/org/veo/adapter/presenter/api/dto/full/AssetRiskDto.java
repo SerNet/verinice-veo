@@ -61,8 +61,9 @@ public class AssetRiskDto extends AbstractRiskDto {
             @Valid ModelObjectReference<Person> riskOwner,
             @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
             @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
-            @Valid ModelObjectReference<Asset> asset, String self, long version) {
-        super(domains, scenario, mitigatedBy, riskOwner);
+            @Valid ModelObjectReference<Asset> asset, String self, long version,
+            String designator) {
+        super(designator, domains, scenario, mitigatedBy, riskOwner);
         this.asset = asset;
         this._self = self;
         setCreatedAt(createdAt);
@@ -74,6 +75,7 @@ public class AssetRiskDto extends AbstractRiskDto {
 
     public static AssetRiskDto from(@Valid AssetRisk risk, ReferenceAssembler referenceAssembler) {
         return AssetRiskDto.builder()
+                           .designator(risk.getDesignator())
                            .asset(ModelObjectReference.from(risk.getEntity(), referenceAssembler))
                            .scenario(ModelObjectReference.from(risk.getScenario(),
                                                                referenceAssembler))

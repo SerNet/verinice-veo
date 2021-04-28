@@ -31,6 +31,8 @@ public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto {
 
     ModelObjectReference<ElementOwner> getOwner();
 
+    void setDesignator(String designator);
+
     void setDomains(Set<ModelObjectReference<Domain>> domains);
 
     void setOwner(ModelObjectReference<ElementOwner> owner);

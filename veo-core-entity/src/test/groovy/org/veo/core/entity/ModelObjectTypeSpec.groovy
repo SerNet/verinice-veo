@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
+package org.veo.core.entity
 
-import org.veo.core.entity.Asset;
-import org.veo.core.entity.AssetRisk;
-import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.risk.CreateRiskUseCase;
+import spock.lang.Specification
 
-public class CreateAssetRiskUseCase extends CreateRiskUseCase<Asset, AssetRisk> {
+class ModelObjectTypeSpec extends Specification{
 
-    public CreateAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        super(Asset.class, repositoryProvider, designatorService);
+    def "it should list all type designators"() {
+        expect:
+        // There is one type designator for each ELS and one that is common to all types of risks.
+        ModelObjectType.TYPE_DESIGNATORS.size() == ModelObjectType.ENTITY_TYPES.size() + 1
     }
 }

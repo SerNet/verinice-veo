@@ -28,6 +28,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.veo.core.entity.ModelObject;
 import org.veo.persistence.CurrentUserProvider;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -35,16 +36,10 @@ import lombok.extern.slf4j.Slf4j;
  * them to the {@link ApplicationEventPublisher} as {@link VersioningEvent}s.
  */
 @Slf4j
+@AllArgsConstructor
 public class ModelObjectDataEntityListener {
     private final ApplicationEventPublisher publisher;
-
     private final CurrentUserProvider currentUserProvider;
-
-    public ModelObjectDataEntityListener(ApplicationEventPublisher publisher,
-            CurrentUserProvider currentUserProvider) {
-        this.publisher = publisher;
-        this.currentUserProvider = currentUserProvider;
-    }
 
     @PrePersist
     public void prePersist(ModelObject entity) {

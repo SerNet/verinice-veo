@@ -270,6 +270,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         when:
         def risk = asset.newRisk(scenario, domain)
+        risk.designator = "RSK-1"
         testIdentityConsistency(AssetRiskData.class, risk)
 
         then:

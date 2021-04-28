@@ -20,11 +20,13 @@ package org.veo.core.usecase.asset;
 import org.veo.core.entity.Asset;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 public class CreateAssetUseCase extends CreateEntityUseCase<Asset> {
 
-    public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository entityRepo) {
-        super(unitRepository, entityRepo);
+    public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository entityRepo,
+            DesignatorService designatorService) {
+        super(unitRepository, entityRepo, designatorService);
     }
 }

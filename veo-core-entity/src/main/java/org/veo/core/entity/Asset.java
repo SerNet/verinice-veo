@@ -26,6 +26,7 @@ public interface Asset
 
     String SINGULAR_TERM = "asset";
     String PLURAL_TERM = "assets";
+    String TYPE_DESIGNATOR = "AST";
 
     @Override
     default String getModelType() {
@@ -35,6 +36,11 @@ public interface Asset
     @Override
     default Class<? extends ModelObject> getModelInterface() {
         return Asset.class;
+    }
+
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
     }
 
 }

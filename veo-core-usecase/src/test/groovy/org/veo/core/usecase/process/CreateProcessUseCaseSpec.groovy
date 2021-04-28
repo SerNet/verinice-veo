@@ -19,31 +19,29 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateEntityUseCase
 import org.veo.core.usecase.repository.ProcessRepository
 
-public class CreateProcessUseCaseSpec extends UseCaseSpec {
+class CreateProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
     Process process = Mock()
-    Process process1 = Mock()
     Unit unit = Mock()
+    DesignatorService designatorService = Mock()
 
-
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,processRepository)
+    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository, processRepository, designatorService)
     def "create a process"() {
-        process1.owner >> unit
-        process1.name >> "John's process"
-
-        given:
-        process.getName() >> "John's process"
+        process.owner >> unit
+        process.name >> "John's process"
 
         when:
-        def output = usecase.execute(new CreateEntityUseCase.InputData(process1, existingClient))
+        def output = usecase.execute(new CreateEntityUseCase.InputData(process, existingClient))
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-        1 * processRepository.save(process1) >> process
+        1 * processRepository.save(process) >> process
+        1 * designatorService.assignDesignator(process, existingClient)
         output.entity != null
         output.entity.name == "John's process"
     }

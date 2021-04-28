@@ -20,11 +20,13 @@ package org.veo.core.usecase.control;
 import org.veo.core.entity.Control;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 public class CreateControlUseCase extends CreateEntityUseCase<Control> {
 
-    public CreateControlUseCase(UnitRepository unitRepository, ControlRepository entityRepo) {
-        super(unitRepository, entityRepo);
+    public CreateControlUseCase(UnitRepository unitRepository, ControlRepository entityRepo,
+            DesignatorService designatorService) {
+        super(unitRepository, entityRepo, designatorService);
     }
 }

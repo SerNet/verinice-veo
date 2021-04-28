@@ -254,6 +254,9 @@ abstract class VeoSpec extends Specification {
     }
 
     private static initEntityLayerSupertype(EntityLayerSupertype target) {
+        if(target.designator == null) {
+            target.designator = UUID.randomUUID().toString()
+        }
         if(target.customAspects == null) {
             target.customAspects = []
         }

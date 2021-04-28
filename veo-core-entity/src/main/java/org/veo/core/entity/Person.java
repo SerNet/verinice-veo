@@ -25,10 +25,15 @@ public interface Person extends EntityLayerSupertype, CompositeEntity<Person> {
 
     String SINGULAR_TERM = "person";
     String PLURAL_TERM = "persons";
+    String TYPE_DESIGNATOR = "PER";
 
     @Override
     default String getModelType() {
         return SINGULAR_TERM;
     }
 
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
+    }
 }

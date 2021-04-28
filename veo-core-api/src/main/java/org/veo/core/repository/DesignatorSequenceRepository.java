@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2021  Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.asset;
+package org.veo.core.repository;
 
-import org.veo.core.entity.Asset;
-import org.veo.core.entity.AssetRisk;
-import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.risk.CreateRiskUseCase;
+import java.util.UUID;
 
-public class CreateAssetRiskUseCase extends CreateRiskUseCase<Asset, AssetRisk> {
+import org.veo.core.entity.Key;
 
-    public CreateAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        super(Asset.class, repositoryProvider, designatorService);
-    }
+/**
+ * Provides sequential numbers for designator creation. There is a separate
+ * sequence for each combination of client and type designator.
+ */
+public interface DesignatorSequenceRepository {
+    Long getNext(Key<UUID> clientId, String typeDesignator);
 }

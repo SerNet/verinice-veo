@@ -20,11 +20,13 @@ package org.veo.core.usecase.scenario;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 public class CreateScenarioUseCase extends CreateEntityUseCase<Scenario> {
 
-    public CreateScenarioUseCase(UnitRepository unitRepository, ScenarioRepository entityRepo) {
-        super(unitRepository, entityRepo);
+    public CreateScenarioUseCase(UnitRepository unitRepository, ScenarioRepository entityRepo,
+            DesignatorService designatorService) {
+        super(unitRepository, entityRepo, designatorService);
     }
 }

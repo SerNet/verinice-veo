@@ -20,11 +20,13 @@ package org.veo.core.usecase.incident;
 import org.veo.core.entity.Incident;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 public class CreateIncidentUseCase extends CreateEntityUseCase<Incident> {
 
-    public CreateIncidentUseCase(UnitRepository unitRepository, IncidentRepository entityRepo) {
-        super(unitRepository, entityRepo);
+    public CreateIncidentUseCase(UnitRepository unitRepository, IncidentRepository entityRepo,
+            DesignatorService designatorService) {
+        super(unitRepository, entityRepo, designatorService);
     }
 }

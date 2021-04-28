@@ -26,6 +26,7 @@ public interface Scope extends EntityLayerSupertype {
 
     String SINGULAR_TERM = "scope";
     String PLURAL_TERM = "scopes";
+    String TYPE_DESIGNATOR = "SCP";
 
     @Override
     default String getModelType() {
@@ -60,4 +61,8 @@ public interface Scope extends EntityLayerSupertype {
         getMembers().addAll(members);
     }
 
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
+    }
 }

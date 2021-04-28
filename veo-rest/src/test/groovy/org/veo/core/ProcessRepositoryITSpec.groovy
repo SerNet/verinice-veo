@@ -60,7 +60,6 @@ class ProcessRepositoryITSpec extends VeoMvcSpec {
         given: "an invalid process object"
         Key<UUID> id = Key.newUuid()
         def processData = new ProcessData()
-        processData.id = id
 
         when: "the process is saved using the repository"
         processDataRepository.save(processData)
@@ -70,8 +69,11 @@ class ProcessRepositoryITSpec extends VeoMvcSpec {
 
         and: "the reason is given"
         ConstraintViolationException cvex = ex.mostSpecificCause
-        cvex.constraintViolations.size() == 2
-        assert cvex.constraintViolations*.propertyPath*.toString() as Set == ["owner", "name"] as Set
+        cvex.constraintViolations.size() == 3
+        assert cvex.constraintViolations*.propertyPath*.toString() as Set == [
+            "designator",
+            "owner",
+            "name"] as Set
         assert cvex.constraintViolations*.messageTemplate.every() {it == "{javax.validation.constraints.NotNull.message}" }
     }
 }

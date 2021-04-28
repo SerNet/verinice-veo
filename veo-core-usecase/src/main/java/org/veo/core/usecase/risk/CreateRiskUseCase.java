@@ -24,15 +24,19 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.usecase.DesignatorService;
 
 public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
         extends AbstractRiskUseCase<T, R> {
 
+    private final DesignatorService designatorService;
     private final Class<T> entityClass;
 
-    public CreateRiskUseCase(Class<T> entityClass, RepositoryProvider repositoryProvider) {
+    public CreateRiskUseCase(Class<T> entityClass, RepositoryProvider repositoryProvider,
+            DesignatorService designatorService) {
         super(repositoryProvider);
         this.entityClass = entityClass;
+        this.designatorService = designatorService;
     }
 
     @Transactional
@@ -54,6 +58,7 @@ public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         var risk = riskAffected.newRisk(scenario, domains);
 
         risk = applyOptionalInput(input, risk);
+        designatorService.assignDesignator(risk, input.getAuthenticatedClient());
 
         return new OutputData<>(risk);
     }

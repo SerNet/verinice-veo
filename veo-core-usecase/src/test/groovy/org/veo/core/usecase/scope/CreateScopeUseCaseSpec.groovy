@@ -19,6 +19,7 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateEntityUseCase
 import org.veo.core.usecase.repository.ScopeRepository
@@ -26,14 +27,15 @@ import org.veo.core.usecase.repository.ScopeRepository
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 
     ScopeRepository entityScopeRepository = Mock()
+    DesignatorService designatorService = Mock()
 
-    CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository,entityScopeRepository)
+    CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository, entityScopeRepository, designatorService)
     Unit unit = Mock()
 
     def "create a scope"() {
         given:
 
-        Scope  scope = Mock()
+        Scope scope = Mock()
         scope.name >> "My scope"
         scope.owner >> unit
 
@@ -43,6 +45,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * entityScopeRepository.save(_) >> { it[0] }
+        1 * designatorService.assignDesignator(scope, existingClient)
         when:
         def scope1 = output.entity
 

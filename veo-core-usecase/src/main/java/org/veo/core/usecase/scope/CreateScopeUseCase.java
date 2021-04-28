@@ -20,12 +20,14 @@ package org.veo.core.usecase.scope;
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 
 public class CreateScopeUseCase extends CreateEntityUseCase<Scope> {
 
-    public CreateScopeUseCase(UnitRepository unitRepository, ScopeRepository scopeRepository) {
-        super(unitRepository, scopeRepository);
+    public CreateScopeUseCase(UnitRepository unitRepository, ScopeRepository scopeRepository,
+            DesignatorService designatorService) {
+        super(unitRepository, scopeRepository, designatorService);
     }
 
 }

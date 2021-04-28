@@ -24,9 +24,15 @@ public interface Control extends EntityLayerSupertype, CompositeEntity<Control> 
 
     String SINGULAR_TERM = "control";
     String PLURAL_TERM = "controls";
+    String TYPE_DESIGNATOR = "CTL";
 
     @Override
     default String getModelType() {
         return SINGULAR_TERM;
+    }
+
+    @Override
+    default String getTypeDesignator() {
+        return TYPE_DESIGNATOR;
     }
 }

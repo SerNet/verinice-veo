@@ -37,15 +37,15 @@ class ProcessConstraintSpec extends Specification {
         def processData = new ProcessData()
         processData.id = id
 
-        when: "the process is saved using the repository"
+        when: "the process is validated"
         def errors = validator.validate(processData)
 
-        then: "the process is not saved"
-        errors.size() == 2
-
-        and: "the reason is given"
-        errors.size() == 2
-        assert errors*.propertyPath*.toString() as Set == ["owner", "name"] as Set
+        then: "not-null errors are present"
+        errors.size() == 3
+        assert errors*.propertyPath*.toString() as Set == [
+            "designator",
+            "owner",
+            "name"] as Set
         assert errors*.messageTemplate.every() {it == "{javax.validation.constraints.NotNull.message}" }
     }
 }

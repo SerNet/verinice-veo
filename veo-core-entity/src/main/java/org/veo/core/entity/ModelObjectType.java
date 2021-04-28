@@ -70,6 +70,16 @@ public enum ModelObjectType {
                                                                                  .map(t -> (Class<? extends EntityLayerSupertype>) t)
                                                                                  .collect(Collectors.toSet());
 
+    public static final Set<String> TYPE_DESIGNATORS = Set.of(AbstractRisk.TYPE_DESIGNATOR,
+                                                              Asset.TYPE_DESIGNATOR,
+                                                              Control.TYPE_DESIGNATOR,
+                                                              Document.TYPE_DESIGNATOR,
+                                                              Incident.TYPE_DESIGNATOR,
+                                                              Person.TYPE_DESIGNATOR,
+                                                              Process.TYPE_DESIGNATOR,
+                                                              Scenario.TYPE_DESIGNATOR,
+                                                              Scope.TYPE_DESIGNATOR);
+
     public static Class<? extends ModelObject> getTypeForPluralTerm(String pluralTerm) {
         return Stream.of(values())
                      .filter(et -> et.pluralTerm.equals(pluralTerm))

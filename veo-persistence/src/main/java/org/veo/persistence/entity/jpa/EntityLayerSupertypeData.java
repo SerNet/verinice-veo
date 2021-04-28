@@ -71,6 +71,11 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
     @ToString.Include
     private String name;
 
+    @NotNull
+    @Column(name = "designator")
+    @ToString.Include
+    private String designator;
+
     @Column(name = "abbreviation")
     private String abbreviation;
 

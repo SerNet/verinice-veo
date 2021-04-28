@@ -240,6 +240,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                     ],
                     domains:[]]
             ],
+            designator: asset.designator,
             domains:[],
             id: asset.id.uuidValue(),
             links:[:],

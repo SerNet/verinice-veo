@@ -33,7 +33,8 @@ import org.veo.core.entity.specification.EntitySpecifications;
  * The abstract base model class. Used to prevent duplicating common methods in
  * model layer objects.
  */
-public interface EntityLayerSupertype extends Nameable, ModelObject, ClientOwned, Catalogable {
+public interface EntityLayerSupertype
+        extends Nameable, ModelObject, ClientOwned, Catalogable, Designated {
 
     /**
      * Can be null when the owner is a catalogitem owned by a domain template.

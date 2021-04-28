@@ -22,11 +22,12 @@ import org.veo.core.usecase.base.CreateEntityUseCase
 import org.veo.core.usecase.person.CreatePersonUseCase
 import org.veo.core.usecase.repository.PersonRepository
 
-public class CreatePersonUseCaseSpec extends UseCaseSpec {
+class CreatePersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
+    DesignatorService designatorService = Mock()
 
-    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository)
+    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository, designatorService)
 
     def "create a person"() {
         given:
@@ -39,6 +40,7 @@ public class CreatePersonUseCaseSpec extends UseCaseSpec {
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * personRepository.save(p) >> p
+        1 * designatorService.assignDesignator(p, existingClient)
         output.entity != null
         output.entity.name == "John"
     }
