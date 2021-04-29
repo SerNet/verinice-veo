@@ -32,6 +32,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
 
     @NotNull(message = "A name must be present.")
@@ -63,10 +64,6 @@ public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
     @JsonIgnore
     private long version;
 
-    // TODO: VEO-540 check if we want to expose this flag
-    @Schema(description = "The active flag the for the Domain, as domains don't get deleted.")
-    private boolean active;
-
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z",
             accessMode = Schema.AccessMode.READ_ONLY)
@@ -77,9 +74,4 @@ public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
             example = "jane_doe",
             accessMode = Schema.AccessMode.READ_ONLY)
     private String updatedBy;
-
-    public boolean isActive() {
-        return active;
-    }
-
 }

@@ -159,7 +159,7 @@ public final class DtoToEntityTransformer {
         var target = factory.createDomain(source.getName(), "", "", "");
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
-        target.setActive(source.isActive());
+        target.setActive(true);
 
         return target;
     }

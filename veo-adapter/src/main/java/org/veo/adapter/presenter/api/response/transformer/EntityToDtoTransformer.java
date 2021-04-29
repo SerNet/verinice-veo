@@ -198,7 +198,6 @@ public final class EntityToDtoTransformer {
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
-        target.setActive(source.isActive());
 
         return target;
     }
