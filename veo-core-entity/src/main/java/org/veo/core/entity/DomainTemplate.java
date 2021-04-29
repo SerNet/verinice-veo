@@ -54,7 +54,11 @@ public interface DomainTemplate extends Nameable, ModelObject {
      */
     Set<Catalog> getCatalogs();
 
-    void setCatalogs(Set<Catalog> catalogs);
+    default void setCatalogs(Set<Catalog> catalogs) {
+        getCatalogs().clear();
+        catalogs.forEach(catalog -> catalog.setDomainTemplate(this));
+        getCatalogs().addAll(catalogs);
+    }
 
     boolean addToCatalogs(Catalog aCatalog);
 

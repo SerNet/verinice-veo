@@ -42,7 +42,11 @@ public interface CatalogItem extends ElementOwner {
      */
     Set<TailoringReference> getTailoringReferences();
 
-    void setTailoringReferences(Set<TailoringReference> aTailoringReferences);
+    default void setTailoringReferences(Set<TailoringReference> tailoringReferences) {
+        getTailoringReferences().clear();
+        tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
+        getTailoringReferences().addAll(tailoringReferences);
+    }
 
     /**
      * The catalogable is the template element which will applied. A copy of the
@@ -57,7 +61,11 @@ public interface CatalogItem extends ElementOwner {
      */
     Set<UpdateReference> getUpdateReferences();
 
-    void setUpdateReferences(Set<UpdateReference> aUpdateReferences);
+    default void setUpdateReferences(Set<UpdateReference> updateReferences) {
+        getUpdateReferences().clear();
+        updateReferences.forEach(updateReference -> updateReference.setOwner(this));
+        getUpdateReferences().addAll(updateReferences);
+    }
 
     String getNamespace();
 

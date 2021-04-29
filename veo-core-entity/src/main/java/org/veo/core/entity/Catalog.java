@@ -37,7 +37,11 @@ public interface Catalog extends ModelObject, Nameable {
      */
     Set<CatalogItem> getCatalogItems();
 
-    void setCatalogItems(Set<CatalogItem> aCatalogitems);
+    default void setCatalogItems(Set<CatalogItem> catalogItems) {
+        getCatalogItems().clear();
+        catalogItems.forEach(catalogitem -> catalogitem.setCatalog(this));
+        getCatalogItems().addAll(catalogItems);
+    }
 
     /**
      * The owner of the catalog is always a domain template.
