@@ -27,12 +27,15 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
+import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
+import spock.lang.IgnoreRest
 import spock.lang.Issue
 
 /**
@@ -48,6 +51,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
+
+    @Autowired
+    private DomainTemplateDataRepository domainTemplateRepository
 
     @Autowired
     private UnitRepositoryImpl unitRepository
@@ -149,7 +155,79 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         storedEventRepository.findAll().size() == numberOfStoredEventsBefore
     }
 
+    @Issue('VEO-556')
+    @IgnoreRest
+
+    @WithUserDetails("user@domain.example")
+    def "events for domain template entities are ignored"() {
+        given:
+        def numberOfStoredEventsBefore = storedEventRepository.findAll().size()
+        println "Found $numberOfStoredEventsBefore events"
+        when: "creating a domain template"
+        def domainTemplate = domainTemplateRepository.save(newDomainTemplate{
+            templateVersion = '1'
+            revision = ''
+            authority = 'me'
+            catalogs = [
+                newCatalog(it) {
+                    def item1 = newCatalogItem(it) {
+                        element = newAsset(it)
+                    }
+                    def item2 = newCatalogItem(it) {
+                        element = newControl(it)
+                        tailoringReferences = [
+                            newTailoringReference(it) {
+                                catalogItem = item1
+                            }
+                        ]
+                    }
+                    catalogItems = [item1, item2]
+                }
+            ]
+        })
+
+        then: "no event is stored"
+        storedEventRepository.findAll().size() == numberOfStoredEventsBefore
+
+        when: "adding a catalog to the domain template"
+        domainTemplate.addToCatalogs( newCatalog(domainTemplate) {
+            catalogItems = [
+                newCatalogItem(it) {
+                    element = newAsset(it)
+                }
+            ]
+        })
+        domainTemplate = domainTemplateRepository.save(domainTemplate)
+        then: "no event is stored"
+        storedEventRepository.findAll().size() == numberOfStoredEventsBefore
+
+        when: "updating some entities in the template"
+        domainTemplate.tap {
+            templateVersion = '1'
+            catalogs.first().tap {
+                description = 'This is very important!'
+                catalogItems.first().tap {
+                    namespace = 'my namespace'
+                    element.tap {
+                        description = 'Ignore this!'
+                    }
+                }
+                catalogItems[1].tap {
+                    tailoringReferences.first().tap {
+                        referenceType = TailoringReferenceType.COPY_ALWAYS
+                    }
+                }
+            }
+        }
+        domainTemplateRepository.save(domainTemplate)
+
+        then: "no event is stored"
+        storedEventRepository.findAll().size() == numberOfStoredEventsBefore
+    }
+
     private Object getLatestStoredEventContent() {
-        parseJson(storedEventRepository.findAll().sort { it.id }.last().content)
+        parseJson(storedEventRepository.findAll().sort {
+            it.id
+        }.last().content)
     }
 }

@@ -34,6 +34,7 @@ import org.veo.core.entity.event.StoredEvent;
 import org.veo.persistence.access.StoredEventRepository;
 import org.veo.persistence.entity.jpa.StoredEventData;
 import org.veo.persistence.entity.jpa.VersioningEvent;
+import org.veo.persistence.entity.jpa.VersioningEvent.Type;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -68,22 +69,30 @@ public class VersioningEventListener {
     @Transactional(propagation = Propagation.MANDATORY)
     void handleVersioningEvent(VersioningEvent event) {
         ModelObject entity = event.getEntity();
-        Class<? extends ModelObject> entityType = entity.getModelInterface();
         String uuid = entity.getId()
                             .uuidValue();
-        if (entityType.equals(Client.class)) {
-            log.debug("Ignoring event for Client entity {}", uuid);
+        Class<? extends ModelObject> entityType = entity.getModelInterface();
+        if (!(entity instanceof ClientOwned)) {
+            log.debug("Ignoring event for {} entity {}", entityType, uuid);
+            return;
+        }
+        Type eventType = event.getType();
+        var client = ((ClientOwned) entity).getOwningClient();
+        if (client.isEmpty()) {
+            log.debug("Ignoring {} event for {} entity {} which does not belong to a client",
+                      eventType, entityType, uuid);
             return;
         }
         log.debug("Storing {} event for entity {}:{} modified by user {}", event.getType(),
                   entity.getModelType(), uuid, event.getAuthor());
-        var storedEvent = StoredEventData.newInstance(createJson(entity, event.getType(),
-                                                                 event.getAuthor()),
+        var storedEvent = StoredEventData.newInstance(createJson(entity, eventType,
+                                                                 event.getAuthor(), client.get()),
                                                       ROUTING_KEY_PREFIX + ROUTING_KEY);
         storedEventRepository.save(storedEvent);
     }
 
-    private String createJson(ModelObject entity, VersioningEvent.Type type, String author) {
+    private String createJson(ModelObject entity, VersioningEvent.Type type, String author,
+            Client client) {
         var tree = objectMapper.createObjectNode();
         tree.put("uri", referenceAssembler.targetReferenceOf(entity.getModelInterface(),
                                                              entity.getId()
@@ -93,11 +102,9 @@ public class VersioningEventListener {
         tree.put("time", entity.getUpdatedAt()
                                .toString());
         tree.put("author", author);
-        if (entity instanceof ClientOwned) {
-            ((ClientOwned) entity).getOwningClient()
-                                  .ifPresent(client -> tree.put("clientId", client.getId()
-                                                                                  .uuidValue()));
-        }
+        tree.put("clientId", client.getId()
+                                   .uuidValue());
+
         if (type != VersioningEvent.Type.REMOVE) {
             var dto = entityToDtoTransformer.transform2Dto(entity);
             tree.set("content", objectMapper.valueToTree(dto));
