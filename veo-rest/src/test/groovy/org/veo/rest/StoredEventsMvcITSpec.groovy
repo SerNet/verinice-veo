@@ -16,6 +16,9 @@
  ******************************************************************************/
 package org.veo.rest
 
+import java.time.Duration
+import java.time.Instant
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
@@ -29,6 +32,8 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+
+import spock.lang.Issue
 
 /**
  * Integration test to verify entity event generation. Performs operations on the REST API and performs assertions on the {@link StoredEventRepository}.
@@ -122,6 +127,26 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             changeNumber == 2
             content == null
         }
+    }
+
+    @Issue('VEO-473')
+    @WithUserDetails("user@domain.example")
+    def "client events are ignored"() {
+        given:
+        def numberOfStoredEventsBefore = storedEventRepository.findAll().size()
+
+        when: "creating a client"
+        def client = clientRepository.save(newClient())
+
+        then: "no event is stored for the client"
+        storedEventRepository.findAll().size() == numberOfStoredEventsBefore
+
+        when: "updating the client"
+        client.setValidUntil(Instant.now().plus(Duration.ofDays(3l)))
+        clientRepository.save(client)
+
+        then: "no event is stored for the client"
+        storedEventRepository.findAll().size() == numberOfStoredEventsBefore
     }
 
     private Object getLatestStoredEventContent() {

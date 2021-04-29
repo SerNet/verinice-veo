@@ -22,11 +22,7 @@ import org.veo.adapter.ModelObjectReferenceResolver
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
-import org.veo.adapter.presenter.api.dto.full.FullClientDto
-import org.veo.adapter.presenter.api.dto.full.FullDomainDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
-import org.veo.core.entity.Client
-import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -79,24 +75,6 @@ class TransformerSpec extends Specification {
         return unit
     }
 
-    def createCient(Unit unit) {
-        Domain domain = Mock()
-        domain.getName()>>domainName
-        domain.getId()>> Key.uuidFrom(domainId)
-        domain.getDescription()>> domainDescription
-        domain.getModelInterface() >> Domain.getClass()
-        domain.createdAt >> Instant.now()
-        domain.updatedAt >> Instant.now()
-
-        Client client = Mock()
-        client.getid()>>Key.uuidFrom(clientId)
-        client.getDomains >> [domain]
-        client.getUnits>>[unit]
-        client.getName()>> clientName
-        client.getModelInterface() >> Client.getClass()
-        client.createdAt >> Instant.now()
-        client.updatedAt >> Instant.now()
-    }
 
     def AbstractUnitDto createUnitDto() {
         def subUnitDto = Mock(ModelObjectReference) {
@@ -142,76 +120,5 @@ class TransformerSpec extends Specification {
         unit.id.uuidValue() == unitId
         unit.name == unitName
 
-    }
-
-    def "Transform Client to ClientDto"() {
-        given: "A Client with a unit"
-
-        Domain domain = Mock()
-        domain.getName()>>domainName
-        domain.getId()>> Key.uuidFrom(domainId)
-        domain.getAuthority()>>'a'
-        domain.getTemplateVersion()>>'1.0'
-        domain.getRevision()>>'1'
-        domain.getDescription()>> domainDescription
-        domain.getCreatedAt() >> Instant.now()
-        domain.getUpdatedAt() >> Instant.now()
-
-
-        Client client = Mock()
-        client.getId()>>Key.uuidFrom(clientId)
-        client.getDomains() >> [domain]
-        client.getName()>> clientName
-        client.getCreatedAt() >> Instant.now()
-        client.getUpdatedAt() >> Instant.now()
-
-        when: "the client is transformed into a DTO"
-        def clientDto = entityToDtoTransformer.transformClient2Dto(client)
-
-        then: "The DTO contains all required data"
-        clientDto.id == clientId
-        clientDto.name == clientName
-        clientDto.domains.size() == 1
-        clientDto.domains.first().id == domainId
-
-    }
-
-    def "Transform ClientDto to Client"() {
-        given: "A client DTO with a unit and a domain"
-        def unitDto = createUnitDto()
-
-        def domainDto = new FullDomainDto()
-        domainDto.setId(domainId)
-        domainDto.setName(domainName)
-
-        def clientDto = new FullClientDto()
-        clientDto.setId(clientId)
-        clientDto.setName(clientName)
-        clientDto.setUnits([unitDto] as Set)
-        clientDto.setDomains([domainDto] as Set)
-
-        Domain d = Mock(Domain)
-        d.id >> Key.uuidFrom(domainId)
-        d.name >> domainName
-
-        Client c=  Mock(Client)
-        c.id >> Key.uuidFrom(clientId)
-        c.name >> clientName
-        c.domains >> [d]
-
-        factory.createClient(c.id, clientName) >> c
-        factory.createDomain(domainName,_,_,_) >> d
-
-        when: "the DTO is transformed into a Client"
-
-        def client = dtoToEntityTransformer.transformDto2Client(clientDto, Key.uuidFrom(clientDto.id))
-
-        then: "the client contains all relevant fields"
-        client.id.uuidValue() == clientId
-        client.name == clientName
-
-        and: "the domain DTO was also converted"
-        client.domains.first().id.uuidValue() == domainId
-        client.domains.first().name == domainName
     }
 }

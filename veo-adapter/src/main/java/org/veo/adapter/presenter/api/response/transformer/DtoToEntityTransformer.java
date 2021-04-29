@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
-import org.veo.adapter.presenter.api.dto.AbstractClientDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
@@ -46,7 +45,6 @@ import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
@@ -153,19 +151,6 @@ public final class DtoToEntityTransformer {
                                                                   .collect(Collectors.toSet());
 
         target.setMembers(members);
-        return target;
-    }
-
-    // ClientDto->Client
-    public Client transformDto2Client(AbstractClientDto source, Key<UUID> key) {
-        var target = factory.createClient(key, source.getName());
-        mapIdentifiableProperties(source, target);
-        target.setName(source.getName());
-        target.setDomains(convertSet(source.getDomains(),
-                                     e -> transformDto2Domain(e, e instanceof IdentifiableDto
-                                             ? Key.uuidFrom(((IdentifiableDto) e).getId())
-                                             : null)));
-
         return target;
     }
 

@@ -38,7 +38,6 @@ import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
-import org.veo.adapter.presenter.api.dto.full.FullClientDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
@@ -50,7 +49,6 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
@@ -86,9 +84,6 @@ public final class EntityToDtoTransformer {
     public VersionedDto transform2Dto(Versioned source) {
         if (source instanceof EntityLayerSupertype) {
             return transform2Dto((EntityLayerSupertype) source);
-        }
-        if (source instanceof Client) {
-            return transformClient2Dto((Client) source);
         }
         if (source instanceof Domain) {
             return transformDomain2Dto((Domain) source);
@@ -191,18 +186,6 @@ public final class EntityToDtoTransformer {
         FullScopeDto target = new FullScopeDto();
         mapEntityLayerSupertype(source, target);
         target.setMembers(convertReferenceSet(source.getMembers()));
-        return target;
-    }
-
-    // Client ->
-    // ClientDto
-    public FullClientDto transformClient2Dto(@Valid Client source) {
-        var target = new FullClientDto();
-        target.setId(source.getId()
-                           .uuidValue());
-        target.setVersion(source.getVersion());
-        target.setName(source.getName());
-        target.setDomains(convertSet(source.getDomains(), this::transformDomain2Dto));
         return target;
     }
 

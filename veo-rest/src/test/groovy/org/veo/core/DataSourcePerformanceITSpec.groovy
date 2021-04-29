@@ -89,7 +89,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(7)
+        assertInsertCount(6)
         assertUpdateCount(0)
         assertSelectCount(5)
     }

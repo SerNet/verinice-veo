@@ -67,14 +67,17 @@ public class VersioningEventListener {
     @EventListener
     @Transactional(propagation = Propagation.MANDATORY)
     void handleVersioningEvent(VersioningEvent event) {
+        ModelObject entity = event.getEntity();
+        Class<? extends ModelObject> entityType = entity.getModelInterface();
+        String uuid = entity.getId()
+                            .uuidValue();
+        if (entityType.equals(Client.class)) {
+            log.debug("Ignoring event for Client entity {}", uuid);
+            return;
+        }
         log.debug("Storing {} event for entity {}:{} modified by user {}", event.getType(),
-                  event.getEntity()
-                       .getModelType(),
-                  event.getEntity()
-                       .getId()
-                       .uuidValue(),
-                  event.getAuthor());
-        var storedEvent = StoredEventData.newInstance(createJson(event.getEntity(), event.getType(),
+                  entity.getModelType(), uuid, event.getAuthor());
+        var storedEvent = StoredEventData.newInstance(createJson(entity, event.getType(),
                                                                  event.getAuthor()),
                                                       ROUTING_KEY_PREFIX + ROUTING_KEY);
         storedEventRepository.save(storedEvent);
