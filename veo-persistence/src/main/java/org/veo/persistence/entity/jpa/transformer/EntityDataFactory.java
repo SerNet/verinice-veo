@@ -176,16 +176,10 @@ public class EntityDataFactory implements EntityFactory {
 
     @Override
     public Catalog createCatalog(DomainTemplate owner) {
-        Catalog catalog = createCatalog();
+        Catalog catalog = new CatalogData();
         catalog.setDomainTemplate(owner);
         owner.addToCatalogs(catalog);
         return catalog;
-    }
-
-    @Override
-    public Catalog createCatalog() {
-        CatalogData catalogData = new CatalogData();
-        return catalogData;
     }
 
     @Override

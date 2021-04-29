@@ -158,9 +158,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CatalogData newCatalog(@DelegatesTo(value = Catalog.class, strategy = Closure.DELEGATE_FIRST)
+    static CatalogData newCatalog(DomainTemplate domainTemplate, @DelegatesTo(value = Catalog.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Catalog") Closure init = null) {
-        return factory.createCatalog().tap {
+        return factory.createCatalog(domainTemplate).tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)

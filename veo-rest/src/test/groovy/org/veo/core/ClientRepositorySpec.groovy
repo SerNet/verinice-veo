@@ -205,13 +205,10 @@ class ClientRepositorySpec extends VeoSpringSpec {
             abbreviation = "ISO"
         }
 
-        Catalog catalog = newCatalog {
-            domainTemplate = domain
-        }
-        domain.addToCatalogs(catalog)
-        CatalogItem item1 = newCatalogItem(catalog) {}
-        CatalogItem item2 = newCatalogItem(catalog) {}
-        CatalogItem item3 = newCatalogItem(catalog) {}
+        Catalog catalog = newCatalog(domain)
+        CatalogItem item1 = newCatalogItem(catalog)
+        CatalogItem item2 = newCatalogItem(catalog)
+        CatalogItem item3 = newCatalogItem(catalog)
 
         catalog.catalogItems = [item1, item2, item3] as Set
 

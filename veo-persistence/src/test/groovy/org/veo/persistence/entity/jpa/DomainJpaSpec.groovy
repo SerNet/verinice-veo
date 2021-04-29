@@ -107,13 +107,12 @@ class DomainJpaSpec extends AbstractJpaSpec {
         when: "saving"
 
         domain0 = repository.save(domain0)
-        Catalog c = newCatalog {
+        Catalog c = newCatalog(domain0) {
             abbreviation = 'c-1'
             name = 'a catalog'
             description = 'catalog 1desc'
         }
 
-        domain0.addToCatalogs(c)
         domain0 = repository.save(domain0)
         Domain d = repository.findById(domain0.dbId).get()
 
@@ -133,13 +132,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
         given: "the domain template and a catalog"
 
         domain0 = newDomain(client) {}
-        Catalog catalog = newCatalog {
+        Catalog catalog = newCatalog(domain0) {
             abbreviation = 'c-1'
             name = 'catalog'
             description = 'a catalog'
-            domainTemplate = domain0
         }
-        domain0.addToCatalogs(catalog)
         CatalogItem item1 = newCatalogItem(catalog)
         CatalogItem item2 = newCatalogItem(catalog)
         CatalogItem item3 = newCatalogItem(catalog)
@@ -176,11 +173,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
         domain0 = newDomain(client) {}
         domain0.domainTemplate = domainTemplate
 
-        Catalog catalog = newCatalog {
+        Catalog catalog = newCatalog(domain0) {
             name = 'a'
-            domainTemplate = domain0
         }
-        domain0.addToCatalogs(catalog)
         CatalogItem item1 = newCatalogItem(catalog)
         CatalogItem item2 = newCatalogItem(catalog)
         CatalogItem item3 = newCatalogItem(catalog)
@@ -210,16 +205,15 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
         domain0 = newDomain(client) {}
         domain0 = repository.save(domain0)
-        Catalog catalog = newCatalog {
+        Catalog catalog = newCatalog(domain0) {
             name = 'a'
-            domainTemplate = domain0
         }
         domain0.addToCatalogs(catalog)
         catalog = catalogRepository.save(catalog)
 
-        CatalogItem item1 = newCatalogItem(catalog) {}
-        CatalogItem item2 = newCatalogItem(catalog) {}
-        CatalogItem item3 = newCatalogItem(catalog) {}
+        CatalogItem item1 = newCatalogItem(catalog)
+        CatalogItem item2 = newCatalogItem(catalog)
+        CatalogItem item3 = newCatalogItem(catalog)
 
         clientRepository.save(client)
 
@@ -285,9 +279,8 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
         domain0 = newDomain(client) {}
         domain0 = repository.save(domain0)
-        Catalog catalog = newCatalog {
+        Catalog catalog = newCatalog(domain0) {
             name = 'a'
-            domainTemplate = domain0
         }
         domain0.addToCatalogs(catalog)
         catalog = catalogRepository.save(catalog)

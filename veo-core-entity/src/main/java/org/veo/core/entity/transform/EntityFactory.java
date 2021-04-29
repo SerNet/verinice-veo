@@ -76,8 +76,6 @@ public interface EntityFactory {
 
     Catalog createCatalog(DomainTemplate owner);
 
-    Catalog createCatalog();
-
     DomainTemplate createDomainTemplate(String name, String authority, String templateVersion,
             String revision);
 

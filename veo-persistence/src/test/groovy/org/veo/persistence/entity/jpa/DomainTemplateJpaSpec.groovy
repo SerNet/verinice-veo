@@ -29,10 +29,10 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
 class DomainTemplateJpaSpec extends AbstractJpaSpec {
     @Autowired
-    DomainTemplateDataRepository repository;
+    DomainTemplateDataRepository repository
     @Autowired
-    CatalogDataRepository catalogRepository;
-    EntityFactory factory;
+    CatalogDataRepository catalogRepository
+    EntityFactory factory
 
     DomainTemplate domain0
     Domain domain1
@@ -69,11 +69,10 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         when: "saving"
 
         domain0 = repository.save(domain0)
-        Catalog c = newCatalog {
+        Catalog c = newCatalog(domain0) {
             name = "a"
         }
 
-        domain0.addToCatalogs(c)
         domain0 = repository.save(domain0)
         DomainTemplate d = repository.findById(domain0.dbId).get()
 
@@ -89,14 +88,13 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate with catalog and catalog items'() {
         given: "the domain template and a catalog"
 
-        domain0 = newDomainTemplate {}
-        Catalog catalog = newCatalog {
+        domain0 = newDomainTemplate()
+        Catalog catalog = newCatalog(domain0) {
             name = "a"
         }
-        domain0.addToCatalogs(catalog)
-        CatalogItem item1 = newCatalogItem(catalog) {}
-        CatalogItem item2 = newCatalogItem(catalog) {}
-        CatalogItem item3 = newCatalogItem(catalog) {}
+        CatalogItem item1 = newCatalogItem(catalog)
+        CatalogItem item2 = newCatalogItem(catalog)
+        CatalogItem item3 = newCatalogItem(catalog)
 
         catalog.catalogItems = [item1, item2, item3] as Set
 
