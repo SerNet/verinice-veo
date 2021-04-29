@@ -27,7 +27,6 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.CatalogDataRepository
-import org.veo.persistence.access.jpa.CatalogItemDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
@@ -39,9 +38,7 @@ import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.ScenarioDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
-import org.veo.persistence.access.jpa.TailoringReferenceDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
-import org.veo.persistence.access.jpa.UpdateReferenceDataRepository
 import org.veo.test.VeoSpec
 
 /**
@@ -58,15 +55,6 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired
     CatalogDataRepository catalogDataRepository
-
-    @Autowired
-    CatalogItemDataRepository catalogItemDataRepository
-
-    @Autowired
-    TailoringReferenceDataRepository tailoringReferenceDataRepository
-
-    @Autowired
-    UpdateReferenceDataRepository updategReferenceDataRepository
 
     @Autowired
     DomainTemplateDataRepository domainTemplateDataRepository
@@ -109,38 +97,38 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     def setup() {
         txTemplate.execute {
-            [
+            def catalogs = catalogDataRepository.findAll()
+            def entityDataRepositories = [
+                scopeDataRepository,
                 processDataRepository,
                 assetDataRepository,
                 controlDataRepository,
                 documentDataRepository,
                 incidentDataRepository,
                 scenarioDataRepository,
-                personDataRepository,
-                scopeDataRepository
-            ].each {
-                it.findAll().forEach {
+                personDataRepository
+            ]
+            entityDataRepositories.each {
+                def elements = it.findAll()
+                elements.each {
                     it.links.clear()
                 }
             }
-            [
-                scopeDataRepository,
-                tailoringReferenceDataRepository,
-                updategReferenceDataRepository,
-                catalogItemDataRepository,
-                assetDataRepository,
-                processDataRepository,
-                controlDataRepository,
-                documentDataRepository,
-                incidentDataRepository,
-                scenarioDataRepository,
-                personDataRepository,
+            catalogs.each {
+                it.catalogItems.each {
+                    it.element = null
+                    it.tailoringReferences*.owner = null
+                    it.tailoringReferences.clear()
+                    it.updateReferences*.owner = null
+                    it.updateReferences.clear()
+                }
+            }
+            (entityDataRepositories + [
                 unitDataRepository,
-                domainDataRepository,
                 clientDataRepository,
                 domainTemplateDataRepository,
-                eventStoreDataRepository,
-            ]*.deleteAll()
+                eventStoreDataRepository
+            ])*.deleteAll()
         }
     }
 }
