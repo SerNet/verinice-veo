@@ -62,7 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractEntityController {
 
     @Autowired
-    private ClientRepository clientRepository;
+    protected ClientRepository clientRepository;
 
     @Autowired
     private RepositoryProvider repositoryProvider;

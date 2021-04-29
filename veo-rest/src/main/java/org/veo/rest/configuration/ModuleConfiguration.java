@@ -38,6 +38,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
@@ -50,6 +51,10 @@ import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
+import org.veo.core.usecase.catalog.GetCatalogUseCase;
+import org.veo.core.usecase.catalog.GetCatalogsUseCase;
+import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
+import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
@@ -407,6 +412,26 @@ public class ModuleConfiguration {
     @Bean
     public GetDomainsUseCase getDomainsUseCase() {
         return new GetDomainsUseCase();
+    }
+
+    @Bean
+    public GetCatalogUseCase getCatalogUseCase(CatalogRepository catalogRepository) {
+        return new GetCatalogUseCase(catalogRepository);
+    }
+
+    @Bean
+    public GetCatalogsUseCase getCatalogsUseCase() {
+        return new GetCatalogsUseCase();
+    }
+
+    @Bean
+    public GetCatalogItemUseCase getCatalogItemUseCase() {
+        return new GetCatalogItemUseCase();
+    }
+
+    @Bean
+    public GetCatalogItemsUseCase getCatalogItemsUseCase() {
+        return new GetCatalogItemsUseCase();
     }
 
     @Bean

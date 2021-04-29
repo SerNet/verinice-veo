@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 Urs Zeidler.
+ * Copyright (c) 2021 Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -14,24 +14,20 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.adapter.presenter.api.dto;
 
-import java.util.Optional;
-import java.util.UUID;
+import org.veo.core.entity.TailoringReferenceType;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-/**
- * A repository for <code>Client</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface ClientRepository extends Repository<Client, Key<UUID>> {
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
+public abstract class AbstractTailoringReferenceDto extends AbstractCatalogReferenceDto {
 
-    public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
-
-    public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);
+    private TailoringReferenceType referenceType;
 
 }

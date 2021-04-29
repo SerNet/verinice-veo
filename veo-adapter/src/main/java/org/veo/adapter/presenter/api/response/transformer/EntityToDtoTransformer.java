@@ -38,6 +38,8 @@ import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
+import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
@@ -46,9 +48,12 @@ import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
+import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
@@ -63,6 +68,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 
@@ -90,6 +96,15 @@ public final class EntityToDtoTransformer {
         }
         if (source instanceof Unit) {
             return transformUnit2Dto((Unit) source);
+        }
+        if (source instanceof Catalog) {
+            return transformCatalog2Dto((Catalog) source);
+        }
+        if (source instanceof CatalogItem) {
+            return transformCatalogItem2Dto((CatalogItem) source);
+        }
+        if (source instanceof TailoringReference) {
+            return transformTailoringReference2Dto((TailoringReference) source);
         }
         throw new IllegalArgumentException("No transform method defined for " + source.getClass()
                                                                                       .getSimpleName());
@@ -198,7 +213,62 @@ public final class EntityToDtoTransformer {
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
+        return target;
+    }
 
+    public FullCatalogDto transformCatalog2Dto(@Valid Catalog source) {
+        FullCatalogDto target = new FullCatalogDto();
+
+        target.setId(source.getId()
+                           .uuidValue());
+        mapNameableProperties(source, target);
+        mapVersionedProperties(source, target);
+
+        if (source.getDomainTemplate() != null) {
+            target.setDomainTemplate(ModelObjectReference.from(source.getDomainTemplate(),
+                                                               referenceAssembler));
+        }
+        target.setCatalogItems(convertReferenceSet(source.getCatalogItems()));
+
+        return target;
+    }
+
+    public FullCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
+        FullCatalogItemDto target = new FullCatalogItemDto();
+
+        target.setId(source.getId()
+                           .uuidValue());
+        mapVersionedProperties(source, target);
+        target.setNamespace(source.getNamespace());
+        if (source.getCatalog() != null) {
+            target.setCatalog(ModelObjectReference.from(source.getCatalog(), referenceAssembler));
+        }
+
+        if (source.getElement() != null) {
+            target.setElement(ModelObjectReference.from(source.getElement(), referenceAssembler));
+        }
+        target.setTailoringReferences(source.getTailoringReferences()
+                                            .stream()
+                                            .map(this::transformTailoringReference2Dto)
+                                            .collect(Collectors.toSet())
+
+        );
+        return target;
+    }
+
+    public FullTailoringReferenceDto transformTailoringReference2Dto(
+            @Valid TailoringReference source) {
+        FullTailoringReferenceDto target = new FullTailoringReferenceDto();
+        mapVersionedProperties(source, target);
+        target.setId(source.getId()
+                           .uuidValue());
+
+        target.setReferenceType(source.getReferenceType());
+
+        if (source.getCatalogItem() != null) {
+            target.setCatalogItem(ModelObjectReference.from(source.getCatalogItem(),
+                                                            referenceAssembler));
+        }
         return target;
     }
 

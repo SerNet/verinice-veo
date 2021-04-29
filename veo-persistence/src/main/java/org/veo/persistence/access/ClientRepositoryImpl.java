@@ -16,9 +16,13 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.usecase.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
@@ -28,8 +32,23 @@ import org.veo.persistence.entity.jpa.ModelObjectValidation;
 public class ClientRepositoryImpl extends AbstractModelObjectRepository<Client, ClientData>
         implements ClientRepository {
 
+    private final ClientDataRepository clientDataRepository;
+
     public ClientRepositoryImpl(ClientDataRepository dataRepository,
             ModelObjectValidation validator) {
         super(dataRepository, validator);
+        clientDataRepository = dataRepository;
+    }
+
+    @Override
+    public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id) {
+        return clientDataRepository.findWithCatalogsAndItemsByDbId(id.uuidValue())
+                                   .map(Client.class::cast);
+    }
+
+    @Override
+    public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id) {
+        return clientDataRepository.findWithCatalogsAndItemsAndTailoringReferencesByDbId(id.uuidValue())
+                                   .map(Client.class::cast);
     }
 }

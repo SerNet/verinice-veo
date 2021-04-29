@@ -43,6 +43,7 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.CatalogReference;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompoundKeyEntity;
 import org.veo.core.entity.Control;
@@ -61,6 +62,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetRiskResource;
+import org.veo.rest.CatalogController;
 import org.veo.rest.ControlController;
 import org.veo.rest.DocumentController;
 import org.veo.rest.DomainController;
@@ -136,10 +138,15 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                      id)).withRel(DomainController.URL_BASE_PATH)
                                                                          .getHref();
         }
+        if (Catalog.class.isAssignableFrom(type)) {
+            return linkTo(methodOn(CatalogController.class).getCatalog(ANY_AUTH,
+                                                                       id)).withRel(CatalogController.URL_BASE_PATH)
+                                                                           .getHref();
+        }
         // Some model object types have no endpoint.
-        if (Client.class.isAssignableFrom(type) || Catalog.class.isAssignableFrom(type)
-                || CatalogItem.class.isAssignableFrom(type)
-                || DomainTemplate.class.isAssignableFrom(type)) {
+        if (Client.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)
+                || DomainTemplate.class.isAssignableFrom(type)
+                || CatalogReference.class.isAssignableFrom(type)) {
             return null;
         }
 
