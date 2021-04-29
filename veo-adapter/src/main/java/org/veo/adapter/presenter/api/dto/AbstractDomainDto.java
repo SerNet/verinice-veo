@@ -16,8 +16,16 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomainCatalogs;
+import org.veo.core.entity.Catalog;
+
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,5 +54,8 @@ public abstract class AbstractDomainDto extends AbstractVersionedDto implements 
             example = "Everything around data protection.",
             required = false)
     private String description;
+
+    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomainCatalogs.class))
+    private Set<ModelObjectReference<Catalog>> catalogs = new HashSet<>();
 
 }

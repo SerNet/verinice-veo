@@ -27,6 +27,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
@@ -62,6 +63,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
     private Unit unit
     private Domain testDomain
     private Client client
+    private Catalog catalog
     private Client secondClient
     private Domain domainSecondClient
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
@@ -78,10 +80,15 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             client = newClient {
                 id = clientId
             }
+            catalog = newCatalog(domain1) {
+                name= 'a'
+            }
             client.addToDomains(domain1)
             client.addToDomains(domain2)
 
             client = clientRepository.save(client)
+            domain1 = client.domains.first()
+            catalog = domain1.catalogs.first()
             domainSecondClient = newDomain()
             secondClient = newClient()
             secondClient.addToDomains(domainSecondClient)
@@ -111,6 +118,12 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         and:
         def result = parseJson(results)
         result.name == testDomain.name
+        result.catalogs.size() == 1
+        when:
+        def firstCatalog = result.catalogs.first()
+        then:
+        firstCatalog.displayName == 'a'
+        firstCatalog.targetUri == "http://localhost/catalogs/${catalog.dbId}"
     }
 
     @WithUserDetails("user@domain.example")

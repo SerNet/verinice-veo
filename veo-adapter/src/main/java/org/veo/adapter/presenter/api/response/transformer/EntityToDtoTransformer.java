@@ -213,6 +213,7 @@ public final class EntityToDtoTransformer {
         target.setVersion(source.getVersion());
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
+        target.setCatalogs(convertReferenceSet(source.getCatalogs()));
         return target;
     }
 
