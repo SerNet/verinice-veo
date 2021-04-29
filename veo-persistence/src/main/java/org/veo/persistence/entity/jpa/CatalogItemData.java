@@ -77,9 +77,8 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
 
     @Override
     public Client getClient() {
-        if (getCatalog().getDomainTemplate()
-                        .getModelInterface()
-                        .isAssignableFrom(Domain.class))
+        if (Domain.class.isAssignableFrom(getCatalog().getDomainTemplate()
+                                                      .getModelInterface()))
             return ((Domain) getCatalog().getDomainTemplate()).getOwner();
         else
             return null;
