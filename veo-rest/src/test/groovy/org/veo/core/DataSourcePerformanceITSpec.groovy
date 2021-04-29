@@ -40,7 +40,6 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned.Lifecycle
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -76,9 +75,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Autowired
     private DomainRepositoryImpl domainRepository
-
-    @Autowired
-    private EntityFactory entityFactory
 
     private Client client
     private Unit unit
@@ -178,7 +174,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         when:
         reset()
-        savePerson("composite person 1", [
+        savePerson([
             newPerson(unit),
             newPerson(unit)
         ])
@@ -323,7 +319,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         given:
         createClient()
         100.times {
-            savePerson("person $it", [
+            savePerson([
                 newPerson(unit),
                 newPerson(unit)
             ])
@@ -377,11 +373,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
         def units = createClientUnits(2)
 
-        def domain2 = entityFactory.createDomain("domain2","","","")
-        domain2.owner = this.client
-        domain2.authority = 'ta'
-        domain2.revision = '1'
-        domain2.templateVersion = '1.0'
+        def domain2 = newDomain(client) {
+            authority = 'ta'
+            revision = '1'
+            templateVersion = '1.0'
+        }
         domainRepository.save(domain2)
 
         client.addToDomains(domain2)
@@ -412,7 +408,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         client.addToDomains(domain)
         client = clientRepository.save(client)
 
-        unit = entityFactory.createUnit("unit1",null)
+        unit = newUnit(client)
         unit.setClient(client)
         unit.addToDomains(domain)
 
@@ -450,14 +446,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             name = "process1"
             it
         }
-        def person = savePerson("person")
+        def person = savePerson()
 
-        def link1 = entityFactory.createCustomLink("aLink", process, asset).tap {
+        def link1 = newCustomLink(process, asset) {
             type = "aLink"
             applicableTo = ["Process"] as Set
         }
 
-        def link2 = entityFactory.createCustomLink("anotherLink", process, person).tap {
+        def link2 = newCustomLink(process, person) {
             type = "anotherLink"
             applicableTo = ["Process"] as Set
         }
@@ -467,13 +463,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     }
 
     @Transactional
-    Person savePerson(String name, List<Person> parts = []) {
-        def person = entityFactory.createPerson(name, unit)
-
-        person.with {
+    Person savePerson(List<Person> parts = []) {
+        def person = newPerson(unit) {
             it.parts = parts
-            state = Lifecycle.CREATING
-            it
+            it.state = Lifecycle.CREATING
         }
         return personRepository.save(person)
     }
@@ -483,7 +476,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def compositePersons = (0..<count).collect {
             def dolly = newPerson(unit)
             def minime = newPerson(unit)
-            def person = entityFactory.createPerson(baseName+count, unit)
+            def person = newPerson(unit) {
+                name = baseName+count
+            }
             person.tap {
                 parts = [dolly, minime]
                 state = Lifecycle.CREATING
@@ -498,8 +493,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     def saveProcessWithCustomAspects(int count) {
         def process = newProcess(unit)
         for (i in 0..<count) {
-            CustomProperties cp = entityFactory.createCustomProperties().tap {
-                type = "aType"
+            CustomProperties cp = newCustomProperties("aType") {
                 applicableTo = ["Process"] as Set
             }
             process.addToCustomAspects(cp)
@@ -547,8 +541,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         for (i in 0..<count) {
             values.add("value_" + i)
         }
-        CustomProperties cp = entityFactory.createCustomProperties().tap {
-            type = "aType"
+        CustomProperties cp = newCustomProperties("aType") {
             applicableTo = ["Process"] as Set
         }
         cp.setProperty(PROP_KEY, values as List)
@@ -567,7 +560,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Transactional
     def createLinkedEntities() {
-        def compositePerson = savePerson("parentperson", [
+        def compositePerson = savePerson([
             newPerson(unit),
             newPerson(unit)
         ]) // creates person with 2 parts
@@ -581,18 +574,18 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def process = newProcess(unit)
         process = processRepository.save(process)
 
-        def link_person_asset = entityFactory.createCustomLink("link1", compositePerson, asset).tap {
+        def link_person_asset = newCustomLink(compositePerson, asset) {
             type = "type1"
             applicableTo = ["Person"] as Set
         }
         compositePerson.addToLinks(link_person_asset)
         compositePerson = personRepository.save(compositePerson)
 
-        def link_asset_person = entityFactory.createCustomLink("link2", asset, compositePerson).tap {
+        def link_asset_person = newCustomLink(asset, compositePerson) {
             type = "type2"
             applicableTo = ["Asset"] as Set
         }
-        def link_asset_process = entityFactory.createCustomLink("link3", asset, process).tap {
+        def link_asset_process = newCustomLink(asset, process) {
             type = "type3"
             applicableTo = ["Asset"] as Set
         }
@@ -600,14 +593,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         asset.addToLinks(link_asset_person)
         asset = assetRepository.save(asset)
 
-        def link_process_person = entityFactory.createCustomLink("link4", process, compositePerson).tap {
+        def link_process_person = newCustomLink(process, compositePerson) {
             type = "type4"
             applicableTo = ["Process"] as Set
         }
         process.addToLinks(link_process_person)
         process = processRepository.save(process)
 
-        def link_asset_asset = entityFactory.createCustomLink("link5", asset, asset2).tap {
+        def link_asset_asset = newCustomLink(asset, asset2) {
             type = "type5"
             applicableTo = ["Asset"] as Set
         }

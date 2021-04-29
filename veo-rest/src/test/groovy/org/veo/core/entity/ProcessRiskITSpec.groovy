@@ -71,35 +71,15 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         createClient()
     }
 
-    private Control control(String name) {
-        entityFactory.createControl( name, unit)
-    }
-
-    private Scenario scenario(String name) {
-        entityFactory.createScenario( name, unit)
-    }
-
-    private Process process(String name) {
-        entityFactory.createProcess( name, unit)
-    }
-
-    private Domain domain(String name, String authority, String templateVersion, String revision) {
-        entityFactory.createDomain(name, authority, templateVersion, revision)
-    }
-
-    private Person person(String name) {
-        entityFactory.createPerson( name, unit)
-    }
-
     def "a risk can be modified persistently"() {
 
         given: "predefined entities"
-        def process1 = process("process1")
-        def scenario1 = scenario("scenario1")
-        def domain1 = domain("domain1", "a","1.0","1")
+        def process1 = newProcess(unit)
+        def scenario1 = newScenario(unit)
+        def domain1 = newDomain(client)
         process1.addToDomains(domain1)
-        def control1 = control("control1")
-        def person1 = person("person1")
+        def control1 = newControl(unit)
+        def person1 = newPerson(unit)
 
         def risk = txTemplate.execute{
             scenario1 = insertScenario(scenario1)

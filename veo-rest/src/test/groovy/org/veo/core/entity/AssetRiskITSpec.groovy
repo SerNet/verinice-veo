@@ -24,7 +24,6 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.repository.ControlRepository
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -38,9 +37,6 @@ import org.veo.persistence.entity.jpa.AssetRiskData
 @ComponentScan("org.veo")
 @ActiveProfiles(["test"])
 class AssetRiskITSpec extends VeoSpringSpec {
-
-    @Autowired
-    EntityFactory entityFactory
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -71,35 +67,15 @@ class AssetRiskITSpec extends VeoSpringSpec {
         createClient()
     }
 
-    private Control control(String name) {
-        entityFactory.createControl( name, unit)
-    }
-
-    private Scenario scenario(String name) {
-        entityFactory.createScenario( name, unit)
-    }
-
-    private Asset asset(String name) {
-        entityFactory.createAsset( name, unit)
-    }
-
-    private Domain domain(String name) {
-        entityFactory.createDomain( name, "","","")
-    }
-
-    private Person person(String name) {
-        entityFactory.createPerson( name, unit)
-    }
-
     def "a risk can be modified persistently"() {
 
         given: "predefined entities"
-        def asset1 = asset("asset1")
-        def scenario1 = scenario("scenario1")
-        def domain1 = domain("domain1")
+        def asset1 = newAsset(unit)
+        def scenario1 = newScenario(unit)
+        def domain1 = newDomain(client)
         asset1.addToDomains(domain1)
-        def control1 = control("control1")
-        def person1 = person("person1")
+        def control1 = newControl(unit)
+        def person1 = newPerson(unit)
 
         def risk = txTemplate.execute{
             scenario1 = insertScenario(scenario1)

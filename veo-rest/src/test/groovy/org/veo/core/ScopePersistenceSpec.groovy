@@ -24,7 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.Versioned.Lifecycle
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -43,11 +42,6 @@ class ScopePersistenceSpec extends VeoSpringSpec {
     @Autowired
     private ScopeRepositoryImpl scopeRepository
 
-    @Autowired
-    private EntityFactory factory
-
-
-
     def "save a scope"() {
         given: "a client and a unit"
         def client = clientRepository.save(newClient())
@@ -57,7 +51,9 @@ class ScopePersistenceSpec extends VeoSpringSpec {
         def john = newPerson(unit)
         def jane = newPerson(unit)
 
-        def scope = factory.createScope('My scope', unit)
+        def scope = newScope(unit) {
+            name = 'My scope'
+        }
 
         scope.with {
             members = [john, jane]

@@ -24,7 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.Versioned.Lifecycle
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -43,10 +42,6 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
     @Autowired
     private PersonRepositoryImpl personRepository
 
-    @Autowired
-    private EntityFactory factory
-
-
     def "save a composite person"() {
         given: "a client and a unit"
         def client = clientRepository.save(newClient())
@@ -57,7 +52,9 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
         def john = newPerson(unit)
         def jane = newPerson(unit)
 
-        def compositePerson = factory.createPerson('My composite person', unit)
+        def compositePerson = newPerson(unit) {
+            name = 'My composite person'
+        }
 
         compositePerson.with {
             parts = [john, jane]
