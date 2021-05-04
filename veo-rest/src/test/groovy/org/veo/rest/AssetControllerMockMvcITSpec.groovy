@@ -163,6 +163,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'Test asset'
+                designator = 'AST-1'
             })
         }
         Map request = [
@@ -200,7 +201,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'My Assets'
         and: "the composite asset contains the other asset"
         result.parts.size() == 1
-        result.parts.first().displayName == '- Test asset (Test unit)'
+        result.parts.first().displayName == 'AST-1 Test asset'
     }
 
 

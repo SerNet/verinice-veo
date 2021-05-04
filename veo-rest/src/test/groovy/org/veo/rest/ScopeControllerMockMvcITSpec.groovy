@@ -152,6 +152,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'Test asset'
+                designator = 'AST-1'
             })
         }
         Map request = [
@@ -189,7 +190,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'My Assets'
         and: "the scope contains the asset"
         result.members.size() == 1
-        result.members.first().displayName == '- Test asset (Test unit)'
+        result.members.first().displayName == 'AST-1 Test asset'
     }
 
 
@@ -206,6 +207,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def composite = newPerson(unit) {
             name = 'Composite person'
             parts = [p1, p2]
+            designator = 'PER-1'
         }
 
         def scope = txTemplate.execute {
@@ -226,7 +228,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         and: "is has the correct members"
         result.members.size() == 1
-        result.members.first().displayName == '- Composite person (Test unit)'
+        result.members.first().displayName == 'PER-1 Composite person'
     }
 
     @WithUserDetails("user@domain.example")
@@ -523,6 +525,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             })
             def scenario = scenarioRepository.save(newScenario(unit) {
                 name = 'Test scenario'
+                designator = 'SCN-1'
             })
             def scope = scopeRepository.save(newScope(unit) {
                 name = 'Test scope'
@@ -548,7 +551,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def members = parseJson(results).members
         then:
         members.size() == 1
-        members.first().displayName == "- ${scenario.name} (${unit.name})"
+        members.first().displayName == "SCN-1 Test scenario"
     }
 
     @WithUserDetails("user@domain.example")

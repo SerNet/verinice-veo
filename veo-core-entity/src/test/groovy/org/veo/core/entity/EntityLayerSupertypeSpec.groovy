@@ -24,16 +24,12 @@ class EntityLayerSupertypeSpec extends Specification {
         given: "an EntityLayerSupertype spy"
         def spy = Spy(EntityLayerSupertype)
 
-        when: "setting abbreviation, name & owner"
+        when: "setting abbreviation, name, and designator"
         spy.abbreviation >> "FF"
         spy.name >> "Fun foo"
-        spy.owner >> Mock(Unit) {
-            it.name >> "Super unit"
-            it.isUnitType() >> true
-            it.asUnit() >> it
-        }
+        spy.designator >> 'XXX-23'
         then: "all three elements appear in the display name"
-        spy.displayName == "FF - Fun foo (Super unit)"
+        spy.displayName == "XXX-23 FF Fun foo"
     }
 
     def "formats display name without abbreviation"() {
@@ -43,12 +39,8 @@ class EntityLayerSupertypeSpec extends Specification {
         when: "setting the abbreviation to null"
         spy.abbreviation >> null
         spy.name >> "Fun foo"
-        spy.owner >> Mock(Unit) {
-            it.name >> "Super unit"
-            it.isUnitType() >> true
-            it.asUnit() >> it
-        }
+        spy.designator >> 'XXX-42'
         then: "the abbreviation is omitted"
-        spy.displayName == "- Fun foo (Super unit)"
+        spy.displayName == "XXX-42 Fun foo"
     }
 }

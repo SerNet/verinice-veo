@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2020  Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.format;
+package org.veo.adapter.presenter.api.common
 
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Unit;
+import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.Key
 
-/**
- * Resolves a value on the source object's owner.
- */
-public class OwnerPlaceholder implements Placeholder<EntityLayerSupertype> {
-    private final Placeholder<Unit> unitPlaceholder;
+import spock.lang.Issue
+import spock.lang.Specification
 
-    public OwnerPlaceholder(Placeholder<Unit> unitPlaceholder) {
-        this.unitPlaceholder = unitPlaceholder;
-    }
+class ModelObjectReferenceSpec extends Specification {
 
-    @Override
-    public Object resolveValue(EntityLayerSupertype source) {
-        return unitPlaceholder.resolveValue(source.getOwner()
-                                                  .asUnit());
+    @Issue('VEO-560')
+    def "create ModelObjectReference for CatalogItem"() {
+        given:
+        CatalogItem catalogItem = Stub {
+            getId() >> Key.newUuid()
+            getModelInterface() >> CatalogItem
+            getDisplayName() >> null
+        }
+        ReferenceAssembler referenceAssembler = Mock()
+        when:
+        def mor = ModelObjectReference.from(catalogItem, referenceAssembler)
+        then:
+        mor.displayName == null
     }
 }

@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * Defines the basic properties of nameable elements.
  */
@@ -35,26 +38,17 @@ public interface Nameable extends Displayable {
     void setDescription(String aDescription);
 
     /**
-     * A default implementation to render a user friendly display name that can be
-     * overridden if more complicated parameters need to be taken into account.
-     * <p>
-     * I.e. for a person the title, middle initial et al might have to be included
-     * in the display name, the nationality of the person and the UI locale might
-     * need to be considered etc.
-     * <p>
-     * This is why more complicated implementations of this method should be placed
-     * in the adapter layer.
-     * <p>
-     * See also:
-     * <p>
-     * {@code org.veo.adapter.presenter.api.common.ToDisplayNameSwitch}
+     * A default implementation to render a user friendly display name.
      */
     default String getDisplayName() {
-        return String.join("",
-                           (getAbbreviation() != null && !getAbbreviation().isEmpty())
-                                   ? getAbbreviation() + " "
-                                   : "",
-                           getName());
+        Stream<String> parts = Stream.of(getName());
+        String abbreviation = getAbbreviation();
+        if (abbreviation != null) {
+            parts = Stream.concat(Stream.of(abbreviation), parts);
+        }
+        if (this instanceof Designated) {
+            parts = Stream.concat(Stream.of(((Designated) this).getDesignator()), parts);
+        }
+        return parts.collect(Collectors.joining(" "));
     }
-
 }

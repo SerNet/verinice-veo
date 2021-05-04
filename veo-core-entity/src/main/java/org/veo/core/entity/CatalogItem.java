@@ -83,9 +83,9 @@ public interface CatalogItem extends ElementOwner {
         return SINGULAR_TERM;
     }
 
+    // TODO VEO-563 remove Displayable from extended interfaces
     default String getDisplayName() {
-        return getElement() == null ? getNamespace()
-                : getNamespace() + "-" + getElement().getDisplayName();
+        return null;
     }
 
     default Optional<Client> getOwningClient() {

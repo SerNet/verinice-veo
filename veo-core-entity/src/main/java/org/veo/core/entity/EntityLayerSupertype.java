@@ -17,15 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.veo.core.entity.format.AbbreviationPlaceholder;
-import org.veo.core.entity.format.DisplayNameFormat;
-import org.veo.core.entity.format.NamePlaceholder;
-import org.veo.core.entity.format.OwnerPlaceholder;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 
@@ -123,23 +118,5 @@ public interface EntityLayerSupertype
                     + "violated by the attempted operation on element: " + toString()
                     + " from client " + client.toString());
         }
-    }
-
-    @Override
-    default String getDisplayName() {
-        // TODO VEO-284 Use configurable format template & placeholders,
-        // optimize owner
-        // retrieval performance.
-        if (getOwner().isUnitType()) {
-            var format = new DisplayNameFormat<>("%s - %s (%s)",
-                    List.of(new AbbreviationPlaceholder<>(), new NamePlaceholder<>(),
-                            new OwnerPlaceholder(new NamePlaceholder<>())));
-            return format.render(this);
-        } else {
-            var format = new DisplayNameFormat<>("%s - %s",
-                    List.of(new AbbreviationPlaceholder<>(), new NamePlaceholder<>()));
-            return format.render(this);
-        }
-
     }
 }

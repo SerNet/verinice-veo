@@ -220,9 +220,11 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved composite control with two parts"
         Control c1 = newControl(unit) {
             name = "c1"
+            designator = 'CTL-1'
         }
         Control c2 = newControl(unit) {
             name = "c2"
+            designator = 'CTL-2'
         }
 
         def compositeControl = txTemplate.execute {
@@ -242,8 +244,8 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         result.parts.size() == 2
         result.parts*.displayName as Set == [
-            '- c1 (Test unit)',
-            '- c2 (Test unit)'
+            'CTL-1 c1',
+            'CTL-2 c2'
         ] as Set
     }
 
