@@ -21,11 +21,7 @@ import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
@@ -48,7 +44,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @Valid
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractRiskDto implements VersionedDto {
+public abstract class AbstractRiskDto extends AbstractVersionedDto {
 
     @Valid
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
@@ -69,30 +65,5 @@ public abstract class AbstractRiskDto implements VersionedDto {
     @Schema(implementation = ModelObjectReferenceOwner.class,
             description = "The accountable point-of-contact for this risk.")
     private ModelObjectReference<Person> riskOwner;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String createdAt;
-
-    @Schema(description = "The username of the user who created this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String createdBy;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String updatedAt;
-
-    @Schema(description = "The username of the user who last updated this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String updatedBy;
-
-    @JsonIgnore
-    private long version;
 
 }

@@ -61,10 +61,14 @@ public class AssetRiskDto extends AbstractRiskDto {
             @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
             @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
             @Valid ModelObjectReference<Asset> asset, String self, long version) {
-        super(domains, scenario, mitigatedBy, riskOwner, createdAt, createdBy, updatedAt, updatedBy,
-                version);
+        super(domains, scenario, mitigatedBy, riskOwner);
         this.asset = asset;
         this._self = self;
+        setCreatedAt(createdAt);
+        setCreatedBy(createdBy);
+        setUpdatedAt(updatedAt);
+        setUpdatedBy(updatedBy);
+        setVersion(version);
     }
 
     public static AssetRiskDto from(@Valid AssetRisk risk, ReferenceAssembler referenceAssembler) {

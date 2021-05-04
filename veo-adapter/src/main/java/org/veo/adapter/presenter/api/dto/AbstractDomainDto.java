@@ -17,23 +17,20 @@
 package org.veo.adapter.presenter.api.dto;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.veo.adapter.presenter.api.Patterns;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
  * Base transfer object for Domains. Contains common data for all Domain DTOs.
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
+public abstract class AbstractDomainDto extends AbstractVersionedDto implements NameableDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Domain.", example = "Data protection", required = true)
@@ -50,28 +47,4 @@ public abstract class AbstractDomainDto implements NameableDto, VersionedDto {
             required = false)
     private String description;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String createdAt;
-
-    @Schema(description = "The username of the user who created this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String createdBy;
-
-    @JsonIgnore
-    private long version;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String updatedAt;
-
-    @Schema(description = "The username of the user who last updated this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String updatedBy;
 }

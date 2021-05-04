@@ -20,11 +20,9 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
@@ -41,7 +39,7 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractUnitDto implements NameableDto, VersionedDto {
+public abstract class AbstractUnitDto extends AbstractVersionedDto implements NameableDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Unit.", example = "My unit", required = true)
@@ -54,27 +52,6 @@ public abstract class AbstractUnitDto implements NameableDto, VersionedDto {
             example = "This is currently the main and only unit for our organization.")
     private String description;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z")
-    @Pattern(regexp = Patterns.DATETIME)
-    private String createdAt;
-
-    @Schema(description = "The username of the user who created this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String createdBy;
-
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String updatedAt;
-
-    @Schema(description = "The username of the user who last updated this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String updatedBy;
-
     @JsonIgnore
     private ModelObjectReference<Client> client;
 
@@ -86,7 +63,4 @@ public abstract class AbstractUnitDto implements NameableDto, VersionedDto {
 
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
-
-    @JsonIgnore
-    private long version;
 }

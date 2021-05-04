@@ -61,10 +61,14 @@ public class ProcessRiskDto extends AbstractRiskDto {
             @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
             @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
             @Valid ModelObjectReference<Process> process, String self, long version) {
-        super(domains, scenario, mitigatedBy, riskOwner, createdAt, createdBy, updatedAt, updatedBy,
-                version);
+        super(domains, scenario, mitigatedBy, riskOwner);
         this.process = process;
         this._self = self;
+        setCreatedAt(createdAt);
+        setCreatedBy(createdBy);
+        setUpdatedAt(updatedAt);
+        setUpdatedBy(updatedBy);
+        setVersion(version);
     }
 
     public static ProcessRiskDto from(@Valid ProcessRisk risk,
