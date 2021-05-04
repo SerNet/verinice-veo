@@ -23,9 +23,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
@@ -37,18 +39,20 @@ public class GetCatalogItemsUseCase implements
 
     @Override
     public OutputData execute(InputData input) {
-        List<CatalogItem> list = input.authenticatedClient.getDomains()
-                                                          .stream()
-                                                          .filter(UseCaseTools.DOMAIN_IS_ACTIVE_PREDICATE)
-                                                          .filter(UseCaseTools.getDomainIdPredicate(input.domainId))
-                                                          .flatMap(d -> d.getCatalogs()
-                                                                         .stream())
-                                                          .filter(UseCaseTools.getCatalogIdPredicate(input.catalogId))
-                                                          .flatMap(c -> c.getCatalogItems()
-                                                                         .stream())
-                                                          .filter(UseCaseTools.getNamespacePredicate(input.namespace))
-                                                          .collect(Collectors.toList());
-
+        Catalog catalog = input.authenticatedClient.getDomains()
+                                                   .stream()
+                                                   .filter(UseCaseTools.DOMAIN_IS_ACTIVE_PREDICATE)
+                                                   .filter(UseCaseTools.getDomainIdPredicate(input.domainId))
+                                                   .flatMap(d -> d.getCatalogs()
+                                                                  .stream())
+                                                   .filter(UseCaseTools.getCatalogIdPredicate(input.catalogId))
+                                                   .findFirst()
+                                                   .orElseThrow(() -> new NotFoundException(
+                                                           input.catalogId.uuidValue()));
+        List<CatalogItem> list = catalog.getCatalogItems()
+                                        .stream()
+                                        .filter(UseCaseTools.getNamespacePredicate(input.namespace))
+                                        .collect(Collectors.toList());
         return new OutputData(list);
     }
 
@@ -56,7 +60,7 @@ public class GetCatalogItemsUseCase implements
     @Value
     public static class InputData implements UseCase.InputData {
         Optional<String> namespace;
-        Optional<Key<UUID>> catalogId;
+        Key<UUID> catalogId;
         Optional<Key<UUID>> domainId;
         Client authenticatedClient;
     }
@@ -67,5 +71,4 @@ public class GetCatalogItemsUseCase implements
         @Valid
         List<CatalogItem> catalogItems;
     }
-
 }

@@ -16,41 +16,54 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import javax.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
 
-public class GetCatalogItemUseCase
-        implements TransactionalUseCase<IdAndClient, GetCatalogItemUseCase.OutputData> {
-    private final CatalogItemRepository repository;
-
-    public GetCatalogItemUseCase(CatalogItemRepository repository) {
-        this.repository = repository;
-    }
+public class GetCatalogItemUseCase implements
+        TransactionalUseCase<GetCatalogItemUseCase.InputData, GetCatalogItemUseCase.OutputData> {
 
     @Override
-    public OutputData execute(IdAndClient input) {
-        CatalogItem catalogItem = repository.findById(input.getId())
-                                            .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                          .uuidValue()));
+    public OutputData execute(InputData input) {
 
-        DomainTemplate domaintemplate = catalogItem.getCatalog()
-                                                   .getDomainTemplate();
-        UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domaintemplate);
-        if (!((Domain) domaintemplate).isActive()) {
-            throw new NotFoundException("Domain is inactive.");
-        }
+        CatalogItem catalogItem = input.getAuthenticatedClient()
+                                       .getDomains()
+                                       .stream()
+                                       .filter(UseCaseTools.DOMAIN_IS_ACTIVE_PREDICATE)
+                                       .filter(UseCaseTools.getDomainIdPredicate(input.domainId))
+                                       .flatMap(d -> d.getCatalogs()
+                                                      .stream())
+                                       .filter(UseCaseTools.getCatalogIdPredicate(input.catalogId))
+
+                                       .flatMap(c -> c.getCatalogItems()
+                                                      .stream())
+                                       .filter(item -> item.getId()
+                                                           .equals(input.itemId))
+                                       .findFirst()
+                                       .orElseThrow(() -> new NotFoundException(
+                                               input.itemId.uuidValue()));
+
         return new OutputData(catalogItem);
+    }
+
+    @Valid
+    @Value
+    public static class InputData implements UseCase.InputData {
+        Key<UUID> itemId;
+        Key<UUID> catalogId;
+        Optional<Key<UUID>> domainId;
+        Client authenticatedClient;
     }
 
     @Valid

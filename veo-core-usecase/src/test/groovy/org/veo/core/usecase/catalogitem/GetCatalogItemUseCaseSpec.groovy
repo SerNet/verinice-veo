@@ -21,23 +21,19 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.repository.CatalogItemRepository
-import org.veo.core.usecase.UseCase.IdAndClient
 import org.veo.core.usecase.UseCaseSpec
 
 class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
-    CatalogItemRepository repository = Mock()
     Catalog catalog = Mock()
-    CatalogItem catalogitem = Mock()
+    CatalogItem catalogItem = Mock()
 
     DomainTemplate domaintemplate = Mock()
     Key existingDomainId = Key.newUuid()
     Key catalogId = Key.newUuid()
     Key catalogItemId = Key.newUuid()
 
-    GetCatalogItemUseCase usecase = new GetCatalogItemUseCase(repository)
+    GetCatalogItemUseCase usecase = new GetCatalogItemUseCase()
 
     def setup() {
         existingDomain.getId() >> existingDomainId
@@ -46,19 +42,17 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         catalog.getId() >> catalogId
         catalog.getDomainTemplate() >> existingDomain
 
-        catalogitem.getId() >> catalogItemId
-        catalogitem.getCatalog() >> catalog
-
+        catalogItem.getId() >> catalogItemId
+        catalogItem.getCatalog() >> catalog
+        catalog.getCatalogItems() >> [catalogItem]
+        existingDomain.getCatalogs() >> [catalog]
         anotherClient.getDomains() >> []
-
-        repository.findById(catalogItemId) >> Optional.of(catalogitem)
-        repository.findById(_) >> Optional.empty()
     }
 
     def "retrieve a catalogitem"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new IdAndClient(catalogItemId,  existingClient))
+        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.of(existingDomainId),existingClient))
         then:
         output.catalogItem != null
         output.catalogItem.id == catalogItemId
@@ -67,7 +61,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalogitem for a deleted domain"() {
         when:
         existingDomain.isActive() >> false
-        def output = usecase.execute(new IdAndClient(catalogItemId,  existingClient))
+        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId,catalogId, Optional.of(existingDomainId), existingClient))
         then:
         thrown(NotFoundException)
     }
@@ -75,15 +69,15 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalogitem for another client"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new IdAndClient(catalogItemId,  anotherClient))
+        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.empty(),anotherClient))
         then:
-        thrown(ClientBoundaryViolationException)
+        thrown(NotFoundException)
     }
 
     def "retrieve an unknown catalogitem"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
+        def output = usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), catalogId,  Optional.of(existingDomainId),existingClient))
         then:
         thrown(NotFoundException)
     }

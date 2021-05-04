@@ -14,13 +14,14 @@
  * along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.catalogitem;
+package org.veo.core.usecase.catalogitem
 
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase.InputData
 
@@ -61,7 +62,7 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
         catalog.catalogItems >> [ci1, ci2, ci3]
 
         Domain domain = Mock()
-        domain.active >> true;
+        domain.active >> true
 
         Catalog catalog1 = Mock()
         catalog1.getId() >> catalog1Id
@@ -72,63 +73,39 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
         anotherClient.getDomains() >> [existingDomain, domain]
     }
 
-
-    def "retrieve all catalogitems for client"() {
-        when:
-        def output = usecase.execute(new InputData(Optional.empty(),Optional.empty(),Optional.empty(),  anotherClient))
-        then:
-        output.catalogItems.size() == 6
-    }
-
-    def "retrieve all catalogitems for a domain"() {
-        when:
-        def output = usecase.execute(new InputData(Optional.empty(),Optional.empty(),Optional.of(existingDomainId),  anotherClient))
-        then:
-        output.catalogItems.size() == 5
-    }
-    def "retrieve all catalogitems for an unkown domain"() {
-        when:
-        def output = usecase.execute(new InputData(Optional.empty(),Optional.empty(),Optional.of(Key.newUuid()),  anotherClient))
-        then:
-        output.catalogItems.size() == 0
-    }
     def "retrieve all catalogitems for an unkown catalog"() {
         when:
-        def output = usecase.execute(new InputData(Optional.empty(),Optional.of(Key.newUuid()),Optional.empty(),  anotherClient))
+        def output = usecase.execute(new InputData(Optional.empty(),Key.newUuid(),Optional.empty(),  anotherClient))
         then:
-        output.catalogItems.size() == 0
+        thrown(NotFoundException)
     }
+
     def "retrieve all catalogitems for an other catalog"() {
         when:
-        def output = usecase.execute(new InputData(Optional.empty(),Optional.of(catalog1Id),Optional.empty(),  existingClient))
+        def output = usecase.execute(new InputData(Optional.empty(),catalog1Id,Optional.empty(),  existingClient))
         then:
-        output.catalogItems.size() == 0
+        thrown(NotFoundException)
     }
+
     def "retrieve all catalogitems for a catalog"() {
         when:
-        def output = usecase.execute(new InputData(Optional.empty(),Optional.of(catalogId),Optional.empty(),  anotherClient))
+        def output = usecase.execute(new InputData(Optional.empty(),catalogId,Optional.empty(),  anotherClient))
         then:
         output.catalogItems.size() == 3
     }
+
     def "retrieve all catalogitems for a namspace"() {
         when:
-        def output = usecase.execute(new InputData(Optional.of('A.B.C.D'),Optional.empty(),Optional.empty(),  anotherClient))
+        def output = usecase.execute(new InputData(Optional.of('A.B.C.D'),catalogId,Optional.empty(),  anotherClient))
         then:
         output.catalogItems.size() == 2
         when:
-        output = usecase.execute(new InputData(Optional.of('A.B.C'),Optional.empty(),Optional.empty(),  anotherClient))
+        output = usecase.execute(new InputData(Optional.of('A.B.C'),catalogId,Optional.empty(),  anotherClient))
         then:
         output.catalogItems.size() == 1
         when:
-        output = usecase.execute(new InputData(Optional.of('A.B.C.LL'),Optional.empty(),Optional.empty(),  anotherClient))
+        output = usecase.execute(new InputData(Optional.of('A.B.C.LL'),catalogId,Optional.empty(),  anotherClient))
         then:
         output.catalogItems.size() == 0
-    }
-
-    def "retrieve a catalog for a domain of another client"() {
-        when:
-        def output = usecase.execute(new InputData(Optional.empty(),Optional.empty(),Optional.empty(),  existingClient))
-        then:
-        output.catalogItems.size() == 5
     }
 }

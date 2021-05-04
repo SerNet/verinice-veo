@@ -46,12 +46,10 @@ public class UseCaseTools {
             return TRUE_PREDICATE;
     }
 
-    public static Predicate<? super Catalog> getCatalogIdPredicate(Optional<Key<UUID>> catalogId) {
-        if (catalogId.isPresent()) {
-            return c -> c.getId()
-                         .equals(catalogId.get());
-        }
-        return TRUE_PREDICATE;
+    public static Predicate<? super Catalog> getCatalogIdPredicate(Key<UUID> catalogId) {
+        return c -> c.getId()
+                     .equals(catalogId);
+
     }
 
     public static Predicate<? super CatalogItem> getNamespacePredicate(Optional<String> namespace) {
