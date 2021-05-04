@@ -31,7 +31,6 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.CatalogDataRepository
-import org.veo.persistence.access.jpa.CatalogItemDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -46,8 +45,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
     DomainDataRepository repository
     @Autowired
     CatalogDataRepository catalogRepository
-    @Autowired
-    CatalogItemDataRepository catalogItemRepository
     @Autowired
     ClientDataRepository clientRepository
     @Autowired
@@ -166,11 +163,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
     def 'domain with catalog and catalog items and a domain template'() {
         given: "the domain template and a catalog"
 
-        domainTemplate = newDomainTemplate {}
+        domainTemplate = newDomainTemplate()
         domainTemplateRepository.save(domainTemplate)
 
 
-        domain0 = newDomain(client) {}
+        domain0 = newDomain(client)
         domain0.domainTemplate = domainTemplate
 
         Catalog catalog = newCatalog(domain0) {
@@ -203,7 +200,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
     def 'domain with catalog and catalog items and controls'() {
         given: "the domain template and a catalog"
 
-        domain0 = newDomain(client) {}
+        domain0 = newDomain(client)
         domain0 = repository.save(domain0)
         Catalog catalog = newCatalog(domain0) {
             name = 'a'
@@ -221,14 +218,12 @@ class DomainJpaSpec extends AbstractJpaSpec {
             name = 'c1'
         }
         item1.element = control1
-        item1 = catalogItemRepository.save(item1)
         control1 = item1.element
 
         Control control2= newControl(item2) {
             name = 'c2'
         }
         item2.element = control2
-        item2 = catalogItemRepository.save(item2)
         control2 = item2.element
 
         Control control3= newControl(item3) {
@@ -242,13 +237,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         item3.tailoringReferences = [tr1]
-        item3 = catalogItemRepository.save(item3)
         control3 = item3.element
 
         catalog.catalogItems = [item1, item2, item3]
 
         when: "saving"
-
         domain0 = repository.save(domain0)
 
         Domain d = repository.findById(domain0.dbId).get()
@@ -269,7 +262,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             it[2].element.name == 'c3'
             it[2].tailoringReferences.size() == 1
             it[2].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
-            it[2].tailoringReferences[0].catalogItem.id == item2.id
         }
     }
 
@@ -301,13 +293,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
             description = 'control number one'
         }
         item1.element = control1
-        item1 = catalogItemRepository.save(item1)
 
         Control control2= newControl(item2) {
             name = 'c2'
         }
         item2.element = control2
-        item2 = catalogItemRepository.save(item2)
 
         Control control3=newControl(item3) {
             name = 'c3'
@@ -318,7 +308,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             referenceType = TailoringReferenceType.COPY
         }
         item3.tailoringReferences = [tr1]
-        item3 = catalogItemRepository.save(item3)
 
         Asset asset1 = newAsset(item4) {
             name = 'd1'
@@ -352,6 +341,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             item5
         ] as Set
 
+        catalogRepository.save(catalog)
         when: "saving"
 
         domain0 = repository.save(domain0)
@@ -365,9 +355,12 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.templateVersion == domain0.templateVersion
         d.revision == domain0.revision
         d.catalogs.size() == 1
-        d.catalogs.first().id == catalog.id
-        d.catalogs.first().catalogItems.size() == 5
-        with(d.catalogs.first().catalogItems.sort {it.element.name}) {
+        when:
+        def loadedCatalog = d.catalogs.first()
+        then:
+        loadedCatalog.id == catalog.id
+        loadedCatalog.catalogItems.size() == 5
+        with(loadedCatalog.catalogItems.sort {it.element.name}) {
             it[0].element.name == 'c1'
             it[0].element.abbreviation == control1.abbreviation
             it[0].element.description == control1.description
@@ -375,7 +368,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             it[2].element.name == 'c3'
             it[2].tailoringReferences.size() == 1
             it[2].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
-            it[2].tailoringReferences[0].catalogItem.id == item2.id
             it[3].element.name == 'd1'
             it[3].element.parts.first().name == asset2.name
             it[4].element.name == 'p1'
@@ -384,18 +376,18 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         when: "create entities linked to catalogItems"
-
+        def firstItemFromCatalog = loadedCatalog.catalogItems.sort {it.element.name}.first()
         Control controlEntity = newControl(unit) {
             name = 'c1'
         }
         controlEntity.description = "a linked entity"
-        controlEntity.appliedCatalogItems = [item1] as Set
+        controlEntity.appliedCatalogItems = [firstItemFromCatalog] as Set
         controlEntity = controlRepository.save(controlEntity)
         clientRepository.save(client)
 
         Control c = controlRepository.findById(controlEntity.dbId).get()
         then: "the link remains"
-        c.appliedCatalogItems.size()==1
-        c.appliedCatalogItems.first()==item1
+        c.appliedCatalogItems.size() == 1
+        c.appliedCatalogItems.first() == firstItemFromCatalog
     }
 }
