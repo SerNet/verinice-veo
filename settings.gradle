@@ -1,3 +1,4 @@
+rootProject.name = 'verinice veo'
 include ':veo-data-xml'
 include ':veo-rest'
 include ':veo-vna-import'
