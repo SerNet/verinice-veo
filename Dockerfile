@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.description="Backend of the verinice.veo web appl
 LABEL org.opencontainers.image.ref.name=verinice.veo
 LABEL org.opencontainers.image.vendor="SerNet GmbH"
 LABEL org.opencontainers.image.authors=verinice@sernet.de
-LABEL org.opencontainers.image.licenses=LGPL-2.0
+LABEL org.opencontainers.image.licenses=AGPL-3.0
 LABEL org.opencontainers.image.source=https://github.com/verinice/verinice-veo
 LABEL org.opencontainers.image.version=${VEO_VERSION}
 

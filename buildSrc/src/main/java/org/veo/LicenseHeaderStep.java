@@ -1,18 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2018 Jochen Kemnade.
+ * verinice.veo
+ * Copyright (C) 2018  Jochen Kemnade
  *
- * This program is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation, either version 3
- * of the License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Lesser General Public License for more details.
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.
- * If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package org.veo;
 
@@ -38,17 +39,17 @@ public final class LicenseHeaderStep implements Serializable {
                                                                                                                      "module-info.java");
 
     private static final String licenseHeaderTemplate = "/*******************************************************************************\n"
-            + " * Copyright (c) $YEAR $AUTHOR.\n" + " *\n"
-            + " * This program is free software: you can redistribute it and/or\n"
-            + " * modify it under the terms of the GNU Lesser General Public License\n"
-            + " * as published by the Free Software Foundation, either version 3\n"
-            + " * of the License, or (at your option) any later version.\n"
+            + " * verinice.veo\n" + " * Copyright (C) $YEAR  $AUTHOR\n" + " *\n"
+            + " * This program is free software: you can redistribute it and/or modify\n"
+            + " * it under the terms of the GNU Affero General Public License as published by\n"
+            + " * the Free Software Foundation, either version 3 of the License, or\n"
+            + " * (at your option) any later version.\n" + " *\n"
             + " * This program is distributed in the hope that it will be useful,\n"
-            + " * but WITHOUT ANY WARRANTY; without even the implied warranty\n"
-            + " * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
-            + " * See the GNU Lesser General Public License for more details.\n" + " *\n"
-            + " * You should have received a copy of the GNU Lesser General Public License\n"
-            + " * along with this program.\n" + " * If not, see <http://www.gnu.org/licenses/>.\n"
+            + " * but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+            + " * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+            + " * GNU Affero General Public License for more details.\n" + " *\n"
+            + " * You should have received a copy of the GNU Affero General Public License\n"
+            + " * along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
             + " ******************************************************************************/\n";
 
     private final String author;
@@ -92,7 +93,7 @@ public final class LicenseHeaderStep implements Serializable {
         Matcher matcher = delimiterPattern.matcher(raw);
         if (!matcher.find()) {
             throw new IllegalArgumentException(
-                    "Unable to find delimiter regex " + delimiterPattern);
+                    "Unable to find delimiter regex " + delimiterPattern + " in " + raw);
         } else {
             String existingLicense = raw.substring(0, matcher.start());
             if (existingLicense.contains("Apache Software License")) {
@@ -112,7 +113,7 @@ public final class LicenseHeaderStep implements Serializable {
                 return raw;
             } else {
                 // otherwise we'll have to add the header
-                Pattern existingInfo = Pattern.compile("Copyright \\(c\\) (\\d{4}) (.*)\\.");
+                Pattern existingInfo = Pattern.compile("Copyright \\([cC]\\) (\\d{4}) +(.*)");
                 Matcher existingInfoMatcher = existingInfo.matcher(existingLicense);
                 String yearToUse;
                 String authorToUse;
