@@ -194,7 +194,7 @@ public final class DtoToEntityTransformer {
 
         target.setApplicableTo(source.getApplicableTo());
         target.setType(type);
-        mapNameableProperties(source, target);
+        target.setName(source.getName());
         entitySchema.applyLinkAttributes(source.getAttributes(), target);
         entitySchema.validateLinkTarget(target);
         return target;

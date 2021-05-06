@@ -20,7 +20,11 @@ package org.veo.core.entity;
  * A link connects two model objects. This link serve only documentation
  * purpose.
  */
-public interface CustomLink extends Nameable, CustomProperties {
+public interface CustomLink extends CustomProperties {
+
+    String getName();
+
+    void setName(String name);
 
     EntityLayerSupertype getTarget();
 

@@ -233,7 +233,7 @@ public final class EntityToDtoTransformer {
         // still open, avoiding a LazyInit exception during serialization.
         // TODO VEO-448 Join fetch applicableTo.
         target.setApplicableTo(new HashSet<>(source.getApplicableTo()));
-        mapNameableProperties(source, target);
+        target.setName(source.getName());
 
         target.setAttributes(source.getAllProperties());
 

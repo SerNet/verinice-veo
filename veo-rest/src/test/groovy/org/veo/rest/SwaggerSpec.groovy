@@ -105,6 +105,14 @@ class SwaggerSpec extends VeoSpringSpec {
         ownerReferenceSchema.required.contains('targetUri')
     }
 
+    def "name is not required for custom link"() {
+        when:
+        def customLinkDtoSchema = parsedApiDocs.components.schemas.CustomLinkDto
+        then:
+        customLinkDtoSchema.properties.containsKey('name')
+        !customLinkDtoSchema.required.contains('name')
+    }
+
     def "allowed entity schema types are listed"() {
         given: "existing entity types"
         def schemaTypes = ModelObjectType.ENTITY_TYPES

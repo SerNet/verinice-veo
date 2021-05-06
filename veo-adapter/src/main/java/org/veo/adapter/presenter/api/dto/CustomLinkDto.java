@@ -33,24 +33,11 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomLinkDto extends CustomPropertiesDto implements NameableDto {
+public class CustomLinkDto extends CustomPropertiesDto {
 
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the CustomLink.",
-            example = "My custom relation",
-            required = true)
+    @Schema(description = "The name for the CustomLink.", example = "My custom relation")
     @ToString.Include
     private String name;
-
-    @Schema(description = "The abbreviation for the CustomLink.",
-            example = "Relation",
-            required = false)
-    private String abbreviation;
-
-    @Schema(description = "The description for the CustomLink.",
-            example = "This is a custom link.",
-            required = false)
-    private String description;
 
     @NotNull(message = "A target must be present.")
     @ToString.Include
