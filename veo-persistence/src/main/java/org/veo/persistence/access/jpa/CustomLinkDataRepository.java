@@ -19,7 +19,6 @@ package org.veo.persistence.access.jpa;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +28,4 @@ public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, 
     @Query("SELECT l FROM customlink l where l.target.dbId  IN ?1")
     @Transactional(readOnly = true)
     Set<CustomLinkData> findLinksByTargetIds(Set<String> targetIDs);
-
-    @Query("DELETE FROM customlink l where l.target.dbId  IN ?1")
-    @Transactional()
-    @Modifying
-    void deleteLinksByTargetIds(Set<String> targetIDs);
 }

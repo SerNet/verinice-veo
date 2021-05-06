@@ -36,11 +36,6 @@ import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSupertypeData>
         extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
 
-    Page<T> findByNameContainingIgnoreCase(String search, Pageable pageable);
-
-    @Query("select e from #{#entityName} as e where e.owner.client.dbId = ?1")
-    Page<T> findByOwner_Client_DbId(String clientId, Pageable pageable); // NOPMD
-
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.domains " + "left join fetch e.subTypeAspects "
             + "left join fetch e.appliedCatalogItems " + "left join fetch e.links "

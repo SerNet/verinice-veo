@@ -16,7 +16,6 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
@@ -24,8 +23,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.veo.persistence.entity.jpa.UnitData;
 
 public interface UnitDataRepository extends CrudRepository<UnitData, String> {
-
-    Collection<UnitData> findByNameContainingIgnoreCase(String search);
 
     List<UnitData> findByParent_DbId(String ownerId);
 
