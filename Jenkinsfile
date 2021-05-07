@@ -151,8 +151,7 @@ pipeline {
                     def veo = docker.build("veo", "-f postman/Dockerfile .")
                     withDockerNetwork{ n ->
                         docker.image('postgres').withRun("--network ${n} --name database-${n} -e POSTGRES_PASSWORD=postgres") { db ->
-                            // TODO check for DB startup
-                            sleep 5
+                            sh 'until pg_isready; do sleep 1; done'
                             veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
                                 sh "java -Dlogging.file.name=/veo/veo-rest.log -Dveo-basedir=/veo/veo-data -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dspring.rabbitmq.username=${env.RABBITMQ_CREDS_USR} -Dspring.rabbitmq.password=${env.RABBITMQ_CREDS_PSW} -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
                                 echo 'Waiting for application startup'
