@@ -26,26 +26,21 @@ import javax.validation.Valid;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.AbstractUseCase;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        implements
-        TransactionalUseCase<AbstractRiskUseCase.InputData, AbstractRiskUseCase.OutputData<R>> {
-
-    private final RepositoryProvider repositoryProvider;
+        extends AbstractUseCase<AbstractRiskUseCase.InputData, AbstractRiskUseCase.OutputData<R>> {
 
     public AbstractRiskUseCase(RepositoryProvider repositoryProvider) {
-        this.repositoryProvider = repositoryProvider;
+        super(repositoryProvider);
     }
 
     protected R applyOptionalInput(InputData input, R risk) {
@@ -70,13 +65,6 @@ public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extend
         }
 
         return risk;
-    }
-
-    protected void checkClients(Client authenticatedClient, Set<Domain> domains) {
-        if (domains.stream()
-                   .anyMatch(domain -> !domain.getOwner()
-                                              .equals(authenticatedClient)))
-            throw new ClientBoundaryViolationException("Illegal client for attempted operation.");
     }
 
     @Valid

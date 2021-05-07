@@ -27,34 +27,27 @@ import org.veo.core.repository.RepositoryProvider;
 public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
         extends AbstractRiskUseCase<T, R> {
 
-    private final RepositoryProvider repositoryProvider;
     private final Class<T> entityClass;
 
     public CreateRiskUseCase(Class<T> entityClass, RepositoryProvider repositoryProvider) {
         super(repositoryProvider);
         this.entityClass = entityClass;
-        this.repositoryProvider = repositoryProvider;
     }
 
     @Transactional
     @Override
     public OutputData<R> execute(InputData input) {
         // Retrieve the necessary entities for the requested operation:
-        var riskAffected = repositoryProvider.getRepositoryFor(entityClass)
-                                             .findById(input.getRiskAffectedRef())
-                                             .orElseThrow();
+        var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
 
-        var scenario = repositoryProvider.getRepositoryFor(Scenario.class)
-                                         .findById(input.getScenarioRef())
-                                         .orElseThrow();
+        var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
 
-        var domains = repositoryProvider.getRepositoryFor(Domain.class)
-                                        .getByIds(input.getDomainRefs());
+        var domains = findEntities(Domain.class, input.getDomainRefs());
 
         // Validate security constraints:
         riskAffected.checkSameClient(input.getAuthenticatedClient());
         scenario.checkSameClient(input.getAuthenticatedClient());
-        checkClients(input.getAuthenticatedClient(), domains);
+        checkDomainOwnership(input.getAuthenticatedClient(), domains);
 
         // Apply requested operation:
         var risk = riskAffected.newRisk(scenario, domains);

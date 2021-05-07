@@ -32,36 +32,27 @@ public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         extends AbstractRiskUseCase<T, R> {
 
     private final Class<T> entityClass;
-    private final RepositoryProvider repositoryProvider;
 
     public UpdateRiskUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass) {
         super(repositoryProvider);
         this.entityClass = entityClass;
-        this.repositoryProvider = repositoryProvider;
     }
 
     @Transactional
     @Override
     public OutputData<R> execute(InputData input) {
         // Retrieve required entities for operation:
-        var riskAffected = repositoryProvider.getRepositoryFor(entityClass)
-                                             .findById(input.getRiskAffectedRef())
-                                             .orElseThrow();
+        var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
 
-        var scenario = repositoryProvider.getRepositoryFor(Scenario.class)
-                                         .findById(input.getScenarioRef())
-                                         .orElseThrow();
+        var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
 
-        var domains = repositoryProvider.getRepositoryFor(Domain.class)
-                                        .getByIds(input.getDomainRefs());
+        var domains = findEntities(Domain.class, input.getDomainRefs());
 
-        var controlRepository = repositoryProvider.getRepositoryFor(Control.class);
         var mitigation = input.getControlRef()
-                              .flatMap(controlRepository::findById);
+                              .flatMap(id -> findEntity(Control.class, id));
 
-        var personRepository = repositoryProvider.getRepositoryFor(Person.class);
         var riskOwner = input.getRiskOwnerRef()
-                             .flatMap(personRepository::findById);
+                             .flatMap(id -> findEntity(Person.class, id));
 
         var risk = riskAffected.getRisk(input.getScenarioRef())
                                .orElseThrow();
@@ -70,7 +61,7 @@ public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         checkETag(risk, input);
         riskAffected.checkSameClient(input.getAuthenticatedClient());
         scenario.checkSameClient(input.getAuthenticatedClient());
-        checkClients(input.getAuthenticatedClient(), domains);
+        checkDomainOwnership(input.getAuthenticatedClient(), domains);
         mitigation.ifPresent(control -> control.checkSameClient(input.getAuthenticatedClient()));
         riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
 
