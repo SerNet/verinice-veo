@@ -94,11 +94,9 @@ public class VersioningEventListener {
                                .toString());
         tree.put("author", author);
         if (entity instanceof ClientOwned) {
-            Client client = ((ClientOwned) entity).getClient();
-            if (client != null) {
-                tree.put("clientId", client.getId()
-                                           .uuidValue());
-            }
+            ((ClientOwned) entity).getOwningClient()
+                                  .ifPresent(client -> tree.put("clientId", client.getId()
+                                                                                  .uuidValue()));
         }
         if (type != VersioningEvent.Type.REMOVE) {
             var dto = entityToDtoTransformer.transform2Dto(entity);

@@ -16,6 +16,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
+
 /**
  * The domain should be referenced by the domain objects if applicable. It
  * defines a standard, a best practice or a company-specific context. It can be
@@ -51,8 +53,8 @@ public interface Domain extends DomainTemplate, ClientOwned {
 
     Client getOwner();
 
-    default Client getClient() {
-        return getOwner();
+    default Optional<Client> getOwningClient() {
+        return Optional.of(getOwner());
     }
 
     default void validateSubType(Class<? extends ModelObject> entityType, String subType)

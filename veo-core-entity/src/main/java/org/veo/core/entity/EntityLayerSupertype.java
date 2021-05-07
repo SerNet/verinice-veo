@@ -37,10 +37,9 @@ public interface EntityLayerSupertype extends Nameable, ModelObject, ClientOwned
     /**
      * Can be null when the owner is a catalogitem owned by a domain template.
      */
-    default Client getClient() {
-        if (getOwner() == null)
-            return null;// could be removed when VersioningEventListener gets fixed
-        return getOwner().getClient();
+    default Optional<Client> getOwningClient() {
+        return Optional.of(getOwner())
+                       .map(ElementOwner::getClient);
     }
 
     /**

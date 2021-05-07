@@ -16,9 +16,11 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
+
 /**
- * Something that is owned by a specific client.
+ * Something that can be owned by a specific client.
  */
 public interface ClientOwned {
-    Client getClient();
+    Optional<Client> getOwningClient();
 }

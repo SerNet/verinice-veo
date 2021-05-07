@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -44,6 +45,10 @@ public interface Unit extends Nameable, ModelObject, ClientOwned, ElementOwner {
 
     String SINGULAR_TERM = "unit";
     String PLURAL_TERM = "units";
+
+    default Optional<Client> getOwningClient() {
+        return Optional.of(getClient());
+    }
 
     Client getClient();
 
