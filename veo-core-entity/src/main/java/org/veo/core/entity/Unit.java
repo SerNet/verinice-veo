@@ -41,7 +41,7 @@ import org.veo.core.entity.specification.SameClientSpecification;
  * should exclusively be used to model ownership and high-level access
  * restrictions.
  */
-public interface Unit extends Nameable, ModelObject, ClientOwned, ElementOwner {
+public interface Unit extends Nameable, ModelObject, ElementOwner {
 
     String SINGULAR_TERM = "unit";
     String PLURAL_TERM = "units";

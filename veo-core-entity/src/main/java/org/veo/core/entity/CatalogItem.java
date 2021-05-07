@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -84,5 +85,10 @@ public interface CatalogItem extends ElementOwner {
     default String getDisplayName() {
         return getElement() == null ? getNamespace()
                 : getNamespace() + "-" + getElement().getDisplayName();
+    }
+
+    default Optional<Client> getOwningClient() {
+        return Optional.ofNullable(getCatalog())
+                       .flatMap(Catalog::getOwningClient);
     }
 }

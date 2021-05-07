@@ -16,10 +16,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
+
 /**
  * Basic type for catalog references.
  */
-public interface CatalogReference extends ModelObject {
+public interface CatalogReference extends ModelObject, ClientOwned {
 
     /**
      * The reference to an other catalogitem.
@@ -31,4 +33,9 @@ public interface CatalogReference extends ModelObject {
     CatalogItem getOwner();
 
     void setOwner(CatalogItem owner);
+
+    default Optional<Client> getOwningClient() {
+        return Optional.ofNullable(getOwner())
+                       .map(CatalogItem::getClient);
+    }
 }

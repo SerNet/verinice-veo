@@ -20,7 +20,7 @@ package org.veo.core.entity;
  * Something that can own an element, and therefore can be used as the owner of
  * an element. Unit and CatalogItems are examples.
  */
-public interface ElementOwner extends ModelObject, Displayable {
+public interface ElementOwner extends ModelObject, Displayable, ClientOwned {
     Client getClient();
 
     /**

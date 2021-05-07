@@ -16,6 +16,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -28,7 +29,7 @@ import java.util.Set;
  * template elements from other domainTemplates. <br>
  * usecase: compliance mapping
  */
-public interface Catalog extends ModelObject, Nameable {
+public interface Catalog extends ModelObject, Nameable, ClientOwned {
     String SINGULAR_TERM = "catalog";
     String PLURAL_TERM = "catalogs";
 
@@ -58,5 +59,12 @@ public interface Catalog extends ModelObject, Nameable {
     @Override
     default String getModelType() {
         return SINGULAR_TERM;
+    }
+
+    default Optional<Client> getOwningClient() {
+        return Optional.ofNullable(getDomainTemplate())
+                       .filter(ClientOwned.class::isInstance)
+                       .map(ClientOwned.class::cast)
+                       .flatMap(ClientOwned::getOwningClient);
     }
 }
