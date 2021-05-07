@@ -92,6 +92,11 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
         }
     }
 
+    /**
+     * A combination of an entity ID and a Client. This is used to specify an
+     * element that is to be loaded in a client's context. The Client object is used
+     * to check if the given ID is valid in the client.
+     */
     @Valid
     @Value
     public static class IdAndClient implements UseCase.InputData {
