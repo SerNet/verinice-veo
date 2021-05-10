@@ -37,7 +37,7 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.repository.Repository;
 import org.veo.core.repository.RepositoryProvider;
 
@@ -133,8 +133,7 @@ public class ModelObjectReferenceResolver {
                 ((EntityLayerSupertype) entity).checkSameClient(client);
             }
             if (entity instanceof Domain) {
-                if (!(new SameClientSpecification<>(
-                        client)).isSatisfiedBy(((Domain) entity).getOwner()))
+                if (!(EntitySpecifications.hasSameClient(client)).isSatisfiedBy(((Domain) entity).getOwner()))
                     throw new ClientBoundaryViolationException(
                             format("The client boundary would be violated by the attempted operation "
                                     + "on element: %s",

@@ -28,9 +28,9 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
 
@@ -41,17 +41,19 @@ public class GetCatalogItemsUseCase implements
     public OutputData execute(InputData input) {
         Catalog catalog = input.authenticatedClient.getDomains()
                                                    .stream()
-                                                   .filter(UseCaseTools.DOMAIN_IS_ACTIVE_PREDICATE)
-                                                   .filter(UseCaseTools.getDomainIdPredicate(input.domainId))
+                                                   .filter(EntitySpecifications.isActive())
+                                                   .filter(input.domainId.map(EntitySpecifications::hasId)
+                                                                         .orElse(EntitySpecifications.matchAll()))
                                                    .flatMap(d -> d.getCatalogs()
                                                                   .stream())
-                                                   .filter(UseCaseTools.getCatalogIdPredicate(input.catalogId))
+                                                   .filter(EntitySpecifications.hasId(input.catalogId))
                                                    .findFirst()
                                                    .orElseThrow(() -> new NotFoundException(
                                                            input.catalogId.uuidValue()));
         List<CatalogItem> list = catalog.getCatalogItems()
                                         .stream()
-                                        .filter(UseCaseTools.getNamespacePredicate(input.namespace))
+                                        .filter(input.namespace.map(EntitySpecifications::hasNamespace)
+                                                               .orElse(EntitySpecifications.matchAll()))
                                         .collect(Collectors.toList());
         return new OutputData(list);
     }

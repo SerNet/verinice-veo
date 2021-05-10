@@ -24,6 +24,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.specification.EntitySpecifications
 import org.veo.core.entity.specification.InvalidUnitException
 import org.veo.core.entity.specification.SameClientSpecification
 import org.veo.test.VeoSpec
@@ -225,8 +226,8 @@ class CompositeEntitySpec extends VeoSpec {
         def p2 = newProcess(unit)
 
         and: "a specification"
-        def spec1 = new SameClientSpecification(client)
-        def spec2 = new SameClientSpecification(newClient())
+        def spec1 = EntitySpecifications.hasSameClient(client)
+        def spec2 = EntitySpecifications.hasSameClient(newClient())
 
         when: "a composite is reinstantiated with the processes"
         def processComposite = newProcess(unit)

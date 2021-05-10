@@ -16,12 +16,8 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
-import org.veo.core.entity.Catalog;
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -35,31 +31,6 @@ import org.veo.core.repository.ClientRepository;
  * A collection of methods used by use cases.
  */
 public class UseCaseTools {
-    public static final Predicate<? super Object> TRUE_PREDICATE = c -> true;
-    public static final Predicate<? super Domain> DOMAIN_IS_ACTIVE_PREDICATE = d -> d.isActive();
-
-    public static Predicate<? super Domain> getDomainIdPredicate(Optional<Key<UUID>> domainId) {
-        if (domainId.isPresent()) {
-            return d -> domainId.get()
-                                .equals(d.getId());
-        } else
-            return TRUE_PREDICATE;
-    }
-
-    public static Predicate<? super Catalog> getCatalogIdPredicate(Key<UUID> catalogId) {
-        return c -> c.getId()
-                     .equals(catalogId);
-
-    }
-
-    public static Predicate<? super CatalogItem> getNamespacePredicate(Optional<String> namespace) {
-        if (namespace.isPresent()) {
-            return ci -> namespace.get()
-                                  .equals(ci.getNamespace());
-        }
-        return TRUE_PREDICATE;
-    }
-
     /**
      * Check if the client exists.
      *

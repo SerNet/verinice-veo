@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -109,7 +109,8 @@ public abstract class ChangeUnitUseCase
     }
 
     public boolean isSame(Client client1, Client client2) {
-        return new SameClientSpecification<>(client1).isSatisfiedBy(client2);
+        return EntitySpecifications.hasSameClient(client1)
+                                   .isSatisfiedBy(client2);
     }
 
     private void checkETag(Unit storedUnit, InputData input) {

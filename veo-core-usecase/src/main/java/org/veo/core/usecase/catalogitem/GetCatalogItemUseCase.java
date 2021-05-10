@@ -25,9 +25,9 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
 
@@ -40,11 +40,12 @@ public class GetCatalogItemUseCase implements
         CatalogItem catalogItem = input.getAuthenticatedClient()
                                        .getDomains()
                                        .stream()
-                                       .filter(UseCaseTools.DOMAIN_IS_ACTIVE_PREDICATE)
-                                       .filter(UseCaseTools.getDomainIdPredicate(input.domainId))
+                                       .filter(EntitySpecifications.isActive())
+                                       .filter(input.domainId.map(EntitySpecifications::hasId)
+                                                             .orElse(EntitySpecifications.matchAll()))
                                        .flatMap(d -> d.getCatalogs()
                                                       .stream())
-                                       .filter(UseCaseTools.getCatalogIdPredicate(input.catalogId))
+                                       .filter(EntitySpecifications.hasId(input.catalogId))
 
                                        .flatMap(c -> c.getCatalogItems()
                                                       .stream())

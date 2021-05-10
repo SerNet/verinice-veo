@@ -18,9 +18,11 @@ package org.veo.core.entity.specification;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.ModelObject;
 
 /**
  * An intention-revealing interface for business rule specifications.
@@ -34,7 +36,7 @@ import org.veo.core.entity.EntityLayerSupertype;
  * If a repositories is given a specification it can implement its own version
  * that can based on database-queries.
  */
-public interface EntitySpecification<T extends EntityLayerSupertype> {
+public interface EntitySpecification<T extends ModelObject> extends Predicate<T> {
 
     /**
      * Determines if this specification is fulfilled by the provided entity.
@@ -44,7 +46,16 @@ public interface EntitySpecification<T extends EntityLayerSupertype> {
      * @return {@literal true} if the entity fulfills the specification.
      *         {@literal false} otherwise.
      */
-    public boolean isSatisfiedBy(T entity);
+    @Override
+    boolean test(T entity);
+
+    /**
+     * @deprecated use {@link #test(EntityLayerSupertype)}
+     */
+    @Deprecated
+    default boolean isSatisfiedBy(T entity) {
+        return test(entity);
+    }
 
     /**
      * Return only those entities from a collection that fulfill the
@@ -57,7 +68,7 @@ public interface EntitySpecification<T extends EntityLayerSupertype> {
      */
     default Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
         return collection.stream()
-                         .filter(this::isSatisfiedBy)
+                         .filter(this::test)
                          .collect(Collectors.toSet());
     }
 }

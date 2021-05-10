@@ -37,12 +37,12 @@ public class SameClientSpecification<T extends EntityLayerSupertype>
 
     private Client client;
 
-    public SameClientSpecification(Client client) {
+    SameClientSpecification(Client client) {
         this.client = client;
     }
 
     @Override
-    public boolean isSatisfiedBy(T entity) {
+    public boolean test(T entity) {
         return isSatisfiedBy(entity.getOwner()
                                    .getClient());
     }
@@ -50,7 +50,7 @@ public class SameClientSpecification<T extends EntityLayerSupertype>
     @Override
     public Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
         return collection.stream()
-                         .filter(this::isSatisfiedBy)
+                         .filter(this::test)
                          .collect(Collectors.toSet());
     }
 

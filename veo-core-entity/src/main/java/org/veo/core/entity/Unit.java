@@ -22,7 +22,7 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.entity.specification.EntitySpecifications;
 
 /**
  * A unit is high level group of elements defined by organizational structure.
@@ -85,7 +85,8 @@ public interface Unit extends Nameable, ModelObject, ElementOwner {
      *             if the passed client is not equal to the client in the unit
      */
     default void checkSameClient(Client client) {
-        if (!(new SameClientSpecification<>(client).isSatisfiedBy(getClient()))) {
+        if (!(EntitySpecifications.hasSameClient(client)
+                                  .isSatisfiedBy(getClient()))) {
             throw new ClientBoundaryViolationException("The client boundary would be "
                     + "violated by the attempted operation on element: " + toString()
                     + " from client " + client.toString());

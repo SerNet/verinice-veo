@@ -26,7 +26,7 @@ import org.veo.core.entity.format.DisplayNameFormat;
 import org.veo.core.entity.format.NamePlaceholder;
 import org.veo.core.entity.format.OwnerPlaceholder;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.SameClientSpecification;
+import org.veo.core.entity.specification.EntitySpecifications;
 
 /**
  * The abstract base model class. Used to prevent duplicating common methods in
@@ -115,7 +115,8 @@ public interface EntityLayerSupertype extends Nameable, ModelObject, ClientOwned
         thisEntitysClient = Objects.requireNonNull(thisEntitysOwner.getClient(),
                                                    "No client set for " + thisEntitysOwner
                                                            + " might be part of a domain template");
-        if (!(new SameClientSpecification<>(client).isSatisfiedBy(thisEntitysClient))) {
+        if (!(EntitySpecifications.hasSameClient(client)
+                                  .isSatisfiedBy(thisEntitysClient))) {
             throw new ClientBoundaryViolationException("The client boundary would be "
                     + "violated by the attempted operation on element: " + toString()
                     + " from client " + client.toString());
