@@ -216,6 +216,7 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
         def refc1 = result.catalogItems.find {it.displayName.contains('c1')}
         then:
         refc1.displayName == 'null-- c1'
+        refc1.targetUri.contains(item1.dbId)
     }
 
     @WithUserDetails("user@domain.example")

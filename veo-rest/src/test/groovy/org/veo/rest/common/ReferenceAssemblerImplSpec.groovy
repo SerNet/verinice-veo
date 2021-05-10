@@ -21,6 +21,7 @@ package org.veo.rest.common
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
+import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
@@ -28,6 +29,8 @@ import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
+import org.veo.core.entity.Catalog
+import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Incident
@@ -49,15 +52,16 @@ class ReferenceAssemblerImplSpec extends Specification {
         referenceAssembler.parseId(url) == parsedId
 
         where:
-        url                                                                                                            | parsedId
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                            | '40331ed5-be07-4c69-bf99-553811ce5454'
+        url                                                                                                              | parsedId
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | '40331ed5-be07-4c69-bf99-553811ce5454'
         // TODO: VEO-585: probably expect an exception instead
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/59d3c21d-2f21-4085-950d-1273056d664a' | '59d3c21d-2f21-4085-950d-1273056d664a'
-        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                          | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
-        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                            | '59d3c21d-2f21-4085-950d-1273056d664a'
-        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                         | 'f05ab334-c605-456e-8a78-9e1bc85b8509'
-        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                         | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
-        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | '28df429d-da5e-431a-a2d8-488c0741fb9f'
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/59d3c21d-2f21-4085-950d-1273056d664a'   | '59d3c21d-2f21-4085-950d-1273056d664a'
+        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
+        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                              | '59d3c21d-2f21-4085-950d-1273056d664a'
+        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | 'f05ab334-c605-456e-8a78-9e1bc85b8509'
+        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
+        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | '28df429d-da5e-431a-a2d8-488c0741fb9f'
+        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | '47799d6d-7887-48d5-9cd2-1af23e0b467a'
     }
 
     def "parsed type for #url is #type"() {
@@ -67,15 +71,16 @@ class ReferenceAssemblerImplSpec extends Specification {
         referenceAssembler.parseType(url) == type
 
         where:
-        url                                                                                                            | type       | dtoType
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                            | Asset      | FullAssetDto
+        url                                                                                                              | type        | dtoType
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | Asset       | FullAssetDto
         // TODO: VEO-585: probably expect an exception instead
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | Asset      | FullAssetDto
-        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                          | Control    | FullControlDto
-        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                            | Scope      | FullScopeDto
-        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                         | Scenario   | FullScenarioDto
-        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                         | Incident   | FullIncidentDto
-        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | Domain     | FullDomainDto
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | Asset       | FullAssetDto
+        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | Control     | FullControlDto
+        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                              | Scope       | FullScopeDto
+        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | Scenario    | FullScenarioDto
+        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | Incident    | FullIncidentDto
+        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | Domain      | FullDomainDto
+        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | CatalogItem | FullCatalogItemDto
     }
 
     def "target reference for #type and #id is #reference"() {
@@ -94,6 +99,22 @@ class ReferenceAssemblerImplSpec extends Specification {
         Incident | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
         Scope    | '59d3c21d-2f21-4085-950d-1273056d664a' | '/scopes/59d3c21d-2f21-4085-950d-1273056d664a'
         Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'
+    }
+
+    def "create target URI for catalog item"() {
+        given:
+        def catalogId = '371c5f43-cd7c-4e4f-b45b-59a7337bf489'
+        def itemId = 'ccf66944-e782-4221-8e2a-65209d2826f1'
+        Catalog catalog = Stub {
+            getId () >> Key.uuidFrom(catalogId)
+        }
+        CatalogItem catalogItem = Stub {
+            getId () >> Key.uuidFrom(itemId)
+            getCatalog()  >> catalog
+            getModelInterface() >> CatalogItem
+        }
+        expect:
+        referenceAssembler.targetReferenceOf(catalogItem) == "/catalogs/${catalogId}/items/${itemId}"
     }
 
     def "resources reference for #type is #reference"() {

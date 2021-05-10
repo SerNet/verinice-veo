@@ -22,6 +22,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.VeoSpringSpec
+import org.veo.core.entity.Catalog
+import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Key
 import org.veo.core.entity.ModelObjectType
 import org.veo.rest.configuration.TypeExtractor
@@ -37,10 +39,7 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
     def "creates and parses URLs for #type.simpleName"() {
         given:
         def referenceAssembler = new ReferenceAssemblerImpl(typeExtractor)
-        def entity = Stub(type) {
-            getId () >> Key.newUuid()
-            getModelInterface() >> type
-        }
+        def entity = createEntity(type)
 
         when: "creating a target URL"
         def targetUrl = referenceAssembler.targetReferenceOf(entity)
@@ -58,5 +57,19 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
 
         where:
         type << ModelObjectType.TYPES
+    }
+
+    def createEntity(type) {
+        def entity = Stub(type) {
+            getId () >> Key.newUuid()
+            getModelInterface() >> type
+        }
+        if (type == CatalogItem) {
+            def catalog = Stub(Catalog) {
+                getId() >> Key.newUuid()
+            }
+            entity.getCatalog() >> catalog
+        }
+        entity
     }
 }

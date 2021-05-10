@@ -147,9 +147,19 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                        id)).withRel(CatalogController.URL_BASE_PATH)
                                                                            .getHref();
         }
+        if (CatalogItem.class.isAssignableFrom(type)) {
+            CatalogItem catalogItem = (CatalogItem) modelObject;
+            return linkTo(methodOn(CatalogController.class).getCatalogItem(ANY_AUTH,
+                                                                           catalogItem.getCatalog()
+                                                                                      .getId()
+                                                                                      .uuidValue(),
+                                                                           id, null))
+                                                                                     .withRel(CatalogController.URL_BASE_PATH)
+                                                                                     .expand()
+                                                                                     .getHref();
+        }
         // Some model object types have no endpoint.
-        if (Client.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)
-                || DomainTemplate.class.isAssignableFrom(type)
+        if (Client.class.isAssignableFrom(type) || DomainTemplate.class.isAssignableFrom(type)
                 || CatalogReference.class.isAssignableFrom(type)) {
             return null;
         }
