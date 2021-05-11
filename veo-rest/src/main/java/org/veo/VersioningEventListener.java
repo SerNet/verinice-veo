@@ -95,9 +95,7 @@ public class VersioningEventListener {
     private String createJson(ModelObject entity, VersioningEvent.Type type, String author,
             Client client) {
         var tree = objectMapper.createObjectNode();
-        tree.put("uri", referenceAssembler.targetReferenceOf(entity.getModelInterface(),
-                                                             entity.getId()
-                                                                   .uuidValue()));
+        tree.put("uri", referenceAssembler.targetReferenceOf(entity));
         tree.put("type", convertType(type));
         tree.put("changeNumber", getChangeNumber(entity, type));
         tree.put("time", entity.getUpdatedAt()

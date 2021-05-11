@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 
-import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.core.VeoSpringSpec
+import org.veo.core.entity.Key
 import org.veo.core.entity.ModelObjectType
 import org.veo.rest.configuration.TypeExtractor
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -37,10 +37,13 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
     def "creates and parses URLs for #type.simpleName"() {
         given:
         def referenceAssembler = new ReferenceAssemblerImpl(typeExtractor)
+        def entity = Stub(type) {
+            getId () >> Key.newUuid()
+            getModelInterface() >> type
+        }
 
         when: "creating a target URL"
-        def targetUrl = referenceAssembler.targetReferenceOf(type, UUID.randomUUID().toString())
-
+        def targetUrl = referenceAssembler.targetReferenceOf(entity)
         then: "it can be parsed back"
         if(targetUrl != null) {
             assert referenceAssembler.parseType(targetUrl) == type

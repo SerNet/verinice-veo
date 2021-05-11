@@ -35,13 +35,11 @@ public interface ReferenceAssembler {
     /**
      * Returns an absolute reference to the target object of this reference.
      *
-     * @param type
-     *            the model object type
-     * @param id
-     *            the ID of the target object
+     * @param modelObject
+     *            the model object
      * @return the URI of the specific target object
      */
-    String targetReferenceOf(Class<? extends ModelObject> type, String id);
+    String targetReferenceOf(ModelObject modelObject);
 
     /**
      * Returns an absolute reference to the target object, where the target object

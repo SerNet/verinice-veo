@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.veo.core.entity.Displayable;
 import org.veo.core.entity.ModelObject;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -32,6 +34,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModelObjectReference<T extends ModelObject> implements IModelObjectReference {
 
     @JsonIgnore
@@ -49,20 +52,20 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
     @JsonIgnore
     private ReferenceAssembler urlAssembler;
 
-    private ModelObjectReference(String id, String displayName, Class<T> type,
+    @JsonIgnore
+    private String uri;
+
+    @JsonIgnore
+    private ModelObject entity;
+
+    private ModelObjectReference(ModelObject entity, String id, String displayName, Class<T> type,
             ReferenceAssembler referenceAssembler) {
-        super();
-        this.id = id;
-        this.displayName = displayName;
-        this.type = type;
-        this.urlAssembler = referenceAssembler;
+        this(id, displayName, type, referenceAssembler, null, entity);
     }
 
-    private ModelObjectReference(String id, Class<T> type, ReferenceAssembler referenceAssembler) {
-        super();
-        this.id = id;
-        this.type = type;
-        this.urlAssembler = referenceAssembler;
+    private ModelObjectReference(String uri, String id, Class<T> type,
+            ReferenceAssembler referenceAssembler) {
+        this(id, null, type, referenceAssembler, uri, null);
     }
 
     /**
@@ -72,23 +75,26 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
             @NonNull ReferenceAssembler urlAssembler) {
         if (entity == null)
             return null;
-        Class<? extends ModelObject> modelInterface = entity.getModelInterface();
-        return new ModelObjectReference<T>(entity.getId()
-                                                 .uuidValue(),
-                ((Displayable) entity).getDisplayName(), (Class<T>) modelInterface, urlAssembler);
+        return new ModelObjectReference<>(entity, entity.getId()
+                                                        .uuidValue(),
+                ((Displayable) entity).getDisplayName(), (Class<T>) entity.getModelInterface(),
+                urlAssembler);
     }
 
     public static <T extends ModelObject> ModelObjectReference<T> fromUri(String uri,
             @NonNull ReferenceAssembler urlAssembler) {
-
-        return new ModelObjectReference<T>(urlAssembler.parseId(uri),
+        return new ModelObjectReference<>(uri, urlAssembler.parseId(uri),
                 (Class<T>) urlAssembler.parseType(uri), urlAssembler);
     }
 
     @Override
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getTargetUri() {
-        return urlAssembler.targetReferenceOf(type, id);
+        if (uri == null) {
+            uri = urlAssembler.targetReferenceOf(entity);
+        }
+        return uri;
+
     }
 
     @Override

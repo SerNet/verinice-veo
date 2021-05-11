@@ -79,8 +79,13 @@ class ReferenceAssemblerImplSpec extends Specification {
     }
 
     def "target reference for #type and #id is #reference"() {
+        given:
+        def entity = Stub(type) {
+            getId () >> Key.uuidFrom(id)
+            getModelInterface() >> type
+        }
         expect:
-        referenceAssembler.targetReferenceOf(type, id) == reference
+        referenceAssembler.targetReferenceOf(entity) == reference
         where:
         type     | id                                     | reference
         Asset    | '40331ed5-be07-4c69-bf99-553811ce5454' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454'
@@ -133,7 +138,7 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "create a key for a reference to a #type with id #id "() {
         expect:
-        referenceAssembler.toKey(new ModelObjectReference(id, type, referenceAssembler)) == key
+        referenceAssembler.toKey(new ModelObjectReference(null, id, type, referenceAssembler)) == key
 
         where:
         type     | id                                     | key
@@ -148,8 +153,8 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "create multiple keys for a reference to a #type with keys #id1, #id2 "() {
         expect:
         def refs = referenceAssembler.toKeys([
-            new ModelObjectReference(id1, type, referenceAssembler),
-            new ModelObjectReference(id2, type, referenceAssembler)
+            new ModelObjectReference(null, id1, type, referenceAssembler),
+            new ModelObjectReference(null, id2, type, referenceAssembler)
         ] as Set
         )
         refs.contains(Key.uuidFrom(id1))

@@ -88,7 +88,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     @SuppressFBWarnings // ignore warning on call to method proxy factory
-    public String targetReferenceOf(Class<? extends ModelObject> type, String id) {
+    public String targetReferenceOf(ModelObject modelObject) {
+        Class<? extends ModelObject> type = modelObject.getModelInterface();
+        String id = modelObject.getId()
+                               .uuidValue();
         if (Scope.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH,
                                                                    id)).withRel(ScopeController.URL_BASE_PATH)
