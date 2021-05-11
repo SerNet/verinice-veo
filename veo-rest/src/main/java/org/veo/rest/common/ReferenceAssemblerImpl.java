@@ -325,7 +325,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     public Key<UUID> toKey(ModelObjectReference<? extends ModelObject> reference) {
         if (reference == null)
             return null;
-        return Key.uuidFrom(parseId(reference.getTargetUri()));
+        return Key.uuidFrom(reference.getId());
     }
 
     @Override
