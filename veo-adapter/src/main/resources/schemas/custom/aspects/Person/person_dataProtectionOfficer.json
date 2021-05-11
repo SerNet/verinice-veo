@@ -1,100 +1,71 @@
 {
+  "type": "object",
   "additionalProperties": false,
   "properties": {
+    "id": {
+      "type": "string",
+      "title": "The UUID to identify the element",
+      "format": "regex",
+      "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+    },
     "applicableTo": {
+      "type": "array",
       "items": {
         "type": "string"
-      },
-      "type": "array"
-    },
-    "attributes": {
-      "properties": {
-        "person_dataProtectionOfficer_affiliation": {
-          "enum": [
-            "person_dataProtectionOfficer_affiliation_internal",
-            "person_dataProtectionOfficer_affiliation_external"
-          ],
-          "title": "Data protection officer affiliation"
-        },
-        "person_dataProtectionOfficer_expertise": {
-          "title": "Required expertise and reliability",
-          "type": "boolean"
-        },
-        "person_dataProtectionOfficer_nomination": {
-          "title": "Written nomination",
-          "type": "boolean"
-        },
-        "person_dataProtectionOfficer_nominationDate": {
-          "format": "date",
-          "title": "Date of nomination",
-          "type": "string"
-        },
-        "person_dataProtectionOfficer_nominationEvidence": {
-          "format": "uri",
-          "title": "Nomination evidence",
-          "type": "string"
-        },
-        "person_dataProtectionOfficer_other": {
-          "title": "Other",
-          "type": "string"
-        },
-        "person_dataProtectionOfficer_profession": {
-          "enum": [
-            "person_dataProtectionOfficer_profession_lawyer",
-            "person_dataProtectionOfficer_profession_economist",
-            "person_dataProtectionOfficer_profession_itSpecialist",
-            "person_dataProtectionOfficer_profession_humanResourcesOfficer"
-          ],
-          "title": "Professional title/education"
-        }
-      },
-      "type": "object"
+      }
     },
     "domains": {
+      "type": "array",
+      "title": "The list of domains in which this element is present.",
       "description": "The ids of elements of the type domain.",
       "items": {
+        "type": "object",
         "properties": {
           "displayName": {
-            "description": "A friendly human readable title of the referenced domain.",
-            "type": "string"
+            "type": "string",
+            "description": "A friendly human readable title of the referenced domain."
           },
           "targetUri": {
-            "description": "The resource URL of the referenced domain.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "targetUri"
-        ],
-        "type": "object"
-      },
-      "title": "The list of domains in which this element is present.",
-      "type": "array",
-      "uniqueItems": true
-    },
-    "id": {
-      "format": "regex",
-      "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-      "title": "The UUID to identify the element",
-      "type": "string"
-    },
-    "references": {
-      "items": {
-        "properties": {
-          "displayName": {
-            "description": "A friendly human readable title of the referenced object.",
-            "type": "string"
-          },
-          "targetUri": {
-            "description": "The resource URL of the referenced object.",
-            "type": "string"
+            "type": "string",
+            "description": "The resource URL of the referenced domain."
           }
         },
         "required": [
           "targetUri"
         ]
       },
-      "type": "array"
+      "uniqueItems": true
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "A friendly human readable title of the referenced object."
+          },
+          "targetUri": {
+            "type": "string",
+            "description": "The resource URL of the referenced object."
+          }
+        },
+        "required": [
+          "targetUri"
+        ]
+      }
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "person_dataProtectionOfficer_expertise": {
+          "title": "Required expertise and reliability?",
+          "type": "boolean"
+        },
+        "person_dataProtectionOfficer_profession": {
+          "title": "Profession, education",
+          "type": "string"
+        }
+      }
     },
     "type": {
       "description": "The name of the type described by this schema.",
@@ -102,6 +73,5 @@
         "person_dataProtectionOfficer"
       ]
     }
-  },
-  "type": "object"
+  }
 }

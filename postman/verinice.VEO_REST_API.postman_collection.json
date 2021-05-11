@@ -1857,7 +1857,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_commons\": {\n            \"type\": \"person_commons\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"person_commons_salutation\": \"person_commons_salutation_ms\",\n                \"person_commons_surname\": \"Schmidt\"\n            }\n        }\n    }\n}",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_generalInformation\": {\n            \"type\": \"person_generalInformation\",\n            \"applicableTo\": [\n                \"Person\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"person_generalInformation_salutation\": \"person_commons_salutation_ms\",\n                \"person_generalInformation_familyName\": \"Schmidt\"\n            }\n        }\n    }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1892,7 +1892,7 @@
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"personName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
                   "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
-                  "    pm.expect(jsonData.customAspects).to.have.property('person_commons');",
+                  "    pm.expect(jsonData.customAspects).to.have.property('person_generalInformation');",
                   "",
                   "});",
                   ""

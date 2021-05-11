@@ -57,38 +57,36 @@
     "attributes": {
       "type": "object",
       "properties": {
-        "person_contactInformation_office": {
-          "title": "Phone",
+        "person_address_address1": {
+          "title": "Street and number / P.O. Box",
           "type": "string"
         },
-        "person_contactInformation_mobile": {
-          "title": "Mobile",
+        "person_address_address2": {
+          "title": "Address suffix",
           "type": "string"
         },
-        "person_contactInformation_private": {
-          "title": "Private",
+        "person_address_postcode": {
+          "title": "Postcode",
           "type": "string"
         },
-        "person_contactInformation_fax": {
-          "title": "Fax",
+        "person_address_city": {
+          "title": "City",
           "type": "string"
         },
-        "person_contactInformation_email": {
-          "title": "Email",
+        "person_address_country": {
+          "title": "Country",
           "type": "string"
         },
-        "person_contactInformation_website": {
-          "title": "Website",
-          "type": "string",
-          "format": "uri",
-          "pattern": "^(https?|ftp)://"
+        "person_address_state": {
+          "title": "State",
+          "type": "string"
         }
       }
     },
     "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
-        "person_contactInformation"
+        "person_address"
       ]
     }
   }

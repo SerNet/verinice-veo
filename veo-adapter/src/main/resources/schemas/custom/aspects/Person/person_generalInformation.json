@@ -57,38 +57,28 @@
     "attributes": {
       "type": "object",
       "properties": {
-        "person_contactInformation_office": {
-          "title": "Phone",
+        "person_generalInformation_salutation": {
+          "title": "Salutation",
           "type": "string"
         },
-        "person_contactInformation_mobile": {
-          "title": "Mobile",
+        "person_generalInformation_title": {
+          "title": "Title",
           "type": "string"
         },
-        "person_contactInformation_private": {
-          "title": "Private",
+        "person_generalInformation_givenName": {
+          "title": "Given name",
           "type": "string"
         },
-        "person_contactInformation_fax": {
-          "title": "Fax",
+        "person_generalInformation_familyName": {
+          "title": "Family name",
           "type": "string"
-        },
-        "person_contactInformation_email": {
-          "title": "Email",
-          "type": "string"
-        },
-        "person_contactInformation_website": {
-          "title": "Website",
-          "type": "string",
-          "format": "uri",
-          "pattern": "^(https?|ftp)://"
         }
       }
     },
     "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
-        "person_contactInformation"
+        "person_generalInformation"
       ]
     }
   }
