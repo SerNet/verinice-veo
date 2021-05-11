@@ -455,6 +455,9 @@
         "format": {
           "type": "string",
           "const": "uri"
+        },
+        "pattern": {
+          "type": "string"
         }
       },
       "required": [
