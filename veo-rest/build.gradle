@@ -3,7 +3,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 plugins {
-    id "com.gorylenko.gradle-git-properties" version "2.2.4"
+    id "com.gorylenko.gradle-git-properties" version "2.3.1"
 }
 
 apply plugin: 'org.springframework.boot'

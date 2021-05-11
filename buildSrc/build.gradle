@@ -5,13 +5,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.diffplug.spotless:spotless-lib:2.13.2'
-    implementation 'com.diffplug.spotless:spotless-lib-extra:2.13.2'
+    implementation 'com.diffplug.spotless:spotless-lib:2.13.4'
+    implementation 'com.diffplug.spotless:spotless-lib-extra:2.13.4'
     [
         'jsonschema-generator',
         'jsonschema-module-jackson',
         'jsonschema-module-javax-validation',
         'jsonschema-module-swagger-2'
     ].each { compileOnly "com.github.victools:$it:4.17.0" }
-    compileOnly 'io.swagger.core.v3:swagger-annotations:2.1.7'
+    compileOnly 'io.swagger.core.v3:swagger-annotations:2.1.9'
 }
