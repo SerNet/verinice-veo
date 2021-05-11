@@ -19,7 +19,9 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.web.servlet.ResultActions
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
@@ -62,7 +64,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "/units/"+unitId,
             ]])).resourceId
-        def createdAssetJson = new ObjectMapper().readTree(get("/assets/$assetId").andReturn().response.contentAsString)
+        def createdAssetJson = parseNode(get("/assets/$assetId"))
 
         when: "validating the asset JSON"
         def validationMessages = schema.validate(createdAssetJson)
@@ -106,7 +108,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 ]
             ]
         ])).resourceId
-        def createdProcessJson = new ObjectMapper().readTree(get("/processes/$processId").andReturn().response.contentAsString)
+        def createdProcessJson = parseNode(get("/processes/$processId"))
 
         when: "validating the process JSON"
         def validationMessages = processSchema.validate(createdProcessJson)
@@ -135,7 +137,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 ]
             ]
         ])).resourceId
-        def scope = new ObjectMapper().readTree(get("/scopes/$scopeId").andReturn().response.contentAsString)
+        def scope = parseNode(get("/scopes/$scopeId"))
 
         when: "validating the scope JSON"
         def validationMessages = schema.validate(scope)
@@ -147,5 +149,9 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     private JsonSchema getSchema(String type) {
         def schemaString = entitySchemaService.findSchema(type, Collections.emptyList())
         return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7).getSchema(schemaString)
+    }
+
+    JsonNode parseNode(ResultActions resultActions) {
+        return new ObjectMapper().readTree(resultActions.andReturn().response.contentAsString)
     }
 }
