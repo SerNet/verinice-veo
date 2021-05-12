@@ -83,17 +83,17 @@
           },
           "type": {
             "enum": [
-              "Person"
+              "person"
             ]
           }
         },
-        "title": "Management of the responsible body",
+        "title": "Deputy head of the responsible body",
         "type": "object"
       },
       "type": {
         "description": "The name of the type described by this schema.",
         "enum": [
-          "scope_person_management"
+          "scope_deputyManagementPersonLink"
         ]
       }
     },

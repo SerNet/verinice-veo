@@ -399,15 +399,15 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ], customAspects:
             [
-                'scope_commons' :
+                'scope_address' :
                 [
                     applicableTo: [
                         "Scope"
                     ],
                     domains: [],
                     attributes:  [
-                        scope_commons_number: '1',
-                        scope_commons_country: 'Germany'
+                        scope_address_postcode: '1',
+                        scope_address_country: 'Germany'
                     ]
                 ]
             ]
@@ -438,10 +438,10 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New scope 2'
         entity.abbreviation == 's-2'
-        entity.customAspects.first().type == 'scope_commons'
+        entity.customAspects.first().type == 'scope_address'
         entity.customAspects.first().applicableTo == ['Scope'] as Set
-        entity.customAspects.first().stringProperties.scope_commons_number == '1'
-        entity.customAspects.first().stringProperties.scope_commons_country == 'Germany'
+        entity.customAspects.first().stringProperties.scope_address_postcode == '1'
+        entity.customAspects.first().stringProperties.scope_address_country == 'Germany'
     }
 
 

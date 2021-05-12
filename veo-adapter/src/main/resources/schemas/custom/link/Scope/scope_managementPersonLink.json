@@ -83,17 +83,17 @@
           },
           "type": {
             "enum": [
-              "Person"
+              "person"
             ]
           }
         },
-        "title": "Head of data processing / IT",
+        "title": "Head of the responsible body",
         "type": "object"
       },
       "type": {
         "description": "The name of the type described by this schema.",
         "enum": [
-          "scope_person_headOfDataProcessing"
+          "scope_managementPersonLink"
         ]
       }
     },

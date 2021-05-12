@@ -9,24 +9,10 @@
     },
     "attributes": {
       "properties": {
-        "scope_commons_city": {
-          "title": "City",
-          "type": "string"
-        },
-        "scope_commons_country": {
-          "title": "Country",
-          "type": "string"
-        },
-        "scope_commons_number": {
-          "title": "Number",
-          "type": "string"
-        },
-        "scope_commons_postcode": {
-          "title": "Postcode",
-          "type": "number"
-        },
-        "scope_commons_street": {
-          "title": "Street",
+        "scope_generalInformation_document": {
+          "format": "uri",
+          "pattern": "^(https?|ftp)://",
+          "title": "Document",
           "type": "string"
         }
       },
@@ -81,7 +67,7 @@
     "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
-        "scope_commons"
+        "scope_generalInformation"
       ]
     }
   },

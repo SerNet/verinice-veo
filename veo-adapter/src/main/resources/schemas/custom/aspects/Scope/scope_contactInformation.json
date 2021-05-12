@@ -10,15 +10,11 @@
     "attributes": {
       "properties": {
         "scope_contactInformation_email": {
-          "title": "E-Mail",
+          "title": "Email",
           "type": "string"
         },
         "scope_contactInformation_fax": {
           "title": "Fax",
-          "type": "string"
-        },
-        "scope_contactInformation_mobile": {
-          "title": "Mobile",
           "type": "string"
         },
         "scope_contactInformation_phone": {
@@ -26,7 +22,6 @@
           "type": "string"
         },
         "scope_contactInformation_website": {
-          "format": "uri",
           "title": "Website",
           "type": "string"
         }

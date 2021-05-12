@@ -15,7 +15,32 @@
       },
       "attributes": {
         "properties": {
-          
+          "scope_dataProtectionOfficer_affiliation": {
+            "enum": [
+              "scope_dataProtectionOfficer_affiliation_internal",
+              "scope_dataProtectionOfficer_affiliation_external"
+            ],
+            "title": "Company data protection officer?"
+          },
+          "scope_dataProtectionOfficer_dataProtectionCoordinator": {
+            "title": "Data protection coordinator",
+            "type": "boolean"
+          },
+          "scope_dataProtectionOfficer_nomination": {
+            "title": "Written nomination?",
+            "type": "boolean"
+          },
+          "scope_dataProtectionOfficer_nominationDate": {
+            "format": "date",
+            "title": "Nomination date",
+            "type": "string"
+          },
+          "scope_dataProtectionOfficer_nominationEvidence": {
+            "format": "uri",
+            "pattern": "^(https?|ftp)://",
+            "title": "Nomination evidence",
+            "type": "string"
+          }
         },
         "type": "object"
       },
@@ -83,17 +108,17 @@
           },
           "type": {
             "enum": [
-              "Person"
+              "person"
             ]
           }
         },
-        "title": "Responsible regulatory authority",
+        "title": "Data protection officer",
         "type": "object"
       },
       "type": {
         "description": "The name of the type described by this schema.",
         "enum": [
-          "scope_person_responsibleRegulatoryAuthority"
+          "scope_dataProtectionOfficer"
         ]
       }
     },
