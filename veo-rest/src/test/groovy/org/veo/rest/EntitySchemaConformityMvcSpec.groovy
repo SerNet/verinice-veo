@@ -36,6 +36,7 @@ import org.veo.rest.configuration.WebMvcSecurityConfiguration
 /**
  * Tests if resources returned by the API conform to the entity schema.
  */
+@WithUserDetails("user@domain.example")
 class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     @Autowired
     EntitySchemaService entitySchemaService
@@ -46,6 +47,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     @Autowired
     ClientRepository clientRepository
 
+    ObjectMapper om = new ObjectMapper()
     String unitId
 
     def setup() {
@@ -55,11 +57,32 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         unitId = unitRepository.save(newUnit(client)).dbId
     }
 
-    @WithUserDetails("user@domain.example")
-    def "created minimalist asset conforms to schema"() {
+    def "created asset with custom aspect & link conforms to schema"() {
         given: "the asset schema and a newly created asset"
         def schema = getSchema("asset")
+        def targetPersonId = parseJson(post("/persons", [
+            name: "target",
+            owner: [
+                targetUri: "/units/"+unitId,
+            ]])).resourceId
         def assetId = (String)parseJson(post("/assets", [
+            customAspects: [
+                AssetCommons: [
+                    attributes: [
+                        assetStatus: "assetStatusOperation"
+                    ]
+                ]
+            ],
+            links: [
+                Asset_informed_Person: [
+                    [
+                        name: "i don't care",
+                        target: [
+                            targetUri: "/persons/$targetPersonId"
+                        ]
+                    ]
+                ]
+            ],
             name: "asset",
             owner: [
                 targetUri: "/units/"+unitId,
@@ -73,8 +96,102 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         validationMessages.empty
     }
 
-    @WithUserDetails("user@domain.example")
-    def "created process with props & links conforms to schema"() {
+    def "created control with link conforms to schema"() {
+        given: "the asset schema and a newly created control"
+        def schema = getSchema("control")
+        def targetPersonId = parseJson(post("/persons", [
+            name: "target",
+            owner: [
+                targetUri: "/units/"+unitId,
+            ]])).resourceId
+        def controlId = (String)parseJson(post("/controls", [
+            links: [
+                Control_assignee_Person: [
+                    [
+                        name: "whatever",
+                        target: [
+                            targetUri: "/persons/$targetPersonId"
+                        ]
+                    ]
+                ]
+            ],
+            name: "control",
+            owner: [
+                targetUri: "/units/"+unitId,
+            ]])).resourceId
+        def createdControlJson = parseNode(get("/controls/$controlId"))
+
+        when: "validating the control JSON"
+        def validationMessages = schema.validate(createdControlJson)
+
+        then:
+        validationMessages.empty
+    }
+
+    def "created document conforms to schema"() {
+        given: "the document schema and a newly created document"
+        def documentSchema = getSchema("document")
+        // TODO VEO-323 add custom aspect & link.
+        def documentId = (String)parseJson(post("/documents", [
+            name: "doc",
+            owner: [
+                targetUri: "/units/"+unitId
+            ]
+        ])).resourceId
+        def createdDocumentJson = parseNode(get("/documents/$documentId"))
+
+        when: "validating the document JSON"
+        def validationMessages = documentSchema.validate(createdDocumentJson)
+
+        then:
+        validationMessages.empty
+    }
+
+    def "created incident conforms to schema"() {
+        given: "the incident schema and a newly created incident"
+        def incidentSchema = getSchema("incident")
+        // TODO VEO-320 add custom aspect & link.
+        def incidentId = (String)parseJson(post("/incidents", [
+            name: "incident",
+            owner: [
+                targetUri: "/units/"+unitId
+            ]
+        ])).resourceId
+        def createdIncidentJson = parseNode(get("/incidents/$incidentId"))
+
+        when: "validating the incident JSON"
+        def validationMessages = incidentSchema.validate(createdIncidentJson)
+
+        then:
+        validationMessages.empty
+    }
+
+    def "created person with custom aspect conforms to schema"() {
+        given: "the person schema and a newly created person"
+        def personSchema = getSchema("person")
+        def personId = (String)parseJson(post("/persons", [
+            name: "person",
+            owner: [
+                targetUri: "/units/"+unitId
+            ],
+            customAspects: [
+                person_address: [
+                    attributes: [
+                        person_address_city: "Goettingen"
+                    ]
+                ]
+            ]
+        ])).resourceId
+        def createdPersonJson = parseNode(get("/persons/$personId"))
+
+        when: "validating the process JSON"
+        def validationMessages = personSchema.validate(createdPersonJson)
+
+        then:
+        validationMessages.empty
+    }
+
+    def "created process with custom aspect & links conforms to schema"() {
         given: "the process schema and a newly created process"
         def processSchema = getSchema("process")
         def personId = (String)parseJson(post("/persons", [
@@ -117,8 +234,26 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         validationMessages.empty
     }
 
-    @WithUserDetails("user@domain.example")
-    def "created scope with member conforms to schema"() {
+    def "created scenario conforms to schema"() {
+        given: "the scenario schema and a newly created scenario"
+        def scenarioSchema = getSchema("scenario")
+        // TODO VEO-307 add custom aspect & link.
+        def scenarioId = (String)parseJson(post("/scenarios", [
+            name: "scenario",
+            owner: [
+                targetUri: "/units/"+unitId
+            ]
+        ])).resourceId
+        def createdScenarioJson = parseNode(get("/scenarios/$scenarioId"))
+
+        when: "validating the scenario JSON"
+        def validationMessages = scenarioSchema.validate(createdScenarioJson)
+
+        then:
+        validationMessages.empty
+    }
+
+    def "created scope with custom aspect, link & member conforms to schema"() {
         given: "the scope schema and a scope with one member"
         def schema = getSchema("scope")
         def memberAssetId = parseJson(post("/assets", [
@@ -126,10 +261,32 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "/units/"+unitId,
             ]])).resourceId
+        def targetPersonId = parseJson(post("/persons", [
+            name: "target",
+            owner: [
+                targetUri: "/units/"+unitId,
+            ]])).resourceId
         def scopeId = parseJson(post("/scopes", [
             name: "scope",
             owner: [
                 targetUri: "/units/"+unitId,
+            ],
+            customAspects: [
+                scope_address: [
+                    attributes: [
+                        scope_address_city: "Goettingen"
+                    ]
+                ]
+            ],
+            links: [
+                scope_dataProtectionOfficer: [
+                    [
+                        name: "doesn't matter",
+                        target: [
+                            targetUri: "/persons/$targetPersonId"
+                        ]
+                    ]
+                ]
             ],
             members: [
                 [
@@ -152,6 +309,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     }
 
     JsonNode parseNode(ResultActions resultActions) {
-        return new ObjectMapper().readTree(resultActions.andReturn().response.contentAsString)
+        om.readTree(resultActions.andReturn().response.contentAsString)
     }
 }
