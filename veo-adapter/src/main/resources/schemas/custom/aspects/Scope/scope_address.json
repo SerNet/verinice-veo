@@ -9,7 +9,7 @@
     },
     "attributes": {
       "properties": {
-        "scope_address_adddress1": {
+        "scope_address_address1": {
           "title": "Street and number / P.O. Box",
           "type": "string"
         },
