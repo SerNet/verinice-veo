@@ -36,7 +36,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
-import spock.lang.IgnoreRest
 import spock.lang.Issue
 
 /**
@@ -157,8 +156,6 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     }
 
     @Issue('VEO-556')
-    @IgnoreRest
-
     @WithUserDetails("user@domain.example")
     def "events for domain template entities are ignored"() {
         given:
