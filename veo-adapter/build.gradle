@@ -129,6 +129,10 @@ task checkTranslations {
                 value.enum?.each {
                     handleTranslationKey(it, "$file.name (custom aspect/link select value id)", isDummySchema)
                 }
+                // custom aspect enum entry / value in multi-value drop-down
+                value.items?.enum?.each {
+                    handleTranslationKey(it, "$file.name (custom aspect/link select value id)", isDummySchema)
+                }
             }
         }
         languagesToCheck.each {lang, json->
