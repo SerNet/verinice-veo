@@ -62,6 +62,12 @@ public class PropertyData {
         this.type = Type.DOUBLE;
     }
 
+    public PropertyData(String key, Integer value) {
+        this.key = key;
+        this.integerValue = value;
+        this.type = Type.INTEGER;
+    }
+
     public PropertyData(String key, Boolean value) {
         this.key = key;
         this.booleanValue = value;
@@ -91,6 +97,8 @@ public class PropertyData {
 
     private Double doubleValue;
 
+    private Integer integerValue;
+
     private OffsetDateTime offsetDateTimeValue;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -103,7 +111,7 @@ public class PropertyData {
     private List<String> stringListValue = new ArrayList<>();
 
     public enum Type {
-        BOOLEAN, STRING, STRING_LIST, DOUBLE, OFFSET_DATE_TIME
+        BOOLEAN, STRING, STRING_LIST, DOUBLE, INTEGER, OFFSET_DATE_TIME
     }
 
     @Data
@@ -121,6 +129,8 @@ public class PropertyData {
             return getStringListValue();
         case DOUBLE:
             return getDoubleValue();
+        case INTEGER:
+            return getIntegerValue();
         case BOOLEAN:
             return getBooleanValue();
         case OFFSET_DATE_TIME:

@@ -105,7 +105,7 @@ class CustomLinkPersistenceSpec extends VeoSpec {
 
         when: "add properties of type number"
 
-        cp.setProperty("my.key.3", 10)
+        cp.setProperty("my.key.3", 10.0)
 
         assetRepository.save(assetData)
         savedAsset = assetRepository.findById(asset.id)

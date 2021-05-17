@@ -121,6 +121,18 @@ public class CustomPropertiesData implements CustomProperties {
     }
 
     @Override
+    public Map<String, Integer> getIntegerProperties() {
+        return getProperties(Integer.class);
+    }
+
+    @Override
+    public void setProperty(String key, Integer value) {
+        PropertyData propertyData = new PropertyData(key, value);
+        propertyData.setParentId(getDbId());
+        dataProperties.add(propertyData);
+    }
+
+    @Override
     public Map<String, OffsetDateTime> getOffsetDateTimeProperties() {
         return getProperties(OffsetDateTime.class);
     }

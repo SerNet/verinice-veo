@@ -36,6 +36,7 @@ class AttributeTransformer {
     private static final String TYPE_ARRAY = "array";
     private static final String TYPE_BOOLEAN = "boolean";
     private static final String TYPE_NUMBER = "number";
+    private static final String TYPE_INTEGER = "integer";
     private static final String TYPE_STRING = "string";
 
     /**
@@ -85,6 +86,9 @@ class AttributeTransformer {
                 break;
             case TYPE_NUMBER:
                 target.setProperty(key, ((Number) value).doubleValue());
+                break;
+            case TYPE_INTEGER:
+                target.setProperty(key, ((Integer) value));
                 break;
             case TYPE_ARRAY:
                 var itemSchema = attrSchema.get(KEY_ITEMS);

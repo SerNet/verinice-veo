@@ -66,6 +66,10 @@ public interface CustomProperties {
 
     void setProperty(String key, Double value);
 
+    Map<String, Integer> getIntegerProperties();
+
+    void setProperty(String key, Integer value);
+
     Map<String, OffsetDateTime> getOffsetDateTimeProperties();
 
     void setProperty(String key, OffsetDateTime value);

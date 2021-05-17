@@ -102,6 +102,29 @@ class AttributeTransformerSpec extends Specification {
         thrown(IllegalArgumentException)
     }
 
+    def "applies integer"() {
+        given: "an integer schema"
+        def schema = om.valueToTree([
+            "type": "integer"
+        ])
+        when: "an integer is passed"
+        sut.applyToEntity("numberOfLegs", 8, schema, entity)
+        then: "it is set as double"
+        1 * entity.setProperty("numberOfLegs", 8d)
+        when: "a float is passed"
+        sut.applyToEntity("temperature", 8.36f, schema, entity)
+        then: "an exception is thrown"
+        thrown(IllegalArgumentException)
+        when: "a double is passed"
+        sut.applyToEntity("angle", 10.4d, schema, entity)
+        then: "an exception is thrown"
+        thrown(IllegalArgumentException)
+        when: "a string is passed"
+        sut.applyToEntity("numberOfLegs", "8", schema, entity)
+        then: "an exception is thrown"
+        thrown(IllegalArgumentException)
+    }
+
     def "applies enum"() {
         given: "an enum schema"
         def schema = om.valueToTree([
