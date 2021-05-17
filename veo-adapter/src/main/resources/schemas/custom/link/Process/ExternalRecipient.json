@@ -25,32 +25,25 @@
         "type": "object",
         "properties": {
           "process_ExternalRecipient_purpose": {
-            "title": "Purpose of the external data transfer",
             "type": "string"
           },
           "process_ExternalRecipient_dataprocessingagreement": {
-            "title": "Data Processing Agreement?",
             "type": "boolean"
           },
           "process_ExternalRecipient_thirdcountry": {
-            "title": "Processing in a third country?",
             "type": "boolean"
           },
           "process_ExternalRecipient_thirdcountryname": {
-            "title": "Name of the third country?",
             "type": "string",
             "format": "uri"
           },
           "process_ExternalRecipient_indication": {
-            "title": "Indication of appropriate guarantees",
             "type": "string"
           },
           "process_ExternalRecipient_explanation": {
-            "title": "Explanation",
             "type": "string"
           },
           "process_ExternalRecipient_document": {
-            "title": "Document",
             "type": "string",
             "format": "uri"
           }

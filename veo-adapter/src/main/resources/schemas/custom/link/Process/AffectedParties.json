@@ -80,7 +80,6 @@
         "type": "object",
         "properties": {
           "process_AffectedParties_supplementaryInformation": {
-            "title": "Supplementary information",
             "type": "string"
           }
         }

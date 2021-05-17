@@ -58,19 +58,15 @@
       "type": "object",
       "properties": {
         "person_generalInformation_salutation": {
-          "title": "Salutation",
           "type": "string"
         },
         "person_generalInformation_title": {
-          "title": "Title",
           "type": "string"
         },
         "person_generalInformation_givenName": {
-          "title": "Given name",
           "type": "string"
         },
         "person_generalInformation_familyName": {
-          "title": "Family name",
           "type": "string"
         }
       }

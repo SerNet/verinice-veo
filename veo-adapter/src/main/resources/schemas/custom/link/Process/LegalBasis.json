@@ -25,11 +25,9 @@
         "type": "object",
         "properties": {
           "process_LegalBasis_explanation": {
-            "title": "Explanation",
             "type": "string"
           },
           "process_LegalBasis_document": {
-            "title": "Document",
             "type": "string",
             "format": "uri"
           }

@@ -63,18 +63,15 @@
       "type": "object",
       "properties": {
         "process_ProcessingDetails_intendedPurpose": {
-          "title": "Intended purpose",
           "type": "string"
         },
         "process_ProcessingDetails_typeOfSurvey": {
-          "title": "Type of survey",
           "enum": [
             "process_ProcessingDetails_typeOfSurvey_newsurvey",
             "process_ProcessingDetails_typeOfSurvey_change"
           ]
         },
         "process_ProcessingDetails_operationalStage": {
-          "title": "Operational Stage",
           "enum": [
             "process_ProcessingDetails_operationalStage_operation",
             "process_ProcessingDetails_operationalStage_planning",
@@ -83,11 +80,9 @@
           ]
         },
         "process_ProcessingDetails_comment": {
-          "title": "Comment",
           "type": "string"
         },
         "process_ProcessingDetails_surveyConductedOn": {
-          "title": "Survey conducted on",
           "type": "string",
           "format": "date"
         }

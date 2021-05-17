@@ -63,11 +63,9 @@
       "type": "object",
       "properties": {
         "assetNum": {
-          "title": "Number",
           "type": "string"
         },
         "assetType": {
-          "title": "Type of Asset",
           "enum": [
             "assetTypeInf",
             "assetTypeSoftware",
@@ -80,11 +78,9 @@
           ]
         },
         "assetPlatform": {
-          "title": "Platform",
           "type": "string"
         },
         "assetStatus": {
-          "title": "Status",
           "enum": [
             "assetStatusOperation",
             "assetStatusPlanning",

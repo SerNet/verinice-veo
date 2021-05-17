@@ -63,19 +63,15 @@
       "type": "object",
       "properties": {
         "process_SensitiveData_SensitiveData": {
-          "title": "Data processing of particularly sensitive data?",
           "type": "boolean"
         },
         "process_SensitiveData_comment": {
-          "title": "Comment",
           "type": "string"
         },
         "process_SensitiveData_notification3343GDPR": {
-          "title": "Notification procedure Art. 33,34 GDPR?",
           "type": "boolean"
         },
         "process_SensitiveData_secrecy203STGB": {
-          "title": "Persons subject to secrecy according to §203 StGB?",
           "type": "boolean"
         }
       }

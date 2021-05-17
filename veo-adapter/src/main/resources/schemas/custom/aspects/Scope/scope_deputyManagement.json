@@ -10,43 +10,33 @@
     "attributes": {
       "properties": {
         "scope_deputyManagement_email": {
-          "title": "Email",
           "type": "string"
         },
         "scope_deputyManagement_familyName": {
-          "title": "Family name",
           "type": "string"
         },
         "scope_deputyManagement_fax": {
-          "title": "Fax",
           "type": "string"
         },
         "scope_deputyManagement_givenName": {
-          "title": "Given name",
           "type": "string"
         },
         "scope_deputyManagement_linkPerson": {
-          "title": "Link person?",
           "type": "boolean"
         },
         "scope_deputyManagement_mobile": {
-          "title": "Mobile",
           "type": "string"
         },
         "scope_deputyManagement_phone": {
-          "title": "Phone",
           "type": "string"
         },
         "scope_deputyManagement_private": {
-          "title": "Private",
           "type": "string"
         },
         "scope_deputyManagement_salutation": {
-          "title": "Salutation",
           "type": "string"
         },
         "scope_deputyManagement_title": {
-          "title": "Title",
           "type": "string"
         }
       },

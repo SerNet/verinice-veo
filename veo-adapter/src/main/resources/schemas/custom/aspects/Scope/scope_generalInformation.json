@@ -12,7 +12,6 @@
         "scope_generalInformation_document": {
           "format": "uri",
           "pattern": "^(https?|ftp)://",
-          "title": "Document",
           "type": "string"
         }
       },

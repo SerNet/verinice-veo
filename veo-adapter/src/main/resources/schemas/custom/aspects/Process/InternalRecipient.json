@@ -63,7 +63,6 @@
       "type": "object",
       "properties": {
         "process_InternalRecipient_InternalRecipient": {
-          "title": "Internal Recipient?",
           "type": "boolean"
         }
       }

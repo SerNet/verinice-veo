@@ -10,27 +10,21 @@
     "attributes": {
       "properties": {
         "scope_address_address1": {
-          "title": "Street and number / P.O. Box",
           "type": "string"
         },
         "scope_address_address2": {
-          "title": "Address suffix",
           "type": "string"
         },
         "scope_address_city": {
-          "title": "City",
           "type": "string"
         },
         "scope_address_country": {
-          "title": "Country",
           "type": "string"
         },
         "scope_address_postcode": {
-          "title": "Postcode",
           "type": "string"
         },
         "scope_address_state": {
-          "title": "State",
           "type": "string"
         }
       },

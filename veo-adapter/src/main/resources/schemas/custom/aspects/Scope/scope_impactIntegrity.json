@@ -10,99 +10,75 @@
     "attributes": {
       "properties": {
         "scope_impactIntegrity_financialImpactHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactIntegrity_financialImpactLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactIntegrity_financialImpactNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactIntegrity_financialImpactVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactIntegrity_negativeEffectsHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactIntegrity_negativeEffectsLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactIntegrity_negativeEffectsNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactIntegrity_negativeEffectsVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactIntegrity_physicalIntegrityHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactIntegrity_physicalIntegrityLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactIntegrity_physicalIntegrityNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactIntegrity_physicalIntegrityVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactIntegrity_selfDeterminationHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactIntegrity_selfDeterminationLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactIntegrity_selfDeterminationNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactIntegrity_selfDeterminationVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactIntegrity_taskFulfilmentHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactIntegrity_taskFulfilmentLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactIntegrity_taskFulfilmentNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactIntegrity_taskFulfilmentVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactIntegrity_violationsHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactIntegrity_violationsLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactIntegrity_violationsNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactIntegrity_violationsVeryHigh": {
-          "title": "Very high",
           "type": "string"
         }
       },

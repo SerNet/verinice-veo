@@ -10,43 +10,33 @@
     "attributes": {
       "properties": {
         "scope_management_email": {
-          "title": "Email",
           "type": "string"
         },
         "scope_management_familyName": {
-          "title": "Family name",
           "type": "string"
         },
         "scope_management_fax": {
-          "title": "Fax",
           "type": "string"
         },
         "scope_management_givenName": {
-          "title": "Given name",
           "type": "string"
         },
         "scope_management_linkPerson": {
-          "title": "Link person",
           "type": "boolean"
         },
         "scope_management_mobile": {
-          "title": "Mobile",
           "type": "string"
         },
         "scope_management_phone": {
-          "title": "Phone",
           "type": "string"
         },
         "scope_management_private": {
-          "title": "Private",
           "type": "string"
         },
         "scope_management_salutation": {
-          "title": "Salutation",
           "type": "string"
         },
         "scope_management_title": {
-          "title": "Title",
           "type": "string"
         }
       },

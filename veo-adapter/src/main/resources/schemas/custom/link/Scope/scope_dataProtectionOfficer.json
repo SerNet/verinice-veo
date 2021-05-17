@@ -23,22 +23,18 @@
             "title": "Company data protection officer?"
           },
           "scope_dataProtectionOfficer_dataProtectionCoordinator": {
-            "title": "Data protection coordinator",
             "type": "boolean"
           },
           "scope_dataProtectionOfficer_nomination": {
-            "title": "Written nomination?",
             "type": "boolean"
           },
           "scope_dataProtectionOfficer_nominationDate": {
             "format": "date",
-            "title": "Nomination date",
             "type": "string"
           },
           "scope_dataProtectionOfficer_nominationEvidence": {
             "format": "uri",
             "pattern": "^(https?|ftp)://",
-            "title": "Nomination evidence",
             "type": "string"
           }
         },

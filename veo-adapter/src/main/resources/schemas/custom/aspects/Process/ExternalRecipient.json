@@ -63,7 +63,6 @@
       "type": "object",
       "properties": {
         "process_ExternalRecipient_ExternalRecipient": {
-          "title": "External Recipient?",
           "type": "boolean"
         }
       }

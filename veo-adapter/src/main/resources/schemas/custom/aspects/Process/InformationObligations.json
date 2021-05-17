@@ -63,7 +63,6 @@
       "type": "object",
       "properties": {
         "process_InformationObligations_informationObligations": {
-          "title": "Information obligations Art. 13, 14 GDPR",
           "type": "string",
           "enum": [
             "process_InformationObligations_informationObligations_done",
@@ -71,11 +70,9 @@
           ]
         },
         "process_InformationObligations_explanation": {
-          "title": "Explanation",
           "type": "string"
         },
         "process_InformationObligations_document": {
-          "title": "Document",
           "type": "string",
           "format": "uri"
         }

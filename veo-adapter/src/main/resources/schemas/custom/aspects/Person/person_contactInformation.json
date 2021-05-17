@@ -58,27 +58,21 @@
       "type": "object",
       "properties": {
         "person_contactInformation_office": {
-          "title": "Phone",
           "type": "string"
         },
         "person_contactInformation_mobile": {
-          "title": "Mobile",
           "type": "string"
         },
         "person_contactInformation_private": {
-          "title": "Private",
           "type": "string"
         },
         "person_contactInformation_fax": {
-          "title": "Fax",
           "type": "string"
         },
         "person_contactInformation_email": {
-          "title": "Email",
           "type": "string"
         },
         "person_contactInformation_website": {
-          "title": "Website",
           "type": "string",
           "format": "uri",
           "pattern": "^(https?|ftp)://"

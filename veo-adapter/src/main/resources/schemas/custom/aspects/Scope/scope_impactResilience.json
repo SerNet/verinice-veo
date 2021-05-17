@@ -10,99 +10,75 @@
     "attributes": {
       "properties": {
         "scope_impactResilience_financialImpactHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactResilience_financialImpactLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactResilience_financialImpactNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactResilience_financialImpactVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactResilience_negativeEffectsHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactResilience_negativeEffectsLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactResilience_negativeEffectsNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactResilience_negativeEffectsVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactResilience_physicalIntegrityHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactResilience_physicalIntegrityLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactResilience_physicalIntegrityNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactResilience_physicalIntegrityVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactResilience_selfDeterminationHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactResilience_selfDeterminationLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactResilience_selfDeterminationNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactResilience_selfDeterminationVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactResilience_taskFulfilmentHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactResilience_taskFulfilmentLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactResilience_taskFulfilmentNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactResilience_taskFulfilmentVeryHigh": {
-          "title": "Very high",
           "type": "string"
         },
         "scope_impactResilience_violationsHigh": {
-          "title": "High",
           "type": "string"
         },
         "scope_impactResilience_violationsLow": {
-          "title": "Low",
           "type": "string"
         },
         "scope_impactResilience_violationsNormal": {
-          "title": "Normal",
           "type": "string"
         },
         "scope_impactResilience_violationsVeryHigh": {
-          "title": "Very high",
           "type": "string"
         }
       },

@@ -421,9 +421,6 @@
         "type": {
           "const": "string"
         },
-        "title": {
-          "type": "string"
-        },
         "description": {
           "type": "string"
         },
@@ -432,8 +429,7 @@
         }
       },
       "required": [
-        "type",
-        "title"
+        "type"
       ],
       "additionalProperties": false
     },
@@ -442,9 +438,6 @@
       "properties": {
         "type": {
           "const": "string"
-        },
-        "title": {
-          "type": "string"
         },
         "description": {
           "type": "string"
@@ -462,7 +455,6 @@
       },
       "required": [
         "type",
-        "title",
         "format"
       ],
       "additionalProperties": false
@@ -473,16 +465,12 @@
         "type": {
           "const": "boolean"
         },
-        "title": {
-          "type": "string"
-        },
         "description": {
           "type": "string"
         }
       },
       "required": [
-        "type",
-        "title"
+        "type"
       ],
       "additionalProperties": false
     },
@@ -492,16 +480,12 @@
         "type": {
           "const": "number"
         },
-        "title": {
-          "type": "string"
-        },
         "description": {
           "type": "string"
         }
       },
       "required": [
-        "type",
-        "title"
+        "type"
       ],
       "additionalProperties": false
     },
@@ -511,16 +495,12 @@
         "type": {
           "const": "integer"
         },
-        "title": {
-          "type": "string"
-        },
         "description": {
           "type": "string"
         }
       },
       "required": [
-        "type",
-        "title"
+        "type"
       ],
       "additionalProperties": false
     },
@@ -529,9 +509,6 @@
       "properties": {
         "type": {
           "const": "string"
-        },
-        "title": {
-          "type": "string"
         },
         "description": {
           "type": "string"
@@ -545,7 +522,6 @@
       },
       "required": [
         "type",
-        "title",
         "format"
       ]
     },
@@ -554,9 +530,6 @@
       "properties": {
         "type": {
           "const": "string"
-        },
-        "title": {
-          "type": "string"
         },
         "description": {
           "type": "string"
@@ -570,7 +543,6 @@
       },
       "required": [
         "type",
-        "title",
         "format"
       ]
     },
@@ -593,9 +565,6 @@
         "type": {
           "const": "string"
         },
-        "title": {
-          "type": "string"
-        },
         "enum": {
           "type": "array",
           "items": {
@@ -615,9 +584,6 @@
         "type": {
           "const": "number"
         },
-        "title": {
-          "type": "string"
-        },
         "enum": {
           "type": "array",
           "items": {
@@ -636,9 +602,6 @@
       "properties": {
         "type": {
           "const": "integer"
-        },
-        "title": {
-          "type": "string"
         },
         "enum": {
           "type": "array",
@@ -662,9 +625,6 @@
         },
         "type": {
           "const": "array"
-        },
-        "title": {
-          "type": "string"
         },
         "items": {
           "properties": {
@@ -692,9 +652,6 @@
         "type": {
           "const": "array"
         },
-        "title": {
-          "type": "string"
-        },
         "description": {
           "type": "string"
         },
@@ -720,7 +677,6 @@
       },
       "required": [
         "type",
-        "title",
         "items",
         "uniqueItems"
       ]
@@ -731,9 +687,6 @@
       "properties": {
         "type": {
           "const": "array"
-        },
-        "title": {
-          "type": "string"
         },
         "description": {
           "type": "string"
@@ -750,7 +703,6 @@
       },
       "required": [
         "type",
-        "title",
         "items",
         "uniqueItems"
       ]

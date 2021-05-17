@@ -63,35 +63,27 @@
       "type": "object",
       "properties": {
         "controlDataProtectionObjectivesEugdprPseudonymization": {
-          "title": "Pseudonymization",
           "type": "boolean"
         },
         "controlDataProtectionObjectivesEugdprEncryption": {
-          "title": "Encryption",
           "type": "boolean"
         },
         "controlDataProtectionObjectivesEugdprConfidentiality": {
-          "title": "Ensure confidentiality",
           "type": "boolean"
         },
         "controlDataProtectionObjectivesEugdprIntegrity": {
-          "title": "Ensure integrity",
           "type": "boolean"
         },
         "controlDataProtectionObjectivesEugdprAvailability": {
-          "title": "Ensure availability",
           "type": "boolean"
         },
         "controlDataProtectionObjectivesEugdprResilience": {
-          "title": "Ensure resilience",
           "type": "boolean"
         },
         "controlDataProtectionObjectivesEugdprRecoverability": {
-          "title": "Recoverability",
           "type": "boolean"
         },
         "controlDataProtectionObjectivesEugdprEffectiveness": {
-          "title": "Effectiveness of TOMs",
           "type": "boolean"
         }
       }

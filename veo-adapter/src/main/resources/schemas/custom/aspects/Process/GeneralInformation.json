@@ -63,11 +63,9 @@
       "type": "object",
       "properties": {
         "process_GeneralInformation_tags": {
-          "title": "Tags",
           "type": "string"
         },
         "process_GeneralInformation_document": {
-          "title": "Document",
           "type": "string",
           "format": "uri"
         }

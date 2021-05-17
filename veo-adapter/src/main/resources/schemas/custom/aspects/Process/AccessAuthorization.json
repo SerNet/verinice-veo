@@ -63,15 +63,12 @@
       "type": "object",
       "properties": {
         "process_AccessAuthorization_authorizationConcept": {
-          "title": "Authorization concept?",
           "type": "boolean"
         },
         "process_AccessAuthorization_description": {
-          "title": "Description of the authorization concept",
           "type": "string"
         },
         "process_AccessAuthorization_Document": {
-          "title": "Document",
           "type": "string",
           "format": "uri"
         }

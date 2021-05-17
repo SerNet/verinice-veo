@@ -58,27 +58,21 @@
       "type": "object",
       "properties": {
         "person_address_address1": {
-          "title": "Street and number / P.O. Box",
           "type": "string"
         },
         "person_address_address2": {
-          "title": "Address suffix",
           "type": "string"
         },
         "person_address_postcode": {
-          "title": "Postcode",
           "type": "string"
         },
         "person_address_city": {
-          "title": "City",
           "type": "string"
         },
         "person_address_country": {
-          "title": "Country",
           "type": "string"
         },
         "person_address_state": {
-          "title": "State",
           "type": "string"
         }
       }

@@ -10,57 +10,44 @@
     "attributes": {
       "properties": {
         "scope_thirdCountry_address1": {
-          "title": "Street and number / P.O. Box",
           "type": "string"
         },
         "scope_thirdCountry_address2": {
-          "title": "Address suffix",
           "type": "string"
         },
         "scope_thirdCountry_city": {
-          "title": "City",
           "type": "string"
         },
         "scope_thirdCountry_country": {
-          "title": "Country",
           "type": "string"
         },
         "scope_thirdCountry_description": {
-          "title": "Description",
           "type": "string"
         },
         "scope_thirdCountry_email": {
-          "title": "Email",
           "type": "string"
         },
         "scope_thirdCountry_fax": {
-          "title": "Fax",
           "type": "string"
         },
         "scope_thirdCountry_name": {
-          "title": "Name",
           "type": "string"
         },
         "scope_thirdCountry_phone": {
-          "title": "Phone",
           "type": "string"
         },
         "scope_thirdCountry_postcode": {
-          "title": "Postcode",
           "type": "string"
         },
         "scope_thirdCountry_state": {
-          "title": "State",
           "type": "string"
         },
         "scope_thirdCountry_status": {
-          "title": "Location of the responsible party outside the EU?",
           "type": "boolean"
         },
         "scope_thirdCountry_website": {
           "format": "uri",
           "pattern": "^(https?|ftp)://",
-          "title": "Website",
           "type": "string"
         }
       },

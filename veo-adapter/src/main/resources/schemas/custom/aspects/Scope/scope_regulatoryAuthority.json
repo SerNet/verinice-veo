@@ -10,53 +10,41 @@
     "attributes": {
       "properties": {
         "scope_regulatoryAuthority_address1": {
-          "title": "Street and number / P.O. Box",
           "type": "string"
         },
         "scope_regulatoryAuthority_address2": {
-          "title": "Address suffix",
           "type": "string"
         },
         "scope_regulatoryAuthority_city": {
-          "title": "City",
           "type": "string"
         },
         "scope_regulatoryAuthority_country": {
-          "title": "Country",
           "type": "string"
         },
         "scope_regulatoryAuthority_description": {
-          "title": "Description",
           "type": "string"
         },
         "scope_regulatoryAuthority_email": {
-          "title": "Email",
           "type": "string"
         },
         "scope_regulatoryAuthority_fax": {
-          "title": "Fax",
           "type": "string"
         },
         "scope_regulatoryAuthority_name": {
-          "title": "Name",
           "type": "string"
         },
         "scope_regulatoryAuthority_phone": {
-          "title": "Phone",
           "type": "string"
         },
         "scope_regulatoryAuthority_postcode": {
-          "title": "Postcode",
           "type": "string"
         },
         "scope_regulatoryAuthority_state": {
-          "title": "State",
           "type": "string"
         },
         "scope_regulatoryAuthority_website": {
           "format": "uri",
           "pattern": "^(https?|ftp)://",
-          "title": "Website",
           "type": "string"
         }
       },

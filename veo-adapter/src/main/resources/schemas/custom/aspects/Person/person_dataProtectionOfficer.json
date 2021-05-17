@@ -58,11 +58,9 @@
       "type": "object",
       "properties": {
         "person_dataProtectionOfficer_expertise": {
-          "title": "Required expertise and reliability?",
           "type": "boolean"
         },
         "person_dataProtectionOfficer_profession": {
-          "title": "Profession, education",
           "type": "string"
         }
       }
