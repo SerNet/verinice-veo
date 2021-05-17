@@ -57,7 +57,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         unitId = unitRepository.save(newUnit(client)).dbId
     }
 
-    def "created asset with custom aspect & link conforms to schema"() {
+    def "created asset with custom aspect conforms to schema"() {
         given: "the asset schema and a newly created asset"
         def schema = getSchema("asset")
         def targetPersonId = parseJson(post("/persons", [
@@ -67,19 +67,9 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ]])).resourceId
         def assetId = (String)parseJson(post("/assets", [
             customAspects: [
-                AssetCommons: [
+                asset_details: [
                     attributes: [
-                        assetStatus: "assetStatusOperation"
-                    ]
-                ]
-            ],
-            links: [
-                Asset_informed_Person: [
-                    [
-                        name: "i don't care",
-                        target: [
-                            targetUri: "/persons/$targetPersonId"
-                        ]
+                        asset_details_operatingStage: "asset_details_operatingStage_operation"
                     ]
                 ]
             ],

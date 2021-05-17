@@ -2067,7 +2067,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n    ,\"links\": {\n        \"Asset_located_in_Asset\": [\n            {\n                \"type\": \"Asset_located_in_Asset\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"AssetCommons\": {\n            \"type\": \"AssetCommons\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"assetNum\": \"001\",\n                \"assetPlatform\": \"9 3/4\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_typeOfAsset\": \"asset_details_typeOfAsset_physical\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -2097,8 +2097,7 @@
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"assetName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
                   "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
-                  "      pm.expect(jsonData.customAspects).to.have.property('AssetCommons');",
-                  "    pm.expect(jsonData.links).to.have.property('Asset_located_in_Asset');",
+                  "      pm.expect(jsonData.customAspects).to.have.property('asset_details');",
                   "});",
                   ""
                 ],

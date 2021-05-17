@@ -67,10 +67,10 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "/units/$unitId"]
         ])).resourceId
 
-        when: "creating an asset with different links to all persons"
-        def assetId = parseJson(post("/assets", [
+        when: "creating a scope with different links to all persons"
+        def scopeId = parseJson(post("/scopes", [
             links: [
-                Asset_owner_Person: [
+                scope_dataProtectionOfficer: [
                     [
                         name: "link to person 1",
                         target: [targetUri: "/persons/$person1"]
@@ -80,7 +80,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                         target: [targetUri: "/persons/$person2"]
                     ]
                 ],
-                Asset_consulted_Person: [
+                scope_headOfDataProcessingPersonLink: [
                     [
                         name: "link to person 2",
                         target: [targetUri: "/persons/$person2"]
@@ -91,18 +91,18 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ],
-            name : "asset",
+            name : "scope",
             owner: [targetUri: "/units/$unitId"]
         ])).resourceId
-        def retrievedAsset = parseJson(get("/assets/$assetId"))
+        def retrievedScope = parseJson(get("/scopes/$scopeId"))
 
         then:
-        with(retrievedAsset.links.Asset_owner_Person.sort {it.name}) {
+        with(retrievedScope.links.scope_dataProtectionOfficer.sort {it.name}) {
             size() == 2
             it[0].target.targetUri == "http://localhost/persons/$person1"
             it[1].target.targetUri == "http://localhost/persons/$person2"
         }
-        with(retrievedAsset.links.Asset_consulted_Person.sort{it.name}) {
+        with(retrievedScope.links.scope_headOfDataProcessingPersonLink.sort{it.name}) {
             size() == 2
             it[0].target.targetUri == "http://localhost/persons/$person2"
             it[1].target.targetUri == "http://localhost/persons/$person3"

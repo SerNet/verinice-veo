@@ -106,8 +106,8 @@ task checkTranslations {
         handleTranslationKey('description', 'ModelObject base attributes')
 
         customSchemaFiles.each { file->
-            // FIXME remove dummy schema handling after VEO-363 and VEO-365 are done
-            def isDummySchema = file.absolutePath.contains('/Asset/') ||  file.absolutePath.contains('/Control/')
+            // FIXME remove dummy schema handling after VEO-365 is done
+            def isDummySchema = file.absolutePath.contains('/Control/')
             logger.info "Loading $file, isDummySchema=$isDummySchema"
             def data = new groovy.json.JsonSlurper().parse(file)
             def isLinkSchema = data.items != null

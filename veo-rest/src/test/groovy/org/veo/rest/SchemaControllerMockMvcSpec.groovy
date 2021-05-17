@@ -100,17 +100,12 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
         response.status == OK.value()
         results.andExpect(jsonPath('$.title').value("Asset"))
 
-        and: "the custom links are present"
-        results.andExpect(
-                jsonPath('$..links.properties.Asset_located_in_Asset').hasJsonPath()
-                )
-
         and: "the custom aspects are present"
         results.andExpect(
-                jsonPath('$..customAspects.properties.AssetCommons').hasJsonPath()
+                jsonPath('$..customAspects.properties.asset_details').hasJsonPath()
                 )
         results.andExpect(
-                jsonPath('$..enum[*]', hasItem("assetTypeSoftware"))
+                jsonPath('$..enum[*]', hasItem("asset_details_typeOfAsset_software"))
                 )
     }
 }

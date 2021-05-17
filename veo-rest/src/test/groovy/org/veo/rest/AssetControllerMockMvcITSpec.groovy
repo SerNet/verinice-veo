@@ -171,7 +171,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: "/units/${unit.id.uuidValue()}"
             ],
             parts: [
-                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]]
+                [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
+            ]
         ]
 
         when: "the request is sent"
@@ -562,15 +563,15 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             ],
             customAspects:
             [
-                'AssetCommons' :
+                'asset_details' :
                 [
                     applicableTo: [
                         "Asset"
                     ],
                     domains: [],
                     attributes:  [
-                        assetNum: '001',
-                        assetPlatform: '9 3/4'
+                        asset_details_number: 1,
+                        asset_details_typeOfAsset: 'asset_details_typeOfAsset_physical'
                     ]
                 ]
             ]
@@ -602,10 +603,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New asset-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'AssetCommons'
+        entity.customAspects.first().type == 'asset_details'
         entity.customAspects.first().applicableTo == ['Asset'] as Set
-        entity.customAspects.first().stringProperties.assetNum == '001'
-        entity.customAspects.first().stringProperties.assetPlatform == '9 3/4'
+        entity.customAspects.first().integerProperties.asset_details_number == 1
+        entity.customAspects.first().stringProperties.asset_details_typeOfAsset == 'asset_details_typeOfAsset_physical'
     }
 
     @WithUserDetails("user@domain.example")
@@ -764,7 +765,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def result= post("/assets/"+asset.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+            ]
         ] as Map)
 
         then:
@@ -822,12 +824,14 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         post("/assets/"+asset.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario2.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+            ]
         ] as Map)
         post("/assets/"+asset.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario3.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ] ]
+                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+            ]
         ] as Map)
 
         when: "The risks are queried"
@@ -968,7 +972,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 post("/assets/" + asset.id.uuidValue() + "/risks", [
                     scenario: [targetUri: '/scenarios/' + scenario.id.uuidValue()],
                     domains : [
-                        [targetUri: '/domains/' + domain1.id.uuidValue()]]
+                        [targetUri: '/domains/' + domain1.id.uuidValue()]
+                    ]
                 ]))
         return [asset, scenario, postResult]
     }
