@@ -43,7 +43,8 @@ class ReferenceAssemblerImplSpec extends Specification {
         where:
         url                                                                                                            | parsedId
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                            | '40331ed5-be07-4c69-bf99-553811ce5454'
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/59d3c21d-2f21-4085-950d-1273056d664a' | '40331ed5-be07-4c69-bf99-553811ce5454'
+        // TODO: VEO-585: probably expect an exception instead
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/59d3c21d-2f21-4085-950d-1273056d664a' | '59d3c21d-2f21-4085-950d-1273056d664a'
         'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                          | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
         'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                            | '59d3c21d-2f21-4085-950d-1273056d664a'
         'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                         | 'f05ab334-c605-456e-8a78-9e1bc85b8509'

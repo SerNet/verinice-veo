@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -85,6 +86,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+
+    private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
 
     @Override
     @SuppressFBWarnings // ignore warning on call to method proxy factory
@@ -313,12 +316,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     public String parseId(String uriString) {
-        Optional<String> objectTypeTerm = readObjectTypePluralTerm(uriString);
-        var pat = Pattern.compile(String.join("", ".*/", objectTypeTerm.orElseThrow(), "/",
-                                              "(?<resourceId>", UUID_REGEX, ").*"));
-        var matcher = pat.matcher(uriString);
-        matcher.find();
-        return matcher.group("resourceId");
+        Matcher matcher = UUID_PATTERN.matcher(uriString);
+        if (!matcher.find()) {
+            return null;
+        }
+        String result = matcher.group(0);
+        if (matcher.find()) {
+            // TODO: VEO-585: probably throw an exception
+            result = matcher.group(0);
+        }
+        return result;
     }
 
     @Override
