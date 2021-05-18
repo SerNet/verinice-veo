@@ -30,12 +30,12 @@ class EntitySchemaServiceSpec extends Specification {
         given: 'The control schema for with GDPR extensions'
         def schema = entitySchemaService.findSchema("control", ["GDPR"])
         def s = new JsonSlurper().parseText(schema)
-        expect: 'the schema has the ControlDataProtectionObjectivesEugdpr extension'
-        def controlDataProtectionObjectivesEugdpr = s.properties.customAspects.properties.ControlDataProtectionObjectivesEugdpr
-        controlDataProtectionObjectivesEugdpr != null
+        expect: 'the schema has the control_dataProtection extension'
+        def controlDataProtection = s.properties.customAspects.properties.control_dataProtection
+        controlDataProtection != null
         and: 'the custom properties added by the extension are not added to the root properties ...'
-        controlDataProtectionObjectivesEugdpr.properties.controlDataProtectionObjectivesEugdprPseudonymization == null
+        controlDataProtection.properties.control_dataProtection == null
         and: '''... but to the 'attributes' property'''
-        controlDataProtectionObjectivesEugdpr.properties.attributes.properties.controlDataProtectionObjectivesEugdprPseudonymization != null
+        controlDataProtection.properties.attributes.properties.control_dataProtection_objectives != null
     }
 }

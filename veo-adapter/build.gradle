@@ -87,15 +87,11 @@ task checkTranslations {
             'English': langJson.lang.en
         ]
 
-        def handleTranslationKey = {translationKey, location = null, isDummySchema = false->
+        def handleTranslationKey = {translationKey, location = null ->
             languagesToCheck.each {lang, json->
                 def translation = json.remove(translationKey)
                 if (translation == null) {
-                    if (isDummySchema) {
-                        logger.info("Missing $lang translation for $translationKey in dummy schema $location")
-                    }else {
-                        logger.warn("Missing $lang translation for $translationKey in $location")
-                    }
+                    logger.warn("Missing $lang translation for $translationKey in $location")
                 }
             }
         }
@@ -106,16 +102,14 @@ task checkTranslations {
         handleTranslationKey('description', 'ModelObject base attributes')
 
         customSchemaFiles.each { file->
-            // FIXME remove dummy schema handling after VEO-365 is done
-            def isDummySchema = file.absolutePath.contains('/Control/')
-            logger.info "Loading $file, isDummySchema=$isDummySchema"
+            logger.info "Loading $file"
             def data = new groovy.json.JsonSlurper().parse(file)
             def isLinkSchema = data.items != null
             if (isLinkSchema) {
                 // relevant data is nested in link schemas
                 data = data.items
                 // link IDs should be translated, custom aspect IDs should not
-                handleTranslationKey(data.properties.type.enum.first(), "$file.name (custom link id)", isDummySchema)
+                handleTranslationKey(data.properties.type.enum.first(), "$file.name (custom link id)")
             }
 
             def properties = data.properties.attributes.properties
@@ -124,14 +118,14 @@ task checkTranslations {
 
             // custom aspect attribute ID / field in the editor
             properties.each {key, value->
-                handleTranslationKey(key, "$file.name (custom aspect/link attribute id)", isDummySchema)
+                handleTranslationKey(key, "$file.name (custom aspect/link attribute id)")
                 // custom aspect enum entry / value in drop-down
                 value.enum?.each {
-                    handleTranslationKey(it, "$file.name (custom aspect/link select value id)", isDummySchema)
+                    handleTranslationKey(it, "$file.name (custom aspect/link select value id)")
                 }
                 // custom aspect enum entry / value in multi-value drop-down
                 value.items?.enum?.each {
-                    handleTranslationKey(it, "$file.name (custom aspect/link select value id)", isDummySchema)
+                    handleTranslationKey(it, "$file.name (custom aspect/link select value id)")
                 }
             }
         }

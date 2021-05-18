@@ -86,22 +86,14 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         validationMessages.empty
     }
 
-    def "created control with link conforms to schema"() {
-        given: "the asset schema and a newly created control"
+    def "created control with custom aspect conforms to schema"() {
+        given: "the control schema and a newly created control"
         def schema = getSchema("control")
-        def targetPersonId = parseJson(post("/persons", [
-            name: "target",
-            owner: [
-                targetUri: "/units/"+unitId,
-            ]])).resourceId
         def controlId = (String)parseJson(post("/controls", [
-            links: [
-                Control_assignee_Person: [
-                    [
-                        name: "whatever",
-                        target: [
-                            targetUri: "/persons/$targetPersonId"
-                        ]
+            customAspects: [
+                control_generalInformation: [
+                    attributes: [
+                        control_generalInformation_document: "https://example.org/controls/this_one"
                     ]
                 ]
             ],

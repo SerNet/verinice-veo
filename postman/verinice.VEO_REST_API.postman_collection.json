@@ -1964,7 +1964,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"Control_assignee_Person\": [\n            {\n                \"type\": \"Control_assignee_Person\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/persons/{{personId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"ControlDataProtectionObjectivesEugdpr\": {\n            \"type\": \"ControlDataProtectionObjectivesEugdpr\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"controlDataProtectionObjectivesEugdprPseudonymization\": true,\n                \"controlDataProtectionObjectivesEugdprEncryption\": false\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"control_dataProtection\": {\n            \"type\": \"control_dataProtection\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"control_dataProtection_objectives\": [\"control_dataProtection_objectives_pseudonymization\"]\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -1994,8 +1994,7 @@
                   "    pm.expect(jsonData.name).to.equal(pm.collectionVariables.get(\"controlName\"))",
                   "    pm.expect(jsonData.owner.displayName).to.equal(pm.collectionVariables.get(\"unitName\"));",
                   "    pm.expect(jsonData.owner.targetUri).to.equal(pm.collectionVariables.get(\"baseUrl\")+'/units/'+pm.collectionVariables.get(\"unitId\"));",
-                  "    pm.expect(jsonData.customAspects).to.have.property('ControlDataProtectionObjectivesEugdpr');",
-                  "    pm.expect(jsonData.links).to.have.property('Control_assignee_Person');",
+                  "    pm.expect(jsonData.customAspects).to.have.property('control_dataProtection');",
                   "",
                   "});",
                   ""

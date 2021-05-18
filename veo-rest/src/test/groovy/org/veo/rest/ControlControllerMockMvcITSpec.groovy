@@ -145,15 +145,16 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/' + unit.id.uuidValue()
             ], customAspects:
             [
-                'ControlDataProtectionObjectivesEugdpr' :
+                'control_dataProtection' :
                 [
                     applicableTo: [
                         "Control"
                     ],
                     domains: [],
                     attributes:  [
-                        controlDataProtectionObjectivesEugdprPseudonymization:true,
-                        controlDataProtectionObjectivesEugdprEncryption:false
+                        control_dataProtection_objectives:[
+                            'control_dataProtection_objectives_pseudonymization'
+                        ]
                     ]
                 ]
             ]
@@ -183,7 +184,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         then: 'the custom properties are saved'
-        savedControl.customAspects.first().type == 'ControlDataProtectionObjectivesEugdpr'
+        savedControl.customAspects.first().type == 'control_dataProtection'
     }
 
     @WithUserDetails("user@domain.example")
@@ -242,7 +243,8 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.parts.size() == 2
         result.parts*.displayName as Set == [
             '- c1 (Test unit)',
-            '- c2 (Test unit)'] as Set
+            '- c2 (Test unit)'
+        ] as Set
     }
 
 
@@ -374,15 +376,16 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ], customAspects:
             [
-                'ControlDataProtectionObjectivesEugdpr' :
+                'control_dataProtection' :
                 [
                     applicableTo: [
                         "Control"
                     ],
                     domains: [],
                     attributes:  [
-                        controlDataProtectionObjectivesEugdprPseudonymization:true,
-                        controlDataProtectionObjectivesEugdprEncryption:false
+                        control_dataProtection_objectives:[
+                            'control_dataProtection_objectives_pseudonymization'
+                        ]
                     ]
                 ]
             ]
