@@ -222,14 +222,20 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         validationMessages.empty
     }
 
-    def "created scenario conforms to schema"() {
+    def "created scenario with custom aspect conforms to schema"() {
         given: "the scenario schema and a newly created scenario"
         def scenarioSchema = getSchema("scenario")
-        // TODO VEO-307 add custom aspect & link.
         def scenarioId = (String)parseJson(post("/scenarios", [
             name: "scenario",
             owner: [
                 targetUri: "/units/"+unitId
+            ],
+            customAspects: [
+                scenario_probability: [
+                    attributes: [
+                        scenario_probability_ofOccurrence: 'scenario_probability_ofOccurrence_high'
+                    ]
+                ]
             ]
         ])).resourceId
         def createdScenarioJson = parseNode(get("/scenarios/$scenarioId"))
