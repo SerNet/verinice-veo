@@ -110,14 +110,20 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         validationMessages.empty
     }
 
-    def "created document conforms to schema"() {
+    def "created document with custom aspect conforms to schema"() {
         given: "the document schema and a newly created document"
         def documentSchema = getSchema("document")
-        // TODO VEO-323 add custom aspect & link.
         def documentId = (String)parseJson(post("/documents", [
             name: "doc",
             owner: [
                 targetUri: "/units/"+unitId
+            ],
+            customAspects: [
+                document_details: [
+                    attributes: [
+                        document_details_approvalDate: "2020-01-01"
+                    ]
+                ]
             ]
         ])).resourceId
         def createdDocumentJson = parseNode(get("/documents/$documentId"))
