@@ -36,13 +36,13 @@ import org.springframework.stereotype.Component;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CatalogReference;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CompoundKeyEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -169,22 +169,27 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     @SuppressFBWarnings // ignore warning on call to method proxy factory
-    public String targetReferenceOf(Class<? extends CompoundKeyEntity> type, String id1,
-            String id2) {
-        if (AssetRisk.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(AssetController.class).getRisk(ANY_USER, id1,
-                                                                  id2)).withRel(AssetController.URL_BASE_PATH
+    public String targetReferenceOf(AbstractRisk<?, ?> risk) {
+        var entityId = risk.getEntity()
+                           .getId()
+                           .uuidValue();
+        var scenarioId = risk.getScenario()
+                             .getId()
+                             .uuidValue();
+        if (risk instanceof AssetRisk) {
+            return linkTo(methodOn(AssetController.class).getRisk(ANY_USER, entityId,
+                                                                  scenarioId)).withRel(AssetController.URL_BASE_PATH
                                                                           + AssetRiskResource.RELPATH)
-                                                                       .getHref();
-        } else if (ProcessRisk.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ProcessController.class).getRisk(ANY_USER, id1,
-                                                                    id2)).withRel(ProcessController.URL_BASE_PATH
+                                                                              .getHref();
+        }
+        if (risk instanceof ProcessRisk) {
+            return linkTo(methodOn(ProcessController.class).getRisk(ANY_USER, entityId,
+                                                                    scenarioId)).withRel(ProcessController.URL_BASE_PATH
                                                                             + ProcessRiskResource.RELPATH)
-                                                                         .getHref();
+                                                                                .getHref();
         }
         throw new NotImplementedException(
-                format("Cannot create compound-id reference to entity " + "%s.",
-                       type.getSimpleName()));
+                format("Cannot create risk reference to entity " + "%s.", risk.getClass()));
     }
 
     @Override

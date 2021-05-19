@@ -18,6 +18,7 @@
 package org.veo.persistence.entity.jpa;
 
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Versioned;
 
 import lombok.Getter;
 
@@ -27,13 +28,13 @@ import lombok.Getter;
  */
 public class VersioningEvent {
     @Getter
-    private final ModelObject entity;
+    private final Versioned entity;
     @Getter
     private final Type type;
     @Getter
     private final String author;
 
-    public VersioningEvent(ModelObject entity, Type type, String author) {
+    public VersioningEvent(Versioned entity, Type type, String author) {
         this.entity = entity;
         this.type = type;
         this.author = author;

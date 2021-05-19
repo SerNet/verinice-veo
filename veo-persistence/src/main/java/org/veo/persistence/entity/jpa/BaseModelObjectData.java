@@ -20,7 +20,6 @@ package org.veo.persistence.entity.jpa;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 
 import org.veo.core.entity.Key;
@@ -39,7 +38,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@EntityListeners(ModelObjectDataEntityListener.class)
 public abstract class BaseModelObjectData extends VersionedData implements ModelObject {
 
     @Override

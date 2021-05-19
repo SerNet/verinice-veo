@@ -28,9 +28,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.StoredEvent;
 import org.veo.persistence.access.StoredEventRepository;
 import org.veo.persistence.entity.jpa.StoredEventData;
@@ -69,33 +71,30 @@ public class VersioningEventListener {
     @EventListener
     @Transactional(propagation = Propagation.MANDATORY)
     void handleVersioningEvent(VersioningEvent event) {
-        ModelObject entity = event.getEntity();
-        String uuid = entity.getId()
-                            .uuidValue();
-        Class<? extends ModelObject> entityType = entity.getModelInterface();
+        Versioned entity = event.getEntity();
         if (!(entity instanceof ClientOwned)) {
-            log.debug("Ignoring event for {} entity {}", entityType, uuid);
+            log.debug("Ignoring event for entity {}", entity);
             return;
         }
         Type eventType = event.getType();
         var client = ((ClientOwned) entity).getOwningClient();
         if (client.isEmpty()) {
-            log.debug("Ignoring {} event for {} entity {} which does not belong to a client",
-                      eventType, entityType, uuid);
+            log.debug("Ignoring {} event for entity {} which does not belong to a client",
+                      eventType, entity);
             return;
         }
-        log.debug("Storing {} event for entity {}:{} modified by user {}", event.getType(),
-                  entity.getModelType(), uuid, event.getAuthor());
+        log.debug("Storing {} event for entity {} modified by user {}", event.getType(), entity,
+                  event.getAuthor());
         var storedEvent = StoredEventData.newInstance(createJson(entity, eventType,
                                                                  event.getAuthor(), client.get()),
                                                       ROUTING_KEY_PREFIX + ROUTING_KEY);
         storedEventRepository.save(storedEvent);
     }
 
-    private String createJson(ModelObject entity, VersioningEvent.Type type, String author,
+    private String createJson(Versioned entity, VersioningEvent.Type type, String author,
             Client client) {
         var tree = objectMapper.createObjectNode();
-        tree.put("uri", referenceAssembler.targetReferenceOf(entity));
+        tree.put("uri", getUri(entity));
         tree.put("type", convertType(type));
         tree.put("changeNumber", getChangeNumber(entity, type));
         tree.put("time", entity.getUpdatedAt()
@@ -105,13 +104,13 @@ public class VersioningEventListener {
                                    .uuidValue());
 
         if (type != VersioningEvent.Type.REMOVE) {
-            var dto = entityToDtoTransformer.transform2Dto(entity);
-            tree.set("content", objectMapper.valueToTree(dto));
+            tree.set("content",
+                     objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
         }
         return tree.toString();
     }
 
-    private long getChangeNumber(ModelObject entity, VersioningEvent.Type type) {
+    private long getChangeNumber(Versioned entity, VersioningEvent.Type type) {
         // We use the JPA version number as a base for our continuous change number.
         // When updating an entity, JPA increments the version number after this event
         // creation, so we must add 1 to the version number. We must also add 1 in case
@@ -121,6 +120,17 @@ public class VersioningEventListener {
             changeNumber++;
         }
         return changeNumber;
+    }
+
+    private String getUri(Versioned entity) {
+        if (entity instanceof ModelObject) {
+            return referenceAssembler.targetReferenceOf((ModelObject) entity);
+        }
+        if (entity instanceof AbstractRisk) {
+            return referenceAssembler.targetReferenceOf((AbstractRisk<?, ?>) entity);
+        }
+        throw new NotImplementedException(
+                "Can't build URI for object of type " + entity.getClass());
     }
 
     private String convertType(VersioningEvent.Type type) {

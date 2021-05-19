@@ -20,7 +20,7 @@ package org.veo.adapter.presenter.api.common;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.core.entity.CompoundKeyEntity;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
 
@@ -48,16 +48,12 @@ public interface ReferenceAssembler {
      * I.e. the URI to an object with a compound ID could look like this
      * "/risks/<ASSET-UUID>/<SCENARIO-UUID>"
      *
-     * @param type
-     *            the model object type
-     * @param id1
-     *            the first foreign key of the compound key
-     * @param id2
-     *            the second foreign key of the compound key
+     * @param risk
+     *            target risk
      *
      * @return the URI of the specific target object
      */
-    String targetReferenceOf(Class<? extends CompoundKeyEntity> type, String id1, String id2);
+    String targetReferenceOf(AbstractRisk<?, ?> risk);
 
     /**
      * Returns a reference to a collection of searches for the target type. Searches

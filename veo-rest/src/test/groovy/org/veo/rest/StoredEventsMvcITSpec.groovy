@@ -26,9 +26,11 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.usecase.repository.DomainRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -51,6 +53,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     private ClientRepositoryImpl clientRepository
 
     @Autowired
+    private DomainRepository domainRepository
+
+    @Autowired
     private DomainTemplateDataRepository domainTemplateRepository
 
     @Autowired
@@ -59,6 +64,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     @Autowired
     private StoredEventRepository storedEventRepository
 
+    private Domain domain
     private Unit unit
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
@@ -66,6 +72,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = clientRepository.save(newClient {
                 id = clientId
+            })
+            domain = domainRepository.save(newDomain {
+                owner = client
+                name = "ISO"
             })
 
             unit = newUnit(client) {
@@ -151,6 +161,130 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
         then: "no event is stored for the client"
         storedEventRepository.findAll().size() == numberOfStoredEventsBefore
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "asset risk events are generated"() {
+        given: "an asset risk"
+        when: "creating an asset risk"
+        String assetId = parseJson(post("/assets", [
+            name: "acid",
+            domains: [
+                [
+                    targetUri: "/domains/${domain.id.uuidValue()}"
+                ]
+            ],
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ]
+        ])).resourceId
+        String scenarioId = parseJson(post("/scenarios", [
+            name: "scenario",
+            domains: [
+                [
+                    targetUri: "/domains/${domain.id.uuidValue()}"
+                ]
+            ],
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ]
+        ])).resourceId
+        post("/assets/$assetId/risks", [
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains : [
+                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+        ])
+
+        then:
+        with(getLatestStoredEventContent()) {
+            type == "CREATION"
+            uri == "/assets/$assetId/risks/$scenarioId"
+            author =="user@domain.example"
+            content.scenario.targetUri == "/scenarios/$scenarioId"
+        }
+
+        when:
+        String controlId = parseJson(post("/controls", [
+            name: "Im in control",
+            owner: [targetUri: "/units/${unit.id.uuidValue()}"]
+        ])).resourceId
+        String riskETag = parseETag(get("/assets/$assetId/risks/$scenarioId"))
+        put("/assets/$assetId/risks/$scenarioId", [
+            mitigation: [targetUri:  "/controls/$controlId"],
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains : [
+                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+        ], ["If-Match": riskETag])
+
+        then:
+        with(getLatestStoredEventContent()) {
+            type == "MODIFICATION"
+            uri == "/assets/$assetId/risks/$scenarioId"
+            author =="user@domain.example"
+            content.mitigation.targetUri == "/controls/$controlId"
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "process risk events are generated"() {
+        given: "a process risk"
+        when: "creating a process risk"
+        String processId = parseJson(post("/processes", [
+            name: "pro",
+            domains: [
+                [
+                    targetUri: "/domains/${domain.id.uuidValue()}"
+                ]
+            ],
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ]
+        ])).resourceId
+        String scenarioId = parseJson(post("/scenarios", [
+            name: "scenario",
+            domains: [
+                [
+                    targetUri: "/domains/${domain.id.uuidValue()}"
+                ]
+            ],
+            owner: [
+                targetUri: "/units/${unit.id.uuidValue()}"
+            ]
+        ])).resourceId
+        post("/processes/$processId/risks", [
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains : [
+                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+        ])
+
+        then:
+        with(getLatestStoredEventContent()) {
+            type == "CREATION"
+            uri == "/processes/$processId/risks/$scenarioId"
+            author =="user@domain.example"
+            content.scenario.targetUri == "/scenarios/$scenarioId"
+        }
+
+        when:
+        String controlId = parseJson(post("/controls", [
+            name: "Im in control",
+            owner: [targetUri: "/units/${unit.id.uuidValue()}"]
+        ])).resourceId
+        String riskETag = parseETag(get("/processes/$processId/risks/$scenarioId"))
+        put("/processes/$processId/risks/$scenarioId", [
+            mitigation: [targetUri:  "/controls/$controlId"],
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains : [
+                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+        ], ["If-Match": riskETag])
+
+        then:
+        with(getLatestStoredEventContent()) {
+            type == "MODIFICATION"
+            uri == "/processes/$processId/risks/$scenarioId"
+            author =="user@domain.example"
+            content.mitigation.targetUri == "/controls/$controlId"
+        }
     }
 
     @Issue('VEO-556')

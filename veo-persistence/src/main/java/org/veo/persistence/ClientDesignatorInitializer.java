@@ -37,12 +37,12 @@ public class ClientDesignatorInitializer {
 
     @EventListener
     public void handle(VersioningEvent versioningEvent) {
-        var entity = versioningEvent.getEntity();
-        if (entity instanceof Client) {
+        if (versioningEvent.getEntity() instanceof Client) {
+            var client = (Client) versioningEvent.getEntity();
             if (versioningEvent.getType() == VersioningEvent.Type.PERSIST) {
-                designatorSequenceRepository.createSequences(entity.getId());
+                designatorSequenceRepository.createSequences(client.getId());
             } else if (versioningEvent.getType() == VersioningEvent.Type.REMOVE) {
-                designatorSequenceRepository.deleteSequences(entity.getId());
+                designatorSequenceRepository.deleteSequences(client.getId());
             }
         }
     }

@@ -97,13 +97,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
                                           .map(o -> ModelObjectReference.from(o,
                                                                               referenceAssembler))
                                           .collect(Collectors.toSet()))
-                             .self(referenceAssembler.targetReferenceOf(ProcessRisk.class,
-                                                                        risk.getEntity()
-                                                                            .getId()
-                                                                            .uuidValue(),
-                                                                        risk.getScenario()
-                                                                            .getId()
-                                                                            .uuidValue()))
+                             .self(referenceAssembler.targetReferenceOf(risk))
                              .build();
     }
 }

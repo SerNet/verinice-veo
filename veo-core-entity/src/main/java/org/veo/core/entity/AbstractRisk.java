@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -41,7 +42,7 @@ import lombok.NonNull;
  * assessor). This is also optional.
  */
 public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends CompoundKeyEntity, Designated, Versioned {
+        extends ClientOwned, CompoundKeyEntity, Designated, Versioned {
 
     String TYPE_DESIGNATOR = "RSK";
 
@@ -93,4 +94,8 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
 
     T getEntity();
 
+    @Override
+    default Optional<Client> getOwningClient() {
+        return getEntity().getOwningClient();
+    }
 }

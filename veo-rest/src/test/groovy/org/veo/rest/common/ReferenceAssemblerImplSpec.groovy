@@ -27,12 +27,14 @@ import org.veo.adapter.presenter.api.dto.full.FullDomainDto
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
+import org.veo.core.entity.AbstractRisk
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
+import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scenario
@@ -144,17 +146,24 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '/domains/searches'
     }
 
-    def "target reference for #type and compound-id #id1/#id2 is #reference"() {
+    def "target reference for #type and compound-id #entityId/#scenarioId is #reference"() {
+        def risk = Stub(type) {
+            entity >> Stub(entityType) {
+                id >> Key.uuidFrom(entityId)
+            }
+            scenario >> Stub(Scenario) {
+                id >> Key.uuidFrom(scenarioId)
+            }
+        }
         when:
-        def result = referenceAssembler.targetReferenceOf(type, id1, id2)
+        def result = referenceAssembler.targetReferenceOf(risk)
 
         then:
         result == reference
-        noExceptionThrown()
 
         where:
-        type      | id1                                    | id2                                    | reference
-        AssetRisk | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
+        type      | entityType | entityId                               | scenarioId                             | reference
+        AssetRisk | Asset      | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
     }
 
     def "create a key for a reference to a #type with id #id "() {

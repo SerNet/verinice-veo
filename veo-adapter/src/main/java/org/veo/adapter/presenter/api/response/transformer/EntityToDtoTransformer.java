@@ -37,6 +37,7 @@ import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
@@ -50,8 +51,10 @@ import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeEntity;
@@ -66,6 +69,7 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
@@ -96,6 +100,12 @@ public final class EntityToDtoTransformer {
         }
         if (source instanceof Unit) {
             return transformUnit2Dto((Unit) source);
+        }
+        if (source instanceof AssetRisk) {
+            return AssetRiskDto.from((AssetRisk) source, referenceAssembler);
+        }
+        if (source instanceof ProcessRisk) {
+            return ProcessRiskDto.from((ProcessRisk) source, referenceAssembler);
         }
         if (source instanceof Catalog) {
             return transformCatalog2Dto((Catalog) source);

@@ -94,13 +94,7 @@ public class AssetRiskDto extends AbstractRiskDto {
                                         .stream()
                                         .map(o -> ModelObjectReference.from(o, referenceAssembler))
                                         .collect(Collectors.toSet()))
-                           .self(referenceAssembler.targetReferenceOf(AssetRisk.class,
-                                                                      risk.getEntity()
-                                                                          .getId()
-                                                                          .uuidValue(),
-                                                                      risk.getScenario()
-                                                                          .getId()
-                                                                          .uuidValue()))
+                           .self(referenceAssembler.targetReferenceOf(risk))
                            .build();
     }
 }

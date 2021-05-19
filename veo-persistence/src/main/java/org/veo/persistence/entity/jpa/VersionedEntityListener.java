@@ -26,45 +26,49 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Versioned;
 import org.veo.persistence.CurrentUserProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listens to JPA events on {@link BaseModelObjectData} objects and delegates
- * them to the {@link ApplicationEventPublisher} as {@link VersioningEvent}s.
+ * Listens to JPA events on {@link VersionedData} objects and delegates them to
+ * the {@link ApplicationEventPublisher} as {@link VersioningEvent}s.
  */
 @Slf4j
 @AllArgsConstructor
-public class ModelObjectDataEntityListener {
+public class VersionedEntityListener {
     private final ApplicationEventPublisher publisher;
     private final CurrentUserProvider currentUserProvider;
 
     @PrePersist
-    public void prePersist(ModelObject entity) {
-        log.debug("Publishing PrePersist event for {}:{}", entity.getModelType(), entity.getDbId());
-        // We need to fire this one a little later (after the entity's ID has been
-        // generated).
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void beforeCommit(boolean readOnly) {
-                publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.PERSIST,
-                        currentUserProvider.getUsername()));
-            }
-        });
+    public void prePersist(Versioned entity) {
+        log.debug("Publishing PrePersist event for {}", entity);
+        if (entity instanceof ModelObject) {
+            // We need to fire this one a little later (after the entity's ID has been
+            // generated).
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void beforeCommit(boolean readOnly) {
+                    publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.PERSIST,
+                            currentUserProvider.getUsername()));
+                }
+            });
+        } else {
+            publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.PERSIST,
+                    currentUserProvider.getUsername()));
+        }
     }
 
     @PreUpdate
-    public void preUpdate(ModelObject entity) {
-        log.debug("Publishing PreUpdate event for {}:{}", entity.getModelType(), entity.getDbId());
+    public void preUpdate(Versioned entity) {
         publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.UPDATE,
                 currentUserProvider.getUsername()));
     }
 
     @PreRemove
-    public void preRemove(ModelObject entity) {
-        log.debug("Publishing PreRemove event for {}:{}", entity.getModelType(), entity.getDbId());
+    public void preRemove(Versioned entity) {
         publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.REMOVE,
                 currentUserProvider.getUsername()));
     }
