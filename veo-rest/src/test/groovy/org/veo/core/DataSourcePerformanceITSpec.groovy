@@ -27,7 +27,6 @@ import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
@@ -50,7 +49,6 @@ import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 @SpringBootTest(classes = DataSourcePerformanceITSpec.class)
-@ComponentScan("org.veo")
 @ActiveProfiles(["test", "stats"])
 class DataSourcePerformanceITSpec extends VeoSpringSpec {
 

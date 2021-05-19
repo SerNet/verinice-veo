@@ -19,7 +19,6 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -53,7 +52,6 @@ webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
-@ComponentScan("org.veo.rest")
 class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired

@@ -23,14 +23,12 @@ import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.entity.jpa.StoredEventData
 
 @SpringBootTest(classes = StoredEventRepositorySpec.class)
 @Transactional()
-@ComponentScan("org.veo")
 class StoredEventRepositorySpec extends VeoSpringSpec {
 
     @Autowired

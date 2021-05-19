@@ -27,17 +27,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 
 import org.veo.MessagingJob
+import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.event.StoredEvent
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
 
 import groovy.util.logging.Slf4j
 import spock.lang.Requires
-import spock.lang.Specification
 
 /**
  * Tests sending and receiving events against a remote message queue. Local tests will instead use a self-started
@@ -54,13 +53,12 @@ classes = [EventDispatcherRemoteMqITSpec.class,
     RabbitMQSenderConfiguration.class,
 ]
 )
-@ComponentScan("org.veo")
 @ActiveProfiles(["test", "publishing-enabled"])
 @Requires({
     Boolean.valueOf(env['CI'])
 })
 @Slf4j
-class EventDispatcherRemoteMqITSpec extends Specification {
+class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
 
     public static final int NUM_EVENTS = 10
 

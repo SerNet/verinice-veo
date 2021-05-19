@@ -23,7 +23,6 @@ import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
@@ -42,9 +41,8 @@ import org.veo.test.VeoSpec
 @SpringBootTest(classes = CustomLinkPersistenceSpec.class
 )
 @Transactional()
-@ComponentScan("org.veo")
 @ActiveProfiles("test")
-class CustomLinkPersistenceSpec extends VeoSpec {
+class CustomLinkPersistenceSpec extends VeoSpringSpec {
 
 
     @Autowired

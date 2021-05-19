@@ -19,7 +19,6 @@ package org.veo.core.entity
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
@@ -34,7 +33,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.AssetRiskData
 
 @SpringBootTest(classes = AssetRiskITSpec.class)
-@ComponentScan("org.veo")
 @ActiveProfiles(["test"])
 class AssetRiskITSpec extends VeoSpringSpec {
 

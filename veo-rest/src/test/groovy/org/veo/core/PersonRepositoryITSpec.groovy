@@ -21,7 +21,6 @@ import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -30,7 +29,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 
 @SpringBootTest(classes = PersonRepositoryITSpec.class)
 @Transactional()
-@ComponentScan("org.veo")
 class PersonRepositoryITSpec extends VeoSpringSpec {
 
 

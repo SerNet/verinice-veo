@@ -21,7 +21,6 @@ import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.transaction.TransactionSystemException
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -30,8 +29,6 @@ import org.veo.core.entity.Key
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.entity.jpa.ProcessData
-
-import spock.lang.Ignore
 
 /**
  * Integration test for the process repository. Uses mocked spring MVC environment.
@@ -42,7 +39,6 @@ import spock.lang.Ignore
 @SpringBootTest(
 webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 classes = ProcessRepositoryITSpec.class)
-@ComponentScan("org.veo.rest")
 class ProcessRepositoryITSpec extends VeoMvcSpec {
 
     @Autowired

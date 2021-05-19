@@ -19,7 +19,6 @@ package org.veo.rest.common
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Catalog
@@ -30,7 +29,6 @@ import org.veo.rest.configuration.TypeExtractor
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = WebMvcSecurityConfiguration)
-@ComponentScan("org.veo")
 class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
 
     @Autowired

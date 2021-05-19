@@ -20,7 +20,6 @@ package org.veo.rest
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
@@ -46,7 +45,6 @@ webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 classes = [WebMvcSecurityConfiguration]
 )
 @EnableAsync
-@ComponentScan("org.veo.rest")
 class GetAllWithNoClientSpec extends VeoMvcSpec {
 
     def setup() {
