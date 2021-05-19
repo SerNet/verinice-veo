@@ -20,11 +20,9 @@ package org.veo.core.entity.util
 import java.time.Duration
 
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class TimeFormatterSpec extends Specification {
 
-    @Unroll
     def "#milliSeconds ms (#duration) should be converted to '#humanReadable'"() {
         expect:
 

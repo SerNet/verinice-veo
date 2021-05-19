@@ -23,8 +23,6 @@ import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateEntityUseCase
 import org.veo.core.usecase.repository.ScopeRepository
 
-import spock.lang.Unroll
-
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 
     ScopeRepository entityScopeRepository = Mock()
@@ -32,7 +30,6 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
     CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository,entityScopeRepository)
     Unit unit = Mock()
 
-    @Unroll
     def "create a scope"() {
         given:
 

@@ -26,7 +26,6 @@ import org.veo.core.service.EntitySchemaService
 
 import io.swagger.v3.core.util.Json
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class ClassPathMetaSchemaConformitySpec extends Specification {
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl()
@@ -34,7 +33,7 @@ class ClassPathMetaSchemaConformitySpec extends Specification {
     def customAspectMetaSchema = getMetaSchema("custom-aspect-meta-schema.json")
     def customLinkMetaSchema = getMetaSchema("custom-link-meta-schema.json")
 
-    @Unroll
+
     def "Custom aspect #aspect.id of #aspect.schema schema conform to meta schema"() {
         expect:
         customAspectMetaSchema.validate(aspect.data).empty
@@ -46,7 +45,7 @@ class ClassPathMetaSchemaConformitySpec extends Specification {
         }.flatten()
     }
 
-    @Unroll
+
     def "Custom link #link.id of #link.schema schema conform to meta schema"() {
         expect:
         customLinkMetaSchema.validate(link.data).empty
@@ -58,7 +57,7 @@ class ClassPathMetaSchemaConformitySpec extends Specification {
         }.flatten()
     }
 
-    @Unroll
+
     def "entity schema #schema.title is a valid schema"() {
         given:
         def schema07 = getMetaSchema("draft-07.json")

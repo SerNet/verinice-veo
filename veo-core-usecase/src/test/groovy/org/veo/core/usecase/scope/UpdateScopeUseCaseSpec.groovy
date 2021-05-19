@@ -24,15 +24,12 @@ import org.veo.core.usecase.base.ModifyEntityUseCase
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.repository.ScopeRepository
 
-import spock.lang.Unroll
-
 class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
     public static final String USER_NAME = "john"
     ScopeRepository scopeRepository = Mock()
 
     UpdateScopeUseCase usecase = new UpdateScopeUseCase(scopeRepository)
-    @Unroll
     def "update a scope"() {
         given:
         def repository = Mock(ScopeRepository)

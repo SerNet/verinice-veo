@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
-import static org.junit.Assert.assertSame
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -68,6 +66,6 @@ class CompositeEntityJpaSpec extends AbstractJpaSpec {
         def retrievedComposite2 = (Asset)retrievedComposite1.parts.first()
 
         and: "composite 1 is always the same object"
-        assertSame(retrievedComposite2.parts.first(), retrievedComposite1)
+        retrievedComposite2.parts.first().is(retrievedComposite1)
     }
 }

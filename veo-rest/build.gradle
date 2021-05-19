@@ -45,6 +45,8 @@ dependencies {
     testImplementation 'commons-codec:commons-codec'
     testImplementation 'com.vladmihalcea:db-util'
     testImplementation project(":veo-test")
+    testImplementation 'org.codehaus.groovy:groovy-json'
+
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 

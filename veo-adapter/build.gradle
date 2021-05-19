@@ -29,6 +29,7 @@ dependencies {
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.networknt:json-schema-validator'
+    testImplementation 'org.codehaus.groovy:groovy-json'
 
     testRuntimeOnly 'com.h2database:h2'
 

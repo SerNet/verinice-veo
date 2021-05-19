@@ -45,8 +45,6 @@ import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ModelObjectValidation
 
-import spock.lang.Unroll
-
 class CompositeEntityAccessSpec extends AbstractJpaSpec {
 
 
@@ -112,7 +110,6 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
         scenarioRepository = new ScenarioRepositoryImpl(scenarioDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository)
     }
 
-    @Unroll
     def "delete parts from a #type.simpleName composite"() {
         given: "A nested structure of composites and entities"
         def typeRepository = getProperty("${type.simpleName.toLowerCase()}Repository")

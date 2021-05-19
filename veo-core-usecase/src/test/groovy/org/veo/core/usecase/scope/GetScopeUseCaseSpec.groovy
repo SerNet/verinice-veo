@@ -23,14 +23,11 @@ import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.repository.ScopeRepository
 
-import spock.lang.Unroll
-
 class GetScopeUseCaseSpec extends UseCaseSpec {
 
     ScopeRepository scopeRepository = Mock()
 
     GetScopeUseCase usecase = new GetScopeUseCase(scopeRepository)
-    @Unroll
     def "retrieve a scope"() {
         given:
         def repository = Mock(ScopeRepository)

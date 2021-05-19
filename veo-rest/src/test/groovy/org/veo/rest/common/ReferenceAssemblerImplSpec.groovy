@@ -30,13 +30,11 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 
 import spock.lang.Specification
-import spock.lang.Unroll
 
 class ReferenceAssemblerImplSpec extends Specification {
 
     ReferenceAssembler referenceAssembler = new ReferenceAssemblerImpl()
 
-    @Unroll
     def "parsed entity id for #url is #parsedId"() {
         expect:
         referenceAssembler.parseId(url) == parsedId
@@ -52,7 +50,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | '28df429d-da5e-431a-a2d8-488c0741fb9f'
     }
 
-    @Unroll
     def "parsed type for #url is #type"() {
         expect:
         referenceAssembler.parseType(url) == type
@@ -67,7 +64,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | Domain
     }
 
-    @Unroll
     def "target reference for #type and #id is #reference"() {
         expect:
         referenceAssembler.targetReferenceOf(type, id) == reference
@@ -81,7 +77,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'
     }
 
-    @Unroll
     def "resources reference for #type is #reference"() {
         expect:
         referenceAssembler.resourcesReferenceOf(type) == reference
@@ -95,7 +90,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '/domains'
     }
 
-    @Unroll
     def "searches reference for #type is #reference"() {
         expect:
         referenceAssembler.searchesReferenceOf(type) == reference
@@ -110,7 +104,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '/domains/searches'
     }
 
-    @Unroll
     def "target reference for #type and compound-id #id1/#id2 is #reference"() {
         when:
         def result = referenceAssembler.targetReferenceOf(type, id1, id2)
@@ -124,7 +117,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         AssetRisk | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
     }
 
-    @Unroll
     def "create a key for a reference to a #type with id #id "() {
         expect:
         referenceAssembler.toKey(new ModelObjectReference(id, type, referenceAssembler)) == key
@@ -139,7 +131,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | Key.uuidFrom('28df429d-da5e-431a-a2d8-488c0741fb9f')
     }
 
-    @Unroll
     def "create multiple keys for a reference to a #type with keys #id1, #id2 "() {
         expect:
         def refs = referenceAssembler.toKeys([
@@ -161,7 +152,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | '28df429d-da5e-431a-a2d8-488c0741fb9f'
     }
 
-    @Unroll
     def "creates and parses URLs for #type.simpleName"() {
         when: "creating a target URL"
         def targetUrl = referenceAssembler.targetReferenceOf(type, UUID.randomUUID().toString())
