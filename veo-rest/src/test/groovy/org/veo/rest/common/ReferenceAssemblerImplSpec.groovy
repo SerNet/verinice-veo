@@ -82,7 +82,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     }
 
     @Unroll
-    def "resources reference for #type and #id is #reference"() {
+    def "resources reference for #type is #reference"() {
         expect:
         referenceAssembler.resourcesReferenceOf(type) == reference
         where:
@@ -96,7 +96,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     }
 
     @Unroll
-    def "searches reference for #type and #id is #reference"() {
+    def "searches reference for #type is #reference"() {
         expect:
         referenceAssembler.searchesReferenceOf(type) == reference
 
@@ -144,7 +144,8 @@ class ReferenceAssemblerImplSpec extends Specification {
         expect:
         def refs = referenceAssembler.toKeys([
             new ModelObjectReference(id1, type, referenceAssembler),
-            new ModelObjectReference(id2, type, referenceAssembler)] as Set
+            new ModelObjectReference(id2, type, referenceAssembler)
+        ] as Set
         )
         refs.contains(Key.uuidFrom(id1))
         refs.contains(Key.uuidFrom(id2))
