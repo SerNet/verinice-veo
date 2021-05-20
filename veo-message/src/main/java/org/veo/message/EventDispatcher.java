@@ -58,7 +58,14 @@ public class EventDispatcher {
         try {
             var confirm = correlationData.getFuture()
                                          .get(1000, TimeUnit.MILLISECONDS);
-            callback.confirm(confirm.isAck());
+            var returnedMessage = correlationData.getReturned();
+            if (returnedMessage != null) {
+                log.warn("Message for event {} returned with code {}: {}", event.getId(),
+                         returnedMessage.getReplyCode(), returnedMessage.getMessage());
+                callback.confirm(false);
+            } else {
+                callback.confirm(confirm.isAck());
+            }
         } catch (InterruptedException e) {
             log.error("Thread was interrupted while waiting for message confirmation", e);
         } catch (ExecutionException e) {

@@ -19,6 +19,7 @@ package org.veo.message
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 import org.springframework.amqp.rabbit.core.RabbitAdmin
@@ -108,13 +109,18 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
                 "queue: {}, binding: {}", routingKeyPrefix, testQueue, binding)
 
         when: "the events are published"
+        def confirmationLatch = new CountDownLatch(NUM_EVENTS)
         Long id = 0
         NUM_EVENTS.times {
             StoredEvent event = StoredEventData.newInstance("testEvent", routingKeyPrefix + "storedevent")
             event.setId(id++)
             sentEvents.add EventMessage.from(event)
         }
-        eventDispatcher.sendAsync(sentEvents, EventDispatcher.NOP_CALLBACK)
+        eventDispatcher.sendAsync(sentEvents, { boolean ack ->
+            if (ack) {
+                confirmationLatch.countDown()
+            }
+        })
 
         then: "all events are received within an acceptable timeframe"
         eventSubscriber.getLatch().await(10, TimeUnit.SECONDS)
@@ -122,6 +128,23 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
 
         and: "the events are equal after marshalling and unmarshalling"
         eventSubscriber.getReceivedEvents() as Set == sentEvents
+
+        and: "all publications has been confirmed"
+        confirmationLatch.await(2, TimeUnit.SECONDS)
+    }
+
+    def "Publisher receives no confirmation without a matching queue"() {
+        when: "an event for a routing key that nobody listens to is published"
+        def confirmationLatch = new CountDownLatch(1)
+        def event = new EventMessage("funky key that no one listens to", "content", 1, Instant.now())
+        eventDispatcher.sendAsync(event, { boolean ack ->
+            if (ack) {
+                confirmationLatch.countDown()
+            }
+        })
+
+        then: "the publisher never receives a positive confirmation"
+        !confirmationLatch.await(2, TimeUnit.SECONDS)
     }
 
     def "Dispatch stored events with confirmations"() {

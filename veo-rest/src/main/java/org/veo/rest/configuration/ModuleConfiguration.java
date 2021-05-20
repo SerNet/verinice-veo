@@ -493,6 +493,7 @@ public class ModuleConfiguration {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(jsonMessageConverter());
         template.setChannelTransacted(false);
+        template.setMandatory(true);
         return template;
     }
 }
