@@ -22,6 +22,8 @@ import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Scope;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -32,10 +34,13 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "Scope", description = "Schema for scope")
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractScopeDto extends AbstractEntityLayerSupertypeDto {
 
     @Schema(description = "The scope's members")
     private Set<ModelObjectReference<EntityLayerSupertype>> members = Collections.emptySet();
 
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Scope.class;
+    }
 }

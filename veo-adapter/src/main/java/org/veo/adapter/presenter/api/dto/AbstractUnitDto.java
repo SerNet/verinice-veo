@@ -29,6 +29,7 @@ import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -39,7 +40,6 @@ import lombok.Data;
  * Base transfer object for Units. Contains common data for all Unit DTOs.
  */
 @Data
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractUnitDto extends AbstractVersionedDto implements NameableDto {
 
     @NotNull(message = "A name must be present.")
@@ -64,4 +64,9 @@ public abstract class AbstractUnitDto extends AbstractVersionedDto implements Na
 
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Unit.class;
+    }
 }

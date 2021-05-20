@@ -28,8 +28,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCatalogDomainTemplate;
+import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.ModelObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -40,7 +42,6 @@ import lombok.ToString;
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractCatalogDto implements VersionedDto, NameableDto {
 
     @NotNull(message = "A name must be present.")
@@ -80,4 +81,9 @@ public abstract class AbstractCatalogDto implements VersionedDto, NameableDto {
 
     @JsonIgnore
     private long version;
+
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Catalog.class;
+    }
 }

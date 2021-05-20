@@ -20,6 +20,7 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.List;
 import java.util.Map;
 
+import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,5 +66,10 @@ public abstract class AbstractPersonDto extends CompositeEntityDto<Person> {
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();
+    }
+
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Person.class;
     }
 }

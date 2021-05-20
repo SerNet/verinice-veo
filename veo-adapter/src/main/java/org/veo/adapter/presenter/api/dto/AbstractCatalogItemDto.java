@@ -40,10 +40,12 @@ import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCatalogItemCatalog;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
@@ -59,7 +61,7 @@ import lombok.ToString;
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractCatalogItemDto implements VersionedDto {
+public abstract class AbstractCatalogItemDto implements VersionedDto, ModelDto {
 
     @NotNull(message = "A catalog must be present.")
     @Schema(implementation = ModelObjectReferenceCatalogItemCatalog.class)
@@ -107,4 +109,10 @@ public abstract class AbstractCatalogItemDto implements VersionedDto {
 
     @JsonIgnore
     private long version;
+
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return CatalogItem.class;
+    }
+
 }

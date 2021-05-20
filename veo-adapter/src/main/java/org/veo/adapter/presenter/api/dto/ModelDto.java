@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2021  Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,17 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-public interface NameableDto extends ModelDto {
-    String getName();
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    void setName(String aName);
+import org.veo.core.entity.ModelObject;
 
-    String getAbbreviation();
-
-    void setAbbreviation(String aAbbreviation);
-
-    String getDescription();
-
-    void setDescription(String aDescription);
-
+public interface ModelDto {
+    @JsonIgnore
+    Class<? extends ModelObject> getModelInterface();
 }

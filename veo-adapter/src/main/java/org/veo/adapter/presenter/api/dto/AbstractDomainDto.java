@@ -25,6 +25,8 @@ import javax.validation.constraints.NotNull;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomainCatalogs;
 import org.veo.core.entity.Catalog;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ModelObject;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,7 +40,6 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractDomainDto extends AbstractVersionedDto implements NameableDto {
 
     @NotNull(message = "A name must be present.")
@@ -59,4 +60,8 @@ public abstract class AbstractDomainDto extends AbstractVersionedDto implements 
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomainCatalogs.class))
     private Set<ModelObjectReference<Catalog>> catalogs = new HashSet<>();
 
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Domain.class;
+    }
 }

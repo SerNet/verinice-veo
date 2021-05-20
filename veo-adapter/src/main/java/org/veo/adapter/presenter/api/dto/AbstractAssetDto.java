@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.ModelObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -64,5 +65,10 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> {
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();
+    }
+
+    @Override
+    public Class<? extends ModelObject> getModelInterface() {
+        return Asset.class;
     }
 }
