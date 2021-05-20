@@ -168,7 +168,6 @@ pipeline {
                                   script: 'VEO_USER=$KEYCLOAK_CREDS_USR VEO_USER_PASSWORD=$KEYCLOAK_CREDS_PSW /veo/authenticate -r verinice-veo -c veo-development-client'
                                 ).trim()
                                 sh "newman run 'postman/verinice.VEO_REST_API.postman_collection.json' --env-var 'accessToken=${accessToken}' --reporters 'cli,junit' --reporter-junit-export='newman-report.xml' --suppress-exit-code"
-                                sh "cat /veo/veo-rest.log"
                                 junit allowEmptyResults: true, testResults: 'newman-report.xml'
                                 sh "cp /veo/veo-rest.log ${WORKSPACE}"
                                 archiveArtifacts artifacts: 'veo-rest.log', fingerprint: false
