@@ -22,7 +22,6 @@ import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 
 import org.springframework.amqp.rabbit.core.RabbitAdmin
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -67,9 +66,6 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
 
     @Autowired
     TestEventSubscriber eventSubscriber
-
-    @Autowired
-    RabbitTemplate rabbitTemplate
 
     @Autowired
     RabbitAdmin rabbitAdmin
