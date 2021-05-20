@@ -40,5 +40,8 @@ public interface ModelObject extends Versioned {
 
     void setDbId(String id);
 
+    /**
+     * @return The specific interface for this type of model object.
+     */
     Class<? extends ModelObject> getModelInterface();
 }
