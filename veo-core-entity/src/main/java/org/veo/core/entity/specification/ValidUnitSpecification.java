@@ -43,11 +43,7 @@ final class ValidUnitSpecification<T extends EntityLayerSupertype>
 
     @Override
     public boolean test(EntityLayerSupertype entity) {
-        if (entity.getOwner()
-                  .isUnitType())
-            return isSatisfiedBy(entity.getOwner()
-                                       .asUnit());
-        return false;
+        return isSatisfiedBy(entity.getOwner());
     }
 
     public boolean isSatisfiedBy(Unit unit) {

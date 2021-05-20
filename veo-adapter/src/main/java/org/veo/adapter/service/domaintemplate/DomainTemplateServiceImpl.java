@@ -434,7 +434,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         target.setElement(aCatalogable);
         if (target.getElement() != null) {
             target.getElement()
-                  .setOwner(target);
+                  .setContainingCatalogItem(target);
         }
         return target;
     }

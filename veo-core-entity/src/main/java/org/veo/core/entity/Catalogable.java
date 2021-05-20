@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -35,8 +36,27 @@ public interface Catalogable extends ModelObject, Displayable {
 
     void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
 
-    ElementOwner getOwner();
+    default ElementOwner getOwnerOrContainingCatalogItem() {
+        return Optional.<ElementOwner> ofNullable(getOwner())
+                       .orElse(getContainingCatalogItem());
+    }
 
-    void setOwner(ElementOwner aOwner);
+    default void setOwnerOrContainingCatalogItem(ElementOwner owner) {
+        if (owner instanceof Unit) {
+            this.setOwner((Unit) owner);
+            this.setContainingCatalogItem(null);
+        } else {
+            this.setOwner(null);
+            this.setContainingCatalogItem((CatalogItem) owner);
+        }
+    }
+
+    Unit getOwner();
+
+    void setOwner(Unit unit);
+
+    CatalogItem getContainingCatalogItem();
+
+    void setContainingCatalogItem(CatalogItem containigCatalogItem);
 
 }

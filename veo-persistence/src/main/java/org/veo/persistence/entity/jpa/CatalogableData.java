@@ -26,13 +26,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
-import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.Unit;
+import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,6 +44,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
+@HasOwnerOrContainingCatalogItem
 public abstract class CatalogableData extends BaseModelObjectData implements Catalogable {
     @Id
     @ToString.Include
@@ -53,8 +55,11 @@ public abstract class CatalogableData extends BaseModelObjectData implements Cat
     @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
     private Set<CatalogItem> appliedCatalogItems;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementOwnerData.class, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
     @JoinColumn(name = "owner_id")
-    private ElementOwner owner;
+    private Unit owner;
+
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = CatalogItemData.class)
+    @JoinColumn(name = "containing_catalog_item_id")
+    private CatalogItem containingCatalogItem;
 }

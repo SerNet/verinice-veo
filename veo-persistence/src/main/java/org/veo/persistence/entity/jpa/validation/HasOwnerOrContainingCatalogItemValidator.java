@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2021  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,12 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.persistence.entity.jpa.validation;
 
-/**
- * Something that can own an element, and therefore can be used as the owner of
- * an element. Unit and CatalogItems are examples.
- */
-public interface ElementOwner extends ModelObject, Displayable, ClientOwned {
-    Client getClient();
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.veo.persistence.entity.jpa.CatalogableData;
+
+public class HasOwnerOrContainingCatalogItemValidator
+        implements ConstraintValidator<HasOwnerOrContainingCatalogItem, CatalogableData> {
+
+    @Override
+    public boolean isValid(CatalogableData catalogable, ConstraintValidatorContext context) {
+        // that's an XOR
+        return catalogable.getOwner() != null ^ catalogable.getContainingCatalogItem() != null;
+    }
 }

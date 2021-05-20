@@ -107,11 +107,22 @@ public interface EntityLayerSupertype
      *             if the passed client is not equal to the client in the unit to
      *             which the entity belongs
      */
+    default void checkSameClient(Catalogable catalogable) {
+        checkSameClient(catalogable.getOwnerOrContainingCatalogItem()
+                                   .getClient());
+    }
+
+    /**
+     * @throws ClientBoundaryViolationException
+     *             if the passed client is not equal to the client in the unit to
+     *             which the entity belongs
+     */
     default void checkSameClient(Client client) {
         Objects.requireNonNull(client, "client must not be null");
         Client thisEntitysClient = null;
-        ElementOwner thisEntitysOwner = Objects.requireNonNull(getOwner(),
-                                                               "No owner set for " + this);
+        ElementOwner thisEntitysOwner = Objects.requireNonNull(getOwnerOrContainingCatalogItem(),
+                                                               "No owner or containing catalog item set for "
+                                                                       + this);
         thisEntitysClient = Objects.requireNonNull(thisEntitysOwner.getClient(),
                                                    "No client set for " + thisEntitysOwner
                                                            + " might be part of a domain template");

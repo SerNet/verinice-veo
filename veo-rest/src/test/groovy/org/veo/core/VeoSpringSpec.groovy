@@ -113,6 +113,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 def elements = it.findAll()
                 elements.each {
                     it.links.clear()
+                    it.domains.clear()
                 }
             }
             catalogs.each {

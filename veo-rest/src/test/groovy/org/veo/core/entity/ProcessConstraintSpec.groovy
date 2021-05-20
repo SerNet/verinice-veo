@@ -44,9 +44,13 @@ class ProcessConstraintSpec extends Specification {
         errors.size() == 3
         assert errors*.propertyPath*.toString() as Set == [
             "designator",
-            "owner",
+            "",
             "name"
         ] as Set
-        assert errors*.messageTemplate.every() {it == "{javax.validation.constraints.NotNull.message}" }
+        assert errors*.messageTemplate as Set == [
+            '{javax.validation.constraints.NotNull.message}',
+            'Either owner or containingCatalogItem must be set',
+            '{javax.validation.constraints.NotNull.message}'
+        ] as Set
     }
 }

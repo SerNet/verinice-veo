@@ -163,14 +163,14 @@ public class EntityDataFactory implements EntityFactory {
     public Scope createScope(String name, ElementOwner owner) {
         var group = new ScopeData();
         group.setName(name);
-        group.setOwner(owner);
+        group.setOwnerOrContainingCatalogItem(owner);
         return group;
     }
 
     private void setEntityLayerData(EntityLayerSupertype entityLayerSupertype, String name,
             ElementOwner unit) {
         entityLayerSupertype.setName(name);
-        entityLayerSupertype.setOwner(unit);
+        entityLayerSupertype.setOwnerOrContainingCatalogItem(unit);
     }
 
     @Override

@@ -306,7 +306,7 @@ public final class DtoToEntityTransformer {
         target.setLinks(mapLinks(target, source, entitySchema, modelObjectReferenceResolver));
         target.setCustomAspects(mapCustomAspects(source, factory, entitySchema));
         if (source.getOwner() != null) {
-            target.setOwner(modelObjectReferenceResolver.resolve(source.getOwner()));
+            target.setOwnerOrContainingCatalogItem(modelObjectReferenceResolver.resolve(source.getOwner()));
         }
     }
 
@@ -401,7 +401,7 @@ public final class DtoToEntityTransformer {
 
         if (target.getElement() != null) {
             target.getElement()
-                  .setOwner(target);
+                  .setContainingCatalogItem(target);
         }
         target.getTailoringReferences()
               .clear();

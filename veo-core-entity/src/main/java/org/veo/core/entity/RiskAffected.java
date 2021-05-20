@@ -80,7 +80,7 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
     }
 
     default Set<R> newRisks(Set<Scenario> scenarios, Set<Domain> domains) {
-        scenarios.forEach(s -> s.checkSameClient(getOwner().getClient()));
+        scenarios.forEach(s -> s.checkSameClient(this));
         domains.forEach(this::isDomainValid);
 
         return scenarios.stream()

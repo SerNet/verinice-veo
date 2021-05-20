@@ -61,7 +61,8 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
     @OneToOne(optional = true,
               targetEntity = CatalogableData.class,
               cascade = CascadeType.ALL,
-              orphanRemoval = true)
+              orphanRemoval = true,
+              mappedBy = "containingCatalogItem")
     private Catalogable element;
 
     @Column(name = "updatereferences")

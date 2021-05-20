@@ -68,9 +68,13 @@ class ProcessRepositoryITSpec extends VeoMvcSpec {
         cvex.constraintViolations.size() == 3
         assert cvex.constraintViolations*.propertyPath*.toString() as Set == [
             "designator",
-            "owner",
+            "",
             "name"
         ] as Set
-        assert cvex.constraintViolations*.messageTemplate.every() {it == "{javax.validation.constraints.NotNull.message}" }
+        assert cvex.constraintViolations*.messageTemplate as Set == [
+            '{javax.validation.constraints.NotNull.message}',
+            'Either owner or containingCatalogItem must be set',
+            '{javax.validation.constraints.NotNull.message}'
+        ] as Set
     }
 }

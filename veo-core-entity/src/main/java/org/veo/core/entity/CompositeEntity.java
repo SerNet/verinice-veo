@@ -37,14 +37,12 @@ public interface CompositeEntity<T extends EntityLayerSupertype> extends EntityL
     }
 
     default boolean addPart(T part) {
-        checkSameClient(part.getOwner()
-                            .getClient());
+        checkSameClient(part);
         return getParts().add(part);
     }
 
     default boolean addParts(Set<T> parts) {
-        parts.forEach(part -> checkSameClient(part.getOwner()
-                                                  .getClient()));
+        parts.forEach(CompositeEntity.this::checkSameClient);
         return getParts().addAll(parts);
     }
 
@@ -58,8 +56,7 @@ public interface CompositeEntity<T extends EntityLayerSupertype> extends EntityL
 
     default void setParts(Set<T> parts) {
         parts.stream()
-             .forEach(part -> checkSameClient(part.getOwner()
-                                                  .getClient()));
+             .forEach(CompositeEntity.this::checkSameClient);
         getParts().clear();
         getParts().addAll(parts);
     }

@@ -55,7 +55,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
 
     @Override
     public R newRisk(Scenario scenario, Domain domain) {
-        scenario.checkSameClient(getOwner().getClient());
+        scenario.checkSameClient(this);
         isDomainValid(domain);
 
         var riskData = createRisk(scenario);
