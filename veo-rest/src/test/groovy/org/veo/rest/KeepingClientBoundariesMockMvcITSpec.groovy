@@ -336,7 +336,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         post('/processes', [
             name : 'My process',
             owner: [
-                targetUri: 'http://localhost/units/units/'+unit.id.uuidValue()
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue()
             ],
             links: [
                 'Process_depends_on_Asset': [
@@ -344,7 +344,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
                         name  : 'requires',
                         target:
                         [
-                            targetUri: "http://localhost/units/assets/$otherClientsAsset.dbId"
+                            targetUri: "http://localhost/assets/$otherClientsAsset.dbId"
                         ]
                     ]
                 ]

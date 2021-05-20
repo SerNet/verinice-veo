@@ -25,11 +25,6 @@ import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.ANY_USER;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -55,7 +50,6 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -75,19 +69,22 @@ import org.veo.rest.ProcessRiskResource;
 import org.veo.rest.ScenarioController;
 import org.veo.rest.ScopeController;
 import org.veo.rest.UnitController;
+import org.veo.rest.configuration.TypeExtractor;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
-@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
     private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
+
+    private final TypeExtractor typeExtractor;
 
     @Override
     @SuppressFBWarnings // ignore warning on call to method proxy factory
@@ -308,10 +305,28 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         throw new NotImplementedException("Unsupported collection reference type " + type);
     }
 
+    /**
+     * Compares the given URI with all mapped request methods of type "GET".
+     * Extracts the DTO type used in the methods return value. Then returns the
+     * corresponding entity type.
+     *
+     * @param uriString
+     *            the URI string received as a reference, i.e. via JSON
+     *            representation of an entity
+     * @return the class of the entity that is mapped by the DTO
+     */
     @Override
     public Class<? extends ModelObject> parseType(String uriString) {
-        Optional<String> term = readObjectTypePluralTerm(uriString);
-        return ModelObjectType.getTypeForPluralTerm(term.orElseThrow());
+        try {
+            return typeExtractor.parseDtoType(uriString)
+                                .orElseThrow()
+                                .getDeclaredConstructor()
+                                .newInstance()
+                                .getModelInterface();
+        } catch (ReflectiveOperationException | IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    String.format("Could not extract entity type from URI: %s", uriString));
+        }
     }
 
     @Override
@@ -342,53 +357,4 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                          .collect(Collectors.toSet());
     }
 
-    private Optional<String> readObjectTypePluralTerm(String uriString) {
-        return ModelObjectType.PLURAL_TERMS.stream()
-                                           .filter(t -> readUriString(uriString).matches(String.join("",
-                                                                                                     ".*/",
-                                                                                                     t,
-                                                                                                     "/",
-                                                                                                     UUID_REGEX,
-                                                                                                     ".*")))
-                                           .findFirst();
-    }
-
-    /**
-     * This method tries to create a URL from the input string. If that doesn't
-     * work, it tries to create a URI. We do this because we also accept URIs as
-     * references (i.e. relative URIs).
-     *
-     * @throws IllegalArgumentException
-     *             if no path could be extracted from neither URI nor URL
-     *
-     * @see URL
-     * @see URI
-     */
-    private String readUriString(String uriString) {
-        try {
-            return parseURL(uriString);
-        } catch (MalformedURLException e) {
-            return parseURI(uriString);
-        }
-    }
-
-    private String parseURI(String uriString) {
-        try {
-            var uri = new URI(uriString);
-            return uri.getPath();
-        } catch (URISyntaxException e) {
-            log.error("Could not parse URI for element: {}", uriString, e);
-            throw new IllegalArgumentException(
-                    format("Could not parse URI for element: %s", uriString));
-        }
-    }
-
-    private String parseURL(String uriString) throws MalformedURLException {
-        try {
-            return new URL(uriString).getPath();
-        } catch (MalformedURLException e) {
-            log.info("Reference is not a valid URL: {}", uriString);
-            throw e;
-        }
-    }
 }

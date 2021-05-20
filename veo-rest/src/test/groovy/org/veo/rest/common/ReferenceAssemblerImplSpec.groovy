@@ -17,27 +17,37 @@
  ******************************************************************************/
 package org.veo.rest.common
 
+
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto
+import org.veo.adapter.presenter.api.dto.full.FullControlDto
+import org.veo.adapter.presenter.api.dto.full.FullDomainDto
+import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
+import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelObjectType
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
+import org.veo.rest.configuration.TypeExtractor
 
 import spock.lang.Specification
 
 class ReferenceAssemblerImplSpec extends Specification {
 
-    ReferenceAssembler referenceAssembler = new ReferenceAssemblerImpl()
+    TypeExtractor typeExtractor = Mock(TypeExtractor)
+
+    ReferenceAssembler referenceAssembler = new ReferenceAssemblerImpl(typeExtractor)
 
     def "parsed entity id for #url is #parsedId"() {
         expect:
         referenceAssembler.parseId(url) == parsedId
+
         where:
         url                                                                                                            | parsedId
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                            | '40331ed5-be07-4c69-bf99-553811ce5454'
@@ -51,17 +61,21 @@ class ReferenceAssemblerImplSpec extends Specification {
     }
 
     def "parsed type for #url is #type"() {
+        1 *  typeExtractor.parseDtoType(url) >> Optional.of(dtoType)
+
         expect:
         referenceAssembler.parseType(url) == type
+
         where:
-        url                                                                                                            | type
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                            | Asset
-        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | Asset
-        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                          | Control
-        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                            | Scope
-        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                         | Scenario
-        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                         | Incident
-        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | Domain
+        url                                                                                                            | type       | dtoType
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                            | Asset      | FullAssetDto
+        // TODO: VEO-585: probably expect an exception instead
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | Asset      | FullAssetDto
+        'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                          | Control    | FullControlDto
+        'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                            | Scope      | FullScopeDto
+        'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                         | Scenario   | FullScenarioDto
+        'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                         | Incident   | FullIncidentDto
+        'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | Domain     | FullDomainDto
     }
 
     def "target reference for #type and #id is #reference"() {
@@ -151,25 +165,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         Scope    | '59d3c21d-2f21-4085-950d-1273056d664a' | '5c70c0b8-5882-4eaf-8bf8-98f9f5a923ea'
         Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | '28df429d-da5e-431a-a2d8-488c0741fb9f'
     }
-
-    def "creates and parses URLs for #type.simpleName"() {
-        when: "creating a target URL"
-        def targetUrl = referenceAssembler.targetReferenceOf(type, UUID.randomUUID().toString())
-        then: "it can be parsed back"
-        if(targetUrl != null) {
-            assert referenceAssembler.parseType(targetUrl) == type
-        }
-
-        when: "generating collection & search URLs"
-        referenceAssembler.resourcesReferenceOf(type)
-        referenceAssembler.searchesReferenceOf(type)
-        then:
-        notThrown(Exception)
-
-        where:
-        type << ModelObjectType.TYPES
-    }
-
 
     def "create an empty key reference"() {
         expect:
