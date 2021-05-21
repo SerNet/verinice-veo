@@ -20,24 +20,20 @@ package org.veo.core.entity;
 import java.util.UUID;
 
 /**
- * The basic model object interface, a model object can be observed via property
- * change listener.
+ * Base type for entities that act as aggregate roots and have a UUID
  */
 public interface ModelObject extends Versioned {
     Key<UUID> getId();
 
     /**
-     * Map the type to a String.
-     *
-     * @see ModelPackage
-     * @return
+     * @return Lowercase singular name for the specific model object type
      */
     String getModelType();
 
     void setId(Key<UUID> id);
 
     /**
-     * @return The specific interface for this type of model object.
+     * @return The specific interface for this type of model object
      */
     Class<? extends ModelObject> getModelInterface();
 }

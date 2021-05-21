@@ -20,7 +20,8 @@ package org.veo.core.entity;
 import java.util.Set;
 
 /**
- * A group of objects that form a logical unit
+ * A group of {@link EntityLayerSupertype} objects that form a logical unit. An
+ * object may belong to zero, one or multiple scopes. Scopes can contain scopes.
  */
 public interface Scope extends EntityLayerSupertype {
 

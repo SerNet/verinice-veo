@@ -18,5 +18,8 @@
 package org.veo.core.entity;
 
 public interface Displayable {
+    /**
+     * @return A simple human-readable name composed of basic object properties
+     */
     String getDisplayName();
 }

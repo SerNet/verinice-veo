@@ -46,7 +46,7 @@ public interface Versioned {
      * repository.</li>
      * </ul>
      */
-
+    @Deprecated // VEO-602
     public enum Lifecycle {
         CREATING, STORED_CURRENT, STORED_ARCHIVED, STORED_DRAFT, STORED_DELETED, DELETING
     }
@@ -54,11 +54,13 @@ public interface Versioned {
     /**
      * @see Lifecycle
      */
+    @Deprecated // VEO-602
     Lifecycle getState();
 
     /**
      * @see Lifecycle
      */
+    @Deprecated // VEO-602
     void setState(Lifecycle state);
 
     Instant getCreatedAt();
@@ -77,38 +79,16 @@ public interface Versioned {
 
     void setUpdatedBy(String username);
 
+    @Deprecated // VEO-602
     Instant getValidUntil();
 
+    @Deprecated // VEO-602
     void setValidUntil(Instant validUntil);
 
-    // @formatter:off
     /**
-     * The version number starts a 0 for a new object and is increased whenever
-     * the entity is edited by the user and saved.
-     *
-     * DRAFTs will have their version number increased. Whenever a DRAFT becomes
-     * the STORED_CURRENT version, the state of the previous version will be set
-     * to STORED_ARCHIVED (and may be moved to a separate database table that
-     * contains only archived data).
-     *
-     * When a draft is discarded, it will simply be deleted and the
-     * STORED_CURRENT remains unchanged. Then the object is finally deleted it
-     * will simply be marked as such:
-     *
-     * discard draft ┌──<────────────┐ ┌────────┐ save ┌────────┴─────┐ ┌──┴──┐
-     * save(*) ┌──────────────┐ del ┌──────────────┐(**)
-     * │CREATING├─────────>┤STORED_CURRENT├─────>┤DRAFT├─────────────>┤STORED_CURRENT├─────>┤STORED_DELETED│
-     * │ v0 │ │ v1 │ edit │ v2 ├─┐ │ v2 │ │ v2 │ └────────┘ └──────────────┘
-     * └───┬─┘ │ └──────────────┘ └──────────────┘ ▲ │ └───┘ overwrite draft
-     * (autosave)
-     *
-     * (*) When the DRAFT is saved, v1 will have its state set to
-     * STORED_ARCHIVED and its "validUntil" timestamp set to now(). (**) A
-     * deleted version will keep the version number but have its state set to
-     * STORED_DELETED and the "validUntil" field set to the timestamp of the
-     * delete operation. It will represent the last known state of the object.
+     * The version number starts at 0 for a new object and is increased whenever the
+     * entity is edited by the user and saved.
      */
-    // @formatter:on
     long getVersion();
 
     void setVersion(long version);

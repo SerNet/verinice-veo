@@ -18,7 +18,7 @@
 package org.veo.core.entity;
 
 /**
- * A process is a series of business activites that use specific assets.
+ * A process is a series of business activities that use specific assets.
  */
 public interface Process
         extends EntityLayerSupertype, CompositeEntity<Process>, RiskAffected<Process, ProcessRisk> {

@@ -26,8 +26,10 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 
 /**
- * The abstract base model class. Used to prevent duplicating common methods in
- * model layer objects.
+ * Base type for entities that belong to a unit (a.k.a domain objects). ELS
+ * instances may be assigned to a set of domains and may hold aspects, custom
+ * aspects & links within certain domains. They can also be of a domain-specific
+ * sub type.
  */
 public interface EntityLayerSupertype
         extends Nameable, ModelObject, ClientOwned, Catalogable, Designated {

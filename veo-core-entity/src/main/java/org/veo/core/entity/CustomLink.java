@@ -18,13 +18,19 @@
 package org.veo.core.entity;
 
 /**
- * A link connects two model objects. This link serve only documentation
- * purpose.
+ * A link connects two {@link EntityLayerSupertype} objects. It serves
+ * documentation purposes only. It's defined by its source (owning) entity &
+ * target entity, but may also hold dynamic attributes that document the link
+ * (just like the attributes on a custom aspect).
+ *
+ * @see CustomProperties
  */
 public interface CustomLink extends CustomProperties {
 
+    @Deprecated // VEO-572
     String getName();
 
+    @Deprecated // VEO-572
     void setName(String name);
 
     EntityLayerSupertype getTarget();
