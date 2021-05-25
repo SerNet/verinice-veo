@@ -27,7 +27,6 @@ import org.veo.adapter.presenter.api.dto.full.FullDomainDto
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
-import org.veo.core.entity.AbstractRisk
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.Catalog
@@ -37,6 +36,8 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
+import org.veo.core.entity.Process
+import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.rest.configuration.TypeExtractor
@@ -148,7 +149,7 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "target reference for #type and compound-id #entityId/#scenarioId is #reference"() {
         def risk = Stub(type) {
-            entity >> Stub(entityType) {
+            entity >> Stub(entityType as Class<EntityLayerSupertype>) {
                 id >> Key.uuidFrom(entityId)
             }
             scenario >> Stub(Scenario) {
@@ -162,8 +163,9 @@ class ReferenceAssemblerImplSpec extends Specification {
         result == reference
 
         where:
-        type      | entityType | entityId                               | scenarioId                             | reference
-        AssetRisk | Asset      | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
+        type        | entityType | entityId                               | scenarioId                             | reference
+        AssetRisk   | Asset      | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
+        ProcessRisk | Process    | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/processes/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
     }
 
     def "create a key for a reference to a #type with id #id "() {
