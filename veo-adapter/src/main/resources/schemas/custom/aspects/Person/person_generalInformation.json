@@ -8,12 +8,6 @@
       "format": "regex",
       "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
     },
-    "applicableTo": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
     "domains": {
       "type": "array",
       "title": "The list of domains in which this element is present.",

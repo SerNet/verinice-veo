@@ -116,7 +116,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(8)
+        assertInsertCount(7)
         assertUpdateCount(0)
         assertSelectCount(0)
     }
@@ -132,7 +132,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(4)
+        assertInsertCount(3)
         assertUpdateCount(0)
         assertSelectCount(0)
     }
@@ -147,7 +147,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         then:
         assertDeleteCount(0)
-        assertInsertCount(6)
+        assertInsertCount(5)
         assertUpdateCount(0)
         assertSelectCount(0)
     }
@@ -165,7 +165,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         assertDeleteCount(0)
         assertInsertCount(1)
         assertUpdateCount(0)
-        assertSelectCount(12)
+        assertSelectCount(10)
     }
 
     def "SQL performance for saving 1 composite person with 2 parts"() {
@@ -362,10 +362,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 0
 
         and:
-        assertDeleteCount(19)
+        assertDeleteCount(12)
         assertInsertCount(4)
         assertUpdateCount(0)
-        assertSelectCount(41)
+        assertSelectCount(36)
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
@@ -450,12 +450,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         def link1 = newCustomLink(process, asset) {
             type = "aLink"
-            applicableTo = ["Process"] as Set
         }
 
         def link2 = newCustomLink(process, person) {
             type = "anotherLink"
-            applicableTo = ["Process"] as Set
         }
 
         process.setLinks([link1, link2] as Set)
@@ -493,9 +491,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     def saveProcessWithCustomAspects(int count) {
         def process = newProcess(unit)
         for (i in 0..<count) {
-            CustomProperties cp = newCustomProperties("aType") {
-                applicableTo = ["Process"] as Set
-            }
+            CustomProperties cp = newCustomProperties("aType")
             process.addToCustomAspects(cp)
         }
         processRepository.save(process)
@@ -541,9 +537,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         for (i in 0..<count) {
             values.add("value_" + i)
         }
-        CustomProperties cp = newCustomProperties("aType") {
-            applicableTo = ["Process"] as Set
-        }
+        CustomProperties cp = newCustomProperties("aType")
         cp.setProperty(PROP_KEY, values as List)
         process.addToCustomAspects(cp)
         return processRepository.save(process)
@@ -576,18 +570,15 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         def link_person_asset = newCustomLink(compositePerson, asset) {
             type = "type1"
-            applicableTo = ["Person"] as Set
         }
         compositePerson.addToLinks(link_person_asset)
         compositePerson = personRepository.save(compositePerson)
 
         def link_asset_person = newCustomLink(asset, compositePerson) {
             type = "type2"
-            applicableTo = ["Asset"] as Set
         }
         def link_asset_process = newCustomLink(asset, process) {
             type = "type3"
-            applicableTo = ["Asset"] as Set
         }
         asset.addToLinks(link_asset_process)
         asset.addToLinks(link_asset_person)
@@ -595,14 +586,12 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
         def link_process_person = newCustomLink(process, compositePerson) {
             type = "type4"
-            applicableTo = ["Process"] as Set
         }
         process.addToLinks(link_process_person)
         process = processRepository.save(process)
 
         def link_asset_asset = newCustomLink(asset, asset2) {
             type = "type5"
-            applicableTo = ["Asset"] as Set
         }
         asset.addToLinks(link_asset_asset)
         asset = assetRepository.save(asset)

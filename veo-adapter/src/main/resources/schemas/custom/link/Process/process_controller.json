@@ -7,12 +7,6 @@
         "title": "Abbreviation",
         "type": "string"
       },
-      "applicableTo": {
-        "items": {
-          "type": "string"
-        },
-        "type": "array"
-      },
       "attributes": {
         "properties": {
           "process_controller_document": {

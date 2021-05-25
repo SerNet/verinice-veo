@@ -28,8 +28,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -70,10 +68,6 @@ public class CustomPropertiesData implements CustomProperties {
                // 'owner' must therefore be nullable for these entities:
                optional = true)
     private EntityLayerSupertype owner;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Column(name = "applicableto")
-    private Set<String> applicableTo = new HashSet<>();
 
     @ManyToMany(targetEntity = DomainData.class)
     final protected Set<Domain> domains = new HashSet<>();

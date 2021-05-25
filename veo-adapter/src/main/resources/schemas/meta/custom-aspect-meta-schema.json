@@ -28,8 +28,7 @@
       "required": [
         "id",
         "domains",
-        "attributes",
-        "applicableTo"
+        "attributes"
       ],
       "properties": {
         "id": {
@@ -38,14 +37,6 @@
             "title": "The UUID to identify the element",
             "format": "regex",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
-          }
-        },
-        "applicableTo": {
-          "const": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "type": {

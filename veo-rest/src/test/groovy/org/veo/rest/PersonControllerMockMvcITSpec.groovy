@@ -232,9 +232,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a person with custom properties"() {
         given: "a saved person"
 
-        CustomProperties cp = newCustomProperties("my.new.type") {
-            applicableTo = ['Person'] as Set
-        }
+        CustomProperties cp = newCustomProperties("my.new.type")
 
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
@@ -261,9 +259,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'person_generalInformation' :
                 [
-                    applicableTo: [
-                        "Person"
-                    ],
                     domains: [],
                     attributes:  [
                         person_generalInformation_salutation:'Ms.',
@@ -299,7 +294,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         entity.name == 'New person-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'person_generalInformation'
-        entity.customAspects.first().applicableTo == ['Person'] as Set
         entity.customAspects.first().stringProperties.person_generalInformation_salutation == 'Ms.'
         entity.customAspects.first().stringProperties.person_generalInformation_familyName == 'Schmidt'
     }

@@ -56,9 +56,7 @@ class CustomAspectPersistenceSpec extends VeoSpec {
     def "create an asset with a customAspect and save-load it"() {
         given: "a Unit and an asset"
 
-        CustomProperties cp = newCustomProperties('my.new.linktype') {
-            applicableTo = ['Asset'] as Set
-        }
+        CustomProperties cp = newCustomProperties('my.new.linktype')
 
         Client client = clientRepository.save(newClient())
         Unit unit = newUnit(client)
@@ -138,7 +136,6 @@ class CustomAspectPersistenceSpec extends VeoSpec {
         when: "add properties of type list string"
 
         CustomProperties aspect = newCustomProperties('my_new_asset_custom_aspect') {
-            applicableTo = ['Asset'] as Set
             it.setProperty('l1', ['e1', 'e2'])
         }
 
@@ -156,8 +153,6 @@ class CustomAspectPersistenceSpec extends VeoSpec {
 
         then: "list also"
 
-        savedAspect.applicableTo.size() == 1
-        savedAspect.applicableTo.contains('Asset')
         savedAspect.type == 'my_new_asset_custom_aspect'
         with(savedAspect.stringListProperties) {
             size() == 1

@@ -235,7 +235,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result == [
             customAspects:[
                 simpleAspect:[
-                    applicableTo:[],
                     attributes:[
                         simpleProp:'simpleValue'
                     ],
@@ -326,7 +325,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         CustomLink link = newCustomLink(sourceAsset, targetAsset) {
             type = "mypreciouslink"
-            applicableTo = ["Asset"] as Set
         }
         targetAsset.links.add(link)
 
@@ -350,7 +348,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.links.mypreciouslink.target.targetUri == [
             "http://localhost/assets/${sourceAsset.id.uuidValue()}"
         ]
-        result.links.mypreciouslink.applicableTo[0] == ['Asset']
 
         when: "all assets are queried"
         def allAssets = parseJson(get("/assets"))
@@ -537,9 +534,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "put an asset with custom properties"() {
         given: "a saved asset"
 
-        CustomProperties cp = newCustomProperties("my.new.type") {
-            applicableTo = ['Asset'] as Set
-        }
+        CustomProperties cp = newCustomProperties("my.new.type")
 
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
@@ -567,9 +562,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'asset_details' :
                 [
-                    applicableTo: [
-                        "Asset"
-                    ],
                     domains: [],
                     attributes:  [
                         asset_details_number: 1,
@@ -606,7 +598,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         entity.name == 'New asset-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'asset_details'
-        entity.customAspects.first().applicableTo == ['Asset'] as Set
         entity.customAspects.first().integerProperties.asset_details_number == 1
         entity.customAspects.first().stringProperties.asset_details_typeOfAsset == 'asset_details_typeOfAsset_physical'
     }

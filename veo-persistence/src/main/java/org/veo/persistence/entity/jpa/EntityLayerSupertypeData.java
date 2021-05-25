@@ -55,13 +55,12 @@ import lombok.ToString;
                           @NamedAttributeNode(value = "appliedCatalogItems"),
                           @NamedAttributeNode(value = "links"),
                           @NamedAttributeNode(value = "subTypeAspects") },
-                  subgraphs = {
-                          @NamedSubgraph(name = "customAspectGraph",
-                                         attributeNodes = {
-                                                 @NamedAttributeNode(value = "applicableTo"),
-                                                 // TODO VEO-448 make dataProperties LAZY and fetch
-                                                 // dataProperties.stringListValue here
-                                                 @NamedAttributeNode(value = "dataProperties"), }) })
+                  subgraphs = { @NamedSubgraph(name = "customAspectGraph",
+                                               attributeNodes = {
+                                                       // TODO VEO-448 make dataProperties LAZY and
+                                                       // fetch
+                                                       // dataProperties.stringListValue here
+                                                       @NamedAttributeNode(value = "dataProperties"), }) })
 public abstract class EntityLayerSupertypeData extends CatalogableData
         implements NameableData, EntityLayerSupertype {
 

@@ -375,9 +375,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a scope with custom properties"() {
         given: "a saved scope"
 
-        CustomProperties cp = newCustomProperties("my.new.type") {
-            applicableTo = ['Asset'] as Set
-        }
+        CustomProperties cp = newCustomProperties("my.new.type")
 
         def scope = txTemplate.execute {
             scopeRepository.save(newScope(unit) {
@@ -403,9 +401,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'scope_address' :
                 [
-                    applicableTo: [
-                        "Scope"
-                    ],
                     domains: [],
                     attributes:  [
                         scope_address_postcode: '1',
@@ -441,7 +436,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         entity.name == 'New scope 2'
         entity.abbreviation == 's-2'
         entity.customAspects.first().type == 'scope_address'
-        entity.customAspects.first().applicableTo == ['Scope'] as Set
         entity.customAspects.first().stringProperties.scope_address_postcode == '1'
         entity.customAspects.first().stringProperties.scope_address_country == 'Germany'
     }

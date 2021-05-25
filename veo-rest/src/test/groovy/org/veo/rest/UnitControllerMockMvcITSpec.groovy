@@ -419,9 +419,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_dataType' : [
                     [
-                        applicableTo: [
-                            "Process"
-                        ],
                         name:'test link prcess->asset',
                         domains: [],
                         attributes: [

@@ -87,14 +87,12 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
                 domains = [domain] as Set
                 customAspects = [
                     new CustomPropertiesData().tap {
-                        it.applicableTo = []
                         it.type = "my_custom_aspect"
                         it.setProperty("foo", "bar")
                     }
                 ] as Set
                 links = [
                     new CustomLinkData().tap {
-                        it.applicableTo = []
                         it.name = "no_name"
                         it.type = "my_little_link"
                         it.target = asset

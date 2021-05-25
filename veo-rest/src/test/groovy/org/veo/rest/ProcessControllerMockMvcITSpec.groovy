@@ -303,9 +303,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a process with custom aspect"() {
         given: "a saved process"
 
-        CustomProperties cp = newCustomProperties("my.new.type") {
-            applicableTo = ['Process'] as Set
-        }
+        CustomProperties cp = newCustomProperties("my.new.type")
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
@@ -334,9 +332,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_privacyImpactAssessment' :
                 [
-                    applicableTo: [
-                        "Process"
-                    ],
                     domains: [],
                     attributes: [
                         process_privacyImpactAssessment_approved: true,
@@ -373,7 +368,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'process_privacyImpactAssessment'
-        entity.customAspects.first().applicableTo == ['Process'] as Set
         entity.customAspects.first().booleanProperties.process_privacyImpactAssessment_approved
         entity.customAspects.first().stringProperties.process_privacyImpactAssessment_approvedComment == 'no comment'
     }
@@ -383,7 +377,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved process"
 
         CustomProperties cp = newCustomProperties("process_privacyImpactAssessment") {
-            applicableTo = ['Process'] as Set
             it.setProperty('process_privacyImpactAssessment_approvedComment', 'old comment')
         }
 
@@ -415,9 +408,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_privacyImpactAssessment' :
                 [
-                    applicableTo: [
-                        "Process"
-                    ],
                     domains: [],
                     attributes: [
                         process_privacyImpactAssessment_approvedComment:'new comment'
@@ -450,7 +440,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'process_privacyImpactAssessment'
-        entity.customAspects.first().applicableTo == ['Process'] as Set
         entity.customAspects.first().stringProperties.process_privacyImpactAssessment_approvedComment == 'new comment'
     }
 
@@ -502,9 +491,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_dataType' : [
                     [
-                        applicableTo: [
-                            "Process"
-                        ],
                         name:'test link prcess->asset',
                         domains: [],
                         attributes: [

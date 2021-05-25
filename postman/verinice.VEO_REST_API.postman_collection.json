@@ -1756,7 +1756,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"process_dataType\": [\n            {\n                \"type\": \"process_dataType\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"process_privacyImpactAssessment\": {\n            \"type\": \"process_privacyImpactAssessment\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"process_privacyImpactAssessment_approved\": true,\n                \"process_privacyImpactAssessment_approvedComment\": \"no comment\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"links\": {\n        \"process_dataType\": [\n            {\n                \"type\": \"process_dataType\",\n                \"name\": \"requires\",\n                \"target\": {\n                    \"targetUri\": \"/assets/{{assetId}}\"\n                }\n            }\n        ]\n    },\n    \"customAspects\": {\n        \"process_privacyImpactAssessment\": {\n            \"type\": \"process_privacyImpactAssessment\",\n            \"domains\": [],\n            \"attributes\": {\n                \"process_privacyImpactAssessment_approved\": true,\n                \"process_privacyImpactAssessment_approvedComment\": \"no comment\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -1857,7 +1857,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_generalInformation\": {\n            \"type\": \"person_generalInformation\",\n            \"applicableTo\": [\n                \"Person\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"person_generalInformation_salutation\": \"person_commons_salutation_ms\",\n                \"person_generalInformation_familyName\": \"Schmidt\"\n            }\n        }\n    }\n}",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_generalInformation\": {\n            \"type\": \"person_generalInformation\",\n            \"domains\": [],\n            \"attributes\": {\n                \"person_generalInformation_salutation\": \"person_commons_salutation_ms\",\n                \"person_generalInformation_familyName\": \"Schmidt\"\n            }\n        }\n    }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1964,7 +1964,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"control_dataProtection\": {\n            \"type\": \"control_dataProtection\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"control_dataProtection_objectives\": [\"control_dataProtection_objectives_pseudonymization\"]\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"control_dataProtection\": {\n            \"type\": \"control_dataProtection\",\n            \"domains\": [],\n            \"attributes\": {\n                \"control_dataProtection_objectives\": [\"control_dataProtection_objectives_pseudonymization\"]\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -2066,7 +2066,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_typeOfAsset\": \"asset_details_typeOfAsset_physical\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_typeOfAsset\": \"asset_details_typeOfAsset_physical\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",

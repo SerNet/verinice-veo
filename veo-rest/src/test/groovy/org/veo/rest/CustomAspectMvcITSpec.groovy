@@ -57,9 +57,6 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
         def personId = parseJson(post("/persons", [
             customAspects: [
                 person_generalInformation: [
-                    applicableTo: [
-                        "person"
-                    ],
                     attributes: [
                         person_generalInformation_salutation: "Mr.",
                         person_generalInformation_familyName: "Mick"
@@ -67,9 +64,6 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
                     domains: [],
                 ],
                 person_dataProtectionOfficer: [
-                    applicableTo: [
-                        "person"
-                    ],
                     attributes: [
                         person_dataProtectionOfficer_expertise: true
                     ],

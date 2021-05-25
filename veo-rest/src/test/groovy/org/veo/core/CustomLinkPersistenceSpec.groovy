@@ -69,7 +69,6 @@ class CustomLinkPersistenceSpec extends VeoSpec {
         CustomLink cp = entityFactory.createCustomLink("My link", person, asset)
 
         cp.setType('my.new.linktype')
-        cp.setApplicableTo(['Asset'] as Set)
 
         asset.setLinks([cp] as Set)
 

@@ -34,10 +34,6 @@ public interface CustomProperties {
 
     void setType(String aType);
 
-    Set<String> getApplicableTo();
-
-    void setApplicableTo(Set<String> aApplicableTo);
-
     /**
      * Add the given Domain to the collection domains.
      *

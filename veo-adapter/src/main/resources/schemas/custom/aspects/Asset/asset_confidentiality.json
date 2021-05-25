@@ -1,12 +1,6 @@
 {
   "additionalProperties": false,
   "properties": {
-    "applicableTo": {
-      "items": {
-        "type": "string"
-      },
-      "type": "array"
-    },
     "attributes": {
       "properties": {
         "asset_confidentiality_impact": {

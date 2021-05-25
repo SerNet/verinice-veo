@@ -67,12 +67,6 @@ public class CustomPropertiesDto {
             accessMode = Schema.AccessMode.READ_ONLY)
     private String updatedBy;
 
-    // TODO Add an example for the API documentation for field applicableTo.
-    @Schema(description = "The applicableTo for the CustomProperties.",
-            example = "<add example here>",
-            required = false)
-    private Set<String> applicableTo = Collections.emptySet();
-
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
 
     private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();

@@ -147,9 +147,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'control_dataProtection' :
                 [
-                    applicableTo: [
-                        "Control"
-                    ],
                     domains: [],
                     attributes:  [
                         control_dataProtection_objectives:[
@@ -353,9 +350,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a control with custom properties"() {
         given: "a saved control"
 
-        def cp = newCustomProperties("my.new.type") {
-            it.setApplicableTo(['Control'] as Set)
-        }
+        def cp = newCustomProperties("my.new.type")
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
@@ -380,9 +375,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'control_dataProtection' :
                 [
-                    applicableTo: [
-                        "Control"
-                    ],
                     domains: [],
                     attributes:  [
                         control_dataProtection_objectives:[
@@ -412,9 +404,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a control with a string property that is too long"() {
         given: "a saved control"
 
-        CustomProperties cp = newCustomProperties("my.new.type") {
-            applicableTo = ['Control'] as Set
-        }
+        CustomProperties cp = newCustomProperties("my.new.type")
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
@@ -439,9 +429,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'ControlDataProtectionObjectivesEugdpr' :
                 [
-                    applicableTo: [
-                        "Control"
-                    ],
                     domains: [],
                     attributes:  [
                         test: 'X' * 20000

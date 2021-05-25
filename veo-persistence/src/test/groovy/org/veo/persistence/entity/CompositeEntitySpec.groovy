@@ -254,9 +254,7 @@ class CompositeEntitySpec extends VeoSpec {
         def link = newCustomLink(p2, p1)
         p1.addToLinks(link)
 
-        def customAspect = newCustomProperties("type") {
-            applicableTo = [Process.typeName] as Set
-        }
+        def customAspect = newCustomProperties("type")
         p1.addToCustomAspects(customAspect)
 
         when: "a composite is reinstantiated with the processes:"
@@ -266,9 +264,7 @@ class CompositeEntitySpec extends VeoSpec {
         and: "another object should be compared"
         def p3 = newProcess(unit)
 
-        def customAspect2 = newCustomProperties("type2") {
-            applicableTo = [Process.typeName] as Set
-        }
+        def customAspect2 = newCustomProperties("type2")
         p3.addToCustomAspects(customAspect2)
 
         def link2 = newCustomLink(p2, p3)
