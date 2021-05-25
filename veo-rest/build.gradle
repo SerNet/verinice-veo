@@ -47,6 +47,8 @@ dependencies {
     testImplementation 'org.codehaus.groovy:groovy-json'
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    testRuntimeOnly 'org.testcontainers:postgresql'
 }
 
 jar {

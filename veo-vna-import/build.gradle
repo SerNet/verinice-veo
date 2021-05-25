@@ -14,7 +14,7 @@ dependencies {
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    testRuntimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'org.testcontainers:postgresql'
 }
 
 jar {

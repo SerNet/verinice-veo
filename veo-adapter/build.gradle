@@ -31,8 +31,6 @@ dependencies {
     testImplementation 'com.networknt:json-schema-validator'
     testImplementation 'org.codehaus.groovy:groovy-json'
 
-    testRuntimeOnly 'com.h2database:h2'
-
     generateSchemas 'com.github.victools:jsonschema-generator'
     generateSchemas 'com.github.victools:jsonschema-module-jackson'
     generateSchemas 'com.github.victools:jsonschema-module-javax-validation'
