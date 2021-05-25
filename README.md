@@ -72,8 +72,6 @@ The database connection can be modified by setting the following properties as n
 export spring_datasource_url=jdbc:postgresql://127.0.0.1:5432/v2020
 export spring_datasource_username=verinice
 export spring_datasource_password=verinice
-export spring_datasource_driver-class-name=org.postgresql.Driver
-export spring_jpa_database-platform=org.hibernate.dialect.PostgreSQLDialect
 ```
 
 ### Profiles
@@ -82,15 +80,15 @@ Spring profiles can be used to tailor the appication for different runtime and d
 Profiles can be activated via the command line on launch:
 
 ```bash
-./gradlew -P springProfiles=h2 veo-rest:bootRun
+./gradlew -P springProfiles=stats veo-rest:bootRun
 or
-java -Dspring.profiles.active=h2,local -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
+java -Dspring.profiles.active=stats,local -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
 ```
 
 Profiles can also be set using environment variables:
 
 ```bash
-SPRING_PROFILES_ACTIVE: h2,local
+SPRING_PROFILES_ACTIVE: stats,local
 ```
 
 For more information on how to use profiles see [the reference documentation](https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-definition-profiles)
@@ -101,10 +99,6 @@ The following profiles are supported by the application:
 This profile is active when unit or integration tests are running. It can be used to deactivate certain beans
 and configurations that should not be running during tests because they are replaced by mocks/stubs or because
 they are not required.
-
-#### Profile 'h2'
-This profile starts and uses an in-memory H2 database. This is used for integration tests but can also be utilized to
-run a database during exploratory tests or when trying out the application locally.
 
 #### Profile 'stats'
 This profile enables a data source proxy that logs all generated SQL. It can be used for debugging. It is

@@ -41,6 +41,7 @@ spring:
     serialization:
       write-dates-as-timestamps: false
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
     ## Turn OSIV off - only the business layer decides the fetching strategy for a particular use case:
@@ -64,6 +65,7 @@ spring:
           # IMPORTANT: hikari.auto-commit=false must be set as well
           provider_disables_autocommit: true
   datasource:
+    driver-class-name: org.postgresql.Driver
     hikari:
       auto-commit: false
   rabbitmq:
