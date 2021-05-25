@@ -2,6 +2,7 @@
   "additionalProperties": false,
   "properties": {
     "attributes": {
+      "additionalProperties": false,
       "properties": {
         "scope_impactAvailability_financialImpactHigh": {
           "type": "string"

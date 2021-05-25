@@ -8,6 +8,7 @@
         "type": "string"
       },
       "attributes": {
+        "additionalProperties": false,
         "properties": {
           "process_controller_document": {
             "format": "uri",

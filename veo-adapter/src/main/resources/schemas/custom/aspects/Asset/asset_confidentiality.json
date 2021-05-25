@@ -2,6 +2,7 @@
   "additionalProperties": false,
   "properties": {
     "attributes": {
+      "additionalProperties": false,
       "properties": {
         "asset_confidentiality_impact": {
           "enum": [

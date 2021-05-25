@@ -2,6 +2,7 @@
   "additionalProperties": false,
   "properties": {
     "attributes": {
+      "additionalProperties": false,
       "properties": {
         "scope_deputyManagement_email": {
           "type": "string"

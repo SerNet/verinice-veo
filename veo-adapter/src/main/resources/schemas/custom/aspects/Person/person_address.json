@@ -49,6 +49,7 @@
       }
     },
     "attributes": {
+      "additionalProperties": false,
       "type": "object",
       "properties": {
         "person_address_address1": {

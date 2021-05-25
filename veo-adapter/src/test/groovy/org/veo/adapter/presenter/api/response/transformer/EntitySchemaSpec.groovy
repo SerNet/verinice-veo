@@ -39,6 +39,7 @@ class EntitySchemaSpec extends Specification{
                         SuperAspect: [
                             properties: [
                                 attributes: [
+                                    additionalProperties: false,
                                     properties: [
                                         foo1: [
                                             type: "string"
@@ -60,6 +61,7 @@ class EntitySchemaSpec extends Specification{
                                 type : "object" ,
                                 properties : [
                                     attributes: [
+                                        additionalProperties: false,
                                         properties: [
                                             fa1: [
                                                 type: "string"
@@ -87,6 +89,7 @@ class EntitySchemaSpec extends Specification{
                                 type : "object" ,
                                 properties : [
                                     attributes: [
+                                        additionalProperties: false,
                                         properties: [
                                         ]
                                     ],

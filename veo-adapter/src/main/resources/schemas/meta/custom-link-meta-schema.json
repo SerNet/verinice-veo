@@ -329,10 +329,15 @@
             
           },
           "required": [
+            "additionalProperties",
             "type",
             "properties"
           ],
           "properties": {
+            "additionalProperties": {
+              "type": "boolean",
+              "const": false
+            },
             "type": {
               "$id": "#/properties/properties/properties/attributes/properties/type",
               "type": "string",
