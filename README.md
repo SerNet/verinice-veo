@@ -272,13 +272,6 @@ This module contains the JAXB class files for accessing SNCA.xml from verinice.
 ### veo-rest
 This module contains the implementation of the REST services of the REST API.
 
-The JSON schemas accepted by the API can be found in *${veo.basedir}/schemas/*. If this directory
-does not exist, built-in schema files will be served as default.
-
-*veo.basedir* can be set in *application.properties* and is */var/lib/veo* by
-default. The gradle task `bootRun` sets *veo.basedir* to
-*$HOME/.local/share/veo*.
-
 ### veo-vna-import [DEPRECATED]
 This module contains an importer for verinice archives (VNAs). It has to be fixed to work with the new data model.
 

@@ -2,7 +2,6 @@ server:
   port: 8070
 
 veo:
-  basedir: ${user.home}/.local/share/veo
   cors:
     origins: <ALLOWED_ORIGIN1>, <ALLOWED_ORIGIN2>
   # Salt for hashing the ETags, enter a 10 random characters
