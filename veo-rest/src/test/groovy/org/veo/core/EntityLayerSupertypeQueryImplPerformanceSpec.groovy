@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount
-import static com.vladmihalcea.sql.SQLStatementCountValidator.reset
-
 import javax.persistence.EntityManager
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,6 +35,8 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.CustomLinkData
 import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.ProcessData
+
+import net.ttddyy.dsproxy.QueryCountHolder
 
 @SpringBootTest(classes = EntityLayerSupertypeQueryImplPerformanceSpec.class)
 @ActiveProfiles(["test", "stats"])
@@ -75,7 +74,7 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
 
     def "query efficiently fetches results"() {
         given:
-        reset()
+        QueryCountHolder.clear()
         final def testProcessCount = 10
 
         def asset = assetRepository.save(newAsset(unit))
@@ -100,7 +99,7 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
             })
         }
         processRepository.saveAll(processes)
-        assertSelectCount(0)
+        QueryCountHolder.grandTotal.select == 0
 
         when:
         def result = processRepository.query(client).execute(PagingConfiguration.UNPAGED)
@@ -116,6 +115,6 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
 
         // TODO: VEO-448 Reduce query selects to 3 by joining all that is EAGER now.
         // assertSelectCount(3)
-        assertSelectCount(3 + testProcessCount)
+        QueryCountHolder.grandTotal.select == 3 + testProcessCount
     }
 }

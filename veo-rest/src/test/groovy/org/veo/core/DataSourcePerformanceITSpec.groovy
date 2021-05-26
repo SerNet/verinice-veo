@@ -17,12 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import static com.vladmihalcea.sql.SQLStatementCountValidator.assertDeleteCount
-import static com.vladmihalcea.sql.SQLStatementCountValidator.assertInsertCount
-import static com.vladmihalcea.sql.SQLStatementCountValidator.assertSelectCount
-import static com.vladmihalcea.sql.SQLStatementCountValidator.assertUpdateCount
-import static com.vladmihalcea.sql.SQLStatementCountValidator.reset
-
 import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,6 +41,9 @@ import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+
+import net.ttddyy.dsproxy.QueryCount
+import net.ttddyy.dsproxy.QueryCountHolder
 
 @SpringBootTest(classes = DataSourcePerformanceITSpec.class)
 @ActiveProfiles(["test", "stats"])
@@ -79,14 +76,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     def "SQL performance for saving a new domain, client and unit"() {
         when:
-        reset()
-        createClient()
-
+        def queryCounts = trackQueryCounts{
+            createClient()
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(6)
-        assertUpdateCount(0)
-        assertSelectCount(5)
+        queryCounts.delete == 0
+        queryCounts.insert == 6
+        queryCounts.update == 0
+        queryCounts.select == 5
     }
 
     def "SQL performance for saving 1 process"() {
@@ -94,14 +91,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        saveProcess("process1")
-
+        def queryCounts = trackQueryCounts{
+            saveProcess("process1")
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(2)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 2
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
     def "SQL performance for saving 1 process with 2 links to 1 asset and 1 composite person"() {
@@ -109,14 +106,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        saveProcessWithLinks()
-
+        def queryCounts = trackQueryCounts{
+            saveProcessWithLinks()
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(7)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 7
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
 
@@ -125,14 +122,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        saveProcessWithCustomAspects(10)
-
+        def queryCounts = trackQueryCounts{
+            saveProcessWithCustomAspects(10)
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(3)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 3
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
     def "SQL performance for saving 1 process with 1 customAspect with 10 array properties"() {
@@ -140,14 +137,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        def process = saveProcessWithArrayCustomAspect(10)
-
+        def queryCounts = trackQueryCounts{
+            def process = saveProcessWithArrayCustomAspect(10)
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(5)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 5
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
     def "SQL performance for putting 1 string value in 1 customAspect with 10 existing values"() {
@@ -156,14 +153,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def process = saveProcessWithArrayCustomAspect(10)
 
         when:
-        reset()
-        updateProcessWithArrayCustomAspect(process)
-
+        def queryCounts = trackQueryCounts{
+            updateProcessWithArrayCustomAspect(process)
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(1)
-        assertUpdateCount(0)
-        assertSelectCount(10)
+        queryCounts.delete == 0
+        queryCounts.insert == 1
+        queryCounts.update == 0
+        queryCounts.select == 10
     }
 
     def "SQL performance for saving 1 composite person with 2 parts"() {
@@ -171,17 +168,17 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        savePerson([
-            newPerson(unit),
-            newPerson(unit)
-        ])
-
+        def queryCounts = trackQueryCounts{
+            savePerson([
+                newPerson(unit),
+                newPerson(unit)
+            ])
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(3)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 3
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
     def "SQL performance for saving 1 scope with 2 persons"() {
@@ -189,17 +186,17 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        saveScope("Scope 1", [
-            newPerson(unit),
-            newPerson(unit)
-        ])
-
+        def queryCounts = trackQueryCounts{
+            saveScope("Scope 1", [
+                newPerson(unit),
+                newPerson(unit)
+            ])
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(4)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 4
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
 
@@ -208,16 +205,16 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        saveScope("Scope 1",(1..100).collect{
-            newPerson(unit)
-        })
-
+        def queryCounts = trackQueryCounts{
+            saveScope("Scope 1",(1..100).collect{
+                newPerson(unit)
+            })
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(13)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 13
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
     def "SQL performance for saving 1 scope with 100 persons with 2 parts each"() {
@@ -225,21 +222,21 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        saveScope("Scope 1",(1..100).collect{
-            newPerson(unit) {
-                parts = [
-                    newPerson(unit),
-                    newPerson(unit)
-                ]
-            }
-        })
-
+        def queryCounts = trackQueryCounts{
+            saveScope("Scope 1",(1..100).collect{
+                newPerson(unit) {
+                    parts = [
+                        newPerson(unit),
+                        newPerson(unit)
+                    ]
+                }
+            })
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(33)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 33
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
     def "SQL performance for saving 1 scope with 10 persons with 10 parts each"() {
@@ -247,20 +244,20 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClient()
 
         when:
-        reset()
-        saveScope("Scope 1",(1..10).collect{
-            newPerson(unit) {
-                parts =(1..10).collect{
-                    newPerson(unit)
+        def queryCounts = trackQueryCounts{
+            saveScope("Scope 1",(1..10).collect{
+                newPerson(unit) {
+                    parts =(1..10).collect{
+                        newPerson(unit)
+                    }
                 }
-            }
-        })
-
+            })
+        }
         then:
-        assertDeleteCount(0)
-        assertInsertCount(14)
-        assertUpdateCount(0)
-        assertSelectCount(0)
+        queryCounts.delete == 0
+        queryCounts.insert == 14
+        queryCounts.update == 0
+        queryCounts.select == 0
     }
 
     def "SQL performance for adding 100 persons with 2 parts each to an existing scope"() {
@@ -269,14 +266,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def scope = saveScope("scope")
 
         when:
-        reset()
-        saveWithAddedCompositePersons(100, "person", scope )
-
+        def queryCounts = trackQueryCounts{
+            saveWithAddedCompositePersons(100, "person", scope )
+        }
         then:
-        assertDeleteCount(1)
-        assertInsertCount(35)
-        assertUpdateCount(5)
-        assertSelectCount(7)
+        queryCounts.delete == 1
+        queryCounts.insert == 35
+        queryCounts.update == 5
+        queryCounts.select == 7
     }
 
     def "SQL performance for selecting units of a client"() {
@@ -285,15 +282,16 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createClientUnits(100)
 
         when:
-        reset()
-        def units = selectUnits()
-
+        def units
+        def queryCounts = trackQueryCounts{
+            units = selectUnits()
+        }
         then:
         units.size() == 101
-        assertDeleteCount(0)
-        assertInsertCount(0)
-        assertUpdateCount(0)
-        assertSelectCount(1)
+        queryCounts.delete == 0
+        queryCounts.insert == 0
+        queryCounts.update == 0
+        queryCounts.select == 1
     }
 
     def "SQL performance for selecting subunits of a unit"() {
@@ -302,15 +300,16 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createSubUnits(100)
 
         when:
-        reset()
-        def units = selectSubUnits(unit)
-
+        def units
+        def queryCounts = trackQueryCounts{
+            units = selectSubUnits(unit)
+        }
         then:
         units.size() == 100
-        assertDeleteCount(0)
-        assertInsertCount(0)
-        assertUpdateCount(0)
-        assertSelectCount(2)
+        queryCounts.delete == 0
+        queryCounts.insert == 0
+        queryCounts.update == 0
+        queryCounts.select == 2
     }
 
     def "SQL performance for deleting 1 unit with 100 persons of 2 parts each"() {
@@ -324,15 +323,15 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
 
         when:
-        reset()
-        personRepository.deleteByUnit(unit)
-        unitRepository.delete(unit)
-
+        def queryCounts = trackQueryCounts{
+            personRepository.deleteByUnit(unit)
+            unitRepository.delete(unit)
+        }
         then:
-        assertDeleteCount(16)
-        assertInsertCount(11)
-        assertUpdateCount(0)
-        assertSelectCount(11)
+        queryCounts.delete == 16
+        queryCounts.insert == 11
+        queryCounts.update == 0
+        queryCounts.select == 11
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
@@ -341,9 +340,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         createLinkedEntities()
 
         when:
-        reset()
-        deleteUnit()
-
+        def queryCounts = trackQueryCounts{
+            deleteUnit()
+        }
         then: "all entities are removed"
         with(personRepository.query(client)) {
             whereUnitIn([unit] as Set)
@@ -360,10 +359,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 0
 
         and:
-        assertDeleteCount(12)
-        assertInsertCount(4)
-        assertUpdateCount(0)
-        assertSelectCount(36)
+        queryCounts.delete == 12
+        queryCounts.insert == 4
+        queryCounts.update == 0
+        queryCounts.select == 32
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
@@ -382,17 +381,17 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         client = clientRepository.save(client)
 
         when:
-        reset()
-        units.each {
-            it.addToDomains(domain2)
+        def queryCounts = trackQueryCounts{
+            units.each {
+                it.addToDomains(domain2)
+            }
+            unitRepository.saveAll(units)
         }
-        unitRepository.saveAll(units)
-
         then:
-        assertDeleteCount(0)
-        assertInsertCount(2)
-        assertUpdateCount(1)
-        assertSelectCount(6)
+        queryCounts.delete == 0
+        queryCounts.insert == 2
+        queryCounts.update == 1
+        queryCounts.select == 6
     }
 
     @Transactional
@@ -602,5 +601,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         processRepository.deleteByUnit(unit)
         scopeRepository.deleteByUnit(unit)
         unitRepository.delete(unit)
+    }
+
+    static QueryCount trackQueryCounts(Closure cl) {
+        QueryCountHolder.clear()
+        cl.call()
+        QueryCountHolder.grandTotal
     }
 }

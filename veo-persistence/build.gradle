@@ -4,13 +4,13 @@ apply plugin: 'java-library'
 dependencies {
 
     api project(":veo-core-usecase")
+    api 'net.ttddyy:datasource-proxy'
 
     compileOnly 'org.projectlombok:lombok'
 
     compileOnly 'javax.validation:validation-api'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'net.ttddyy:datasource-proxy'
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
