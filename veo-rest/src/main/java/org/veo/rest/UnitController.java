@@ -39,7 +39,6 @@ import javax.validation.constraints.NotBlank;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -142,7 +141,6 @@ public class UnitController extends AbstractEntityController {
         });
     }
 
-    @Async
     @GetMapping(value = "/{id}")
     @Operation(summary = "Loads a unit")
     @ApiResponses(value = {
@@ -167,7 +165,6 @@ public class UnitController extends AbstractEntityController {
     }
 
     // TODO: veo-279 use the complete dto
-    @Async
     @PostMapping()
     @Operation(summary = "Creates a unit")
     @ApiResponses(value = {
@@ -188,7 +185,6 @@ public class UnitController extends AbstractEntityController {
                                          });
     }
 
-    @Async
     @PutMapping(value = "/{id}")
     // @Operation(summary = "Updates a unit")
     // @ApiResponses(value = { @ApiResponse(responseCode = "200", description =
@@ -210,7 +206,6 @@ public class UnitController extends AbstractEntityController {
                                          output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
     }
 
-    @Async
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Deletes a unit")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Unit deleted"),

@@ -32,7 +32,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -95,7 +94,6 @@ public class CatalogController extends AbstractEntityController {
         this.getCatalogItemsUseCase = getCatalogItemsUseCase;
     }
 
-    @Async
     @GetMapping(value = "/{id}")
     @Operation(summary = "Loads a catalog")
     @ApiResponses(value = {
@@ -183,7 +181,6 @@ public class CatalogController extends AbstractEntityController {
         });
     }
 
-    @Async
     @GetMapping(value = "/{id}/items/{itemId}")
     @Operation(summary = "Loads a catalogitem")
     @ApiResponses(value = {
