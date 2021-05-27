@@ -32,7 +32,6 @@ import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
-import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.access.jpa.IncidentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
@@ -61,9 +60,6 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired
     DomainTemplateDataRepository domainTemplateDataRepository
-
-    @Autowired
-    DomainDataRepository domainDataRepository
 
     @Autowired
     UnitDataRepository unitDataRepository
