@@ -126,7 +126,8 @@ pipeline {
                         error 'LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport'
                     }
                 }
-                sh './gradlew --no-daemon check -x test'
+                 // work around https://github.com/spotbugs/spotbugs-gradle-plugin/issues/391
+                sh './gradlew --no-daemon check -x test -x spotbugsTest'
             }
             post {
                 always {
