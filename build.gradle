@@ -165,8 +165,8 @@ subprojects {
         ruleSets = []
         rulesMinimumPriority = 2
         consoleOutput = true
+        sourceSets = project.sourceSets.matching {it.name != 'test'}
     }
-    pmdTest.enabled = false
 
     spotbugs.excludeFilter = rootProject.file('misc/spotbugs/exclude.xml')
     spotbugsTest.enabled = false
