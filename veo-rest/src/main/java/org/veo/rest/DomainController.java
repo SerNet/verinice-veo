@@ -32,7 +32,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -115,7 +114,6 @@ public class DomainController extends AbstractEntityController {
 
     }
 
-    @Async
     @GetMapping(value = "/{id}")
     @Operation(summary = "Loads a domain")
     @ApiResponses(value = {
