@@ -97,24 +97,24 @@ For more information on how to use profiles see [the reference documentation](ht
 
 The following profiles are supported by the application:
 
-## Profile 'test'
+#### Profile 'test'
 This profile is active when unit or integration tests are running. It can be used to deactivate certain beans
 and configurations that should not be running during tests because they are replaced by mocks/stubs or because
 they are not required.
 
-## Profile 'h2'
+#### Profile 'h2'
 This profile starts and uses an in-memory H2 database. This is used for integration tests but can also be utilized to
 run a database during exploratory tests or when trying out the application locally.
 
-## Profile 'stats'
+#### Profile 'stats'
 This profile enables a data source proxy that logs all generated SQL. It can be used for debugging. It is
 also used for tests that analyze the generated SQL queries for possible performance issues.
 
-## Profile 'publishing-enabled'
+#### Profile 'publishing-enabled'
 This profile will enable an event-dispatcher that forwards the generated application events to an external AMQP message broker.
 The dispatcher needs to be configured using the corresponding settings found in `application.yaml`.
 
-## Profile 'local'
+#### Profile 'local'
 (Or any other self-defined profile name). Loads additional configuration files that can be used to set up
 a dev environment, increase log levels and such. This profile will look for and load an additional property
 file called `application-local.[yaml|properties]`
