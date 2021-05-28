@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
 import org.veo.core.entity.event.StoredEvent;
 
@@ -40,8 +41,18 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StoredEventData implements StoredEvent {
+
+    /**
+     * This uses a sequence with a large increment to make ID generation more
+     * efficient. This can lead to gaps in the IDs if the application is restarted,
+     * so the consumer must not rely on IDs being consecutive.
+     *
+     * @see <a href=
+     *      "https://vladmihalcea.com/hibernate-hidden-gem-the-pooled-lo-optimizer">https://vladmihalcea.com/hibernate-hidden-gem-the-pooled-lo-optimizer</a>
+     */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_events")
+    @SequenceGenerator(name = "seq_events", allocationSize = 50)
     private Long id;
 
     @Column(length = 100000)

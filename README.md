@@ -296,6 +296,13 @@ call `./misc/scripts/authenticate -h` for more details.
 (See the section on using postman for another alternative.)
 
 
+## Events
+
+veo-rest records changed to entities and sends them to an external message queue (see Profile 'publishing-enabled').
+
+To ensure that all events are successfully published, the same event may be transmitted multiple times. Therefore, consumers are required to keep track of which events they already received. Due to how those events are handled internally, gaps may occur in their IDs, so consumers must not rely on event IDs being consecutive.
+
+
 ## Code Styles
 Code styles are enforced using the gradle plugins
 [pmd](https://docs.gradle.org/current/userguide/pmd_plugin.html) and
