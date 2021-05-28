@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core
 
+import javax.persistence.SequenceGenerator
 import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,6 +42,8 @@ import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.access.jpa.StoredEventDataRepository
+import org.veo.persistence.entity.jpa.StoredEventData
 
 import net.ttddyy.dsproxy.QueryCount
 import net.ttddyy.dsproxy.QueryCountHolder
@@ -71,8 +74,30 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     @Autowired
     private DomainRepositoryImpl domainRepository
 
+    @Autowired
+    private StoredEventDataRepository storedEventRepository
+
     private Client client
     private Unit unit
+
+    /**
+     * to create a predictable number of select statements, we need to make sure
+     * that the number of queries to the seq_events sequence is always the same.
+     * Therefore, we insert dummy events until the highest ID is a multiple of the
+     * allocationSize of the @SequenceGenerator.
+     *
+     * @see {@link org.veo.persistence.entity.jpa.StoredEventData#id}
+     * @see {@link javax.persistence.SequenceGenerator#allocationSize()}
+     */
+    def setup() {
+        txTemplate.execute {
+            def highestId = storedEventRepository.save(new StoredEventData()).id
+            int allocationSize = StoredEventData.class.getDeclaredField('id').getAnnotation(SequenceGenerator).allocationSize()
+            while (!(highestId % allocationSize == 0)) {
+                highestId= storedEventRepository.save(new StoredEventData()).id
+            }
+        }
+    }
 
     def "SQL performance for saving a new domain, client and unit"() {
         when:
@@ -83,7 +108,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 6
         queryCounts.update == 0
-        queryCounts.select == 5
+        queryCounts.select == 6
     }
 
     def "SQL performance for saving 1 process"() {
@@ -214,7 +239,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 13
         queryCounts.update == 0
-        queryCounts.select == 0
+        queryCounts.select == 2
     }
 
     def "SQL performance for saving 1 scope with 100 persons with 2 parts each"() {
@@ -236,7 +261,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 33
         queryCounts.update == 0
-        queryCounts.select == 0
+        queryCounts.select == 6
     }
 
     def "SQL performance for saving 1 scope with 10 persons with 10 parts each"() {
@@ -257,7 +282,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 14
         queryCounts.update == 0
-        queryCounts.select == 0
+        queryCounts.select == 2
     }
 
     def "SQL performance for adding 100 persons with 2 parts each to an existing scope"() {
@@ -273,7 +298,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 1
         queryCounts.insert == 35
         queryCounts.update == 5
-        queryCounts.select == 7
+        queryCounts.select == 15
     }
 
     def "SQL performance for selecting units of a client"() {
@@ -331,7 +356,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 16
         queryCounts.insert == 11
         queryCounts.update == 0
-        queryCounts.select == 11
+        queryCounts.select == 17
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
