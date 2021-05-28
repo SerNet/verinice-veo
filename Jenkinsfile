@@ -105,6 +105,7 @@ pipeline {
             }
             steps {
                 sh './gradlew --no-daemon -PciBuildNumer=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
+                archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar, veo-vna-import/build/libs/*.jar', fingerprint: true
             }
         }
         stage('Analyze') {
@@ -222,11 +223,6 @@ pipeline {
                     )
                   ]
                 )
-            }
-        }
-        success {
-            node('') {
-                archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar, veo-vna-import/build/libs/*.jar', fingerprint: true
             }
         }
     }
