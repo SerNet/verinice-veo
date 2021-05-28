@@ -16,3 +16,7 @@ dependencies {
 
     testRuntimeOnly 'com.h2database:h2'
 }
+
+jar {
+    enabled = false
+}

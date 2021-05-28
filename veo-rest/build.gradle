@@ -49,6 +49,10 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
+jar {
+    enabled = false
+}
+
 bootRun {
     def activeSpringProfiles = 'psql'
     findProperty('springProfiles')?.with { activeSpringProfiles = it }
