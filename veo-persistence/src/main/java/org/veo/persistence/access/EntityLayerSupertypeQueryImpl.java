@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,6 +73,15 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
                 criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)
                                            .get("subType"),
                                        values, criteriaBuilder));
+    }
+
+    @Override
+    public void whereDisplayNameContainsIgnoreCase(Set<String> values) {
+        mySpec = mySpec.and((root, query, criteriaBuilder) -> criteriaBuilder.or(values.stream()
+                                                                                       .map(str -> criteriaBuilder.like(criteriaBuilder.upper(root.get("displayName")),
+                                                                                                                        "%" + str.toUpperCase(Locale.GERMAN)
+                                                                                                                                + "%"))
+                                                                                       .toArray(Predicate[]::new)));
     }
 
     @Override

@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -84,43 +80,10 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> impleme
         }
 
         if (input.getDisplayName() != null) {
-            // TODO VEO-546 enable paged query with display name filter
-            var result = query.execute(PagingConfiguration.UNPAGED)
-                              .getResultPage();
-            int pageSize = input.getPagingConfiguration()
-                                .getPageSize();
-            result = filterByDisplayName(result, input.getDisplayName()
-                                                      .getValues());
-            result.sort(Comparator.comparing(EntityLayerSupertype::getDisplayName));
-            int numberOfResults = result.size();
-            int offsetStart = input.getPagingConfiguration()
-                                   .getPageNumber()
-                    * pageSize;
-            int offsetEnd = Math.min(numberOfResults, offsetStart + pageSize);
-            List<T> page = offsetEnd > numberOfResults || offsetStart > offsetEnd
-                    ? Collections.emptyList()
-                    : result.subList(offsetStart, offsetEnd);
-            int numberOfPages = numberOfResults == 0 ? 1
-                    : (int) Math.ceil((double) numberOfResults / (double) pageSize);
-            PagedResult<T> pagedResult = new PagedResult<>(input.getPagingConfiguration(), page,
-                    result.size(), numberOfPages);
-            return new OutputData<>(pagedResult);
-        } else {
-            return new OutputData<>(query.execute(input.getPagingConfiguration()));
+            query.whereDisplayNameContainsIgnoreCase(input.getDisplayName()
+                                                          .getValues());
         }
-    }
-
-    private List<T> filterByDisplayName(List<T> modelObjects, Set<String> displayNames) {
-        return modelObjects.stream()
-                           .filter(mo -> displayNames.stream()
-                                                     .anyMatch(dn -> matchesDisplayName(mo, dn)))
-                           .collect(Collectors.toList());
-    }
-
-    private boolean matchesDisplayName(T t, String displayName) {
-        return t.getDisplayName()
-                .toUpperCase()
-                .contains(displayName.toUpperCase());
+        return new OutputData<>(query.execute(input.getPagingConfiguration()));
     }
 
     @Valid

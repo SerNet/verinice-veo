@@ -30,7 +30,10 @@ import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Formula;
 
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
@@ -39,8 +42,10 @@ import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "entitylayersupertype")
@@ -108,6 +113,10 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
                mappedBy = "owner",
                fetch = FetchType.LAZY)
     private Set<SubTypeAspectData> subTypeAspects = new HashSet<>();
+
+    @Formula("case when abbreviation is null then concat(designator,' ',name) else concat(designator,' ',abbreviation,' ',name) end")
+    @Setter(AccessLevel.NONE)
+    private String displayName;
 
     protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
         return source.stream()
@@ -212,5 +221,12 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
             propertiesData.setOwner(null);
         }
         return this.customAspects.remove(aCustomProperties);
+    }
+
+    @Transient
+    @Override
+    public String getDisplayName() {
+        return displayName;
+
     }
 }
