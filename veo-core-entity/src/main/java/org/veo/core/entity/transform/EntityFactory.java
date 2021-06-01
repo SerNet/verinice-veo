@@ -18,10 +18,12 @@
 package org.veo.core.entity.transform;
 
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
@@ -84,7 +86,8 @@ public interface EntityFactory {
      * Creates a catalogItem and add it to the catalog. Careful this changes the
      * catalog entity.
      */
-    CatalogItem createCatalogItem(Catalog catalog);
+    CatalogItem createCatalogItem(Catalog catalog,
+            Function<CatalogItem, Catalogable> catalogableFactory);
 
     TailoringReference createTailoringReference(CatalogItem catalogItem);
 

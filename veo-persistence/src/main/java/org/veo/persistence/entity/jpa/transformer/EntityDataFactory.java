@@ -19,10 +19,12 @@ package org.veo.persistence.entity.jpa.transformer;
 
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
@@ -195,9 +197,13 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CatalogItem createCatalogItem(Catalog catalog) {
+    public CatalogItem createCatalogItem(Catalog catalog,
+            Function<CatalogItem, Catalogable> catalogableFactory) {
         CatalogItem catalogItem = new CatalogItemData();
         catalogItem.setCatalog(catalog);
+        Catalogable catalogable = catalogableFactory.apply(catalogItem);
+        catalogable.setContainingCatalogItem(catalogItem);
+        catalogItem.setElement(catalogable);
         catalog.getCatalogItems()
                .add(catalogItem);
         return catalogItem;
@@ -207,6 +213,8 @@ public class EntityDataFactory implements EntityFactory {
     public TailoringReference createTailoringReference(CatalogItem catalogItem) {
         TailoringReferenceData tailoringReference = new TailoringReferenceData();
         tailoringReference.setOwner(catalogItem);
+        catalogItem.getTailoringReferences()
+                   .add(tailoringReference);
         return tailoringReference;
     }
 }

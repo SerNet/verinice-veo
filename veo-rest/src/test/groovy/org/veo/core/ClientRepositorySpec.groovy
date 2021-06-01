@@ -205,12 +205,15 @@ class ClientRepositorySpec extends VeoSpringSpec {
         }
 
         Catalog catalog = newCatalog(domain)
-        CatalogItem item1 = newCatalogItem(catalog)
-        CatalogItem item2 = newCatalogItem(catalog)
-        CatalogItem item3 = newCatalogItem(catalog)
-
-        catalog.catalogItems = [item1, item2, item3] as Set
-
+        CatalogItem item1 = newCatalogItem(catalog, {
+            newControl(it)
+        })
+        CatalogItem item2 = newCatalogItem(catalog, {
+            newControl(it)
+        })
+        CatalogItem item3 = newCatalogItem(catalog, {
+            newControl(it)
+        })
 
         Client client = newClient {
             name = "Demo Client"

@@ -58,11 +58,11 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
                fetch = FetchType.LAZY)
     private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
-    @OneToOne(optional = true,
+    @OneToOne(optional = true, // FIXME VEO-674 shouldn't this be false?
               targetEntity = CatalogableData.class,
               cascade = CascadeType.ALL,
               orphanRemoval = true,
-              mappedBy = "containingCatalogItem")
+              mappedBy = "containingCatalogItem") // FIXME VEO-674 should this be the owning side?
     private Catalogable element;
 
     @Column(name = "updatereferences")

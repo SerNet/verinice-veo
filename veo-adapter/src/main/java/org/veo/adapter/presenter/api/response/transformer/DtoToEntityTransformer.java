@@ -366,43 +366,42 @@ public final class DtoToEntityTransformer {
 
     public CatalogItem transformDto2CatalogItem(AbstractCatalogItemDto source,
             ModelObjectReferenceResolver modelObjectReferenceResolver, Catalog catalog) {
-        var target = factory.createCatalogItem(catalog);
+        var target = factory.createCatalogItem(catalog, catalogItem -> {
+            if (source instanceof CompositeCatalogItemDto) {
+                CompositeCatalogItemDto catalogitem = (CompositeCatalogItemDto) source;
+                CatalogableDto catalogableDto = catalogitem.getElement();
+                if (catalogableDto instanceof AbstractAssetDto) {
+                    return transformDto2Asset((AbstractAssetDto) catalogableDto,
+                                              modelObjectReferenceResolver);
+                } else if (catalogableDto instanceof AbstractControlDto) {
+                    return transformDto2Control((AbstractControlDto) catalogableDto,
+                                                modelObjectReferenceResolver);
+                } else if (catalogableDto instanceof AbstractDocumentDto) {
+                    return transformDto2Document((AbstractDocumentDto) catalogableDto,
+                                                 modelObjectReferenceResolver);
+                } else if (catalogableDto instanceof AbstractIncidentDto) {
+                    return transformDto2Incident((AbstractIncidentDto) catalogableDto,
+                                                 modelObjectReferenceResolver);
+                } else if (catalogableDto instanceof AbstractPersonDto) {
+                    return transformDto2Person((AbstractPersonDto) catalogableDto,
+                                               modelObjectReferenceResolver);
+                } else if (catalogableDto instanceof AbstractProcessDto) {
+                    return transformDto2Process((AbstractProcessDto) catalogableDto,
+                                                modelObjectReferenceResolver);
+                } else if (catalogableDto instanceof AbstractScenarioDto) {
+                    return transformDto2Scenario((AbstractScenarioDto) catalogableDto,
+                                                 modelObjectReferenceResolver);
+                }
+            } else if (source instanceof ReferenceCatalogItemDto) {
+                ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;
+                return modelObjectReferenceResolver.resolve(catalogitem.getElement());
+            }
+            throw new IllegalArgumentException("Cannot handle entity type " + source.getClass()
+                                                                                    .getName());
+        });
         mapIdentifiableProperties(source, target);
         target.setNamespace(source.getNamespace());
-        if (source instanceof CompositeCatalogItemDto) {
-            CompositeCatalogItemDto catalogitem = (CompositeCatalogItemDto) source;
-            CatalogableDto catalogableDto = catalogitem.getElement();
-            if (catalogableDto instanceof AbstractAssetDto) {
-                target.setElement(transformDto2Asset((AbstractAssetDto) catalogableDto,
-                                                     modelObjectReferenceResolver));
-            } else if (catalogableDto instanceof AbstractControlDto) {
-                target.setElement(transformDto2Control((AbstractControlDto) catalogableDto,
-                                                       modelObjectReferenceResolver));
-            } else if (catalogableDto instanceof AbstractDocumentDto) {
-                target.setElement(transformDto2Document((AbstractDocumentDto) catalogableDto,
-                                                        modelObjectReferenceResolver));
-            } else if (catalogableDto instanceof AbstractIncidentDto) {
-                target.setElement(transformDto2Incident((AbstractIncidentDto) catalogableDto,
-                                                        modelObjectReferenceResolver));
-            } else if (catalogableDto instanceof AbstractPersonDto) {
-                target.setElement(transformDto2Person((AbstractPersonDto) catalogableDto,
-                                                      modelObjectReferenceResolver));
-            } else if (catalogableDto instanceof AbstractProcessDto) {
-                target.setElement(transformDto2Process((AbstractProcessDto) catalogableDto,
-                                                       modelObjectReferenceResolver));
-            } else if (catalogableDto instanceof AbstractScenarioDto) {
-                target.setElement(transformDto2Scenario((AbstractScenarioDto) catalogableDto,
-                                                        modelObjectReferenceResolver));
-            }
-        } else if (source instanceof ReferenceCatalogItemDto) {
-            ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;
-            target.setElement(modelObjectReferenceResolver.resolve(catalogitem.getElement()));
-        }
 
-        if (target.getElement() != null) {
-            target.getElement()
-                  .setContainingCatalogItem(target);
-        }
         target.getTailoringReferences()
               .clear();
         target.getTailoringReferences()

@@ -31,6 +31,7 @@ import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+import org.veo.test.VeoSpec
 
 import spock.lang.Issue
 
@@ -292,22 +293,14 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             templateVersion = '1'
             revision = ''
             authority = 'me'
-            catalogs = [
-                newCatalog(it) {
-                    def item1 = newCatalogItem(it) {
-                        element = newAsset(it)
-                    }
-                    def item2 = newCatalogItem(it) {
-                        element = newControl(it)
-                        tailoringReferences = [
-                            newTailoringReference(it) {
-                                catalogItem = item1
-                            }
-                        ]
-                    }
-                    catalogItems = [item1, item2]
+
+            newCatalog(it) {
+                def item1 = newCatalogItem(it, VeoSpec.&newAsset)
+                def item2 = newCatalogItem(it, VeoSpec.&newControl)
+                newTailoringReference(item2) {
+                    catalogItem = item1
                 }
-            ]
+            }
         })
 
         then: "no event is stored"
@@ -315,11 +308,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
         when: "adding a catalog to the domain template"
         domainTemplate.addToCatalogs( newCatalog(domainTemplate) {
-            catalogItems = [
-                newCatalogItem(it) {
-                    element = newAsset(it)
-                }
-            ]
+            newCatalogItem(it, {
+                newAsset(it)
+            })
         })
         domainTemplate = domainTemplateRepository.save(domainTemplate)
         then: "no event is stored"

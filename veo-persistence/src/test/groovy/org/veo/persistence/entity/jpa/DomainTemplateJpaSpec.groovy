@@ -20,7 +20,6 @@ package org.veo.persistence.entity.jpa
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
@@ -28,6 +27,7 @@ import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
+import org.veo.test.VeoSpec
 
 class DomainTemplateJpaSpec extends AbstractJpaSpec {
     @Autowired
@@ -92,12 +92,10 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         domain0 = newDomainTemplate(Key.newUuid())
         Catalog catalog = newCatalog(domain0) {
             name = "a"
+            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, VeoSpec.&newControl)
         }
-        CatalogItem item1 = newCatalogItem(catalog)
-        CatalogItem item2 = newCatalogItem(catalog)
-        CatalogItem item3 = newCatalogItem(catalog)
-
-        catalog.catalogItems = [item1, item2, item3] as Set
 
         when: "saving"
 

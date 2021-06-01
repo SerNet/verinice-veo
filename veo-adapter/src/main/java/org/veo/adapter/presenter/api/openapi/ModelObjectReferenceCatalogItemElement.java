@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(name = "CatalogItemElement",
         description = "The actual model instance of this catalog item",
-        required = false)
+        required = true)
 public interface ModelObjectReferenceCatalogItemElement extends IModelObjectReference {
 
     @Schema(description = "A friendly human readable title of the referenced element.",

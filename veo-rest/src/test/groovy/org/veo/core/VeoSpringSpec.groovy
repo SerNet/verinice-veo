@@ -114,16 +114,11 @@ abstract class VeoSpringSpec extends VeoSpec {
                 elements.each {
                     it.links.clear()
                     it.domains.clear()
+                    it.appliedCatalogItems.clear()
                 }
             }
             catalogs.each {
-                it.catalogItems.each {
-                    it.element = null
-                    it.tailoringReferences*.owner = null
-                    it.tailoringReferences.clear()
-                    it.updateReferences*.owner = null
-                    it.updateReferences.clear()
-                }
+                it.catalogItems.clear()
             }
             (entityDataRepositories + [
                 unitDataRepository,

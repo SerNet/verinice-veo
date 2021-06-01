@@ -97,49 +97,45 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
                 name= 'a'
             }
 
-            item1 = newCatalogItem(catalog) {
-                element = newControl(it) {
+            item1 = newCatalogItem(catalog, {
+                newControl(it) {
                     name = 'c1'
                 }
-            }
-            CatalogItem item2 = newCatalogItem(catalog) {
-                element = newControl(it) {
+            })
+            CatalogItem item2 = newCatalogItem(catalog, {
+                newControl(it) {
                     name = 'c2'
                 }
-            }
-            CatalogItem item3 = newCatalogItem(catalog) {
-                element = newControl(it) {
+            })
+            CatalogItem item3 = newCatalogItem(catalog, {
+                newControl(it) {
                     name = 'c3'
                 }
-                tailoringReferences = [
-                    newTailoringReference(it) {
-                        catalogItem = item2
-                        referenceType = TailoringReferenceType.COPY
-                    },
-                    newTailoringReference(it) {
-                        catalogItem = item1
-                        referenceType = TailoringReferenceType.COPY_ALWAYS
-                    }
-                ] as Set
+            })
+            newTailoringReference(item3) {
+                catalogItem = item2
+                referenceType = TailoringReferenceType.COPY
             }
-            CatalogItem item4 = newCatalogItem(catalog) {
-                element = newProcess(it) {
+            newTailoringReference(item3) {
+                catalogItem = item1
+                referenceType = TailoringReferenceType.COPY_ALWAYS
+            }
+
+            CatalogItem item4 = newCatalogItem(catalog, {
+                newProcess(it) {
                     name = 'p1'
                     description = "a process example entry"
                 }
-                tailoringReferences = [
-                    newTailoringReference(it) {
-                        catalogItem = item1
-                        referenceType = TailoringReferenceType.LINK
-                    },
-                    newTailoringReference(it) {
-                        catalogItem = item2
-                        referenceType = TailoringReferenceType.LINK
-                    }
-                ] as Set
-            }
+            })
 
-            catalog.catalogItems = [item1, item2, item3, item4] as Set
+            newTailoringReference(item4) {
+                catalogItem = item1
+                referenceType = TailoringReferenceType.LINK
+            }
+            newTailoringReference(item4) {
+                catalogItem = item2
+                referenceType = TailoringReferenceType.LINK
+            }
 
             domain1 = newDomain {
                 description = "ISO/IEC2"
@@ -166,13 +162,11 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
             }
             catalog1 = newCatalog(domain3) {
                 name = 'b'
-                catalogItems = [
-                    newCatalogItem(it) {
-                        element = newControl(it) {
-                            name = 'c15'
-                        }
+                newCatalogItem(it, {
+                    newControl(it) {
+                        name = 'c15'
                     }
-                ]
+                })
             }
 
             secondClient = newClient()
@@ -203,7 +197,9 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: "it contains a reference to its items"
         result.catalogItems.size() == 4
-        result.catalogItems*.targetUri.find {it.contains(item1.dbId)} != null
+        result.catalogItems*.targetUri.find {
+            it.contains(item1.dbId)
+        } != null
     }
 
     @WithUserDetails("user@domain.example")
