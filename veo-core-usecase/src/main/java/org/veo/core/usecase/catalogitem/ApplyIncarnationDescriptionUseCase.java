@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,9 +31,15 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.TailoringReferenceType;
+import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.util.CustomLinkComparators;
+import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.UnitRepository;
@@ -56,6 +64,7 @@ public class ApplyIncarnationDescriptionUseCase implements
     private final org.veo.core.repository.RepositoryProvider repositoryProvider;
     private final DesignatorService designatorService;
     private final CatalogItemService catalogItemservice;
+    private final EntityFactory factory;
 
     @Override
     public OutputData execute(InputData input) {
@@ -66,7 +75,7 @@ public class ApplyIncarnationDescriptionUseCase implements
         Client authenticatedClient = input.authenticatedClient;
         unit.checkSameClient(authenticatedClient);
 
-        List<Catalogable> createdCatalogables = input.getReferecesToApply()
+        List<Catalogable> createdCatalogables = input.getReferencesToApply()
                                                      .stream()
                                                      .map(ra -> {
                                                          CatalogItem catalogItem = catalogItemRepository.findById(ra.getItem()
@@ -93,36 +102,30 @@ public class ApplyIncarnationDescriptionUseCase implements
 
     private Element createElementFromItem(Unit unit, Client authenticatedClient,
             CatalogItem catalogItem, Domain domain,
-            List<TailoringReferenceParameter> referecesToApply) {
-        validateItem(catalogItem, referecesToApply);
+            List<TailoringReferenceParameter> referencesToApply) {
+        validateItem(catalogItem, referencesToApply);
         Catalogable copyItem = catalogItemservice.createInstance(catalogItem, domain);
-        applyTailoringReferences(copyItem, referecesToApply);
+        applyLinkTailoringReferences(copyItem, referencesToApply.stream()
+                                                                .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
+                                                                .collect(Collectors.toList()));
         @SuppressWarnings("unchecked")
         ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) copyItem.getModelInterface());
         Element entity = (Element) copyItem;
         entity.setOwner(unit);
         designatorService.assignDesignator(entity, authenticatedClient);
         entity = repository.save(entity);
+        applyExternalTailoringReferences(entity, domain, externalTailorReferences(catalogItem),
+                                         externalTailorReferencesParameters(referencesToApply));
         return entity;
     }
 
-    private void validateItem(CatalogItem catalogItem,
-            List<TailoringReferenceParameter> referecesToApply) {
-        if (catalogItem.getTailoringReferences()
-                       .stream()
-                       .filter(UseCaseTools.IS_LINK_PREDICATE)
-                       .count() != referecesToApply.size()) {
-            throw new IllegalArgumentException("Tailoring references don't match.");
-        }
-    }
-
-    private void applyTailoringReferences(Catalogable copyItem,
+    private void applyLinkTailoringReferences(Catalogable copyItem,
             List<TailoringReferenceParameter> referencesToApply) {
         if (copyItem instanceof Element) {
             Element el = (Element) copyItem;
             List<CustomLink> orderByExecution = el.getLinks()
                                                   .stream()
-                                                  .sorted(UseCaseTools.BY_LINK_EXECUTION)
+                                                  .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
                                                   .collect(Collectors.toList());
 
             if (orderByExecution.size() > referencesToApply.size()) {
@@ -139,12 +142,86 @@ public class ApplyIncarnationDescriptionUseCase implements
         }
     }
 
+    private void applyExternalTailoringReferences(Element linkTargetEntity, Domain domain,
+            List<ExternalTailoringReference> externalTailoringRefs,
+            List<TailoringReferenceParameter> referencesToApply) {
+        Iterator<TailoringReferenceParameter> parameter = referencesToApply.iterator();
+        for (ExternalTailoringReference catalogReference : externalTailoringRefs) {
+            TailoringReferenceParameter tailoringReferenceParameter = parameter.next();
+            Catalogable catalogable = tailoringReferenceParameter.getReferencedCatalogable();
+            if (catalogable instanceof Element) {
+                Element linkSourceEntity = (Element) catalogable;
+                copyLink(linkSourceEntity, linkTargetEntity, domain,
+                         catalogReference.getExternalLink());
+                @SuppressWarnings("unchecked")
+                ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) catalogable.getModelInterface());
+                linkSourceEntity = repository.save(linkSourceEntity);
+            }
+        }
+    }
+
+    /**
+     * Creates a new link between source and target, as a value copy of the
+     * linkToCopy. Adds the domain to this link.
+     */
+    private void copyLink(Element source, Element target, Domain domain, CustomLink linkToCopy) {
+        CustomLink link = factory.createCustomLink(target, source, linkToCopy.getType());
+        link.setAttributes(linkToCopy.getAttributes() == null ? null
+                : new HashMap<>(linkToCopy.getAttributes()));
+        link.addToDomains(domain);
+        link.setType(linkToCopy.getType());
+        source.addToLinks(link);
+    }
+
+    private void validateItem(CatalogItem catalogItem,
+            List<TailoringReferenceParameter> referencesToApply) {
+        if (catalogItem.getTailoringReferences()
+                       .stream()
+                       .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
+                       .count() != referencesToApply.stream()
+                                                    .filter(r -> r.getReferenceType() == TailoringReferenceType.LINK)
+                                                    .count()) {
+            throw new IllegalArgumentException("Tailoring references (LINK) don't match.");
+        }
+        if (catalogItem.getTailoringReferences()
+                       .stream()
+                       .filter(r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL)
+                       .count() != referencesToApply.stream()
+                                                    .filter(r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL)
+                                                    .count()) {
+            throw new IllegalArgumentException("Tailoring references (EXTERNAL_LINK) don't match.");
+        }
+        if (referencesToApply.stream()
+                             .anyMatch(t -> t.getReferencedCatalogable() == null)) {
+            throw new IllegalArgumentException("Tailoring references target undefined.");// need to
+                                                                                         // change
+                                                                                         // with
+                                                                                         // VEO-726
+        }
+    }
+
+    private List<ExternalTailoringReference> externalTailorReferences(CatalogItem catalogItem) {
+        return catalogItem.getTailoringReferences()
+                          .stream()
+                          .filter(TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
+                          .sorted(TailoringReferenceComparators.BY_EXECUTION)
+                          .map(ExternalTailoringReference.class::cast)
+                          .collect(Collectors.toList());
+    }
+
+    private List<TailoringReferenceParameter> externalTailorReferencesParameters(
+            List<TailoringReferenceParameter> referencesToApply) {
+        return referencesToApply.stream()
+                                .filter(TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
+                                .collect(Collectors.toList());
+    }
+
     @Valid
     @Value
     public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
         Key<UUID> containerId;
-        List<IncarnateCatalogItemDescription> referecesToApply;
+        List<IncarnateCatalogItemDescription> referencesToApply;
     }
 
     @Valid

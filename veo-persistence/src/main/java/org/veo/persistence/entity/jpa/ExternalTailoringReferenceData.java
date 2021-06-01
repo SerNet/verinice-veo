@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2021  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto.create;
+package org.veo.persistence.entity.jpa;
 
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+
+import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.ExternalTailoringReference;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * This DTO is primarily used in the domainTemplateassembler.
- */
-@EqualsAndHashCode(callSuper = true)
+@Entity(name = "externaltailoringreference")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public final class CreateTailoringReferenceDto extends AbstractTailoringReferenceDto {
+public class ExternalTailoringReferenceData extends TailoringReferenceData
+        implements ExternalTailoringReference {
+
+    @OneToOne(targetEntity = CustomLinkDescriptorData.class,
+              orphanRemoval = true,
+              cascade = CascadeType.ALL)
+    private CustomLink externalLink;
 
 }

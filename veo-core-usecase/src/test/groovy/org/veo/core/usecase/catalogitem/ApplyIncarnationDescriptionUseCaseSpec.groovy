@@ -17,41 +17,32 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-import static org.assertj.core.api.InstanceOfAssertFactories.optional
 
 import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
-import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.ExternalTailoringReference
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.repository.CatalogItemRepository
-import org.veo.core.repository.ElementRepository
-import org.veo.core.repository.RepositoryProvider
-import org.veo.core.repository.UnitRepository
-import org.veo.core.service.CatalogItemService
-import org.veo.core.service.DomainTemplateService
-import org.veo.core.usecase.DesignatorService
-import org.veo.core.usecase.UseCaseSpec
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase.InputData
-import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase
 import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription
 import org.veo.core.usecase.parameter.TailoringReferenceParameter
 
 class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
+    EntityFactory factory = Mock()
 
     ApplyIncarnationDescriptionUseCase usecase = new ApplyIncarnationDescriptionUseCase(
-    unitRepo, catalogItemRepository, entityRepo, designatorService, catalogItemservice  )
+    unitRepo, catalogItemRepository, entityRepo, designatorService, catalogItemservice, factory)
 
     def setup() {
+
         catalogItemservice.createInstance(item1, existingDomain) >> newControl
         entityRepo.getElementRepositoryFor(_) >> repo
 
@@ -82,6 +73,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         output.newElements.size() == 1
         output.newElements.first() == newControl
     }
+
     def "apply an element from item with tailor refs"() {
         given:
 
@@ -112,6 +104,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         newControl.links >> [newLink]
 
         TailoringReferenceParameter ref = Mock()
+        ref.referenceType >> TailoringReferenceType.LINK
         ref.referencedCatalogable >> control3
 
         existingDomain.catalogs >> [catalog]
@@ -128,6 +121,58 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         1* designatorService.assignDesignator(newControl, existingClient)
         1* newLink.setTarget(control3)
 
+        output.newElements.size() == 1
+        output.newElements.first() == newControl
+    }
+
+    def "apply an element from item with external tailor refs"() {
+        given:
+
+        CustomLink newLink = Mock()
+
+        factory.createCustomLink(_, _, _) >> newLink
+
+        Control control2 = Mock()
+        Control control3 = Mock()
+
+        def id2 = Key.newUuid()
+        item2.id >> id2
+        item2.catalog >> catalog
+        item2.element>>control2
+
+        CustomLink link = Mock()
+        link.type >> "external.link.type"
+        link.target>>control2
+        link.attributes >> [:]
+
+        ExternalTailoringReference etr = Mock()
+        etr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
+        etr.owner >> item1
+        etr.catalogItem >> item2
+        etr.externalLink >> link
+
+        item1.tailoringReferences >> [etr]
+        item1.element >> control
+
+        newControl.links >> []
+
+        TailoringReferenceParameter ref = Mock()
+        ref.referencedCatalogable >> control3
+        ref.referenceType >> TailoringReferenceType.LINK_EXTERNAL
+
+        existingDomain.catalogs >> [catalog]
+        catalog.domainTemplate >> existingDomain
+        catalog.catalogItems >> [item1, item2]
+
+        when:
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
+            new IncarnateCatalogItemDescription(item1, [ref])
+        ]))
+        then:
+        1* repo.save(newControl) >> newControl
+        1* newControl.setOwner(existingUnit)
+        1* designatorService.assignDesignator(newControl, existingClient)
+        1* control3.addToLinks(_)
         output.newElements.size() == 1
         output.newElements.first() == newControl
     }
@@ -224,10 +269,13 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         catalog.domainTemplate >> existingDomain
         catalog.catalogItems >> [item1]
 
+        TailoringReferenceParameter ref = Mock()
+        ref.referenceType >> TailoringReferenceType.LINK_EXTERNAL
+
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id,
                 [
-                    new IncarnateCatalogItemDescription(item1, [Mock(TailoringReference)])
+                    new IncarnateCatalogItemDescription(item1, [ref])
                 ]))
         then:
         thrown(IllegalArgumentException)

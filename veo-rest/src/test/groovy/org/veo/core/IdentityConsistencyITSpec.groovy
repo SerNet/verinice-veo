@@ -27,25 +27,32 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
+import org.veo.core.entity.Catalog
+import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomAspect
+import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
+import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.AssetRiskData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
+import org.veo.persistence.entity.jpa.CustomLinkDescriptorData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.SubTypeAspectData
 import org.veo.persistence.entity.jpa.UnitData
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
 @SpringBootTest(classes = IdentityConsistencyITSpec.class)
 @ActiveProfiles("test")
@@ -64,6 +71,9 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
     @Autowired
     UnitRepositoryImpl unitRepository
+
+    @Autowired
+    CatalogDataRepository catalogRepository
 
     private Client client
     private Unit unit
@@ -315,5 +325,41 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         and: "two different entities are not equal"
         link != new CustomLinkData()
+    }
+
+    @Transactional
+    def "The identity of the custom link descriptor is consistent over entity state changes"() {
+        given:
+        def domain = newDomain(client)
+        Catalog catalog = newCatalog(domain) {
+            name = 'c'
+        }
+        CatalogItem itemSource = newCatalogItem(catalog, {
+            newControl(it) {
+                name = 'ci1'
+            }
+        })
+        CatalogItem itemTarget = newCatalogItem(catalog,{
+            newControl(it) {
+                name = 'ci2'
+            }
+        })
+        entityManager.flush()
+
+        when:
+        def link = newExternalTailoringReference(itemTarget, TailoringReferenceType.LINK_EXTERNAL) {
+            catalogItem = itemSource
+            externalLink = newCustomLinkDescriptor(itemTarget.element) {
+                type= 'externallinktest'
+                source = itemSource.element
+            }
+        }
+        testIdentityConsistency(CustomLinkDescriptorData.class, link.externalLink)
+
+        then:
+        notThrown(Exception)
+
+        and: "two different entities are not equal"
+        link.externalLink != new CustomLinkDescriptorData()
     }
 }

@@ -30,15 +30,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Describes a Tailoringreference of this incarnation.")
+@Schema(description = "Describes a Tailoringreference of this CatalogItem. It describes a link feature in the catalogItem which will be applied when the Catalogitem is incarnated. The referencedCatalogable need to be changed to link an acual element. ")
 public class TailoringReferenceParameterDto {
 
     @Schema(required = true,
             implementation = IdRefTailoringReferenceParameterReferencedCatalogable.class)
     private IdRef<Catalogable> referencedCatalogable;
+
     @Schema(description = "The translatable key of the reference type. For customLinks this is the type of the link.",
             example = "proc_1")
     private String referenceKey;
-    @Schema(description = "The type of the reference.", example = "LINK", required = true)
+
+    @Schema(description = "The type of the Tailoringreference.",
+            example = "LINK or LINK_EXTERNAL",
+            required = true)
     private TailoringReferenceType referenceType;
 }

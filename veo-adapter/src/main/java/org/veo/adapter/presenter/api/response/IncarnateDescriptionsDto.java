@@ -34,7 +34,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IncarnateDescriptionsDto {
 
-    @Schema(description = "A list of parameters to apply to an item", required = true)
+    @Schema(description = "A list of CatalogItemDescription defining the structure of each catalog item to create.",
+            required = true)
     private List<IncarnateCatalogItemDescriptionDto> parameters;
 
     public IncarnateDescriptionsDto(List<IncarnateCatalogItemDescription> references,

@@ -301,9 +301,30 @@ class DomainJpaSpec extends AbstractJpaSpec {
         newTailoringReference(item5, TailoringReferenceType.LINK) {
             catalogItem = item3
         }
-        catalog = catalogRepository.save(catalog)
 
-        catalogRepository.save(catalog)
+        CatalogItem item6 = newCatalogItem(catalog,{
+            newControl(it) {
+                name = 'c-p'
+            }
+        })
+        newExternalTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
+            catalogItem = item2
+            externalLink = newCustomLinkDescriptor(item6.element) {
+                type= 'externallinktest'
+                source = item2.element
+            }
+        }
+
+        catalog.catalogItems = [
+            item1,
+            item2,
+            item3,
+            item4,
+            item5,
+            item6
+        ] as Set
+
+        catalog = catalogRepository.save(catalog)
         when: "saving"
 
         domain0 = repository.save(domain0)
@@ -321,22 +342,28 @@ class DomainJpaSpec extends AbstractJpaSpec {
         def loadedCatalog = d.catalogs.first()
         then:
         loadedCatalog.id == catalog.id
-        loadedCatalog.catalogItems.size() == 5
+        loadedCatalog.catalogItems.size() == 6
         with(loadedCatalog.catalogItems.sort {
             it.element.name
         }) {
-            it[0].element.name == 'c1'
-            it[0].element.abbreviation == item1.element.abbreviation
-            it[0].element.description == item1.element.description
-            it[1].element.name == 'c2'
-            it[2].element.name == 'c3'
-            it[2].tailoringReferences.size() == 1
-            it[2].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
-            it[3].element.name == 'd1'
-            it[3].element.parts.first().name == item4.element.parts.first().name
-            it[4].element.name == 'p1'
-            it[4].element.subTypeAspects.size() == 1
-            it[4].tailoringReferences.size() == 2
+            it[0].element.name == 'c-p'
+            it[0].tailoringReferences.size() == 1
+            it[0].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+            it[0].tailoringReferences[0].externalLink != null
+            it[0].tailoringReferences[0].externalLink.source.id == it[2].element.id
+            it[0].tailoringReferences[0].externalLink.target.id == it[0].element.id
+            it[1].element.name == 'c1'
+            it[1].element.abbreviation == item1.element.abbreviation
+            it[1].element.description == item1.element.description
+            it[2].element.name == 'c2'
+            it[3].element.name == 'c3'
+            it[3].tailoringReferences.size() == 1
+            it[3].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
+            it[4].element.name == 'd1'
+            it[4].element.parts.first().name == item4.element.parts.first().name
+            it[5].element.name == 'p1'
+            it[5].element.subTypeAspects.size() == 1
+            it[5].tailoringReferences.size() == 2
         }
 
         when: "create elements linked to catalogItems"

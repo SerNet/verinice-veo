@@ -18,9 +18,38 @@
 package org.veo.core.entity;
 
 /**
- * Actiontype for Tailoringreference
+ * Actiontype for {@link TailoringReference}. It defines the kind of actions a
+ * {@link TailoringReference} can define.
  */
 public enum TailoringReferenceType {
+    /**
+     * Defines an action to skip this {@link TailoringReference}.
+     */
+    OMIT,
+    /**
+     * Defines a {@link TailoringReference} which corresponds to a
+     * {@link CustomLink} or a {@link CompositeElement} in the element of the owning
+     * {@link CatalogItem}. The target of the feature need to be the element owned
+     * by the target of the {@link TailoringReference#getCatalogItem()}.
+     */
+    LINK,
+    /**
+     * Defines a link in another {@link Catalogable} which points to the
+     * {@link CatalogItem#getElement()}. The property
+     * {@link TailoringReference#getCatalogItem()} points to the {@link CatalogItem}
+     * in which the {@link ExternalTailoringReference#getExternalLink()} object is
+     * added. This describes the modeling of an opposite feature.
+     */
+    LINK_EXTERNAL,
+    /**
+     * Create the linked {@link CatalogItem#getElement()} in the same step. It is a
+     * bit vage in the sense when to create.
+     */
+    COPY,
+    /**
+     * @see TailoringReferenceType#COPY, but clear in semantics, it alway create the
+     *      linked {@link CatalogItem#getElement()} in the same step.
+     */
+    COPY_ALWAYS;
 
-    OMIT, LINK, COPY, COPY_ALWAYS;
 }

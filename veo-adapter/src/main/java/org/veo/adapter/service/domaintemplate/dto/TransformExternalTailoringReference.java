@@ -15,18 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto.create;
+package org.veo.adapter.service.domaintemplate.dto;
 
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.CustomTypedLinkDto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * This DTO is primarily used in the domainTemplateassembler.
+ * This DTO is used to represent an ExternalTailoringRefrence it is primarily
+ * used in the construction and serialization of a domain template.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateTailoringReferenceDto extends AbstractTailoringReferenceDto {
-
+public class TransformExternalTailoringReference extends AbstractTailoringReferenceDto {
+    private CustomTypedLinkDto externalLink;
 }

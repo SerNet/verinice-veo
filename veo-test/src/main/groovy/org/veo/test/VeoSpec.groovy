@@ -34,6 +34,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementOwner
+import org.veo.core.entity.ExternalTailoringReference
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.ItemUpdateType
@@ -55,9 +56,11 @@ import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
+import org.veo.persistence.entity.jpa.CustomLinkDescriptorData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.DomainData
 import org.veo.persistence.entity.jpa.DomainTemplateData
+import org.veo.persistence.entity.jpa.ExternalTailoringReferenceData
 import org.veo.persistence.entity.jpa.IncidentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
@@ -88,7 +91,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-
     static ClientData newClient(@DelegatesTo(value = Client.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Client") Closure init = null) {
         return factory.createClient(Key.newUuid(), null).tap {
@@ -108,7 +110,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-
     static DocumentData newDocument(ElementOwner owner, @DelegatesTo(value = Document.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Document") Closure init = null) {
         return factory.createDocument(null, owner).tap {
@@ -116,8 +117,6 @@ abstract class VeoSpec extends Specification {
             VeoSpec.initElement(it)
         }
     }
-
-
 
     static IncidentData newIncident(ElementOwner owner, @DelegatesTo(value = Incident.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Incident") Closure init = null) {
@@ -127,7 +126,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-
     static ScenarioData newScenario(ElementOwner owner, @DelegatesTo(value = Scenario.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scenario") Closure init = null) {
         return factory.createScenario(null, owner).tap {
@@ -135,7 +133,6 @@ abstract class VeoSpec extends Specification {
             VeoSpec.initElement(it)
         }
     }
-
 
     static DomainData newDomain(@DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure init = null) {
@@ -200,6 +197,16 @@ abstract class VeoSpec extends Specification {
         }
     }
 
+    static ExternalTailoringReferenceData newExternalTailoringReference(CatalogItem catalogItem,
+            TailoringReferenceType referenceType,
+            @DelegatesTo(value = ExternalTailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ExternalTailoringReference") Closure init = null) {
+        return factory.createExternalTailoringReference(catalogItem, referenceType).tap {
+            VeoSpec.execute(it, init)
+            VeoSpec.version(it)
+        }
+    }
+
     static PersonData newPerson(ElementOwner owner, @DelegatesTo(value = Person.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Person") Closure init = null) {
         return factory.createPerson(null, owner).tap {
@@ -208,8 +215,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-
-
     static ProcessData newProcess(ElementOwner owner, @DelegatesTo(value = Process.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Process") Closure init = null) {
         return factory.createProcess(null, owner).tap {
@@ -217,7 +222,6 @@ abstract class VeoSpec extends Specification {
             VeoSpec.initElement(it)
         }
     }
-
 
     static ScopeData newScope(ElementOwner owner, @DelegatesTo(value = Scope.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scope") Closure init = null) {
@@ -247,6 +251,13 @@ abstract class VeoSpec extends Specification {
     static CustomLinkData newCustomLink(Element linkTarget, String type, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
         return factory.createCustomLink(linkTarget, null, type).tap{
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static CustomLinkDescriptorData newCustomLinkDescriptor(Element linkTarget, @DelegatesTo(value = CustomLink.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
+        return factory.createCustomLinkDescriptor(linkTarget, null).tap{
             VeoSpec.execute(it, init)
         }
     }
@@ -281,8 +292,6 @@ abstract class VeoSpec extends Specification {
         name(target)
         version(target)
     }
-
-
 
     private static def version(Versioned target) {
         if(target.createdBy == null) {

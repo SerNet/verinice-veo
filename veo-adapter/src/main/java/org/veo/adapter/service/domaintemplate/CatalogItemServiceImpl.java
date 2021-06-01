@@ -31,8 +31,8 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.util.CustomLinkComparators;
 import org.veo.core.service.CatalogItemService;
-import org.veo.core.usecase.UseCaseTools;
 
 public class CatalogItemServiceImpl implements CatalogItemService {
     private final DtoToEntityTransformer entityTransformer;
@@ -62,7 +62,7 @@ public class CatalogItemServiceImpl implements CatalogItemService {
             Element catalogELST = (Element) catalogElement;
             catalogELST.getLinks()
                        .stream()
-                       .sorted(UseCaseTools.BY_LINK_EXECUTION)
+                       .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
                        .forEach(orgLink -> newELST.addToLinks(copyLink(domain, placeholderResolver,
                                                                        orgLink)));
             catalogELST.getSubTypeAspects()

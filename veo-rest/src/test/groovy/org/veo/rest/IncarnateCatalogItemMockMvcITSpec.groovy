@@ -203,6 +203,75 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for item7 and post"() {
+        given: "the created catalogitems and the control p1, also the linked controls"
+
+        def incarnationDescriptions = getIncarnationDescriptions(unit,item1,item2)
+        def postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+
+        incarnationDescriptions = getIncarnationDescriptions(unit,item4)
+        postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+        def processUri = postResult[0].targetUri
+
+        when: "a request is made to the server to create a TOM1 element"
+        incarnationDescriptions = getIncarnationDescriptions(unit,item7)
+
+        then: "it contains 1 element to create: item7"
+        incarnationDescriptions.parameters.size() == 1
+
+        when: "we create Item7"
+        postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+        then: "1 object is created"
+        postResult.size() == 1
+
+        when: "we get the created tom"
+        def tomResult = parseJson(get(postResult[0].targetUri))
+
+        then: "the tom is created and all the features are set"
+        validateNewElementAgainstCatalogItem(tomResult, item7, domain)
+        tomResult.owner.displayName == 'Test unit'
+        tomResult.subType[domain.id.uuidValue()] == "CTL_TOM"
+
+        when: "we get the linked process"
+        def processResult = parseJson(get(processUri))
+
+        then: "the process has a new link pointing to the created tom"
+        processResult.links.size() == 3
+        processResult.links.externallinktest.target.targetUri[0] == postResult[0].targetUri
+
+
+        when: "we link to another created process (p3-all-features)"
+        incarnationDescriptions = getIncarnationDescriptions(unit,item6)
+        postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+        processUri = postResult[0].targetUri
+        and: "we get the process"
+        processResult = parseJson(get(processUri))
+        then: "there is one link"
+        processResult.links.size() == 1
+
+        when: "we get the description for the tom"
+        incarnationDescriptions = getIncarnationDescriptions(unit,item7)
+        and: "we set the link to p3"
+        incarnationDescriptions.parameters[0].references[0].referencedCatalogable.targetUri = postResult[0].targetUri
+        and:"create the tom and a link in p3"
+        postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+        and: "we get the created tom"
+        tomResult = parseJson(get(postResult[0].targetUri))
+
+        then: "the tom is created and all the features are set"
+        validateNewElementAgainstCatalogItem(tomResult, item7, domain)
+        tomResult.owner.displayName == 'Test unit'
+        tomResult.subType[domain.id.uuidValue()] == "CTL_TOM"
+
+        when: "we get the linked process"
+        processResult = parseJson(get(processUri))
+
+        then: "the process has a new link pointing to the created tom"
+        processResult.links.size() == 2
+        processResult.links.externallinktest.target.targetUri[0] == postResult[0].targetUri
+    }
+
+    @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item3 and post in other client unit"() {
         given: "the created catalogitems"
 

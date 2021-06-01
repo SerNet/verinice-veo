@@ -65,9 +65,10 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         domainFromTemplate.templateVersion == domainFromTemplate.domainTemplate.templateVersion
 
         domainFromTemplate.catalogs.size() == 1
-        domainFromTemplate.catalogs.first().catalogItems.size() == 5
+        domainFromTemplate.catalogs.first().catalogItems.size() == 6
         with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
             it[0].tailoringReferences.size()==0
+            it[0].element.links.size()==0
             it[0].element.abbreviation == 'c-1'
             it[0].element.name == 'Control-1'
             it[0].element.description.startsWith('Lore')
@@ -81,19 +82,25 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
             it[2].tailoringReferences.first().catalogItem == it[0]
 
-            it[3].element.abbreviation == 'cc-1'
-            it[3].element.links.size()==1
-            it[3].element.links.first().target == it[4].element
+            it[3].element.abbreviation == 'c-4'
+            it[3].element.links.size()==0
             it[3].tailoringReferences.size()==1
-            it[3].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
-            it[3].tailoringReferences.first().catalogItem == it[4]
+            it[3].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
+            it[3].tailoringReferences.first().catalogItem == it[1]
 
-            it[4].element.abbreviation == 'cc-2'
+            it[4].element.abbreviation == 'cc-1'
             it[4].element.links.size()==1
-            it[4].element.links.first().target == it[3].element
+            it[4].element.links.first().target == it[5].element
             it[4].tailoringReferences.size()==1
             it[4].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
-            it[4].tailoringReferences.first().catalogItem == it[3]
+            it[4].tailoringReferences.first().catalogItem == it[5]
+
+            it[5].element.abbreviation == 'cc-2'
+            it[5].element.links.size()==1
+            it[5].element.links.first().target == it[4].element
+            it[5].tailoringReferences.size()==1
+            it[5].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
+            it[5].tailoringReferences.first().catalogItem == it[4]
         }
     }
 
@@ -122,8 +129,6 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             name = "Demo Client"
         })
 
-
-
         def domainFromTemplate = null
         txTemplate.execute {
             domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001")
@@ -134,16 +139,45 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         expect: 'the domain matches'
         domainFromTemplate != null
-        domainFromTemplate.domainTemplate.dbId == "00000000-0000-0000-0000-000000000001"
-        domainFromTemplate.name == domainFromTemplate.domainTemplate.name
-        domainFromTemplate.abbreviation == domainFromTemplate.domainTemplate.abbreviation
-        domainFromTemplate.description == domainFromTemplate.domainTemplate.description
-        domainFromTemplate.authority == domainFromTemplate.domainTemplate.authority
-        domainFromTemplate.revision == domainFromTemplate.domainTemplate.revision
-        domainFromTemplate.templateVersion == domainFromTemplate.domainTemplate.templateVersion
+        with (domainFromTemplate) {
+            domainTemplate.dbId == "00000000-0000-0000-0000-000000000001"
+            name == domainTemplate.name
+            abbreviation == domainTemplate.abbreviation
+            description == domainTemplate.description
+            authority == domainTemplate.authority
+            revision == domainTemplate.revision
+            templateVersion == domainTemplate.templateVersion
+        }
+        with (domainFromTemplate.catalogs) {
+            size() == 1
+            first().name == 'DSGVO-Controls'
+            first().catalogItems.size() == 6
+        }
+        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
+            it[0].element.name == 'Control-1'
+            it[0].element.abbreviation == 'c-1'
+            it[0].element.description.startsWith('Lore')
+            it[0].tailoringReferences.size()==1
+            it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
+            it[0].tailoringReferences.first().catalogItem == it[5]
 
-        domainFromTemplate.catalogs.size() == 1
-        domainFromTemplate.catalogs.first().name == 'DVGO-Controls'
-        domainFromTemplate.catalogs.first().catalogItems.size() == 5
+            it[1].element.name == 'Control-2'
+            it[1].element.abbreviation == 'c-2'
+            it[1].tailoringReferences.size() == 0
+
+            it[2].element.name == 'Control-3'
+            it[2].element.abbreviation == 'c-3'
+            it[2].element.links.size()==1
+            it[2].element.links.first().target == it[0].element
+            it[2].tailoringReferences.size()==1
+            it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
+            it[2].tailoringReferences.first().catalogItem == it[0]
+
+            it[3].element.name == 'Control-cc-1'
+
+            it[4].element.name == 'Control-cc-2'
+
+            it[5].element.name == 'Test process-1'
+        }
     }
 }

@@ -566,8 +566,9 @@ public class ModuleConfiguration {
             org.veo.core.repository.UnitRepository unitRepository,
             CatalogItemRepository catalogItemRepository,
             org.veo.core.repository.RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, CatalogItemService catalogItemService) {
+            DesignatorService designatorService, CatalogItemService catalogItemService,
+            EntityFactory factory) {
         return new ApplyIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
-                repositoryProvider, designatorService, catalogItemService);
+                repositoryProvider, designatorService, catalogItemService, factory);
     }
 }

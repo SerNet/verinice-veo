@@ -65,6 +65,7 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem item4
     CatalogItem item5
     CatalogItem item6
+    CatalogItem item7
     CatalogItem otherItem
     Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
     Client client
@@ -173,6 +174,22 @@ class CatalogSpec extends VeoMvcSpec {
             newTailoringReference(item6, TailoringReferenceType.LINK) {
                 catalogItem = item1
             }
+
+            item7 = newCatalogItem(catalog, {
+                newControl(it) {
+                    name = 'tom1'
+                    description = "a control with external tailorref"
+                    setSubType(domain, "CTL_TOM")
+                }
+            })
+            newExternalTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {
+                catalogItem = item4
+                externalLink = newCustomLinkDescriptor(item7.element) {
+                    type= 'externallinktest'
+                    source = item4.element
+                }
+            }
+
             domain1 = newDomain {
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
@@ -194,7 +211,7 @@ class CatalogSpec extends VeoMvcSpec {
             domain1 = client.domains.toList().get(1)
             catalog = domain.catalogs.first()
 
-            (item1, item2, item3, item4, item5, item6) = catalog.catalogItems.sort{it.element.name}
+            (item1, item2, item3, item4, item5, item6, item7) = catalog.catalogItems.sort{it.element.name}
 
             domain3 = newDomain {
                 abbreviation = "D1"

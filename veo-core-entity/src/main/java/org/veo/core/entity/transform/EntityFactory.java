@@ -33,6 +33,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
@@ -77,6 +78,8 @@ public interface EntityFactory {
 
     CustomLink createCustomLink(Element linkTarget, Element linkSource, String type);
 
+    CustomLink createCustomLinkDescriptor(Element linkTarget, Element linkSource);
+
     Scope createScope(String name, ElementOwner owner);
 
     Catalog createCatalog(DomainTemplate owner);
@@ -95,4 +98,8 @@ public interface EntityFactory {
             TailoringReferenceType referenceType);
 
     UpdateReference createUpdateReference(CatalogItem catalogItem, ItemUpdateType updateType);
+
+    ExternalTailoringReference createExternalTailoringReference(CatalogItem catalogItem,
+            TailoringReferenceType referenceType);
+
 }

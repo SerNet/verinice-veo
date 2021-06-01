@@ -27,14 +27,9 @@ package org.veo.core.entity;
  * tailref of type LINK must exist, pointing to the catalogItem which holds the
  * refered element.
  */
-public interface TailoringReference extends CatalogReference {
+public interface TailoringReference extends CatalogReference, TailoringReferenceTyped {
     String SINGULAR_TERM = "tailoringreference";
     String PLURAL_TERM = "tailoringreferences";
-
-    /**
-     * The type of action for the tailor reference.
-     */
-    TailoringReferenceType getReferenceType();
 
     void setReferenceType(TailoringReferenceType aReferenceType);
 
