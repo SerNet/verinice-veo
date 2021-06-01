@@ -30,10 +30,13 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
@@ -73,8 +76,8 @@ public class GetIncarnationDescriptionUseCase implements
                                                                                .orElseThrow(() -> new NotFoundException(
                                                                                        "CatalogItem not found %s",
                                                                                        id)))
-                                               .flatMap(ci -> UseCaseTools.getAllElementsToCreate(ci)
-                                                                          .stream())
+                                               .flatMap(ci -> ci.getAllElementsToCreate()
+                                                                .stream())
                                                .collect(Collectors.toList());
 
         List<IncarnateCatalogItemDescription> incarnationDescriptions = itemsToCreate.stream()
@@ -108,8 +111,8 @@ public class GetIncarnationDescriptionUseCase implements
             CatalogItem catalogItem) {
         return catalogItem.getTailoringReferences()
                           .stream()
-                          .filter(UseCaseTools.IS_LINK_PREDICATE)
-                          .sorted(UseCaseTools.BY_EXECUTION)
+                          .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
+                          .sorted(TailoringReferenceComparators.BY_EXECUTION)
                           .map(r -> toParameter(unit, r, getReferenceName(r)))
                           .collect(Collectors.toList());
     }
@@ -118,10 +121,8 @@ public class GetIncarnationDescriptionUseCase implements
             String name) {
         TailoringReferenceParameter tailoringReferenceParameter = new TailoringReferenceParameter(
                 ref.getReferenceType(), name);
-        Optional<Catalogable> appliedItem = findReferencedAppliedItem(unit, ref.getCatalogItem());
-        if (appliedItem.isPresent()) {
-            tailoringReferenceParameter.setReferencedCatalogable(appliedItem.get());
-        }
+        findReferencedAppliedItem(unit,
+                                  ref.getCatalogItem()).ifPresent(tailoringReferenceParameter::setReferencedCatalogable);
 
         return tailoringReferenceParameter;
     }
@@ -136,22 +137,33 @@ public class GetIncarnationDescriptionUseCase implements
         return "unknown";
     }
 
+    /**
+     * Returns the optional link corresponding to a TailoringReference.
+     */
     private Optional<CustomLink> getLinkForReference(TailoringReference ref) {
         CatalogItem catalogItem = ref.getOwner();
         Catalogable element = catalogItem.getElement();
         Catalogable linkTarget = ref.getCatalogItem()
                                     .getElement();
-
-        if (element instanceof Element) {
-            Element el = (Element) element;
-            return el.getLinks()
-                     .stream()
-                     .filter(l -> l.getTarget()
-                                   .equals(linkTarget))
-                     .findFirst();
-
+        switch (ref.getReferenceType()) {
+        case LINK_EXTERNAL:
+            if (ref instanceof ExternalTailoringReference) {
+                ExternalTailoringReference etr = (ExternalTailoringReference) ref;
+                return Optional.of(etr.getExternalLink());
+            } else
+                throw new IllegalArgumentException();
+        case LINK:
+            if (element instanceof Element) {
+                Element el = (Element) element;
+                return el.getLinks()
+                         .stream()
+                         .filter(l -> l.getTarget()
+                                       .equals(linkTarget))
+                         .findFirst();
+            }
+        default:
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     private Optional<Catalogable> findReferencedAppliedItem(Unit unit, CatalogItem catalogItem) {
@@ -183,7 +195,7 @@ public class GetIncarnationDescriptionUseCase implements
     }
 
     @Valid
-    @Value()
+    @Value
     public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
         Key<UUID> containerId;

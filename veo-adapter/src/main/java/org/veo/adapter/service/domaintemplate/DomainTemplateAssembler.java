@@ -104,7 +104,7 @@ public class DomainTemplateAssembler {
      * domaintemplate.out.file="dsgvo-example.json"<br/>
      * domaintemplate.revision="latest"<br/>
      * domaintemplate.templateVersion="1.0"<br/>
-     * tom.catalog.name="DVGO-Controls"<br/>
+     * tom.catalog.name="DSGVO-Controls"<br/>
      * tom.dir="/verinice-veo/domaintemplates/dsgvo/tom"<br/>
      * tom.prefix="TOM."<br/>
      */

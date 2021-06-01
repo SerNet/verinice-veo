@@ -21,7 +21,9 @@ import java.util.Set;
 
 import javax.validation.constraints.Pattern;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
@@ -34,6 +36,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * This DTO represent a complete catalogItem, i.e. it contains a FullCXXXDto for
+ * the element of this item, it is primarily used in the construction and
+ * serialization of a domain template.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TransformCatalogItemDto extends CompositeCatalogItemDto implements IdentifiableDto {
@@ -44,7 +51,13 @@ public class TransformCatalogItemDto extends CompositeCatalogItemDto implements 
     @ToString.Include
     private String id;
 
-    @JsonDeserialize(contentAs = CreateTailoringReferenceDto.class)
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+                  visible = true,
+                  defaultImpl = CreateTailoringReferenceDto.class,
+                  include = As.EXISTING_PROPERTY,
+                  property = "referenceType")
+    @JsonSubTypes({ @JsonSubTypes.Type(value = TransformExternalTailoringReference.class,
+                                       name = "LINK_EXTERNAL") })
     @Override
     public void setTailoringReferences(Set<AbstractTailoringReferenceDto> tailoringReferences) {
         super.setTailoringReferences(tailoringReferences);

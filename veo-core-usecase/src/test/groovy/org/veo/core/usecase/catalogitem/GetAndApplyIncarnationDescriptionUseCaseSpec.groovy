@@ -29,6 +29,7 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.ElementRepository
 import org.veo.core.repository.PagedResult
@@ -43,11 +44,11 @@ import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputDa
 import org.veo.core.usecase.parameter.TailoringReferenceParameter
 
 class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
-
+    EntityFactory factory = Mock()
     GetIncarnationDescriptionUseCase usecaseGet = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
 
     ApplyIncarnationDescriptionUseCase usecasePut = new ApplyIncarnationDescriptionUseCase(
-    unitRepo, catalogItemRepository,entityRepo, designatorService, catalogItemservice  )
+    unitRepo, catalogItemRepository,entityRepo, designatorService, catalogItemservice, factory)
 
 
     def setup() {
@@ -60,7 +61,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         catalogItemRepository.findById(_) >> Optional.empty()
     }
 
-    def "get the apply information for a catalog-item no tailorref and apply it"() {
+    def "get the apply information for a catalog-item without tailor reference and apply it"() {
         given:
 
         def id = Key.newUuid()
@@ -98,7 +99,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
     def "get the apply information for a catalog-item"() {
         given:
-
         def id = Key.newUuid()
         item1.id >> id
         item1.catalog >> catalog
@@ -135,6 +135,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
         when: "request to create an item with a link"
         def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+
         then: "we got the parameter objekt"
         output.references.size()== 1
         output.references.first().item == item1
@@ -145,7 +146,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         output.references.first().references.first().referencedCatalogable = control2
         def o1 = usecasePut.execute(new ApplyIncarnationDescriptionUseCase.InputData(existingClient, existingUnit.id, output.references))
 
-        then: "the control is saved and the lik ist set to control2"
+        then: "the control is saved and the link ist set to control2"
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
         1* designatorService.assignDesignator(newControl, existingClient)

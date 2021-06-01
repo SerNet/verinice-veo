@@ -41,6 +41,7 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
@@ -52,6 +53,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+/**
+ * This DTO represent the contained {@link Element} defined by a FullXXXDto. It
+ * uses the 'type' property in the json to determine the actual type.
+ */
 @EqualsAndHashCode()
 @Data
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.EXISTING_PROPERTY, property = "type")

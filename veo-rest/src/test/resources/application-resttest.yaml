@@ -16,6 +16,11 @@ veo:
         pass: ''
     proxyHost: cache.company.private
     proxyPort: 3128
+  entity_schemas_location: '/testentity/'
+
+domain:
+  file:
+    selector: 'classpath:testdomaintemplates/*.json'
 
 spring:
   datasource:

@@ -38,7 +38,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     RepositoryProvider entityRepo = Mock()
     ElementRepository repo = Mock()
     UnitRepository unitRepo = Mock()
-    CatalogItem item1 = Mock()
+    CatalogItem item1 = Spy()
     CatalogItem item2 = Mock()
     Catalog catalog = Mock()
     Control control = Mock()

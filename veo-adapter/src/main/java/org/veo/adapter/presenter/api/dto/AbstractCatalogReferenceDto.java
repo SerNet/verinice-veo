@@ -25,10 +25,18 @@ import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogReferenceCatalogItem;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.UpdateReference;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+/**
+ * The base dto class for all catalog references like {@link TailoringReference}
+ * or {@link UpdateReference}. As long as we do not have an editor, (see
+ * VEO-399) it is only used internally. Therefore all schema annotations are
+ * quite useless as these are not part of any client api.
+ */
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractCatalogReferenceDto implements VersionedDto {

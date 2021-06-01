@@ -19,6 +19,7 @@ package org.veo.core.usecase.parameter;
 
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.TailoringReferenceType;
+import org.veo.core.entity.TailoringReferenceTyped;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,7 +32,8 @@ import lombok.EqualsAndHashCode;
  * The {@link TailoringReferenceParameter} describes the concrete values to
  * apply a defined {@link TailoringReference}.
  */
-public class TailoringReferenceParameter extends CatalogReferenceParameter {
+public class TailoringReferenceParameter extends CatalogReferenceParameter
+        implements TailoringReferenceTyped {
     @EqualsAndHashCode.Include
     private TailoringReferenceType referenceType;
     /**

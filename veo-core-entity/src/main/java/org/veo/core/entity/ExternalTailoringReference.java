@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2021  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto.create;
-
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+package org.veo.core.entity;
 
 /**
- * This DTO is primarily used in the domainTemplateassembler.
+ * This reference type is used to describe the {@link CustomLink} of an existing
+ * {@link EntityLayerSupertype} which will be added to it when this
+ * {@link CatalogItem} is applied and points to the created {@link Catalogable}.
+ * It defines the opposite site of a link.
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-public final class CreateTailoringReferenceDto extends AbstractTailoringReferenceDto {
+public interface ExternalTailoringReference extends TailoringReference {
+
+    CustomLink getExternalLink();
+
+    void setExternalLink(CustomLink link);
 
 }

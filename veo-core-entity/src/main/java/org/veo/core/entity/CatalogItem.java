@@ -17,8 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * CatalogItem The catalog item contains an element and/other related catalog
@@ -31,6 +35,48 @@ import java.util.Set;
 public interface CatalogItem extends ElementOwner {
     String SINGULAR_TERM = "catalogitem";
     String PLURAL_TERM = "catalogitems";
+
+    Comparator<? super CatalogItem> BY_CATALOGITEMS = (ci1, ci2) -> ci1.getId()
+                                                                       .uuidValue()
+                                                                       .compareTo(ci2.getId()
+                                                                                     .uuidValue());
+
+    /**
+     * Includes itself together with {@link this.getElementsToCreate()}. This list
+     * is ordered. The item itself is at the first position.
+     */
+    default List<CatalogItem> getAllElementsToCreate() {
+        List<CatalogItem> result = this.getElementsToCreate()
+                                       .stream()
+                                       .sorted(BY_CATALOGITEMS)
+                                       .distinct()
+                                       .collect(Collectors.toList());
+        result.add(0, this);
+        return result;
+    }
+
+    /**
+     * Return the set additional elements to create. These elements are defined by
+     * {@link TailoringReference} of type {@link TailoringReferenceType#COPY} or
+     * {@link TailoringReferenceType#COPY_ALWAYS}.
+     */
+    default Set<CatalogItem> getElementsToCreate() {
+        Set<CatalogItem> elementsToCreate = new HashSet<>();
+        this.getTailoringReferences()
+            .stream()
+            .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
+            .forEach(r -> addElementsToCopy(r, elementsToCreate));
+        return elementsToCreate;
+    }
+
+    default void addElementsToCopy(TailoringReference reference, Set<CatalogItem> itemList) {
+        itemList.add(reference.getCatalogItem());
+        reference.getCatalogItem()
+                 .getTailoringReferences()
+                 .stream()
+                 .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
+                 .forEach(rr -> addElementsToCopy(rr, itemList));
+    }
 
     /**
      * The owner of this is a catalog.

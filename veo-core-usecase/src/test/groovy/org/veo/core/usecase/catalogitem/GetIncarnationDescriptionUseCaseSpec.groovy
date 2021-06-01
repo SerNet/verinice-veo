@@ -24,6 +24,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.ExternalTailoringReference
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
@@ -57,9 +58,8 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         catalogItemRepository.findById(_) >> Optional.empty()
     }
 
-    def "get the apply information for a catalog-item no tailorref"() {
+    def "get the apply information for a catalog-item without tailorref"() {
         given:
-
         item1.tailoringReferences >> []
 
         existingDomain.catalogs >> [catalog]
@@ -135,9 +135,51 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
         then:
         output.references.size()== 1
-        output.references.first().item == item1
-        output.references.first().references.size() == 1
-        output.references.first().references.first().referenceKey == "link.type"
+        with(output.references.first()) {
+            item == item1
+            references.size() == 1
+            references.first().referenceKey == "link.type"
+            references.first().referenceType == TailoringReferenceType.LINK
+        }
+    }
+
+    def "get the apply information for a catalog-item with external link"() {
+        given:
+
+        Control control2 = Mock()
+
+        def id2 = Key.newUuid()
+        item2.id >> id2
+        item2.catalog >> catalog
+        item2.element>>control2
+
+        CustomLink link = Mock()
+        link.type >> "external.link.type"
+        link.target>>control2
+
+        ExternalTailoringReference tr = Mock()
+        tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
+        tr.owner >> item1
+        tr.catalogItem >> item2
+        tr.externalLink >> link
+
+        item1.tailoringReferences >> [tr]
+        item1.element >> control
+
+        existingDomain.catalogs >> [catalog]
+        catalog.domainTemplate >> existingDomain
+        catalog.catalogItems >> [item1, item2]
+
+        when:
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        then:
+        output.references.size()== 1
+        with(output.references.first()) {
+            item == item1
+            references.size() == 1
+            references[0].referenceKey == "external.link.type"
+            references[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+        }
     }
 
     def "get the apply information for a catalog-item with link to an unknown feature "() {

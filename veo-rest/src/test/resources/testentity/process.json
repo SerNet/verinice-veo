@@ -1057,6 +1057,202 @@
       "title": "CustomLink",
       "description": "Custom relations which do not affect the behavior.",
       "properties": {
+        "process_tom": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "CTL_TOM"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "control"
+                    ]
+                  }
+                },
+                "type": "object"
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "process_tom"
+                ]
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_LegalBasisForProcessingSensitiveData": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "The UUID to identify the element",
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+              },
+              "applicableTo": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "type": {
+                "description": "The name of the type described by this schema.",
+                "enum": [
+                  "process_LegalBasisForProcessingSensitiveData"
+                ]
+              },
+              "domains": {
+                "type": "array",
+                "title": "The list of domains in which this element is present.",
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "displayName": {
+                      "type": "string",
+                      "description": "A friendly human readable title of the referenced domain."
+                    },
+                    "targetUri": {
+                      "type": "string",
+                      "description": "The resource URL of the referenced domain."
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "uniqueItems": true
+              },
+              "references": {
+                "type": "array",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "type": "string",
+                      "description": "A friendly human readable title of the referenced object."
+                    },
+                    "targetUri": {
+                      "type": "string",
+                      "description": "The resource URL of the referenced object."
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ]
+                }
+              },
+              "abbreviation": {
+                "type": "string",
+                "title": "Abbreviation",
+                "description": "The abbreviation for this custom link."
+              },
+              "description": {
+                "type": "string",
+                "title": "Description",
+                "description": "The description for this custom link."
+              },
+              "name": {
+                "type": "string",
+                "title": "Name",
+                "description": "The name for this custom link."
+              },
+              "target": {
+                "type": "object",
+                "title": "id of the Control",
+                "properties": {
+                  "targetUri": {
+                    "type": "string",
+                    "title": "The id of the target object."
+                  },
+                  "type": {
+                    "enum": [
+                      "control"
+                    ]
+                  }
+                }
+              },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "target"
+            ]
+          }
+        },
         "process_processor": {
           "items": {
             "additionalProperties": false,

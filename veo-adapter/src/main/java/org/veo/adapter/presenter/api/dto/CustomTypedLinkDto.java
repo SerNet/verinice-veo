@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2021  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto.create;
-
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+package org.veo.adapter.presenter.api.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-/**
- * This DTO is primarily used in the domainTemplateassembler.
- */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateTailoringReferenceDto extends AbstractTailoringReferenceDto {
+@EqualsAndHashCode(callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+public class CustomTypedLinkDto extends CustomLinkDto {
+
+    private String type;
 
 }

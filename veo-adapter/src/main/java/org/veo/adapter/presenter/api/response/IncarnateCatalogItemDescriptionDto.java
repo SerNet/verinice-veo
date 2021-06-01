@@ -37,11 +37,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Describes the incarnation parameters of the item.")
+@Schema(description = "Describes the incarnation parameters of one catalogitem.")
 public class IncarnateCatalogItemDescriptionDto {
 
     @Schema(required = true, implementation = IdRefCatalogItemDescriptionItem.class)
     private IdRef<CatalogItem> item;
+
     @ArraySchema(schema = @Schema(implementation = TailoringReferenceParameterDto.class))
     private List<TailoringReferenceParameterDto> references;
 

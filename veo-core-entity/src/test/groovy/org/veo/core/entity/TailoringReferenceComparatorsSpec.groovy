@@ -15,22 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase
+package org.veo.core.entity
 
-import static org.junit.jupiter.api.Assertions.*
+import org.veo.core.entity.util.TailoringReferenceComparators
 
-import org.junit.jupiter.api.Test
-
-import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Control
-import org.veo.core.entity.CustomLink
-import org.veo.core.entity.Key
-import org.veo.core.entity.TailoringReference
-import org.veo.core.entity.TailoringReferenceType
-
+import groovy.transform.CompileStatic
 import spock.lang.Specification
 
-class UseCaseToolsSpec extends Specification{
+class TailoringReferenceComparatorsSpec extends Specification{
     TailoringReference r1 = Mock()
     TailoringReference r2 = Mock()
     TailoringReference r3 = Mock()
@@ -89,44 +81,10 @@ class UseCaseToolsSpec extends Specification{
         lt3.type >> "a"
     }
 
-
-    def "order links"() {
-        when:
-
-        def list = [l2, l1, l3] as List
-        list.sort(UseCaseTools.BY_LINK_EXECUTION)
-
-        then:
-        list[0] == l1
-        list[0].target == element
-        list[1] == l2
-        list[2] == l3
-
-        when:
-
-        list = [l3, l2, l1] as List
-        list.sort(UseCaseTools.BY_LINK_EXECUTION)
-
-        then:
-        list[0] == l1
-        list[0].target == element
-        list[1] == l2
-        list[2] == l3
-
-        when:
-        list = [lt3, lt2, lt1] as List
-        list.sort(UseCaseTools.BY_LINK_EXECUTION)
-
-        then:
-        list[0] == lt2
-        list[1] == lt3
-        list[2] == lt1
-    }
-
     def "order tailor ref"() {
         when:
         def list = [r1, r2, r3] as List
-        list.sort(UseCaseTools.BY_EXECUTION)
+        list.sort(TailoringReferenceComparators.BY_EXECUTION)
 
         then:
 
@@ -135,9 +93,8 @@ class UseCaseToolsSpec extends Specification{
         list[2].referenceType == TailoringReferenceType.COPY
 
         when:
-
         def list1 = [r1, r2, r4, r3] as List
-        list1.sort(UseCaseTools.BY_EXECUTION)
+        list1.sort(TailoringReferenceComparators.BY_EXECUTION)
 
         then:
 
@@ -151,34 +108,71 @@ class UseCaseToolsSpec extends Specification{
     def "filter copy TailoringReference"() {
         expect:
 
-        UseCaseTools.IS_COPY_PREDICATE.test(r1)
-        !UseCaseTools.IS_COPY_PREDICATE.test(r2)
-        !UseCaseTools.IS_COPY_PREDICATE.test(r3)
-        UseCaseTools.IS_COPY_PREDICATE.test(r5)
+        TailoringReferenceTyped.IS_COPY_PREDICATE.test(r1)
+        !TailoringReferenceTyped.IS_COPY_PREDICATE.test(r2)
+        !TailoringReferenceTyped.IS_COPY_PREDICATE.test(r3)
+        TailoringReferenceTyped.IS_COPY_PREDICATE.test(r5)
     }
 
     def "filter link TailoringReference"() {
         expect:
 
-        !UseCaseTools.IS_LINK_PREDICATE.test(r1)
-        !UseCaseTools.IS_LINK_PREDICATE.test(r2)
-        UseCaseTools.IS_LINK_PREDICATE.test(r3)
-        !UseCaseTools.IS_LINK_PREDICATE.test(r5)
+        !TailoringReferenceTyped.IS_LINK_PREDICATE.test(r1)
+        !TailoringReferenceTyped.IS_LINK_PREDICATE.test(r2)
+        TailoringReferenceTyped.IS_LINK_PREDICATE.test(r3)
+        !TailoringReferenceTyped.IS_LINK_PREDICATE.test(r5)
     }
 
-    def "getElementsToCreate"() {
+    def "get no elements to create"() {
         when:
-        item.tailoringReferences >> []
-        def elements = UseCaseTools.getElementsToCreate(item)
+        CatalogItem sut = Spy() {
+            1 * getTailoringReferences() >> []
+        }
+        def elements = sut.getElementsToCreate()
 
         then:
         elements.size() == 0
+    }
+
+    def "get recursive elements to create"() {
+        given:
+        TailoringReference r1 = Mock()
+        TailoringReference r2 = Mock()
+        TailoringReference r3 = Mock()
+        TailoringReference r4 = Mock()
+        TailoringReference r5 = Mock()
+
+        CatalogItem item = Spy() {
+            2 * getTailoringReferences() >> []
+        }
+        CatalogItem item1 = Spy() {
+            1 * getTailoringReferences() >> [r1]
+        }
+        CatalogItem item2 = Spy() {
+            1 * getTailoringReferences() >> [r1, r5, r2]
+        }
+
+        item.element >> element
+        item1.element >> element1
+
+        r1.referenceType >> TailoringReferenceType.COPY
+        r1.catalogItem >> item
+
+        r2.referenceType >> TailoringReferenceType.OMIT
+        r2.catalogItem >> item
+
+        r3.referenceType >> TailoringReferenceType.LINK
+        r3.catalogItem >> item
+
+        r4.referenceType >> TailoringReferenceType.LINK
+        r4.catalogItem >> item1
+
+        r5.referenceType >> TailoringReferenceType.COPY_ALWAYS
+        r5.catalogItem >> item1
 
         when:
-        item2.tailoringReferences >> [r1, r5, r2]
-        item1.tailoringReferences >> [r1]
+        def elements = item2.getElementsToCreate()
 
-        elements = UseCaseTools.getElementsToCreate(item2)
         then:
         elements.size() == 2
         elements.contains(item)
