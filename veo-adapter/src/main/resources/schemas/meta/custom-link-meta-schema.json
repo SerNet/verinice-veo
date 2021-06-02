@@ -220,7 +220,6 @@
           },
           "required": [
             "type",
-            "title",
             "properties"
           ],
           "properties": {
@@ -228,13 +227,6 @@
               "$id": "#type",
               "type": "string",
               "title": "The type schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": ""
-            },
-            "title": {
-              "$id": "#title",
-              "type": "string",
-              "title": "The title schema",
               "description": "An explanation about the purpose of this instance.",
               "default": ""
             },
