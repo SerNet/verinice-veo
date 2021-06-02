@@ -487,6 +487,33 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "retrieve all assets for a unit filtering by displayName with special characters"() {
+        given: "A sub unit and a sub sub unit with one asset each"
+
+        def subUnit = unitRepository.save(newUnit(unit.client) {
+            parent = unit
+        })
+        def subSubUnit = unitRepository.save(newUnit(unit.client) {
+            parent = subUnit
+        })
+
+        assetRepository.save(newAsset( subUnit) {
+            name = "Fußballverein Äächen 0"
+        })
+        assetRepository.save(newAsset( subSubUnit) {
+            name = "Fußballverein Äächen 1"
+        })
+
+        when: "all assets for the root unit matching the filter"
+        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=ballverein Äächen 1"))
+        then: "only the matching asset from the unit's hierarchy is returned"
+        with(result) {
+            size == 1
+            it[0].name == "Fußballverein Äächen 1"
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
     def "put an asset"() {
         given: "a saved asset"
 

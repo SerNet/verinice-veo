@@ -22,6 +22,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+import java.nio.charset.StandardCharsets
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
@@ -123,7 +125,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     def parseJson(ResultActions resultActions) {
-        parseJson(resultActions.andReturn().response.contentAsString)
+        parseJson(resultActions.andReturn().response.getContentAsString(StandardCharsets.UTF_8))
     }
 
     def parseJson(String json) {
