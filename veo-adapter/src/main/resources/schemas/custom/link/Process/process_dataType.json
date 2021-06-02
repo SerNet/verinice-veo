@@ -10,6 +10,9 @@
       "attributes": {
         "additionalProperties": false,
         "properties": {
+          "process_dataType_comment": {
+            "type": "string"
+          },
           "process_dataType_dataOrigin": {
             "enum": [
               "process_dataType_dataOrigin_direct",
@@ -17,70 +20,7 @@
               "process_dataType_dataOrigin_other"
             ]
           },
-          "process_dataType_dataTransfer": {
-            "enum": [
-              "process_dataType_dataTransfer_internalRecipient",
-              "process_dataType_dataTransfer_externalRecipient"
-            ]
-          },
-          "process_dataType_document": {
-            "format": "uri",
-            "pattern": "^(https?|ftp)://",
-            "type": "string"
-          },
-          "process_dataType_legalBasis": {
-            "items": {
-              "enum": [
-                "process_dataType_legalBasis_Art6Abs2DSGVO",
-                "process_dataType_legalBasis_Art6Abs3DSGVO",
-                "process_dataType_legalBasis_Art9Abs2litfDSGVO",
-                "process_dataType_legalBasis_P31aBPolG",
-                "process_dataType_legalBasis_P67bAbs1S1SGBX",
-                "process_dataType_legalBasis_P25BDSG",
-                "process_dataType_legalBasis_P24BDSG",
-                "process_dataType_legalBasis_P8IfSG",
-                "process_dataType_legalBasis_17aAbs4RoeVP28Abs8RooeV",
-                "process_dataType_legalBasis_P61StrlSchV",
-                "process_dataType_legalBasis_P18PStG",
-                "process_dataType_legalBasis_P294SGBV",
-                "process_dataType_legalBasis_P298SGBV",
-                "process_dataType_legalBasis_P138,139StGB",
-                "process_dataType_legalBasis_P64SGBVIII",
-                "process_dataType_legalBasis_others"
-              ]
-            },
-            "type": "array"
-          },
           "process_dataType_otherDataOrigin": {
-            "type": "string"
-          },
-          "process_dataType_otherLegalBasis": {
-            "type": "string"
-          },
-          "process_dataType_recipient": {
-            "type": "string"
-          },
-          "process_dataType_serviceProviders": {
-            "type": "boolean"
-          },
-          "process_dataType_thirdCountryDocument": {
-            "format": "uri",
-            "pattern": "^(https?|ftp)://",
-            "type": "string"
-          },
-          "process_dataType_thirdCountryExplanation": {
-            "type": "string"
-          },
-          "process_dataType_thirdCountryGuarantees": {
-            "type": "string"
-          },
-          "process_dataType_thirdCountryName": {
-            "type": "string"
-          },
-          "process_dataType_thirdCountryProcessing": {
-            "type": "boolean"
-          },
-          "process_dataType_transferPurpose": {
             "type": "string"
           }
         },
@@ -154,7 +94,6 @@
             ]
           }
         },
-        "title": "Datenart",
         "type": "object"
       },
       "type": {

@@ -4,28 +4,11 @@
     "attributes": {
       "additionalProperties": false,
       "properties": {
-        "process_processingDetails_comment": {
-          "type": "string"
-        },
-        "process_processingDetails_operatingStage": {
+        "process_recipient_type": {
           "enum": [
-            "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_operatingStage_planning",
-            "process_processingDetails_operatingStage_test",
-            "process_processingDetails_operatingStage_rollout"
-          ]
-        },
-        "process_processingDetails_responsibleDepartment": {
-          "type": "string"
-        },
-        "process_processingDetails_surveyConductedOn": {
-          "format": "date",
-          "type": "string"
-        },
-        "process_processingDetails_typeOfSurvey": {
-          "enum": [
-            "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_typeOfSurvey_change"
+            "process_recipient_type_internal",
+            "process_recipient_type_external",
+            "process_recipient_type_processor"
           ]
         }
       },
@@ -80,7 +63,7 @@
     "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
-        "process_processingDetails"
+        "process_recipient"
       ]
     }
   },

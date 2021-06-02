@@ -10,23 +10,7 @@
       "attributes": {
         "additionalProperties": false,
         "properties": {
-          "process_processor_thirdCountryDocument": {
-            "format": "uri",
-            "pattern": "^(https?|ftp)://",
-            "type": "string"
-          },
-          "process_processor_thirdCountryExplanation": {
-            "type": "string"
-          },
-          "process_processor_thirdCountryGuarantees": {
-            "type": "string"
-          },
-          "process_processor_thirdCountryName": {
-            "type": "string"
-          },
-          "process_processor_thirdCountryProcessing": {
-            "type": "boolean"
-          }
+          
         },
         "type": "object"
       },
@@ -94,7 +78,7 @@
           },
           "type": {
             "enum": [
-              "scope"
+              "person"
             ]
           }
         },
@@ -103,7 +87,7 @@
       "type": {
         "description": "The name of the type described by this schema.",
         "enum": [
-          "process_processor"
+          "process_externalRecipient"
         ]
       }
     },

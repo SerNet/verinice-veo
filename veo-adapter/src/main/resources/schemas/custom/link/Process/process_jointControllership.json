@@ -10,7 +10,11 @@
       "attributes": {
         "additionalProperties": false,
         "properties": {
-          
+          "process_jointControllership_document": {
+            "format": "uri",
+            "pattern": "^(https?|ftp)://",
+            "type": "string"
+          }
         },
         "type": "object"
       },
@@ -82,7 +86,6 @@
             ]
           }
         },
-        "title": "Gemeinsame Verantwortliche nach Art.26 DS-GVO",
         "type": "object"
       },
       "type": {
