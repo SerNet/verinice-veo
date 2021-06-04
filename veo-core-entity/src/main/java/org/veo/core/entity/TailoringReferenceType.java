@@ -22,5 +22,5 @@ package org.veo.core.entity;
  */
 public enum TailoringReferenceType {
 
-    COPY, COPY_ALWAYS, LINK, OMIT;
+    OMIT, LINK, COPY, COPY_ALWAYS;
 }

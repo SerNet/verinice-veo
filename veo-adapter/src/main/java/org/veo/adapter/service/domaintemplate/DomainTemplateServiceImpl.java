@@ -38,22 +38,14 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
-import org.veo.adapter.presenter.api.dto.AbstractControlDto;
-import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
-import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
-import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
-import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
-import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
-import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
@@ -66,7 +58,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -77,62 +68,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DomainTemplateServiceImpl implements DomainTemplateService {
     private static final String SYSTEM_USER = "system";
-    private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
-
-    private class PlaceholderResolver extends ModelObjectReferenceResolver {
-        Map<String, ModelObject> cache = new HashMap<>();
-        Map<String, IdentifiableDto> dtoCache = new HashMap<>();
-
-        private PlaceholderResolver() {
-            super(null, null);
-        }
-
-        @Override
-        public <TEntity extends ModelObject> TEntity resolve(
-                ModelObjectReference<TEntity> objectReference) throws NotFoundException {
-            if (objectReference == null) {
-                return null;
-            }
-            String id = objectReference.getId();
-            ModelObject modelObject = cache.computeIfAbsent(id,
-                                                            a -> createElement(id,
-                                                                               objectReference.getType()));
-            return (TEntity) modelObject;
-        }
-
-        @Override
-        public <TEntity extends ModelObject> Set<TEntity> resolve(
-                Set<ModelObjectReference<TEntity>> objectReferences) {
-
-            return objectReferences.stream()
-                                   .map(o -> resolve(o))
-                                   .collect(Collectors.toSet());
-        }
-
-        /**
-         * Creates te missing element from the dto in the cache.
-         */
-        private ModelObject createElement(String id, Class<? extends ModelObject> type) {
-            IdentifiableDto catalogableDto = dtoCache.get(id);
-            if (catalogableDto != null) {
-                EntityLayerSupertypeDto es = (EntityLayerSupertypeDto) catalogableDto;
-                HashMap<String, List<CustomLinkDto>> hashMap = new HashMap<>(es.getLinks());
-                es.getLinks()
-                  .clear();
-                Catalogable catalogable = transform(es, this);
-                es.getLinks()
-                  .putAll(hashMap);
-                return catalogable;
-            }
-            throw new IllegalArgumentException(
-                    "Unknown type (not dtoCached):" + type + "  id:" + id);
-        }
-    }
 
     private final DomainTemplateRepository domainTemplateRepository;
     private final DtoToEntityTransformer entityTransformer;
     private final EntityFactory factory;
     private final List<VeoInputStreamResource> domainResources;
+    private final CatalogItemPrepareStrategy preparations;
 
     private ReferenceAssembler assembler;
     private ObjectMapper objectMapper;
@@ -141,13 +82,16 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     private Map<String, VeoInputStreamResource> domainTemplateFiles = new HashMap<>();
 
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
-            DtoToEntityTransformer entityTransformer, EntityFactory factory,
-            List<VeoInputStreamResource> domainResources) {
+            EntityFactory factory, List<VeoInputStreamResource> domainResources,
+            EntityToDtoTransformer dtoTransformer, SubTypeTransformer subTypeTransformer,
+            CatalogItemPrepareStrategy preparations) {
         this.domainTemplateRepository = domainTemplateRepository;
-        this.entityTransformer = entityTransformer;
         this.factory = factory;
         this.domainResources = domainResources;
+        this.preparations = preparations;
 
+        entityTransformer = new DtoToEntityTransformer(factory,
+                NoValidationSchemaLoader.NO_VALIDATION_LOADER, subTypeTransformer);
         assembler = new LocalReferenceAssembler();
         deserializer = new ReferenceDeserializer(assembler);
         objectMapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(ModelObjectReference.class,
@@ -270,7 +214,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
      * Transform the given domainTemplateDto to a new domain.
      */
     private Domain processDomainTemplate(TransformDomainTemplateDto domainTemplateDto) {
-        PlaceholderResolver ref = new PlaceholderResolver();
+        PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
         Domain domainPlaceholder = factory.createDomain(domainTemplateDto.getName(),
                                                         domainTemplateDto.getAuthority(),
                                                         domainTemplateDto.getTemplateVersion(),
@@ -310,7 +254,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                          .addAll(catalogItems);
                   catalog.getCatalogItems()
                          .forEach(item -> {
-                             processCatalogItem(domain, catalog, item);
+                             preparations.prepareCatalogItem(domain, catalog, item);
                          });
               });
         return domain;
@@ -369,7 +313,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         catalogableDtos.values()
                        .stream()
-                       .map(e -> transform((CatalogableDto) e, ref))
+                       .map(e -> entityTransformer.transformDto2Catalogable(((CatalogableDto) e),
+                                                                            ref))
                        .forEach(c -> ref.cache.put(c.getId()
                                                     .uuidValue(),
                                                    c));
@@ -439,99 +384,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         return target;
     }
 
-    private Catalogable transform(CatalogableDto catalogableDto,
-            PlaceholderResolver modelObjectReferenceResolver) {
-
-        if (catalogableDto instanceof AbstractAssetDto) {
-            return entityTransformer.transformDto2Asset((AbstractAssetDto) catalogableDto,
-                                                        modelObjectReferenceResolver);
-        } else if (catalogableDto instanceof AbstractControlDto) {
-            return entityTransformer.transformDto2Control((AbstractControlDto) catalogableDto,
-                                                          modelObjectReferenceResolver);
-        } else if (catalogableDto instanceof AbstractDocumentDto) {
-            return entityTransformer.transformDto2Document((AbstractDocumentDto) catalogableDto,
-                                                           modelObjectReferenceResolver);
-        } else if (catalogableDto instanceof AbstractIncidentDto) {
-            return entityTransformer.transformDto2Incident((AbstractIncidentDto) catalogableDto,
-                                                           modelObjectReferenceResolver);
-        } else if (catalogableDto instanceof AbstractPersonDto) {
-            return entityTransformer.transformDto2Person((AbstractPersonDto) catalogableDto,
-                                                         modelObjectReferenceResolver);
-        } else if (catalogableDto instanceof AbstractProcessDto) {
-            return entityTransformer.transformDto2Process((AbstractProcessDto) catalogableDto,
-                                                          modelObjectReferenceResolver);
-        } else if (catalogableDto instanceof AbstractScenarioDto) {
-            return entityTransformer.transformDto2Scenario((AbstractScenarioDto) catalogableDto,
-                                                           modelObjectReferenceResolver);
-        }
-        return null;
-    }
-
-    /**
-     * Clean up and relink a catalogItem. Add the domain to each sub element.
-     */
-    private void processCatalogItem(Domain domain, Catalog catalog, CatalogItem item) {
-        item.setId(null);
-        item.setCatalog(catalog);
-        Catalogable element = item.getElement();
-        if (element != null) {
-            processElement(domain, item, element);
-        }
-    }
-
-    /**
-     * Clean up and relink a catalogable. Add the domain to each sub element.
-     */
-    private void processElement(Domain domain, CatalogItem item, Catalogable element) {
-        element.setId(null);
-        if (element instanceof EntityLayerSupertype) {
-            EntityLayerSupertype est = (EntityLayerSupertype) element;
-            est.setDesignator(NO_DESIGNATOR);
-            est.getDomains()
-               .clear();
-            est.addToDomains(domain);
-            processSubTypes(domain, est);
-            processLinks(domain, est);
-            processCustomAspects(domain, est);
-            // TODO: VEO-612 add parts from CompositeEntity
-        } else {
-            throw new IllegalArgumentException(
-                    "Element not of known type: " + element.getModelInterface()
-                                                           .getSimpleName());
-        }
-    }
-
-    private void processCustomAspects(Domain domain, EntityLayerSupertype est) {
-        est.getCustomAspects()
-           .forEach(ca -> {
-               ca.getDomains()
-                 .clear();
-               ca.addToDomains(domain);
-           });
-    }
-
-    private void processLinks(Domain domain, EntityLayerSupertype est) {
-        est.getLinks()
-           .forEach(link -> {
-               link.getDomains()
-                   .clear();
-               link.addToDomains(domain);
-           });
-    }
-
-    private void processSubTypes(Domain domain, EntityLayerSupertype est) {
-        if (!est.getSubTypeAspects()
-                .isEmpty()) {
-            List<String> aspects = est.getSubTypeAspects()
-                                      .stream()
-                                      .map(sa -> sa.getSubType())
-                                      .collect(Collectors.toList());
-            est.getSubTypeAspects()
-               .clear();
-            aspects.forEach(a -> est.setSubType(domain, a));
-        }
-    }
-
     private TransformDomainTemplateDto readInstanceFile(VeoInputStreamResource resource)
             throws JsonParseException, JsonMappingException, IOException {
 
@@ -542,5 +394,4 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             return domainTemplateDto;
         }
     }
-
 }

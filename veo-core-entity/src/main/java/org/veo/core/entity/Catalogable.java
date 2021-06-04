@@ -36,6 +36,8 @@ public interface Catalogable extends ModelObject, Displayable {
 
     void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
 
+    void setDesignator(String designator);
+
     default ElementOwner getOwnerOrContainingCatalogItem() {
         return Optional.<ElementOwner> ofNullable(getOwner())
                        .orElse(getContainingCatalogItem());

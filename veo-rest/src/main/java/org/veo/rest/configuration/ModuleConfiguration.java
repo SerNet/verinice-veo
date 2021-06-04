@@ -40,8 +40,11 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
+import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
+import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
@@ -50,6 +53,7 @@ import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.service.CatalogItemService;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.DesignatorService;
@@ -65,8 +69,10 @@ import org.veo.core.usecase.base.DeleteEntityUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.catalog.GetCatalogUseCase;
 import org.veo.core.usecase.catalog.GetCatalogsUseCase;
+import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
+import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
@@ -506,15 +512,48 @@ public class ModuleConfiguration {
 
     @Bean
     public DomainTemplateServiceImpl domainTemplateService(
-            DomainTemplateRepository domainTemplateRepository,
-            DtoToEntityTransformer entityTransformer, EntityFactory factory,
-            DomainTemplateResource domainTemplateResource) {
-        return new DomainTemplateServiceImpl(domainTemplateRepository, entityTransformer, factory,
-                domainTemplateResource.getResources());
+            DomainTemplateRepository domainTemplateRepository, EntityFactory factory,
+            DomainTemplateResource domainTemplateResource, EntityToDtoTransformer dtoTransformer,
+            SubTypeTransformer subTypeTransformer, CatalogItemPrepareStrategy prepareStrategy) {
+        return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
+                domainTemplateResource.getResources(), dtoTransformer, subTypeTransformer,
+                prepareStrategy);
+    }
+
+    @Bean
+    public CatalogItemService catalogItemService(DtoToEntityTransformer entityTransformer,
+            EntityToDtoTransformer dtoTransformer, EntityFactory factory,
+            SubTypeTransformer subTypeTransformer, CatalogItemPrepareStrategy prepareStrategy) {
+        return new CatalogItemServiceImpl(dtoTransformer, factory, subTypeTransformer,
+                prepareStrategy);
+    }
+
+    @Bean
+    public CatalogItemPrepareStrategy catalogItemPrepareStrategy() {
+        return new CatalogItemPrepareStrategy();
     }
 
     @Bean
     public TypeDefinitionProvider getTypeDefinitionProvider(ReferenceAssembler referenceAssembler) {
         return new TypeDefinitionProvider(referenceAssembler);
+    }
+
+    @Bean
+    public GetIncarnationDescriptionUseCase getApplyCatalogItemUseCase(
+            org.veo.core.repository.UnitRepository unitRepository,
+            CatalogItemRepository catalogItemRepository,
+            org.veo.core.repository.RepositoryProvider entityRepository) {
+        return new GetIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
+                entityRepository);
+    }
+
+    @Bean
+    public ApplyIncarnationDescriptionUseCase applyCatalogItemUseCase(
+            org.veo.core.repository.UnitRepository unitRepository,
+            CatalogItemRepository catalogItemRepository,
+            org.veo.core.repository.RepositoryProvider repositoryProvider,
+            DesignatorService designatorService, CatalogItemService catalogItemService) {
+        return new ApplyIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
+                repositoryProvider, designatorService, catalogItemService);
     }
 }

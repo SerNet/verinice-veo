@@ -15,20 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.service;
 
-import java.util.Set;
-
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ElementOwner;
 
-public interface CatalogableDto {
-
-    Set<ModelObjectReference<Domain>> getDomains();
-
-    ModelObjectReference<ElementOwner> getOwner();
-
-    void setOwner(ModelObjectReference<ElementOwner> owner);
-
+/**
+ * The CatalogItemService creates elements based on the given
+ * {@link CatalogItem}.
+ */
+public interface CatalogItemService {
+    /**
+     * Creates the element instance of an {@link CatalogItem#getElement()} and set
+     * the domain in all parts. It also add the item to the field
+     * {@link Catalogable#getAppliedCatalogItems()}. It creates an so called
+     * incarnation of the given {@link CatalogItem#getElement()}. It creates an
+     * exact copy of the {@link CatalogItem#getElement()} with no owner set, and all
+     * references linking the catalog elements. The instance need to be saved and
+     * the link targets set to concrete entities in order to be persistent.
+     */
+    Catalogable createInstance(CatalogItem item, Domain domain);
 }

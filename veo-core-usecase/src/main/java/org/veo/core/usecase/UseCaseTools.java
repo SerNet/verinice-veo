@@ -17,12 +17,24 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -31,7 +43,65 @@ import org.veo.core.repository.ClientRepository;
 /**
  * A collection of methods used by use cases.
  */
-public class UseCaseTools {
+public final class UseCaseTools {
+
+    private UseCaseTools() {
+        super();
+    }
+
+    /**
+     * Predicate to filter {@link TailoringReferenceType#COPY} or
+     * {@link TailoringReferenceType#COPY_ALWAYS}.
+     */
+    public static final Predicate<? super TailoringReference> IS_COPY_PREDICATE = r -> r.getReferenceType() == TailoringReferenceType.COPY
+            || r.getReferenceType() == TailoringReferenceType.COPY_ALWAYS;
+
+    /**
+     * Predicate to filter {@link TailoringReferenceType#LINK}
+     */
+    public static final Predicate<? super TailoringReference> IS_LINK_PREDICATE = r -> r.getReferenceType() == TailoringReferenceType.LINK;
+
+    public static final Comparator<? super TailoringReference> BY_CATALOGITEM_ELEMENT = (c1,
+            c2) -> c1.getCatalogItem()
+                     .getElement()
+                     .getId()
+                     .uuidValue()
+                     .compareTo(c2.getCatalogItem()
+                                  .getElement()
+                                  .getId()
+                                  .uuidValue());
+
+    /**
+     * Orders the {@link TailoringReference} for applying.
+     */
+    public static final Comparator<? super TailoringReference> BY_EXECUTION = Comparator.comparing(TailoringReference::getReferenceType)
+                                                                                        .thenComparing(BY_CATALOGITEM_ELEMENT);
+
+    public static final Comparator<? super CustomLink> BY_LINK_TARGET = (c1, c2) -> c1.getTarget()
+                                                                                      .getId()
+                                                                                      .uuidValue()
+                                                                                      .compareTo(c2.getTarget()
+                                                                                                   .getId()
+                                                                                                   .uuidValue());
+
+    /**
+     * Orders the string nullsafe by compareTo.
+     */
+    public static final Comparator<? super String> BY_STRING_NULL_SAFE = (s1,
+            s2) -> StringUtils.compare(s1, s2, true);
+
+    /**
+     * Orders the links for applying.
+     */
+    public static final Comparator<? super CustomLink> BY_LINK_EXECUTION = Comparator.comparing(CustomLink::getType,
+                                                                                                BY_STRING_NULL_SAFE)
+                                                                                     .thenComparing(BY_LINK_TARGET);
+
+    public static final Comparator<? super CatalogItem> BY_CATALOGITEMS = (ci1, ci2) -> ci1.getId()
+                                                                                           .uuidValue()
+                                                                                           .compareTo(ci2.getId()
+                                                                                                         .uuidValue());
+
     /**
      * Check if the client exists.
      *
@@ -63,4 +133,39 @@ public class UseCaseTools {
         }
     }
 
+    /**
+     * Includes itself together with
+     * {@link UseCaseTools#getElementsToCreate(CatalogItem)}. This list is ordered.
+     * The item itself is at the first position.
+     */
+    public static List<CatalogItem> getAllElementsToCreate(CatalogItem catalogItem) {
+        List<CatalogItem> allElementsToCreate = getElementsToCreate(catalogItem).stream()
+                                                                                .sorted(BY_CATALOGITEMS)
+                                                                                .collect(Collectors.toList());
+        allElementsToCreate.add(0, catalogItem);
+        return allElementsToCreate;
+    }
+
+    /**
+     * Return the set additional elements to create. These elements are defined by
+     * {@link TailoringReference} of type {@link TailoringReferenceType#COPY} or
+     * {@link TailoringReferenceType#COPY_ALWAYS}.
+     */
+    public static Set<CatalogItem> getElementsToCreate(CatalogItem catalogItem) {
+        Set<CatalogItem> elementsToCreate = new HashSet<>();
+        catalogItem.getTailoringReferences()
+                   .stream()
+                   .filter(UseCaseTools.IS_COPY_PREDICATE)
+                   .forEach(r -> addElementsToCopy(r, elementsToCreate));
+        return elementsToCreate;
+    }
+
+    private static void addElementsToCopy(TailoringReference reference, Set<CatalogItem> set) {
+        set.add(reference.getCatalogItem());
+        reference.getCatalogItem()
+                 .getTailoringReferences()
+                 .stream()
+                 .filter(UseCaseTools.IS_COPY_PREDICATE)
+                 .forEach(rr -> addElementsToCopy(rr, set));
+    }
 }

@@ -27,8 +27,6 @@ import org.veo.core.entity.ElementOwner;
 
 public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto, CatalogableDto {
 
-    Set<ModelObjectReference<Domain>> getDomains();
-
     ModelObjectReference<ElementOwner> getOwner();
 
     void setDesignator(String designator);

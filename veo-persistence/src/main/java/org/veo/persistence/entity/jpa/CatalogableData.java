@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,6 +28,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -51,6 +54,12 @@ public abstract class CatalogableData extends BaseModelObjectData implements Cat
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
+
+    @NotNull
+    @Column(name = "designator")
+    @ToString.Include
+    @Pattern(regexp = "([A-Z]{3}-\\d+)|NO_DESIGNATOR")
+    private String designator;
 
     @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
     private Set<CatalogItem> appliedCatalogItems;

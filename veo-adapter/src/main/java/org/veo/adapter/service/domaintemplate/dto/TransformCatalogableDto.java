@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -37,6 +40,7 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
@@ -68,4 +72,5 @@ public class TransformCatalogableDto implements CatalogableDto, IdentifiableDto 
 
     private ModelObjectReference<ElementOwner> owner;
 
+    private Set<ModelObjectReference<Domain>> domains = new HashSet<>();
 }

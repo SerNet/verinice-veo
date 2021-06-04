@@ -58,6 +58,7 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
@@ -276,6 +277,34 @@ public final class DtoToEntityTransformer {
         target.setType(type);
         entitySchema.validateCustomAspect(target);
         return target;
+    }
+
+    public Catalogable transformDto2Catalogable(CatalogableDto catalogableDto,
+            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+        if (catalogableDto instanceof AbstractAssetDto) {
+            return transformDto2Asset((AbstractAssetDto) catalogableDto,
+                                      modelObjectReferenceResolver);
+        } else if (catalogableDto instanceof AbstractControlDto) {
+            return transformDto2Control((AbstractControlDto) catalogableDto,
+                                        modelObjectReferenceResolver);
+        } else if (catalogableDto instanceof AbstractDocumentDto) {
+            return transformDto2Document((AbstractDocumentDto) catalogableDto,
+                                         modelObjectReferenceResolver);
+        } else if (catalogableDto instanceof AbstractIncidentDto) {
+            return transformDto2Incident((AbstractIncidentDto) catalogableDto,
+                                         modelObjectReferenceResolver);
+        } else if (catalogableDto instanceof AbstractPersonDto) {
+            return transformDto2Person((AbstractPersonDto) catalogableDto,
+                                       modelObjectReferenceResolver);
+        } else if (catalogableDto instanceof AbstractProcessDto) {
+            return transformDto2Process((AbstractProcessDto) catalogableDto,
+                                        modelObjectReferenceResolver);
+        } else if (catalogableDto instanceof AbstractScenarioDto) {
+            return transformDto2Scenario((AbstractScenarioDto) catalogableDto,
+                                         modelObjectReferenceResolver);
+        }
+        throw new IllegalArgumentException("unkown type: " + catalogableDto.getClass()
+                                                                           .getName());
     }
 
     private void mapDomainTemplate(AbstractDomainTemplateDto source,

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2021  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.usecase.parameter;
 
-import java.util.Optional;
-import java.util.UUID;
+import org.veo.core.entity.Catalogable;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
+@Data
+@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 /**
- * A repository for <code>Client</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * Represents a concrete reference on a concrete {@link Catalogable}.
  */
-public interface ClientRepository extends Repository<Client, Key<UUID>> {
-
-    Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
-
-    Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);
+public abstract class CatalogReferenceParameter {
+    private Catalogable referencedCatalogable;
 }

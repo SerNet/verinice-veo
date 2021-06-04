@@ -36,6 +36,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
@@ -60,6 +61,22 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
             Client client) {
         this.dataRepository = repo;
         mySpec = createSpecification(client);
+    }
+
+    @Override
+    public EntityLayerSupertypeQuery<TInterface> whereAppliedItemsContains(CatalogItem item) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> criteriaBuilder.equal(root.join("appliedCatalogItems",
+                                                                    JoinType.LEFT),
+                                                          item));
+        return this;
+    }
+
+    @Override
+    public EntityLayerSupertypeQuery<TInterface> whereOwnerIs(Unit unit) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> criteriaBuilder.equal(root.join("owner"), unit));
+        return this;
     }
 
     @Override

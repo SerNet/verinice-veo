@@ -19,6 +19,7 @@ package org.veo.core.repository;
 
 import java.util.Set;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Unit;
 
@@ -44,6 +45,9 @@ public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
 
     EntityLayerSupertypeQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 
-    PagedResult<T> execute(PagingConfiguration pagingConfiguration);
+    EntityLayerSupertypeQuery<T> whereAppliedItemsContains(CatalogItem item);
 
+    EntityLayerSupertypeQuery<T> whereOwnerIs(Unit unit);
+
+    PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }
