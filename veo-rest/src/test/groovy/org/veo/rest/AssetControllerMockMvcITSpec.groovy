@@ -790,10 +790,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         result.andExpect(status().isCreated())
         def json = parseJson(result)
-        json.with {
+        with(json) {
             resourceId != null
             resourceId.length() == 36
-            success == true
+            success
             message == "Asset risk created successfully."
         }
     }
