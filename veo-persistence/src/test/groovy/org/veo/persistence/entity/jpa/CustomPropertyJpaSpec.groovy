@@ -17,16 +17,12 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
-import org.veo.persistence.entity.jpa.custom.PropertyData
 
 class CustomPropertyJpaSpec extends AbstractJpaSpec {
     @Autowired
@@ -38,8 +34,6 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
     @Autowired
     ClientDataRepository clientDataRepository
 
-    @PersistenceContext
-    EntityManager entityManager
     Unit unit
 
     def setup() {
@@ -54,9 +48,9 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
-                dataProperties: [
-                    new PropertyData("k1", "uno"),
-                    new PropertyData("k2", 2)
+                attributes: [
+                    "k1": "uno",
+                    "k2": 2
                 ]
                 )
             ]
@@ -66,11 +60,10 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         def retrievedAsset = assetRepository.findById(asset.dbId)
         then:
         retrievedAsset.present
-        with(retrievedAsset.get().customAspects[0].dataProperties) {
-            size() == 2
-            it.find { it.key == "k1" }.stringValue == "uno"
-            it.find { it.key == "k2" }.integerValue  == 2
-        }
+        retrievedAsset.get().customAspects[0].attributes == [
+            "k1": "uno",
+            "k2": 2
+        ]
     }
 
     def 'property type can be changed'() {
@@ -79,25 +72,23 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
-                dataProperties: [
-                    new PropertyData("k1", "uno")
+                attributes: [
+                    "k1": "uno"
                 ]
                 )
             ]
         }
         assetRepository.save(asset)
         when: 'replacing the string prop with an int prop'
-        asset.customAspects[0].dataProperties = [
-            new PropertyData("k1", 1)
+        asset.customAspects[0].attributes = [
+            "k1": 1
         ]
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
         then: 'the change has been applied'
-        with(retrievedAsset.get().customAspects[0].dataProperties) {
-            size() == 1
-            it[0].type == PropertyData.Type.INTEGER
-            it[0].integerValue == 1
-        }
+        retrievedAsset.get().customAspects[0].attributes == [
+            "k1": 1
+        ]
     }
 
     def 'property can be removed'() {
@@ -106,27 +97,20 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
-                dataProperties: [
-                    new PropertyData("k1", "uno"),
-                    new PropertyData("k2", "due")
+                attributes: [
+                    "k1": "uno",
+                    "k2": "due",
                 ]
                 )
             ]
         }
         assetRepository.save(asset)
         when: 'removing the first prop'
-        asset.customAspects[0].dataProperties = [
-            new PropertyData("k2", "due")
-        ]
+        asset.customAspects[0].attributes = ["k2": "due"]
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
         then: 'only the second prop remains'
-        with(retrievedAsset.get().customAspects[0].dataProperties) {
-            size() == 1
-            it[0].key == "k2"
-            it[0].type == PropertyData.Type.STRING
-            it[0].stringValue == "due"
-        }
+        retrievedAsset.get().customAspects[0].attributes == ["k2": "due"]
     }
 
     def 'long custom property value is accepted'() {
@@ -137,9 +121,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
             customAspects = [
                 new CustomPropertiesData(
                 dbId: UUID.randomUUID().toString(),
-                dataProperties: [
-                    new PropertyData("p", longString),
-                ]
+                attributes: ["p": longString]
                 )
             ]
         }
@@ -149,8 +131,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         then:
         retrievedAsset.present
         when:
-        def savedProperty = retrievedAsset.get().customAspects.first().dataProperties.first()
-        def savedValue = savedProperty.stringValue
+        def savedValue = retrievedAsset.get().customAspects.first().attributes["p"]
         then:
         savedValue.length() == stringLength
         savedValue == longString

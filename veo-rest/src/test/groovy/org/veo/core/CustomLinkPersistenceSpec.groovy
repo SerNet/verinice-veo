@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import java.time.OffsetDateTime
-
 import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -83,9 +81,10 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
 
         when: "add some properties"
         Asset assetData = savedAsset.get()
-        cp = assetData.links.first()
-        cp.setProperty("my.key.1", "my test value 1")
-        cp.setProperty("my.key.2", "my test value 2")
+        assetData.links.first().attributes = [
+            "my.key.1": "my test value 1",
+            "my.key.2": "my test value 2",
+        ]
 
         assetRepository.save(savedAsset.get())
 
@@ -95,14 +94,15 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
         assetData.getLinks().size() == 1
         with(assetData.getLinks().first()) {
             getType() == cp.getType()
-
-            stringProperties["my.key.1"] == "my test value 1"
-            stringProperties["my.key.2"] == "my test value 2"
+            attributes["my.key.1"] == "my test value 1"
+            attributes["my.key.2"] == "my test value 2"
         }
 
         when: "add properties of type number"
 
-        cp.setProperty("my.key.3", 10.0)
+        cp.attributes = [
+            "my.key.1": 10.0
+        ]
 
         assetRepository.save(assetData)
         savedAsset = assetRepository.findById(asset.id)
@@ -113,21 +113,6 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
         CustomProperties savedCp = assetData.getLinks().first()
 
         then: "numbers also"
-        savedCp.doubleProperties["my.key.3"] == 10
-
-        when: "add properties of type date"
-
-        savedCp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00Z"))
-
-        assetRepository.save(assetData)
-        savedAsset = assetRepository.findById(asset.id)
-        then:
-        savedAsset.present
-        when:
-        assetData = savedAsset.get()
-        savedCp = assetData.getLinks().first()
-
-        then: "date also"
-        savedCp.getOffsetDateTimeProperties().get("my.key.4") == OffsetDateTime.parse("2020-02-02T00:00:00Z")
+        savedCp.attributes["my.key.1"] == 10
     }
 }

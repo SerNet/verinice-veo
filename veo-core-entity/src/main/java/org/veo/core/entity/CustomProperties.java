@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,8 +25,6 @@ import java.util.Set;
  * clients.
  */
 public interface CustomProperties {
-
-    int MAXIMUM_STRING_LENGTH = 18000;
 
     String getType();
 
@@ -52,43 +48,8 @@ public interface CustomProperties {
 
     void setDomains(Set<Domain> aDomains);
 
-    void clearProperties();
+    Map<String, Object> getAttributes();
 
-    Map<String, Boolean> getBooleanProperties();
-
-    void setProperty(String key, Boolean value);
-
-    Map<String, Double> getDoubleProperties();
-
-    void setProperty(String key, Double value);
-
-    Map<String, Integer> getIntegerProperties();
-
-    void setProperty(String key, Integer value);
-
-    Map<String, OffsetDateTime> getOffsetDateTimeProperties();
-
-    void setProperty(String key, OffsetDateTime value);
-
-    Map<String, String> getStringProperties();
-
-    void setProperty(String key, String value);
-
-    Map<String, List<String>> getStringListProperties();
-
-    void setProperty(String key, List<String> value);
-
-    // @formatter:off
-    /**
-     * W.l.o.g. we assume this CustomAspect belongs to a person.
-     *
-     * The (jackson) serialized map then has to conform to
-     * Person.json#properties.customAspects.properties.{this.getType()}.properties.attributes.properties.
-     *
-     * Person.json#properties.customAspects.properties.{this.getType()}
-     * has to conform to custom-aspect-meta-schema.json.
-     */
-    // @formatter:on
-    Map<String, ?> getAllProperties();
+    void setAttributes(Map<String, Object> attributes);
 
 }

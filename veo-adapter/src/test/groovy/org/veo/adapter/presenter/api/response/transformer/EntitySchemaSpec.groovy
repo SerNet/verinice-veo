@@ -25,10 +25,8 @@ import org.veo.core.entity.EntityLayerSupertype
 
 import spock.lang.Specification
 
-class EntitySchemaSpec extends Specification{
+class EntitySchemaSpec extends Specification {
     ObjectMapper om = new ObjectMapper()
-    AttributeTransformer transformer = Mock()
-
     EntitySchema sut
 
     def setup() {
@@ -40,7 +38,7 @@ class EntitySchemaSpec extends Specification{
                             properties: [
                                 attributes: [
                                     additionalProperties: false,
-                                    properties: [
+                                    properties          : [
                                         foo1: [
                                             type: "string"
                                         ],
@@ -53,16 +51,16 @@ class EntitySchemaSpec extends Specification{
                         ]
                     ]
                 ],
-                links: [
+                links        : [
                     properties: [
-                        SuperLink: [
-                            type : "array" ,
-                            items : [
-                                type : "object" ,
-                                properties : [
+                        SuperLink   : [
+                            type : "array",
+                            items: [
+                                type      : "object",
+                                properties: [
                                     attributes: [
                                         additionalProperties: false,
-                                        properties: [
+                                        properties          : [
                                             fa1: [
                                                 type: "string"
                                             ],
@@ -71,7 +69,7 @@ class EntitySchemaSpec extends Specification{
                                             ]
                                         ]
                                     ],
-                                    target: [
+                                    target    : [
                                         properties: [
                                             type: [
                                                 enum: [
@@ -84,16 +82,16 @@ class EntitySchemaSpec extends Specification{
                             ]
                         ],
                         UltimateLink: [
-                            type : "array" ,
-                            items : [
-                                type : "object" ,
-                                properties : [
+                            type : "array",
+                            items: [
+                                type      : "object",
+                                properties: [
                                     attributes: [
                                         additionalProperties: false,
-                                        properties: [
+                                        properties          : [
                                         ]
                                     ],
-                                    target: [
+                                    target    : [
                                         properties: [
                                             type: [
                                                 enum: [
@@ -111,39 +109,55 @@ class EntitySchemaSpec extends Specification{
                 ]
             ]
         ])
-        sut = new EntitySchema(schema, transformer)
+        sut = new EntitySchema(schema)
     }
 
-    def "applies custom aspect attributes"() {
+    def "validates custom aspect attributes"() {
         given:
-        def input = [
-            foo1: "bar",
-            foo2: 5
-        ]
-        def target = Mock(CustomProperties) {
-            it.type >> "SuperAspect"
+        def aspect = Mock(CustomProperties) {
+            attributes >> [
+                "foo1": "bar",
+                "foo2": 5,
+            ]
+            type >> "SuperAspect"
         }
 
-        when: "applying the input props"
-        sut.applyAspectAttributes(input, target)
+        when: "validating"
+        sut.validateCustomAspect(aspect)
 
-        then: "the transformer is called"
-        1 * transformer.applyToEntity("foo1", "bar", om.valueToTree([type: "string"]), target)
-        1 * transformer.applyToEntity("foo2", 5, om.valueToTree([type: "number"]), target)
+        then:
+        noExceptionThrown()
+    }
+
+    def "invalid aspect attribute data type causes exception"() {
+        given:
+        def aspect = Mock(CustomProperties) {
+            attributes >> [
+                "foo1": "bar",
+                "foo2": "5",
+            ]
+            type >> "SuperAspect"
+        }
+
+        when: "validating"
+        sut.validateCustomAspect(aspect)
+
+        then: "an exception is thrown"
+        thrown(IllegalArgumentException)
     }
 
     def "unknown aspect causes exception"() {
         given:
-        def input = [
-            foo1: "bar",
-            foo2: 5
-        ]
-        def target = Mock(CustomProperties) {
-            it.type >> "MissingAspect"
+        def aspect = Mock(CustomProperties) {
+            attributes >> [
+                "foo1": "bar",
+                "foo2": 5,
+            ]
+            type >> "MissingAspect"
         }
 
-        when: "applying the input props"
-        sut.applyAspectAttributes(input, target)
+        when: "validating"
+        sut.validateCustomAspect(aspect)
 
         then: "an exception is thrown"
         thrown(IllegalArgumentException)
@@ -151,50 +165,69 @@ class EntitySchemaSpec extends Specification{
 
     def "unknown aspect attribute type causes exception"() {
         given:
-        def input = [
-            fantasyFoo: "baritone"
-        ]
-        def target = Mock(CustomProperties) {
-            it.type >> "SuperAspect"
+        def aspect = Mock(CustomProperties) {
+            attributes >> [
+                "fantasyFoo": "baritone",
+            ]
+            type >> "SuperAspect"
         }
 
-        when: "applying the input props"
-        sut.applyAspectAttributes(input, target)
+        when: "validating"
+        sut.validateCustomAspect(aspect)
 
         then: "an exception is thrown"
         thrown(IllegalArgumentException)
     }
 
-    def "applies custom link attributes"() {
+    def "invalid link attribute data type causes exception"() {
         given:
-        def input = [
-            fa1: "na",
-            fa2: true
-        ]
-        def target = Mock(CustomLink) {
-            it.type >> "SuperLink"
+        def link = Mock(CustomLink) {
+            attributes >> [
+                "fa1": "na",
+                "fa2": "true",
+            ]
+            type >> "SuperLink"
         }
+        when: "validating"
+        sut.validateCustomLink(link)
 
-        when: "applying the input props"
-        sut.applyLinkAttributes(input, target)
+        then: "an exception is thrown"
+        thrown(IllegalArgumentException)
+    }
 
-        then: "the transformer is called"
-        1 * transformer.applyToEntity("fa1", "na", om.valueToTree([type: "string"]), target)
-        1 * transformer.applyToEntity("fa2", true, om.valueToTree([type: "boolean"]), target)
+    def "validates link"() {
+        given:
+        def link = Mock(CustomLink) {
+            attributes >> [
+                "fa1": "na",
+                "fa2": true,
+            ]
+            target >> Mock(EntityLayerSupertype) {
+                modelType >> "target_type"
+            }
+            type >> "SuperLink"
+        }
+        when: "validating"
+        sut.validateCustomLink(link)
+
+        then:
+        noExceptionThrown()
     }
 
     def "unknown link type causes exception"() {
         given:
-        def input = [
-            fa1: "na",
-            fa2: true
-        ]
-        def target = Mock(CustomLink) {
-            it.type >> "MissingLink"
+        def link = Mock(CustomLink) {
+            attributes >> [
+                "fa1": "na",
+                "fa2": true,
+            ]
+            target >> Mock(EntityLayerSupertype) {
+                modelType >> "target_type"
+            }
+            type >> "MissingLink"
         }
-
-        when: "applying the input props"
-        sut.applyLinkAttributes(input, target)
+        when: "validating with unknown link type"
+        sut.validateCustomLink(link)
 
         then: "an exception is thrown"
         thrown(IllegalArgumentException)
@@ -202,65 +235,56 @@ class EntitySchemaSpec extends Specification{
 
     def "unknown link attribute type causes exception"() {
         given:
-        def input = [
-            fantasyFa: "na-na-na"
-        ]
-        def target = Mock(CustomLink) {
-            it.type >> "SuperLink"
+        def link = Mock(CustomLink) {
+            attributes >> [
+                "fantasyFa:": "na-na-na",
+            ]
+            target >> Mock(EntityLayerSupertype) {
+                modelType >> "target_type"
+            }
+            type >> "SuperLink"
         }
-
-        when: "applying the input props"
-        sut.applyLinkAttributes(input, target)
+        when: "validating"
+        sut.validateCustomLink(link)
 
         then: "an exception is thrown"
         thrown(IllegalArgumentException)
     }
 
-    def "invalid links cause exception"() {
+    def "invalid link targets cause exception"() {
         given: "a link with invalid target modelType"
         def link = Mock(CustomLink) {
-            it.type >> "SuperLink"
-            it.target >> Mock(EntityLayerSupertype) {
-                it.modelType >> "no_target_type"
+            attributes >> [
+                "fa1": "na",
+                "fa2": true,
+            ]
+            type >> "SuperLink"
+            target >> Mock(EntityLayerSupertype) {
+                modelType >> "no_target_type"
             }
         }
 
         when: "validated"
-        sut.validateLinkTarget(link)
+        sut.validateCustomLink(link)
 
         then: "an exception is thrown"
         thrown(IllegalArgumentException)
     }
 
-    def "valid links are allowed"() {
+    def "another valid link is allowed"() {
         given: "a link with valid target modelType"
         def link = Mock(CustomLink) {
-            it.type >> "SuperLink"
-            it.target >> Mock(EntityLayerSupertype) {
-                it.modelType >> "target_type"
+            attributes >> [:]
+            type >> "UltimateLink"
+            target >> Mock(EntityLayerSupertype) {
+                modelType >> "another_target_type"
             }
         }
 
         when: "validated"
-        sut.validateLinkTarget(link)
+        sut.validateCustomLink(link)
 
-        then: "throws no illegal argument exceptions"
-        notThrown(IllegalArgumentException)
-    }
-
-    def "mutiple valid links are allowed"() {
-        given: "a link with valid target modelType"
-        def link = Mock(CustomLink) {
-            it.type >> "UltimateLink"
-            it.target >> Mock(EntityLayerSupertype) {
-                it.modelType >> "another_target_type"
-            }
-        }
-
-        when: "validated"
-        sut.validateLinkTarget(link)
-
-        then: "throws no illegal argument exceptions"
-        notThrown(IllegalArgumentException)
+        then:
+        noExceptionThrown()
     }
 }

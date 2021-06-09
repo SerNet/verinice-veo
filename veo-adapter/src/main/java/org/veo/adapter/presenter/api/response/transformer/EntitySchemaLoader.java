@@ -38,8 +38,7 @@ public class EntitySchemaLoader {
         var schemaString = entitySchemaService.findSchema(entityType, Collections.emptyList());
         try {
             return new EntitySchema(Json.mapper()
-                                        .readTree(schemaString),
-                    new AttributeTransformer());
+                                        .readTree(schemaString));
         } catch (JsonProcessingException ex) {
             throw new EntitySchemaException(
                     String.format("Invalid entity schema \"%s\"", entityType), ex);

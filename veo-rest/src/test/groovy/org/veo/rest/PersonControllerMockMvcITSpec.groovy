@@ -285,9 +285,11 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New person-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'person_generalInformation'
-        entity.customAspects.first().stringProperties.person_generalInformation_salutation == 'Ms.'
-        entity.customAspects.first().stringProperties.person_generalInformation_familyName == 'Schmidt'
+        with(entity.customAspects.first()) {
+            type == 'person_generalInformation'
+            attributes["person_generalInformation_salutation"] == 'Ms.'
+            attributes["person_generalInformation_familyName"] == 'Schmidt'
+        }
     }
 
     @WithUserDetails("user@domain.example")

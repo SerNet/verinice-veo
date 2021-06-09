@@ -193,10 +193,10 @@ public final class DtoToEntityTransformer {
 
         var target = factory.createCustomLink(source.getName(), linkTarget, null);
 
+        target.setAttributes(source.getAttributes());
         target.setType(type);
         target.setName(source.getName());
-        entitySchema.applyLinkAttributes(source.getAttributes(), target);
-        entitySchema.validateLinkTarget(target);
+        entitySchema.validateCustomLink(target);
         return target;
 
     }
@@ -205,8 +205,9 @@ public final class DtoToEntityTransformer {
     public CustomProperties transformDto2CustomProperties(EntityFactory factory,
             CustomPropertiesDto source, String type, EntitySchema entitySchema) {
         var target = factory.createCustomProperties();
+        target.setAttributes(source.getAttributes());
         target.setType(type);
-        entitySchema.applyAspectAttributes(source.getAttributes(), target);
+        entitySchema.validateCustomAspect(target);
         return target;
     }
 

@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.persistence.EntityManager
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -61,9 +59,6 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
     Domain domain
     private Unit unit
 
-    @Autowired
-    private EntityManager entityManager
-
     def setup() {
         client = clientRepository.save(newClient {})
         unit = unitRepository.save(newUnit(client))
@@ -85,7 +80,9 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
                 customAspects = [
                     new CustomPropertiesData().tap {
                         it.type = "my_custom_aspect"
-                        it.setProperty("foo", "bar")
+                        it.attributes = [
+                            "foo": "bar"
+                        ]
                     }
                 ] as Set
                 links = [
@@ -107,14 +104,12 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
         then: "all data has been fetched"
         result.totalResults == testProcessCount
         with(result.resultPage[0]) {
-            customAspects.first().stringProperties["foo"] == "bar"
+            customAspects.first().attributes["foo"] == "bar"
             domains.first() != null
             getSubType(domain) != null
             links.first() != null
         }
 
-        // TODO: VEO-448 Reduce query selects to 3 by joining all that is EAGER now.
-        // assertSelectCount(3)
-        QueryCountHolder.grandTotal.select == 3 + testProcessCount
+        QueryCountHolder.grandTotal.select == 3
     }
 }

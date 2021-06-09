@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -30,7 +29,6 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Control
-import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -42,7 +40,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
-
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
  * Uses JPA repositories with in-memory database.
@@ -381,56 +378,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "put a control with a string property that is too long"() {
-        given: "a saved control"
-
-        CustomProperties cp = newCustomProperties("my.new.type")
-
-        def control = txTemplate.execute {
-            controlRepository.save(newControl(unit) {
-                customAspects = [cp] as Set
-                domains = [domain1] as Set
-            })
-        }
-        Map request = [
-            name: 'New control-2',
-            abbreviation: 'u-2',
-            description: 'desc',
-            owner:
-            [
-                targetUri: '/units/'+unit.id.uuidValue(),
-                displayName: 'test unit'
-            ], domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
-            ], customAspects:
-            [
-                'ControlDataProtectionObjectivesEugdpr' :
-                [
-                    domains: [],
-                    attributes:  [
-                        test: 'X' * 20000
-                    ]
-                ]
-            ]
-        ]
-
-        when: "a request is made to the server"
-        Map headers = [
-            'If-Match': ETag.from(control.id.uuidValue(), 1)
-        ]
-        def results = put("/controls/${control.id.uuidValue()}", request, headers, false)
-
-        then: "the data is rejected"
-        HttpMessageNotReadableException ex = thrown()
-
-        and: "the reason is given"
-        ex.message =~ /Property value for test exceeds maximum length of 18.000 characters./
     }
 
     @WithUserDetails("user@domain.example")

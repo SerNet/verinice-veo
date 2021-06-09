@@ -310,7 +310,7 @@ public final class EntityToDtoTransformer {
     public CustomLinkDto transformCustomLink2Dto(@Valid CustomLink source) {
         var target = new CustomLinkDto();
         target.setName(source.getName());
-        target.setAttributes(source.getAllProperties());
+        target.setAttributes(source.getAttributes());
 
         if (source.getTarget() != null) {
             target.setTarget(ModelObjectReference.from(source.getTarget(), referenceAssembler));
@@ -350,7 +350,7 @@ public final class EntityToDtoTransformer {
     // CustomPropertiesDto
     public CustomPropertiesDto transformCustomProperties2Dto(@Valid CustomProperties source) {
         var target = new CustomPropertiesDto();
-        target.setAttributes(source.getAllProperties());
+        target.setAttributes(source.getAttributes());
         return target;
     }
 

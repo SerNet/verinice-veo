@@ -17,28 +17,26 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+
+import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.persistence.entity.jpa.custom.PropertyData;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,6 +46,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
+@TypeDef(name = "json", typeClass = JsonType.class)
 public class CustomPropertiesData implements CustomProperties {
 
     @Id
@@ -72,111 +71,9 @@ public class CustomPropertiesData implements CustomProperties {
     @ManyToMany(targetEntity = DomainData.class)
     final protected Set<Domain> domains = new HashSet<>();
 
-    @OneToMany(targetEntity = PropertyData.class,
-               fetch = FetchType.EAGER,
-               cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               mappedBy = "parentId")
-    private java.util.Set<PropertyData> dataProperties = new java.util.HashSet<>();
-
-    @Override
-    public void clearProperties() {
-        dataProperties.clear();
-    }
-
-    @Override
-    public Map<String, Boolean> getBooleanProperties() {
-        return getProperties(Boolean.class);
-    }
-
-    @Override
-    public void setProperty(String key, Boolean value) {
-        PropertyData propertyData = new PropertyData(key, value);
-        propertyData.setParentId(getDbId());
-        dataProperties.add(propertyData);
-    }
-
-    public void setDataProperties(Set<PropertyData> newDataProperties) {
-        this.dataProperties.clear();
-        newDataProperties.forEach(propertyData -> propertyData.setParentId(this.dbId));
-        this.dataProperties.addAll(newDataProperties);
-    }
-
-    @Override
-    public Map<String, Double> getDoubleProperties() {
-        return getProperties(Double.class);
-    }
-
-    @Override
-    public void setProperty(String key, Double value) {
-        PropertyData propertyData = new PropertyData(key, value);
-        propertyData.setParentId(getDbId());
-        dataProperties.add(propertyData);
-    }
-
-    @Override
-    public Map<String, Integer> getIntegerProperties() {
-        return getProperties(Integer.class);
-    }
-
-    @Override
-    public void setProperty(String key, Integer value) {
-        PropertyData propertyData = new PropertyData(key, value);
-        propertyData.setParentId(getDbId());
-        dataProperties.add(propertyData);
-    }
-
-    @Override
-    public Map<String, OffsetDateTime> getOffsetDateTimeProperties() {
-        return getProperties(OffsetDateTime.class);
-    }
-
-    @Override
-    public void setProperty(String key, OffsetDateTime value) {
-        PropertyData propertyData = new PropertyData(key, value);
-        propertyData.setParentId(getDbId());
-        dataProperties.add(propertyData);
-    }
-
-    @Override
-    public Map<String, String> getStringProperties() {
-        return getProperties(String.class);
-    }
-
-    @Override
-    public void setProperty(String key, String value) {
-        PropertyData propertyData = new PropertyData(key, value);
-        propertyData.setParentId(getDbId());
-        dataProperties.add(propertyData);
-    }
-
-    @Override
-    public Map<String, List<String>> getStringListProperties() {
-        return getProperties(List.class, p -> (List<String>) p);
-    }
-
-    @Override
-    public void setProperty(String key, List<String> value) {
-        PropertyData propertyData = new PropertyData(key, value);
-        propertyData.setParentId(getDbId());
-        dataProperties.add(propertyData);
-    }
-
-    @Override
-    public Map<String, ?> getAllProperties() {
-        return new HashMap<>(getProperties(Object.class));
-    }
-
-    private <T> Map<String, T> getProperties(Class<T> tClass) {
-        return getProperties(tClass, tClass::cast);
-    }
-
-    private <TOut> Map<String, TOut> getProperties(Class<?> inClass, Function<Object, TOut> cast) {
-        return dataProperties.stream()
-                             .filter(p -> inClass.isInstance(p.getValue()))
-                             .collect(Collectors.toMap(PropertyData::getKey,
-                                                       p -> cast.apply(p.getValue())));
-    }
+    @Type(type = "json")
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> attributes;
 
     /**
      * Add the given Domain to the collection domains.

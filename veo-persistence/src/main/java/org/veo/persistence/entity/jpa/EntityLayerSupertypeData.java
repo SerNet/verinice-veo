@@ -28,7 +28,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -53,19 +52,11 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @NamedEntityGraph(name = EntityLayerSupertypeData.FULL_AGGREGATE_GRAPH,
-                  attributeNodes = {
-                          @NamedAttributeNode(value = "customAspects",
-                                              subgraph = "customAspectGraph"),
+                  attributeNodes = { @NamedAttributeNode(value = "customAspects"),
                           @NamedAttributeNode(value = "domains"),
                           @NamedAttributeNode(value = "appliedCatalogItems"),
                           @NamedAttributeNode(value = "links"),
-                          @NamedAttributeNode(value = "subTypeAspects") },
-                  subgraphs = { @NamedSubgraph(name = "customAspectGraph",
-                                               attributeNodes = {
-                                                       // TODO VEO-448 make dataProperties LAZY and
-                                                       // fetch
-                                                       // dataProperties.stringListValue here
-                                                       @NamedAttributeNode(value = "dataProperties"), }) })
+                          @NamedAttributeNode(value = "subTypeAspects") })
 public abstract class EntityLayerSupertypeData extends CatalogableData
         implements NameableData, EntityLayerSupertype {
 

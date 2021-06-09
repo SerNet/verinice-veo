@@ -157,17 +157,17 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.select == 0
     }
 
-    def "SQL performance for saving 1 process with 1 customAspect with 10 array properties"() {
+    def "SQL performance for saving 1 process with 1 customAspect with custom properties"() {
         given:
         createClient()
 
         when:
         def queryCounts = trackQueryCounts{
-            def process = saveProcessWithArrayCustomAspect(10)
+            saveProcessWithCustomAspect()
         }
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 5
+        queryCounts.insert == 3
         queryCounts.update == 0
         queryCounts.select == 0
     }
@@ -175,17 +175,17 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     def "SQL performance for putting 1 string value in 1 customAspect with 10 existing values"() {
         given:
         createClient()
-        def process = saveProcessWithArrayCustomAspect(10)
+        def process = saveProcessWithCustomAspect()
 
         when:
         def queryCounts = trackQueryCounts{
-            updateProcessWithArrayCustomAspect(process)
+            updateProcessWithCustomAspect(process)
         }
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 1
-        queryCounts.update == 0
-        queryCounts.select == 10
+        queryCounts.insert == 0
+        queryCounts.update == 1
+        queryCounts.select == 6
     }
 
     def "SQL performance for saving 1 composite person with 2 parts"() {
@@ -387,7 +387,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 12
         queryCounts.insert == 4
         queryCounts.update == 0
-        queryCounts.select == 32
+        queryCounts.select == 27
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
@@ -553,24 +553,23 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     }
 
     @Transactional
-    def Process saveProcessWithArrayCustomAspect(int count) {
+    def Process saveProcessWithCustomAspect() {
         def process = newProcess(unit)
-        def values = []
-        for (i in 0..<count) {
-            values.add("value_" + i)
-        }
         CustomProperties cp = newCustomProperties("aType")
-        cp.setProperty(PROP_KEY, values as List)
+        cp.attributes = [
+            PROP_KEY: "ok"
+        ]
         process.addToCustomAspects(cp)
         return processRepository.save(process)
     }
 
     @Transactional
-    def void updateProcessWithArrayCustomAspect(Process detachedProcess) {
+    def void updateProcessWithCustomAspect(Process detachedProcess) {
         def process = processRepository.findById(detachedProcess.getId()).get()
         // adding 1 value to the end of the list:
-        process.customAspects
-                .first().stringListProperties.entrySet().first().value.add("value_new")
+        process.customAspects.first().attributes = [
+            PROP_KEY: "updated val"
+        ]
         processRepository.save(process)
     }
 

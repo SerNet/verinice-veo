@@ -29,6 +29,8 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.util.NestedServletException
 
+import com.fasterxml.jackson.databind.ObjectMapper
+
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.CustomProperties
@@ -364,9 +366,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'process_privacyImpactAssessment'
-        entity.customAspects.first().booleanProperties.process_privacyImpactAssessment_approved
-        entity.customAspects.first().stringProperties.process_privacyImpactAssessment_approvedComment == 'no comment'
+        with(entity.customAspects.first()) {
+            type == 'process_privacyImpactAssessment'
+            attributes["process_privacyImpactAssessment_approved"]
+            attributes["process_privacyImpactAssessment_approvedComment"] == 'no comment'
+        }
     }
 
     @WithUserDetails("user@domain.example")
@@ -374,7 +378,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved process"
 
         CustomProperties cp = newCustomProperties("process_privacyImpactAssessment") {
-            it.setProperty('process_privacyImpactAssessment_approvedComment', 'old comment')
+            attributes = [
+                'process_privacyImpactAssessment_approvedComment': 'old comment'
+            ]
         }
 
         def process = txTemplate.execute {
@@ -436,8 +442,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New Process-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'process_privacyImpactAssessment'
-        entity.customAspects.first().stringProperties.process_privacyImpactAssessment_approvedComment == 'new comment'
+        with(entity.customAspects.first()) {
+            type == 'process_privacyImpactAssessment'
+            attributes["process_privacyImpactAssessment_approvedComment"] == 'new comment'
+        }
     }
 
     @WithUserDetails("user@domain.example")

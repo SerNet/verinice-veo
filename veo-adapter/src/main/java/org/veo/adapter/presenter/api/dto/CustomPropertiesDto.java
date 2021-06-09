@@ -17,15 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.text.NumberFormat;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
@@ -76,32 +72,8 @@ public class CustomPropertiesDto {
         return entityToDtoTransformer.transformCustomProperties2Dto(control);
     }
 
-    // maybe this is the best way to handle this.
-    // we can use the map here and the transform function creates the properties
-    // in the entity so no need for dtoProperties
-
     @Schema(description = "The properties of the element described by the schema of the type attribute.",
             example = " name: 'value'",
             required = false)
-    private Map<String, ?> attributes = new HashMap<>();
-
-    public Map<String, ?> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, ?> attributes) {
-        attributes.forEach((key, value) -> {
-            // TODO: it doesn't seem right that we have to do this manually
-            if (value instanceof String
-                    && ((String) value).length() > CustomProperties.MAXIMUM_STRING_LENGTH) {
-                throw new ValidationException(
-                        "Property value for " + key + " exceeds maximum length of "
-                                + NumberFormat.getInstance(Locale.US)
-                                              .format(CustomProperties.MAXIMUM_STRING_LENGTH)
-                                + " characters.");
-            }
-        });
-        this.attributes = attributes;
-    }
-
+    private Map<String, Object> attributes = Collections.emptyMap();
 }

@@ -18,16 +18,22 @@
 package org.veo.adapter.presenter.api.response.transformer;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
+import com.networknt.schema.ValidationMessage;
 
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 
+import lombok.NonNull;
+
 /**
- * Parses attributes of custom aspect / link DTOs according to an entity JSON
- * schema. This is the high-level transformer class; the actual low-level
- * parsing and applying is delegated to an {@code AttributeTransformer}.
+ * Wraps a JSON entity schema and provides validation functionality for custom
+ * aspects and links.
  */
 public class EntitySchema {
     public static final String KEY_ATTRIBUTES = "attributes";
@@ -40,46 +46,41 @@ public class EntitySchema {
     public static final String KEY_ENUM = "enum";
 
     private final JsonNode jsonSchema;
-    private final AttributeTransformer transformer;
+    private final JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+    private final ObjectMapper om = new ObjectMapper();
 
-    public EntitySchema(JsonNode jsonSchema, AttributeTransformer transformer) {
+    public EntitySchema(JsonNode jsonSchema) {
         this.jsonSchema = jsonSchema;
-        this.transformer = transformer;
     }
 
     /**
-     * Parses attributes in map and applies them to given target aspect. For custom
-     * links, use {@code applyLinkAttributes} instead.
-     *
-     * @param input
-     *            DTO attribute map (key: attribute type, value: attribute value).
-     * @param target
-     *            Custom aspect to apply the attribute map to.
-     * @throws IllegalArgumentException
-     *             If attributes don't conform to schema.
+     * Validates if the custom aspects attributes are allowed by the schema.
      */
-    public void applyAspectAttributes(Map<String, ?> input, CustomProperties target) {
-        apply(input, target, getAspectAttrPropsSchema(target.getType()));
+    public void validateCustomAspect(CustomProperties customProperties) {
+        validateAgainstSchema(customProperties.getAttributes(),
+                              getAspectAttrSchema(customProperties.getType()));
     }
 
     /**
-     * Parses attributes in map and applies them to given target link.
-     *
-     * @param input
-     *            DTO attribute map (key: attribute type, value: attribute value).
-     * @param target
-     *            Custom link to apply the attribute map to.
-     * @throws IllegalArgumentException
-     *             If attributes don't conform to schema.
+     * Validates if the link attributes and target type are allowed by the schema.
      */
-    public void applyLinkAttributes(Map<String, ?> input, CustomLink target) {
-        apply(input, target, getLinkAttrPropsSchema(target.getType()));
+    public void validateCustomLink(CustomLink customLink) {
+        validateAgainstSchema(customLink.getAttributes(), getLinkAttrSchema(customLink.getType()));
+        validateLinkTarget(customLink);
     }
 
-    /**
-     * Validates if the links target type is allowed by the schema.
-     */
-    public void validateLinkTarget(CustomLink link) throws IllegalArgumentException {
+    private void validateAgainstSchema(@NonNull Map<String, Object> target,
+            @NonNull JsonNode schema) {
+        var errors = schemaFactory.getSchema(schema)
+                                  .validate(om.convertValue(target, JsonNode.class));
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException("JSON does not conform to schema: " + errors.stream()
+                                                                                           .map(ValidationMessage::getMessage)
+                                                                                           .collect(Collectors.joining(", ")));
+        }
+    }
+
+    private void validateLinkTarget(CustomLink link) throws IllegalArgumentException {
         final var validTargetTypes = jsonSchema.get(KEY_PROPERTIES)
                                                .get(KEY_LINKS)
                                                .get(KEY_PROPERTIES)
@@ -98,23 +99,12 @@ public class EntitySchema {
             }
         }
         throw new IllegalArgumentException(
-                String.format("link target of type '%s' hat to be one of %s", link.getTarget()
+                String.format("link target of type '%s' had to be one of %s", link.getTarget()
                                                                                   .getModelType(),
                               validTargetTypes));
     }
 
-    private void apply(Map<String, ?> input, CustomProperties target, JsonNode attrPropSchema) {
-        input.forEach((key, value) -> {
-            JsonNode propSchema = attrPropSchema.get(key);
-            if (propSchema == null) {
-                throw new IllegalArgumentException(
-                        String.format("Attribute type \"%s\" does not exist in schema.", key));
-            }
-            transformer.applyToEntity(key, value, propSchema, target);
-        });
-    }
-
-    private JsonNode getAspectAttrPropsSchema(String aspectType) {
+    private JsonNode getAspectAttrSchema(String aspectType) {
         var aspectSchema = jsonSchema.get(KEY_PROPERTIES)
                                      .get(KEY_CUSTOM_ASPECTS)
                                      .get(KEY_PROPERTIES)
@@ -125,11 +115,10 @@ public class EntitySchema {
                                   aspectType));
         }
         return aspectSchema.get(KEY_PROPERTIES)
-                           .get(KEY_ATTRIBUTES)
-                           .get(KEY_PROPERTIES);
+                           .get(KEY_ATTRIBUTES);
     }
 
-    private JsonNode getLinkAttrPropsSchema(String type) {
+    private JsonNode getLinkAttrSchema(String type) {
         var linkSchema = jsonSchema.get(KEY_PROPERTIES)
                                    .get(KEY_LINKS)
                                    .get(KEY_PROPERTIES)
@@ -140,7 +129,6 @@ public class EntitySchema {
         }
         return linkSchema.get(KEY_ITEMS)
                          .get(KEY_PROPERTIES)
-                         .get(KEY_ATTRIBUTES)
-                         .get(KEY_PROPERTIES);
+                         .get(KEY_ATTRIBUTES);
     }
 }

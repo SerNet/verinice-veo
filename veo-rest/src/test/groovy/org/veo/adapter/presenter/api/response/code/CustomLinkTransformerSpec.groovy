@@ -51,9 +51,7 @@ class CustomLinkTransformerSpec extends Specification {
         def link = Mock(CustomLink) {
             it.name >> "good name"
             it.target >> targetAsset
-            it.getAllProperties() >> [
-                "foo": "bar"
-            ]
+            it.attributes >> [:]
         }
 
         when: "transforming it to a DTO"
@@ -63,9 +61,7 @@ class CustomLinkTransformerSpec extends Specification {
         with(dto) {
             name == "good name"
             target == ModelObjectReference.from(targetAsset, referenceAssembler)
-            with(attributes) {
-                get("foo") == "bar"
-            }
+            attributes == link.attributes
         }
     }
 
@@ -80,9 +76,7 @@ class CustomLinkTransformerSpec extends Specification {
         def linkDto = new CustomLinkDto().tap {
             name = "good name"
             target = ModelObjectReference.from(targetAsset, Mock(ReferenceAssembler))
-            attributes = [
-                "foo": "bar"
-            ]
+            attributes = [:]
         }
 
         when: "transforming it to an entity"
@@ -93,6 +87,7 @@ class CustomLinkTransformerSpec extends Specification {
         1 * factory.createCustomLink("good name", targetAsset, null) >> newLink
         entity == newLink
         1 * newLink.setType("good type")
-        1 * schema.applyLinkAttributes(["foo": "bar"], newLink)
+        1 * newLink.setAttributes(linkDto.attributes)
+        1 * schema.validateCustomLink(newLink)
     }
 }

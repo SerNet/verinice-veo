@@ -21,6 +21,7 @@ dependencies {
     api project(":veo-core-usecase")
 
     implementation 'javax.validation:validation-api'
+    implementation 'com.networknt:json-schema-validator'
 
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core'
@@ -28,7 +29,6 @@ dependencies {
     testImplementation 'io.swagger.core.v3:swagger-core'
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.networknt:json-schema-validator'
     testImplementation 'org.codehaus.groovy:groovy-json'
 
     generateSchemas 'com.github.victools:jsonschema-generator'

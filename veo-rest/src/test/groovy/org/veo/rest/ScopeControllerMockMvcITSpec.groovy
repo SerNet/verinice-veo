@@ -412,9 +412,11 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New scope 2'
         entity.abbreviation == 's-2'
-        entity.customAspects.first().type == 'scope_address'
-        entity.customAspects.first().stringProperties.scope_address_postcode == '1'
-        entity.customAspects.first().stringProperties.scope_address_country == 'Germany'
+        with(entity.customAspects.first()) {
+            type == 'scope_address'
+            attributes["scope_address_postcode"] == '1'
+            attributes["scope_address_country"] == 'Germany'
+        }
     }
 
 

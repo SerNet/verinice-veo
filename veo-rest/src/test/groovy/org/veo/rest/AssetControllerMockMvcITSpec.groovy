@@ -208,7 +208,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved asset"
 
         CustomProperties simpleProps = newCustomProperties("simpleAspect") {
-            it.setProperty("simpleProp", "simpleValue")
+            attributes = [
+                "simpleProp": "simpleValue"
+            ]
         }
 
         def asset = txTemplate.execute {
@@ -272,19 +274,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         and: "a saved asset"
-        CustomProperties simpleProps = newCustomProperties("simpleAspect") {
-            it.setProperty("simpleProp", "simpleValue")
-        }
-
-        def asset = newAsset(unit) {
-        }
-        asset.id = Key.newUuid()
-        asset.name = 'Test asset-1'
-        asset.owner = unit
-        asset.setCustomAspects([simpleProps] as Set)
-
-        asset = txTemplate.execute {
-            assetRepository.save(asset)
+        def asset = txTemplate.execute {
+            assetRepository.save(newAsset(unit))
         }
 
         when: "a search request is made to the server"
@@ -304,11 +295,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve an asset with a link"() {
         given: "a saved asset"
-
-        CustomProperties simpleProps = newCustomProperties("simpleAspect") {
-            it.setProperty("simpleProp", "simpleValue")
-        }
-
         def sourceAsset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 domains = [domain1] as Set
@@ -316,7 +302,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
         def targetAsset = newAsset(unit) {
             name = "Test asset-1"
-            customAspects = [simpleProps] as Set
         }
 
         CustomLink link = newCustomLink(sourceAsset, targetAsset) {
@@ -588,8 +573,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         entity.name == 'New asset-2'
         entity.abbreviation == 'u-2'
-        entity.customAspects.first().type == 'asset_details'
-        entity.customAspects.first().integerProperties.asset_details_number == 1
+        with(entity.customAspects.first()) {
+            type == 'asset_details'
+            attributes["asset_details_number"] == 1
+        }
     }
 
     @WithUserDetails("user@domain.example")

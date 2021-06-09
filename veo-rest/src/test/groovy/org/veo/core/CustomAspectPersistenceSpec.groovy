@@ -19,8 +19,6 @@ package org.veo.core
 
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 
-import java.time.OffsetDateTime
-
 import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -75,8 +73,11 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
         when: "add some properties"
         def assetData = savedAsset.get()
         cp = assetData.customAspects.first()
-        cp.setProperty("my.key.1", "my test value 1")
-        cp.setProperty("my.key.2", "my test value 2")
+        cp.attributes = [
+            "my.key.1": "my test value 1",
+            "my.key.2": "my test value 2",
+            "my.key.3": 10.0,
+        ]
 
         assetRepository.save(assetData)
 
@@ -93,68 +94,10 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
         then:
         cp.getType().equals(cp.getType())
 
-        cp.stringProperties.size() == 2
-        cp.stringProperties["my.key.1"] == "my test value 1"
-        cp.stringProperties["my.key.2"] == "my test value 2"
-
-        when: "add properties of type number"
-
-        cp.setProperty("my.key.3", 10.0)
-
-        assetRepository.save(assetData)
-
-        savedAsset = assetRepository.findById(asset.id)
-        then:
-        savedAsset.present
-        when:
-        assetData = savedAsset.get()
-        CustomProperties savedCp = assetData.getCustomAspects().first()
-
-        then: "numbers also"
-        savedCp.doubleProperties.size() == 1
-        savedCp.doubleProperties["my.key.3"] == 10
-
-        when: "add properties of type date"
-
-        cp.setProperty("my.key.4", OffsetDateTime.parse("2020-02-02T00:00:00Z"))
-
-        assetRepository.save(assetData)
-
-        savedAsset = assetRepository.findById(asset.id)
-        then:
-        savedAsset.present
-        when:
-        assetData = savedAsset.get()
-        savedCp = assetData.getCustomAspects().first()
-
-        then: "date also"
-        savedCp.getOffsetDateTimeProperties().size() == 1
-        savedCp.getOffsetDateTimeProperties().get("my.key.4") == OffsetDateTime.parse("2020-02-02T00:00:00Z")
-
-        when: "add properties of type list string"
-
-        CustomProperties aspect = newCustomProperties('my_new_asset_custom_aspect') {
-            it.setProperty('l1', ['e1', 'e2'])
-        }
-
-        assetData.getCustomAspects().clear()
-        assetData.getCustomAspects().add(aspect)
-
-        assetRepository.save(assetData)
-
-        savedAsset = assetRepository.findById(asset.id)
-        then:
-        savedAsset.present
-        when:
-        assetData = savedAsset.get()
-        CustomProperties savedAspect = assetData.getCustomAspects().first()
-
-        then: "list also"
-
-        savedAspect.type == 'my_new_asset_custom_aspect'
-        with(savedAspect.stringListProperties) {
-            size() == 1
-            get("l1") == ["e1", "e2"]
-        }
+        cp.attributes == [
+            "my.key.1": "my test value 1",
+            "my.key.2": "my test value 2",
+            "my.key.3": 10.0,
+        ]
     }
 }
