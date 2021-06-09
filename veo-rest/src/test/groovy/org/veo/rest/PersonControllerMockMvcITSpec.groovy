@@ -172,19 +172,13 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/persons?unit=${unit.id.uuidValue()}")
+        def result = parseJson(get("/persons?unit=${unit.id.uuidValue()}"))
 
         then: "the persons are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-
-        result.sort{it.name}.first().name == 'Test person-1'
-        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-        result.sort{it.name}[1].name == 'Test person-2'
-        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.items*.name.sort() == [
+            'Test person-1',
+            'Test person-2'
+        ]
     }
 
     @WithUserDetails("user@domain.example")

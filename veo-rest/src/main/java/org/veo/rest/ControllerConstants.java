@@ -33,6 +33,7 @@ public final class ControllerConstants {
     public static final Authentication ANY_AUTH = new UsernamePasswordAuthenticationToken(null,
             null);
     public static final ApplicationUser ANY_USER = null;
+    public static final Integer ANY_INT = null;
     public static final SearchQueryDto ANY_SEARCH = null;
     public static final String ANY_STRING = null;
 
@@ -43,6 +44,15 @@ public final class ControllerConstants {
     static final String DOMAIN_PARAM = "domain";
     static final String SUB_TYPE_PARAM = "subType";
     static final String DISPLAY_NAME_PARAM = "displayName";
+    static final String PAGE_SIZE_PARAM = "size";
+    static final String PAGE_SIZE_DEFAULT_VALUE = "20";
+    static final String PAGE_NUMBER_PARAM = "page";
+    static final String PAGE_NUMBER_DEFAULT_VALUE = "0";
+    static final String SORT_COLUMN_PARAM = "sortBy";
+    static final String SORT_COLUMN_DEFAULT_VALUE = "name";
+    static final String SORT_ORDER_PARAM = "sortOrder";
+    static final String SORT_ORDER_DEFAULT_VALUE = "asc";
+    static final String SORT_ORDER_PATTERN = "[asc|desc|ASC|DESC]";
     static final String IF_MATCH_HEADER = "If-Match";
 
     static final String UUID_DEFINITION = "This is the normalized UUID representation:\n"

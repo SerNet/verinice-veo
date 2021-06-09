@@ -129,8 +129,10 @@ public abstract class AbstractEntityController {
 
     private ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
         try {
-            return ResponseEntity.created(new URI(buildSearchUri(search.getSearchId())))
-                                 .body(new SearchResponse(buildSearchUri(search.getSearchId())));
+            // Build search URI and remove optional request param placeholders.
+            var searchUri = buildSearchUri(search.getSearchId()).replaceAll("\\{.*\\}", "");
+            return ResponseEntity.created(new URI(searchUri))
+                                 .body(new SearchResponse(searchUri));
         } catch (IOException | URISyntaxException e) {
             log.error("Could not create search.", e);
             throw new IllegalArgumentException(String.format("Could not create search %s", search));

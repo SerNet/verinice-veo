@@ -171,20 +171,18 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             [scenario, scenario2].collect(scenarioDataRepository.&save)
         }
 
-        when: "a request is made to the server"
-        def results = get("/scenarios?unit=${unit.id.uuidValue()}")
+        when: "requesting all scenarios in the unit"
+        def result = parseJson(get("/scenarios?unit=${unit.id.uuidValue()}"))
 
         then: "the scenarios are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-
-        result.sort{it.name}.first().name == 'Test scenario-1'
-        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-        result.sort{it.name}[1].name == 'Test scenario-2'
-        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        def expectedUnitUri = "http://localhost/units/${unit.id.uuidValue()}"
+        with(result.items.sort{it.name}) {
+            size == 2
+            it[0].name == 'Test scenario-1'
+            it[0].owner.targetUri == expectedUnitUri
+            it[1].name == 'Test scenario-2'
+            it[1].owner.targetUri == expectedUnitUri
+        }
     }
 
     @WithUserDetails("user@domain.example")
@@ -201,16 +199,11 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
 
-        when: "a request is made to the server"
-        def results = get("/scenarios?unit=${unit.id.uuidValue()}")
+        when: "requesting all scenarios in the unit"
+        def result = parseJson(get("/scenarios?unit=${unit.id.uuidValue()}"))
 
         then: "the scenarios are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-        result*.name as Set == [
+        result.items*.name as Set == [
             'Test scenario-1',
             'Test composite scenario-1'
         ] as Set

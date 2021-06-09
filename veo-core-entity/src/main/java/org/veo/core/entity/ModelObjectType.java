@@ -48,6 +48,7 @@ public enum ModelObjectType {
     SCOPE(Scope.class, Scope.PLURAL_TERM);
     // @formatter:on
 
+    @Getter
     private final String pluralTerm;
     @Getter
     private final Class<? extends ModelObject> type;

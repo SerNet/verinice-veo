@@ -407,11 +407,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One asset is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created asset is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('assetId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('assetName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('assetId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('assetName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -815,11 +815,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One process is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created process is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('processId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('processName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('processId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('processName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -913,11 +913,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One person is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created person is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('personId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('personName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('personId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('personName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -1196,11 +1196,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One control is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created control is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('controlId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('controlName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('controlId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('controlName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2650,11 +2650,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One asset is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created asset is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('assetId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('assetName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('assetId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('assetName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2694,11 +2694,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One process is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created process is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('processId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('processName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('processId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('processName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2738,11 +2738,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One person is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created person is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('personId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('personName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('personId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('personName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2782,11 +2782,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One control is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created control is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('controlId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('controlName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('controlId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('controlName'))",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -2826,11 +2826,11 @@
                   "});",
                   "var jsonData = pm.response.json();",
                   "pm.test(\"One asset is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "    pm.expect(jsonData.items).to.have.lengthOf(1);",
                   "});",
                   "pm.test(\"The created asset is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('assetId'))",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('assetName'))",
+                  "    pm.expect(jsonData.items[0].id).to.equal(pm.collectionVariables.get('assetId'))",
+                  "    pm.expect(jsonData.items[0].name).to.equal(pm.collectionVariables.get('assetName'))",
                   "});"
                 ],
                 "type": "text/javascript"

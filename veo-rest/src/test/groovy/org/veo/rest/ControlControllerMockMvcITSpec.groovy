@@ -259,26 +259,17 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/controls?unit=${unit.id.uuidValue()}")
-
+        def result = parseJson(get("/controls?unit=${unit.id.uuidValue()}"))
         then: "the controls are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-
-        result.sort{it.name}.first().name == 'Test control-1'
-        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-        result.sort{it.name}[1].name == 'Test control-2'
-        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.items*.name.sort() == [
+            'Test control-1',
+            'Test control-2'
+        ]
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieving all controls for a unit returns composite entities and their parts"() {
         given: "a saved control  and a composite document containing it"
-
-
         txTemplate.execute {
             controlRepository.save(newControl(unit) {
                 name = 'Test composite control-1'
@@ -289,15 +280,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/controls?unit=${unit.id.uuidValue()}")
-
+        def result = parseJson(get("/controls?unit=${unit.id.uuidValue()}"))
         then: "the controls are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-        result*.name as Set == [
+        result.items*.name as Set == [
             'Test control-1',
             'Test composite control-1'
         ] as Set
@@ -450,12 +435,10 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "delete a control"() {
-
         given: "an existing control"
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit))
         }
-
 
         when: "a delete request is sent to the server"
 

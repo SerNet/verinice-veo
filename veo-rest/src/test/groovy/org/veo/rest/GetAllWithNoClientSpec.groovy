@@ -59,7 +59,7 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
         then: "an empty result is returned"
 
         results.andExpect(status().isOk())
-        getJsonResult(results).size() == 0
+        getJsonResult(results).items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
@@ -71,7 +71,7 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
         then: "an empty result is returned"
 
         results.andExpect(status().isOk())
-        getJsonResult(results).size() == 0
+        getJsonResult(results).items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
@@ -83,7 +83,7 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
         then: "an empty result is returned"
 
         results.andExpect(status().isOk())
-        getJsonResult(results).size() == 0
+        getJsonResult(results).items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
@@ -95,7 +95,7 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
         then: "an empty result is returned"
 
         results.andExpect(status().isOk())
-        getJsonResult(results).size() == 0
+        getJsonResult(results).items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
@@ -107,7 +107,7 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
         then: "an empty result is returned"
 
         results.andExpect(status().isOk())
-        getJsonResult(results).size() == 0
+        getJsonResult(results).items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
@@ -119,7 +119,7 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
         then: "an empty result is returned"
 
         results.andExpect(status().isOk())
-        getJsonResult(results).size() == 0
+        getJsonResult(results).items.size() == 0
     }
 
     Object getJsonResult(ResultActions results) {

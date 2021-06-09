@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.common
 
-
 import org.veo.adapter.presenter.api.common.ModelObjectReference
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
@@ -125,11 +124,11 @@ class ReferenceAssemblerImplSpec extends Specification {
         referenceAssembler.resourcesReferenceOf(type) == reference
         where:
         type     | reference
-        Asset    | '/assets{?unit,displayName,subType}'
-        Control  | '/controls{?unit,displayName,subType}'
-        Scenario | '/scenarios{?unit,displayName,subType}'
-        Incident | '/incidents{?unit,displayName,subType}'
-        Scope    | '/scopes{?unit,displayName,subType}'
+        Asset    | '/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}'
+        Control  | '/controls{?unit,displayName,subType,size,page,sortBy,sortOrder}'
+        Scenario | '/scenarios{?unit,displayName,subType,size,page,sortBy,sortOrder}'
+        Incident | '/incidents{?unit,displayName,subType,size,page,sortBy,sortOrder}'
+        Scope    | '/scopes{?unit,displayName,subType,size,page,sortBy,sortOrder}'
         Domain   | '/domains'
     }
 

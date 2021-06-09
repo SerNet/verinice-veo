@@ -20,14 +20,24 @@ package org.veo.rest;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.ANY_INT;
+import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
+import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -38,6 +48,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -56,16 +67,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
@@ -87,6 +99,7 @@ import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -140,30 +153,41 @@ public class AssetController extends AbstractEntityController implements AssetRi
 
     @GetMapping
     @Operation(summary = "Loads all assets")
-    public @Valid CompletableFuture<List<FullAssetDto>> getAssets(
+    public @Valid CompletableFuture<PageDto<FullAssetDto>> getAssets(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
             @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
                                          required = false) String displayName,
-            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType) {
+            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+            @RequestParam(value = PAGE_SIZE_PARAM,
+                          required = false,
+                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
+            @RequestParam(value = PAGE_NUMBER_PARAM,
+                          required = false,
+                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
+            @RequestParam(value = SORT_COLUMN_PARAM,
+                          required = false,
+                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
+            @RequestParam(value = SORT_ORDER_PARAM,
+                          required = false,
+                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);
         } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(Collections::emptyList);
+            return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
         return getAssets(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
-                                                    PagingConfiguration.UNPAGED));
+                                                    PagingMapper.toConfig(pageSize, pageNumber,
+                                                                          sortColumn, sortOrder)));
     }
 
-    private CompletableFuture<List<FullAssetDto>> getAssets(
+    private CompletableFuture<PageDto<FullAssetDto>> getAssets(
             GetEntitiesUseCase.InputData inputData) {
-        return useCaseInteractor.execute(getAssetsUseCase, inputData, output -> output.getEntities()
-                                                                                      .getResultPage()
-                                                                                      .stream()
-                                                                                      .map(a -> entityToDtoTransformer.transformAsset2Dto(a))
-                                                                                      .collect(Collectors.toList()));
+        return useCaseInteractor.execute(getAssetsUseCase, inputData,
+                                         output -> PagingMapper.toPage(output.getEntities(),
+                                                                       entityToDtoTransformer::transformAsset2Dto));
     }
 
     @GetMapping(value = "/{id}")
@@ -276,20 +300,37 @@ public class AssetController extends AbstractEntityController implements AssetRi
     }
 
     @Override
+    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
     protected String buildSearchUri(String id) {
-        return linkTo(methodOn(AssetController.class).runSearch(ANY_AUTH, id)).withSelfRel()
-                                                                              .getHref();
+        return linkTo(methodOn(AssetController.class).runSearch(ANY_AUTH, id, ANY_INT, ANY_INT,
+                                                                ANY_STRING, ANY_STRING))
+                                                                                        .withSelfRel()
+                                                                                        .getHref();
     }
 
     @GetMapping(value = "/searches/{searchId}")
     @Operation(summary = "Finds assets for the search.")
-    public @Valid CompletableFuture<List<FullAssetDto>> runSearch(
+    public @Valid CompletableFuture<PageDto<FullAssetDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String searchId) {
+            @PathVariable String searchId,
+            @RequestParam(value = PAGE_SIZE_PARAM,
+                          required = false,
+                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
+            @RequestParam(value = PAGE_NUMBER_PARAM,
+                          required = false,
+                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
+            @RequestParam(value = SORT_COLUMN_PARAM,
+                          required = false,
+                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
+            @RequestParam(value = SORT_ORDER_PARAM,
+                          required = false,
+                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
             return getAssets(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
                                                         SearchQueryDto.decodeFromSearchId(searchId),
-                                                        PagingConfiguration.UNPAGED));
+                                                        PagingMapper.toConfig(pageSize, pageNumber,
+                                                                              sortColumn,
+                                                                              sortOrder)));
         } catch (IOException e) {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;

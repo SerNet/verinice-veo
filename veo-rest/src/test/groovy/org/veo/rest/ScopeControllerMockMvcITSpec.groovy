@@ -311,20 +311,13 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 }
 
         when: "the server is queried for the scopes"
-        def results = get("/scopes")
+        def result = parseJson(get("/scopes"))
 
         then: "the scopes are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-
-        result.sort{it.name}.first().name == 'Test scope 1'
-        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
-
-        result.sort{it.name}[1].name == 'Test scope 2'
-        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        result.items*.name.sort() == [
+            'Test scope 1',
+            'Test scope 2'
+        ]
     }
 
     @WithUserDetails("user@domain.example")
@@ -342,30 +335,16 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                     [scope1, scope2].collect(assetRepository.&save)
                 }
         when: "a request is made to the server for all scopes of a unit"
-        def results = get("/scopes?unit=${unit.id.uuidValue()}")
+        def result = parseJson(get("/scopes?unit=${unit.id.uuidValue()}"))
 
         then: "the respective scope is returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 1
-
-        result.first().name == 'Test scope 1'
-        result.first().owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        result.items*.name == ['Test scope 1']
 
         when: "a request is made to the server for all scopes of another unit"
-        results = get("/scopes?unit=${unit2.id.uuidValue()}")
+        result = parseJson(get("/scopes?unit=${unit2.id.uuidValue()}"))
 
         then: "the respective scope is returned"
-        results.andExpect(status().isOk())
-        when:
-        result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 1
-
-        result.first().name == 'Test scope 2'
-        result.first().owner.targetUri == "http://localhost/units/${unit2.id.uuidValue()}"
+        result.items*.name == ['Test scope 2']
     }
 
 

@@ -295,12 +295,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def postSearchResponse = parseJson(postSearchResult)
 
         when: "the search is run"
-        def getSearchResult = get(postSearchResponse.searchUrl)
+        def searchResult = parseJson(get(postSearchResponse.searchUrl))
 
         then: "the response contains the expected data"
-        def getSearchResponse = parseJson(getSearchResult)
-        getSearchResponse.size == 1
-        getSearchResponse[0].id == asset.id.uuidValue()
+        searchResult.items*.id == [asset.id.uuidValue()]
     }
 
     @WithUserDetails("user@domain.example")
@@ -350,7 +348,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when: "all assets are queried"
         def allAssets = parseJson(get("/assets"))
         then: "the asset with the link is retrieved"
-        allAssets.sort{it.name}.first() == result
+        allAssets.items.sort{it.name}.first() == result
     }
 
     @WithUserDetails("user@domain.example")
@@ -371,20 +369,16 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             [asset, asset2].collect(assetRepository.&save)
         }
 
-        when: "a request is made to the server"
-        def results = get("/assets")
+        when: "all assets are requested"
+        def result = parseJson(get("/assets"))
 
         then: "the assets are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-        result.sort{it.name}.first().name == 'Test asset-1'
-        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-
-        result.sort{it.name}[1].name == 'Test asset-2'
-        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
+        def sortedItems = result.items.sort { it.name }
+        sortedItems.size == 2
+        sortedItems[0].name == 'Test asset-1'
+        sortedItems[0].owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
+        sortedItems[1].name == 'Test asset-2'
+        sortedItems[1].owner.targetUri == "http://localhost/units/" + unit2.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -403,31 +397,15 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             [asset, asset2].collect(assetRepository.&save)
         }
 
-        when: "a request is made to the server"
-        def results = get("/assets?unit=${unit.id.uuidValue()}")
-
-        then: "the assets are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 1
-
-        result.first().name == 'Test asset-1'
-        result.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        when: "all assets in the first unit is queried"
+        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}"))
+        then: "asset 1 is returned"
+        result.items*.name == ['Test asset-1']
 
         when: "a request is made to the server"
-        results = get("/assets?unit=${unit2.id.uuidValue()}")
-
-        then: "the assets are returned"
-        results.andExpect(status().isOk())
-        when:
-        result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 1
-
-        result.first().name == 'Test asset-2'
-        result.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
+        result = parseJson(get("/assets?unit=${unit2.id.uuidValue()}"))
+        then: "the asset of unit 2 is returned"
+        result.items*.name == ['Test asset-2']
     }
 
     @WithUserDetails("user@domain.example")
@@ -449,14 +427,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "all assets for the root unit are queried"
-        def results = get("/assets?unit=${unit.id.uuidValue()}")
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}"))
         then: "both assets from the unit's hierarchy are returned"
-        with(result.sort{it.name}) {
-            size == 2
-            it[0].name == "asset 0"
-            it[1].name == "asset 1"
-        }
+        result.items*.name.sort() == ['asset 0', 'asset 1']
     }
 
     @WithUserDetails("user@domain.example")
@@ -480,10 +453,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when: "all assets for the root unit matching the filter"
         def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=sset 1"))
         then: "only the matching asset from the unit's hierarchy is returned"
-        with(result) {
-            size == 1
-            it[0].name == "asset 1"
-        }
+        result.items*.name == ["asset 1"]
     }
 
     @WithUserDetails("user@domain.example")
@@ -507,10 +477,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when: "all assets for the root unit matching the filter"
         def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=ballverein Äächen 1"))
         then: "only the matching asset from the unit's hierarchy is returned"
-        with(result) {
-            size == 1
-            it[0].name == "Fußballverein Äächen 1"
-        }
+        result.items*.name == ["Fußballverein Äächen 1"]
     }
 
     @WithUserDetails("user@domain.example")

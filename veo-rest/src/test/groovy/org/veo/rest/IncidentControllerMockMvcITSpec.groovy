@@ -170,20 +170,13 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             [incident, incident2].collect(incidentRepository.&save)
         }
 
-        when: "a request is made to the server"
-        def results = get("/incidents?unit=${unit.id.uuidValue()}")
-
+        when: "requesting all incidents in the unit"
+        def result = parseJson(get("/incidents?unit=${unit.id.uuidValue()}"))
         then: "the incidents are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-
-        result.sort{it.name}.first().name == 'Test incident-1'
-        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-        result.sort{it.name}[1].name == 'Test incident-2'
-        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.items*.name.sort() == [
+            'Test incident-1',
+            'Test incident-2'
+        ]
     }
 
     @WithUserDetails("user@domain.example")
@@ -198,16 +191,10 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
 
-        when: "a request is made to the server"
-        def results = get("/incidents?unit=${unit.id.uuidValue()}")
-
+        when: "requesting all incidents in the unit"
+        def result = parseJson(get("/incidents?unit=${unit.id.uuidValue()}"))
         then: "the incidents are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-        result*.name as Set == [
+        result.items*.name as Set == [
             'Test incident-1',
             'Test composite incident-1'
         ] as Set

@@ -168,20 +168,13 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             [document, document2].collect(documentRepository.&save)
         }
 
-        when: "a request is made to the server"
-        def results = get("/documents?unit=${unit.id.uuidValue()}")
-
-        then: "the documents are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        when: "all documents in the unit are requested"
+        def result = parseJson(get("/documents?unit=${unit.id.uuidValue()}"))
         then:
-        result.size == 2
-
-        result.sort{it.name}.first().name == 'Test document-1'
-        result.sort{it.name}.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-        result.sort{it.name}[1].name == 'Test document-2'
-        result.sort{it.name}[1].owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.items*.name.sort() == [
+            'Test document-1',
+            'Test document-2'
+        ]
     }
 
     @WithUserDetails("user@domain.example")
@@ -198,15 +191,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/documents?unit=${unit.id.uuidValue()}")
-
+        def result = parseJson(get("/documents?unit=${unit.id.uuidValue()}"))
         then: "the documents are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-        result*.name as Set == [
+        result.items*.name as Set == [
             'Test document-1',
             'Test composite document-1'
         ] as Set

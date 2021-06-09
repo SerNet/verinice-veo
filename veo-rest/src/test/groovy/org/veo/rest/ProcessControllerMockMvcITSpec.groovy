@@ -91,7 +91,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -584,22 +583,15 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
 
-        when: "a request is made to the server"
-        def results = get("/processes")
+        when: "all processes are requested"
+        def result = parseJson(get("/processes"))
 
         then: "the processes are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
-        result.size == 2
-        when:
-        def sortedResult = result.sort{ it.name }
-        then:
-        sortedResult.first().name == 'Test process-1'
-        sortedResult.first().owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
-        sortedResult[1].name == 'Test process-2'
-        sortedResult[1].owner.targetUri == "http://localhost/units/${unit2.id.uuidValue()}"
+        def sortedItems = result.items.sort{ it.name }
+        sortedItems[0].name == 'Test process-1'
+        sortedItems[0].owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+        sortedItems[1].name == 'Test process-2'
+        sortedItems[1].owner.targetUri == "http://localhost/units/${unit2.id.uuidValue()}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -615,21 +607,21 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
 
-        when: "a request is made to the server"
+        when: "all processes in the first unit are requested"
         def result = parseJson(get("/processes?unit=${unit.id.uuidValue()}"))
 
         then:
-        result.size == 1
-        result.first().name == 'Test process-1'
-        result.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        result.items.size == 1
+        result.items.first().name == 'Test process-1'
+        result.items.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
-        when: "a request is made to the server"
+        when: "all processes in unit 2 are requested"
         result = parseJson(get("/processes?unit=${unit2.id.uuidValue()}"))
 
         then:
-        result.size == 1
-        result.first().name == 'Test process-2'
-        result.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
+        result.items.size == 1
+        result.items.first().name == 'Test process-2'
+        result.items.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -649,19 +641,17 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         when: "the sub type param is omitted"
         def result = parseJson(get("/processes"))
         then: "both processes are returned"
-        result.size == 2
+        result.items.size == 2
 
         when: "VT processes are queried"
         result = parseJson(get("/processes?subType=VT"))
         then: "only the VT process is returned"
-        result.size == 1
-        result.first().name == 'Test process-1'
+        result.items*.name == ['Test process-1']
 
         when: "processes without a sub type are queried"
         result = parseJson(get("/processes?subType="))
         then: "only the process without a sub type is returned"
-        result.size == 1
-        result.first().name == 'Test process-2'
+        result.items*.name == ['Test process-2']
     }
 
     @WithUserDetails("user@domain.example")
