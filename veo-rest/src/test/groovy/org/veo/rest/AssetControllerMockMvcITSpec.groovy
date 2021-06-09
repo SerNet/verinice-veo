@@ -589,8 +589,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 [
                     domains: [],
                     attributes:  [
-                        asset_details_number: 1,
-                        asset_details_typeOfAsset: 'asset_details_typeOfAsset_physical'
+                        asset_details_number: 1
                     ]
                 ]
             ]
@@ -624,7 +623,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         entity.abbreviation == 'u-2'
         entity.customAspects.first().type == 'asset_details'
         entity.customAspects.first().integerProperties.asset_details_number == 1
-        entity.customAspects.first().stringProperties.asset_details_typeOfAsset == 'asset_details_typeOfAsset_physical'
     }
 
     @WithUserDetails("user@domain.example")

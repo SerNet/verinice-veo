@@ -101,8 +101,5 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
         results.andExpect(
                 jsonPath('$..customAspects.properties.asset_details').hasJsonPath()
                 )
-        results.andExpect(
-                jsonPath('$..enum[*]', hasItem("asset_details_typeOfAsset_software"))
-                )
     }
 }
