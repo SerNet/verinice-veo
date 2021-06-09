@@ -14,17 +14,6 @@
             "asset_details_operatingStage_test",
             "asset_details_operatingStage_rollout"
           ]
-        },
-        "asset_details_typeOfAsset": {
-          "enum": [
-            "asset_details_typeOfAsset_information",
-            "asset_details_typeOfAsset_software",
-            "asset_details_typeOfAsset_physical",
-            "asset_details_typeOfAsset_service",
-            "asset_details_typeOfAsset_people",
-            "asset_details_typeOfAsset_immaterial",
-            "asset_details_typeOfAsset_virtual"
-          ]
         }
       },
       "type": "object"
