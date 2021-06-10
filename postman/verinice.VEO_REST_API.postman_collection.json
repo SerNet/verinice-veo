@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "be6aa115-4ce3-4af9-8c9a-c81f2e1900f3",
+    "_postman_id": "407ec445-5c1b-488e-b7ce-f126828464e3",
     "name": "verinice.VEO REST API",
     "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -2066,7 +2066,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_typeOfAsset\": \"asset_details_typeOfAsset_physical\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
