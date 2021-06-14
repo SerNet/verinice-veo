@@ -80,7 +80,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                         target: [targetUri: "/persons/$person2"]
                     ]
                 ],
-                scope_headOfDataProcessingPersonLink: [
+                scope_headOfDataProcessing: [
                     [
                         name: "link to person 2",
                         target: [targetUri: "/persons/$person2"]
@@ -102,7 +102,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             it[0].target.targetUri == "http://localhost/persons/$person1"
             it[1].target.targetUri == "http://localhost/persons/$person2"
         }
-        with(retrievedScope.links.scope_headOfDataProcessingPersonLink.sort{it.name}) {
+        with(retrievedScope.links.scope_headOfDataProcessing.sort{it.name}) {
             size() == 2
             it[0].target.targetUri == "http://localhost/persons/$person2"
             it[1].target.targetUri == "http://localhost/persons/$person3"
