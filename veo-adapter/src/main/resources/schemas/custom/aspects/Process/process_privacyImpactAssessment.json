@@ -13,7 +13,17 @@
         "process_privacyImpactAssessment_blacklistComment": {
           "type": "string"
         },
+        "process_privacyImpactAssessment_blacklistDocument": {
+          "format": "uri",
+          "pattern": "^(https?|ftp)://",
+          "type": "string"
+        },
         "process_privacyImpactAssessment_comment": {
+          "type": "string"
+        },
+        "process_privacyImpactAssessment_document": {
+          "format": "uri",
+          "pattern": "^(https?|ftp)://",
           "type": "string"
         },
         "process_privacyImpactAssessment_otherExclusions": {

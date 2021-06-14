@@ -1,0 +1,98 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "attributes": {
+      "additionalProperties": false,
+      "properties": {
+        "process_dataTransfer_document": {
+          "format": "uri",
+          "pattern": "^(https?|ftp)://",
+          "type": "string"
+        },
+        "process_dataTransfer_explanation": {
+          "type": "string"
+        },
+        "process_dataTransfer_legalBasis": {
+          "items": {
+            "enum": [
+              "process_dataTransfer_legalBasis_Art6Abs2DSGVO",
+              "process_dataTransfer_legalBasis_Art6Abs3DSGVO",
+              "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO",
+              "process_dataTransfer_legalBasis_P31aBPolG",
+              "process_dataTransfer_legalBasis_P67bAbs1S1SGBX",
+              "process_dataTransfer_legalBasis_P25BDSG",
+              "process_dataTransfer_legalBasis_P24BDSG",
+              "process_dataTransfer_legalBasis_P8IfSG",
+              "process_dataTransfer_legalBasis_17aAbs4RoeVP28Abs8RooeV",
+              "process_dataTransfer_legalBasis_P61StrlSchV",
+              "process_dataTransfer_legalBasis_P18PStG",
+              "process_dataTransfer_legalBasis_P294SGBV",
+              "process_dataTransfer_legalBasis_P298SGBV",
+              "process_dataTransfer_legalBasis_P138_139StGB",
+              "process_dataTransfer_legalBasis_P64SGBVIII",
+              "process_dataTransfer_legalBasis_others"
+            ]
+          },
+          "type": "array"
+        },
+        "process_dataTransfer_otherLegalBasis": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "domains": {
+      "description": "The ids of elements of the type domain.",
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced domain.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "title": "The list of domains in which this element is present.",
+      "type": "array",
+      "uniqueItems": true
+    },
+    "id": {
+      "format": "regex",
+      "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+      "title": "The UUID to identify the element",
+      "type": "string"
+    },
+    "references": {
+      "items": {
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced object.",
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced object.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ]
+      },
+      "type": "array"
+    },
+    "type": {
+      "description": "The name of the type described by this schema.",
+      "enum": [
+        "process_dataTransfer"
+      ]
+    }
+  },
+  "type": "object"
+}
