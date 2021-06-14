@@ -37,6 +37,7 @@ dependencies {
     testImplementation "org.testcontainers:testcontainers"
     testImplementation "org.testcontainers:spock"
     testImplementation 'com.h2database:h2'
+    testImplementation 'org.keycloak:keycloak-authz-client'
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -78,5 +79,43 @@ springBoot {
                 ]
             }
         }
+    }
+}
+
+test {
+    filter {
+        excludeTestsMatching "org.veo.rest.test.*"
+    }
+}
+
+tasks.register('restTest', Test) {
+    description = 'Runs REST API integration tests'
+    group = 'verification'
+
+    shouldRunAfter test
+
+    filter {
+        includeTestsMatching "org.veo.rest.test.*"
+    }
+}
+
+def continuousIntegrationBuild = rootProject.hasProperty('ci')
+
+// specific "continuous integration" settings needed by Jenkins
+if (continuousIntegrationBuild) {
+
+    // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
+    task jenkinsRestTestFix {
+        inputs.files restTest.outputs.files
+        doLast {
+            if (!sourceSets.test.allSource.empty) {
+                def timestamp = System.currentTimeMillis()
+                restTest.reports.junitXml.destination.eachFile { it.lastModified = timestamp }
+            }
+        }
+    }
+
+    restTest {
+        finalizedBy jenkinsRestTestFix
     }
 }

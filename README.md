@@ -1,3 +1,4 @@
+
 # verinice veo
 
 A prototype of a new verinice version.
@@ -112,6 +113,48 @@ The dispatcher needs to be configured using the corresponding settings found in 
 (Or any other self-defined profile name). Loads additional configuration files that can be used to set up
 a dev environment, increase log levels and such. This profile will look for and load an additional property
 file called `application-local.[yaml|properties]`
+
+#### Profile 'resttest'
+This profile will be active while the integration test for the REST API are running. These tests use Spring's `TestRestTemplate`
+which needs to be configured with URLs and credentials for the production services that are to be used
+during the integration test, such as Keycloack, PostgreSQL or RabbitMQ.
+
+If you want to run the REST API integration tests, simply run:
+
+```shell
+./gradlew veo-rest:restTest
+```
+
+You can use `application-resttest.yaml` or your own `application-local.yaml` to set the required
+parameters.
+
+If you need to pass proxy parameters (i.e. if the backend server has to use a proxy to reach the
+Keycloak service to verifx access tokens) you can pass them on the command line as project properties:
+
+```shell
+RUN_RESTTESTS=true ./gradlew veo-rest:test \
+--tests "*rest.test*" \
+-Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 \
+-Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128
+```
+
+The REST API tests will spin up a local server. All tests execute purely as HTTP requests
+against this server. No address space is shared between REST client and server. It is not
+possible to access repositories or any other server-side objects from the tests directly.
+All communication has to occur using HTTP calls like a regular client would use the service.
+
+It is also possible to run these tests against a running remote server. Simply set the `baseUrl` parameter
+in your application properties accordingly, i.e.:
+
+```yaml
+veo:
+resttest:
+	baseUrl: 'https://veo.develop.verinice.com'
+```
+
+Leave the `baseUrl` empty to run the tests against a local bootstrapped server
+(this is the default).
+
 
 ### Logging
 

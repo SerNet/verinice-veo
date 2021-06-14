@@ -98,6 +98,39 @@ pipeline {
                  }
             }
         }
+          stage('HTTP REST Test') {
+                    environment {
+                        def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
+                        KEYCLOAK_CREDS = credentials('veo_authentication_credentials')
+                        RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
+                        VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.RESTTESTMESSAGE.${tag}."
+                        VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_RESTTEST_QUEUE_${tag}"
+                        VEO_TEST_MESSAGE_CONSUME_ROUTING_KEY = "VEO.RESTTESTMESSAGE.${tag}.#"
+                        VEO_RESTTEST_BASEURL = ""
+                        VEO_RESTTEST_OIDCURL = "https://keycloak.staging.verinice.com"
+                        VEO_RESTTEST_REALM = "verinice-veo"
+                        VEO_RESTTEST_CLIENTID = "veo-development-client"
+                        VEO_RESTTEST_USER = "${env.KEYCLOAK_CREDS_USR}"
+                        VEO_RESTTEST_PASS = "${env.KEYCLOAK_CREDS_PSW}"
+                        VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
+                        VEO_RESTTEST_PROXYPORT = 3128
+                    }
+                    agent any
+                    steps {
+                         script {
+                             withDockerNetwork{ n ->
+                                 docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                     docker.image(imageForGradleStages).inside("--network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
+                                         sh """export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
+                                               export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
+                                               ./gradlew --no-daemon veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128 """
+                                         junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
+                                     }
+                                 }
+                             }
+                         }
+                    }
+                }
         stage('Artifacts') {
             agent {
                 docker {
@@ -160,6 +193,7 @@ pipeline {
                 }
             }
         }
+
         stage('Postman Tests') {
             environment {
                 KEYCLOAK_CREDS = credentials('veo_authentication_credentials')

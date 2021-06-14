@@ -1,0 +1,36 @@
+veo:
+  message:
+    dispatch:
+      routing-key-prefix: 'veo.resttestmessage.'
+  resttest:
+    baseUrl: '' # i.e. "https://veo.develop.verinice.com". Leave empty for local tests.
+    oidcUrl: 'https://keycloak.staging.verinice.com'
+    realm: 'realm'
+    clientId: 'clientid'
+    user: ''
+    pass: ''
+    proxyHost: cache.company.private
+    proxyPort: 3128
+
+spring:
+  datasource:
+    url: 'jdbc:postgresql://127.0.0.1:5432/veoresttest'
+    username: test
+    password: test
+    driver-class-name: org.postgresql.Driver
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak.staging.verinice.com/auth/realms/verinice-veo
+          jwk-set-uri: https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/certs
+
+  rabbitmq:
+    host: localhost # can be a forwarded port
+    port: 5672
+    username: username
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
