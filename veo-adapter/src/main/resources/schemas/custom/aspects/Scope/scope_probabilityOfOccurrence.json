@@ -4,34 +4,19 @@
     "attributes": {
       "additionalProperties": false,
       "properties": {
-        "scope_headOfDataProcessing_email": {
+        "scope_probabilityOfOccurrence_high": {
           "type": "string"
         },
-        "scope_headOfDataProcessing_familyName": {
+        "scope_probabilityOfOccurrence_low": {
           "type": "string"
         },
-        "scope_headOfDataProcessing_fax": {
+        "scope_probabilityOfOccurrence_moderate": {
           "type": "string"
         },
-        "scope_headOfDataProcessing_givenName": {
+        "scope_probabilityOfOccurrence_veryHigh": {
           "type": "string"
         },
-        "scope_headOfDataProcessing_linkPerson": {
-          "type": "boolean"
-        },
-        "scope_headOfDataProcessing_mobile": {
-          "type": "string"
-        },
-        "scope_headOfDataProcessing_phone": {
-          "type": "string"
-        },
-        "scope_headOfDataProcessing_private": {
-          "type": "string"
-        },
-        "scope_headOfDataProcessing_salutation": {
-          "type": "string"
-        },
-        "scope_headOfDataProcessing_title": {
+        "scope_probabilityOfOccurrence_veryLow": {
           "type": "string"
         }
       },
@@ -86,7 +71,7 @@
     "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
-        "scope_headOfDataProcessing"
+        "scope_probabilityOfOccurrence"
       ]
     }
   },

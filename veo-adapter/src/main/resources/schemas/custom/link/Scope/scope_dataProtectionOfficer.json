@@ -14,11 +14,10 @@
             "enum": [
               "scope_dataProtectionOfficer_affiliation_internal",
               "scope_dataProtectionOfficer_affiliation_external"
-            ],
-            "title": "Company data protection officer?"
+            ]
           },
-          "scope_dataProtectionOfficer_dataProtectionCoordinator": {
-            "type": "boolean"
+          "scope_dataProtectionOfficer_comment": {
+            "type": "string"
           },
           "scope_dataProtectionOfficer_nomination": {
             "type": "boolean"
@@ -103,7 +102,6 @@
             ]
           }
         },
-        "title": "Data protection officer",
         "type": "object"
       },
       "type": {
