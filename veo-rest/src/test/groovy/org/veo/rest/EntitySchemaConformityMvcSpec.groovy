@@ -68,11 +68,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created asset with custom aspect conforms to schema"() {
         given: "the asset schema and a newly created asset"
         def schema = getSchema("asset")
-        def targetPersonId = parseJson(post("/persons", [
-            name: "target",
-            owner: [
-                targetUri: "/units/"+unitId,
-            ]])).resourceId
         def assetId = (String)parseJson(post("/assets", [
             customAspects: [
                 asset_details: [
