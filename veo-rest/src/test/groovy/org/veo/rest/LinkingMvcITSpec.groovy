@@ -26,6 +26,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WebMvcSecurityConfiguration])
@@ -36,11 +37,15 @@ class LinkingMvcITSpec extends VeoMvcSpec {
     ClientRepositoryImpl clientRepository
 
     @Autowired
+    DomainRepositoryImpl domainRepository
+
+    @Autowired
     UnitRepository unitRepository
 
     @Autowired
     TransactionTemplate txTemplate
 
+    String domainId
     String unitId
 
     def setup() {
@@ -48,6 +53,9 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             def client = clientRepository.save(newClient {
                 id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
             })
+            domainId = domainRepository.save(newDomain {
+                owner = client
+            }).id.uuidValue()
             unitId = unitRepository.save(newUnit(client)).id.uuidValue()
         }
     }
@@ -107,5 +115,71 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             it[0].target.targetUri == "http://localhost/persons/$person2"
             it[1].target.targetUri == "http://localhost/persons/$person3"
         }
+    }
+
+    def "link target sub type is validated"() {
+        given:
+        def controllerPerson = parseJson(post("/persons", [
+            name: "Jane",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                [
+                    targetUri: "/domains/$domainId"
+                ]
+            ],
+            subType: [
+                (domainId): "PER_Controller"
+            ]
+        ])).resourceId
+        def randomPerson = parseJson(post("/persons", [
+            name: "John",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                [
+                    targetUri: "/domains/$domainId"
+                ]
+            ],
+            subType: [
+                (domainId): "PER_Plex"
+            ]
+        ])).resourceId
+
+        when: "posting a process with a controller link to the controller person"
+        post("/processes", [
+            name: "My little process",
+            owner: [
+                targetUri: "/units/$unitId"
+            ],
+            links: [
+                process_controller: [
+                    [
+                        name: "Doesn't matter",
+                        target: [
+                            targetUri: "/persons/$controllerPerson"
+                        ]
+                    ]
+                ]]
+        ])
+        then:
+        noExceptionThrown()
+
+        when: "posting a process with a controller link to the other person"
+        post("/processes", [
+            name: "My little process",
+            owner: [
+                targetUri: "/units/$unitId"
+            ],
+            links: [
+                process_controller: [
+                    [
+                        name: "Doesn't matter",
+                        target: [
+                            targetUri: "/persons/$randomPerson"
+                        ]
+                    ]
+                ]]
+        ], false)
+        then:
+        thrown(IllegalArgumentException)
     }
 }

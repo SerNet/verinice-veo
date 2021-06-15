@@ -18,7 +18,9 @@
 package org.veo.adapter.presenter.api.response.transformer;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +45,7 @@ public class EntitySchema {
     public static final String KEY_PROPERTIES = "properties";
     public static final String KEY_TARGET = "target";
     public static final String KEY_TYPE = "type";
+    public static final String KEY_SUB_TYPE = "subType";
     public static final String KEY_ENUM = "enum";
 
     private final JsonNode jsonSchema;
@@ -66,7 +69,8 @@ public class EntitySchema {
      */
     public void validateCustomLink(CustomLink customLink) {
         validateAgainstSchema(customLink.getAttributes(), getLinkAttrSchema(customLink.getType()));
-        validateLinkTarget(customLink);
+        validateLinkTargetType(customLink);
+        validateLinkTargetSubType(customLink);
     }
 
     private void validateAgainstSchema(@NonNull Map<String, Object> target,
@@ -80,7 +84,7 @@ public class EntitySchema {
         }
     }
 
-    private void validateLinkTarget(CustomLink link) throws IllegalArgumentException {
+    private void validateLinkTargetType(CustomLink link) throws IllegalArgumentException {
         final var validTargetTypes = jsonSchema.get(KEY_PROPERTIES)
                                                .get(KEY_LINKS)
                                                .get(KEY_PROPERTIES)
@@ -102,6 +106,40 @@ public class EntitySchema {
                 String.format("link target of type '%s' had to be one of %s", link.getTarget()
                                                                                   .getModelType(),
                               validTargetTypes));
+    }
+
+    private void validateLinkTargetSubType(CustomLink link) throws IllegalArgumentException {
+        final var subTypeNode = jsonSchema.get(KEY_PROPERTIES)
+                                          .get(KEY_LINKS)
+                                          .get(KEY_PROPERTIES)
+                                          .get(link.getType())
+                                          .get(KEY_ITEMS)
+                                          .get(KEY_PROPERTIES)
+                                          .get(KEY_TARGET)
+                                          .get(KEY_PROPERTIES)
+                                          .get(KEY_SUB_TYPE);
+        if (subTypeNode == null) {
+            return;
+        }
+        var target = link.getTarget();
+        var targetSubTypes = target.getDomains()
+                                   .stream()
+                                   .map(target::getSubType)
+                                   .filter(Optional::isPresent)
+                                   .map(Optional::get)
+                                   .collect(Collectors.toSet());
+        var allowedSubTypes = StreamSupport.stream(subTypeNode.get(KEY_ENUM)
+                                                              .spliterator(),
+                                                   false)
+                                           .map(JsonNode::asText)
+                                           .collect(Collectors.toSet());
+        if (allowedSubTypes.stream()
+                           .anyMatch(targetSubTypes::contains)) {
+            return;
+        }
+        throw new IllegalArgumentException(
+                String.format("link target with sub types %s had to have one of %s", targetSubTypes,
+                              allowedSubTypes));
     }
 
     private JsonNode getAspectAttrSchema(String aspectType) {

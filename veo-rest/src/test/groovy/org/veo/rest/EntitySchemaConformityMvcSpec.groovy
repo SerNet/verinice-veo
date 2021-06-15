@@ -29,6 +29,7 @@ import com.networknt.schema.SpecVersion
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
+import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.EntitySchemaService
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -47,13 +48,20 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     @Autowired
     ClientRepository clientRepository
 
+    @Autowired
+    DomainRepository domainRepository
+
     ObjectMapper om = new ObjectMapper()
+    String domainId
     String unitId
 
     def setup() {
         def client = clientRepository.save(newClient {
             dbId = WebMvcSecurityConfiguration.TESTCLIENT_UUID
         })
+        domainId = domainRepository.save(newDomain {
+            owner = client
+        }).id.uuidValue()
         unitId = unitRepository.save(newUnit(client)).dbId
     }
 
@@ -183,10 +191,17 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         given: "the process schema and a newly created process"
         def processSchema = getSchema("process")
         def personId = (String)parseJson(post("/persons", [
+            domains: [
+                [targetUri: "/domains/$domainId"]
+            ],
             name: "person",
             owner: [
                 targetUri: "/units/"+unitId
-            ]])).resourceId
+            ],
+            subType: [
+                (domainId): "PER_Controller"
+            ]
+        ])).resourceId
         def processId = (String)parseJson(post("/processes", [
             name: "process",
             owner: [

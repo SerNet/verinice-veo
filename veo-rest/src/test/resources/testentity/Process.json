@@ -1531,6 +1531,11 @@
               },
               "target": {
                 "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Controller"
+                    ]
+                  },
                   "targetUri": {
                     "title": "The id of the target object.",
                     "type": "string"

@@ -306,9 +306,35 @@
                     }
                   },
                   "additionalProperties": true
+                },
+                "subType": {
+                  "$id": "#type",
+                  "type": "object",
+                  "title": "The type schema",
+                  "description": "Whitelist of sub types that the link target entity may have. Omit this property to allow any sub type.",
+                  "required": [
+                    "enum"
+                  ],
+                  "properties": {
+                    "enum": {
+                      "$id": "#enum",
+                      "type": "array",
+                      "default": [],
+                      "additionalItems": true,
+                      "items": {
+                        "$id": "#items",
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "additionalProperties": true
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": false
             }
           },
           "additionalProperties": true

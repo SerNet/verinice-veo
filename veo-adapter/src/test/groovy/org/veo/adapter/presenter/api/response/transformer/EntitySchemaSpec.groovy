@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype
 
 import spock.lang.Specification
@@ -98,6 +99,34 @@ class EntitySchemaSpec extends Specification {
                                                     "target_type",
                                                     "another_target_type",
                                                     "yet_another_target_type"
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        SubTypeSensitiveLink: [
+                            type : "array",
+                            items: [
+                                type      : "object",
+                                properties: [
+                                    attributes: [
+                                        additionalProperties: false,
+                                        properties          : [
+                                        ]
+                                    ],
+                                    target    : [
+                                        properties: [
+                                            type: [
+                                                enum: [
+                                                    "target_type"
+                                                ]
+                                            ],
+                                            subType: [
+                                                enum: [
+                                                    "sub_type_1",
+                                                    "sub_type_2"
                                                 ]
                                             ]
                                         ]
@@ -286,5 +315,68 @@ class EntitySchemaSpec extends Specification {
 
         then:
         noExceptionThrown()
+    }
+
+
+    def "link target with valid sub type is allowed"() {
+        given: "a link with valid target sub type"
+        def domain1 = Mock(Domain)
+        def domain2 = Mock(Domain)
+        def link = Mock(CustomLink) {
+            attributes >> [:]
+            type >> "SubTypeSensitiveLink"
+            target >> Mock(EntityLayerSupertype) {
+                domains >> [domain1, domain2]
+                modelType >> "target_type"
+                getSubType(domain1) >> Optional.of("wrong_type")
+                getSubType(domain2) >> Optional.of("sub_type_2")
+            }
+        }
+
+        when: "validated"
+        sut.validateCustomLink(link)
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "link target with invalid sub types is not allowed"() {
+        given: "a link with invalid target sub type"
+        def domain = Mock(Domain)
+        def link = Mock(CustomLink) {
+            attributes >> [:]
+            type >> "SubTypeSensitiveLink"
+            target >> Mock(EntityLayerSupertype) {
+                domains >> [domain]
+                modelType >> "target_type"
+                getSubType(domain) >> Optional.of("wrong_type")
+            }
+        }
+
+        when: "validated"
+        sut.validateCustomLink(link)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    def "link target without sub type is not allowed"() {
+        given: "a link with no target sub type"
+        def domain = Mock(Domain)
+        def link = Mock(CustomLink) {
+            attributes >> [:]
+            type >> "SubTypeSensitiveLink"
+            target >> Mock(EntityLayerSupertype) {
+                domains >> [domain]
+                modelType >> "target_type"
+                getSubType(domain) >> Optional.empty()
+            }
+        }
+
+        when: "validated"
+        sut.validateCustomLink(link)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 }
