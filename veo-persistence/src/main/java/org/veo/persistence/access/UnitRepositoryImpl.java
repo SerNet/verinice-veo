@@ -42,7 +42,8 @@ public class UnitRepositoryImpl extends AbstractModelObjectRepository<Unit, Unit
 
     @Override
     public List<Unit> findByClient(Client client) {
-        return dataRepository.findByClient_DbId(client.getDbId())
+        return dataRepository.findByClientId(client.getId()
+                                                   .uuidValue())
                              .stream()
                              .map(e -> (Unit) e)
                              .collect(Collectors.toList());
@@ -51,7 +52,8 @@ public class UnitRepositoryImpl extends AbstractModelObjectRepository<Unit, Unit
 
     @Override
     public List<Unit> findByParent(Unit parent) {
-        return dataRepository.findByParent_DbId(parent.getDbId())
+        return dataRepository.findByParentId(parent.getId()
+                                                   .uuidValue())
                              .stream()
                              .map(e -> (Unit) e)
                              .collect(Collectors.toList());

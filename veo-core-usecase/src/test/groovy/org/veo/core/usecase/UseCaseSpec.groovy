@@ -69,7 +69,6 @@ abstract class UseCaseSpec extends Specification {
         existingUnit.getParent() >> null
         existingUnit.getName() >> "Existing unit"
         existingUnit.getId() >> id
-        existingUnit.getDbId() >> id.uuidValue()
         existingUnit.getVersion() >> 0
 
         existingUnitHierarchyMembers = [

@@ -290,7 +290,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         domainPlaceholder.setDescription(domainTemplateDto.getDescription());
         domainPlaceholder.setAbbreviation(domainTemplateDto.getAbbreviation());
 
-        domainPlaceholder.setDbId(domainTemplateDto.getId());
+        domainPlaceholder.setId(Key.uuidFrom(domainTemplateDto.getId()));
         ref.cache.put(domainTemplateDto.getId(), domainPlaceholder);
 
         domainTemplateDto.getCatalogs()
@@ -309,11 +309,12 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         domain.getCatalogs()
               .forEach(catalog -> {
-                  catalog.setDbId(null);
+                  catalog.setId(null);
                   catalog.setDomainTemplate(domain);
                   Set<CatalogItem> catalogItems = catalog.getCatalogItems()
                                                          .stream()
-                                                         .map(ci -> itemCache.get(ci.getDbId()))
+                                                         .map(ci -> itemCache.get(ci.getId()
+                                                                                    .uuidValue()))
                                                          .collect(Collectors.toSet());
                   catalog.getCatalogItems()
                          .clear();
@@ -337,7 +338,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                         .stream())
                          .map(ci -> (TransformCatalogItemDto) ci)
                          .map(ci -> transformCatalogItem(ci, elementCache, ref))
-                         .forEach(c -> ref.cache.put(c.getDbId(), c));
+                         .forEach(c -> ref.cache.put(c.getId()
+                                                      .uuidValue(),
+                                                     c));
 
         Map<String, CatalogItem> itemCache = ref.cache.entrySet()
                                                       .stream()
@@ -379,7 +382,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         catalogableDtos.values()
                        .stream()
                        .map(e -> transform((CatalogableDto) e, ref))
-                       .forEach(c -> ref.cache.put(c.getDbId(), c));
+                       .forEach(c -> ref.cache.put(c.getId()
+                                                    .uuidValue(),
+                                                   c));
 
         Map<String, Catalogable> elementCache = ref.cache.entrySet()
                                                          .stream()
@@ -395,9 +400,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                      es.getLinks()
                        .forEach(link -> {
                            if (link.getTarget()
-                                   .getDbId() != null) {
+                                   .getId() != null) {
                                Catalogable catalogable = elementCache.get(link.getTarget()
-                                                                              .getDbId());
+                                                                              .getId()
+                                                                              .uuidValue());
                                link.setTarget((EntityLayerSupertype) catalogable);
                            }
 
@@ -477,7 +483,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
      * Clean up and relink a catalogItem. Add the domain to each sub element.
      */
     private void processCatalogItem(Domain domain, Catalog catalog, CatalogItem item) {
-        item.setDbId(null);
+        item.setId(null);
         item.setCatalog(catalog);
         Catalogable element = item.getElement();
         if (element != null) {
@@ -489,7 +495,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
      * Clean up and relink a catalogable. Add the domain to each sub element.
      */
     private void processElement(Domain domain, CatalogItem item, Catalogable element) {
-        element.setDbId(null);
+        element.setId(null);
         if (element instanceof EntityLayerSupertype) {
             EntityLayerSupertype est = (EntityLayerSupertype) element;
             est.setDesignator(NO_DESIGNATOR);

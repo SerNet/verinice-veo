@@ -85,7 +85,8 @@ public class ControlRepositoryImpl extends
     @Override
     @Transactional
     public void deleteByUnit(Unit owner) {
-        removeFromRisks(dataRepository.findByUnits(singleton(owner.getDbId())));
+        removeFromRisks(dataRepository.findByUnits(singleton(owner.getId()
+                                                                  .uuidValue())));
         super.deleteByUnit(owner);
     }
 }

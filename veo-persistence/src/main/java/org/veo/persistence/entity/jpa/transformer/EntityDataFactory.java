@@ -140,8 +140,7 @@ public class EntityDataFactory implements EntityFactory {
     public Domain createDomain(String name, String authority, String templateVersion,
             String revision) {
         Domain domain = new DomainData();
-        domain.setDbId(Key.newUuid()
-                          .uuidValue());
+        domain.setId(Key.newUuid());
         domain.setName(name);
         domain.setAuthority(authority);
         domain.setTemplateVersion(templateVersion);

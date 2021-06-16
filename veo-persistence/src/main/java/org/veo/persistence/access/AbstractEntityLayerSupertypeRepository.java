@@ -66,7 +66,8 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
 
     @Transactional
     public void deleteByUnit(Unit owner) {
-        var entities = dataRepository.findByUnits(singleton(owner.getDbId()));
+        var entities = dataRepository.findByUnits(singleton(owner.getId()
+                                                                 .uuidValue()));
         var entityIDs = entities.stream()
                                 .map(BaseModelObjectData::getDbId)
                                 .collect(Collectors.toSet());
@@ -89,7 +90,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
         linkDataRepository.deleteAll(links);
 
         // remove element from scope members:
-        Set<Scope> scopes = scopeDataRepository.findDistinctByMembers_DbId_In(singleton(id.uuidValue()));
+        Set<Scope> scopes = scopeDataRepository.findDistinctByMemberIds(singleton(id.uuidValue()));
         scopes.stream()
               .map(ScopeData.class::cast)
               .forEach(scopeData -> scopeData.removeMemberById(id));

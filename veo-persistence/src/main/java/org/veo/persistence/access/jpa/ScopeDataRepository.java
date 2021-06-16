@@ -30,7 +30,9 @@ public interface ScopeDataRepository extends EntityLayerSupertypeDataRepository<
 
     <T extends EntityLayerSupertypeData> Set<Scope> findDistinctByMembersIn(Set<T> entities);
 
-    Set<Scope> findDistinctByMembers_DbId_In(Set<String> dbIds);
+    @Query("select distinct e from #{#entityName} as e " + "inner join e.members m "
+            + "where m.dbId IN ?1")
+    Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
 
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "left join fetch e.subTypeAspects "

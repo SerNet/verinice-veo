@@ -36,10 +36,6 @@ public interface ModelObject extends Versioned {
 
     void setId(Key<UUID> id);
 
-    String getDbId();
-
-    void setDbId(String id);
-
     /**
      * @return The specific interface for this type of model object.
      */

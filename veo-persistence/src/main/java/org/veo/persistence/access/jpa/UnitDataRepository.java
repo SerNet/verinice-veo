@@ -19,14 +19,17 @@ package org.veo.persistence.access.jpa;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.UnitData;
 
 public interface UnitDataRepository extends CrudRepository<UnitData, String> {
 
-    List<UnitData> findByParent_DbId(String ownerId);
+    @Query("select e from #{#entityName} as e where e.parent.dbId = ?1")
+    List<UnitData> findByParentId(String parentId);
 
-    List<UnitData> findByClient_DbId(String ownerId);
+    @Query("select e from #{#entityName} as e where e.client.dbId = ?1")
+    List<UnitData> findByClientId(String clientId);
 
 }

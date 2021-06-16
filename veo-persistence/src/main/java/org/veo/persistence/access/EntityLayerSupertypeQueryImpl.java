@@ -89,7 +89,7 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
         Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
         List<String> ids = items.stream()
-                                .map(EntityLayerSupertype::getDbId)
+                                .map(EntityLayerSupertypeData::getDbId)
                                 .collect(Collectors.toList());
         List<TDataClass> fullyLoadedItems = dataRepository.findAllById(ids);
         fullyLoadedItems.sort(Comparator.comparingInt(item -> ids.indexOf(item.getDbId())));

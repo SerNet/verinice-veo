@@ -31,7 +31,8 @@ public class LocalReferenceAssembler implements ReferenceAssembler {
     @Override
     public String targetReferenceOf(ModelObject modelObject) {
         return SyntheticModelObjectReference.toUrl(modelObject.getModelInterface(),
-                                                   modelObject.getDbId());
+                                                   modelObject.getId()
+                                                              .uuidValue());
     }
 
     @Override

@@ -40,6 +40,10 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public abstract class BaseModelObjectData extends VersionedData implements ModelObject {
 
+    public abstract String getDbId();
+
+    public abstract void setDbId(String id);
+
     @Override
     public Key<UUID> getId() {
         return Key.uuidFrom(getDbId());

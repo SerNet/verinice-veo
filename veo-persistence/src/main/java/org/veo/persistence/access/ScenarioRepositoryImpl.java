@@ -82,7 +82,8 @@ public class ScenarioRepositoryImpl
     @Override
     @Transactional
     public void deleteByUnit(Unit owner) {
-        removeRisks(dataRepository.findByUnits(singleton(owner.getDbId())));
+        removeRisks(dataRepository.findByUnits(singleton(owner.getId()
+                                                              .uuidValue())));
         super.deleteByUnit(owner);
     }
 }
