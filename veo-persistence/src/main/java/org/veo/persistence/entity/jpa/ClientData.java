@@ -52,7 +52,7 @@ public class ClientData extends BaseModelObjectData implements Client, Nameable 
     @Column(name = "abbreviation")
     private String abbreviation;
 
-    @Column(name = "description")
+    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @Column(name = "domains")

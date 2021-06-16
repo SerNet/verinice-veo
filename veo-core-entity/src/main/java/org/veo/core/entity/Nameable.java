@@ -25,6 +25,8 @@ import java.util.stream.Stream;
  */
 public interface Nameable extends Displayable {
 
+    int DESCRIPTION_MAX_LENGTH = 65535;
+
     String getName();
 
     void setName(String aName);

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -30,6 +31,7 @@ import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -51,6 +53,7 @@ public abstract class AbstractUnitDto extends AbstractVersionedDto implements Na
 
     @Schema(description = "The description for the Unit.",
             example = "This is currently the main and only unit for our organization.")
+    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @JsonIgnore

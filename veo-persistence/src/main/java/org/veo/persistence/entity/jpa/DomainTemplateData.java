@@ -51,7 +51,7 @@ public class DomainTemplateData extends BaseModelObjectData implements DomainTem
     private String name;
     @Column(name = "abbreviation")
     private String abbreviation;
-    @Column(name = "description")
+    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
     @NotNull
     @Column(name = "authority")

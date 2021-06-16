@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomainCatalogs;
@@ -28,6 +29,7 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -56,6 +58,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedDto implements 
     @Schema(description = "The description for the Domain.",
             example = "Everything around data protection.",
             required = false)
+    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @NotNull(message = "An authority must be present.")

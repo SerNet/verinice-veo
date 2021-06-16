@@ -38,6 +38,7 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
@@ -74,7 +75,7 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
     @Column(name = "abbreviation")
     private String abbreviation;
 
-    @Column(name = "description")
+    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @Column(name = "domains")

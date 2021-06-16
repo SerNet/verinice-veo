@@ -36,6 +36,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Nameable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,7 +56,7 @@ public class CatalogData extends BaseModelObjectData implements Catalog, Nameabl
     private String name;
     @Column(name = "abbreviation")
     private String abbreviation;
-    @Column(name = "description")
+    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
     @ToString.Exclude
     @Column(name = "catalogitems")

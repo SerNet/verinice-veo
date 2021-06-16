@@ -18,12 +18,14 @@
 package org.veo.adapter.presenter.api.dto;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCatalogDomainTemplate;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,6 +40,7 @@ public abstract class AbstractCatalogDto extends AbstractVersionedDto implements
     @Schema(description = "The abbreviation for the Catalog.")
     private String abbreviation;
     @Schema(description = "The description for the Catalog.")
+    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
     @Schema(implementation = ModelObjectReferenceCatalogDomainTemplate.class)
     private ModelObjectReference<DomainTemplate> domainTemplate;

@@ -25,11 +25,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Nameable
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -293,6 +295,23 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         put("/documents/$id", parseJson(getResult), [
             "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
         ])
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "can't post excessively long document description"() {
+        when:
+        post("/documents/", [
+            description: "!".repeat(Nameable.DESCRIPTION_MAX_LENGTH+1),
+            name: "new name",
+            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+        ], false)
+
+        then:
+        def ex = thrown(MethodArgumentNotValidException)
+        with(ex.message) {
+            contains("Field error in object 'createDocumentDto' on field 'description'")
+            contains("size must be between 0 and $Nameable.DESCRIPTION_MAX_LENGTH")
+        }
     }
 
     @WithUserDetails("user@domain.example")

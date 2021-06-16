@@ -24,12 +24,14 @@ import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
 import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -68,6 +70,7 @@ public abstract class AbstractEntityLayerSupertypeDto extends AbstractVersionedD
     @Schema(description = "The description for the EntityLayerSupertype.",
             example = "Lock doors",
             required = false)
+    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))

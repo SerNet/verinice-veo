@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 
 import lombok.Data;
@@ -53,7 +54,7 @@ public class UnitData extends ElementOwnerData implements NameableData, Unit {
     @Column(name = "abbreviation")
     private String abbreviation;
 
-    @Column(name = "description")
+    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @NotNull

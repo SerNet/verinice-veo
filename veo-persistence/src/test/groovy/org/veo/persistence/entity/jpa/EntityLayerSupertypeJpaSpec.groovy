@@ -19,24 +19,18 @@ package org.veo.persistence.entity.jpa
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
+import javax.persistence.PersistenceException
 
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
 
-    public static final String TESTCLIENT_UUID = "274af105-8d21-4f07-8019-5c4573d503e5"
-
     @Autowired
     AssetDataRepository assetRepository
-
-    @Autowired
-    ScopeDataRepository scopeDataRepository
-
 
     @Autowired
     UnitDataRepository unitRepository
@@ -150,5 +144,23 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         then: "version is incremented"
         versionBefore == 0
         unit.getVersion() == 1
+    }
+
+    def 'max description length is applied'() {
+        when:
+        assetRepository.save(newAsset(owner0) {
+            description = "-".repeat(DESCRIPTION_MAX_LENGTH)
+        })
+        entityManager.flush()
+        then:
+        noExceptionThrown()
+
+        when:
+        assetRepository.save(newAsset(owner0) {
+            description = "-".repeat(DESCRIPTION_MAX_LENGTH + 1)
+        })
+        entityManager.flush()
+        then:
+        thrown(PersistenceException)
     }
 }
