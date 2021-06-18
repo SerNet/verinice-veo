@@ -71,7 +71,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         "/swagger.json", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
                         "/swagger-ui/**")
                 .permitAll()
-                .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "persons/**",
+                .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
                         "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
                 .hasAuthority("SCOPE_veo-user").anyRequest().authenticated() // CAUTION:
                                                                              // this
