@@ -541,7 +541,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 [
                     domains: [],
                     attributes:  [
-                        asset_details_number: 1
+                        asset_details_number: 1,
+                        asset_details_operatingStage: 'asset_details_operatingStage_planning'
                     ]
                 ]
             ]
@@ -576,6 +577,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         with(entity.customAspects.first()) {
             type == 'asset_details'
             attributes["asset_details_number"] == 1
+            attributes['asset_details_operatingStage'] == 'asset_details_operatingStage_planning'
         }
     }
 

@@ -2066,7 +2066,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_operatingStage\": \"asset_details_operatingStage_planning\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
