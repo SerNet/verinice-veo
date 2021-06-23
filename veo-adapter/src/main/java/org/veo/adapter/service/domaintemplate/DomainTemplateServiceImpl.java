@@ -70,7 +70,6 @@ import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.service.DomainTemplateEventPublisher;
 import org.veo.core.service.DomainTemplateService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -133,7 +132,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     private final DomainTemplateRepository domainTemplateRepository;
     private final DtoToEntityTransformer entityTransformer;
     private final EntityFactory factory;
-    private final DomainTemplateEventPublisher publisher;
     private final List<VeoInputStreamResource> domainResources;
 
     private ReferenceAssembler assembler;
@@ -144,11 +142,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
             DtoToEntityTransformer entityTransformer, EntityFactory factory,
-            DomainTemplateEventPublisher publisher, List<VeoInputStreamResource> domainResources) {
+            List<VeoInputStreamResource> domainResources) {
         this.domainTemplateRepository = domainTemplateRepository;
         this.entityTransformer = entityTransformer;
         this.factory = factory;
-        this.publisher = publisher;
         this.domainResources = domainResources;
 
         assembler = new LocalReferenceAssembler();
@@ -179,15 +176,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                                                                    e -> createDomainTemplate(e.getKey(),
                                                                                                              e.getValue())));
 
-    }
-
-    /**
-     * Mainly used by the test, as we expect the state to be cleared each time the
-     * test run.
-     */
-    void reInitalizeAvailableDomainTemplates() {
-        bootstrappedDomaintemplates = null;
-        publisher.domainServiceReinitialize();
     }
 
     @Override

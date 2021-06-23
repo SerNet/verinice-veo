@@ -41,7 +41,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.events.VeoEventPublisherImpl;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
@@ -509,9 +508,9 @@ public class ModuleConfiguration {
     public DomainTemplateServiceImpl domainTemplateService(
             DomainTemplateRepository domainTemplateRepository,
             DtoToEntityTransformer entityTransformer, EntityFactory factory,
-            DomainTemplateResource domainTemplateResource, VeoEventPublisherImpl ep) {
+            DomainTemplateResource domainTemplateResource) {
         return new DomainTemplateServiceImpl(domainTemplateRepository, entityTransformer, factory,
-                ep, domainTemplateResource.getResources());
+                domainTemplateResource.getResources());
     }
 
     @Bean

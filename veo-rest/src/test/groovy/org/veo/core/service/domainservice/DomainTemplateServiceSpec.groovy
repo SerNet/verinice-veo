@@ -46,15 +46,11 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             name = "Demo Client"
         })
 
-        txTemplate.execute {
-            domainTemplateService.reInitalizeAvailableDomainTemplates()
-        }
-
         def domainsFromTemplate = null
         txTemplate.execute {
-            domainsFromTemplate = domainTemplateService.createDefaultDomains(client);
+            domainsFromTemplate = domainTemplateService.createDefaultDomains(client)
             domainsFromTemplate.forEach({client.addToDomains(it)})
-            client = repository.save(client);
+            client = repository.save(client)
         }
         def domainFromTemplate = client.domains.first()
         expect: 'the domain matches with the linked domainTemplate'
@@ -105,16 +101,13 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             name = "Demo Client"
         })
 
-        client.addToDomains(newDomain(client));
+        client.addToDomains(newDomain(client))
 
-        txTemplate.execute {
-            domainTemplateService.reInitalizeAvailableDomainTemplates()
-        }
 
         when: 'default domains are created'
         def domainsFromTemplate = null
         txTemplate.execute {
-            domainsFromTemplate = domainTemplateService.createDefaultDomains(client);
+            domainsFromTemplate = domainTemplateService.createDefaultDomains(client)
         }
 
         then: 'exception is thrown'
@@ -127,15 +120,13 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             name = "Demo Client"
         })
 
-        txTemplate.execute {
-            domainTemplateService.reInitalizeAvailableDomainTemplates()
-        }
+
 
         def domainFromTemplate = null
         txTemplate.execute {
-            domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001");
-            client.addToDomains(domainFromTemplate);
-            client = repository.save(client);
+            domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001")
+            client.addToDomains(domainFromTemplate)
+            client = repository.save(client)
         }
         domainFromTemplate = client.domains.first()
 

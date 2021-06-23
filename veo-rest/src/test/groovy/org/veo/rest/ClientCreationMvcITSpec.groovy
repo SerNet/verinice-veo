@@ -35,16 +35,7 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
     @Autowired
     ClientRepository clientRepository
 
-    @Autowired
-    DomainTemplateServiceImpl domainTemplateService
 
-    def setup() {
-        //the VeoSpec setup Method clears all the data, so we need to reInitalize
-        txTemplate.execute {
-            domainTemplateService.reInitalizeAvailableDomainTemplates()
-        }
-
-    }
 
     @WithUserDetails("user@domain.example")
     def "create a new client"() {

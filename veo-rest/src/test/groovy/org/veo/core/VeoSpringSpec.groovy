@@ -25,6 +25,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
+import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -90,6 +91,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     StoredEventDataRepository eventStoreDataRepository
 
     @Autowired
+    DomainTemplateServiceImpl domainTemplateService
+
+    @Autowired
     TransactionTemplate txTemplate
 
     def setup() {
@@ -126,6 +130,7 @@ abstract class VeoSpringSpec extends VeoSpec {
                 domainTemplateDataRepository,
                 eventStoreDataRepository
             ])*.deleteAll()
+            domainTemplateService.readTemplateFiles()
         }
     }
 }
