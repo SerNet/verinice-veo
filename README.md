@@ -196,16 +196,6 @@ while the application is running:
 * Install MySQL, MariaDB or PostgreSQL
 * Create an empty database _v2020_
 
-### Run VNA Import
-
-Set your database properties in file _veo-vna-import/src/main/resources/application.properties_ and rebuild the application.
-
-```bash
-./gradlew veo-vna-import:bootJar
-java -jar veo-vna-import/build/libs/veo-vna-import-0.1.0-SNAPSHOT.jar \
--f /path/to/verinice-archive-file.vna
-```
-
 ### Run REST Service
 
 Set your database properties in file _veo-rest/src/main/resources/application.properties_ and rebuild the application.
@@ -260,14 +250,8 @@ You can now send your HTTP request. The access token will time out (usually afte
 
 ## Modules
 
-### veo-data-xml [DEPRECATED]
-This module contains the JAXB class files for accessing SNCA.xml from verinice.
-
 ### veo-rest
 This module contains the implementation of the REST services of the REST API.
-
-### veo-vna-import [DEPRECATED]
-This module contains an importer for verinice archives (VNAs). It has to be fixed to work with the new data model.
 
 ## Database [DEPRECATED]
 Entity–relationship model of the database:

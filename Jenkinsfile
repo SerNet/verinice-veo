@@ -108,7 +108,7 @@ pipeline {
             }
             steps {
                 sh './gradlew --no-daemon -PciBuildNumer=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
-                archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar, veo-vna-import/build/libs/*.jar', fingerprint: true
+                archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar', fingerprint: true
             }
         }
         stage('Analyze') {
@@ -222,7 +222,7 @@ pipeline {
                       highTags: 'FIXME',
                       ignoreCase: true,
                       normalTags: 'TODO',
-                      excludePattern: 'Jenkinsfile, gradle/wrapper/**, gradle-home/**, .gradle/**, buildSrc/.gradle/**, build/**, */build/**, **/*.pdf, **/*.png, **/*.jpg, **/*.vna'
+                      excludePattern: 'Jenkinsfile, gradle/wrapper/**, gradle-home/**, .gradle/**, buildSrc/.gradle/**, build/**, */build/**, **/*.pdf, **/*.png, **/*.jpg'
                     )
                   ]
                 )
