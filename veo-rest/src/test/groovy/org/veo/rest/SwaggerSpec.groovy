@@ -112,6 +112,17 @@ class SwaggerSpec extends VeoSpringSpec {
         !customLinkDtoSchema.required.contains('name')
     }
 
+    def "catalog item element is a reference"() {
+        when:
+        def catalogItemDtoSchema = parsedApiDocs.components.schemas.FullCatalogItemDto
+        then:
+        catalogItemDtoSchema.properties.element.'$ref' == '#/components/schemas/CatalogItemElement'
+        when:
+        def elementReferenceSchema = parsedApiDocs.components.schemas.CatalogItemElement
+        then:
+        elementReferenceSchema.required.contains('targetUri')
+    }
+
     def "allowed entity schema types are listed"() {
         given: "existing entity types"
         def schemaTypes = ModelObjectType.ENTITY_TYPES

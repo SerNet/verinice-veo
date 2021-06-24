@@ -19,7 +19,7 @@ package org.veo.adapter.presenter.api.dto.reference;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
-import org.veo.adapter.presenter.api.dto.AbstractEntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCatalogItemElement;
 import org.veo.core.entity.Catalogable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,9 +37,7 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class ReferenceCatalogItemDto extends AbstractCatalogItemDto {
 
-    @Schema(description = "The actual model instance of this catalog item.",
-            required = false,
-            oneOf = { AbstractEntityLayerSupertypeDto.class })
+    @Schema(implementation = ModelObjectReferenceCatalogItemElement.class)
     private ModelObjectReference<Catalogable> element;
 
 }
