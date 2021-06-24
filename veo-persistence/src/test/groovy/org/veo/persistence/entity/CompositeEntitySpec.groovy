@@ -133,7 +133,8 @@ class CompositeEntitySpec extends VeoSpec {
         def topProcessComposite = newProcess(unit) {
             parts = [
                 processComposite1,
-                processComposite2] as Set<Process>
+                processComposite2
+            ] as Set<Process>
         }
 
         then: "the composite contains both subcomposites"

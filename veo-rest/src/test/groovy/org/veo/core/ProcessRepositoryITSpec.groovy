@@ -69,7 +69,8 @@ class ProcessRepositoryITSpec extends VeoMvcSpec {
         assert cvex.constraintViolations*.propertyPath*.toString() as Set == [
             "designator",
             "owner",
-            "name"] as Set
+            "name"
+        ] as Set
         assert cvex.constraintViolations*.messageTemplate.every() {it == "{javax.validation.constraints.NotNull.message}" }
     }
 }

@@ -50,7 +50,7 @@ task generateEntitySchemas(type: JavaExec) {
     classpath compileJava.classpath
     classpath configurations.generateSchemas
     classpath file("${rootDir}/buildSrc/build/classes/java/main")
-    main = 'org.veo.GenerateEntitySchema'
+    mainClass = 'org.veo.GenerateEntitySchema'
     args = [
         targetDirectory.absolutePath,
         schemaSnippetDir.absolutePath,
@@ -74,7 +74,7 @@ task assembleDomainTemplates(type: JavaExec) {
     inputs.files templateSnippetDir
     classpath compileJava.outputs.files
     classpath compileJava.classpath
-    main = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssembler'
+    mainClass = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssembler'
     environment = [
         'domaintemplate.abbreviation': "DSGVO",
         'domaintemplate.authority': "SERNET",

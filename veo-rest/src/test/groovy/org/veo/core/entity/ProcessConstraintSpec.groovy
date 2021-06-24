@@ -45,7 +45,8 @@ class ProcessConstraintSpec extends Specification {
         assert errors*.propertyPath*.toString() as Set == [
             "designator",
             "owner",
-            "name"] as Set
+            "name"
+        ] as Set
         assert errors*.messageTemplate.every() {it == "{javax.validation.constraints.NotNull.message}" }
     }
 }

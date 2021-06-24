@@ -5,8 +5,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.diffplug.spotless:spotless-lib:2.13.5'
-    implementation 'com.diffplug.spotless:spotless-lib-extra:2.13.5'
+    implementation 'com.diffplug.spotless:spotless-lib:2.15.0'
+    implementation 'com.diffplug.spotless:spotless-lib-extra:2.15.0'
     [
         'jsonschema-generator',
         'jsonschema-module-jackson',

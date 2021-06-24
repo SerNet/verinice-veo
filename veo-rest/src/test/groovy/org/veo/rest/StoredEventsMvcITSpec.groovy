@@ -192,7 +192,8 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         post("/assets/$assetId/risks", [
             scenario: [targetUri: "/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+                [targetUri: "/domains/${domain.id.uuidValue()}"]
+            ]
         ])
 
         then:
@@ -213,7 +214,8 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             mitigation: [targetUri:  "/controls/$controlId"],
             scenario: [targetUri: "/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+                [targetUri: "/domains/${domain.id.uuidValue()}"]
+            ]
         ], ["If-Match": riskETag])
 
         then:
@@ -254,7 +256,8 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         post("/processes/$processId/risks", [
             scenario: [targetUri: "/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+                [targetUri: "/domains/${domain.id.uuidValue()}"]
+            ]
         ])
 
         then:
@@ -275,7 +278,8 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             mitigation: [targetUri:  "/controls/$controlId"],
             scenario: [targetUri: "/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]]
+                [targetUri: "/domains/${domain.id.uuidValue()}"]
+            ]
         ], ["If-Match": riskETag])
 
         then:

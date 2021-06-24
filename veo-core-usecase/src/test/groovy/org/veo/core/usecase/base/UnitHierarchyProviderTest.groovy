@@ -58,6 +58,7 @@ class UnitHierarchyProviderTest extends Specification{
             rootChild0Child0,
             rootChild0Child1,
             rootChild1,
-            rootChild1Child0] as Set
+            rootChild1Child0
+        ] as Set
     }
 }
