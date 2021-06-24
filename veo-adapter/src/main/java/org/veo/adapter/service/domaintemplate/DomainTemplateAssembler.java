@@ -59,9 +59,13 @@ import org.veo.core.entity.TailoringReferenceType;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A simple domaintemplate builder.
+ * A simple domaintemplate builder. This is used by the assembleDomainTemplates
+ * Gradle task and should not be called from anywhere else. This is a temporary
+ * solution until VEO-399 is implemented.
  */
 @Slf4j
+@Deprecated
+// TODO VEO-399 remove this class
 public class DomainTemplateAssembler {
     private final ReferenceAssembler assembler;
 
@@ -104,7 +108,6 @@ public class DomainTemplateAssembler {
      * tom.dir="/verinice-veo/domaintemplates/dsgvo/tom"<br/>
      * tom.prefix="TOM."<br/>
      */
-    // TODO: VEO-636 add as gradle task to build step
     public static void main(String[] args) {
         ReferenceAssembler urlAssembler = new LocalReferenceAssembler();
         ReferenceDeserializer deserializer = new ReferenceDeserializer(urlAssembler);
@@ -153,7 +156,7 @@ public class DomainTemplateAssembler {
      * Creates a domain template with all previous thru
      * {@link #createCatalog(Resource[], String)} created catalogs.
      */
-    public TransformDomainTemplateDto createDomainTemplateDto() {
+    private TransformDomainTemplateDto createDomainTemplateDto() {
         TransformDomainTemplateDto domainTemplateDto = new TransformDomainTemplateDto();
         domainTemplateDto.setId(id);
 
@@ -175,7 +178,7 @@ public class DomainTemplateAssembler {
      * array. The catalog is stored in the assembler and will be added to the domain
      * when {@link #createDomainTemplateDto()} is called.
      */
-    public void createCatalog(File[] resources, String catalogName,
+    private void createCatalog(File[] resources, String catalogName,
             Function<EntityLayerSupertypeDto, String> toNamespace)
             throws JsonParseException, JsonMappingException, IOException {
         String catalogId = Key.newUuid()

@@ -1,9 +1,11 @@
 def generatedSchemasDir = "$buildDir/generated_entity_schemas"
+def domainTemplatesDir = "$buildDir/domain_templates"
 
 sourceSets {
     main {
         resources {
             srcDir generatedSchemasDir
+            srcDir domainTemplatesDir
             exclude 'schemas/custom', 'schemas/links'
         }
     }
@@ -64,14 +66,39 @@ task generateEntitySchemas(type: JavaExec) {
     ]
 }
 
+task assembleDomainTemplates(type: JavaExec) {
+    def targetDirectory = file("$domainTemplatesDir/domaintemplates/")
+    def templateSnippetDir = rootProject.file('domaintemplates/')
+    outputs.dir targetDirectory
+    inputs.files compileJava.outputs
+    inputs.files templateSnippetDir
+    classpath compileJava.outputs.files
+    classpath compileJava.classpath
+    main = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssembler'
+    environment = [
+        'domaintemplate.abbreviation': "DSGVO",
+        'domaintemplate.authority': "SERNET",
+        'domaintemplate.description': "The DSGVO DomainTemplate.",
+        'domaintemplate.id': "f8ed22b1-b277-56ec-a2ce-0dbd94e24824",
+        'domaintemplate.name': "DSGVO",
+        'domaintemplate.out.file': "${targetDirectory}/dsgvo-example.json",
+        'domaintemplate.revision': "latest",
+        'domaintemplate.templateVersion': "1.0",
+        'tom.catalog.name': "DVGO-Controls",
+        'tom.dir': "${templateSnippetDir}/dsgvo/tom",
+        'tom.prefix': "TOM."
+    ]
+}
+
 plugins.withId('eclipse'){
     eclipse {
-        synchronizationTasks generateEntitySchemas
-        autoBuildTasks generateEntitySchemas
+        synchronizationTasks generateEntitySchemas, assembleDomainTemplates
+        autoBuildTasks generateEntitySchemas, assembleDomainTemplates
     }
 }
 
 processResources.dependsOn(generateEntitySchemas)
+processResources.dependsOn(assembleDomainTemplates)
 
 task checkTranslations {
     def langFile = file('src/main/resources/lang/lang.json')
