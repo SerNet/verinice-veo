@@ -130,7 +130,7 @@ public abstract class AbstractEntityController {
     private ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
         try {
             // Build search URI and remove optional request param placeholders.
-            var searchUri = buildSearchUri(search.getSearchId()).replaceAll("\\{.*\\}", "");
+            var searchUri = buildSearchUri(search.getSearchId()).replaceFirst("\\{[^}]*}", "");
             return ResponseEntity.created(new URI(searchUri))
                                  .body(new SearchResponse(searchUri));
         } catch (IOException | URISyntaxException e) {
