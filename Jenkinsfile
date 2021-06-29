@@ -91,7 +91,7 @@ pipeline {
                                        export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
                                        ./gradlew --no-daemon test"""
                                  jacoco classPattern: '**/build/classes/java/main'
-                                 junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
+                                 junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
                              }
                          }
                      }
@@ -124,7 +124,7 @@ pipeline {
                                          sh """export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                                export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
                                                ./gradlew --no-daemon veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128 """
-                                         junit allowEmptyResults: true, testResults: '**/build/test-results/**/*.xml'
+                                         junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
                                      }
                                  }
                              }
