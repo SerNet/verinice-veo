@@ -37,7 +37,7 @@ class UnitRestTestITSpec extends VeoRestTest {
 
         when: "a unit is created"
         def beforeCreation = Instant.now()
-        def postResponse = restPostNewUnit()
+        def postResponse = postNewUnit(UNIT_NAME)
 
         then: "the operation succeeds"
         with(postResponse) {
@@ -47,7 +47,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         }
 
         when: "the unit is requested"
-        def getResponse = restGetUnit(postResponse.resourceId)
+        def getResponse = getUnit(postResponse.resourceId)
 
         then: "the stored unit is retrieved"
 
@@ -66,7 +66,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         def user = this.user
 
         given: "a unit"
-        def postResponseBody = restPostNewUnit()
+        def postResponseBody = postNewUnit(UNIT_NAME)
         def getResponse = get("/units/${postResponseBody.resourceId}")
 
         when: "the unit is updated (roundtrip test)"
@@ -81,7 +81,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         put("/units/${postResponseBody.resourceId}", putRequestBody, etagHeader)
 
         and: "the same unit id is retrieved"
-        def changedResponse = restGetUnit(postResponseBody.resourceId)
+        def changedResponse = getUnit(postResponseBody.resourceId)
 
         then: "the response reflects the change"
         with(changedResponse) {
@@ -99,8 +99,8 @@ class UnitRestTestITSpec extends VeoRestTest {
 
     def "Delete a unit"() {
         given: "a unit"
-        def postResponse = restPostNewUnit()
-        def getResponse = restGetUnit(postResponse.resourceId)
+        def postResponse = postNewUnit(UNIT_NAME)
+        def getResponse = getUnit(postResponse.resourceId)
 
         when: "the unit is deleted"
         restDeleteUnit(postResponse.resourceId)
@@ -114,17 +114,6 @@ class UnitRestTestITSpec extends VeoRestTest {
             resourceId == null
             message == postResponse.resourceId
         }
-    }
-
-    private restPostNewUnit() {
-        def response = post("/units", [
-            name: UNIT_NAME
-        ])
-        response.body
-    }
-
-    private restGetUnit(id) {
-        get("/units/${id}").body
     }
 
     private void restDeleteUnit(id) {

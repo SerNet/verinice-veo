@@ -49,11 +49,13 @@ import org.veo.rest.RestApplication
 import org.veo.rest.security.WebSecurity
 
 import groovy.json.JsonSlurper
+import groovy.util.logging.Slf4j
 import spock.lang.Shared
 
 @SpringBootTest(classes = [RestApplication.class, WebSecurity.class],
 webEnvironment = RANDOM_PORT)
 @ActiveProfiles(["test", "resttest", "local"])
+@Slf4j
 class VeoRestTest extends spock.lang.Specification {
 
     @Autowired
@@ -136,25 +138,42 @@ class VeoRestTest extends spock.lang.Specification {
 
 
 
-    Response get(String relativeUri, int assertStatusCode = 200) {
+    Response get(String relativeUri, Class responseType, int assertStatusCode = 200) {
         def absoluteUrl = baseUrl + relativeUri
-        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.GET, null, ObjectNode.class)
+        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.GET, null, responseType)
         assert resp.statusCodeValue == assertStatusCode
+        log.info(resp.body.toString())
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    Response post(String relativeUri, Object requestBody, int assertStatusCode = 201) {
+    Response get(String relativeUri, int assertStatusCode = 200) {
+        get(relativeUri, ObjectNode.class, assertStatusCode)
+    }
+
+    Response getList(String relativeUri, int assertStatusCode = 200) {
+        get(relativeUri, String.class, assertStatusCode)
+    }
+
+    Response post(String relativeUri, Object requestBody, Class responseType, int assertStatusCode = 201) {
         def absoluteUrl = baseUrl + relativeUri
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
         HttpEntity<String> request = new HttpEntity<>(toJson(requestBody), headers)
 
-        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.POST, request, ObjectNode.class)
+        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.POST, request, responseType)
         assert resp.statusCodeValue == assertStatusCode
         new Response(headers: resp.headers,
         body: jsonSlurper.parseText(resp.body.toString()))
+    }
+
+    Response post(String relativeUri, Object requestBody, int assertStatusCode = 201) {
+        post(relativeUri, requestBody, ObjectNode.class, assertStatusCode)
+    }
+
+    Response postList(String relativeUri, Object requestBody, int assertStatusCode = 201) {
+        post(relativeUri, requestBody, String.class, assertStatusCode)
     }
 
     void put(String relativeUri, Object requestBody, String etagHeader, int assertStatusCode = 200) {
@@ -172,5 +191,28 @@ class VeoRestTest extends spock.lang.Specification {
         def absoluteUrl = baseUrl + relativeUri
         def resp = restTemplate.exchange(absoluteUrl, HttpMethod.DELETE, null, ObjectNode.class)
         assert resp.statusCodeValue == assertStatusCode
+    }
+
+    def getUnit(id) {
+        get("/units/${id}").body
+    }
+
+    def postNewUnit(unitName) {
+        def response = post("/units", [
+            name: unitName
+        ])
+        response.body
+    }
+
+    def getDomains() {
+        getList("/domains").body
+    }
+
+    def getCatalog(id) {
+        get("/catalogs/${id}").body
+    }
+
+    def getControl(id) {
+        get("/controls/${id}").body
     }
 }

@@ -18,26 +18,11 @@
 package org.veo.rest
 
 import org.apache.commons.codec.digest.DigestUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Client
-import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
-import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.usecase.common.ETag
-import org.veo.persistence.access.CatalogRepositoryImpl
-import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
-import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the catalog. Uses mocked spring MVC environment.
@@ -45,140 +30,7 @@ import org.veo.rest.configuration.WebMvcSecurityConfiguration
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
-
-    @Autowired
-    private ClientRepositoryImpl clientRepository
-    @Autowired
-    private UnitRepositoryImpl unitRepository
-
-    @Autowired
-    private DomainRepositoryImpl domainRepository
-
-    @Autowired
-    private CatalogRepositoryImpl catalogRepository
-
-    @Autowired
-    TransactionTemplate txTemplate
-    @Autowired
-    private EntityDataFactory entityFactory
-
-    private Domain domain
-    private Domain domain1
-    private Catalog catalog
-    private CatalogItem item1
-    private CatalogItem otherItem
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    private Client client
-    private Client secondClient
-    private Domain domain3
-    private Catalog catalog1
-    String salt = "salt-for-etag"
-
-    def setup() {
-        ETag.setSalt(salt)
-        txTemplate.execute {
-            client = newClient {
-                id = clientId
-            }
-
-            domain = newDomain {
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-                name = "ISO"
-                authority = 'ta'
-                revision = '1'
-                templateVersion = '1.0'
-                domainTemplate = domainTemplate
-            }
-            catalog = newCatalog(domain) {
-                name= 'a'
-            }
-
-            item1 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c1'
-                }
-            })
-            CatalogItem item2 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c2'
-                }
-            })
-            CatalogItem item3 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c3'
-                }
-            })
-            newTailoringReference(item3) {
-                catalogItem = item2
-                referenceType = TailoringReferenceType.COPY
-            }
-            newTailoringReference(item3) {
-                catalogItem = item1
-                referenceType = TailoringReferenceType.COPY_ALWAYS
-            }
-
-            CatalogItem item4 = newCatalogItem(catalog, {
-                newProcess(it) {
-                    name = 'p1'
-                    description = "a process example entry"
-                }
-            })
-
-            newTailoringReference(item4) {
-                catalogItem = item1
-                referenceType = TailoringReferenceType.LINK
-            }
-            newTailoringReference(item4) {
-                catalogItem = item2
-                referenceType = TailoringReferenceType.LINK
-            }
-
-            domain1 = newDomain {
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-                name = "ISO"
-                authority = 'ta'
-                revision = '1'
-                templateVersion = '1.0'
-            }
-
-            client.domains = [domain, domain1] as Set
-            client = clientRepository.save(client)
-
-            domain = client.domains.toList().get(0)
-            domain1 = client.domains.toList().get(1)
-            catalog = domain.catalogs.first()
-            item1 = catalog.catalogItems.first()
-            domain3 = newDomain {
-                abbreviation = "D1"
-                name = "Domain 1"
-                authority = 'ta'
-                revision = '1'
-                templateVersion = '1.0'
-            }
-            catalog1 = newCatalog(domain3) {
-                name = 'b'
-                newCatalogItem(it, {
-                    newControl(it) {
-                        name = 'c15'
-                    }
-                })
-            }
-
-            secondClient = newClient()
-            secondClient.addToDomains(domain3)
-            secondClient = clientRepository.save(secondClient)
-
-            domain3 = secondClient.getDomains().iterator().next()
-            catalog1 = domain3.catalogs.first()
-            otherItem =catalog1.catalogItems.first()
-        }
-    }
-
-
-
+class CatalogControllerMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve a catalog"() {
         given: "a catalog"
@@ -191,7 +43,7 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
         result.domainTemplate.targetUri == "http://localhost/domains/"+domain.id.uuidValue()
 
         and: "it contains a reference to its items"
-        result.catalogItems.size() == 4
+        result.catalogItems.size() == catalog.catalogItems.size()
         result.catalogItems*.targetUri.find {
             it.contains(item1.dbId)
         } != null
@@ -264,7 +116,7 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(get("/catalogs/${catalog.dbId}/items"))
 
         then: "the domains are returned"
-        result.size == 4
+        result.size == catalog.catalogItems.size()
     }
 
     @WithUserDetails("user@domain.example")

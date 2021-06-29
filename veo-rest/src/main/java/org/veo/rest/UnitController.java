@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -53,16 +54,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
+import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -108,6 +114,68 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     private final UpdateUnitUseCase putUnitUseCase;
     private final DeleteUnitUseCase deleteUnitUseCase;
     private final GetUnitsUseCase getUnitsUseCase;
+    private final ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase;
+    private final GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
+
+    @GetMapping(value = "/{unitId}/incarnations{?itemIds}")
+    @Operation(summary = "Loads the information to incarnate catalogItems.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                         description = "incarnation description loaded",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = IncarnateDescriptionsDto.class))),
+            @ApiResponse(responseCode = "404", description = "incarnation description not found") })
+    public @Valid CompletableFuture<ResponseEntity<IncarnateDescriptionsDto>> getIncarnations(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String unitId, @RequestParam(required = true) List<String> itemIds) {
+        Client client = getAuthenticatedClient(auth);
+        Key<UUID> containerId = Key.uuidFrom(unitId);
+        List<Key<UUID>> list = itemIds.stream()
+                                      .map(Key::uuidFrom)
+                                      .collect(Collectors.toList());
+
+        CompletableFuture<IncarnateDescriptionsDto> catalogFuture = useCaseInteractor.execute(getIncarnationDescriptionUseCase,
+                                                                                              new GetIncarnationDescriptionUseCase.InputData(
+                                                                                                      client,
+                                                                                                      containerId,
+                                                                                                      list),
+
+                                                                                              output -> new IncarnateDescriptionsDto(
+                                                                                                      output.getReferences(),
+                                                                                                      urlAssembler));
+        return catalogFuture.thenApply(result -> ResponseEntity.ok()
+                                                               .body(result));
+    }
+
+    @PostMapping("/{unitId}/incarnations")
+    @Operation(summary = "Applies the incarnation descriptions to the unit.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                         description = "Catalog items incarnated.",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = IncarnateDescriptionsDto.class))) })
+    public CompletableFuture<ResponseEntity<List<ModelObjectReference<Catalogable>>>> applyIncarnations(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String unitId,
+            @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
+        Client client = getAuthenticatedClient(auth);
+        CompletableFuture<List<ModelObjectReference<Catalogable>>> completableFuture = useCaseInteractor.execute(applyIncarnationDescriptionUseCase,
+                                                                                                                 (Supplier<ApplyIncarnationDescriptionUseCase.InputData>) () -> {
+                                                                                                                     ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                                                                                                     return new ApplyIncarnationDescriptionUseCase.InputData(
+                                                                                                                             client,
+                                                                                                                             Key.uuidFrom(unitId),
+                                                                                                                             applyInformation.dto2Model(modelObjectReferenceResolver));
+
+                                                                                                                 },
+                                                                                                                 output -> output.getNewElements()
+                                                                                                                                 .stream()
+                                                                                                                                 .map(c -> ModelObjectReference.from(c,
+                                                                                                                                                                     referenceAssembler))
+                                                                                                                                 .collect(Collectors.toList()));
+        return completableFuture.thenApply(result -> ResponseEntity.status(201)
+                                                                   .body(result));
+    }
 
     @GetMapping
     @Operation(summary = "Loads all units")

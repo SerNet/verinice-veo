@@ -539,7 +539,7 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public GetIncarnationDescriptionUseCase getApplyCatalogItemUseCase(
+    public GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
             org.veo.core.repository.UnitRepository unitRepository,
             CatalogItemRepository catalogItemRepository,
             org.veo.core.repository.RepositoryProvider entityRepository) {
@@ -548,7 +548,7 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public ApplyIncarnationDescriptionUseCase applyCatalogItemUseCase(
+    public ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase(
             org.veo.core.repository.UnitRepository unitRepository,
             CatalogItemRepository catalogItemRepository,
             org.veo.core.repository.RepositoryProvider repositoryProvider,
