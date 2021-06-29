@@ -128,10 +128,8 @@ abstract class VeoSpringSpec extends VeoSpec {
             (entityDataRepositories + [
                 unitDataRepository,
                 clientDataRepository,
-                domainTemplateDataRepository,
                 eventStoreDataRepository
             ])*.deleteAll()
-            domainTemplateService.readTemplateFiles()
         }
     }
 }
