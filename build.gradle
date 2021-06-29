@@ -203,7 +203,7 @@ subprojects {
             doLast {
                 if (!sourceSets.test.allSource.empty) {
                     def timestamp = System.currentTimeMillis()
-                    test.reports.junitXml.destination.eachFile { it.lastModified = timestamp }
+                    test.reports.junitXml.outputLocation.get().asFile.eachFile { it.lastModified = timestamp }
                 }
             }
         }

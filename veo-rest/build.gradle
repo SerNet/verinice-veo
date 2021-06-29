@@ -110,7 +110,7 @@ if (continuousIntegrationBuild) {
         doLast {
             if (!sourceSets.test.allSource.empty) {
                 def timestamp = System.currentTimeMillis()
-                restTest.reports.junitXml.destination.eachFile { it.lastModified = timestamp }
+                restTest.reports.junitXml.outputLocation.get().asFile.eachFile { it.lastModified = timestamp }
             }
         }
     }
