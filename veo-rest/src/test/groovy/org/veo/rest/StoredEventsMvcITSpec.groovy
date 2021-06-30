@@ -21,8 +21,6 @@ import java.time.Duration
 import java.time.Instant
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
@@ -42,11 +40,6 @@ import spock.lang.Issue
 /**
  * Integration test to verify entity event generation. Performs operations on the REST API and performs assertions on the {@link StoredEventRepository}.
  */
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
-@EnableAsync
 class StoredEventsMvcITSpec extends VeoMvcSpec {
 
     @Autowired

@@ -21,8 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -44,11 +42,6 @@ import org.veo.rest.configuration.WebMvcSecurityConfiguration
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
-@EnableAsync
 class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired

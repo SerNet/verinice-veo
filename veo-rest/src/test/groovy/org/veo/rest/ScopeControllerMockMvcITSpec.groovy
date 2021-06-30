@@ -20,7 +20,6 @@ package org.veo.rest
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -48,11 +47,6 @@ import groovy.json.JsonSlurper
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
-
 class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired

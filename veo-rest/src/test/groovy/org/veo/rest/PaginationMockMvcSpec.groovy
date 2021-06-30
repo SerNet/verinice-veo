@@ -18,8 +18,6 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.scheduling.annotation.EnableAsync
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.EntityLayerSupertype
@@ -29,12 +27,6 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
-@EnableAsync
 class PaginationMockMvcSpec extends VeoMvcSpec {
     @Autowired
     private ClientRepositoryImpl clientRepository

@@ -19,13 +19,10 @@ package org.veo.rest
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
 
 import org.veo.core.VeoMvcSpec
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
 
@@ -40,11 +37,6 @@ import groovy.json.JsonSlurper
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
-@EnableAsync
 class GetAllWithNoClientSpec extends VeoMvcSpec {
 
     def setup() {

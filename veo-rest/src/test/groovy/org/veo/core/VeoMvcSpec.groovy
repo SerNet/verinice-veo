@@ -26,6 +26,8 @@ import java.nio.charset.StandardCharsets
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.ResultActions
@@ -33,12 +35,19 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 
+import org.veo.rest.configuration.WebMvcSecurityConfiguration
+
 import groovy.json.JsonSlurper
 
 /**
  * Base class for veo specifications that use MockMvc
  */
 @AutoConfigureMockMvc
+@SpringBootTest(
+webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+classes = [WebMvcSecurityConfiguration]
+)
+@EnableAsync
 abstract class VeoMvcSpec extends VeoSpringSpec {
 
     @Autowired
