@@ -23,7 +23,6 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -49,11 +48,6 @@ public abstract class VersionedData implements Versioned {
     @Version
     private long version;
 
-    // @Enumerated(EnumType.STRING)
-    // @Column(nullable = false)
-    // Lifecycle state;
-    private @NotNull Lifecycle state = Lifecycle.CREATING;
-
     @Column(name = "created_at", nullable = false)
     @CreatedDate
     private Instant createdAt;
@@ -69,7 +63,4 @@ public abstract class VersionedData implements Versioned {
     @Column(name = "updated_by", nullable = false)
     @LastModifiedBy
     private String updatedBy;
-
-    @Column(name = "valid_until", nullable = true)
-    private Instant validUntil;
 }

@@ -27,7 +27,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.Versioned.Lifecycle;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
@@ -102,7 +101,6 @@ public class CreateUnitUseCase
                                      .getAbbreviation());
         newUnit.setDescription(input.getNameableInput()
                                     .getDescription());
-        newUnit.setState(Lifecycle.STORED_CURRENT);
         newUnit.setClient(client);
         newUnit.addToDomains(client.getDomains());
         Unit save = unitRepository.save(newUnit);

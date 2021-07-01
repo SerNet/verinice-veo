@@ -33,7 +33,6 @@ import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
-import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -486,7 +485,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     Person savePerson(List<Person> parts = []) {
         def person = newPerson(unit) {
             it.parts = parts
-            it.state = Lifecycle.CREATING
         }
         return personRepository.save(person)
     }
@@ -501,7 +499,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             }
             person.tap {
                 parts = [dolly, minime]
-                state = Lifecycle.CREATING
             }
         }
 

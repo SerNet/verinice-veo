@@ -22,7 +22,6 @@ import javax.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -56,7 +55,6 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
 
         compositePerson.with {
             parts = [john, jane]
-            state = Lifecycle.CREATING
             it
         }
         compositePerson = personRepository.save(compositePerson)

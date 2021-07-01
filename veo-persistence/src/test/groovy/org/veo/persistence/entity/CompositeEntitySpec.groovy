@@ -23,11 +23,9 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
-import org.veo.core.entity.Versioned
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.EntitySpecifications
 import org.veo.core.entity.specification.InvalidUnitException
-import org.veo.core.entity.specification.SameClientSpecification
 import org.veo.test.VeoSpec
 
 import spock.lang.Ignore
@@ -51,11 +49,9 @@ class CompositeEntitySpec extends VeoSpec {
 
         then: "the composite is initialized as expected"
         composite.name == "New composite"
-        composite.state == Versioned.Lifecycle.CREATING
         composite.version == 0L
         composite.createdAt?.isAfter(beforeCreation)
         composite.createdAt?.isBefore(Instant.now())
-        composite.validUntil == null
     }
 
     // This used to be guaranteed by the model, now it can't be verified without using external validation

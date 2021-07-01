@@ -22,7 +22,6 @@ import javax.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-import org.veo.core.entity.Versioned.Lifecycle
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -55,7 +54,6 @@ class ScopePersistenceSpec extends VeoSpringSpec {
 
         scope.with {
             members = [john, jane]
-            state = Lifecycle.CREATING
             it
         }
         scope = scopeRepository.save(scope)

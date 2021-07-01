@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import java.time.Duration
-import java.time.Instant
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
@@ -149,7 +146,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         storedEventRepository.findAll().size() == numberOfStoredEventsBefore
 
         when: "updating the client"
-        client.setValidUntil(Instant.now().plus(Duration.ofDays(3l)))
+        client.setName("new name")
         clientRepository.save(client)
 
         then: "no event is stored for the client"

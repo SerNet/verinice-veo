@@ -20,49 +20,10 @@ package org.veo.core.entity;
 import java.time.Instant;
 
 /**
- * A versioned entity with a sequential version number, lifecycle state and some
- * metadata (time & author of creation and last modification).
+ * A versioned entity with a sequential version number and some metadata (time &
+ * author of creation and last modification).
  */
 public interface Versioned {
-    /**
-     * Lifecycle state of an entity. When a lifecycle state changes, the version
-     * number needs to be increased in most cases.
-     *
-     * The possible states are defined as follows:
-     *
-     * <ul>
-     * <li>CREATING: a newly created entity that has not yet been persisted into the
-     * repository</li>
-     * <li>STORED_CURRENT: a persisted entity in its currently valid version that
-     * can be changed</li>
-     * <li>STORED_ARCHIVED: a persisted entity in an older version that can no
-     * longer be changed</li>
-     * <li>STORED_DRAFT: a persisted entity based on the current entity that is
-     * currently being edited and can be persisted into the repository. A draft must
-     * have a higher version number than the object with STORED_CURRENT status.</li>
-     * <li>STORED_DELETED: a entity that is marked as deleted and can no longer be
-     * edited</li>
-     * <li>DELETING: an entity that is in the process of being deleted from the
-     * repository.</li>
-     * </ul>
-     */
-    @Deprecated // VEO-602
-    public enum Lifecycle {
-        CREATING, STORED_CURRENT, STORED_ARCHIVED, STORED_DRAFT, STORED_DELETED, DELETING
-    }
-
-    /**
-     * @see Lifecycle
-     */
-    @Deprecated // VEO-602
-    Lifecycle getState();
-
-    /**
-     * @see Lifecycle
-     */
-    @Deprecated // VEO-602
-    void setState(Lifecycle state);
-
     Instant getCreatedAt();
 
     void setCreatedAt(Instant createdAt);
@@ -78,12 +39,6 @@ public interface Versioned {
     String getUpdatedBy();
 
     void setUpdatedBy(String username);
-
-    @Deprecated // VEO-602
-    Instant getValidUntil();
-
-    @Deprecated // VEO-602
-    void setValidUntil(Instant validUntil);
 
     /**
      * The version number starts at 0 for a new object and is increased whenever the
