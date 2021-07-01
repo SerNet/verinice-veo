@@ -59,19 +59,19 @@ public enum ModelObjectType {
 
     public static Set<String> PLURAL_TERMS = Stream.of(values())
                                                    .map(et -> et.pluralTerm)
-                                                   .collect(Collectors.toSet());
+                                                   .collect(Collectors.toUnmodifiableSet());
 
     public static Set<Class<? extends ModelObject>> TYPES = Stream.of(values())
                                                                   .map(et -> et.type)
-                                                                  .collect(Collectors.toSet());
+                                                                  .collect(Collectors.toUnmodifiableSet());
 
     public static Set<ModelObjectType> ENTITY_TYPES = Stream.of(values())
                                                             .filter(type -> EntityLayerSupertype.class.isAssignableFrom(type.type))
-                                                            .collect(Collectors.toSet());
+                                                            .collect(Collectors.toUnmodifiableSet());
 
     public static Set<Class<? extends EntityLayerSupertype>> ENTITY_TYPE_CLASSES = ENTITY_TYPES.stream()
                                                                                                .map(t -> (Class<? extends EntityLayerSupertype>) t.type)
-                                                                                               .collect(Collectors.toSet());
+                                                                                               .collect(Collectors.toUnmodifiableSet());
 
     public static final Set<String> TYPE_DESIGNATORS = Set.of(AbstractRisk.TYPE_DESIGNATOR,
                                                               Asset.TYPE_DESIGNATOR,
