@@ -24,6 +24,7 @@ import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
+import static org.veo.rest.ControllerConstants.ANY_STRING_LIST;
 import static org.veo.rest.ControllerConstants.ANY_USER;
 
 import java.util.Set;
@@ -71,6 +72,7 @@ import org.veo.rest.ScenarioController;
 import org.veo.rest.ScopeController;
 import org.veo.rest.UnitController;
 import org.veo.rest.configuration.TypeExtractor;
+import org.veo.rest.schemas.controller.EntitySchemaController;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
@@ -387,6 +389,13 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         return references.stream()
                          .map(this::toKey)
                          .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String schemaReferenceOf(String typeSingularTerm) {
+        return linkTo(methodOn(EntitySchemaController.class).getSchema(ANY_AUTH, typeSingularTerm,
+                                                                       ANY_STRING_LIST)).withSelfRel()
+                                                                                        .getHref();
     }
 
 }

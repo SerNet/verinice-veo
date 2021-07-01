@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
+import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
@@ -517,5 +518,10 @@ public class ModuleConfiguration {
     public DomainTemplateInitalizeUseCase getDomainTemplateServiceInitalizeUseCase(
             DomainTemplateService templateService) {
         return new DomainTemplateInitalizeUseCase(templateService);
+    }
+
+    @Bean
+    public TypeDefinitionProvider getTypeDefinitionProvider(ReferenceAssembler referenceAssembler) {
+        return new TypeDefinitionProvider(referenceAssembler);
     }
 }

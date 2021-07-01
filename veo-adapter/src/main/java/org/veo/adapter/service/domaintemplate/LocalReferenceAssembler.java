@@ -70,4 +70,9 @@ public class LocalReferenceAssembler implements ReferenceAssembler {
         return null;
     }
 
+    @Override
+    public String schemaReferenceOf(String typeSingularTerm) {
+        return null;
+    }
+
 }

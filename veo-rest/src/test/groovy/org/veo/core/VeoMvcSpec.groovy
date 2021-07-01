@@ -50,8 +50,9 @@ classes = [WebMvcSecurityConfiguration]
 @EnableAsync
 abstract class VeoMvcSpec extends VeoSpringSpec {
 
+    // TODO VEO-663 make private again
     @Autowired
-    private MockMvc mvc
+    protected MockMvc mvc
 
 
 

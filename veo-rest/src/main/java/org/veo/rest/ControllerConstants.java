@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import java.util.List;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
@@ -36,6 +38,7 @@ public final class ControllerConstants {
     public static final Integer ANY_INT = null;
     public static final SearchQueryDto ANY_SEARCH = null;
     public static final String ANY_STRING = null;
+    public static final List<String> ANY_STRING_LIST = null;
 
     static final String PARENT_PARAM = "parent";
     static final String UUID_PARAM = "uuid";

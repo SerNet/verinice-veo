@@ -103,4 +103,6 @@ public interface ReferenceAssembler {
      * Transforms the given adapter layer references to entity keys.
      */
     Set<Key<UUID>> toKeys(Set<? extends ModelObjectReference<?>> references);
+
+    String schemaReferenceOf(String typeSingularTerm);
 }
