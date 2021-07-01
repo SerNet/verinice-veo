@@ -67,8 +67,8 @@ public class DeleteUnitUseCase
 
     void removeObjectsInUnit(Unit unit) {
 
-        ModelObjectType.ENTITY_TYPES.forEach(clazz -> repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
-                                                                        .deleteByUnit(unit));
+        ModelObjectType.ENTITY_TYPE_CLASSES.forEach(clazz -> repositoryProvider.getEntityLayerSupertypeRepositoryFor(clazz)
+                                                                               .deleteByUnit(unit));
 
     }
 

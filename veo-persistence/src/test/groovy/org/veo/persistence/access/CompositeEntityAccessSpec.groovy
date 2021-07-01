@@ -141,6 +141,6 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
         persistedScope.get().members.empty
 
         where:
-        type << ModelObjectType.ENTITY_TYPES.findAll{CompositeEntity.isAssignableFrom(it)}
+        type << ModelObjectType.ENTITY_TYPE_CLASSES.findAll{CompositeEntity.isAssignableFrom(it)}
     }
 }

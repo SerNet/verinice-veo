@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
@@ -43,9 +42,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
-    private static final Set<String> VALID_CLASS_NAMES = ModelObjectType.ENTITY_TYPES.stream()
-                                                                                     .map(Class::getSimpleName)
-                                                                                     .collect(Collectors.toSet());
+    private static final List<String> VALID_TYPE_SINGULAR_TERMS = ModelObjectType.ENTITY_TYPES.stream()
+                                                                                              .map(ModelObjectType::getSingularTerm)
+                                                                                              .collect(Collectors.toList());
     private final String schemaFilePath;
 
     public EntitySchemaServiceClassPathImpl(@NonNull @NotNull String schemaFilePath) {
@@ -55,13 +54,14 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
     @Override
     public String findSchema(String type, List<String> domains) {
-        var typeClassName = mapFirst(type, Character::toUpperCase);
-        if (!VALID_CLASS_NAMES.contains(typeClassName)) {
+        if (!VALID_TYPE_SINGULAR_TERMS.contains(type)) {
             throw new IllegalArgumentException(
                     String.format("Type \"%s\" is not a valid schema.", type));
         }
         log.debug("Getting static JSON schema file for type: {} in path: {}", type, schemaFilePath);
-        return extract(schemaFilePath + typeClassName + ".json");
+        return extract(schemaFilePath + ModelObjectType.getTypeForSingularTerm(type)
+                                                       .getSimpleName()
+                + ".json");
     }
 
     @Override
@@ -92,12 +92,6 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
     @Override
     public List<String> listValidSchemaNames() {
-        return VALID_CLASS_NAMES.stream()
-                                .map(s -> mapFirst(s, Character::toLowerCase))
-                                .collect(Collectors.toList());
-    }
-
-    private String mapFirst(String str, Function<Character, Character> f) {
-        return f.apply(str.charAt(0)) + str.substring(1);
+        return VALID_TYPE_SINGULAR_TERMS;
     }
 }

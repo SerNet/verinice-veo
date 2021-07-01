@@ -126,8 +126,7 @@ class SwaggerSpec extends VeoSpringSpec {
     def "allowed entity schema types are listed"() {
         given: "existing entity types"
         def schemaTypes = ModelObjectType.ENTITY_TYPES
-                .collect{it.simpleName}
-                .collect{it[0].toLowerCase() + it.substring(1)}
+                .collect{it.singularTerm}
                 .sort()
 
         when: "fetching allowed schemas from OpenAPI parameter doc"
