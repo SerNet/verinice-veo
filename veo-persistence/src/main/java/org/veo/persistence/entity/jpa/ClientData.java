@@ -87,7 +87,7 @@ public class ClientData extends BaseModelObjectData implements Client, Nameable 
         if (aDomain.getOwner()
                    .equals(this))
             throw new ClientBoundaryViolationException(
-                    String.format("Domain does not belong to this " + "client: %s", aDomain));
+                    String.format("Domain does not belong to this client: %s", aDomain.getId()));
         aDomain.setOwner(null);
         return this.domains.remove(aDomain);
     }

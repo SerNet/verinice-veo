@@ -136,9 +136,8 @@ public class ModelObjectReferenceResolver {
             if (entity instanceof Domain) {
                 if (!(EntitySpecifications.hasSameClient(client)).isSatisfiedBy(((Domain) entity).getOwner()))
                     throw new ClientBoundaryViolationException(
-                            format("The client boundary would be violated by the attempted operation "
-                                    + "on element: %s",
-                                   entity));
+                            format("The client boundary would be violated by the attempted operation on element: %s",
+                                   entity.getId()));
             }
             result.add((TEntity) entity);
             ModelObjectReference<TEntity> reference = copyOfReferencesById.get(entity.getId()
