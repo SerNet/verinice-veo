@@ -248,7 +248,7 @@ class CompositeEntitySpec extends VeoSpec {
         def p1 = newProcess(unit)
         def p2 = newProcess(unit)
 
-        def link = newCustomLink(p2, p1)
+        def link = newCustomLink(p2)
         p1.addToLinks(link)
 
         def customAspect = newCustomProperties("type")
@@ -264,7 +264,7 @@ class CompositeEntitySpec extends VeoSpec {
         def customAspect2 = newCustomProperties("type2")
         p3.addToCustomAspects(customAspect2)
 
-        def link2 = newCustomLink(p2, p3)
+        def link2 = newCustomLink(p2)
         p3.addToLinks(link2)
 
         then: "the same method can be called on the composite (branch node) or element (leaf node)"

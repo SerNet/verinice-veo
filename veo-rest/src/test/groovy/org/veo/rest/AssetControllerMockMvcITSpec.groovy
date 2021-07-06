@@ -287,27 +287,24 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve an asset with a link"() {
         given: "a saved asset"
+        def targetAsset = txTemplate.execute {
+            assetRepository.save(newAsset(unit))
+        }
         def sourceAsset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 domains = [domain1] as Set
+                links = [
+                    newCustomLink(targetAsset) {
+                        type = "mypreciouslink"
+                    }
+                ]
+                name = "Test asset-1"
             })
-        }
-        def targetAsset = newAsset(unit) {
-            name = "Test asset-1"
-        }
-
-        CustomLink link = newCustomLink(sourceAsset, targetAsset) {
-            type = "mypreciouslink"
-        }
-        targetAsset.links.add(link)
-
-        targetAsset = txTemplate.execute {
-            assetRepository.save(targetAsset)
         }
 
         when: "a request is made to the server"
-        def results = get("/assets/${targetAsset.id.uuidValue()}")
-        String expectedETag = DigestUtils.sha256Hex(targetAsset.id.uuidValue() + "_" + salt + "_" + Long.toString(targetAsset.getVersion()))
+        def results = get("/assets/${sourceAsset.id.uuidValue()}")
+        String expectedETag = DigestUtils.sha256Hex(sourceAsset.id.uuidValue() + "_" + salt + "_" + Long.toString(sourceAsset.getVersion()))
         then: "the asset is found"
         results.andExpect(status().isOk())
         and:
@@ -319,7 +316,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'Test asset-1'
         result.links.size() == 1
         result.links.mypreciouslink.target.targetUri == [
-            "http://localhost/assets/${sourceAsset.id.uuidValue()}"
+            "http://localhost/assets/${targetAsset.id.uuidValue()}"
         ]
 
         when: "all assets are queried"
@@ -607,7 +604,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 domains = [domain1] as Set
             })
         }
-        CustomLink link = newCustomLink(sourceAsset, targetAsset)
+        CustomLink link = newCustomLink(targetAsset)
         sourceAsset.links =[link] as Set
 
         when: "a delete request is sent to the server for link target"

@@ -386,7 +386,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 12
         queryCounts.insert == 4
         queryCounts.update == 0
-        queryCounts.select == 27
+        queryCounts.select == 30
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
@@ -469,15 +469,14 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
         def person = savePerson()
 
-        def link1 = newCustomLink(process, asset) {
-            type = "aLink"
-        }
-
-        def link2 = newCustomLink(process, person) {
-            type = "anotherLink"
-        }
-
-        process.setLinks([link1, link2] as Set)
+        process.setLinks([
+            newCustomLink(asset) {
+                type = "aLink"
+            },
+            newCustomLink(person) {
+                type = "anotherLink"
+            }
+        ] as Set)
         processRepository.save(process)
     }
 
@@ -586,29 +585,29 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def process = newProcess(unit)
         process = processRepository.save(process)
 
-        def link_person_asset = newCustomLink(compositePerson, asset) {
+        def link_person_asset = newCustomLink(asset) {
             type = "type1"
         }
         compositePerson.addToLinks(link_person_asset)
         compositePerson = personRepository.save(compositePerson)
 
-        def link_asset_person = newCustomLink(asset, compositePerson) {
+        def link_asset_person = newCustomLink(compositePerson) {
             type = "type2"
         }
-        def link_asset_process = newCustomLink(asset, process) {
+        def link_asset_process = newCustomLink(process) {
             type = "type3"
         }
         asset.addToLinks(link_asset_process)
         asset.addToLinks(link_asset_person)
         asset = assetRepository.save(asset)
 
-        def link_process_person = newCustomLink(process, compositePerson) {
+        def link_process_person = newCustomLink(compositePerson) {
             type = "type4"
         }
         process.addToLinks(link_process_person)
         process = processRepository.save(process)
 
-        def link_asset_asset = newCustomLink(asset, asset2) {
+        def link_asset_asset = newCustomLink(asset2) {
             type = "type5"
         }
         asset.addToLinks(link_asset_asset)
