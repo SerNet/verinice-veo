@@ -20,7 +20,7 @@ package org.veo.persistence.access;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Scope;
-import org.veo.core.usecase.repository.ScopeRepository;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;

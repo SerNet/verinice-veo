@@ -25,14 +25,14 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
+import org.veo.core.repository.AssetRepository
+import org.veo.core.repository.ControlRepository
+import org.veo.core.repository.DocumentRepository
+import org.veo.core.repository.PersonRepository
+import org.veo.core.repository.ProcessRepository
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.DeleteEntityUseCase.InputData
-import org.veo.core.usecase.repository.AssetRepository
-import org.veo.core.usecase.repository.ControlRepository
-import org.veo.core.usecase.repository.DocumentRepository
-import org.veo.core.usecase.repository.PersonRepository
-import org.veo.core.usecase.repository.ProcessRepository
-import org.veo.core.usecase.repository.ScopeRepository
 
 public class DeleteEntityUseCaseSpec extends UseCaseSpec {
 

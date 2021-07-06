@@ -20,7 +20,7 @@ package org.veo.persistence.access;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Incident;
-import org.veo.core.usecase.repository.IncidentRepository;
+import org.veo.core.repository.IncidentRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.IncidentDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;

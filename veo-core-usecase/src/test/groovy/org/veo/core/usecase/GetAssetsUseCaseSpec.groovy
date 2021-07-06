@@ -20,12 +20,12 @@ package org.veo.core.usecase
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.repository.AssetRepository
+import org.veo.core.repository.EntityLayerSupertypeQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.usecase.asset.GetAssetsUseCase
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
-import org.veo.core.usecase.repository.AssetRepository
-import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
 
 class GetAssetsUseCaseSpec extends UseCaseSpec {
 

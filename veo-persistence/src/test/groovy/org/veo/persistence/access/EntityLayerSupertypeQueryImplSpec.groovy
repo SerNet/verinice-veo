@@ -22,9 +22,9 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 import org.veo.core.entity.Asset
+import org.veo.core.repository.EntityLayerSupertypeQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
-import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository

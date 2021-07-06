@@ -25,7 +25,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.repository.DomainRepository
+import org.veo.core.repository.DomainRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl

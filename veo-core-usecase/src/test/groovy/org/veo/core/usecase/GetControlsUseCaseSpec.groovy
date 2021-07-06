@@ -19,12 +19,12 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Control
 import org.veo.core.entity.Key
+import org.veo.core.repository.ControlRepository
+import org.veo.core.repository.EntityLayerSupertypeQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
 import org.veo.core.usecase.control.GetControlsUseCase
-import org.veo.core.usecase.repository.ControlRepository
-import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
 
 class GetControlsUseCaseSpec extends UseCaseSpec {
 

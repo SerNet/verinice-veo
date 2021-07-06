@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.usecase.repository.AssetRepository;
+import org.veo.core.repository.AssetRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;

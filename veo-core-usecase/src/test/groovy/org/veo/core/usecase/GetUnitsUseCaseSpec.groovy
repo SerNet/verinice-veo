@@ -20,8 +20,8 @@ package org.veo.core.usecase
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.repository.ClientRepository
-import org.veo.core.usecase.repository.UnitRepository
+import org.veo.core.repository.ClientRepository
+import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.unit.GetUnitsUseCase
 
 import spock.lang.Specification

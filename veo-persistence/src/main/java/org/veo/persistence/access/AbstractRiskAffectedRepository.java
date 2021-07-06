@@ -28,7 +28,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
-import org.veo.core.usecase.repository.RiskAffectedRepository;
+import org.veo.core.repository.RiskAffectedRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;

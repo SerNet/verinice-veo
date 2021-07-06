@@ -21,11 +21,11 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.ClientRepository
 import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase
 import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase.InputData
-import org.veo.core.usecase.repository.ClientRepository
 
 
 class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {

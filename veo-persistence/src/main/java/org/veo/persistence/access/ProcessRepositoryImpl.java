@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
-import org.veo.core.usecase.repository.ProcessRepository;
+import org.veo.core.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;

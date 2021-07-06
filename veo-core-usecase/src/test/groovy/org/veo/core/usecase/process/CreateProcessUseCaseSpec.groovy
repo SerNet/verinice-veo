@@ -19,10 +19,10 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.repository.ProcessRepository
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateEntityUseCase
-import org.veo.core.usecase.repository.ProcessRepository
 
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 

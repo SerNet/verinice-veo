@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Unit;
-import org.veo.core.usecase.repository.ScenarioRepository;
+import org.veo.core.repository.ScenarioRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;

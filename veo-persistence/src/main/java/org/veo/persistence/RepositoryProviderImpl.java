@@ -37,21 +37,21 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
+import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogRepository;
-import org.veo.core.usecase.repository.AssetRepository;
-import org.veo.core.usecase.repository.ClientRepository;
-import org.veo.core.usecase.repository.ControlRepository;
-import org.veo.core.usecase.repository.DocumentRepository;
-import org.veo.core.usecase.repository.DomainRepository;
-import org.veo.core.usecase.repository.EntityLayerSupertypeRepository;
-import org.veo.core.usecase.repository.IncidentRepository;
-import org.veo.core.usecase.repository.PersonRepository;
-import org.veo.core.usecase.repository.ProcessRepository;
-import org.veo.core.usecase.repository.Repository;
-import org.veo.core.usecase.repository.RepositoryProvider;
-import org.veo.core.usecase.repository.ScenarioRepository;
-import org.veo.core.usecase.repository.ScopeRepository;
-import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ControlRepository;
+import org.veo.core.repository.DocumentRepository;
+import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.IncidentRepository;
+import org.veo.core.repository.PersonRepository;
+import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.Repository;
+import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.ScenarioRepository;
+import org.veo.core.repository.ScopeRepository;
+import org.veo.core.repository.UnitRepository;
 
 @Service
 public class RepositoryProviderImpl implements RepositoryProvider {

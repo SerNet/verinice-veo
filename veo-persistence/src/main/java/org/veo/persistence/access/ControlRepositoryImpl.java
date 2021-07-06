@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.usecase.repository.ControlRepository;
+import org.veo.core.repository.ControlRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;

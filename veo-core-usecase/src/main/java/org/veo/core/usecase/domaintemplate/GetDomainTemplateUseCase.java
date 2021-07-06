@@ -22,12 +22,12 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.UseCaseTools;
-import org.veo.core.usecase.repository.ClientRepository;
 
 import lombok.Value;
 

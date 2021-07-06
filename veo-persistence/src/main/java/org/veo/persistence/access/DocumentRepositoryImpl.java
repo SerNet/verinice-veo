@@ -20,7 +20,7 @@ package org.veo.persistence.access;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Document;
-import org.veo.core.usecase.repository.DocumentRepository;
+import org.veo.core.repository.DocumentRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.DocumentDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;

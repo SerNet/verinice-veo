@@ -18,9 +18,9 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Person
+import org.veo.core.repository.PersonRepository
 import org.veo.core.usecase.base.CreateEntityUseCase
 import org.veo.core.usecase.person.CreatePersonUseCase
-import org.veo.core.usecase.repository.PersonRepository
 
 class CreatePersonUseCaseSpec extends UseCaseSpec {
 

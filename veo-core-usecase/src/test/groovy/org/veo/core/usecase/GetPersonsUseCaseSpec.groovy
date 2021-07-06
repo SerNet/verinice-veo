@@ -19,12 +19,12 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.repository.EntityLayerSupertypeQuery
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.PersonRepository
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
 import org.veo.core.usecase.person.GetPersonsUseCase
-import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
-import org.veo.core.usecase.repository.PersonRepository
 
 class GetPersonsUseCaseSpec extends UseCaseSpec {
 

@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.ModelObject;
-import org.veo.core.usecase.repository.Repository;
+import org.veo.core.repository.Repository;
 import org.veo.persistence.entity.jpa.BaseModelObjectData;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 

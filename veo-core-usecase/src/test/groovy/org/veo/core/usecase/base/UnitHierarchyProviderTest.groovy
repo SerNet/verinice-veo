@@ -19,7 +19,7 @@ package org.veo.core.usecase.base
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.repository.UnitRepository
+import org.veo.core.repository.UnitRepository
 
 import spock.lang.Specification
 

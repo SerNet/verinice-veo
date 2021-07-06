@@ -19,9 +19,9 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.repository.ProcessRepository
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.repository.ProcessRepository
 
 class GetProcessUseCaseSpec extends UseCaseSpec {
 

@@ -24,11 +24,11 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.CatalogRepository
+import org.veo.core.repository.ClientRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.catalog.GetCatalogsUseCase
 import org.veo.core.usecase.catalog.GetCatalogsUseCase.InputData
 import org.veo.core.usecase.domain.GetDomainUseCaseSpec
-import org.veo.core.usecase.repository.ClientRepository
 
 class GetCatalogsUseCaseSpec extends UseCaseSpec {
 

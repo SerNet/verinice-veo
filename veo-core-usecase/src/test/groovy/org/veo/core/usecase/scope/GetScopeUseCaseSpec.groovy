@@ -19,9 +19,9 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.repository.ScopeRepository
 
 class GetScopeUseCaseSpec extends UseCaseSpec {
 

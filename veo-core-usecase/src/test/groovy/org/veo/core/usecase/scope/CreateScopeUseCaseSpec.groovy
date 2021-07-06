@@ -19,10 +19,10 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateEntityUseCase
-import org.veo.core.usecase.repository.ScopeRepository
 
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 

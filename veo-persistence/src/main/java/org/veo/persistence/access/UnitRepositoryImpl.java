@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
-import org.veo.core.usecase.repository.UnitRepository;
+import org.veo.core.repository.UnitRepository;
 import org.veo.persistence.access.jpa.UnitDataRepository;
 import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.UnitData;

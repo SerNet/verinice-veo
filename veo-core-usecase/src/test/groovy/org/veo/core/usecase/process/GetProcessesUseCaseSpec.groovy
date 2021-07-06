@@ -19,12 +19,12 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.repository.EntityLayerSupertypeQuery
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.ProcessRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
-import org.veo.core.usecase.repository.EntityLayerSupertypeQuery
-import org.veo.core.usecase.repository.ProcessRepository
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
