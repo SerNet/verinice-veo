@@ -128,9 +128,7 @@ public interface EntityLayerSupertype
                                                            + " might be part of a domain template");
         if (!(EntitySpecifications.hasSameClient(client)
                                   .isSatisfiedBy(thisEntitysClient))) {
-            throw new ClientBoundaryViolationException(
-                    String.format("The client boundary would be violated by the attempted operation on element: %s from client: %s",
-                                  this.getId(), client.getId()));
+            throw new ClientBoundaryViolationException(this, client);
         }
     }
 

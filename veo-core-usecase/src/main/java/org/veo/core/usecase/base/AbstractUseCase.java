@@ -56,10 +56,13 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
      *             when any of the domains does not belong to the client.
      */
     protected void checkDomainOwnership(Client authenticatedClient, Set<Domain> domains) {
-        if (domains.stream()
-                   .anyMatch(domain -> !domain.getOwner()
-                                              .equals(authenticatedClient)))
-            throw new ClientBoundaryViolationException("Illegal client for attempted operation.");
+        domains.forEach(domain -> checkSameClient(authenticatedClient, domain));
+    }
+
+    private void checkSameClient(Client authenticatedClient, Domain domain) {
+        if (!domain.getOwner()
+                   .equals(authenticatedClient))
+            throw new ClientBoundaryViolationException(domain, authenticatedClient);
     }
 
     protected <M extends ModelObject> Optional<M> findEntity(Class<M> clazz, Key<UUID> id) {

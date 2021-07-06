@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter;
 
-import static java.lang.String.format;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -135,9 +133,7 @@ public class ModelObjectReferenceResolver {
             }
             if (entity instanceof Domain) {
                 if (!(EntitySpecifications.hasSameClient(client)).isSatisfiedBy(((Domain) entity).getOwner()))
-                    throw new ClientBoundaryViolationException(
-                            format("The client boundary would be violated by the attempted operation on element: %s",
-                                   entity.getId()));
+                    throw new ClientBoundaryViolationException(entity, client);
             }
             result.add((TEntity) entity);
             ModelObjectReference<TEntity> reference = copyOfReferencesById.get(entity.getId()

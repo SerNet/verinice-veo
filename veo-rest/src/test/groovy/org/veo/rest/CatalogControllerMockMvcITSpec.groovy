@@ -211,9 +211,6 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
-
-        and: "the reason is given"
-        ex.message =~ /This object is not accessable from this client./
     }
 
     @WithUserDetails("user@domain.example")

@@ -78,7 +78,7 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
 
         then: "a unit was retrieved"
         unitRepository.findById(_) >> Optional.of(this.existingUnit)
-        existingUnit.checkSameClient(_) >> { throw new ClientBoundaryViolationException("The client boundary would be violated by the attempted operation") }
+        existingUnit.checkSameClient(_) >> { throw new ClientBoundaryViolationException(existingUnit, maliciousClient) }
 
         and: "the security violation was prevented"
         thrown ClientBoundaryViolationException

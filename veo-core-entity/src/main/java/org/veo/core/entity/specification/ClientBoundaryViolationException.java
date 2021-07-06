@@ -17,12 +17,15 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainException;
+import org.veo.core.entity.ModelObject;
 
 public class ClientBoundaryViolationException extends DomainException {
 
-    public ClientBoundaryViolationException(String message) {
-        super(message);
+    public ClientBoundaryViolationException(ModelObject entity, Client unauthorizedClient) {
+        super(String.format("The client boundary would be violated by the attempted operation on element: %s by client: %s",
+                            entity.getId(), unauthorizedClient.getId()));
     }
 
 }

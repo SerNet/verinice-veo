@@ -59,8 +59,7 @@ public class UseCaseTools {
         }
         if (!client.getDomains()
                    .contains(domaintemplate)) {
-            throw new ClientBoundaryViolationException(
-                    "This object is not accessable from this client.");
+            throw new ClientBoundaryViolationException(domaintemplate, client);
         }
     }
 

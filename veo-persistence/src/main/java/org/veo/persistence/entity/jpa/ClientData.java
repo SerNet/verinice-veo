@@ -86,8 +86,7 @@ public class ClientData extends BaseModelObjectData implements Client, Nameable 
     public boolean removeFromDomains(Domain aDomain) {
         if (aDomain.getOwner()
                    .equals(this))
-            throw new ClientBoundaryViolationException(
-                    String.format("Domain does not belong to this client: %s", aDomain.getId()));
+            throw new ClientBoundaryViolationException(aDomain, this);
         aDomain.setOwner(null);
         return this.domains.remove(aDomain);
     }

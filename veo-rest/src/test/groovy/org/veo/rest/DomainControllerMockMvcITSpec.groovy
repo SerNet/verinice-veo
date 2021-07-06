@@ -127,9 +127,6 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
-
-        and: "the reason is given"
-        ex.message =~ /The domain is not accessable from this client./
     }
 
     @WithUserDetails("user@domain.example")

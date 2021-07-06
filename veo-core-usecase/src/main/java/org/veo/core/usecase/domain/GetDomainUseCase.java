@@ -19,6 +19,7 @@ package org.veo.core.usecase.domain;
 
 import javax.validation.Valid;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -42,10 +43,9 @@ public class GetDomainUseCase
         Domain domain = repository.findById(input.getId())
                                   .orElseThrow(() -> new NotFoundException(input.getId()
                                                                                 .uuidValue()));
-        if (!input.getAuthenticatedClient()
-                  .equals(domain.getOwner())) {
-            throw new ClientBoundaryViolationException(
-                    "The domain is not accessable from this client.");
+        Client client = input.getAuthenticatedClient();
+        if (!client.equals(domain.getOwner())) {
+            throw new ClientBoundaryViolationException(domain, client);
         }
         if (!domain.isActive()) {
             throw new NotFoundException("Domain is inactive.");
