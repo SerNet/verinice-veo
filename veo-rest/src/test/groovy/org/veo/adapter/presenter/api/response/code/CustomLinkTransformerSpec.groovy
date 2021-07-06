@@ -52,6 +52,7 @@ class CustomLinkTransformerSpec extends Specification {
             it.name >> "good name"
             it.target >> targetAsset
             it.attributes >> [:]
+            it.domains >> []
         }
 
         when: "transforming it to a DTO"

@@ -312,6 +312,7 @@ public final class EntityToDtoTransformer {
         target.setName(source.getName());
         target.setAttributes(source.getAttributes());
 
+        target.setDomains(convertReferenceSet(source.getDomains()));
         if (source.getTarget() != null) {
             target.setTarget(ModelObjectReference.from(source.getTarget(), referenceAssembler));
         }
