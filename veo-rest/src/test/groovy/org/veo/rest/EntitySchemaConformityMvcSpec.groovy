@@ -208,7 +208,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                         attributes: [
                             process_controller_document: "http://example.org/doc"
                         ],
-                        name: "first controller",
                         target: [
                             targetUri: "/persons/$personId"
                         ]
@@ -285,7 +284,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             links: [
                 scope_dataProtectionOfficer: [
                     [
-                        name: "doesn't matter",
                         target: [
                             targetUri: "/persons/$targetPersonId"
                         ]

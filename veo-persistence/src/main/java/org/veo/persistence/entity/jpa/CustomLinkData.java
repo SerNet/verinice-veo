@@ -33,14 +33,7 @@ import lombok.EqualsAndHashCode;
 @Entity(name = "customlink")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CustomLinkData extends CustomPropertiesData implements NameableData, CustomLink {
-
-    @NotNull
-    private String name;
-
-    private String abbreviation;
-
-    private String description;
+public class CustomLinkData extends CustomPropertiesData implements CustomLink {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY,

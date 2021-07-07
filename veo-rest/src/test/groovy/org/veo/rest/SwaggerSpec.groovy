@@ -104,14 +104,6 @@ class SwaggerSpec extends VeoSpringSpec {
         ownerReferenceSchema.required.contains('targetUri')
     }
 
-    def "name is not required for custom link"() {
-        when:
-        def customLinkDtoSchema = parsedApiDocs.components.schemas.CustomLinkDto
-        then:
-        customLinkDtoSchema.properties.containsKey('name')
-        !customLinkDtoSchema.required.contains('name')
-    }
-
     def "catalog item element is a reference"() {
         when:
         def catalogItemDtoSchema = parsedApiDocs.components.schemas.FullCatalogItemDto

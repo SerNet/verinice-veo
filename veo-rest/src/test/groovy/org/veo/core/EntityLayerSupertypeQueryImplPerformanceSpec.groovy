@@ -87,7 +87,6 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
                 ] as Set
                 links = [
                     new CustomLinkData().tap {
-                        it.name = "no_name"
                         it.type = "my_little_link"
                         it.target = asset
                     }

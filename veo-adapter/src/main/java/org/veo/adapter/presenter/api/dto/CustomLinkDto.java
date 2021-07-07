@@ -36,10 +36,6 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class CustomLinkDto extends CustomPropertiesDto {
 
-    @Schema(description = "The name for the CustomLink.", example = "My custom relation")
-    @ToString.Include
-    private String name;
-
     @NotNull(message = "A target must be present.")
     @ToString.Include
     @Schema(required = true, implementation = ModelObjectReferenceCustomLinkTarget.class)

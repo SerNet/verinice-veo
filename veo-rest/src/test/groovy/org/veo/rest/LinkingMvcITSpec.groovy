@@ -80,21 +80,17 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             links: [
                 scope_dataProtectionOfficer: [
                     [
-                        name: "link to person 1",
                         target: [targetUri: "/persons/$person1"]
                     ],
                     [
-                        name: "link to person 2",
                         target: [targetUri: "/persons/$person2"]
                     ]
                 ],
                 scope_headOfDataProcessing: [
                     [
-                        name: "link to person 2",
                         target: [targetUri: "/persons/$person2"]
                     ],
                     [
-                        name: "link to person 3",
                         target: [targetUri: "/persons/$person3"]
                     ]
                 ]
@@ -153,7 +149,6 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             links: [
                 process_controller: [
                     [
-                        name: "Doesn't matter",
                         target: [
                             targetUri: "/persons/$controllerPerson"
                         ]
@@ -172,7 +167,6 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             links: [
                 process_controller: [
                     [
-                        name: "Doesn't matter",
                         target: [
                             targetUri: "/persons/$randomPerson"
                         ]

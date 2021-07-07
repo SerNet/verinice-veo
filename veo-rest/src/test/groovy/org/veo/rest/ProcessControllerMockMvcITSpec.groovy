@@ -487,7 +487,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 'process_dataType' : [
                     [
-                        name:'test link prcess->asset',
                         domains: [],
                         attributes: [
                             process_dataType_comment: 'ok',
@@ -522,8 +521,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         and: 'there is one link of the expected type'
         def linksOfExpectedType = links.'process_dataType'
         linksOfExpectedType.size() == 1
-        and: 'the expected link is present'
-        linksOfExpectedType.first().name == 'test link prcess->asset'
     }
 
     @WithUserDetails("user@domain.example")
@@ -544,7 +541,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             links: [
                 'process_dataType': [
                     [
-                        name  : 'categories',
                         target:
                         [
                             targetUri: "/assets/$assetId"
@@ -560,7 +556,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 //need to be in the open session
                 size() == 1
                 first().type == 'process_dataType'
-                first().name == 'categories'
                 first().target.id.uuidValue() == assetId
             }
             return process

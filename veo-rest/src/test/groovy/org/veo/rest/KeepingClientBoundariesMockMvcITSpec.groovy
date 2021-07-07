@@ -332,7 +332,6 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             links: [
                 'Process_depends_on_Asset': [
                     [
-                        name  : 'requires',
                         target:
                         [
                             targetUri: "http://localhost/assets/$otherClientsAsset.dbId"

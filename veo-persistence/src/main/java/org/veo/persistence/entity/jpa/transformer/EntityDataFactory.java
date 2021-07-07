@@ -152,10 +152,9 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
+    public CustomLink createCustomLink(EntityLayerSupertype linkTarget,
             EntityLayerSupertype linkSource) {
         CustomLink link = new CustomLinkData();
-        link.setName(name);
         link.setTarget(linkTarget);
         link.setSource(linkSource);
         return link;

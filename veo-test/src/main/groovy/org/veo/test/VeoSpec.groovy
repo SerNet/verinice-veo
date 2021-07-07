@@ -233,11 +233,8 @@ abstract class VeoSpec extends Specification {
 
     static CustomLinkData newCustomLink(EntityLayerSupertype linkTarget, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
-        return factory.createCustomLink(null, linkTarget, null).tap{
+        return factory.createCustomLink(linkTarget, null).tap{
             VeoSpec.execute(it, init)
-            if(it.name == null) {
-                it.name = "link to $linkTarget.name"
-            }
         }
     }
 

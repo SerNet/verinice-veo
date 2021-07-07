@@ -34,7 +34,6 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.test.VeoSpec
 
 @SpringBootTest(classes = CustomLinkPersistenceSpec.class
 )
@@ -62,7 +61,7 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
         Person person = newPerson(unit)
         Asset asset = newAsset(unit)
 
-        CustomLink cp = entityFactory.createCustomLink("My link", person, asset)
+        CustomLink cp = entityFactory.createCustomLink(person, asset)
 
         cp.setType('my.new.linktype')
 

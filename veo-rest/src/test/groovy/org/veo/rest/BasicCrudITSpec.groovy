@@ -82,7 +82,6 @@ class BasicCrudITSpec extends VeoMvcSpec {
             links: [
                 'process_dataType':[
                     [
-                        name : 'requires',
                         target:
                         [
                             targetUri: "/assets/$assetId"
@@ -108,7 +107,6 @@ class BasicCrudITSpec extends VeoMvcSpec {
         then:
         links.size() == 1
         links.first().type == 'process_dataType'
-        links.first().name == 'requires'
         links.first().target.id.uuidValue() == assetId
         when:
 

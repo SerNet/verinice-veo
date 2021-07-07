@@ -72,8 +72,7 @@ public interface EntityFactory {
      */
     Domain createDomain(String name, String authority, String templateVersion, String revision);
 
-    CustomLink createCustomLink(String name, EntityLayerSupertype linkTarget,
-            EntityLayerSupertype linkSource);
+    CustomLink createCustomLink(EntityLayerSupertype linkTarget, EntityLayerSupertype linkSource);
 
     Scope createScope(String name, ElementOwner owner);
 

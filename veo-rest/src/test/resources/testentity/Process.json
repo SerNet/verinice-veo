@@ -1061,11 +1061,6 @@
           "items": {
             "additionalProperties": false,
             "properties": {
-              "abbreviation": {
-                "description": "The abbreviation for this custom link.",
-                "title": "Abbreviation",
-                "type": "string"
-              },
               "applicableTo": {
                 "items": {
                   "type": "string"
@@ -1094,11 +1089,6 @@
                 },
                 "type": "object"
               },
-              "description": {
-                "description": "The name for this custom link.",
-                "title": "Description",
-                "type": "string"
-              },
               "domains": {
                 "description": "The ids of elements of the type domain.",
                 "items": {
@@ -1125,11 +1115,6 @@
                 "format": "regex",
                 "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
                 "title": "The UUID to identify the element",
-                "type": "string"
-              },
-              "name": {
-                "description": "The name for this custom link.",
-                "title": "Name",
                 "type": "string"
               },
               "references": {
@@ -1177,11 +1162,6 @@
           "items": {
             "additionalProperties": false,
             "properties": {
-              "abbreviation": {
-                "description": "The abbreviation for this custom link.",
-                "title": "Abbreviation",
-                "type": "string"
-              },
               "applicableTo": {
                 "items": {
                   "type": "string"
@@ -1269,11 +1249,6 @@
                 },
                 "type": "object"
               },
-              "description": {
-                "description": "The name for this custom link.",
-                "title": "Description",
-                "type": "string"
-              },
               "domains": {
                 "description": "The ids of elements of the type domain.",
                 "items": {
@@ -1300,11 +1275,6 @@
                 "format": "regex",
                 "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
                 "title": "The UUID to identify the element",
-                "type": "string"
-              },
-              "name": {
-                "description": "The name for this custom link.",
-                "title": "Name",
                 "type": "string"
               },
               "references": {
@@ -1352,11 +1322,6 @@
           "items": {
             "additionalProperties": false,
             "properties": {
-              "abbreviation": {
-                "description": "The abbreviation for this custom link.",
-                "title": "Abbreviation",
-                "type": "string"
-              },
               "applicableTo": {
                 "items": {
                   "type": "string"
@@ -1368,11 +1333,6 @@
                   
                 },
                 "type": "object"
-              },
-              "description": {
-                "description": "The name for this custom link.",
-                "title": "Description",
-                "type": "string"
               },
               "domains": {
                 "description": "The ids of elements of the type domain.",
@@ -1400,11 +1360,6 @@
                 "format": "regex",
                 "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
                 "title": "The UUID to identify the element",
-                "type": "string"
-              },
-              "name": {
-                "description": "The name for this custom link.",
-                "title": "Name",
                 "type": "string"
               },
               "references": {
@@ -1452,11 +1407,6 @@
           "items": {
             "additionalProperties": false,
             "properties": {
-              "abbreviation": {
-                "description": "The abbreviation for this custom link.",
-                "title": "Abbreviation",
-                "type": "string"
-              },
               "applicableTo": {
                 "items": {
                   "type": "string"
@@ -1472,11 +1422,6 @@
                   }
                 },
                 "type": "object"
-              },
-              "description": {
-                "description": "The name for this custom link.",
-                "title": "Description",
-                "type": "string"
               },
               "domains": {
                 "description": "The ids of elements of the type domain.",
@@ -1504,11 +1449,6 @@
                 "format": "regex",
                 "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
                 "title": "The UUID to identify the element",
-                "type": "string"
-              },
-              "name": {
-                "description": "The name for this custom link.",
-                "title": "Name",
                 "type": "string"
               },
               "references": {

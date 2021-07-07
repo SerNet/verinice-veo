@@ -64,13 +64,11 @@ class CustomLinkSpec extends Specification{
         def commonSource = Mock(EntityLayerSupertype)
         def commonTarget = Mock(EntityLayerSupertype)
         def link1 = new CustomLinkData().tap {
-            setName("my name")
             setSource(commonSource)
             setTarget(commonTarget)
             setType("a")
         }
         def link2 = new CustomLinkData().tap {
-            setName("another name")
             setSource(commonSource)
             setTarget(commonTarget)
             setType("a")

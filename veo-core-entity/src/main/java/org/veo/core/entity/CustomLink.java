@@ -27,12 +27,6 @@ package org.veo.core.entity;
  */
 public interface CustomLink extends CustomProperties {
 
-    @Deprecated // VEO-572
-    String getName();
-
-    @Deprecated // VEO-572
-    void setName(String name);
-
     EntityLayerSupertype getTarget();
 
     void setTarget(EntityLayerSupertype aTarget);

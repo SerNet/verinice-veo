@@ -255,11 +255,10 @@ public final class DtoToEntityTransformer {
             linkTarget = modelObjectReferenceResolver.resolve(source.getTarget());
         }
 
-        var target = factory.createCustomLink(source.getName(), linkTarget, null);
+        var target = factory.createCustomLink(linkTarget, null);
 
         target.setAttributes(source.getAttributes());
         target.setType(type);
-        target.setName(source.getName());
         entitySchema.validateCustomLink(target);
         return target;
 

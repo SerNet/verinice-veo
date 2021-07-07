@@ -309,7 +309,6 @@ public final class EntityToDtoTransformer {
     // CustomLinkDto
     public CustomLinkDto transformCustomLink2Dto(@Valid CustomLink source) {
         var target = new CustomLinkDto();
-        target.setName(source.getName());
         target.setAttributes(source.getAttributes());
 
         target.setDomains(convertReferenceSet(source.getDomains()));

@@ -305,7 +305,6 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         when:
         def link = new CustomLinkData().with{
-            name = "aLink"
             source = asset
             target = process
             it
