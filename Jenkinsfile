@@ -92,6 +92,16 @@ pipeline {
                                        ./gradlew --no-daemon test"""
                                  jacoco classPattern: '**/build/classes/java/main'
                                  junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
+                                 [ 'veo-adapter', 'veo-core-entity', 'veo-core-usecase', 'veo-persistence', 'veo-rest', 'veo-test' ].each {
+                                   publishHTML([
+                                            allowMissing: false,
+                                            alwaysLinkToLastBuild: false,
+                                            keepAll: true,
+                                            reportDir: "${it}/build/reports/tests/test/",
+                                            reportFiles: 'index.html',
+                                            reportName: "Test report: ${it}"
+                                   ])
+                                 }
                              }
                          }
                      }
@@ -125,6 +135,14 @@ pipeline {
                                                export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
                                                ./gradlew --no-daemon veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128 """
                                          junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
+                                         publishHTML([
+                                                    allowMissing: false,
+                                                    alwaysLinkToLastBuild: false,
+                                                    keepAll: true,
+                                                    reportDir: 'veo-rest/build/reports/tests/restTest/',
+                                                    reportFiles: 'index.html',
+                                                    reportName: 'Test report: veo-rest-integration-test'
+                                         ])
                                      }
                                  }
                              }
