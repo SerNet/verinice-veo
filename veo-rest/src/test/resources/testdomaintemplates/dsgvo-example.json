@@ -25,7 +25,7 @@
           ],
           "namespace": "TOM.c-3",
           "element": {
-            "name": "Controll-3",
+            "name": "Control-3",
             "abbreviation": "c-3",
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": [],
@@ -72,7 +72,7 @@
           ],
           "namespace": "TOM.cc-1",
           "element": {
-            "name": "Controll-cc-1",
+            "name": "Control-cc-1",
             "abbreviation": "cc-1",
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": [],
@@ -112,7 +112,7 @@
           "tailoringReferences": [],
           "namespace": "TOM.c-2",
           "element": {
-            "name": "Controll-2",
+            "name": "Control-2",
             "abbreviation": "c-2",
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
             "domains": [],
@@ -148,7 +148,7 @@
           ],
           "namespace": "TOM.cc-2",
           "element": {
-            "name": "Controll-cc-2",
+            "name": "Control-cc-2",
             "abbreviation": "cc-2",
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": [],
@@ -188,7 +188,7 @@
           "tailoringReferences": [],
           "namespace": "TOM.c-1",
           "element": {
-            "name": "Controll-1",
+            "name": "Control-1",
             "abbreviation": "c-1",
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
             "domains": [],

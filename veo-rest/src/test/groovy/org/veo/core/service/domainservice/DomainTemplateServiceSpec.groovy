@@ -67,7 +67,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
             it[0].tailoringReferences.size()==0
             it[0].element.abbreviation == 'c-1'
-            it[0].element.name == 'Controll-1'
+            it[0].element.name == 'Control-1'
             it[0].element.description.startsWith('Lore')
 
             it[1].element.abbreviation == 'c-2'
