@@ -77,7 +77,6 @@ import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
-import org.veo.core.usecase.domaintemplate.DomainTemplateInitalizeUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
@@ -512,12 +511,6 @@ public class ModuleConfiguration {
             DomainTemplateResource domainTemplateResource) {
         return new DomainTemplateServiceImpl(domainTemplateRepository, entityTransformer, factory,
                 domainTemplateResource.getResources());
-    }
-
-    @Bean
-    public DomainTemplateInitalizeUseCase getDomainTemplateServiceInitalizeUseCase(
-            DomainTemplateService templateService) {
-        return new DomainTemplateInitalizeUseCase(templateService);
     }
 
     @Bean

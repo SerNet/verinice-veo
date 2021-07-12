@@ -154,10 +154,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                                                                             deserializer))
                                          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                                                     false);
+        readTemplateFiles();
     }
 
-    @Override
-    public void readTemplateFiles() {
+    private void readTemplateFiles() {
         log.info("read files from resources ...");
         domainResources.forEach(f -> {
             log.info("read file:{}", f.getDescription());

@@ -57,9 +57,4 @@ public interface DomainTemplateService {
      */
     Set<Domain> createDefaultDomains(Client client);
 
-    /**
-     * Reads the stored domaintemplates files and initialize the database when
-     * necessary.
-     */
-    void readTemplateFiles();
 }
