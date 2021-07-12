@@ -910,7 +910,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-16. Group: com.networknt  Name: json-schema-validator  Version: 1.0.55
+16. Group: com.networknt  Name: json-schema-validator  Version: 1.0.57
 
 POM Project URL: https://github.com/networknt/json-schema-validator
 
@@ -1462,7 +1462,7 @@ permitted.
 
 --------------------------------------------------------------------------------
 
-21. Group: com.vladmihalcea  Name: hibernate-types-52  Version: 2.12.0
+21. Group: com.vladmihalcea  Name: hibernate-types-52  Version: 2.12.1
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -2234,7 +2234,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-49. Group: io.swagger.core.v3  Name: swagger-annotations  Version: 2.1.9
+49. Group: io.swagger.core.v3  Name: swagger-annotations  Version: 2.1.10
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-annotations
 
@@ -2244,7 +2244,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-50. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.1.9
+50. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.1.10
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-core
 
@@ -2264,7 +2264,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-52. Group: io.swagger.core.v3  Name: swagger-models  Version: 2.1.9
+52. Group: io.swagger.core.v3  Name: swagger-models  Version: 2.1.10
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-models
 
@@ -7300,7 +7300,7 @@ POM License: The 3-Clause BSD License - https://opensource.org/licenses/BSD-3-Cl
 
 --------------------------------------------------------------------------------
 
-86. Group: org.postgresql  Name: postgresql  Version: 42.2.22
+86. Group: org.postgresql  Name: postgresql  Version: 42.2.23
 
 Manifest Project URL: https://jdbc.postgresql.org/
 
@@ -18178,5 +18178,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Tue Jul 06 08:26:05 CEST 2021.
+This report was generated at Mon Jul 12 08:09:51 CEST 2021.
 
