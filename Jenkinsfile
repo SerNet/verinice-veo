@@ -23,9 +23,6 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '50', artifactNumToKeepStr: '5'))
         timeout(time: 30, unit: 'MINUTES')
-        sidebarLinks([
-            [displayName: 'veoModel', iconFileName: 'document.gif', urlName: 'lastSuccessfulBuild/artifact/doc/model_doc/veoModel.html']
-        ])
     }
 
     environment {
@@ -91,7 +88,9 @@ pipeline {
                                        export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
                                        ./gradlew --no-daemon test"""
                                  jacoco classPattern: '**/build/classes/java/main'
-                                 junit allowEmptyResults: true, testResults: '**/build/test-results/test/*.xml'
+                                 junit allowEmptyResults: true,
+                                         testResults: '**/build/test-results/test/*.xml',
+                                         testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
                                  [ 'veo-adapter', 'veo-core-entity', 'veo-core-usecase', 'veo-persistence', 'veo-rest', 'veo-test' ].each {
                                    publishHTML([
                                             allowMissing: false,
@@ -143,6 +142,10 @@ pipeline {
                                                     reportFiles: 'index.html',
                                                     reportName: 'Test report: veo-rest-integration-test'
                                          ])
+                                         perfReport failBuildIfNoResultFile: false,
+                                                    modePerformancePerTestCase: true,
+                                                    showTrendGraphs: true,
+                                                    sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
                                      }
                                  }
                              }
@@ -185,7 +188,7 @@ pipeline {
                 sh './gradlew --no-daemon check -x test -x spotbugsTest'
             }
             post {
-                always {
+                failure {
                     recordIssues(enabledForFailure: true, tools: [spotBugs(pattern: '**/build/reports/spotbugs/main.xml', useRankAsPriority: true, trendChartType: 'NONE')])
                     recordIssues(enabledForFailure: true, tools: [pmdParser(pattern: '**/build/reports/pmd/main.xml', trendChartType: 'NONE')])
                 }
@@ -241,6 +244,10 @@ pipeline {
                                 ).trim()
                                 sh "newman run 'postman/verinice.VEO_REST_API.postman_collection.json' --env-var 'accessToken=${accessToken}' --reporters 'cli,junit' --reporter-junit-export='newman-report.xml' --suppress-exit-code"
                                 junit allowEmptyResults: true, testResults: 'newman-report.xml'
+                                perfReport failBuildIfNoResultFile: false,
+                                                    modePerformancePerTestCase: true,
+                                                    showTrendGraphs: true,
+                                                    sourceDataFiles: 'newman-report.xml'
                             }
                         }
                     }
@@ -264,6 +271,9 @@ pipeline {
         }
     }
     post {
+        failure {
+            emailext attachLog: true, body: 'see log', recipientProviders: [culprits()], subject: 'your build failed'
+        }
         always {
            node('') {
                 sh 'rm veo-rest/build/libs/*.jar'
