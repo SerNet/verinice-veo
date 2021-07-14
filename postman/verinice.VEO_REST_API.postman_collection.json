@@ -1421,7 +1421,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -1460,7 +1460,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -1499,7 +1499,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -1538,7 +1538,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -2903,7 +2903,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -2942,7 +2942,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -2981,7 +2981,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -3020,7 +3020,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -3323,7 +3323,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -4456,7 +4456,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],
@@ -5233,7 +5233,7 @@
               "script": {
                 "exec": [
                   "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(200);",
+                  "    pm.response.to.have.status(204);",
                   "});",
                   ""
                 ],

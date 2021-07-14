@@ -262,7 +262,7 @@ public class DocumentController extends AbstractEntityController {
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Deletes a document")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Document deleted"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Document deleted"),
             @ApiResponse(responseCode = "404", description = "Document not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDocument(
             @Parameter(hidden = true) Authentication auth,
@@ -272,7 +272,7 @@ public class DocumentController extends AbstractEntityController {
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Document.class,
                                                  Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.ok()
+                                         output -> ResponseEntity.noContent()
                                                                  .build());
     }
 

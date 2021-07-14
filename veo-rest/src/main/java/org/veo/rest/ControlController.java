@@ -272,7 +272,7 @@ public class ControlController extends AbstractEntityController {
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Deletes a control")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Control deleted"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Control deleted"),
             @ApiResponse(responseCode = "404", description = "Control not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteControl(
             @Parameter(required = false, hidden = true) Authentication auth,
@@ -281,7 +281,7 @@ public class ControlController extends AbstractEntityController {
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Control.class,
                                                  Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.ok()
+                                         output -> ResponseEntity.noContent()
                                                                  .build());
     }
 

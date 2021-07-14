@@ -271,7 +271,7 @@ public class IncidentController extends AbstractEntityController {
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Deletes an incident")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Incident deleted"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Incident deleted"),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteIncident(
             @Parameter(required = false, hidden = true) Authentication auth,
@@ -281,7 +281,7 @@ public class IncidentController extends AbstractEntityController {
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Incident.class,
                                                  Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.ok()
+                                         output -> ResponseEntity.noContent()
                                                                  .build());
     }
 

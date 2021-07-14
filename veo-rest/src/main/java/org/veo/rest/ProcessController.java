@@ -259,7 +259,7 @@ public class ProcessController extends AbstractEntityController implements Proce
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Deletes a process")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Process deleted"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Process deleted"),
             @ApiResponse(responseCode = "404", description = "Process not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProcess(
             @Parameter(required = false, hidden = true) Authentication auth,
@@ -267,7 +267,7 @@ public class ProcessController extends AbstractEntityController implements Proce
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Process.class,
                                                  Key.uuidFrom(uuid), getAuthenticatedClient(auth)),
-                                         output -> ResponseEntity.ok()
+                                         output -> ResponseEntity.noContent()
                                                                  .build());
     }
 
@@ -418,8 +418,9 @@ public class ProcessController extends AbstractEntityController implements Proce
         var input = new DeleteRiskUseCase.InputData(Process.class, client, Key.uuidFrom(processId),
                 Key.uuidFrom(scenarioId));
 
-        return useCaseInteractor.execute(deleteRiskUseCase, input, output -> ResponseEntity.ok()
-                                                                                           .build());
+        return useCaseInteractor.execute(deleteRiskUseCase, input,
+                                         output -> ResponseEntity.noContent()
+                                                                 .build());
     }
 
     @Override

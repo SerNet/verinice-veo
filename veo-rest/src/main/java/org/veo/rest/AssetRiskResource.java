@@ -96,7 +96,7 @@ public interface AssetRiskResource {
 
     @DeleteMapping(value = RELPATH + "/{scenarioId}")
     @Operation(summary = "Removes a risk")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Risk deleted"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Risk deleted"),
             @ApiResponse(responseCode = "404", description = "Risk not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
             @Parameter(hidden = true) ApplicationUser user, @PathVariable String assetId,

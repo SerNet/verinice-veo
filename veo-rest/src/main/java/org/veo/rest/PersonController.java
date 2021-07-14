@@ -267,7 +267,7 @@ public class PersonController extends AbstractEntityController {
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Deletes a person")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Person deleted"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Person deleted"),
             @ApiResponse(responseCode = "404", description = "Person not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deletePerson(
             @Parameter(required = false, hidden = true) Authentication auth,
@@ -276,7 +276,7 @@ public class PersonController extends AbstractEntityController {
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Person.class,
                                                  Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.ok()
+                                         output -> ResponseEntity.noContent()
                                                                  .build());
     }
 

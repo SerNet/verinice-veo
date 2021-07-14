@@ -96,7 +96,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
 
     ResultActions delete(String url, boolean expectSuccessfulRequest = true) {
         doRequest(MockMvcRequestBuilders.delete(url)
-                .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
+                .accept(APPLICATION_JSON), 204, expectSuccessfulRequest)
     }
 
     ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int successfulStatusCode, boolean expectSuccessfulRequest) throws Exception {

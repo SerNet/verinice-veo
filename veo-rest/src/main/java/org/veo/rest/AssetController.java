@@ -285,7 +285,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
 
     @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
     @Operation(summary = "Deletes an asset")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Asset deleted"),
+    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Asset deleted"),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteAsset(
             @Parameter(required = false, hidden = true) Authentication auth,
@@ -295,7 +295,7 @@ public class AssetController extends AbstractEntityController implements AssetRi
         return useCaseInteractor.execute(deleteEntityUseCase,
                                          new DeleteEntityUseCase.InputData(Asset.class,
                                                  Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.ok()
+                                         output -> ResponseEntity.noContent()
                                                                  .build());
     }
 
@@ -405,8 +405,9 @@ public class AssetController extends AbstractEntityController implements AssetRi
         var input = new DeleteRiskUseCase.InputData(Asset.class, client, Key.uuidFrom(assetId),
                 Key.uuidFrom(scenarioId));
 
-        return useCaseInteractor.execute(deleteRiskUseCase, input, output -> ResponseEntity.ok()
-                                                                                           .build());
+        return useCaseInteractor.execute(deleteRiskUseCase, input,
+                                         output -> ResponseEntity.noContent()
+                                                                 .build());
     }
 
     @Override
