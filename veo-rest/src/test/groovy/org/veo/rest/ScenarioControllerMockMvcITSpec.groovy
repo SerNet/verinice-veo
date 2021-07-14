@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -36,8 +34,6 @@ import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the scenario controller. Uses mocked spring MVC environment.
@@ -110,14 +106,9 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
+        def result = parseJson(post('/scenarios', request))
 
-        def results = post('/scenarios', request)
-
-        then: "the scenario is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new scenario is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new scenario is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -139,14 +130,12 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/scenarios/${scenario.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(scenario.id.uuidValue() + "_" + salt + "_" + Long.toString(scenario.getVersion()))
 
-        then: "the scenario is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(results)
         result.name == 'Test scenario-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
@@ -232,11 +221,9 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(scenario.id.uuidValue(), scenario.version)
         ]
-        def results = put("/scenarios/${scenario.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/scenarios/${scenario.id.uuidValue()}", request, headers))
 
         then: "the scenario is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New scenario-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -251,13 +238,10 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             scenarioDataRepository.save(newScenario(unit))
         }
 
-
         when: "a delete request is sent to the server"
-
-        def results = delete("/scenarios/${scenario.id.uuidValue()}")
+        delete("/scenarios/${scenario.id.uuidValue()}")
 
         then: "the scenario is deleted"
-        results.andExpect(status().isOk())
         scenarioRepository.findById(scenario.id).empty
     }
 
@@ -320,13 +304,9 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the scenario's parts"
-        def results = get("/scenarios/${compositeScenario.id.uuidValue()}/parts")
+        def result = parseJson(get("/scenarios/${compositeScenario.id.uuidValue()}/parts"))
 
         then: "the parts are found"
-        results.andExpect(status().isOk())
-        when:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        then:
         result.size == 2
         result.sort{it.name}.first().name == 's1'
         result.sort{it.name}[1].name == 's2'

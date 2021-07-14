@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
@@ -83,30 +81,29 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
         def results = get("/assets/${postResultJson.resourceId}")
         String eTag = results.andReturn().response.getHeader("ETag")
 
-        when: "put the asset"
+        when: "putting the asset with current ETag"
         Map headers = [
             'If-Match': getTextBetweenQuotes(eTag)
         ]
-        Map putRequest1 = [
+        put("/assets/${postResultJson.resourceId}", [
             name: 'E-Mail-Server Berlin',
             owner: [
                 displayName: 'test2',
                 targetUri: '/units/' + unit.id.uuidValue()
             ]
-        ]
-        def resultPut1 = put("/assets/${postResultJson.resourceId}", putRequest1, headers)
-        and: "put the asset again"
-        Map putRequest2 = [
+        ], headers)
+        then: "it was successful"
+        noExceptionThrown()
+
+        when: "putting the asset again with the same ETag"
+        put("/assets/${postResultJson.resourceId}", [
             name: 'E-Mail-Server Hamburg',
             owner: [
                 displayName: 'test2',
                 targetUri: '/units/' + unit.id.uuidValue()
             ]
-        ]
-        put("/assets/${postResultJson.resourceId}", putRequest2, headers, false)
-        then: "a status code 200 returned for the first put"
-        resultPut1.andExpect(status().isOk())
-        and: "a ETagMismatchException after the second put"
+        ], headers, false)
+        then: "a ETagMismatchException is thrown"
         thrown ETagMismatchException
     }
 }

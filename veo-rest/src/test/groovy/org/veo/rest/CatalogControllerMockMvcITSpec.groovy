@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -186,12 +184,9 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a catalog"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog.id.uuidValue()}")
+        def result = parseJson(get("/catalogs/${catalog.id.uuidValue()}"))
 
         then: "the catalog is found"
-        results.andExpect(status().isOk())
-        and:
-        def result = parseJson(results)
         result.id == catalog.id.uuidValue()
         result.domainTemplate.targetUri == "http://localhost/domains/"+domain.id.uuidValue()
 
@@ -227,12 +222,9 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
         catalog1 = domain1.catalogs.first()
 
         when: "a request is made to the server"
-        def results = get("/catalogs?")
+        def result = parseJson(get("/catalogs?"))
 
         then: "the catalogs are found"
-        results.andExpect(status().isOk())
-        and:
-        def result = parseJson(results)
         result.size() == 2
     }
 
@@ -244,12 +236,10 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/catalogs/${catalog.id.uuidValue()}/items/${item1.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(item1.id.uuidValue() + "_" + salt + "_" + Long.toString(domain.version))
 
-        then: "the item is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and:
         def result = parseJson(results)
         result.id == item1.id.uuidValue()
@@ -271,13 +261,9 @@ class CatalogControllerMockMvcITSpec extends VeoMvcSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog.dbId}/items")
+        def result = parseJson(get("/catalogs/${catalog.dbId}/items"))
 
         then: "the domains are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = parseJson(results)
-        then:
         result.size == 4
     }
 

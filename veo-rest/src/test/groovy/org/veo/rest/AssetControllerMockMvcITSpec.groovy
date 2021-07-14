@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import java.time.Instant
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -46,7 +44,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
-import groovy.json.JsonSlurper
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
  * Uses JPA repositories with in-memory database.
@@ -132,13 +129,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
 
-        def results = post('/assets', request)
+        def result = parseJson(post('/assets', request))
 
-        then: "the asset is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new asset is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new asset is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -167,26 +160,15 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "the request is sent"
-
-        def results = post('/assets', request)
-
-        then: "the composite asset is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new composite asset is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
-        result.success == true
+        def result = parseJson(post('/assets', request))
+        then: "the location of the new composite asset is returned"
+        result.success
         def resourceId = result.resourceId
         resourceId != null
         resourceId != ''
         result.message == 'Asset created successfully.'
         when: "the server is queried for the asset"
-        results = get("/assets/${resourceId}")
-
-        then: "the asset is found"
-        results.andExpect(status().isOk())
-        when: "the returned content is parsed"
-        result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result = parseJson(get("/assets/${resourceId}"))
         then: "the expected name is present"
         result.name == 'My Assets'
         and: "the composite asset contains the other asset"
@@ -216,14 +198,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/assets/${asset.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(asset.id.uuidValue() + "_" + salt + "_" + Long.toString(asset.getVersion()))
 
-        then: "the asset is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and: "the response contains the expected data"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(results)
         result == [
             customAspects:[
                 simpleAspect:[
@@ -271,13 +251,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a search request is made to the server"
-        def postSearchResult = post('http://localhost/assets/searches', search)
+        def postSearchResponse = parseJson(post('http://localhost/assets/searches', search))
 
-        then: "the server redirects to the created search resource"
-        postSearchResult.andExpect(status().isCreated())
-        def postSearchResponse = parseJson(postSearchResult)
-
-        when: "the search is run"
+        and: "the search is run"
         def searchResult = parseJson(get(postSearchResponse.searchUrl))
 
         then: "the response contains the expected data"
@@ -306,13 +282,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/assets/${sourceAsset.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(sourceAsset.id.uuidValue() + "_" + salt + "_" + Long.toString(sourceAsset.getVersion()))
         then: "the asset is found"
-        results.andExpect(status().isOk())
-        and:
-        String eTag = results.andReturn().response.getHeader("ETag")
+        String eTag = getETag(results)
         eTag != null
         getTextBetweenQuotes(eTag).equals(expectedETag)
         and: "the response contains the expected link"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(results)
         result.name == 'Test asset-1'
         result.links.size() == 1
         result.links.mypreciouslink.target.targetUri == [
@@ -485,11 +459,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(asset.id.uuidValue(), asset.version)
         ]
-        def results = put("/assets/${asset.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/assets/${asset.id.uuidValue()}", request, headers))
 
         then: "the asset is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -541,12 +513,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(asset.id.uuidValue(), asset.version)
         ]
-
-        def results = put("/assets/${asset.id.uuidValue()}",request, headers)
+        def result = parseJson(put("/assets/${asset.id.uuidValue()}",request, headers))
 
         then: "the asset is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -583,9 +552,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a delete request is sent to the server"
 
-        def results = delete("/assets/${asset.id.uuidValue()}")
+        delete("/assets/${asset.id.uuidValue()}")
         then: "the asset is deleted"
-        results.andExpect(status().isOk())
         assetRepository.findById(asset.id).empty
     }
 
@@ -608,10 +576,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         sourceAsset.links =[link] as Set
 
         when: "a delete request is sent to the server for link target"
+        delete("/assets/${targetAsset.id.uuidValue()}")
 
-        def results = delete("/assets/${targetAsset.id.uuidValue()}")
         then: "the asset is deleted"
-        results.andExpect(status().isOk())
         assetRepository.findById(targetAsset.id).empty
     }
 
@@ -627,11 +594,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             [asset, composite]
         }
         when: "a delete request is sent to the server"
-
-        def results = delete("/assets/${composite.id.uuidValue()}")
+        delete("/assets/${composite.id.uuidValue()}")
 
         then: "the composite is deleted"
-        results.andExpect(status().isOk())
         assetRepository.findById(composite.id).empty
         and: "the asset is not deleted"
         !assetRepository.findById(asset.id).empty
@@ -723,16 +688,14 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a new risk can be created successfully"
-        def result= post("/assets/"+asset.id.uuidValue()+"/risks", [
+        def json = parseJson(post("/assets/"+asset.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
                 [targetUri: '/domains/'+ domain1.id.uuidValue() ]
             ]
-        ] as Map)
+        ]))
 
         then:
-        result.andExpect(status().isCreated())
-        def json = parseJson(result)
         with(json) {
             resourceId != null
             resourceId.length() == 36
@@ -809,10 +772,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def (Asset asset, ScenarioData scenario, Object postResult) = createRisk()
 
         when: "the risk is deleted"
-        def result = delete("/assets/${asset.id.uuidValue()}/risks/${scenario.id.uuidValue()}", true)
+        delete("/assets/${asset.id.uuidValue()}/risks/${scenario.id.uuidValue()}")
 
         then: "the risk has been removed"
-        result.andExpect(status().isOk())
         assetRepository.findByRisk(scenario).isEmpty()
 
         and: "all referenced objects are still present"

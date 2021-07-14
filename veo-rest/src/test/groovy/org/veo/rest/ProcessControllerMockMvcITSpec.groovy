@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import java.time.Instant
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -134,14 +132,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
+        def result = parseJson(post('/processes', request))
 
-        def results = post('/processes', request)
-
-        then: "the process is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new unit is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new unit is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -177,11 +170,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a request is made to the server"
-        def results = get("/processes/${process.id.uuidValue()}")
+        def result = parseJson(get("/processes/${process.id.uuidValue()}"))
 
         then: "the process is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test process'
         result.owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
     }
@@ -260,11 +251,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(process.id.uuidValue(), process.version)
         ]
-        def results = put("/processes/${process.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/processes/${process.id.uuidValue()}", request, headers))
 
         then: "the process is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -282,10 +271,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        def results = delete("/processes/${process.id.uuidValue()}")
+        delete("/processes/${process.id.uuidValue()}")
 
         then: "the process is deleted"
-        results.andExpect(status().isOk())
         !processRepository.exists(process.id)
     }
 
@@ -336,11 +324,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(process.id.uuidValue(), process.version)
         ]
-        def results = put("/processes/${process.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/processes/${process.id.uuidValue()}", request, headers))
 
         then: "the process is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -412,11 +398,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(process.id.uuidValue(), process.version)
         ]
-        def results = put("/processes/${process.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/processes/${process.id.uuidValue()}", request, headers))
 
         then: "the process is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -506,11 +490,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(createProcessResult.resourceId, 0)
         ]
-        def results = put("/processes/${createProcessResult.resourceId}", putProcessRequest, headers)
+        def result = parseJson(put("/processes/${createProcessResult.resourceId}", putProcessRequest, headers))
 
         then: "the process is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -706,16 +688,14 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a new risk can be created successfully"
-        def result= post("/processes/"+process.id.uuidValue()+"/risks", [
+        def json = parseJson(post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
                 [targetUri: '/domains/'+ domain1.id.uuidValue() ]
             ]
-        ] as Map)
+        ] as Map))
 
         then:
-        result.andExpect(status().isCreated())
-        def json = parseJson(result)
         with(json) {
             resourceId != null
             resourceId.length() == 36
@@ -792,10 +772,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def (Process process, ScenarioData scenario, Object postResult) = createRisk()
 
         when: "the risk is deleted"
-        def result = delete("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}", true)
+        delete("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}")
 
         then: "the risk has been removed"
-        result.andExpect(status().isOk())
         processRepository.findByRisk(scenario).isEmpty()
 
         and: "all referenced objects are still present"

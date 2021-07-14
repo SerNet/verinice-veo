@@ -61,13 +61,14 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))
                 .accept(APPLICATION_JSON),
+                201,
                 expectSuccessfulRequest)
     }
 
 
     ResultActions get(String url, boolean expectSuccessfulRequest = true) {
         doRequest(MockMvcRequestBuilders.get(url)
-                .accept(APPLICATION_JSON), expectSuccessfulRequest)
+                .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
     }
 
     ResultActions put(String url, Map content, Map headers, boolean expectSuccessfulRequest = true) {
@@ -79,6 +80,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             requestBuilder.header(key, headers.get(key))
         }
         doRequest(requestBuilder,
+                200,
                 expectSuccessfulRequest)
     }
 
@@ -88,19 +90,16 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))
                 .accept(APPLICATION_JSON),
+                200,
                 expectSuccessfulRequest)
     }
 
     ResultActions delete(String url, boolean expectSuccessfulRequest = true) {
         doRequest(MockMvcRequestBuilders.delete(url)
-                .accept(APPLICATION_JSON), expectSuccessfulRequest)
+                .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
     }
 
-    ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder) throws Exception {
-        doRequest(requestBuilder, true)
-    }
-
-    ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, boolean expectSuccessfulRequest) throws Exception {
+    ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int successfulStatusCode, boolean expectSuccessfulRequest) throws Exception {
         ResultActions asyncActions = mvc
                 .perform(MockMvcRequestBuilders.asyncDispatch(prepareAsyncRequest(requestBuilder)))
                 .andDo(MockMvcResultHandlers.print())
@@ -108,9 +107,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
 
         if (expectSuccessfulRequest) {
             assert asyncResult.resolvedException == null
-            asyncActions.andExpect(status().is2xxSuccessful())
+            asyncActions.andExpect(status().is(successfulStatusCode))
         } else {
-            asyncActions.andExpect(status().is4xxClientError())
+            asyncActions.andExpect({result -> result.response.status != successfulStatusCode})
             assert asyncResult.resolvedException != null
             throw asyncResult.resolvedException
         }

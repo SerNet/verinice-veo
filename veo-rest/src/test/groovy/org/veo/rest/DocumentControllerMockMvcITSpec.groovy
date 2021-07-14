@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -37,8 +35,6 @@ import org.veo.persistence.access.DocumentRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the document controller. Uses mocked spring MVC environment.
@@ -110,14 +106,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
+        def result = parseJson(post('/documents', request))
 
-        def results = post('/documents', request)
-
-        then: "the document is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new document is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new document is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -138,14 +129,12 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/documents/${document.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(document.id.uuidValue() + "_" + salt + "_" + Long.toString(document.getVersion()))
 
-        then: "the document is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(results)
         result.name == 'Test document-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
@@ -223,11 +212,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(document.id.uuidValue(), document.version)
         ]
-        def results = put("/documents/${document.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/documents/${document.id.uuidValue()}", request, headers))
 
         then: "the document is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New document-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -242,10 +229,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        def results = delete("/documents/${document.id.uuidValue()}")
+        delete("/documents/${document.id.uuidValue()}")
 
         then: "the document is deleted"
-        results.andExpect(status().isOk())
         documentRepository.findById(document.id).empty
     }
 
@@ -319,10 +305,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-        def results = delete("/documents/${document.id.uuidValue()}")
+        delete("/documents/${document.id.uuidValue()}")
 
         then: "the document is deleted"
-        results.andExpect(status().isOk())
         documentRepository.findById(document.id).empty
 
         expect: "the composite is retrieved with no parts"

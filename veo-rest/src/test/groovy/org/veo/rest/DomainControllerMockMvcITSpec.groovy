@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -101,12 +99,10 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/domains/${testDomain.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(testDomain.id.uuidValue() + "_" + salt + "_" + Long.toString(testDomain.getVersion()))
 
-        then: "the domain is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and:
         def result = parseJson(results)
         result.name == testDomain.name
@@ -132,13 +128,9 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all domains for a client"() {
         when: "a request is made to the server"
-        def results = get("/domains?")
+        def result = parseJson(get("/domains?"))
 
         then: "the domains are returned"
-        results.andExpect(status().isOk())
-        when:
-        def result = parseJson(results)
-        then:
         result.size == 2
         result*.name.sort().first() == 'Domain 1'
     }

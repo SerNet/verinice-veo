@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -35,8 +33,6 @@ import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.IncidentRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the incident controller. Uses mocked spring MVC environment.
@@ -109,14 +105,9 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
+        def result = parseJson(post('/incidents', request))
 
-        def results = post('/incidents', request)
-
-        then: "the incident is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new incident is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new incident is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -138,14 +129,12 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/incidents/${incident.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(incident.id.uuidValue() + "_" + salt + "_" + Long.toString(incident.getVersion()))
 
-        then: "the incident is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(results)
         result.name == 'Test incident-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
@@ -223,11 +212,9 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(incident.id.uuidValue(), incident.version)
         ]
-        def results = put("/incidents/${incident.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/incidents/${incident.id.uuidValue()}", request, headers))
 
         then: "the incident is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New incident-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -244,11 +231,9 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
 
         when: "a delete request is sent to the server"
-
-        def results = delete("/incidents/${incident.id.uuidValue()}")
+        delete("/incidents/${incident.id.uuidValue()}")
 
         then: "the incident is deleted"
-        results.andExpect(status().isOk())
         incidentRepository.findById(incident.id).empty
     }
 
@@ -337,10 +322,9 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is asked to delete b"
-        def results = delete("/incidents/${b.id.uuidValue()}")
+        delete("/incidents/${b.id.uuidValue()}")
 
         then: "b is deleted"
-        results.andExpect(status().isOk())
         incidentRepository.findById(b.id).empty
 
         and: "a and c are left intact"

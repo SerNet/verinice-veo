@@ -17,14 +17,9 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.servlet.ResultActions
 
 import org.veo.core.VeoMvcSpec
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the controllers.
@@ -46,75 +41,54 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
     def "retrieve all assets"() {
         when: "if the client was not created and request is made to the server"
 
-        def results = get("/assets")
+        def result = parseJson(get("/assets"))
 
         then: "an empty result is returned"
-
-        results.andExpect(status().isOk())
-        getJsonResult(results).items.size() == 0
+        result.items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all controls"() {
         when: "if the client was not created and request is made to the server"
-
-        def results = get("/controls")
+        def result = parseJson(get("/controls"))
 
         then: "an empty result is returned"
-
-        results.andExpect(status().isOk())
-        getJsonResult(results).items.size() == 0
+        result.items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all scopes"() {
         when: "if the client was not created and request is made to the server"
-
-        def results = get("/scopes")
+        def result = parseJson(get("/scopes"))
 
         then: "an empty result is returned"
-
-        results.andExpect(status().isOk())
-        getJsonResult(results).items.size() == 0
+        result.items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all persons"() {
         when: "if the client was not created and request is made to the server"
-
-        def results = get("/persons")
+        def result = parseJson(get("/persons"))
 
         then: "an empty result is returned"
-
-        results.andExpect(status().isOk())
-        getJsonResult(results).items.size() == 0
+        result.items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all processes"() {
         when: "if the client was not created and request is made to the server"
-
-        def results = get("/processes")
+        def result = parseJson(get("/processes"))
 
         then: "an empty result is returned"
-
-        results.andExpect(status().isOk())
-        getJsonResult(results).items.size() == 0
+        result.items.size() == 0
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all units"() {
         when: "if the client was not created and request is made to the server"
-
-        def results = get("/units")
+        def result = parseJson(get("/units"))
 
         then: "an empty result is returned"
-
-        results.andExpect(status().isOk())
-        getJsonResult(results).items.size() == 0
-    }
-
-    Object getJsonResult(ResultActions results) {
-        return  new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        result.items.size() == 0
     }
 }

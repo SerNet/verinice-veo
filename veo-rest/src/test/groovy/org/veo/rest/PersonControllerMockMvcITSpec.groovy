@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -36,8 +34,6 @@ import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the unit personler. Uses mocked spring MVC environment.
@@ -110,14 +106,9 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
+        def result = parseJson(post('/persons', request))
 
-        def results = post('/persons', request)
-
-        then: "the person is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new person is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new person is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -138,14 +129,12 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/persons/${person.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(person.id.uuidValue() + "_" + salt + "_" + Long.toString(person.getVersion()))
 
-        then: "the person is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(results)
         result.name == 'Test person-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
@@ -202,11 +191,9 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(person.id.uuidValue(), 0)
         ]
-        def results = put("/persons/${person.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/persons/${person.id.uuidValue()}", request, headers))
 
         then: "the person is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -257,11 +244,9 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(person.id.uuidValue(), person.version)
         ]
-        def results = put("/persons/${person.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/persons/${person.id.uuidValue()}", request, headers))
 
         then: "the person is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -296,11 +281,9 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-
-        def results = delete("/persons/${person.id.uuidValue()}")
+        delete("/persons/${person.id.uuidValue()}")
 
         then: "the person is deleted"
-        results.andExpect(status().isOk())
         !personRepository.exists(person.id)
     }
 

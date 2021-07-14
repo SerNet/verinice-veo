@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -38,8 +36,6 @@ import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -123,14 +119,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "the request is sent"
+        def result = parseJson(post('/scopes', request))
 
-        def results = post('/scopes', request)
-
-        then: "the scope is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new scope is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new scope is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -159,25 +150,18 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the request is sent"
 
-        def results = post('/scopes', request)
+        def result = parseJson(post('/scopes', request))
 
-        then: "the scope is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new scope is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new scope is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
         resourceId != ''
         result.message == 'Scope created successfully.'
-        when: "the server is queried for the scope"
-        results = get("/scopes/${resourceId}")
 
-        then: "the scope is found"
-        results.andExpect(status().isOk())
-        when: "the returned content is parsed"
-        result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        when: "the server is queried for the scope"
+        result = parseJson(get("/scopes/${resourceId}"))
+
         then: "the expected name is present"
         result.name == 'My Assets'
         and: "the scope contains the asset"
@@ -211,11 +195,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
 
         when: "the server is queried for the scope"
-        def results = get("/scopes/${scope.id.uuidValue()}")
+        def result = parseJson(get("/scopes/${scope.id.uuidValue()}"))
 
         then: "the scope is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test scope'
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         and: "is has the correct members"
@@ -247,22 +229,15 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
 
         when: "the server is queried for the scope"
-        def results = get("/scopes/${scope.id.uuidValue()}")
+        def result = parseJson(get("/scopes/${scope.id.uuidValue()}"))
 
         then: "the scope is found"
-        results.andExpect(status().isOk())
-        when:
-        def result = parseJson(results)
-        then:
         result.name == 'Test scope'
         result.members.empty
 
         when: "the server is queried for the scope's members"
-        def membersResults = get("/scopes/${scope.id.uuidValue()}/members")
-        then: "the members are returned"
-        membersResults.andExpect(status().isOk())
-        when:
-        def membersResult = parseJson(membersResults)
+        def membersResult = parseJson(get("/scopes/${scope.id.uuidValue()}/members"))
+
         then:
         membersResult.empty
 
@@ -272,7 +247,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             [targetUri : "http://localhost/scenarios/${scenario.id.uuidValue()}"]
         ]
         put("/scopes/${scope.id.uuidValue()}", result, [
-            "If-Match": getTextBetweenQuotes(results.andReturn().response.getHeader("ETag"))
+            "If-Match": getTextBetweenQuotes(getETag(get("/scopes/${scope.id.uuidValue()}")))
         ])
         then:
         txTemplate.execute { scopeRepository.findById(scope.id).get().members.size() }  == 2
@@ -385,11 +360,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(scope.id.uuidValue(), scope.version)
         ]
-        def results = put("/scopes/${scope.id.uuidValue()}",request, headers)
+        def result = parseJson(put("/scopes/${scope.id.uuidValue()}",request, headers))
 
         then: "the scope is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New scope 2'
         result.abbreviation == 's-2'
         result.domains.first().displayName == "${domain.abbreviation} ${domain.name}"
@@ -510,13 +483,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         delete("/assets/${asset.id.uuidValue()}")
 
         and: "the server is queried for the scope"
-        def results = get("/scopes/${scope.id.uuidValue()}")
+        def members = parseJson(get("/scopes/${scope.id.uuidValue()}")).members
 
         then: "the scope is found"
-        results.andExpect(status().isOk())
-        when:
-        def members = parseJson(results).members
-        then:
         members.size() == 1
         members.first().displayName == "SCN-1 Test scenario"
     }
@@ -536,10 +505,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is asked to delete b"
-        def results = delete("/scopes/${b.id.uuidValue()}")
+        delete("/scopes/${b.id.uuidValue()}")
 
         then: "b is deleted"
-        results.andExpect(status().isOk())
         scopeRepository.findById(b.id).empty
 
         and: "a and c are left intact"

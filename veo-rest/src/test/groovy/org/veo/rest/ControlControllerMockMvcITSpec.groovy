@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-
 import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -36,8 +34,6 @@ import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -108,14 +104,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
+        def result = parseJson(post('/controls', request))
 
-        def results = post('/controls', request)
-
-        then: "the control is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new control is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new control is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -147,14 +138,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
+        def result = parseJson(post('/controls', request))
 
-        def results = post('/controls', request)
-
-        then: "the control is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new control is returned"
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the location of the new control is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -187,14 +173,12 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         def results = get("/controls/${control.id.uuidValue()}")
         String expectedETag = DigestUtils.sha256Hex(control.id.uuidValue() + "_" + salt + "_" + Long.toString(control.getVersion()))
 
-        then: "the control is found"
-        results.andExpect(status().isOk())
-        and: "the eTag is set"
-        String eTag = results.andReturn().response.getHeader("ETag")
+        then: "the eTag is set"
+        String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getTextBetweenQuotes(eTag) == expectedETag
         and:
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        def result = parseJson(results)
         result.name == 'Test control-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
@@ -221,11 +205,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "the server is queried for the composite control"
-        def results = get("/controls/${compositeControl.id.uuidValue()}")
+        def result = parseJson(get("/controls/${compositeControl.id.uuidValue()}"))
 
         then: "the composite control is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'Test composite control'
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         result.parts.size() == 2
@@ -309,11 +291,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(control.id.uuidValue(), control.version)
         ]
-        def results = put("/controls/${control.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/controls/${control.id.uuidValue()}", request, headers))
 
         then: "the control is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -363,11 +343,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(control.id.uuidValue(), control.version)
         ]
-        def results = put("/controls/${control.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/controls/${control.id.uuidValue()}", request, headers))
 
         then: "the control is found"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
         result.domains.first().displayName == domain.abbreviation+" "+domain.name
@@ -382,11 +360,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-
-        def results = delete("/controls/${control.id.uuidValue()}")
+        delete("/controls/${control.id.uuidValue()}")
 
         then: "the control is deleted"
-        results.andExpect(status().isOk())
         controlRepository.findById(control.id).empty
     }
 

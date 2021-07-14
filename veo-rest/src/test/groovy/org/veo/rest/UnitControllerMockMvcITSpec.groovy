@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.emptyOrNullString
 import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.not
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -90,13 +89,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
-
         def results = post('/units', request)
 
-        then: "the unit is created and a status code returned"
-        results.andExpect(status().isCreated())
-
-        and: "the location of the new unit is returned"
+        then: "the location of the new unit is returned"
         results.andExpect(jsonPath('$.success').value("true"))
         results.andExpect(jsonPath('$.resourceId', is(not(emptyOrNullString()))))
         results.andExpect(jsonPath('$.message').value('Unit created successfully.'))
@@ -111,13 +106,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a request is made to the server"
+        def result = parseJson(get("/units/${unit.id.uuidValue()}"))
 
-        def results = get("/units/${unit.id.uuidValue()}")
-
-        then: "the unit is returned with HTTP status code 200"
-
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the unit is returned"
         result.name == "Test unit"
         result.abbreviation == "u-1"
         result.domains.first().displayName == "ISO 27001"
@@ -132,13 +123,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         })
 
         when: "a request is made to the server"
-
-        def results = get("/units")
+        def result = parseJson(get("/units"))
 
         then: "the units are returned"
-
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
         result.size() == 1
         result.first().name == "Test unit foo"
     }
@@ -173,11 +160,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             'If-Match': ETag.from(unit.id.uuidValue(), 0)
         ]
 
-        def results = put("/units/${unit.id.uuidValue()}", request, headers)
+        def result = parseJson(put("/units/${unit.id.uuidValue()}", request, headers))
 
-        then: "the unit is updated and a status code returned"
-        results.andExpect(status().isOk())
-        def result = new JsonSlurper().parseText(results.andReturn().response.contentAsString)
+        then: "the unit is updated"
         result.name == "New unit-2"
         result.abbreviation == "u-2"
     }
@@ -249,10 +234,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ])
 
-        then: "the sub unit is created and a status code returned"
-        postSubUnitResult.andExpect(status().isCreated())
-
-        and: "the location of the new unit is returned"
+        then: "the location of the new unit is returned"
         postSubUnitResult.andExpect(jsonPath('$.success').value("true"))
         postSubUnitResult.andExpect(jsonPath('$.resourceId', is(not(emptyOrNullString()))))
         postSubUnitResult.andExpect(jsonPath('$.message').value('Unit created successfully.'))
@@ -350,12 +332,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         loadedUnit.present
 
         when: "the unit is deleted"
-        def results = delete("/units/${unit.id.uuidValue()}")
+        delete("/units/${unit.id.uuidValue()}")
 
-        then: "the unit is removed and a status code returned"
-        results.andExpect(status().isNoContent())
-
-        when: "the unit is loaded again"
+        and: "the unit is loaded again"
         loadedUnit = txTemplate.execute {
             urepository.findById(unit.id)
         }
@@ -440,12 +419,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         loadedUnit.present
 
         when: "the unit is deleted"
-        def results = delete("/units/${unit.id.uuidValue()}")
+        delete("/units/${unit.id.uuidValue()}")
 
-        then: "the unit is removed and a status code returned"
-        results.andExpect(status().isNoContent())
-
-        when: "the unit is loaded again"
+        and: "the unit is loaded again"
         loadedUnit = txTemplate.execute {
             urepository.findById(unit.id)
         }
