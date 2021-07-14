@@ -18,6 +18,7 @@
 package org.veo.rest.test
 
 import static groovy.json.JsonOutput.toJson
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -28,6 +29,7 @@ import org.keycloak.authorization.client.AuthzClient
 import org.keycloak.authorization.client.Configuration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -43,13 +45,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
+import org.veo.rest.RestApplication
+import org.veo.rest.security.WebSecurity
 
 import groovy.json.JsonSlurper
-import groovy.transform.CompileStatic
-import lombok.AllArgsConstructor
-import spock.lang.IgnoreIf
 import spock.lang.Shared
 
+@SpringBootTest(classes = [RestApplication.class, WebSecurity.class],
+webEnvironment = RANDOM_PORT)
 @ActiveProfiles(["test", "resttest", "local"])
 class VeoRestTest extends spock.lang.Specification {
 

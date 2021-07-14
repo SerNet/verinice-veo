@@ -17,19 +17,8 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
-
 import java.time.Instant
 
-import org.springframework.boot.test.context.SpringBootTest
-
-import com.fasterxml.jackson.databind.node.ObjectNode
-
-import org.veo.rest.RestApplication
-import org.veo.rest.security.WebSecurity
-
-@SpringBootTest(classes = [RestApplication.class, WebSecurity.class],
-webEnvironment = RANDOM_PORT)
 class UnitRestTestITSpec extends VeoRestTest {
 
     public static final String UNIT_NAME = 'Testunit'
