@@ -157,12 +157,15 @@ class VeoRestTest extends spock.lang.Specification {
         body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    void put(String relativeUri, Object requestBody, int assertStatusCode = 200, String etagHeader) {
+    void put(String relativeUri, Object requestBody, String etagHeader, int assertStatusCode = 200) {
         def absoluteUrl = baseUrl + relativeUri
         HttpHeaders headers = new HttpHeaders()
         headers.setIfMatch(getETag(etagHeader))
-        HttpEntity putEntity = new HttpEntity(requestBody, headers)
-        restTemplate.put(absoluteUrl, putEntity)
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity putEntity = new HttpEntity(toJson(requestBody), headers)
+
+        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.PUT, putEntity, ObjectNode.class)
+        assert resp.statusCodeValue == assertStatusCode
     }
 
     void delete(String relativeUri, int assertStatusCode = 204) {
