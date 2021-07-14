@@ -89,9 +89,4 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
             throw new NotFoundException("Stored JSON file has wrong encoding.");
         }
     }
-
-    @Override
-    public List<String> listValidSchemaNames() {
-        return VALID_TYPE_SINGULAR_TERMS;
-    }
 }

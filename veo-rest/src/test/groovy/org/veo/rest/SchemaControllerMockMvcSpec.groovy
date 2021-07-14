@@ -46,20 +46,6 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
     @Autowired
     private MockMvc mvc
 
-
-    @WithUserDetails("user@domain.example")
-    def "get the list of available schemas"() {
-        when: "a request for a list of schemas is made"
-
-        def results = mvc.perform(get('/schemas'))
-        def response = results.andReturn().response
-
-        then: "a correct response is returned"
-        response.status == OK.value()
-        results.andExpect(jsonPath('$.knownSchemas.[*]', hasItem("process")))
-                .andExpect(jsonPath('$.knownSchemas.[*]', hasItem("asset")))
-    }
-
     @WithUserDetails("user@domain.example")
     def "get the schema for a process"() {
         when: "a request for a schema is made"

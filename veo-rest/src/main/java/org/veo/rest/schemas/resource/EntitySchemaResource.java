@@ -19,8 +19,6 @@ package org.veo.rest.schemas.resource;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.presenter.api.dto.SchemaIdentifiersDTO;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -63,15 +60,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public interface EntitySchemaResource {
 
     String URL_BASE_PATH = "/schemas";
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns a list of all available entity schemas.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Schemas returned",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) })
-    @Valid
-    SchemaIdentifiersDTO getSchemas(@Parameter(hidden = true) Authentication auth);
 
     // @formatter:off
     @GetMapping(value = "/{type:[\\w]+}")

@@ -54,12 +54,4 @@ public interface EntitySchemaService {
      * @return the reduced JSON-schema document
      */
     public String roleFilter(List<String> roles, String inputSchema);
-
-    /**
-     * Return a list of all valid identifiers for which a schema can be requested.
-     *
-     * @return
-     */
-    public List<String> listValidSchemaNames();
-
 }
