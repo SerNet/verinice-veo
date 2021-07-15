@@ -86,7 +86,7 @@ pipeline {
                  script {
                      withDockerNetwork{ n ->
                          docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                             docker.image(imageForGradleStages).inside("--network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
+                             docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
                                  sh """export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                        export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
                                        ./gradlew --no-daemon test"""
@@ -130,7 +130,7 @@ pipeline {
                          script {
                              withDockerNetwork{ n ->
                                  docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                                     docker.image(imageForGradleStages).inside("--network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
+                                     docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
                                          sh """export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                                export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
                                                ./gradlew --no-daemon veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128 """
