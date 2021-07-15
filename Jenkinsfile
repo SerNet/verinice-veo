@@ -248,7 +248,8 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'veo-rest.log', fingerprint: false
+                    archiveArtifacts artifacts: 'veo-rest.log*', fingerprint: false
+                    sh 'rm veo-rest.log*'
                 }
             }
         }
@@ -265,6 +266,7 @@ pipeline {
     post {
         always {
            node('') {
+                sh 'rm veo-rest/build/libs/*.jar'
                 recordIssues(enabledForFailure: true, tools: [java()])
                 recordIssues(enabledForFailure: true, tools: [javaDoc()])
                 recordIssues(
