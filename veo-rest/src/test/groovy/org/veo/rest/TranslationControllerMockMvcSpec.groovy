@@ -26,7 +26,7 @@ import org.veo.core.VeoMvcSpec
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-class TranslationControllerMockMvcSpec2 extends VeoMvcSpec {
+class TranslationControllerMockMvcSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "get the translation for all languages"() {
