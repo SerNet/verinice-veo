@@ -18,12 +18,12 @@
 package org.veo.listeners;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -34,11 +34,11 @@ import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.StoredEvent;
-import org.veo.persistence.access.StoredEventRepository;
-import org.veo.persistence.entity.jpa.StoredEventData;
+import org.veo.core.events.StoredEventService;
 import org.veo.persistence.entity.jpa.VersioningEvent;
 import org.veo.persistence.entity.jpa.VersioningEvent.Type;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,26 +47,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class VersioningEventListener {
-
-    @Value("${veo.message.dispatch.routing-key-prefix}")
-    private String ROUTING_KEY_PREFIX;
 
     private static final String ROUTING_KEY = "versioning_event";
 
     private final ObjectMapper objectMapper;
-    private final StoredEventRepository storedEventRepository;
+    private final StoredEventService storedEventService;
     private final ReferenceAssembler referenceAssembler;
     private final EntityToDtoTransformer entityToDtoTransformer;
-
-    public VersioningEventListener(ObjectMapper objectMapper,
-            StoredEventRepository storedEventRepository, ReferenceAssembler referenceAssembler,
-            EntityToDtoTransformer entityToDtoTransformer) {
-        this.objectMapper = objectMapper;
-        this.storedEventRepository = storedEventRepository;
-        this.referenceAssembler = referenceAssembler;
-        this.entityToDtoTransformer = entityToDtoTransformer;
-    }
 
     @EventListener
     @Transactional(propagation = Propagation.MANDATORY)
@@ -85,13 +74,11 @@ public class VersioningEventListener {
         }
         log.debug("Storing {} event for entity {} modified by user {}", event.getType(), entity,
                   event.getAuthor());
-        var storedEvent = StoredEventData.newInstance(createJson(entity, eventType,
-                                                                 event.getAuthor(), client.get()),
-                                                      ROUTING_KEY_PREFIX + ROUTING_KEY);
-        storedEventRepository.save(storedEvent);
+        storedEventService.storeEvent(ROUTING_KEY, createJson(entity, eventType, event.getAuthor(),
+                                                              client.get()));
     }
 
-    private String createJson(Versioned entity, VersioningEvent.Type type, String author,
+    private JsonNode createJson(Versioned entity, VersioningEvent.Type type, String author,
             Client client) {
         var tree = objectMapper.createObjectNode();
         tree.put("uri", getUri(entity));
@@ -107,7 +94,7 @@ public class VersioningEventListener {
             tree.set("content",
                      objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
         }
-        return tree.toString();
+        return tree;
     }
 
     private long getChangeNumber(Versioned entity, VersioningEvent.Type type) {
