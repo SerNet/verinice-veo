@@ -351,6 +351,7 @@ public final class EntityToDtoTransformer {
     public CustomPropertiesDto transformCustomProperties2Dto(@Valid CustomProperties source) {
         var target = new CustomPropertiesDto();
         target.setAttributes(source.getAttributes());
+        target.setDomains(convertReferenceSet(source.getDomains()));
         return target;
     }
 
