@@ -161,7 +161,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
     def 'domain with catalog and catalog items and a domain template'() {
         given: "the domain template and a catalog"
 
-        domainTemplate = newDomainTemplate(Key.newUuid())
+        domainTemplate = newDomainTemplate()
         domainTemplateRepository.save(domainTemplate)
 
 

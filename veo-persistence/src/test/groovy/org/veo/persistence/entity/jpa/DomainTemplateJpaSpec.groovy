@@ -47,7 +47,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate is inserted'() {
         given: "the domain template"
 
-        domain0 = newDomainTemplate(Key.newUuid())
+        domain0 = newDomainTemplate()
 
         when: "saving"
 
@@ -65,7 +65,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate with catalog is inserted'() {
         given: "the domain template"
 
-        domain0 = newDomainTemplate(Key.newUuid())
+        domain0 = newDomainTemplate()
 
         when: "saving"
 
@@ -89,7 +89,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate with catalog and catalog items'() {
         given: "the domain template and a catalog"
 
-        domain0 = newDomainTemplate(Key.newUuid())
+        domain0 = newDomainTemplate()
         Catalog catalog = newCatalog(domain0) {
             name = "a"
             newCatalogItem(it, VeoSpec.&newControl)

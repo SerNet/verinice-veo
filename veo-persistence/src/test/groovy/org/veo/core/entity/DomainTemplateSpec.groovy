@@ -30,7 +30,7 @@ class DomainTemplateSpec extends VeoSpec {
         String templateVersion = '1.0'
 
         when : "DomainTemplate is created"
-        DomainTemplate domainTemplate = newDomainTemplate(Key.newUuid()) {
+        DomainTemplate domainTemplate = newDomainTemplate() {
             it.name = name
             it.authority = auth
             it.templateVersion = templateVersion
