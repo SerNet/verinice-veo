@@ -18,6 +18,7 @@
 package org.veo.rest.schemas.resource;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +72,7 @@ public interface EntitySchemaResource {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "404", description = "Schema not found")
     })
-    ResponseEntity<String> getSchema(
+    CompletableFuture<ResponseEntity<String>> getSchema(
 
             @Parameter(hidden = true) Authentication auth,
 

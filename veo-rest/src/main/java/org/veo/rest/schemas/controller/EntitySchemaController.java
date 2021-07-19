@@ -19,6 +19,7 @@ package org.veo.rest.schemas.controller;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -47,23 +48,25 @@ public class EntitySchemaController implements EntitySchemaResource {
     private final EntitySchemaService schemaService;
 
     @Override
-    public ResponseEntity<String> getSchema(Authentication auth, @PathVariable String type,
+    public CompletableFuture<ResponseEntity<String>> getSchema(Authentication auth,
+            @PathVariable String type,
             @RequestParam(value = "domains", required = true) List<String> domains) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<String> userRoles = Collections.emptyList();
+            if (auth.getPrincipal() instanceof ApplicationUser) {
+                ApplicationUser user = (ApplicationUser) auth.getPrincipal();
+                userRoles = user.getAuthorities()
+                                .stream()
+                                .map(grant -> grant.getAuthority())
+                                .collect(Collectors.toList());
+            }
+            // TODO define schema-roles for users
+            // TODO use valid 'domain' class
 
-        List<String> userRoles = Collections.emptyList();
-        if (auth.getPrincipal() instanceof ApplicationUser) {
-            ApplicationUser user = (ApplicationUser) auth.getPrincipal();
-            userRoles = user.getAuthorities()
-                            .stream()
-                            .map(grant -> grant.getAuthority())
-                            .collect(Collectors.toList());
-        }
-        // TODO define schema-roles for users
-        // TODO use valid 'domain' class
-
-        String schema = schemaService.roleFilter(userRoles,
-                                                 schemaService.findSchema(type, domains));
-        return ResponseEntity.ok()
-                             .body(schema);
+            String schema = schemaService.roleFilter(userRoles,
+                                                     schemaService.findSchema(type, domains));
+            return ResponseEntity.ok()
+                                 .body(schema);
+        });
     }
 }

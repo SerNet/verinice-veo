@@ -18,6 +18,7 @@
 package org.veo.rest.schemas.controller;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -39,10 +40,12 @@ public class TranslationController implements TranslationsResource {
     private final EntitySchemaService schemaService;
 
     @Override
-    public ResponseEntity<String> getSchema(Authentication auth,
-            @RequestParam(value = "languages", required = true) Set<String> languages) {
-        String t10n = schemaService.findTranslations(languages);
-        return ResponseEntity.ok()
-                             .body(t10n);
+    public CompletableFuture<ResponseEntity<String>> getSchema(Authentication auth,
+            @RequestParam(value = "languages") Set<String> languages) {
+        return CompletableFuture.supplyAsync(() -> {
+            String t10n = schemaService.findTranslations(languages);
+            return ResponseEntity.ok()
+                                 .body(t10n);
+        });
     }
 }

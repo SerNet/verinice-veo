@@ -17,45 +17,25 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.springframework.http.HttpStatus.OK
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.servlet.MockMvc
 
-import org.veo.core.VeoSpringSpec
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
-
+import org.veo.core.VeoMvcSpec
 /**
- * Unit test for the translation controller.
+ * Integration test for the translation controller.
  * Uses mocked spring MVC environment.
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
-@AutoConfigureMockMvc
-class TranslationControllerMockMvcSpec2 extends VeoSpringSpec {
-
-    @Autowired
-    private MockMvc mvc
+class TranslationControllerMockMvcSpec2 extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "get the translation for all languages"() {
         when: "a request for a T10N file is made"
 
-        def results = mvc.perform(get('/translations?languages=all'))
-        def response = results.andReturn().response
+        def translations = parseJson(get('/translations?languages=all'))
 
         then: "a correct response is returned"
-        response.status == OK.value()
-        results.andExpect(jsonPath('$.lang.de.person_address_city').value("Stadt"))
-        results.andExpect(jsonPath('$.lang.en.person_address_city').value("City"))
+        translations.lang.de.person_address_city == "Stadt"
+        translations.lang.en.person_address_city == "City"
     }
 }

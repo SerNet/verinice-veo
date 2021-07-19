@@ -18,6 +18,7 @@
 package org.veo.rest.schemas.resource;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +64,7 @@ public interface TranslationsResource {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "404", description = "Translation not found")
     })
-    public ResponseEntity<String> getSchema(
+    public CompletableFuture<ResponseEntity<String>> getSchema(
 
             @Parameter(required = false, hidden = true) Authentication auth,
 

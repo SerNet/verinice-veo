@@ -18,44 +18,25 @@
 package org.veo.rest
 
 import static org.hamcrest.Matchers.hasItem
-import static org.springframework.http.HttpStatus.OK
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.servlet.MockMvc
 
-import org.veo.core.VeoSpringSpec
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
+import org.veo.core.VeoMvcSpec
 
 /**
- * Unit test for the schema controller. Uses mocked spring MVC environment.
+ * Integration test for the schema controller. Uses mocked spring MVC environment.
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
-@AutoConfigureMockMvc
-class SchemaControllerMockMvcSpec extends VeoSpringSpec {
-
-    @Autowired
-    private MockMvc mvc
+class SchemaControllerMockMvcSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "get the schema for a process"() {
         when: "a request for a schema is made"
-
-        def results = mvc.perform(get('/schemas/process?domains=DSGVO'))
-        def response = results.andReturn().response
+        def results = get('/schemas/process?domains=DSGVO')
 
         then: "a correct response is returned"
-        //results.andDo(MockMvcResultMatchers.print())
-        response.status == OK.value()
         results.andExpect(jsonPath('$.title').value("Process"))
 
         and: "the custom links are present"
@@ -74,13 +55,9 @@ class SchemaControllerMockMvcSpec extends VeoSpringSpec {
     @WithUserDetails("user@domain.example")
     def "get the schema for an asset"() {
         when: "a request for an asset is made"
-
-        def results = mvc.perform(get('/schemas/asset?domains=DSGVO'))
-        def response = results.andReturn().response
+        def results = get('/schemas/asset?domains=DSGVO')
 
         then: "a correct response is returned"
-        //results.andDo(MockMvcResultMatchers.print())
-        response.status == OK.value()
         results.andExpect(jsonPath('$.title').value("Asset"))
 
         and: "the custom aspects are present"
