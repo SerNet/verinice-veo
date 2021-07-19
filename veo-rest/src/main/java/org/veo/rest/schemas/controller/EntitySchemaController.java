@@ -49,8 +49,7 @@ public class EntitySchemaController implements EntitySchemaResource {
 
     @Override
     public CompletableFuture<ResponseEntity<String>> getSchema(Authentication auth,
-            @PathVariable String type,
-            @RequestParam(value = "domains", required = true) List<String> domains) {
+            @PathVariable String type, @RequestParam(value = "domains") List<String> domains) {
         return CompletableFuture.supplyAsync(() -> {
             List<String> userRoles = Collections.emptyList();
             if (auth.getPrincipal() instanceof ApplicationUser) {
