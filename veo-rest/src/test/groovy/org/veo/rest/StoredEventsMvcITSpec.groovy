@@ -26,6 +26,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.DomainRepository
+import org.veo.core.repository.DomainTemplateRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -64,7 +65,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             def client = clientRepository.save(newClient {
                 id = clientId
             })
+            def template = domainTemplateRepository.save(newDomainTemplate())
             domain = domainRepository.save(newDomain {
+                domainTemplate = template
                 owner = client
                 name = "ISO"
             })
@@ -76,6 +79,17 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             clientRepository.save(client)
             unitRepository.save(unit)
         }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "domain creation event is generated"() {
+        when:
+        def event = getLatestStoredEventContent("domain_creation_event")
+
+        then:
+        event.clientId == clientId.uuidValue()
+        event.domainId == domain.id.uuidValue()
+        event.domainTemplateId == domain.domainTemplate.id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")
@@ -340,9 +354,16 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         storedEventRepository.findAll().size() == numberOfStoredEventsBefore
     }
 
-    private Object getLatestStoredEventContent() {
-        parseJson(storedEventRepository.findAll().sort {
-            it.id
-        }.last().content)
+    private Object getLatestStoredEventContent(String routingKey = "") {
+        parseJson(storedEventRepository
+                .findAll()
+                .findAll {
+                    it.routingKey.endsWith(routingKey)
+                }
+                .sort {
+                    it.id
+                }
+                .last()
+                .content)
     }
 }
