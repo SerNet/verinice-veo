@@ -17,13 +17,9 @@
  ******************************************************************************/
 package org.veo.rest
 
-import static org.hamcrest.Matchers.hasItem
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-
 /**
  * Integration test for the schema controller. Uses mocked spring MVC environment.
  * Does not start an embedded server.
@@ -34,38 +30,27 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "get the schema for a process"() {
         when: "a request for a schema is made"
-        def results = get('/schemas/process?domains=DSGVO')
+        def schema = parseJson(get('/schemas/process?domains=DSGVO'))
 
         then: "a correct response is returned"
-        results.andExpect(jsonPath('$.title').value("Process"))
+        schema.title == "Process"
 
         and: "the custom links are present"
-        results.andExpect(
-                jsonPath('$..links.properties.process_dataType').hasJsonPath()
-                )
+        schema.properties.links.properties.process_dataType != null
 
         and: "the custom aspects are present"
-        results.andExpect(
-                jsonPath('$..customAspects.properties.process_processingDetails').hasJsonPath()
-                ).andExpect(
-                jsonPath('$..enum[*]', hasItem("process_processingDetails_operatingStage_operation"))
-                )
+        schema.properties.customAspects.properties.process_processingDetails != null
     }
 
     @WithUserDetails("user@domain.example")
     def "get the schema for an asset"() {
         when: "a request for an asset is made"
-        def results = get('/schemas/asset?domains=DSGVO')
+        def schema = parseJson(get('/schemas/asset?domains=DSGVO'))
 
         then: "a correct response is returned"
-        results.andExpect(jsonPath('$.title').value("Asset"))
+        schema.title == "Asset"
 
         and: "the custom aspects are present"
-        results.andExpect(
-                jsonPath('$..customAspects.properties.asset_details').hasJsonPath()
-                )
-        results.andExpect(
-                jsonPath('$..enum[*]', hasItem("asset_details_operatingStage_test"))
-                )
+        schema.properties.customAspects.properties.asset_details != null
     }
 }
