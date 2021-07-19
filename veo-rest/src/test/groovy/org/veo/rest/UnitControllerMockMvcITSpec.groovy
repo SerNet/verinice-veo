@@ -371,6 +371,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map putProcessRequest = [
             name: 'New Process-2',
+            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:

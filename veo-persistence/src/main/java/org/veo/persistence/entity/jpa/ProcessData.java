@@ -21,15 +21,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -37,6 +42,7 @@ import lombok.ToString;
 @Entity(name = "process")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
 
     @ManyToMany(targetEntity = ProcessData.class,
@@ -46,6 +52,11 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
                inverseJoinColumns = @JoinColumn(name = "part_id"))
     @Getter
     private final Set<Process> parts = new HashSet<>();
+
+    @Column(name = "status")
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Override
     ProcessRiskData createRisk(Scenario scenario) {

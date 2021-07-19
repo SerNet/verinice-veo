@@ -170,6 +170,7 @@ public final class EntityToDtoTransformer {
     public FullProcessDto transformProcess2Dto(@Valid Process source) {
         FullProcessDto target = new FullProcessDto();
         mapCompositeEntity(source, target);
+        target.setStatus(source.getStatus());
         return target;
     }
 

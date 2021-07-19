@@ -51,6 +51,7 @@ import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -115,6 +116,9 @@ public final class DtoToEntityTransformer {
             ModelObjectReferenceResolver modelObjectReferenceResolver) {
         var target = factory.createProcess(source.getName(), null);
         mapCompositeEntity(source, target, modelObjectReferenceResolver);
+        if (source instanceof FullProcessDto) {
+            target.setStatus(((FullProcessDto) source).getStatus());
+        }
         return target;
     }
 

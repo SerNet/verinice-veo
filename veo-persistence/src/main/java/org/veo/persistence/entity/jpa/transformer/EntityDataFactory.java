@@ -38,6 +38,7 @@ import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Process.Status;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
@@ -78,6 +79,7 @@ public class EntityDataFactory implements EntityFactory {
     @Override
     public Process createProcess(String name, ElementOwner unit) {
         Process process = new ProcessData();
+        process.setStatus(Status.NEW);
         setEntityLayerData(process, name, unit);
         return process;
     }

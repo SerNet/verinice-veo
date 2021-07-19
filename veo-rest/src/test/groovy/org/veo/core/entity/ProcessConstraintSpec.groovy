@@ -31,7 +31,7 @@ class ProcessConstraintSpec extends Specification {
 
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator()
 
-    def "owner and name must be specified"() {
+    def "status, designator, owner, and name must be specified"() {
         given: "an invalid process object"
         Key<UUID> id = Key.newUuid()
         def processData = new ProcessData()
@@ -41,13 +41,15 @@ class ProcessConstraintSpec extends Specification {
         def errors = validator.validate(processData)
 
         then: "not-null errors are present"
-        errors.size() == 3
+        errors.size() == 4
         assert errors*.propertyPath*.toString() as Set == [
+            "status",
             "designator",
             "",
             "name"
         ] as Set
         assert errors*.messageTemplate as Set == [
+            '{javax.validation.constraints.NotNull.message}',
             '{javax.validation.constraints.NotNull.message}',
             'Either owner or containingCatalogItem must be set',
             '{javax.validation.constraints.NotNull.message}'

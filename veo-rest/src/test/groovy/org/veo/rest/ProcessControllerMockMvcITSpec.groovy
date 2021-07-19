@@ -231,6 +231,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map request = [
             name: 'New Process-2',
+            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
@@ -292,6 +293,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map request = [
             name: 'New Process-2',
+            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
@@ -370,6 +372,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         when: "a request is made to the server"
         Map request = [
             name: 'New Process-2',
+            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
@@ -453,6 +456,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map putProcessRequest = [
             name: 'New Process-2',
+            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:

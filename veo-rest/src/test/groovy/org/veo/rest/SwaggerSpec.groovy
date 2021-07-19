@@ -127,6 +127,24 @@ class SwaggerSpec extends VeoSpringSpec {
         allowedTypes.sort() == schemaTypes
     }
 
+    def "Process DTO contains status property"() {
+        when:
+        def processDtoSchema = parsedApiDocs.components.schemas.FullProcessDto
+        then:
+        with(processDtoSchema.properties.status) {
+            it != null
+            it.description == 'The status for the Process'
+            it.enum == [
+                'NEW',
+                'IN_PROGRESS',
+                'FOR_REVIEW',
+                'RELEASED',
+                'ARCHIVED'
+            ]
+        }
+        processDtoSchema.required.contains('status')
+    }
+
     @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString
