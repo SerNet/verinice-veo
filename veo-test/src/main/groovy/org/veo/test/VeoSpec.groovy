@@ -18,6 +18,7 @@
 package org.veo.test
 
 import java.time.Instant
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -73,6 +74,8 @@ import spock.lang.Specification
  */
 abstract class VeoSpec extends Specification {
     private static EntityFactory factory = new EntityDataFactory()
+
+    private final static AtomicInteger designatorCounter = new AtomicInteger(1)
 
     static AssetData newAsset(ElementOwner owner, @DelegatesTo(value = Asset.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Asset") Closure init = null) {
@@ -254,7 +257,7 @@ abstract class VeoSpec extends Specification {
 
     private static initEntityLayerSupertype(EntityLayerSupertype target) {
         if(target.designator == null) {
-            target.designator = UUID.randomUUID().toString()
+            target.designator = "${target.typeDesignator}-${designatorCounter.getAndIncrement()}"
         }
         if(target.customAspects == null) {
             target.customAspects = []

@@ -15,6 +15,7 @@ dependencies {
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation project(":veo-test")
     testImplementation 'javax.validation:validation-api'
 

@@ -31,6 +31,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.Formula;
 
@@ -70,6 +71,7 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
     @NotNull
     @Column(name = "designator")
     @ToString.Include
+    @Pattern(regexp = "([A-Z]{3}-\\d+)|NO_DESIGNATOR")
     private String designator;
 
     @Column(name = "abbreviation")
