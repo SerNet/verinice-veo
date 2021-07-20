@@ -22,7 +22,9 @@ import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import org.veo.adapter.presenter.api.dto.ProcessSearchQueryDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
+import org.veo.core.entity.Process.Status;
 import org.veo.rest.security.ApplicationUser;
 
 /**
@@ -37,8 +39,10 @@ public final class ControllerConstants {
     public static final ApplicationUser ANY_USER = null;
     public static final Integer ANY_INT = null;
     public static final SearchQueryDto ANY_SEARCH = null;
+    public static final ProcessSearchQueryDto ANY_PROCESS_SEARCH = null;
     public static final String ANY_STRING = null;
     public static final List<String> ANY_STRING_LIST = null;
+    public static final Status ANY_STATUS = null;
 
     static final String PARENT_PARAM = "parent";
     static final String UUID_PARAM = "uuid";
@@ -47,6 +51,7 @@ public final class ControllerConstants {
     static final String DOMAIN_PARAM = "domain";
     static final String SUB_TYPE_PARAM = "subType";
     static final String DISPLAY_NAME_PARAM = "displayName";
+    static final String STATUS_PARAM = "status";
     static final String PAGE_SIZE_PARAM = "size";
     static final String PAGE_SIZE_DEFAULT_VALUE = "20";
     static final String PAGE_NUMBER_PARAM = "page";

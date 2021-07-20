@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 
@@ -27,5 +28,7 @@ import org.veo.core.entity.ProcessRisk;
  * with more specific methods - i.e. queries based on particular fields.
  */
 public interface ProcessRepository extends RiskAffectedRepository<Process, ProcessRisk> {
+
+    public ProcessQuery query(Client client);
 
 }

@@ -108,7 +108,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(DocumentController.URL_BASE_PATH)
 @Slf4j
-public class DocumentController extends AbstractEntityController {
+public class DocumentController extends AbstractEntityControllerWithDefaultSearch {
 
     public DocumentController(UseCaseInteractor useCaseInteractor,
             GetDocumentUseCase getDocumentUseCase, GetDocumentsUseCase getDocumentsUseCase,

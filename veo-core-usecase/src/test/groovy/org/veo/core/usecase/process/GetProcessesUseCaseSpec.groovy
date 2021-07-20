@@ -19,17 +19,18 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
-import org.veo.core.repository.EntityLayerSupertypeQuery
+import org.veo.core.entity.Process.Status
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.ProcessQuery
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
 import org.veo.core.usecase.base.QueryCondition
+import org.veo.core.usecase.process.GetProcessesUseCase.InputData
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
-    EntityLayerSupertypeQuery<Process> query = Mock()
+    ProcessQuery query = Mock()
     PagingConfiguration pagingConfiguration = Mock()
 
     GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider)
@@ -45,7 +46,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.getId() >> id
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null, null,pagingConfiguration))
+        def output = usecase.execute(new InputData(existingClient, null, null, null, null, pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
@@ -68,12 +69,15 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         null,
         Mock(QueryCondition) {
             getValues() >> ["subType 1", "subType 2"]
-        },pagingConfiguration))
+        },Mock(QueryCondition) {
+            getValues() >> [Status.ARCHIVED]
+        }, pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
+        1 * query.whereStatusIn([Status.ARCHIVED].toSet())
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
         output.entities.resultPage*.id == [id]
     }

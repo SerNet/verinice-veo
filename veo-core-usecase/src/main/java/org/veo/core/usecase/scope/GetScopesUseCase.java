@@ -20,13 +20,13 @@ package org.veo.core.usecase.scope;
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ScopeRepository;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
+import org.veo.core.usecase.base.DefaultGetEntitiesUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 /**
  * Reinstantiate persisted scope objects.
  */
-public class GetScopesUseCase extends GetEntitiesUseCase<Scope> {
+public class GetScopesUseCase extends DefaultGetEntitiesUseCase<Scope> {
 
     public GetScopesUseCase(ClientRepository clientRepository, ScopeRepository scopeRepository,
             UnitHierarchyProvider unitHierarchyProvider) {

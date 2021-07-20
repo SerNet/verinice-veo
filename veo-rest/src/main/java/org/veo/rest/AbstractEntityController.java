@@ -22,10 +22,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,8 +31,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import org.veo.adapter.ModelObjectReferenceResolver;
@@ -52,8 +47,6 @@ import org.veo.rest.common.ReferenceAssemblerImpl;
 import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 
@@ -98,14 +91,6 @@ public abstract class AbstractEntityController {
                  .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
-    @PostMapping(value = "/searches")
-    @Operation(summary = "Creates a new search with the given search criteria.")
-    public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Valid @RequestBody SearchQueryDto search) {
-        return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
-    }
-
     protected Client getClient(String clientId) {
         Key<UUID> id = Key.uuidFrom(clientId);
         return clientRepository.findById(id)
@@ -127,7 +112,7 @@ public abstract class AbstractEntityController {
 
     protected abstract String buildSearchUri(String searchId);
 
-    private ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
+    protected ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
         try {
             // Build search URI and remove optional request param placeholders.
             var searchUri = buildSearchUri(search.getSearchId()).replaceFirst("\\{[^}]*}", "");

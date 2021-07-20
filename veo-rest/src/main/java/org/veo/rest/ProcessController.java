@@ -32,6 +32,7 @@ import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
+import static org.veo.rest.ControllerConstants.STATUS_PARAM;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
@@ -70,7 +71,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
-import org.veo.adapter.presenter.api.dto.SearchQueryDto;
+import org.veo.adapter.presenter.api.dto.ProcessSearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
@@ -80,11 +81,11 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Process.Status;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateEntityUseCase;
 import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.ModifyEntityUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
@@ -99,6 +100,7 @@ import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -279,6 +281,7 @@ public class ProcessController extends AbstractEntityController implements Proce
             @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
                                          required = false) String displayName,
             @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+            @RequestParam(value = STATUS_PARAM, required = false) Status status,
             @RequestParam(value = PAGE_SIZE_PARAM,
                           required = false,
                           defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
@@ -299,13 +302,14 @@ public class ProcessController extends AbstractEntityController implements Proce
         }
 
         return getProcesses(GetEntitiesInputMapper.map(client, parentUuid, displayName, subType,
+                                                       status,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
                                                                              sortColumn,
                                                                              sortOrder)));
     }
 
     private CompletableFuture<PageDto<FullProcessDto>> getProcesses(
-            GetEntitiesUseCase.InputData inputData) {
+            GetProcessesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getProcessesUseCase, inputData,
                                          output -> PagingMapper.toPage(output.getEntities(),
                                                                        entityToDtoTransformer::transformProcess2Dto));
@@ -318,6 +322,14 @@ public class ProcessController extends AbstractEntityController implements Proce
                                                                   ANY_STRING, ANY_STRING))
                                                                                           .withSelfRel()
                                                                                           .getHref();
+    }
+
+    @PostMapping(value = "/searches")
+    @Operation(summary = "Creates a new search with the given search criteria.")
+    public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @Valid @RequestBody ProcessSearchQueryDto search) {
+        return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
     }
 
     @GetMapping(value = "/searches/{searchId}")
@@ -339,7 +351,7 @@ public class ProcessController extends AbstractEntityController implements Proce
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
             return getProcesses(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
-                                                           SearchQueryDto.decodeFromSearchId(searchId),
+                                                           ProcessSearchQueryDto.decodeFromSearchId(searchId),
                                                            PagingMapper.toConfig(pageSize,
                                                                                  pageNumber,
                                                                                  sortColumn,

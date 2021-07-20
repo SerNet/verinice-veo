@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2021  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.document;
+package org.veo.core.usecase.base;
 
-import org.veo.core.entity.Document;
+import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.DocumentRepository;
-import org.veo.core.usecase.base.DefaultGetEntitiesUseCase;
-import org.veo.core.usecase.base.UnitHierarchyProvider;
+import org.veo.core.repository.EntityLayerSupertypeRepository;
 
 /**
- * Reinstantiate persisted document objects.
+ * Base class for get-entities use cases that use the default
+ * {@link GetEntitiesUseCase.InputData}
  */
-public class GetDocumentsUseCase extends DefaultGetEntitiesUseCase<Document> {
+public abstract class DefaultGetEntitiesUseCase<T extends EntityLayerSupertype>
+        extends GetEntitiesUseCase<T, GetEntitiesUseCase.InputData> {
 
-    public GetDocumentsUseCase(ClientRepository clientRepository,
-            DocumentRepository documentRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, documentRepository, unitHierarchyProvider);
+    protected DefaultGetEntitiesUseCase(ClientRepository clientRepository,
+            EntityLayerSupertypeRepository<T> repository,
+            UnitHierarchyProvider unitHierarchyProvider) {
+        super(clientRepository, repository, unitHierarchyProvider);
     }
+
 }

@@ -115,7 +115,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(AssetController.URL_BASE_PATH)
 @Slf4j
-public class AssetController extends AbstractEntityController implements AssetRiskResource {
+public class AssetController extends AbstractEntityControllerWithDefaultSearch
+        implements AssetRiskResource {
 
     private final DeleteRiskUseCase deleteRiskUseCase;
     private final UpdateAssetRiskUseCase updateAssetRiskUseCase;

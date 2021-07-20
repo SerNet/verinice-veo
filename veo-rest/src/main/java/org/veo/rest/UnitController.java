@@ -98,7 +98,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(UnitController.URL_BASE_PATH)
 @RequiredArgsConstructor
 @Slf4j
-public class UnitController extends AbstractEntityController {
+public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
     public static final String URL_BASE_PATH = "/" + Unit.PLURAL_TERM;
 

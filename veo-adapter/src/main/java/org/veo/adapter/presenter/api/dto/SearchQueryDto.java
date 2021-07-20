@@ -30,12 +30,12 @@ import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Value;
+import lombok.experimental.NonFinal;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * Representation of a (named) search query.
@@ -47,10 +47,11 @@ import lombok.Value;
  * having to store the search in the database.
  */
 @Value
-@Builder
+@NonFinal
+@SuperBuilder
+@Jacksonized
 @Schema(title = "SearchQueryDto", description = "A search query")
 @Valid
-@JsonDeserialize(builder = SearchQueryDto.SearchQueryDtoBuilder.class)
 public class SearchQueryDto {
 
     @Schema(description = "The ID of the unit of which the searches elements must be a member.")
@@ -89,7 +90,7 @@ public class SearchQueryDto {
      * Decodes a search query from a base64url-encoded, compressed string.
      */
     public static SearchQueryDto decodeFromSearchId(String searchId) throws IOException {
-        return decodeFromSearchId(searchId, Base64.getUrlDecoder());
+        return decodeFromSearchId(searchId, Base64.getUrlDecoder(), SearchQueryDto.class);
     }
 
     /**
@@ -103,20 +104,14 @@ public class SearchQueryDto {
      * @return the reconstructed search query
      * @throws IOException
      */
-    private static SearchQueryDto decodeFromSearchId(String searchId, Base64.Decoder decoder)
-            throws IOException {
+    protected static <T extends SearchQueryDto> T decodeFromSearchId(String searchId,
+            Base64.Decoder decoder, Class<T> clazz) throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try (InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(stream,
                 new Inflater(true))) {
             inflaterOutputStream.write(decoder.decode(searchId.getBytes(StandardCharsets.UTF_8)));
         }
-        return new ObjectMapper().readValue(stream.toString(StandardCharsets.UTF_8),
-                                            SearchQueryDto.class);
-    }
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class SearchQueryDtoBuilder {
-        // required for Jackson deserialization
+        return new ObjectMapper().readValue(stream.toString(StandardCharsets.UTF_8), clazz);
     }
 
 }

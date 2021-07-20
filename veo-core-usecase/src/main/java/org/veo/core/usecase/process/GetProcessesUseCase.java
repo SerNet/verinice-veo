@@ -17,19 +17,62 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
+import java.util.UUID;
+
+import javax.validation.Valid;
+
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Process.Status;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.repository.ProcessQuery;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
+import org.veo.core.usecase.base.QueryCondition;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 /**
  * Reinstantiate persisted process objects.
  */
-public class GetProcessesUseCase extends GetEntitiesUseCase<Process> {
+public class GetProcessesUseCase
+        extends GetEntitiesUseCase<Process, GetProcessesUseCase.InputData> {
 
-    public GetProcessesUseCase(ClientRepository clientRepository,
-            ProcessRepository processRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, processRepository, unitHierarchyProvider);
+    private final ProcessRepository repository;
+
+    public GetProcessesUseCase(ClientRepository clientRepository, ProcessRepository repository,
+            UnitHierarchyProvider unitHierarchyProvider) {
+        super(clientRepository, repository, unitHierarchyProvider);
+        this.repository = repository;
     }
+
+    @Override
+    protected ProcessQuery createQuery(Client client, InputData input) {
+        var query = repository.query(client);
+        if (input.getStatus() != null) {
+            query.whereStatusIn(input.getStatus()
+                                     .getValues());
+        }
+        return query;
+    }
+
+    @Valid
+    @Value
+    @EqualsAndHashCode(callSuper = true)
+    public static class InputData extends GetEntitiesUseCase.InputData {
+
+        public InputData(Client authenticatedClient, QueryCondition<Key<UUID>> unitUuid,
+                QueryCondition<String> displayName, QueryCondition<String> subType,
+                QueryCondition<Status> status, PagingConfiguration pagingConfiguration) {
+            super(authenticatedClient, unitUuid, displayName, subType, pagingConfiguration);
+            this.status = status;
+        }
+
+        QueryCondition<Status> status;
+    }
+
 }

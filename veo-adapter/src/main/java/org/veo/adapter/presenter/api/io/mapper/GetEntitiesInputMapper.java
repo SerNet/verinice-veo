@@ -22,14 +22,17 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.veo.adapter.presenter.api.dto.ProcessSearchQueryDto;
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Process.Status;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
 import org.veo.core.usecase.base.QueryCondition;
+import org.veo.core.usecase.process.GetProcessesUseCase;
 
 public class GetEntitiesInputMapper {
 
@@ -40,11 +43,28 @@ public class GetEntitiesInputMapper {
                 pagingConfiguration);
     }
 
+    public static GetProcessesUseCase.InputData map(Client client, String unitUuid,
+            String displayName, String subType, Status status,
+            PagingConfiguration pagingConfiguration) {
+        return new GetProcessesUseCase.InputData(client, createUuidCondition(unitUuid),
+                createStringFilter(displayName), createNonEmptyCondition(subType),
+                createNonEmptyCondition(status), pagingConfiguration);
+    }
+
     public static GetEntitiesUseCase.InputData map(Client client, SearchQueryDto searchQuery,
             PagingConfiguration pagingConfiguration) {
         return new GetEntitiesUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
                 transformCondition(searchQuery.getDisplayName()),
                 transformCondition(searchQuery.getSubType()), pagingConfiguration);
+    }
+
+    public static GetProcessesUseCase.InputData map(Client client,
+            ProcessSearchQueryDto searchQuery, PagingConfiguration pagingConfiguration) {
+        return new GetProcessesUseCase.InputData(client,
+                transformCondition(searchQuery.getUnitId()),
+                transformCondition(searchQuery.getDisplayName()),
+                transformCondition(searchQuery.getSubType()),
+                transformCondition(searchQuery.getStatus()), pagingConfiguration);
     }
 
     private static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
@@ -56,14 +76,14 @@ public class GetEntitiesInputMapper {
         return null;
     }
 
-    private static QueryCondition<String> transformCondition(QueryConditionDto<String> filterDto) {
+    private static <T> QueryCondition<T> transformCondition(QueryConditionDto<T> filterDto) {
         if (filterDto != null) {
             return new QueryCondition<>(filterDto.values);
         }
         return null;
     }
 
-    private static QueryCondition<String> createNonEmptyCondition(String value) {
+    private static <T> QueryCondition<T> createNonEmptyCondition(T value) {
         if (value == null) {
             return null;
         }
@@ -87,4 +107,5 @@ public class GetEntitiesInputMapper {
         }
         return null;
     }
+
 }

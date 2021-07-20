@@ -26,6 +26,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.EntityLayerSupertypeQuery;
 import org.veo.core.repository.EntityLayerSupertypeRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
@@ -34,12 +35,13 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
+import lombok.experimental.NonFinal;
 
 /**
  * Reinstantiate persisted entity objects.
  */
-public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> implements
-        TransactionalUseCase<GetEntitiesUseCase.InputData, GetEntitiesUseCase.OutputData<T>> {
+public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, I extends GetEntitiesUseCase.InputData>
+        implements TransactionalUseCase<I, GetEntitiesUseCase.OutputData<T>> {
 
     private final EntityLayerSupertypeRepository<T> repository;
     private final ClientRepository clientRepository;
@@ -59,12 +61,21 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> impleme
      * repository.
      */
     @Override
-    public OutputData<T> execute(InputData input) {
+    public OutputData<T> execute(I input) {
         Client client = UseCaseTools.checkClientExists(input.getAuthenticatedClient()
                                                             .getId(),
                                                        clientRepository);
-        var query = repository.query(client);
 
+        var query = createQuery(client, input);
+        applyDefaultQueryParameters(input, query);
+        return new OutputData<>(query.execute(input.getPagingConfiguration()));
+    }
+
+    protected EntityLayerSupertypeQuery<T> createQuery(Client client, I input) {
+        return repository.query(client);
+    }
+
+    private void applyDefaultQueryParameters(I input, EntityLayerSupertypeQuery<T> query) {
         if (input.getUnitUuid() != null) {
             query.whereUnitIn(input.getUnitUuid()
                                    .getValues()
@@ -83,11 +94,11 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype> impleme
             query.whereDisplayNameContainsIgnoreCase(input.getDisplayName()
                                                           .getValues());
         }
-        return new OutputData<>(query.execute(input.getPagingConfiguration()));
     }
 
     @Valid
     @Value
+    @NonFinal
     public static class InputData implements UseCase.InputData {
         Client authenticatedClient;
         QueryCondition<Key<UUID>> unitUuid;

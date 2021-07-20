@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2021  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,32 +17,32 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import org.springframework.stereotype.Repository;
+import java.util.Set;
+
+import org.springframework.data.jpa.domain.Specification;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.Process.Status;
+import org.veo.core.repository.EntityLayerSupertypeQuery;
 import org.veo.core.repository.ProcessQuery;
-import org.veo.core.repository.ProcessRepository;
-import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
-import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ProcessData;
 
-@Repository
-public class ProcessRepositoryImpl
-        extends AbstractRiskAffectedRepository<Process, ProcessRisk, ProcessData>
-        implements ProcessRepository {
+/**
+ * Implements {@link EntityLayerSupertypeQuery} using {@link Specification} API.
+ */
+public class ProcessQueryImpl extends EntityLayerSupertypeQueryImpl<Process, ProcessData>
+        implements ProcessQuery {
 
-    public ProcessRepositoryImpl(ProcessDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    public ProcessQueryImpl(ProcessDataRepository repo, Client client) {
+        super(repo, client);
     }
 
     @Override
-    public ProcessQuery query(Client client) {
-        return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client);
+    public void whereStatusIn(Set<Status> values) {
+        mySpec = mySpec.and((root, query, criteriaBuilder) -> in(root.get("status"), values,
+                                                                 criteriaBuilder));
     }
+
 }

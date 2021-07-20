@@ -53,7 +53,7 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
         implements EntityLayerSupertypeQuery<TInterface> {
 
     private final EntityLayerSupertypeDataRepository<TDataClass> dataRepository;
-    private Specification<TDataClass> mySpec;
+    protected Specification<TDataClass> mySpec;
 
     public EntityLayerSupertypeQueryImpl(EntityLayerSupertypeDataRepository<TDataClass> repo,
             Client client) {
@@ -105,7 +105,8 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
         };
     }
 
-    private Predicate in(Path<Object> column, Set<?> values, CriteriaBuilder criteriaBuilder) {
+    protected static Predicate in(Path<Object> column, Set<?> values,
+            CriteriaBuilder criteriaBuilder) {
         if (values.stream()
                   .anyMatch(Objects::isNull)) {
             return criteriaBuilder.or(column.in(values), column.isNull());
