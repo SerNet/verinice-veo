@@ -28,6 +28,7 @@ import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
+import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
@@ -38,6 +39,9 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
     @Autowired
     ProcessDataRepository processDataRepository
+
+    @Autowired
+    PersonDataRepository personDataRepository
 
     @Autowired
     ClientDataRepository clientDataRepository
@@ -265,5 +269,27 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
             pageable.sort.first().property == 'foo'
         }) >> Page.empty()
         1 * dataRepository.findAllById(_) >> []
+    }
+
+    def 'sort by designator produces expected sorting'() {
+        given:
+        personDataRepository.saveAll((1..100).collect{ n->
+            newPerson(unit) {
+                name = "Person $n"
+                designator = "PER-$n"
+            }
+        })
+        when: "querying processes sorted by designator ascending"
+        def query = new EntityLayerSupertypeQueryImpl<>(personDataRepository, client)
+
+        def result = query.execute(new PagingConfiguration(100, 0, 'designator', SortOrder.ASCENDING))
+
+        then: "the sort order is correct"
+        with(result.resultPage) {
+            it[0].name == "Person 1"
+            it[22].name == "Person 23"
+            it[41].name == "Person 42"
+            it[99].name == "Person 100"
+        }
     }
 }

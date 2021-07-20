@@ -112,6 +112,10 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
     @Setter(AccessLevel.NONE)
     private String displayName;
 
+    @Formula("length(designator)")
+    @Setter(AccessLevel.NONE)
+    private String designatorLength;
+
     protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
         return source.stream()
                      .filter(aspect -> aspect.getDomain() == domain)

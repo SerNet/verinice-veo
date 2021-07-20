@@ -115,11 +115,23 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     }
 
     protected static Pageable toPageable(PagingConfiguration pagingConfiguration) {
+        String inputSortColumn = pagingConfiguration.getSortColumn();
+        String[] sortColumns;
+        if ("designator".equals(inputSortColumn)) {
+            // The designator is usually of the form [PREFIX]-[COUNTER], i.e.
+            // PER-1, PER-2, PER-100, etc. The counter is a number and the
+            // sorting should honor that (i.e. 100 should come after 2). We use
+            // the fact that longer numbers (in their "normalized" form) are
+            // larger than shorter ones.
+            sortColumns = new String[] { "designatorLength", "designator" };
+        } else {
+            sortColumns = new String[] { inputSortColumn };
+        }
         return PageRequest.of(pagingConfiguration.getPageNumber(),
                               pagingConfiguration.getPageSize(),
                               pagingConfiguration.getSortOrder() == PagingConfiguration.SortOrder.ASCENDING
                                       ? Direction.ASC
                                       : Direction.DESC,
-                              pagingConfiguration.getSortColumn());
+                              sortColumns);
     }
 }
