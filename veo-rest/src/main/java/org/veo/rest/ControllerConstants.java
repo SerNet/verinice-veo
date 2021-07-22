@@ -48,8 +48,12 @@ public final class ControllerConstants {
     static final String UUID_PARAM = "uuid";
     static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";
     static final String UNIT_PARAM = "unit";
+    static final String DESCRIPTION_PARAM = "description";
+    static final String DESIGNATOR_PARAM = "designator";
     static final String DOMAIN_PARAM = "domain";
+    static final String NAME_PARAM = "name";
     static final String SUB_TYPE_PARAM = "subType";
+    static final String UPDATED_BY_PARAM = "updatedBy";
     static final String DISPLAY_NAME_PARAM = "displayName";
     static final String STATUS_PARAM = "status";
     static final String PAGE_SIZE_PARAM = "size";

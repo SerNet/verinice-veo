@@ -66,8 +66,11 @@ public class GetProcessesUseCase
 
         public InputData(Client authenticatedClient, QueryCondition<Key<UUID>> unitUuid,
                 QueryCondition<String> displayName, QueryCondition<String> subType,
+                QueryCondition<String> description, QueryCondition<String> designator,
+                QueryCondition<String> name, QueryCondition<String> updatedBy,
                 QueryCondition<Status> status, PagingConfiguration pagingConfiguration) {
-            super(authenticatedClient, unitUuid, displayName, subType, pagingConfiguration);
+            super(authenticatedClient, unitUuid, displayName, subType, description, designator,
+                    name, updatedBy, pagingConfiguration);
             this.status = status;
         }
 

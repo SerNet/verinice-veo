@@ -57,6 +57,18 @@ public class SearchQueryDto {
     @Schema(description = "The ID of the unit of which the searches elements must be a member.")
     UuidQueryConditionDto unitId;
 
+    @Schema(description = "A substring of the description of an entity.")
+    QueryConditionDto<String> description;
+
+    @Schema(description = "A substring of the designator of an entity.")
+    QueryConditionDto<String> designator;
+
+    @Schema(description = "A substring of the name of an entity.")
+    QueryConditionDto<String> name;
+
+    @Schema(description = "A substring of the name of the user who last updated an entity.")
+    QueryConditionDto<String> updatedBy;
+
     @Schema(description = "A substring of the displayName of an entity.")
     QueryConditionDto<String> displayName;
 

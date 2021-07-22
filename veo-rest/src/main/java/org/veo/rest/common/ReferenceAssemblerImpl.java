@@ -264,6 +264,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     public String resourcesReferenceOf(Class<? extends ModelObject> type) {
         if (Scope.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScopeController.class).getScopes(ANY_AUTH, ANY_STRING,
+                                                                    ANY_STRING, ANY_STRING,
+                                                                    ANY_STRING, ANY_STRING,
                                                                     ANY_STRING, ANY_STRING, ANY_INT,
                                                                     ANY_INT, ANY_STRING,
                                                                     ANY_STRING)).withSelfRel()
@@ -271,6 +273,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
         if (Asset.class.isAssignableFrom(type)) {
             return linkTo(methodOn(AssetController.class).getAssets(ANY_AUTH, ANY_STRING,
+                                                                    ANY_STRING, ANY_STRING,
+                                                                    ANY_STRING, ANY_STRING,
                                                                     ANY_STRING, ANY_STRING, ANY_INT,
                                                                     ANY_INT, ANY_STRING,
                                                                     ANY_STRING)).withSelfRel()
@@ -278,6 +282,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
         if (Document.class.isAssignableFrom(type)) {
             return linkTo(methodOn(DocumentController.class).getDocuments(ANY_AUTH, ANY_STRING,
+                                                                          ANY_STRING, ANY_STRING,
+                                                                          ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_INT, ANY_INT,
                                                                           ANY_STRING, ANY_STRING))
@@ -292,6 +298,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         if (Process.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ProcessController.class).getProcesses(ANY_AUTH, ANY_STRING,
                                                                          ANY_STRING, ANY_STRING,
+                                                                         ANY_STRING, ANY_STRING,
+                                                                         ANY_STRING, ANY_STRING,
                                                                          ANY_STATUS, ANY_INT,
                                                                          ANY_INT, ANY_STRING,
                                                                          ANY_STRING)).withSelfRel()
@@ -300,12 +308,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         if (Person.class.isAssignableFrom(type)) {
             return linkTo(methodOn(PersonController.class).getPersons(ANY_AUTH, ANY_STRING,
                                                                       ANY_STRING, ANY_STRING,
+                                                                      ANY_STRING, ANY_STRING,
+                                                                      ANY_STRING, ANY_STRING,
                                                                       ANY_INT, ANY_INT, ANY_STRING,
                                                                       ANY_STRING)).withSelfRel()
                                                                                   .getHref();
         }
         if (Control.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ControlController.class).getControls(ANY_AUTH, ANY_STRING,
+                                                                        ANY_STRING, ANY_STRING,
+                                                                        ANY_STRING, ANY_STRING,
                                                                         ANY_STRING, ANY_STRING,
                                                                         ANY_INT, ANY_INT,
                                                                         ANY_STRING, ANY_STRING))
@@ -315,6 +327,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         if (Scenario.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScenarioController.class).getScenarios(ANY_AUTH, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
+                                                                          ANY_STRING, ANY_STRING,
+                                                                          ANY_STRING, ANY_STRING,
                                                                           ANY_INT, ANY_INT,
                                                                           ANY_STRING, ANY_STRING))
                                                                                                   .withSelfRel()
@@ -322,6 +336,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
         if (Incident.class.isAssignableFrom(type)) {
             return linkTo(methodOn(IncidentController.class).getIncidents(ANY_AUTH, ANY_STRING,
+                                                                          ANY_STRING, ANY_STRING,
+                                                                          ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_INT, ANY_INT,
                                                                           ANY_STRING, ANY_STRING))

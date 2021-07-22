@@ -124,11 +124,11 @@ class ReferenceAssemblerImplSpec extends Specification {
         referenceAssembler.resourcesReferenceOf(type) == reference
         where:
         type     | reference
-        Asset    | '/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}'
-        Control  | '/controls{?unit,displayName,subType,size,page,sortBy,sortOrder}'
-        Scenario | '/scenarios{?unit,displayName,subType,size,page,sortBy,sortOrder}'
-        Incident | '/incidents{?unit,displayName,subType,size,page,sortBy,sortOrder}'
-        Scope    | '/scopes{?unit,displayName,subType,size,page,sortBy,sortOrder}'
+        Asset    | '/assets{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        Control  | '/controls{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        Scenario | '/scenarios{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        Incident | '/incidents{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        Scope    | '/scopes{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
         Domain   | '/domains'
     }
 

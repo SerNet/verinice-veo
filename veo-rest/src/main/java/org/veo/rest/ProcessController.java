@@ -22,7 +22,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
+import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
+import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
@@ -35,6 +38,7 @@ import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
 import static org.veo.rest.ControllerConstants.STATUS_PARAM;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
+import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
@@ -281,6 +285,10 @@ public class ProcessController extends AbstractEntityController implements Proce
             @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
                                          required = false) String displayName,
             @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+            @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+            @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
+            @RequestParam(value = NAME_PARAM, required = false) String name,
+            @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
             @RequestParam(value = STATUS_PARAM, required = false) Status status,
             @RequestParam(value = PAGE_SIZE_PARAM,
                           required = false,
@@ -302,6 +310,7 @@ public class ProcessController extends AbstractEntityController implements Proce
         }
 
         return getProcesses(GetEntitiesInputMapper.map(client, parentUuid, displayName, subType,
+                                                       description, designator, name, updatedBy,
                                                        status,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
                                                                              sortColumn,

@@ -36,4 +36,12 @@ public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
     void whereSubTypeMatches(QueryCondition<String> values);
 
     void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
+
+    void whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
+
+    void whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
+
+    void whereNameMatchesIgnoreCase(QueryCondition<String> values);
+
+    void whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 }

@@ -37,17 +37,21 @@ import org.veo.core.usecase.process.GetProcessesUseCase;
 public class GetEntitiesInputMapper {
 
     public static GetEntitiesUseCase.InputData map(Client client, String unitUuid,
-            String displayName, String subType, PagingConfiguration pagingConfiguration) {
+            String displayName, String subType, String description, String designator, String name,
+            String updatedBy, PagingConfiguration pagingConfiguration) {
         return new GetEntitiesUseCase.InputData(client, createUuidCondition(unitUuid),
                 createStringFilter(displayName), createNonEmptyCondition(subType),
-                pagingConfiguration);
+                createStringFilter(description), createStringFilter(designator),
+                createStringFilter(name), createStringFilter(updatedBy), pagingConfiguration);
     }
 
     public static GetProcessesUseCase.InputData map(Client client, String unitUuid,
-            String displayName, String subType, Status status,
-            PagingConfiguration pagingConfiguration) {
+            String displayName, String subType, String description, String designator, String name,
+            String updatedBy, Status status, PagingConfiguration pagingConfiguration) {
         return new GetProcessesUseCase.InputData(client, createUuidCondition(unitUuid),
                 createStringFilter(displayName), createNonEmptyCondition(subType),
+                createStringFilter(description), createStringFilter(designator),
+                createStringFilter(name), createStringFilter(updatedBy),
                 createNonEmptyCondition(status), pagingConfiguration);
     }
 
@@ -55,7 +59,11 @@ public class GetEntitiesInputMapper {
             PagingConfiguration pagingConfiguration) {
         return new GetEntitiesUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
                 transformCondition(searchQuery.getDisplayName()),
-                transformCondition(searchQuery.getSubType()), pagingConfiguration);
+                transformCondition(searchQuery.getSubType()),
+                transformCondition(searchQuery.getDescription()),
+                transformCondition(searchQuery.getDesignator()),
+                transformCondition(searchQuery.getName()),
+                transformCondition(searchQuery.getUpdatedBy()), pagingConfiguration);
     }
 
     public static GetProcessesUseCase.InputData map(Client client,
@@ -64,6 +72,10 @@ public class GetEntitiesInputMapper {
                 transformCondition(searchQuery.getUnitId()),
                 transformCondition(searchQuery.getDisplayName()),
                 transformCondition(searchQuery.getSubType()),
+                transformCondition(searchQuery.getDescription()),
+                transformCondition(searchQuery.getDesignator()),
+                transformCondition(searchQuery.getName()),
+                transformCondition(searchQuery.getUpdatedBy()),
                 transformCondition(searchQuery.getStatus()), pagingConfiguration);
     }
 

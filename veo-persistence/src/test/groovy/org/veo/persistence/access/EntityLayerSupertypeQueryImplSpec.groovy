@@ -203,6 +203,103 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
         result.resultPage.first().name == "process 2"
     }
 
+    def 'queries by name'() {
+        given:
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "Process One"
+            },
+            newProcess(unit) {
+                name = "Process Two"
+            },
+            newProcess(unit) {
+                name = "Whatever"
+            }
+        ])
+
+        when:
+        query.whereNameMatchesIgnoreCase(new QueryCondition(Set.of("two", "what")))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage.sort{it.name}*.name == ["Process Two", "Whatever"]
+    }
+
+    def 'queries by description'() {
+        given:
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "A"
+                description = "I am number one"
+            },
+            newProcess(unit) {
+                name = "B"
+                description = "I am number two"
+            },
+            newProcess(unit) {
+                name = "C"
+                description = "I am number three"
+            }
+        ])
+
+        when:
+        query.whereDescriptionMatchesIgnoreCase(new QueryCondition(Set.of("AM NUMBER TWO", "THREE")))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage.sort{it.name}*.name == ["B", "C"]
+    }
+
+    def 'queries by designator'() {
+        given:
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "A"
+                designator = "PER-1"
+            },
+            newProcess(unit) {
+                name = "B"
+                designator = "PER-53"
+            },
+            newProcess(unit) {
+                name = "C"
+                designator = "PER-899"
+            }
+        ])
+
+        when:
+        query.whereDesignatorMatchesIgnoreCase(new QueryCondition(Set.of("53", "per-8")))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage.sort{it.name}*.name == ["B", "C"]
+    }
+
+    def 'queries by updatedBy'() {
+        given:
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "A"
+                updatedBy = "Max Muster"
+            },
+            newProcess(unit) {
+                name = "B"
+                updatedBy = "Max Schuster"
+            },
+            newProcess(unit) {
+                name = "C"
+                updatedBy = "Martha Muster"
+            }
+        ])
+
+        when:
+        query.whereUpdatedByContainsIgnoreCase(new QueryCondition(Set.of("schuster", "martha ")))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage.sort{it.name}*.name == ["B", "C"]
+    }
+
     def 'sort results by different properties'() {
         given: "three processes"
 

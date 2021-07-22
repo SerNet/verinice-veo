@@ -78,13 +78,27 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
 
     @Override
     public void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> condition) {
-        mySpec = mySpec.and((root, query,
-                criteriaBuilder) -> criteriaBuilder.or(condition.getValues()
-                                                                .stream()
-                                                                .map(str -> criteriaBuilder.like(criteriaBuilder.upper(root.get("displayName")),
-                                                                                                 "%" + str.toUpperCase(Locale.GERMAN)
-                                                                                                         + "%"))
-                                                                .toArray(Predicate[]::new)));
+        inIgnoringCase(condition, "displayName");
+    }
+
+    @Override
+    public void whereDescriptionMatchesIgnoreCase(QueryCondition<String> condition) {
+        inIgnoringCase(condition, "description");
+    }
+
+    @Override
+    public void whereDesignatorMatchesIgnoreCase(QueryCondition<String> condition) {
+        inIgnoringCase(condition, "designator");
+    }
+
+    @Override
+    public void whereNameMatchesIgnoreCase(QueryCondition<String> condition) {
+        inIgnoringCase(condition, "name");
+    }
+
+    @Override
+    public void whereUpdatedByContainsIgnoreCase(QueryCondition<String> condition) {
+        inIgnoringCase(condition, "updatedBy");
     }
 
     @Override
@@ -116,6 +130,16 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
         } else {
             return criteriaBuilder.isTrue(column.in(values));
         }
+    }
+
+    private void inIgnoringCase(QueryCondition<String> condition, String propertyName) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> criteriaBuilder.or(condition.getValues()
+                                                                .stream()
+                                                                .map(str -> criteriaBuilder.like(criteriaBuilder.upper(root.get(propertyName)),
+                                                                                                 "%" + str.toUpperCase(Locale.GERMAN)
+                                                                                                         + "%"))
+                                                                .toArray(Predicate[]::new)));
     }
 
     protected static Pageable toPageable(PagingConfiguration pagingConfiguration) {

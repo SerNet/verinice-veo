@@ -93,6 +93,21 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, I exten
         if (input.getDisplayName() != null) {
             query.whereDisplayNameMatchesIgnoringCase(input.getDisplayName());
         }
+        if (input.getDescription() != null) {
+            query.whereDescriptionMatchesIgnoreCase(input.getDescription());
+        }
+
+        if (input.getDesignator() != null) {
+            query.whereDesignatorMatchesIgnoreCase(input.getDesignator());
+        }
+
+        if (input.getName() != null) {
+            query.whereNameMatchesIgnoreCase(input.getName());
+        }
+
+        if (input.getUpdatedBy() != null) {
+            query.whereUpdatedByContainsIgnoreCase(input.getUpdatedBy());
+        }
     }
 
     @Valid
@@ -103,6 +118,10 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, I exten
         QueryCondition<Key<UUID>> unitUuid;
         QueryCondition<String> displayName;
         QueryCondition<String> subType;
+        QueryCondition<String> description;
+        QueryCondition<String> designator;
+        QueryCondition<String> name;
+        QueryCondition<String> updatedBy;
         PagingConfiguration pagingConfiguration;
     }
 
