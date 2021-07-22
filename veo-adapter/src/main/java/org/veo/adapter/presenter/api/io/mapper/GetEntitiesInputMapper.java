@@ -30,8 +30,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process.Status;
 import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.QueryCondition;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 
 public class GetEntitiesInputMapper {

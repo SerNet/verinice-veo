@@ -33,7 +33,7 @@ public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
 
     PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 
-    void whereSubTypeIn(Set<String> values);
+    void whereSubTypeMatches(QueryCondition<String> values);
 
-    void whereDisplayNameContainsIgnoreCase(Set<String> values);
+    void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
 }

@@ -42,6 +42,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.repository.EntityLayerSupertypeQuery;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.repository.QueryCondition;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
 import org.veo.persistence.entity.jpa.UnitData;
@@ -68,20 +69,22 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     }
 
     @Override
-    public void whereSubTypeIn(Set<String> values) {
+    public void whereSubTypeMatches(QueryCondition<String> condition) {
         mySpec = mySpec.and((root, query,
                 criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)
                                            .get("subType"),
-                                       values, criteriaBuilder));
+                                       condition.getValues(), criteriaBuilder));
     }
 
     @Override
-    public void whereDisplayNameContainsIgnoreCase(Set<String> values) {
-        mySpec = mySpec.and((root, query, criteriaBuilder) -> criteriaBuilder.or(values.stream()
-                                                                                       .map(str -> criteriaBuilder.like(criteriaBuilder.upper(root.get("displayName")),
-                                                                                                                        "%" + str.toUpperCase(Locale.GERMAN)
-                                                                                                                                + "%"))
-                                                                                       .toArray(Predicate[]::new)));
+    public void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> condition) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> criteriaBuilder.or(condition.getValues()
+                                                                .stream()
+                                                                .map(str -> criteriaBuilder.like(criteriaBuilder.upper(root.get("displayName")),
+                                                                                                 "%" + str.toUpperCase(Locale.GERMAN)
+                                                                                                         + "%"))
+                                                                .toArray(Predicate[]::new)));
     }
 
     @Override

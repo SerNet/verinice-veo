@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.Set;
-
 import org.springframework.data.jpa.domain.Specification;
 
 import org.veo.core.entity.Client;
@@ -26,6 +24,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Process.Status;
 import org.veo.core.repository.EntityLayerSupertypeQuery;
 import org.veo.core.repository.ProcessQuery;
+import org.veo.core.repository.QueryCondition;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.entity.jpa.ProcessData;
 
@@ -40,9 +39,9 @@ public class ProcessQueryImpl extends EntityLayerSupertypeQueryImpl<Process, Pro
     }
 
     @Override
-    public void whereStatusIn(Set<Status> values) {
-        mySpec = mySpec.and((root, query, criteriaBuilder) -> in(root.get("status"), values,
-                                                                 criteriaBuilder));
+    public void whereStatusMatches(QueryCondition<Status> condition) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> in(root.get("status"), condition.getValues(), criteriaBuilder));
     }
 
 }

@@ -19,12 +19,11 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
-import org.veo.core.entity.Process.Status
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.ProcessQuery
 import org.veo.core.repository.ProcessRepository
+import org.veo.core.repository.QueryCondition
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.QueryCondition
 import org.veo.core.usecase.process.GetProcessesUseCase.InputData
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
@@ -62,22 +61,17 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
-        when:
-        def output = usecase.execute(new InputData(existingClient, Mock(QueryCondition) {
+        def input = new InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        },
-        null,
-        Mock(QueryCondition) {
-            getValues() >> ["subType 1", "subType 2"]
-        },Mock(QueryCondition) {
-            getValues() >> [Status.ARCHIVED]
-        }, pagingConfiguration))
+        }, null, Mock(QueryCondition), Mock(QueryCondition), pagingConfiguration)
+        when:
+        def output = usecase.execute(input)
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
-        1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
-        1 * query.whereStatusIn([Status.ARCHIVED].toSet())
+        1 * query.whereSubTypeMatches(input.subType)
+        1 * query.whereStatusMatches(input.status)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
         output.entities.resultPage*.id == [id]
     }

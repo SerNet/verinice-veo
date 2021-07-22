@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Set;
-
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Process.Status;
 
@@ -27,6 +25,6 @@ import org.veo.core.entity.Process.Status;
  */
 public interface ProcessQuery extends EntityLayerSupertypeQuery<Process> {
 
-    void whereStatusIn(Set<Status> values);
+    void whereStatusMatches(QueryCondition<Status> condition);
 
 }

@@ -23,9 +23,9 @@ import org.veo.core.entity.Person
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.EntityLayerSupertypeQuery
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.QueryCondition
 import org.veo.core.usecase.asset.GetAssetsUseCase
 import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
-import org.veo.core.usecase.base.QueryCondition
 
 class GetAssetsUseCaseSpec extends UseCaseSpec {
 
@@ -62,20 +62,16 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
+        def input = new InputData(existingClient, Mock(QueryCondition) {
+            getValues() >> [existingUnit.id]
+        }, null, Mock(QueryCondition), pagingConfiguration)
         when:
-        def output = usecase.execute(new InputData(existingClient,
-                Mock(QueryCondition) {
-                    getValues() >> [existingUnit.id]
-                },
-                null,
-                Mock(QueryCondition) {
-                    getValues() >> ["subType 1", "subType 2"]
-                },pagingConfiguration))
+        def output = usecase.execute(input)
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
-        1 * query.whereSubTypeIn(["subType 1", "subType 2"].toSet())
+        1 * query.whereSubTypeMatches(input.subType)
         1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
         output.entities.resultPage*.id == [id]
     }

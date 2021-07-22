@@ -30,6 +30,7 @@ import org.veo.core.repository.EntityLayerSupertypeQuery;
 import org.veo.core.repository.EntityLayerSupertypeRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
@@ -86,13 +87,11 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, I exten
                                    .collect(Collectors.toSet()));
         }
         if (input.getSubType() != null) {
-            query.whereSubTypeIn(input.getSubType()
-                                      .getValues());
+            query.whereSubTypeMatches(input.getSubType());
         }
 
         if (input.getDisplayName() != null) {
-            query.whereDisplayNameContainsIgnoreCase(input.getDisplayName()
-                                                          .getValues());
+            query.whereDisplayNameMatchesIgnoringCase(input.getDisplayName());
         }
     }
 

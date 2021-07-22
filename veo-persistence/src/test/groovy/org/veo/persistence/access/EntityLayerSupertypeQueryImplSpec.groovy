@@ -25,6 +25,7 @@ import org.veo.core.entity.Asset
 import org.veo.core.repository.EntityLayerSupertypeQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
+import org.veo.core.repository.QueryCondition
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -135,7 +136,7 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        query.whereSubTypeIn(["VT"] as Set)
+        query.whereSubTypeMatches(new QueryCondition<>(["VT"] as Set))
         def result = query.execute(PagingConfiguration.UNPAGED)
         then:
         result.totalResults == 2
@@ -165,7 +166,7 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        query.whereSubTypeIn([null] as Set)
+        query.whereSubTypeMatches(new QueryCondition<>([null] as Set))
         def result = query.execute(PagingConfiguration.UNPAGED)
         then:
         result.totalResults == 2

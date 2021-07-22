@@ -29,8 +29,8 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.ProcessQuery;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.QueryCondition;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 import lombok.EqualsAndHashCode;
@@ -54,8 +54,7 @@ public class GetProcessesUseCase
     protected ProcessQuery createQuery(Client client, InputData input) {
         var query = repository.query(client);
         if (input.getStatus() != null) {
-            query.whereStatusIn(input.getStatus()
-                                     .getValues());
+            query.whereStatusMatches(input.getStatus());
         }
         return query;
     }
