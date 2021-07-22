@@ -29,19 +29,21 @@ import org.veo.core.entity.Unit;
  *            Entity type
  */
 public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
-    void whereUnitIn(Set<Unit> units);
+
+    EntityLayerSupertypeQuery<T> whereUnitIn(Set<Unit> units);
+
+    EntityLayerSupertypeQuery<T> whereSubTypeMatches(QueryCondition<String> values);
+
+    EntityLayerSupertypeQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
+
+    EntityLayerSupertypeQuery<T> whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
+
+    EntityLayerSupertypeQuery<T> whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
+
+    EntityLayerSupertypeQuery<T> whereNameMatchesIgnoreCase(QueryCondition<String> values);
+
+    EntityLayerSupertypeQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 
     PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 
-    void whereSubTypeMatches(QueryCondition<String> values);
-
-    void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
-
-    void whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
-
-    void whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
-
-    void whereNameMatchesIgnoreCase(QueryCondition<String> values);
-
-    void whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 }

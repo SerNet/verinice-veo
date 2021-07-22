@@ -25,6 +25,6 @@ import org.veo.core.entity.Process.Status;
  */
 public interface ProcessQuery extends EntityLayerSupertypeQuery<Process> {
 
-    void whereStatusMatches(QueryCondition<Status> condition);
+    ProcessQuery whereStatusMatches(QueryCondition<Status> condition);
 
 }

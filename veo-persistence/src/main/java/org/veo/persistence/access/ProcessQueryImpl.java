@@ -39,9 +39,10 @@ public class ProcessQueryImpl extends EntityLayerSupertypeQueryImpl<Process, Pro
     }
 
     @Override
-    public void whereStatusMatches(QueryCondition<Status> condition) {
+    public ProcessQueryImpl whereStatusMatches(QueryCondition<Status> condition) {
         mySpec = mySpec.and((root, query,
                 criteriaBuilder) -> in(root.get("status"), condition.getValues(), criteriaBuilder));
+        return this;
     }
 
 }

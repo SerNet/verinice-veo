@@ -63,42 +63,55 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     }
 
     @Override
-    public void whereUnitIn(Set<Unit> units) {
+    public EntityLayerSupertypeQuery<TInterface> whereUnitIn(Set<Unit> units) {
         mySpec = mySpec.and((root, query, criteriaBuilder) -> in(root.get("owner"), units,
                                                                  criteriaBuilder));
+        return this;
     }
 
     @Override
-    public void whereSubTypeMatches(QueryCondition<String> condition) {
+    public EntityLayerSupertypeQuery<TInterface> whereSubTypeMatches(
+            QueryCondition<String> condition) {
         mySpec = mySpec.and((root, query,
                 criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)
                                            .get("subType"),
                                        condition.getValues(), criteriaBuilder));
+        return this;
     }
 
     @Override
-    public void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> condition) {
+    public EntityLayerSupertypeQuery<TInterface> whereDisplayNameMatchesIgnoringCase(
+            QueryCondition<String> condition) {
         inIgnoringCase(condition, "displayName");
+        return this;
     }
 
     @Override
-    public void whereDescriptionMatchesIgnoreCase(QueryCondition<String> condition) {
+    public EntityLayerSupertypeQuery<TInterface> whereDescriptionMatchesIgnoreCase(
+            QueryCondition<String> condition) {
         inIgnoringCase(condition, "description");
+        return this;
     }
 
     @Override
-    public void whereDesignatorMatchesIgnoreCase(QueryCondition<String> condition) {
+    public EntityLayerSupertypeQuery<TInterface> whereDesignatorMatchesIgnoreCase(
+            QueryCondition<String> condition) {
         inIgnoringCase(condition, "designator");
+        return this;
     }
 
     @Override
-    public void whereNameMatchesIgnoreCase(QueryCondition<String> condition) {
+    public EntityLayerSupertypeQuery<TInterface> whereNameMatchesIgnoreCase(
+            QueryCondition<String> condition) {
         inIgnoringCase(condition, "name");
+        return this;
     }
 
     @Override
-    public void whereUpdatedByContainsIgnoreCase(QueryCondition<String> condition) {
+    public EntityLayerSupertypeQuery<TInterface> whereUpdatedByContainsIgnoreCase(
+            QueryCondition<String> condition) {
         inIgnoringCase(condition, "updatedBy");
+        return this;
     }
 
     @Override
