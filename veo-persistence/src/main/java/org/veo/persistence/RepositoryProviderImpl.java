@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -38,6 +39,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.AssetRepository;
+import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ControlRepository;
@@ -91,6 +93,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     @Autowired
     private ScopeRepository scopeRepository;
 
+    @Autowired
+    private CatalogItemRepository catalogItemRepository;
+
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ModelObject> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
@@ -108,6 +113,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
         }
         if (Catalog.class.isAssignableFrom(entityType)) {
             return (Repository<T, Key<UUID>>) catalogRepository;
+        }
+        if (CatalogItem.class.isAssignableFrom(entityType)) {
+            return (Repository<T, Key<UUID>>) catalogItemRepository;
         }
         throw new IllegalArgumentException("Unsupported entity type " + entityType);
     }
