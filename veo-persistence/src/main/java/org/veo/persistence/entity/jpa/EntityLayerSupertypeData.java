@@ -25,22 +25,32 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.GenericGenerator;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -58,10 +68,17 @@ import lombok.ToString;
                           @NamedAttributeNode(value = "appliedCatalogItems"),
                           @NamedAttributeNode(value = "links"),
                           @NamedAttributeNode(value = "subTypeAspects") })
-public abstract class EntityLayerSupertypeData extends CatalogableData
+@HasOwnerOrContainingCatalogItem
+public abstract class EntityLayerSupertypeData extends BaseModelObjectData
         implements NameableData, EntityLayerSupertype {
 
     public static final String FULL_AGGREGATE_GRAPH = "fullAggregateGraph";
+    @Id
+    @ToString.Include
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String dbId;
+
     @NotNull
     @Column(name = "name")
     @ToString.Include
@@ -72,6 +89,12 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
 
     @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
+
+    @NotNull
+    @Column(name = "designator")
+    @ToString.Include
+    @Pattern(regexp = "([A-Z]{3}-\\d+)|NO_DESIGNATOR")
+    private String designator;
 
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
@@ -100,6 +123,17 @@ public abstract class EntityLayerSupertypeData extends CatalogableData
                mappedBy = "owner",
                fetch = FetchType.LAZY)
     private Set<SubTypeAspect> subTypeAspects = new HashSet<>();
+
+    @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
+    private Set<CatalogItem> appliedCatalogItems;
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
+    @JoinColumn(name = "owner_id")
+    private Unit owner;
+
+    @OneToOne(fetch = FetchType.LAZY, targetEntity = CatalogItemData.class)
+    @JoinColumn(name = "containing_catalog_item_id")
+    private CatalogItem containingCatalogItem;
 
     @Formula("case when abbreviation is null then concat(designator,' ',name) else concat(designator,' ',abbreviation,' ',name) end")
     @Setter(AccessLevel.NONE)

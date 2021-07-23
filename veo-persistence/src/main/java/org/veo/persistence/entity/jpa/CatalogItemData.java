@@ -59,7 +59,7 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
     private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
     @OneToOne(optional = true, // FIXME VEO-674 shouldn't this be false?
-              targetEntity = CatalogableData.class,
+              targetEntity = EntityLayerSupertypeData.class,
               cascade = CascadeType.ALL,
               orphanRemoval = true,
               mappedBy = "containingCatalogItem") // FIXME VEO-674 should this be the owning side?
