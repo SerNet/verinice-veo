@@ -9,6 +9,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 
     compileOnly 'javax.validation:validation-api'
+    implementation 'org.codehaus.groovy:groovy-all'
+    implementation 'org.flywaydb:flyway-core'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'com.vladmihalcea:hibernate-types-52'

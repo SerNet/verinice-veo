@@ -355,3 +355,14 @@ Sample git hooks are provided in [misc/git](misc/git), e.g.
 [pre-commit](misc/git/pre-commit), which checks the code style on each commit.
 To install, copy the file to *.git/hooks/pre-commit*, etc. Make sure the
 scripts are executable.
+
+## Database migrations
+Veo uses [flyway](https://github.com/flyway/flyway/) for DB migrations. It runs groovy migration scripts from [org.veo.persistence migrations](veo-persistence/src/main/groovy/org/veo/persistence/migrations) when starting the service / spring test environment before JPA is initialized.
+
+### Creating a migration
+1. Modify DB model code (persistence-layer entity classes).
+2. `./gradlew bootRun`. The service might complain that the DB doesn't match the model but will silently generate the update DDL in `veo-rest/schema.local.sql`.
+3. Copy SQL from `veo-rest/schema.local.sql`.
+4. Create a new migration script (e.g. `veo-persistence/src/main/groovy/org/veo/persistence/migrations/V3__add_fancy_new_columns.groovy`) and let it execute the SQL you copied (see existing migration scripts).
+5. Append a semicolon to every SQL command
+6. Add some DML to your migration if necessary.

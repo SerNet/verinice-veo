@@ -36,6 +36,8 @@ spring:
   data:
     rest:
       detection-strategy: annotated
+  flyway:
+    locations: classpath:org/veo/persistence/migrations
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -43,11 +45,12 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     ## Turn OSIV off - only the business layer decides the fetching strategy for a particular use case:
     open-in-view: false
     properties:
       hibernate:
+        format_sql: true
         order_inserts: true
         jdbc:
           # execute statements in batches:
@@ -64,6 +67,12 @@ spring:
           # transaction to check the autocommit status:
           # IMPORTANT: hikari.auto-commit=false must be set as well
           provider_disables_autocommit: true
+      javax:
+        persistence:
+          schema-generation:
+            scripts:
+              action: update
+              create-target: schema.local.sql
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari:

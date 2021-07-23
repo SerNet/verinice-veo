@@ -133,6 +133,7 @@ subprojects {
                 'spock-spring'
             ].each { dependency "org.spockframework:$it:2.0-groovy-3.0" }
             dependency 'org.apache.commons:commons-lang3:3.11'
+            dependency 'org.codehaus.groovy:groovy-all:3.0.7'
             dependency 'javax.validation:validation-api:2.0.1.Final'
             // should be provided by spring boot dep. mgmt.:
             // dependency 'javax.transaction:javax.transaction-api:1.3'
