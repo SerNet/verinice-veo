@@ -77,6 +77,11 @@
       },
       "target": {
         "properties": {
+          "subType": {
+            "enum": [
+              "PER_DataProtectionOfficer"
+            ]
+          },
           "targetUri": {
             "title": "The id of the target object.",
             "type": "string"
