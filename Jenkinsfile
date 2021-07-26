@@ -197,6 +197,7 @@ pipeline {
         stage('Dockerimage') {
             agent any
             steps {
+                unarchive mapping: ["veo-rest/build/libs/veo-rest-${projectVersion}.jar": "veo-rest/build/libs/veo-rest-${projectVersion}.jar"]
                 script {
                     def dockerImage = docker.build("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}", "--build-arg VEO_VERSION='$projectVersion' --label org.opencontainers.image.version='$projectVersion' --label org.opencontainers.image.revision='$env.GIT_COMMIT' .")
                     // Finally, we'll push the image with several tags:
@@ -222,6 +223,7 @@ pipeline {
             }
             agent any
             steps {
+            unarchive mapping: ["veo-rest/build/libs/veo-rest-${projectVersion}.jar": "veo-rest/build/libs/veo-rest-${projectVersion}.jar"]
                 script {
                     def veo = docker.build("veo", "-f postman/Dockerfile .")
                     withDockerNetwork{ n ->
