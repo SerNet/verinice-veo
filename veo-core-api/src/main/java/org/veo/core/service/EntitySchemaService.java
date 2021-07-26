@@ -30,7 +30,7 @@ public interface EntitySchemaService {
      * Build and return a schema JSON as a simple string.
      *
      * @param type
-     *            the entity type, i.e. 'Process'
+     *            the entity type, i.e. 'process'
      * @param domains
      *            the domains to use, i.e. 'GDPR', 'ISO_27001'
      * @return a JSON schema document dynamically generated for the above parameters
