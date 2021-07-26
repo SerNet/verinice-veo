@@ -386,5 +386,7 @@
     "designator",
     "name",
     "owner"
-  ]
+  ],
+  "title": "Document",
+  "description": "Schema for Document"
 }

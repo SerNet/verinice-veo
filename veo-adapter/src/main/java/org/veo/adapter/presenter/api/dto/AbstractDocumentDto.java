@@ -35,6 +35,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Schema(title = "Document", description = "Schema for Document")
 public abstract class AbstractDocumentDto extends CompositeEntityDto<Document> {
 
     @Override
