@@ -63,7 +63,9 @@ public class GenerateEntitySchema {
             schemaMerger.extendSchema(jsonSchema, baseName);
 
             writer.writeValue(Files.createDirectories(outputExendedSchemas)
-                                   .resolve(baseName + ".json")
+                                   .resolve(jsonSchema.get("title")
+                                                      .asText()
+                                           + ".json")
                                    .toFile(),
                               jsonSchema);
         }
