@@ -61,7 +61,7 @@ class SwaggerSpec extends VeoSpringSpec {
         def assetDtoSchema = parsedApiDocs.components.schemas.FullAssetDto
         then:
         assetDtoSchema.properties.links != null
-        assetDtoSchema.properties.links.description == 'The links for the Asset.'
+        assetDtoSchema.properties.links.description == 'The links for the asset.'
     }
 
 

@@ -29,40 +29,40 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Base transfer object for Controls. Contains common data for all Control DTOs.
+ * Base transfer object for controls. Contains common data for all control DTOs.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Schema(title = "Control", description = "Schema for Control")
+@Schema(title = "control", description = "Schema for control")
 public abstract class AbstractControlDto extends CompositeEntityDto<Control> {
 
     @Override
-    @Schema(description = "The name for the Control.", example = "Install sensors")
+    @Schema(description = "The name for the control.", example = "Install sensors")
     public String getName() {
         return super.getName();
     }
 
     @Override
-    @Schema(description = "The abbreviation for the Control.", example = "Sensors")
+    @Schema(description = "The abbreviation for the control.", example = "Sensors")
     public String getAbbreviation() {
         return super.getAbbreviation();
     }
 
     @Override
-    @Schema(description = "The description for the Control.",
+    @Schema(description = "The description for the control.",
             example = "Install sensors. Sensors must be installed correctly.")
     public String getDescription() {
         return super.getDescription();
     }
 
     @Override
-    @Schema(description = "The links for the Control.")
+    @Schema(description = "The links for the control.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
-    @Schema(description = "The customAspects for the Control.")
+    @Schema(description = "The customAspects for the control.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();

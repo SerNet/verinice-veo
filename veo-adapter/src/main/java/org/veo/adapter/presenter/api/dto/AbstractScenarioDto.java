@@ -29,41 +29,41 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Base transfer object for Scenarios. Contains common data for all Scenario
+ * Base transfer object for scenarios. Contains common data for all scenario
  * DTOs.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Schema(title = "Scenario", description = "Schema for Scenario")
+@Schema(title = "scenario", description = "Schema for scenario")
 public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario> {
 
     @Override
-    @Schema(description = "The name for the Scenario.", example = "Flood")
+    @Schema(description = "The name for the scenario.", example = "Flood")
     public String getName() {
         return super.getName();
     }
 
     @Override
-    @Schema(description = "The abbreviation for the Scenario.", example = "FL")
+    @Schema(description = "The abbreviation for the scenario.", example = "FL")
     public String getAbbreviation() {
         return super.getAbbreviation();
     }
 
     @Override
-    @Schema(description = "The description for the Scenario.",
+    @Schema(description = "The description for the scenario.",
             example = "A flood is an overflow of water that submerges land that is usually dry.")
     public String getDescription() {
         return super.getDescription();
     }
 
     @Override
-    @Schema(description = "The links for the Scenario.")
+    @Schema(description = "The links for the scenario.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
-    @Schema(description = "The customAspects for the Scenario.")
+    @Schema(description = "The customAspects for the scenario.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();

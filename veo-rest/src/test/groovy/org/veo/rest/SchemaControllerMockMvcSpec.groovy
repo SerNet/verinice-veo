@@ -33,7 +33,7 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
         def schema = parseJson(get('/schemas/process?domains=DSGVO'))
 
         then: "a correct response is returned"
-        schema.title == "Process"
+        schema.title == "process"
 
         and: "the custom links are present"
         schema.properties.links.properties.process_dataType != null
@@ -48,7 +48,7 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
         def schema = parseJson(get('/schemas/asset?domains=DSGVO'))
 
         then: "a correct response is returned"
-        schema.title == "Asset"
+        schema.title == "asset"
 
         and: "the custom aspects are present"
         schema.properties.customAspects.properties.asset_details != null

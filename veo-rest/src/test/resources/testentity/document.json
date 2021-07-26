@@ -19,7 +19,7 @@
       "title": "CustomAspect",
       "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
       "properties": {
-        "asset_integrity": {
+        "document_details": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -30,165 +30,43 @@
             },
             "attributes": {
               "properties": {
-                "asset_integrity_impact": {
+                "document_details_approvalDate": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "document_details_classification": {
                   "enum": [
-                    "asset_integrity_impact_low",
-                    "asset_integrity_impact_normal",
-                    "asset_integrity_impact_high",
-                    "asset_integrity_impact_veryHigh"
-                  ]
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "asset_details": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "asset_details_number": {
-                  "type": "integer"
-                },
-                "asset_details_operatingStage": {
-                  "enum": [
-                    "asset_details_operatingStage_operation",
-                    "asset_details_operatingStage_planning",
-                    "asset_details_operatingStage_test",
-                    "asset_details_operatingStage_rollout"
+                    "document_details_classification_public",
+                    "document_details_classification_internalUse",
+                    "document_details_classification_confidential",
+                    "document_details_classification_strictlyConfidential"
                   ]
                 },
-                "asset_details_typeOfAsset": {
+                "document_details_otherTypeOfDocument": {
+                  "type": "string"
+                },
+                "document_details_status": {
                   "enum": [
-                    "asset_details_typeOfAsset_information",
-                    "asset_details_typeOfAsset_software",
-                    "asset_details_typeOfAsset_physical",
-                    "asset_details_typeOfAsset_service",
-                    "asset_details_typeOfAsset_people",
-                    "asset_details_typeOfAsset_immaterial",
-                    "asset_details_typeOfAsset_virtual"
+                    "document_details_status_draft",
+                    "document_details_status_inProgress",
+                    "document_details_status_approvalRequested",
+                    "document_details_status_approved",
+                    "document_details_status_outOfDate",
+                    "document_details_status_notApplicable"
                   ]
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
                 },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
+                "document_details_typeOfDocument": {
+                  "enum": [
+                    "document_details_typeOfDocument_policy",
+                    "document_details_typeOfDocument_contract",
+                    "document_details_typeOfDocument_agreement",
+                    "document_details_typeOfDocument_systemDocumentation",
+                    "document_details_typeOfDocument_researchResults",
+                    "document_details_typeOfDocument_trainingMaterials",
+                    "document_details_typeOfDocument_other"
+                  ]
                 },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "asset_generalInformation": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "asset_generalInformation_document": {
-                  "format": "uri",
-                  "pattern": "^(https?|ftp)://",
+                "document_details_version": {
                   "type": "string"
                 }
               },
@@ -243,7 +121,7 @@
           },
           "type": "object"
         },
-        "asset_confidentiality": {
+        "document_revision": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -254,13 +132,16 @@
             },
             "attributes": {
               "properties": {
-                "asset_confidentiality_impact": {
-                  "enum": [
-                    "asset_confidentiality_impact_low",
-                    "asset_confidentiality_impact_normal",
-                    "asset_confidentiality_impact_high",
-                    "asset_confidentiality_impact_veryHigh"
-                  ]
+                "document_revision_comment": {
+                  "type": "string"
+                },
+                "document_revision_last": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "document_revision_next": {
+                  "format": "date",
+                  "type": "string"
                 }
               },
               "type": "object"
@@ -314,7 +195,7 @@
           },
           "type": "object"
         },
-        "asset_resilience": {
+        "document_generalInformation": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -325,84 +206,10 @@
             },
             "attributes": {
               "properties": {
-                "asset_resilience_impact": {
-                  "enum": [
-                    "asset_resilience_impact_low",
-                    "asset_resilience_impact_normal",
-                    "asset_resilience_impact_high",
-                    "asset_resilience_impact_veryHigh"
-                  ]
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "asset_availability": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "asset_availability_impact": {
-                  "enum": [
-                    "asset_availability_impact_low",
-                    "asset_availability_impact_normal",
-                    "asset_availability_impact_high",
-                    "asset_availability_impact_veryHigh"
-                  ]
+                "document_generalInformation_externalLink": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
                 }
               },
               "type": "object"
@@ -461,6 +268,10 @@
     "description": {
       "type": "string",
       "description": "The description for the EntityLayerSupertype."
+    },
+    "designator": {
+      "type": "string",
+      "description": "Compact human-readable identifier that is unique within the client."
     },
     "domains": {
       "type": "array",
@@ -572,9 +383,10 @@
     }
   },
   "required": [
+    "designator",
     "name",
     "owner"
   ],
-  "title": "Asset",
-  "description": "Schema for Asset"
+  "title": "document",
+  "description": "Schema for Document"
 }

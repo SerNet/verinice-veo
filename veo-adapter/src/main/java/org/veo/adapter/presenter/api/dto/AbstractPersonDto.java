@@ -29,40 +29,40 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Base transfer object for Persons. Contains common data for all Person DTOs.
+ * Base transfer object for persons. Contains common data for all person DTOs.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Schema(title = "Person", description = "Schema for Person")
+@Schema(title = "person", description = "Schema for person")
 public abstract class AbstractPersonDto extends CompositeEntityDto<Person> {
 
     @Override
-    @Schema(description = "The name for the Person.", example = "Mia Musterfrau")
+    @Schema(description = "The name for the person.", example = "Mia Musterfrau")
     public String getName() {
         return super.getName();
     }
 
     @Override
-    @Schema(description = "The abbreviation for the Person.", example = "Mrs. M.M.")
+    @Schema(description = "The abbreviation for the person.", example = "Mrs. M.M.")
     public String getAbbreviation() {
         return super.getAbbreviation();
     }
 
     @Override
-    @Schema(description = "The description for the Person.",
+    @Schema(description = "The description for the person.",
             example = "Mia Musterfrau is a fictional character and is not related to any real person with that name.")
     public String getDescription() {
         return super.getDescription();
     }
 
     @Override
-    @Schema(description = "The links for the Person.")
+    @Schema(description = "The links for the person.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
-    @Schema(description = "The customAspects for the Person.")
+    @Schema(description = "The customAspects for the person.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();

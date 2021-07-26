@@ -29,41 +29,41 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Base transfer object for Documents. Contains common data for all Document
+ * Base transfer object for documents. Contains common data for all document
  * DTOs.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Schema(title = "Document", description = "Schema for Document")
+@Schema(title = "document", description = "Schema for document")
 public abstract class AbstractDocumentDto extends CompositeEntityDto<Document> {
 
     @Override
-    @Schema(description = "The name for the Document.", example = "Bitcoin Price Predictions")
+    @Schema(description = "The name for the document.", example = "Bitcoin Price Predictions")
     public String getName() {
         return super.getName();
     }
 
     @Override
-    @Schema(description = "The abbreviation for the Document.", example = "BTC Price")
+    @Schema(description = "The abbreviation for the document.", example = "BTC Price")
     public String getAbbreviation() {
         return super.getAbbreviation();
     }
 
     @Override
-    @Schema(description = "The description for the Document.",
+    @Schema(description = "The description for the document.",
             example = "All predictions regarding the price of Bitcoin.")
     public String getDescription() {
         return super.getDescription();
     }
 
     @Override
-    @Schema(description = "The links for the Document.")
+    @Schema(description = "The links for the document.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
-    @Schema(description = "The customAspects for the Document.")
+    @Schema(description = "The customAspects for the document.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();

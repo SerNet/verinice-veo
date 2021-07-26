@@ -29,39 +29,39 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Base transfer object for Assets. Contains common data for all Asset DTOs.
+ * Base transfer object for assets. Contains common data for all asset DTOs.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Schema(title = "Asset", description = "Schema for Asset")
+@Schema(title = "asset", description = "Schema for asset")
 public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> {
 
     @Override
-    @Schema(description = "The name for the Asset.", example = "Mail Server")
+    @Schema(description = "The name for the asset.", example = "Mail Server")
     public String getName() {
         return super.getName();
     }
 
     @Override
-    @Schema(description = "The abbreviation for the Asset.", example = "MS")
+    @Schema(description = "The abbreviation for the asset.", example = "MS")
     public String getAbbreviation() {
         return super.getAbbreviation();
     }
 
     @Override
-    @Schema(description = "The description for the Asset.", example = "A server handling e-mail.")
+    @Schema(description = "The description for the asset.", example = "A server handling e-mail.")
     public String getDescription() {
         return super.getDescription();
     }
 
     @Override
-    @Schema(description = "The links for the Asset.")
+    @Schema(description = "The links for the asset.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
-    @Schema(description = "The customAspects for the Asset.")
+    @Schema(description = "The customAspects for the asset.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();

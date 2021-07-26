@@ -29,42 +29,42 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Transfer object for complete Processes.
+ * Transfer object for complete processes.
  * <p>
- * Contains all information of the Process.
+ * Contains all information of the process.
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Schema(title = "Process", description = "Schema for Process")
+@Schema(title = "process", description = "Schema for process")
 public abstract class AbstractProcessDto extends CompositeEntityDto<Process> {
 
     @Override
-    @Schema(description = "The name for the Process.", example = "Two-factor authentication")
+    @Schema(description = "The name for the process.", example = "Two-factor authentication")
     public String getName() {
         return super.getName();
     }
 
     @Override
-    @Schema(description = "The abbreviation for the Process.", example = "2FA")
+    @Schema(description = "The abbreviation for the process.", example = "2FA")
     public String getAbbreviation() {
         return super.getAbbreviation();
     }
 
     @Override
-    @Schema(description = "The description for the Process.",
+    @Schema(description = "The description for the process.",
             example = "Implement 2FA where possible.")
     public String getDescription() {
         return super.getDescription();
     }
 
     @Override
-    @Schema(description = "The links for the Process.")
+    @Schema(description = "The links for the process.")
     public Map<String, List<CustomLinkDto>> getLinks() {
         return super.getLinks();
     }
 
-    @Schema(description = "The customAspects for the Process.")
+    @Schema(description = "The customAspects for the process.")
     @Override
     public Map<String, CustomPropertiesDto> getCustomAspects() {
         return super.getCustomAspects();

@@ -33,7 +33,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Schema(title = "Scope", description = "Schema for scope")
+@Schema(title = "scope", description = "Schema for scope")
 public abstract class AbstractScopeDto extends AbstractEntityLayerSupertypeDto {
 
     @Schema(description = "The scope's members")

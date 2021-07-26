@@ -83,14 +83,6 @@ public enum ModelObjectType {
                                                               Scenario.TYPE_DESIGNATOR,
                                                               Scope.TYPE_DESIGNATOR);
 
-    public static Class<? extends ModelObject> getTypeForSingularTerm(String singularTerm) {
-        return Stream.of(values())
-                     .filter(et -> et.singularTerm.equals(singularTerm))
-                     .map(et -> et.type)
-                     .findFirst()
-                     .orElseThrow();
-    }
-
     public static Class<? extends ModelObject> getTypeForPluralTerm(String pluralTerm) {
         return Stream.of(values())
                      .filter(et -> et.pluralTerm.equals(pluralTerm))

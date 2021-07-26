@@ -59,9 +59,7 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
                     String.format("Type \"%s\" is not a valid schema.", type));
         }
         log.debug("Getting static JSON schema file for type: {} in path: {}", type, schemaFilePath);
-        return extract(schemaFilePath + ModelObjectType.getTypeForSingularTerm(type)
-                                                       .getSimpleName()
-                + ".json");
+        return extract(schemaFilePath + type + ".json");
     }
 
     @Override
