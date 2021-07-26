@@ -84,9 +84,9 @@ pipeline {
                      withDockerNetwork{ n ->
                          docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
                              docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
-                                 sh """export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
+                                 sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                        export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                       ./gradlew --no-daemon test"""
+                                       ./gradlew --no-daemon test'''
                                  jacoco classPattern: '**/build/classes/java/main'
                                  junit allowEmptyResults: true,
                                          testResults: '**/build/test-results/test/*.xml',
@@ -119,8 +119,6 @@ pipeline {
                         VEO_RESTTEST_OIDCURL = "https://keycloak.staging.verinice.com"
                         VEO_RESTTEST_REALM = "verinice-veo"
                         VEO_RESTTEST_CLIENTID = "veo-development-client"
-                        VEO_RESTTEST_USER = "${env.KEYCLOAK_CREDS_USR}"
-                        VEO_RESTTEST_PASS = "${env.KEYCLOAK_CREDS_PSW}"
                         VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
                         VEO_RESTTEST_PROXYPORT = 3128
                     }
@@ -130,9 +128,11 @@ pipeline {
                              withDockerNetwork{ n ->
                                  docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
                                      docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
-                                         sh """export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
+                                         sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                                export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                               ./gradlew --no-daemon veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128 """
+                                               export VEO_RESTTEST_USER=$KEYCLOAK_CREDS_USR && \
+                                               export VEO_RESTTEST_PASS=$KEYCLOAK_CREDS_PSW && \
+                                               ./gradlew --no-daemon veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128'''
                                          junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
                                          publishHTML([
                                                     allowMissing: false,
@@ -230,7 +230,7 @@ pipeline {
                         docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_PASSWORD=postgres") { db ->
                             sh 'until pg_isready; do sleep 1; done'
                             veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
-                                sh "java -Dlogging.file.name=${WORKSPACE}/veo-rest.log -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dspring.rabbitmq.username=${env.RABBITMQ_CREDS_USR} -Dspring.rabbitmq.password=${env.RABBITMQ_CREDS_PSW} -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
+                                sh "java -Dlogging.file.name=${WORKSPACE}/veo-rest.log -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dspring.rabbitmq.username=\$RABBITMQ_CREDS_USR -Dspring.rabbitmq.password=\$RABBITMQ_CREDS_PSW -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
                                 echo 'Waiting for application startup'
                                 timeout(1) {
                                     waitUntil {
