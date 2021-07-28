@@ -5,11 +5,7 @@
       "attributes": {
         "additionalProperties": false,
         "properties": {
-          "process_jointControllership_document": {
-            "format": "uri",
-            "pattern": "^(https?|ftp)://",
-            "type": "string"
-          }
+          
         },
         "type": "object"
       },
@@ -63,7 +59,7 @@
         "properties": {
           "subType": {
             "enum": [
-              "SCP_JointController"
+              "CTL_TOM"
             ]
           },
           "targetUri": {
@@ -72,7 +68,7 @@
           },
           "type": {
             "enum": [
-              "scope"
+              "control"
             ]
           }
         },
@@ -81,7 +77,7 @@
       "type": {
         "description": "The name of the type described by this schema.",
         "enum": [
-          "process_jointControllership"
+          "process_tom"
         ]
       }
     },

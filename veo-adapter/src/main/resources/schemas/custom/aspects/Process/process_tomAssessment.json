@@ -4,13 +4,20 @@
     "attributes": {
       "additionalProperties": false,
       "properties": {
-        "process_integrity_impact": {
-          "enum": [
-            "process_integrity_impact_low",
-            "process_integrity_impact_normal",
-            "process_integrity_impact_high",
-            "process_integrity_impact_veryHigh"
-          ]
+        "process_tomAssessment_certification": {
+          "type": "boolean"
+        },
+        "process_tomAssessment_certificationStandard": {
+          "type": "string"
+        },
+        "process_tomAssessment_comment": {
+          "type": "string"
+        },
+        "process_tomAssessment_overallAssessment": {
+          "type": "string"
+        },
+        "process_tomAssessment_securityConcept": {
+          "type": "boolean"
         }
       },
       "type": "object"
@@ -64,7 +71,7 @@
     "type": {
       "description": "The name of the type described by this schema.",
       "enum": [
-        "process_integrity"
+        "process_tomAssessment"
       ]
     }
   },

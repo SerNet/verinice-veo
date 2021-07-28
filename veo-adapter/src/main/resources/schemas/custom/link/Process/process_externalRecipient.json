@@ -5,7 +5,23 @@
       "attributes": {
         "additionalProperties": false,
         "properties": {
-          
+          "process_externalRecipient_thirdCountryDocument": {
+            "format": "uri",
+            "pattern": "^(https?|ftp)://",
+            "type": "string"
+          },
+          "process_externalRecipient_thirdCountryExplanation": {
+            "type": "string"
+          },
+          "process_externalRecipient_thirdCountryGuarantees": {
+            "type": "string"
+          },
+          "process_externalRecipient_thirdCountryName": {
+            "type": "string"
+          },
+          "process_externalRecipient_thirdCountryProcessing": {
+            "type": "boolean"
+          }
         },
         "type": "object"
       },

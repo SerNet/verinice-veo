@@ -61,18 +61,18 @@
       },
       "target": {
         "properties": {
+          "subType": {
+            "enum": [
+              "SCP_Controller"
+            ]
+          },
           "targetUri": {
             "title": "The id of the target object.",
             "type": "string"
           },
           "type": {
             "enum": [
-              "person"
-            ]
-          },
-          "subType": {
-            "enum": [
-              "PER_Controller"
+              "scope"
             ]
           }
         },

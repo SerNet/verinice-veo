@@ -73,6 +73,11 @@
       },
       "target": {
         "properties": {
+          "subType": {
+            "enum": [
+              "SCP_Processor"
+            ]
+          },
           "targetUri": {
             "title": "The id of the target object.",
             "type": "string"
