@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -518,10 +522,13 @@ public class ModuleConfiguration {
     public DomainTemplateServiceImpl domainTemplateService(
             DomainTemplateRepository domainTemplateRepository, EntityFactory factory,
             DomainTemplateResource domainTemplateResource, EntityToDtoTransformer dtoTransformer,
-            SubTypeTransformer subTypeTransformer, CatalogItemPrepareStrategy prepareStrategy) {
+            SubTypeTransformer subTypeTransformer, CatalogItemPrepareStrategy prepareStrategy,
+            @Value("${veo.default.domaintemplate.ids:f8ed22b1-b277-56ec-a2ce-0dbd94e24824}") String[] defaultDomainTemlateIds) {
+        Set<String> domainTemplates = Arrays.stream(defaultDomainTemlateIds)
+                                            .collect(Collectors.toSet());
         return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
                 domainTemplateResource.getResources(), dtoTransformer, subTypeTransformer,
-                prepareStrategy);
+                prepareStrategy, domainTemplates);
     }
 
     @Bean

@@ -74,6 +74,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     private final EntityFactory factory;
     private final List<VeoInputStreamResource> domainResources;
     private final CatalogItemPrepareStrategy preparations;
+    private final Set<String> defaultDomainTemplateIds;
 
     private ReferenceAssembler assembler;
     private ObjectMapper objectMapper;
@@ -84,11 +85,12 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
             EntityFactory factory, List<VeoInputStreamResource> domainResources,
             EntityToDtoTransformer dtoTransformer, SubTypeTransformer subTypeTransformer,
-            CatalogItemPrepareStrategy preparations) {
+            CatalogItemPrepareStrategy preparations, Set<String> defaultDomainTemplateIds) {
         this.domainTemplateRepository = domainTemplateRepository;
         this.factory = factory;
         this.domainResources = domainResources;
         this.preparations = preparations;
+        this.defaultDomainTemplateIds = defaultDomainTemplateIds;
 
         entityTransformer = new DtoToEntityTransformer(factory,
                 NoValidationSchemaLoader.NO_VALIDATION_LOADER, subTypeTransformer);
@@ -174,7 +176,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
      * Returns the default template id for a client.
      */
     private Set<String> getDefaultDomainTemplateIds(Client client) {
-        return Collections.singleton(DSGVO_DOMAINTEMPLATE_UUID);
+        return defaultDomainTemplateIds;
     }
 
     /**

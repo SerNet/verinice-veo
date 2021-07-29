@@ -31,7 +31,7 @@ import org.veo.rest.common.SpringResourceWrapper;
 @Component
 public class DomainTemplateResource {
 
-    @Value("${domain.file.selector:classpath:domaintemplates/*.json}")
+    @Value("${veo.domain.file.selector:classpath:domaintemplates/*.json}")
     private Resource[] springDomainResources;
 
     public List<VeoInputStreamResource> getResources() {
