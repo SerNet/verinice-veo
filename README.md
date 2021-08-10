@@ -117,7 +117,7 @@ file called `application-local.[yaml|properties]`
 #### Profile 'resttest'
 This profile will be active while the integration test for the REST API are running. These tests use Spring's `TestRestTemplate`
 which needs to be configured with URLs and credentials for the production services that are to be used
-during the integration test, such as Keycloack, PostgreSQL or RabbitMQ.
+during the integration test, such as Keycloak, PostgreSQL or RabbitMQ.
 
 If you want to run the REST API integration tests, simply run:
 
@@ -132,8 +132,7 @@ If you need to pass proxy parameters (i.e. if the backend server has to use a pr
 Keycloak service to verifx access tokens) you can pass them on the command line as project properties:
 
 ```shell
-RUN_RESTTESTS=true ./gradlew veo-rest:test \
---tests "*rest.test*" \
+./gradlew veo-rest:restTest \
 -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 \
 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128
 ```
@@ -295,11 +294,6 @@ You can now send your HTTP request. The access token will time out (usually afte
 
 ### veo-rest
 This module contains the implementation of the REST services of the REST API.
-
-## Database [DEPRECATED]
-Entity–relationship model of the database:
-
-![ERM of the the database](veo-persistence/src/main/sql/database-erm.png)
 
 ## Authentication and Authorization
 
