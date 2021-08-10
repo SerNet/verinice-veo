@@ -313,9 +313,14 @@ call `./misc/scripts/authenticate -h` for more details.
 
 ## Events
 
-veo-rest records changed to entities and sends them to an external message queue (see Profile 'publishing-enabled').
+VEO records changes to entities and publishes them to an external message broker (see Profile 'publishing-enabled').
 
-To ensure that all events are successfully published, the same event may be transmitted multiple times. Therefore, consumers are required to keep track of which events they already received. Due to how those events are handled internally, gaps may occur in their IDs, so consumers must not rely on event IDs being consecutive.
+### Rules for event consumers
+
+VEO uses a local event store to save model changes and corresponding events in the same transaction boundary. This ensures transactional consistency between events and model changes without the use of the XA protocol (two-phase commits). Please note: in rare cases an event may be published multiple times. This can happen if the message broker crashes after sending the event but before confirming the transmission to the publisher. Therefore:
+
+- consumers of VEO-events MUST perform message deduplication for all received events. Each event carries a unique ID that may be used for this purpose.
+- Due to how those events are handled internally, gaps may occur in the IDs, so consumers MUST NOT rely on event IDs being consecutive.
 
 
 ## Code Styles
