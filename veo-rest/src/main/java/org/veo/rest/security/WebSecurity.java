@@ -73,7 +73,11 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
                         "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
-                .hasAuthority("SCOPE_veo-user").anyRequest().authenticated() // CAUTION:
+                .hasAuthority("SCOPE_veo-user")
+
+                .antMatchers("/admin/**").hasAuthority("SCOPE_veo-admin")
+
+                .anyRequest().authenticated() // CAUTION:
                                                                              // this
                                                                              // includes
                                                                              // anonymous

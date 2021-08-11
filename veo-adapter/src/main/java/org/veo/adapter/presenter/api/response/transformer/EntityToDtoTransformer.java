@@ -31,6 +31,7 @@ import javax.validation.Valid;
 
 import org.veo.adapter.presenter.api.common.ModelObjectReference;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
@@ -53,6 +54,7 @@ import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Catalog;
@@ -101,11 +103,8 @@ public final class EntityToDtoTransformer {
         if (source instanceof Unit) {
             return transformUnit2Dto((Unit) source);
         }
-        if (source instanceof AssetRisk) {
-            return AssetRiskDto.from((AssetRisk) source, referenceAssembler);
-        }
-        if (source instanceof ProcessRisk) {
-            return ProcessRiskDto.from((ProcessRisk) source, referenceAssembler);
+        if (source instanceof AbstractRisk) {
+            return transform2Dto((AbstractRisk) source);
         }
         if (source instanceof Catalog) {
             return transformCatalog2Dto((Catalog) source);
@@ -148,6 +147,18 @@ public final class EntityToDtoTransformer {
         }
         throw new IllegalArgumentException("No transform method defined for " + source.getClass()
                                                                                       .getSimpleName());
+    }
+
+    public AbstractRiskDto transform2Dto(@Valid AbstractRisk<?, ?> source) {
+        if (source instanceof AssetRisk) {
+            return AssetRiskDto.from((AssetRisk) source, referenceAssembler);
+        }
+        if (source instanceof ProcessRisk) {
+            return ProcessRiskDto.from((ProcessRisk) source, referenceAssembler);
+        }
+        throw new IllegalArgumentException(
+                "No transform method defined for risk type " + source.getClass()
+                                                                     .getSimpleName());
     }
 
     // Person ->

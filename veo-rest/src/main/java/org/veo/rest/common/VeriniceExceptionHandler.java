@@ -29,6 +29,7 @@ import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +66,11 @@ public class VeriniceExceptionHandler {
     @ExceptionHandler(ETagMismatchException.class)
     protected ResponseEntity<ApiResponseBody> handle(ETagMismatchException exception) {
         return handle(exception, HttpStatus.PRECONDITION_FAILED);
+    }
+
+    @ExceptionHandler({ MissingAdminPrivilegesException.class })
+    protected ResponseEntity<ApiResponseBody> handle(MissingAdminPrivilegesException exception) {
+        return handle(exception, HttpStatus.FORBIDDEN);
     }
 
     private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {

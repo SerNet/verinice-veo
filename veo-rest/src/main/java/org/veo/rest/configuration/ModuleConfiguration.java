@@ -110,6 +110,7 @@ import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
+import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
@@ -545,6 +546,12 @@ public class ModuleConfiguration {
             org.veo.core.repository.RepositoryProvider entityRepository) {
         return new GetIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
                 entityRepository);
+    }
+
+    @Bean
+    public GetUnitDumpUseCase getUnitDumpUseCase(RepositoryProvider repositoryProvider,
+            UnitRepository unitRepository) {
+        return new GetUnitDumpUseCase(repositoryProvider, unitRepository);
     }
 
     @Bean
