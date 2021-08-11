@@ -69,6 +69,7 @@ spring:
           provider_disables_autocommit: true
       javax:
         persistence:
+          # This makes JPA stop updating the actual database and write DDL to a file instead.
           schema-generation:
             scripts:
               action: update
