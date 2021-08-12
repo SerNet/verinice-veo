@@ -73,7 +73,6 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     private Unit unit
     private Unit otherClientsUnit
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -90,7 +89,6 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             otherClient = clientRepository.save(newClient())
             otherClientsUnit = unitRepository.save(newUnit(otherClient))
         }
-        ETag.setSalt(salt)
     }
 
     @WithUserDetails("user@domain.example")

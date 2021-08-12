@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -29,7 +28,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
@@ -57,7 +55,6 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
     private Client secondClient
     private Domain domainSecondClient
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -85,7 +82,6 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             secondClient = clientRepository.save(secondClient)
             domainSecondClient = secondClient.domains.iterator().next()
         }
-        ETag.setSalt(salt)
 
         testDomain = client.getDomains().iterator().next()
     }
@@ -97,12 +93,9 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/domains/${testDomain.id.uuidValue()}")
-        String expectedETag = DigestUtils.sha256Hex(testDomain.id.uuidValue() + "_" + salt + "_" + Long.toString(testDomain.getVersion()))
 
         then: "the eTag is set"
-        String eTag = getETag(results)
-        eTag != null
-        getTextBetweenQuotes(eTag) == expectedETag
+        getETag(results) != null
         and:
         def result = parseJson(results)
         result.name == testDomain.name

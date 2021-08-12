@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -61,7 +60,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -89,7 +87,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             clientRepository.save(client)
             unitRepository.save(unit)
         }
-        ETag.setSalt(salt)
     }
 
 
@@ -128,12 +125,9 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/scenarios/${scenario.id.uuidValue()}")
-        String expectedETag = DigestUtils.sha256Hex(scenario.id.uuidValue() + "_" + salt + "_" + Long.toString(scenario.getVersion()))
 
         then: "the eTag is set"
-        String eTag = getETag(results)
-        eTag != null
-        getTextBetweenQuotes(eTag) == expectedETag
+        getETag(results) != null
         and:
         def result = parseJson(results)
         result.name == 'Test scenario-1'

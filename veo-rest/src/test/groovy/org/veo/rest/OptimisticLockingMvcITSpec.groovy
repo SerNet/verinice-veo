@@ -23,7 +23,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.common.ETagMismatchException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -47,7 +46,6 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
 
     private Unit unit
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    String salt = "d0eH%vC!l8"
 
     def setup() {
         txTemplate.execute {
@@ -59,7 +57,6 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
                 name = "Test unit"
             })
         }
-        ETag.setSalt(salt)
     }
 
     @WithUserDetails("user@domain.example")

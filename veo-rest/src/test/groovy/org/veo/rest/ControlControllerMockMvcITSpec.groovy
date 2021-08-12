@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -61,7 +60,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -87,7 +85,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "Test unit"
             })
         }
-        ETag.setSalt(salt)
     }
 
 
@@ -171,12 +168,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/controls/${control.id.uuidValue()}")
-        String expectedETag = DigestUtils.sha256Hex(control.id.uuidValue() + "_" + salt + "_" + Long.toString(control.getVersion()))
 
         then: "the eTag is set"
-        String eTag = getETag(results)
-        eTag != null
-        getTextBetweenQuotes(eTag) == expectedETag
+        getETag(results) != null
         and:
         def result = parseJson(results)
         result.name == 'Test control-1'

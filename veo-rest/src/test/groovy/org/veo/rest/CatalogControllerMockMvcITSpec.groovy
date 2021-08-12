@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.entity.Catalog
@@ -86,12 +85,9 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
 
         when: "a request is made to the server"
         def results = get("/catalogs/${catalog.id.uuidValue()}/items/${item1.id.uuidValue()}")
-        String expectedETag = DigestUtils.sha256Hex(item1.id.uuidValue() + "_" + salt + "_" + Long.toString(domain.version))
 
         then: "the eTag is set"
-        String eTag = getETag(results)
-        eTag != null
-        getTextBetweenQuotes(eTag) == expectedETag
+        getETag(results) != null
         and:
         def result = parseJson(results)
         result.id == item1.id.uuidValue()

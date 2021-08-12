@@ -29,7 +29,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.CatalogRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -75,10 +74,8 @@ class CatalogSpec extends VeoMvcSpec {
     Unit unit
     Unit unitSecondClient
     Control controlSecondClient
-    String salt = "salt-for-etag"
 
     def setup() {
-        ETag.setSalt(salt)
         txTemplate.execute {
             client = newClient {
                 id = clientId

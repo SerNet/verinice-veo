@@ -19,7 +19,6 @@ package org.veo.rest
 
 import java.time.Instant
 
-import org.apache.commons.codec.digest.DigestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -81,7 +80,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
     private Domain domain1
     private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-    String salt = "salt-for-etag"
 
     def setup() {
         txTemplate.execute {
@@ -112,7 +110,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "Unit2"
             })
         }
-        ETag.setSalt(salt)
     }
 
     @WithUserDetails("user@domain.example")
@@ -196,12 +193,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a GET request is made to the server"
         def results = get("/assets/${asset.id.uuidValue()}")
-        String expectedETag = DigestUtils.sha256Hex(asset.id.uuidValue() + "_" + salt + "_" + Long.toString(asset.getVersion()))
 
         then: "the eTag is set"
         String eTag = getETag(results)
         eTag != null
-        getTextBetweenQuotes(eTag) == expectedETag
         and: "the response contains the expected data"
         def result = parseJson(results)
         result == [
@@ -280,11 +275,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/assets/${sourceAsset.id.uuidValue()}")
-        String expectedETag = DigestUtils.sha256Hex(sourceAsset.id.uuidValue() + "_" + salt + "_" + Long.toString(sourceAsset.getVersion()))
         then: "the asset is found"
-        String eTag = getETag(results)
-        eTag != null
-        getTextBetweenQuotes(eTag).equals(expectedETag)
+        getETag(results) != null
         and: "the response contains the expected link"
         def result = parseJson(results)
         result.name == 'Test asset-1'
