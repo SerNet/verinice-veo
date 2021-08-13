@@ -304,7 +304,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     }
 
     private postIncarnationDescriptions(unitId, applyInfo) {
-        def response = postList("/units/${unitId}/incarnations", applyInfo)
+        def response = post("/units/${unitId}/incarnations", applyInfo)
         log.info("postIncarnationDescriptions: {}",response.body)
         response.body
     }
