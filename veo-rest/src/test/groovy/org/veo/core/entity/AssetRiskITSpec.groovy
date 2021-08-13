@@ -19,6 +19,7 @@ package org.veo.core.entity
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
@@ -34,6 +35,7 @@ import org.veo.persistence.entity.jpa.AssetRiskData
 
 @SpringBootTest(classes = AssetRiskITSpec.class)
 @ActiveProfiles(["test"])
+@WithUserDetails("user@domain.example")
 class AssetRiskITSpec extends VeoSpringSpec {
 
     @Autowired

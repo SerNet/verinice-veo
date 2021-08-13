@@ -47,7 +47,6 @@ import org.veo.test.VeoSpec
 @SpringBootTest
 @ActiveProfiles("test")
 @ImportAutoConfiguration
-@WithUserDetails("user@domain.example")
 @ComponentScan("org.veo")
 abstract class VeoSpringSpec extends VeoSpec {
 

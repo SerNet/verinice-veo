@@ -17,12 +17,13 @@
  ******************************************************************************/
 package org.veo.rest
 
-
+import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.ModelObjectType
 
+@WithUserDetails("user@domain.example")
 class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
     def "provides types with working links"() {
         when:

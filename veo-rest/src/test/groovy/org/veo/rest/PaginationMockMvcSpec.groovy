@@ -18,6 +18,7 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.EntityLayerSupertype
@@ -27,6 +28,8 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+
+@WithUserDetails("user@domain.example")
 class PaginationMockMvcSpec extends VeoMvcSpec {
     @Autowired
     private ClientRepositoryImpl clientRepository
