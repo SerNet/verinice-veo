@@ -31,7 +31,7 @@ public final class ETag {
 
     public static final String SHA256_ALGORITHM = "SHA-256";
 
-    private static String salt = "gN8Yk<w8fV3WucF";
+    private static String salt;
 
     private ETag() {
         // do not instantiate, use public static methods
@@ -70,6 +70,9 @@ public final class ETag {
     }
 
     public static void setSalt(String salt) {
+        if (salt == null || salt.length() == 0) {
+            throw new IllegalArgumentException("Salt must not be empty");
+        }
         ETag.salt = salt;
     }
 
