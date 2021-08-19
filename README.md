@@ -235,7 +235,7 @@ while the application is running:
 
 ### Prerequisite:
 * Install Java 11.
-* Install MySQL, MariaDB or PostgreSQL
+* Install PostgreSQL
 * Create an empty database _v2020_
 
 ### Run REST Service
