@@ -17,8 +17,8 @@ A prototype of a new verinice version.
 ### Clone project:
 
 ```bash
-git clone ssh://git@git.verinice.org:7999/rd/v2020.git
-cd v2020
+git clone https://github.com/SerNet/verinice-veo.git
+cd verinice-veo
 ```
 
 ### Build project:
