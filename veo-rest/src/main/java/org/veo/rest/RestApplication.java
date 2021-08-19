@@ -97,7 +97,9 @@ public class RestApplication {
     private ApplicationContext appContext;
 
     public static void main(String[] args) {
-        SpringApplication.run(RestApplication.class, args);
+        var app = new SpringApplication(RestApplication.class);
+        app.setBanner((env, sourceClass, out) -> out.println(BannerProvider.getBanner()));
+        app.run(args);
     }
 
     @Bean
