@@ -18,14 +18,17 @@
 package org.veo.core
 
 import javax.transaction.Transactional
+import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
+import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.persistence.access.CatalogItemRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.CatalogItemData
 
 @SpringBootTest(classes = CatalogItemRepositoryITSpec.class)
 @Transactional()
@@ -45,17 +48,37 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         Client client = newClient()
         def domain = newDomain(client)
         def catalog = newCatalog(domain)
-        def catalogItem = newCatalogItem(catalog) {
+        newCatalogItem(catalog) {
             newControl(it) {
                 name = 'Control 1'
             }
         }
         client = clientRepository.save(client)
         def itemId = client.domains.first().catalogs.first().catalogItems.first().id
+
         when:
         def item = catalogItemRepository.findById(itemId)
+
         then:
         item.present
         item.get().element.name == 'Control 1'
+    }
+
+    def "a catalog item cannot be saved without an associated element"() {
+        given: "a client with a catalog containing an item"
+        def client = clientRepository.save(newClient())
+        newDomain(client)
+        client = clientRepository.save(client)
+        def catalog = catalogDataRepository.save(newCatalog(client.domains.first()))
+
+        when:
+        CatalogItem catalogItem = new CatalogItemData()
+        catalogItem.setCatalog(catalog)
+        catalogItemRepository.save(catalogItem)
+
+        then:
+        ConstraintViolationException ex = thrown(ConstraintViolationException)
+        ex.getConstraintViolations().first().propertyPath ==~ /element/
+        ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
     }
 }

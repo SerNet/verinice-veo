@@ -27,6 +27,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
@@ -58,11 +59,14 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
                fetch = FetchType.LAZY)
     private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
-    @OneToOne(optional = true, // FIXME VEO-674 shouldn't this be false?
-              targetEntity = EntityLayerSupertypeData.class,
+    @OneToOne(targetEntity = EntityLayerSupertypeData.class,
               cascade = CascadeType.ALL,
               orphanRemoval = true,
-              mappedBy = "containingCatalogItem") // FIXME VEO-674 should this be the owning side?
+              mappedBy = "containingCatalogItem",
+              fetch = FetchType.LAZY)
+    // Note: 'optional = false' would not be validated because the relation is
+    // mapped from the targetEntity. We have to rely on javax.validation here:
+    @NotNull
     private Catalogable element;
 
     @Column(name = "updatereferences")
