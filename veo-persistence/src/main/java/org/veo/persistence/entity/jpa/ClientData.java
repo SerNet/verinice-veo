@@ -25,6 +25,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -60,6 +61,7 @@ public class ClientData extends BaseModelObjectData implements Client, Nameable 
                cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = DomainData.class)
+    @Valid
     final private Set<Domain> domains = new HashSet<>();
 
     public void setDomains(Set<Domain> newDomains) {

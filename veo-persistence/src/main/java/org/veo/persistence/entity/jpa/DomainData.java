@@ -21,6 +21,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
@@ -39,10 +40,13 @@ public class DomainData extends DomainTemplateData implements NameableData, Doma
     private boolean active = true;
     // one to one
     @ManyToOne(targetEntity = DomainTemplateData.class)
+    @Valid
     private DomainTemplate domainTemplate;
+
     // This enforces the composition association Client-Domain
     @ManyToOne(targetEntity = ClientData.class, optional = false, fetch = FetchType.LAZY)
     @NotNull
+    @Valid
     private Client owner;
 
     @Override

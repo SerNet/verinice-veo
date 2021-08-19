@@ -29,6 +29,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -51,13 +52,17 @@ public class CatalogData extends BaseModelObjectData implements Catalog, Nameabl
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
+
     @NotNull
     @Column(name = "name")
     private String name;
+
     @Column(name = "abbreviation")
     private String abbreviation;
+
     @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
+
     @ToString.Exclude
     @Column(name = "catalogitems")
     @OneToMany(cascade = CascadeType.ALL,
@@ -65,10 +70,12 @@ public class CatalogData extends BaseModelObjectData implements Catalog, Nameabl
                targetEntity = CatalogItemData.class,
                mappedBy = "catalog",
                fetch = FetchType.LAZY)
+    @Valid
     private Set<CatalogItem> catalogItems = new HashSet<>();
-    // one to one
+
     @ToString.Exclude
     @ManyToOne(targetEntity = DomainTemplateData.class, optional = false)
     @JoinColumn(name = "domaintemplate_id")
+    @Valid
     private DomainTemplate domainTemplate;
 }

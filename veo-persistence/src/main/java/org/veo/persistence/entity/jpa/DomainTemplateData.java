@@ -28,6 +28,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Catalog;
@@ -46,26 +47,34 @@ public class DomainTemplateData extends BaseModelObjectData implements DomainTem
     @Id
     @ToString.Include
     private String dbId;
+
     @NotNull
     @Column(name = "name")
     private String name;
+
     @Column(name = "abbreviation")
     private String abbreviation;
+
     @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
+
     @NotNull
     @Column(name = "authority")
     private String authority;
+
     @NotNull
     @Column(name = "templateversion")
     private String templateVersion;
+
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = CatalogData.class,
                mappedBy = "domainTemplate",
                fetch = FetchType.EAGER)
+    @Valid
     private Set<Catalog> catalogs = new HashSet<>();
+
     @NotNull
     @Column(name = "revision")
     private String revision;
