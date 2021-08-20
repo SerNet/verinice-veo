@@ -7,3 +7,15 @@ include ':veo-adapter'
 include ':veo-persistence'
 include ':veo-test'
 include ':veo-message'
+
+boolean isCiServer = System.getenv().containsKey("CI")
+
+buildCache {
+    local {
+        enabled = !isCiServer
+    }
+    remote(HttpBuildCache) {
+        url = 'https://bob-2019:8090/cache/'
+        push = isCiServer
+    }
+}
