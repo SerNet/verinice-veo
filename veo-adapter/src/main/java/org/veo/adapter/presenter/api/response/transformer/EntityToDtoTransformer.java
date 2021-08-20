@@ -31,11 +31,11 @@ import javax.validation.Valid;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
@@ -119,7 +119,7 @@ public final class EntityToDtoTransformer {
                                                                                       .getSimpleName());
     }
 
-    public ElementDto transform2Dto(@Valid Element source) {
+    public AbstractElementDto transform2Dto(@Valid Element source) {
 
         if (source instanceof Person) {
             return transformPerson2Dto((Person) source);
@@ -309,7 +309,7 @@ public final class EntityToDtoTransformer {
 
     }
 
-    private <TDto extends ElementDto & IdentifiableDto> void mapElement(Element source,
+    private <TDto extends AbstractElementDto & IdentifiableDto> void mapElement(Element source,
             TDto target) {
         target.setId(source.getId()
                            .uuidValue());

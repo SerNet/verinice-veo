@@ -70,7 +70,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.ElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
@@ -226,7 +226,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
             @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public @Valid CompletableFuture<List<ElementDto>> getMembers(
+    public @Valid CompletableFuture<List<AbstractElementDto>> getMembers(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);

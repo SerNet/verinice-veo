@@ -19,7 +19,7 @@ package org.veo.adapter.presenter.api.response.transformer;
 
 import java.util.HashMap;
 
-import org.veo.adapter.presenter.api.dto.ElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.specification.DomainBoundaryViolationException;
 
@@ -28,7 +28,7 @@ import org.veo.core.entity.specification.DomainBoundaryViolationException;
  */
 public class SubTypeTransformer {
 
-    public void mapSubTypesToEntity(ElementDto source, Element target) {
+    public void mapSubTypesToEntity(AbstractElementDto source, Element target) {
         source.getSubType()
               .forEach((domainId, subTypeInDomain) -> {
                   var domain = target.getDomains()
@@ -45,7 +45,7 @@ public class SubTypeTransformer {
               });
     }
 
-    public void mapSubTypesToDto(Element source, ElementDto target) {
+    public void mapSubTypesToDto(Element source, AbstractElementDto target) {
         var subTypeMap = new HashMap<String, String>();
         for (var domain : source.getDomains()) {
             source.getSubType(domain)

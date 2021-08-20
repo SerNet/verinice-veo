@@ -35,6 +35,7 @@ import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
@@ -47,7 +48,6 @@ import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomTypedLinkDto;
-import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
@@ -324,7 +324,7 @@ public final class DtoToEntityTransformer {
         target.setParts(idRefResolver.resolve(source.getParts()));
     }
 
-    private <TDto extends ElementDto, TEntity extends Element> void mapElement(TDto source,
+    private <TDto extends AbstractElementDto, TEntity extends Element> void mapElement(TDto source,
             TEntity target, IdRefResolver idRefResolver) {
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
@@ -344,8 +344,8 @@ public final class DtoToEntityTransformer {
         }
     }
 
-    private Set<CustomLink> mapLinks(Element entity, ElementDto dto, EntitySchema entitySchema,
-            IdRefResolver idRefResolver) {
+    private Set<CustomLink> mapLinks(Element entity, AbstractElementDto dto,
+            EntitySchema entitySchema, IdRefResolver idRefResolver) {
         return dto.getLinks()
                   .entrySet()
                   .stream()
@@ -378,7 +378,7 @@ public final class DtoToEntityTransformer {
         return new HashSet<>();
     }
 
-    private Set<CustomAspect> mapCustomAspects(ElementDto dto, EntityFactory factory,
+    private Set<CustomAspect> mapCustomAspects(AbstractElementDto dto, EntityFactory factory,
             EntitySchema entitySchema) {
         return dto.getCustomAspects()
                   .entrySet()

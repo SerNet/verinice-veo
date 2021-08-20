@@ -39,10 +39,10 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
-import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
@@ -180,7 +180,7 @@ public class DomainTemplateAssembler {
      * when {@link #createDomainTemplateDto()} is called.
      */
     private void createCatalog(File[] resources, String catalogName,
-            Function<ElementDto, String> toNamespace)
+            Function<AbstractElementDto, String> toNamespace)
             throws JsonParseException, JsonMappingException, IOException {
         String catalogId = Key.newUuid()
                               .uuidValue();
@@ -203,13 +203,13 @@ public class DomainTemplateAssembler {
 
     private Map<String, TransformCatalogItemDto> createCatalogItems(
             Map<String, CatalogableDto> readElements, String catalogId,
-            Function<ElementDto, String> toNamespace) {
+            Function<AbstractElementDto, String> toNamespace) {
         Map<String, TransformCatalogItemDto> cache = new HashMap<>();
         for (Entry<String, CatalogableDto> e : readElements.entrySet()) {
             TransformCatalogItemDto itemDto = new TransformCatalogItemDto();
             itemDto.setElement(e.getValue());
             itemDto.setCatalog(SyntheticIdRef.from(catalogId, Catalog.class));
-            ElementDto elementDto = (ElementDto) e.getValue();
+            AbstractElementDto elementDto = (AbstractElementDto) e.getValue();
             itemDto.setNamespace(toNamespace.apply(elementDto));
             itemDto.setId(Key.newUuid()
                              .uuidValue());
@@ -223,8 +223,8 @@ public class DomainTemplateAssembler {
 
     private void createTailoringReferences(CatalogableDto value,
             Map<String, TransformCatalogItemDto> catalogItems) {
-        if (value instanceof ElementDto) {
-            ElementDto els = (ElementDto) value;
+        if (value instanceof AbstractElementDto) {
+            AbstractElementDto els = (AbstractElementDto) value;
             TransformCatalogItemDto currentItem = catalogItems.get(((IdentifiableDto) value).getId());
             currentItem.setTailoringReferences(new HashSet<AbstractTailoringReferenceDto>());
             els.getLinks()

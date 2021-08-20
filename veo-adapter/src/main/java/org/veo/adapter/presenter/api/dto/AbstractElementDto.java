@@ -31,6 +31,7 @@ import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -44,7 +45,10 @@ import lombok.ToString;
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractElementDto extends AbstractVersionedDto implements ElementDto {
+public abstract class AbstractElementDto extends AbstractVersionedDto
+        implements NameableDto, CatalogableDto {
+
+    abstract public Class<? extends Identifiable> getModelInterface();
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Element.", example = "Lock doors", required = true)

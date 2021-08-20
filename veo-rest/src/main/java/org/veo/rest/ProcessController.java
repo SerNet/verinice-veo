@@ -73,7 +73,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.dto.ElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.ProcessSearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
@@ -199,7 +199,7 @@ public class ProcessController extends AbstractEntityController implements Proce
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class)))),
             @ApiResponse(responseCode = "404", description = "Process not found") })
-    public @Valid CompletableFuture<List<ElementDto>> getParts(
+    public @Valid CompletableFuture<List<AbstractElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);

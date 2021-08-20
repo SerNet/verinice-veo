@@ -30,6 +30,6 @@ import lombok.Data;
 public class UnitDumpDto {
     private final FullUnitDto unit;
     private final Set<FullDomainDto> domains;
-    private final Set<ElementDto> elements;
+    private final Set<AbstractElementDto> elements;
     private final Set<AbstractRiskDto> risks;
 }

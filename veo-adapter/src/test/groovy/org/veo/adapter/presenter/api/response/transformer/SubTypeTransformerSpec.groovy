@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-import org.veo.adapter.presenter.api.dto.ElementDto
+import org.veo.adapter.presenter.api.dto.AbstractElementDto
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
 import org.veo.core.entity.Key
@@ -28,7 +28,7 @@ import spock.lang.Specification
 
 class SubTypeTransformerSpec extends Specification {
 
-    ElementDto dto = Mock()
+    AbstractElementDto dto = Mock()
     Element entity = Mock()
     SubTypeTransformer aspectTransformer = new SubTypeTransformer()
     Domain domain0 = Mock(Domain) { it.id >> Key.newUuid() }

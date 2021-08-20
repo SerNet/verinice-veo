@@ -19,9 +19,9 @@ package org.veo.adapter.service.domaintemplate;
 
 import java.util.Collections;
 
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
@@ -96,8 +96,8 @@ public class CatalogItemServiceImpl implements CatalogItemService {
         dto.setOwner(null);
         dto.getDomains()
            .clear();
-        if (dto instanceof ElementDto) {
-            ElementDto edto = (ElementDto) dto;
+        if (dto instanceof AbstractElementDto) {
+            AbstractElementDto edto = (AbstractElementDto) dto;
             edto.getLinks()
                 .clear();
             edto.getSubType()
