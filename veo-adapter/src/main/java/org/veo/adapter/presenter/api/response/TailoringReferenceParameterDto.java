@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import javax.validation.constraints.Size;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedCatalogable;
 import org.veo.core.entity.Catalogable;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.TailoringReferenceType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,6 +42,7 @@ public class TailoringReferenceParameterDto {
 
     @Schema(description = "The translatable key of the reference type. For customLinks this is the type of the link.",
             example = "proc_1")
+    @Size(max = CustomAspect.TYPE_MAX_LENGTH)
     private String referenceKey;
 
     @Schema(description = "The type of the Tailoringreference.",

@@ -29,6 +29,8 @@ import java.util.Set;
  */
 public interface CustomAspect {
 
+    public static final int TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+
     String getType();
 
     void setType(String aType);

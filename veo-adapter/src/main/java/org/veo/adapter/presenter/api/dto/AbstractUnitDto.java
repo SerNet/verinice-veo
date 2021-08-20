@@ -46,9 +46,11 @@ public abstract class AbstractUnitDto extends AbstractVersionedDto implements Na
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Unit.", example = "My unit", required = true)
+    @Size(max = Nameable.NAME_MAX_LENGTH)
     private String name;
 
     @Schema(description = "The abbreviation for the Unit.", example = "U-96")
+    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
     private String abbreviation;
 
     @Schema(description = "The description for the Unit.",

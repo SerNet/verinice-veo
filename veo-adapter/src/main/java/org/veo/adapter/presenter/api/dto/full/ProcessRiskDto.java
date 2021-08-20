@@ -48,7 +48,7 @@ import lombok.Singular;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class ProcessRiskDto extends AbstractRiskDto {
 
-    @Schema(description = "A valid reference to this resource.")
+    @Schema(description = "A valid reference to this resource.", format = "uri")
     private String _self = "";
 
     @Valid

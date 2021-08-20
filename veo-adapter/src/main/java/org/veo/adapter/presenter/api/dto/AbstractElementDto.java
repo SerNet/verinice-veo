@@ -52,6 +52,7 @@ public abstract class AbstractElementDto extends AbstractVersionedDto
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Element.", example = "Lock doors", required = true)
+    @Size(max = Nameable.NAME_MAX_LENGTH)
     @ToString.Include
     private String name;
 
@@ -62,9 +63,8 @@ public abstract class AbstractElementDto extends AbstractVersionedDto
     @ToString.Include
     private String designator;
 
-    @Schema(description = "The abbreviation for the Element.",
-            example = "Lock doors",
-            required = false)
+    @Schema(description = "The abbreviation for the Element.", example = "Lock doors")
+    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
     private String abbreviation;
 
     @Schema(description = "The description for the Element.",

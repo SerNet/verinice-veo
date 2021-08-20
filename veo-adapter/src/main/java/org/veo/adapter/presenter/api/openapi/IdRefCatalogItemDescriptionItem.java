@@ -23,13 +23,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public interface IdRefCatalogItemDescriptionItem extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the catalog item to incarnate.")
+    @Schema(description = "A friendly human readable title of the catalog item to incarnate.",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     String getDisplayName();
 
     @Schema(required = true,
             description = "The resource URL of the referenced catalog item.",
-            example = "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>/items/<00000000-0000-0000-0000-000000000000>")
+            example = "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>/items/<00000000-0000-0000-0000-000000000000>",
+            format = "uri")
     @Override
     String getTargetUri();
 

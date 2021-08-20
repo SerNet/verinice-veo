@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.common;
 
 import java.util.Optional;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -26,6 +27,7 @@ import lombok.Data;
  * instead of entity data.
  */
 @Data
+@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 public class ApiResponseBody {
 
     private final boolean success;

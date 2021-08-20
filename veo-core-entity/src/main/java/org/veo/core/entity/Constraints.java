@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,16 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest.common;
+package org.veo.core.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Value;
-
-@Schema(accessMode = Schema.AccessMode.READ_ONLY)
-@Value
-/**
- * API response when a new search is created for a resource endpoint.
- */
-public class SearchResponse {
-    String searchUrl;
+class Constraints {
+    public final static int DEFAULT_STRING_MAX_LENGTH = 255;
 }

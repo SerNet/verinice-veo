@@ -31,7 +31,8 @@ import lombok.Data;
 public abstract class AbstractVersionedDto implements VersionedDto {
 
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z")
+            example = "1990-12-31T23:59:60Z",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Pattern(regexp = Patterns.DATETIME)
     private String createdAt;
 

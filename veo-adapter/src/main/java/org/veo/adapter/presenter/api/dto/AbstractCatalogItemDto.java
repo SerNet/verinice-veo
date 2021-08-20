@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemCatalog;
@@ -41,8 +42,10 @@ public abstract class AbstractCatalogItemDto extends AbstractVersionedDto implem
     private IdRef<Catalog> catalog;
     @Schema(description = "The tailoring references of this catalog item.")
     private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
+
     @ToString.Include
     @Schema(description = "The namespace for the catalogitem.", example = "A1.B2")
+    @Size(max = CatalogItem.NAMESPACE_MAX_LENGTH)
     private String namespace;
 
     @Override

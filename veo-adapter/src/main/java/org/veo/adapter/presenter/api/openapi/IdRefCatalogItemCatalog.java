@@ -32,13 +32,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public interface IdRefCatalogItemCatalog extends IIdRef {
 
     @Schema(description = "A friendly human readable title of the referenced catalog.",
-            example = "EU GDPR 2016-05-04")
+            example = "EU GDPR 2016-05-04",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     String getDisplayName();
 
     @Schema(required = true,
             description = "The resource URL of the referenced catalog.",
-            example = "http://<api.example.org>/api/v1/catalog/<00000000-0000-0000-0000-000000000000>")
+            example = "http://<api.example.org>/api/v1/catalog/<00000000-0000-0000-0000-000000000000>",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     String getTargetUri();
 

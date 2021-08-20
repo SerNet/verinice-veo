@@ -36,6 +36,8 @@ public interface CatalogItem extends ElementOwner {
     String SINGULAR_TERM = "catalogitem";
     String PLURAL_TERM = "catalogitems";
 
+    int NAMESPACE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+
     Comparator<? super CatalogItem> BY_CATALOGITEMS = (ci1, ci2) -> ci1.getId()
                                                                        .uuidValue()
                                                                        .compareTo(ci2.getId()

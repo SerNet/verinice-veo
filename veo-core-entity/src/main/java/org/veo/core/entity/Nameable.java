@@ -25,6 +25,8 @@ import java.util.stream.Stream;
  */
 public interface Nameable extends Displayable {
 
+    int NAME_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+    int ABBREVIATION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
     int DESCRIPTION_MAX_LENGTH = 65535;
 
     String getName();

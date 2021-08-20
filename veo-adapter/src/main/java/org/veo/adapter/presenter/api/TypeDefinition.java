@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@Schema(accessMode = Schema.AccessMode.READ_ONLY)
 @AllArgsConstructor
 public class TypeDefinition {
     @Schema(description = "GET all entities of this type at this location.")

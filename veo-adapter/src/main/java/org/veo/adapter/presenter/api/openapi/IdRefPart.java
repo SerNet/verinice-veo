@@ -28,13 +28,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public interface IdRefPart extends IIdRef {
 
     @Schema(description = "A friendly human readable title of the referenced entity.",
-            example = "My Entity")
+            example = "My Entity",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     String getDisplayName();
 
     @Schema(required = true,
             description = "The resource URL of the referenced entity.",
-            example = "http://<api.example.org>/api/v1/asset/<00000000-0000-0000-0000-000000000000>")
+            example = "http://<api.example.org>/api/v1/asset/<00000000-0000-0000-0000-000000000000>",
+            format = "uri")
     @Override
     String getTargetUri();
 

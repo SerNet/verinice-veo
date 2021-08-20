@@ -44,7 +44,8 @@ import lombok.ToString;
 public class CustomAspectDto {
 
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z")
+            example = "1990-12-31T23:59:60Z",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Pattern(regexp = Patterns.DATETIME)
     private String createdAt;
     @Schema(description = "The username of the user who created this object.",

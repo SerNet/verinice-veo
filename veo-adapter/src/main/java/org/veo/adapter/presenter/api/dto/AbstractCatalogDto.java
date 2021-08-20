@@ -36,12 +36,17 @@ import lombok.EqualsAndHashCode;
 public abstract class AbstractCatalogDto extends AbstractVersionedDto implements NameableDto {
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Catalog.", required = true)
+    @Size(max = Nameable.NAME_MAX_LENGTH)
     private String name;
+
     @Schema(description = "The abbreviation for the Catalog.")
+    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
     private String abbreviation;
+
     @Schema(description = "The description for the Catalog.")
     @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
+
     @Schema(implementation = IdRefCatalogDomainTemplate.class)
     private IdRef<DomainTemplate> domainTemplate;
 

@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.veo.core.entity.Displayable;
 import org.veo.core.entity.Identifiable;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,6 +44,7 @@ public class IdRef<T extends Identifiable> implements IIdRef {
     private String id;
 
     @ToString.Include
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private String displayName;
 
     @JsonIgnore

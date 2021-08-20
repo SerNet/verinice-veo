@@ -33,13 +33,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public interface IdRefUnitParent extends IIdRef {
 
     @Schema(description = "A friendly human readable title of the referenced unit.",
-            example = "My Unit")
+            example = "My Unit",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     String getDisplayName();
 
     @Schema(required = true,
             description = "The resource URL of the referenced unit.",
-            example = "http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>")
+            example = "http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>",
+            format = "uri")
     @Override
     String getTargetUri();
 

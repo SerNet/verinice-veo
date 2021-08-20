@@ -31,13 +31,15 @@ public interface IdRefDomains extends IIdRef {
     // TODO: update reference doc for DomainsReference
 
     @Schema(description = "A friendly human readable title of the referenced domain.",
-            example = "ISO 27001:2013")
+            example = "ISO 27001:2013",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     String getDisplayName();
 
     @Schema(required = true,
             description = "The resource URL of the referenced domains.",
-            example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>")
+            example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>",
+            format = "uri")
     @Override
     String getTargetUri();
 

@@ -20,9 +20,11 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -44,21 +46,27 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedDto
     @Schema(description = "The name for the DomainTemplate.",
             example = "Data protection",
             required = true)
+    @Size(max = Nameable.NAME_MAX_LENGTH)
     private String name;
-    @Schema(description = "The abbreviation for the DomainTemplate.",
-            example = "DSGVO",
-            required = false)
+
+    @Schema(description = "The abbreviation for the DomainTemplate.", example = "DSGVO")
+    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
     private String abbreviation;
+
     @Schema(description = "The description for the DomainTemplate.")
+    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
+
     @NotNull(message = "A authority must be present.")
     @Schema(description = "The authority for the DomainTemplate.", example = "ISO", required = true)
     private String authority;
+
     @NotNull(message = "A templateVersion must be present.")
     @Schema(description = "The templateVersion for the DomainTemplate.",
             example = "1.0",
             required = true)
     private String templateVersion;
+
     @NotNull(message = "A revision must be present.")
     @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
     private String revision;

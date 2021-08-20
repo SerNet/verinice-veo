@@ -47,32 +47,37 @@ public abstract class AbstractDomainDto extends AbstractVersionedDto implements 
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Domain.", example = "Data protection", required = true)
+    @Size(max = Nameable.NAME_MAX_LENGTH)
     @ToString.Include
     private String name;
 
-    @Schema(description = "The abbreviation for the Domain.",
-            example = "Data prot.",
-            required = false)
+    @Schema(description = "The abbreviation for the Domain.", example = "Data prot.")
+    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
     private String abbreviation;
 
     @Schema(description = "The description for the Domain.",
-            example = "Everything around data protection.",
-            required = false)
+            example = "Everything around data protection.")
     @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
     @NotNull(message = "An authority must be present.")
-    @Schema(description = "The authority for the DomainTemplate.", example = "ISO", required = true)
+    @Schema(description = "The authority for the DomainTemplate.",
+            example = "ISO",
+            required = true,
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String authority;
 
     @NotNull(message = "A templateVersion must be present.")
     @Schema(description = "The templateVersion for the DomainTemplate.",
             example = "1.0",
-            required = true)
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String templateVersion;
 
     @NotNull(message = "A revision must be present.")
-    @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
+    @Schema(description = "The revision for the DomainTemplate.",
+            example = "0",
+            required = true,
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String revision;
 
     @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))

@@ -23,13 +23,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public interface IdRefTailoringReferenceParameterReferencedCatalogable extends IIdRef {
     @Schema(description = "A friendly human readable title of the catalogable which will be linked.",
-            example = "CTL_1")
+            example = "CTL_1",
+            accessMode = Schema.AccessMode.READ_ONLY)
     @Override
     String getDisplayName();
 
     @Schema(required = true,
             description = "The resource URL of the referenced element.",
-            example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>")
+            example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>",
+            format = "uri")
     @Override
     String getTargetUri();
 
