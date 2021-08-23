@@ -20,17 +20,22 @@ package org.veo.rest;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.security.AccountImpl;
 
@@ -44,11 +49,22 @@ import lombok.RequiredArgsConstructor;
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public class AdminController {
     private final UseCaseInteractor useCaseInteractor;
+    private final DeleteClientUseCase deleteClientUseCase;
     private final GetUnitDumpUseCase getUnitDumpUseCase;
     private final EntityToDtoTransformer entityToDtoTransformer;
     private final ReferenceAssembler referenceAssembler;
 
     public static final String URL_BASE_PATH = "/admin";
+
+    @DeleteMapping("/client/{clientId}")
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteClient(
+            @Parameter(hidden = true) Authentication auth, @PathVariable String clientId) {
+        return useCaseInteractor.execute(deleteClientUseCase,
+                                         new DeleteClientUseCase.InputData(AccountImpl.from(auth),
+                                                 Key.uuidFrom(clientId)),
+                                         out -> ResponseEntity.noContent()
+                                                              .build());
+    }
 
     @GetMapping("/unit-dump/{unitId}")
     public CompletableFuture<UnitDumpDto> getUnitDump(@Parameter(hidden = true) Authentication auth,

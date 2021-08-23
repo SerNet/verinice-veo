@@ -17,12 +17,41 @@
  ******************************************************************************/
 package org.veo.rest
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.repository.ClientRepository
+import org.veo.core.repository.DocumentRepository
+import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("admin")
 class AdminControllerMvcITSpec extends VeoMvcSpec {
+
+    @Autowired
+    private ClientRepository clientRepo;
+    @Autowired
+    private UnitRepository unitRepo;
+    @Autowired
+    private DocumentRepository documentRepo;
+
+    def "deletes client"() {
+        given: "a client with some units and a document"
+        def client = clientRepo.save(newClient {})
+        def unit1 = unitDataRepository.save(newUnit(client))
+        def unit2 = unitDataRepository.save(newUnit(client))
+        def document = documentRepo.save(newDocument(unit1))
+
+        when: "deleting the client"
+        delete("/admin/client/${client.id.uuidValue()}")
+
+        then:
+        !clientRepo.exists(client.id)
+        !unitRepo.exists(unit1.id)
+        !unitRepo.exists(unit2.id)
+        !documentRepo.exists(document.id)
+    }
+
     def "generates unit dump"() {
         given: "a unit with a bunch of entities and risks"
         def unitId = parseJson(post("/units", [name: "you knit"])).resourceId
