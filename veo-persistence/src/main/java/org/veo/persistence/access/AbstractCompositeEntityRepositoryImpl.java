@@ -27,7 +27,7 @@ import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 abstract class AbstractCompositeEntityRepositoryImpl<S extends CompositeEntity<?>, T extends EntityLayerSupertypeData & CompositeEntity<?>>
         extends AbstractEntityLayerSupertypeRepository<S, T> {
@@ -35,7 +35,7 @@ abstract class AbstractCompositeEntityRepositoryImpl<S extends CompositeEntity<?
     private final CompositeEntityDataRepository<T> compositeRepo;
 
     AbstractCompositeEntityRepositoryImpl(CompositeEntityDataRepository<T> dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ValidationService validation, CustomLinkDataRepository linkDataRepository,
             ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
         this.compositeRepo = dataRepository;

@@ -35,7 +35,7 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class ControlRepositoryImpl extends
@@ -44,10 +44,9 @@ public class ControlRepositoryImpl extends
     private final AssetDataRepository assetDataRepository;
     private final ProcessDataRepository processDataRepository;
 
-    public ControlRepositoryImpl(ControlDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository,
-            ProcessDataRepository processDataRepository) {
+    public ControlRepositoryImpl(ControlDataRepository dataRepository, ValidationService validation,
+            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository,
+            AssetDataRepository assetDataRepository, ProcessDataRepository processDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
         this.assetDataRepository = assetDataRepository;
         this.processDataRepository = processDataRepository;

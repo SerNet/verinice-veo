@@ -33,7 +33,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Unit;
 
 /**
- * The model switch provides cases for all model objects.
+ * The model switch provides cases for all veo types.
  *
  * @param <T>
  *            - the return type

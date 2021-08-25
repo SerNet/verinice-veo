@@ -41,7 +41,7 @@ public interface Domain extends DomainTemplate, ClientOwned {
     void setDomainTemplate(DomainTemplate aDomaintemplate);
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Domain.class;
     }
 
@@ -58,7 +58,7 @@ public interface Domain extends DomainTemplate, ClientOwned {
         return Optional.of(getOwner());
     }
 
-    default void validateSubType(Class<? extends ModelObject> entityType, String subType)
+    default void validateSubType(Class<? extends Identifiable> entityType, String subType)
             throws InvalidSubTypeException {
         // TODO VEO-516: validate subtype
     }

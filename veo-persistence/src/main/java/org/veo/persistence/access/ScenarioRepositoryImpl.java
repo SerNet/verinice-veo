@@ -34,8 +34,8 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ScenarioData;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class ScenarioRepositoryImpl
@@ -46,7 +46,7 @@ public class ScenarioRepositoryImpl
     private final ProcessDataRepository processDataRepository;
 
     public ScenarioRepositoryImpl(ScenarioDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ValidationService validation, CustomLinkDataRepository linkDataRepository,
             ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository,
             ProcessDataRepository processDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);

@@ -25,7 +25,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.persistence.CurrentUserProvider;
 
@@ -45,7 +45,7 @@ public class VersionedEntityListener {
     @PrePersist
     public void prePersist(Versioned entity) {
         log.debug("Publishing PrePersist event for {}", entity);
-        if (entity instanceof ModelObject) {
+        if (entity instanceof Identifiable) {
             // We need to fire this one a little later (after the entity's ID has been
             // generated).
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {

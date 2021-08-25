@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
@@ -66,8 +66,8 @@ import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -248,8 +248,7 @@ public final class EntityToDtoTransformer {
         mapVersionedProperties(source, target);
 
         if (source.getDomainTemplate() != null) {
-            target.setDomainTemplate(ModelObjectReference.from(source.getDomainTemplate(),
-                                                               referenceAssembler));
+            target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
         }
         target.setCatalogItems(convertReferenceSet(source.getCatalogItems()));
 
@@ -264,11 +263,11 @@ public final class EntityToDtoTransformer {
         mapVersionedProperties(source, target);
         target.setNamespace(source.getNamespace());
         if (source.getCatalog() != null) {
-            target.setCatalog(ModelObjectReference.from(source.getCatalog(), referenceAssembler));
+            target.setCatalog(IdRef.from(source.getCatalog(), referenceAssembler));
         }
 
         if (source.getElement() != null) {
-            target.setElement(ModelObjectReference.from(source.getElement(), referenceAssembler));
+            target.setElement(IdRef.from(source.getElement(), referenceAssembler));
         }
         target.setTailoringReferences(source.getTailoringReferences()
                                             .stream()
@@ -289,8 +288,7 @@ public final class EntityToDtoTransformer {
         target.setReferenceType(source.getReferenceType());
 
         if (source.getCatalogItem() != null) {
-            target.setCatalogItem(ModelObjectReference.from(source.getCatalogItem(),
-                                                            referenceAssembler));
+            target.setCatalogItem(IdRef.from(source.getCatalogItem(), referenceAssembler));
         }
         return target;
     }
@@ -301,17 +299,16 @@ public final class EntityToDtoTransformer {
         target.setId(source.getId()
                            .uuidValue());
         target.setVersion(source.getVersion());
-        target.setUnits(convertSet(source.getUnits(),
-                                   u -> ModelObjectReference.from(u, referenceAssembler)));
+        target.setUnits(convertSet(source.getUnits(), u -> IdRef.from(u, referenceAssembler)));
         mapVersionedProperties(source, target);
         mapNameableProperties(source, target);
 
         target.setDomains(convertReferenceSet(source.getDomains()));
         if (source.getClient() != null) {
-            target.setClient(ModelObjectReference.from(source.getClient(), referenceAssembler));
+            target.setClient(IdRef.from(source.getClient(), referenceAssembler));
         }
         if (source.getParent() != null) {
-            target.setParent(ModelObjectReference.from(source.getParent(), referenceAssembler));
+            target.setParent(IdRef.from(source.getParent(), referenceAssembler));
         }
 
         return target;
@@ -325,7 +322,7 @@ public final class EntityToDtoTransformer {
 
         target.setDomains(convertReferenceSet(source.getDomains()));
         if (source.getTarget() != null) {
-            target.setTarget(ModelObjectReference.from(source.getTarget(), referenceAssembler));
+            target.setTarget(IdRef.from(source.getTarget(), referenceAssembler));
         }
 
         return target;
@@ -348,7 +345,7 @@ public final class EntityToDtoTransformer {
         subTypeTransformer.mapSubTypesToDto(source, target);
 
         if (source.getOwner() != null) {
-            target.setOwner(ModelObjectReference.from(source.getOwner(), referenceAssembler));
+            target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
         }
     }
 
@@ -388,10 +385,9 @@ public final class EntityToDtoTransformer {
                     .collect(Collectors.toSet());
     }
 
-    private <T extends ModelObject> Set<ModelObjectReference<T>> convertReferenceSet(
-            Set<T> domains) {
+    private <T extends Identifiable> Set<IdRef<T>> convertReferenceSet(Set<T> domains) {
         return domains.stream()
-                      .map(o -> ModelObjectReference.from(o, referenceAssembler))
+                      .map(o -> IdRef.from(o, referenceAssembler))
                       .collect(Collectors.toSet());
     }
 

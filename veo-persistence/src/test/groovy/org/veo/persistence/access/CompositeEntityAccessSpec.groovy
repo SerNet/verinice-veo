@@ -22,7 +22,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeEntity
-import org.veo.core.entity.ModelObjectType
+import org.veo.core.entity.EntityType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
@@ -43,7 +43,7 @@ import org.veo.persistence.access.jpa.ScenarioDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
-import org.veo.persistence.entity.jpa.ModelObjectValidation
+import org.veo.persistence.entity.jpa.ValidationService
 
 class CompositeEntityAccessSpec extends AbstractJpaSpec {
 
@@ -89,7 +89,7 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
     @Autowired
     CustomLinkDataRepository linkDataRepository
 
-    ModelObjectValidation validationMock = Mock()
+    ValidationService validationMock = Mock()
 
     @Autowired
     TransactionTemplate txTemplate
@@ -141,6 +141,6 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
         persistedScope.get().members.empty
 
         where:
-        type << ModelObjectType.ENTITY_TYPE_CLASSES.findAll{CompositeEntity.isAssignableFrom(it)}
+        type << EntityType.ENTITY_TYPE_CLASSES.findAll{CompositeEntity.isAssignableFrom(it)}
     }
 }

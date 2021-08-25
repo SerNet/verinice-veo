@@ -22,8 +22,8 @@ import java.util.UUID;
 
 import javax.persistence.MappedSuperclass;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public abstract class BaseModelObjectData extends VersionedData implements ModelObject {
+public abstract class IdentifiableVersionedData extends VersionedData implements Identifiable {
 
     public abstract String getDbId();
 
@@ -64,10 +64,10 @@ public abstract class BaseModelObjectData extends VersionedData implements Model
         if (this == o)
             return true;
 
-        if (!(o instanceof BaseModelObjectData))
+        if (!(o instanceof IdentifiableVersionedData))
             return false;
 
-        BaseModelObjectData other = (BaseModelObjectData) o;
+        IdentifiableVersionedData other = (IdentifiableVersionedData) o;
         // Transient (unmanaged) entities have an ID of 'null'. Only managed
         // (persisted and detached) entities have an identity. JPA requires that
         // an entity's identity remains the same over all state changes.

@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 
 /**
@@ -36,7 +36,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
  * to deconstruct URLs.
  */
 @JsonComponent
-public class ReferenceDeserializer extends JsonDeserializer<ModelObjectReference<?>> {
+public class ReferenceDeserializer extends JsonDeserializer<IdRef<?>> {
 
     public static final String TARGET_URI = "targetUri";
 
@@ -44,11 +44,10 @@ public class ReferenceDeserializer extends JsonDeserializer<ModelObjectReference
     ReferenceAssembler urlAssembler;
 
     @Override
-    public ModelObjectReference<?> deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException {
+    public IdRef<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         TreeNode treeNode = p.getCodec()
                              .readTree(p);
         TextNode targetUri = (TextNode) treeNode.get(TARGET_URI);
-        return ModelObjectReference.fromUri(targetUri.asText(), urlAssembler);
+        return IdRef.fromUri(targetUri.asText(), urlAssembler);
     }
 }

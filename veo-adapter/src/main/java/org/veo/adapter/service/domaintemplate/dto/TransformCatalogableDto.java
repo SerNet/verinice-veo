@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
@@ -70,7 +70,7 @@ public class TransformCatalogableDto implements CatalogableDto, IdentifiableDto 
     @ToString.Include
     private String id;
 
-    private ModelObjectReference<ElementOwner> owner;
+    private IdRef<ElementOwner> owner;
 
-    private Set<ModelObjectReference<Domain>> domains = new HashSet<>();
+    private Set<IdRef<Domain>> domains = new HashSet<>();
 }

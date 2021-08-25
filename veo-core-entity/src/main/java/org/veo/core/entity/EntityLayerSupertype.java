@@ -32,7 +32,7 @@ import org.veo.core.entity.specification.EntitySpecifications;
  * sub type.
  */
 public interface EntityLayerSupertype
-        extends Nameable, ModelObject, ClientOwned, Catalogable, Designated {
+        extends Nameable, Identifiable, ClientOwned, Catalogable, Designated, Versioned {
 
     /**
      * Can be null when the owner is a catalogitem owned by a domain template.

@@ -22,18 +22,18 @@ import java.util.UUID;
 /**
  * Base type for entities that act as aggregate roots and have a UUID
  */
-public interface ModelObject extends Versioned {
+public interface Identifiable {
     Key<UUID> getId();
 
     /**
-     * @return Lowercase singular name for the specific model object type
+     * @return Lowercase singular name for the specific type of {@link Identifiable}
      */
     String getModelType();
 
     void setId(Key<UUID> id);
 
     /**
-     * @return The specific interface for this type of model object
+     * @return The specific interface for this type of {@link Identifiable}
      */
-    Class<? extends ModelObject> getModelInterface();
+    Class<? extends Identifiable> getModelInterface();
 }

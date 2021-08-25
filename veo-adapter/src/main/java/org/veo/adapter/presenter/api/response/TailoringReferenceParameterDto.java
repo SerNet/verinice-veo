@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceTailoringReferenceParameterReferencedCatalogable;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedCatalogable;
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.TailoringReferenceType;
 
@@ -34,8 +34,8 @@ import lombok.NoArgsConstructor;
 public class TailoringReferenceParameterDto {
 
     @Schema(required = true,
-            implementation = ModelObjectReferenceTailoringReferenceParameterReferencedCatalogable.class)
-    private ModelObjectReference<Catalogable> referencedCatalogable;
+            implementation = IdRefTailoringReferenceParameterReferencedCatalogable.class)
+    private IdRef<Catalogable> referencedCatalogable;
     @Schema(description = "The translatable key of the reference type. For customLinks this is the type of the link.",
             example = "proc_1")
     private String referenceKey;

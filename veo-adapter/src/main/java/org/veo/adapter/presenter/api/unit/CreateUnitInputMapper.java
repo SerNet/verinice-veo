@@ -20,7 +20,7 @@ package org.veo.adapter.presenter.api.unit;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.core.entity.Key;
@@ -49,7 +49,7 @@ public final class CreateUnitInputMapper {
 
     public static CreateUnitUseCase.InputData map(CreateUnitDto dto, String clientId) {
         Optional<Key<UUID>> parentId = Optional.ofNullable(dto.getParent())
-                                               .map(ModelObjectReference::getId)
+                                               .map(IdRef::getId)
                                                .map(Key::uuidFrom);
 
         Optional<Key<UUID>> newUnitId = Optional.ofNullable(dto.getId())

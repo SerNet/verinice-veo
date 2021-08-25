@@ -25,8 +25,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
@@ -63,9 +63,9 @@ public class CustomPropertiesDto {
             accessMode = Schema.AccessMode.READ_ONLY)
     private String updatedBy;
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
+    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
 
-    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+    private Set<IdRef<Domain>> domains = Collections.emptySet();
 
     public static CustomPropertiesDto from(@Valid CustomProperties control,
             EntityToDtoTransformer entityToDtoTransformer) {

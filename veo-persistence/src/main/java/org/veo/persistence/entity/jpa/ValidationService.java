@@ -27,7 +27,7 @@ import javax.validation.Validator;
 import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.code.ModelValidationException;
 import org.veo.core.entity.code.ModelValidator;
 import org.veo.core.entity.code.ModelValidator.AbstractModelValidator;
@@ -40,22 +40,22 @@ import lombok.AllArgsConstructor;
  */
 @Service
 @AllArgsConstructor
-public class ModelObjectValidation {
+public class ValidationService {
 
     private Validator beanValidator;
 
-    public void validateModelObject(ModelObject modelObject)
+    public void validate(Identifiable identifiable)
             throws ModelValidationException, ConstraintViolationException {
         // execute JSR 380 validations on model entities:
-        Set<ConstraintViolation<ModelObject>> violations = beanValidator.validate(modelObject);
+        Set<ConstraintViolation<Identifiable>> violations = beanValidator.validate(identifiable);
         if (!violations.isEmpty())
             throw new ConstraintViolationException(violations);
 
-        if (!(modelObject instanceof EntityLayerSupertype))
+        if (!(identifiable instanceof EntityLayerSupertype))
             return;
 
         // execute additional model validations:
-        EntityLayerSupertype entity = (EntityLayerSupertype) modelObject;
+        EntityLayerSupertype entity = (EntityLayerSupertype) identifiable;
         AbstractModelValidator<EntityLayerSupertype> modelValidator = new ModelValidator.AbstractModelValidator<>() {
             @Override
             protected void doValidate(EntityLayerSupertype object, List<String> validationErrors) {

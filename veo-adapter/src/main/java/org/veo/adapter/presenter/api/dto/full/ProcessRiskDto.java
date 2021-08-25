@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.core.entity.Control;
@@ -52,17 +52,15 @@ public class ProcessRiskDto extends AbstractRiskDto {
     private String _self = "";
 
     @Valid
-    private ModelObjectReference<Process> process;
+    private IdRef<Process> process;
 
     @Builder
-    public ProcessRiskDto(@Valid @Singular Set<ModelObjectReference<Domain>> domains,
-            @Valid @NotNull(message = "A scenario must be present.") ModelObjectReference<Scenario> scenario,
-            @Valid ModelObjectReference<Control> mitigatedBy,
-            @Valid ModelObjectReference<Person> riskOwner,
+    public ProcessRiskDto(@Valid @Singular Set<IdRef<Domain>> domains,
+            @Valid @NotNull(message = "A scenario must be present.") IdRef<Scenario> scenario,
+            @Valid IdRef<Control> mitigatedBy, @Valid IdRef<Person> riskOwner,
             @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
             @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
-            @Valid ModelObjectReference<Process> process, String self, long version,
-            String designator) {
+            @Valid IdRef<Process> process, String self, long version, String designator) {
         super(designator, domains, scenario, mitigatedBy, riskOwner);
         this.process = process;
         this._self = self;
@@ -77,14 +75,10 @@ public class ProcessRiskDto extends AbstractRiskDto {
             ReferenceAssembler referenceAssembler) {
         return ProcessRiskDto.builder()
                              .designator(risk.getDesignator())
-                             .process(ModelObjectReference.from(risk.getEntity(),
-                                                                referenceAssembler))
-                             .scenario(ModelObjectReference.from(risk.getScenario(),
-                                                                 referenceAssembler))
-                             .riskOwner(ModelObjectReference.from(risk.getRiskOwner(),
-                                                                  referenceAssembler))
-                             .mitigatedBy(ModelObjectReference.from(risk.getMitigation(),
-                                                                    referenceAssembler))
+                             .process(IdRef.from(risk.getEntity(), referenceAssembler))
+                             .scenario(IdRef.from(risk.getScenario(), referenceAssembler))
+                             .riskOwner(IdRef.from(risk.getRiskOwner(), referenceAssembler))
+                             .mitigatedBy(IdRef.from(risk.getMitigation(), referenceAssembler))
                              .createdAt(risk.getCreatedAt()
                                             .toString())
                              .createdBy(risk.getCreatedBy())
@@ -94,8 +88,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
                              .version(risk.getVersion())
                              .domains(risk.getDomains()
                                           .stream()
-                                          .map(o -> ModelObjectReference.from(o,
-                                                                              referenceAssembler))
+                                          .map(o -> IdRef.from(o, referenceAssembler))
                                           .collect(Collectors.toSet()))
                              .self(referenceAssembler.targetReferenceOf(risk))
                              .build();

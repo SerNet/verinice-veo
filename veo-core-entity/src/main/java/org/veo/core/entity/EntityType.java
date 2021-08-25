@@ -32,7 +32,7 @@ import lombok.Getter;
  * be added.
  */
 @AllArgsConstructor
-public enum ModelObjectType {
+public enum EntityType {
     // @formatter:off
     ASSET(Asset.class, Asset.SINGULAR_TERM, Asset.PLURAL_TERM),
     CLIENT(Client.class, Client.SINGULAR_TERM, Client.PLURAL_TERM),
@@ -51,7 +51,7 @@ public enum ModelObjectType {
     // @formatter:on
 
     @Getter
-    private final Class<? extends ModelObject> type;
+    private final Class<? extends Identifiable> type;
     @Getter
     private final String singularTerm;
     @Getter
@@ -61,13 +61,13 @@ public enum ModelObjectType {
                                                          .map(et -> et.pluralTerm)
                                                          .collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<Class<? extends ModelObject>> TYPES = Stream.of(values())
-                                                                        .map(et -> et.type)
-                                                                        .collect(Collectors.toUnmodifiableSet());
+    public static final Set<Class<? extends Identifiable>> TYPES = Stream.of(values())
+                                                                         .map(et -> et.type)
+                                                                         .collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<ModelObjectType> ENTITY_TYPES = Stream.of(values())
-                                                                  .filter(type -> EntityLayerSupertype.class.isAssignableFrom(type.type))
-                                                                  .collect(Collectors.toUnmodifiableSet());
+    public static final Set<EntityType> ENTITY_TYPES = Stream.of(values())
+                                                             .filter(type -> EntityLayerSupertype.class.isAssignableFrom(type.type))
+                                                             .collect(Collectors.toUnmodifiableSet());
 
     public static final Set<Class<? extends EntityLayerSupertype>> ENTITY_TYPE_CLASSES = ENTITY_TYPES.stream()
                                                                                                      .map(t -> (Class<? extends EntityLayerSupertype>) t.type)
@@ -83,7 +83,7 @@ public enum ModelObjectType {
                                                               Scenario.TYPE_DESIGNATOR,
                                                               Scope.TYPE_DESIGNATOR);
 
-    public static Class<? extends ModelObject> getTypeForPluralTerm(String pluralTerm) {
+    public static Class<? extends Identifiable> getTypeForPluralTerm(String pluralTerm) {
         return Stream.of(values())
                      .filter(et -> et.pluralTerm.equals(pluralTerm))
                      .map(et -> et.type)

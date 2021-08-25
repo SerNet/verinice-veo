@@ -35,7 +35,7 @@ public interface Scope extends EntityLayerSupertype {
     }
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Scope.class;
     }
 

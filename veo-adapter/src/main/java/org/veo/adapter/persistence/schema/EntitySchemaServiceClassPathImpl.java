@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
-import org.veo.core.entity.ModelObjectType;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.service.EntitySchemaService;
 
@@ -42,9 +42,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
 
-    private static final List<String> VALID_TYPE_SINGULAR_TERMS = ModelObjectType.ENTITY_TYPES.stream()
-                                                                                              .map(ModelObjectType::getSingularTerm)
-                                                                                              .collect(Collectors.toList());
+    private static final List<String> VALID_TYPE_SINGULAR_TERMS = EntityType.ENTITY_TYPES.stream()
+                                                                                         .map(EntityType::getSingularTerm)
+                                                                                         .collect(Collectors.toList());
     private final String schemaFilePath;
 
     public EntitySchemaServiceClassPathImpl(@NonNull @NotNull String schemaFilePath) {

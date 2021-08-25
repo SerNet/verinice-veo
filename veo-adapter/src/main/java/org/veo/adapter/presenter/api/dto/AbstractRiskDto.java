@@ -23,9 +23,9 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefDomains;
+import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
@@ -55,23 +55,23 @@ public abstract class AbstractRiskDto extends AbstractVersionedDto {
     private String designator;
 
     @Valid
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
+    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
     @Singular
-    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+    private Set<IdRef<Domain>> domains = Collections.emptySet();
 
     @Valid
     @NotNull(message = "A scenario must be present.")
-    @Schema(required = true, implementation = ModelObjectReferenceOwner.class)
-    private ModelObjectReference<Scenario> scenario;
+    @Schema(required = true, implementation = IdRefOwner.class)
+    private IdRef<Scenario> scenario;
 
     @Valid
-    @Schema(implementation = ModelObjectReferenceOwner.class,
+    @Schema(implementation = IdRefOwner.class,
             description = "This risk is mitigated by this control or control-composite.")
-    private ModelObjectReference<Control> mitigation;
+    private IdRef<Control> mitigation;
 
     @Valid
-    @Schema(implementation = ModelObjectReferenceOwner.class,
+    @Schema(implementation = IdRefOwner.class,
             description = "The accountable point-of-contact for this risk.")
-    private ModelObjectReference<Person> riskOwner;
+    private IdRef<Person> riskOwner;
 
 }

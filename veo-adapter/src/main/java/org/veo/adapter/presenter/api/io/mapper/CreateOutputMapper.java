@@ -20,19 +20,19 @@ package org.veo.adapter.presenter.api.io.mapper;
 import java.util.Optional;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 
 /**
- * Returns just the id of the newly created ModelObject as output.
+ * Returns just the id of the newly created {@link Identifiable} as output.
  */
 public final class CreateOutputMapper {
 
-    public static ApiResponseBody map(ModelObject modelObject) {
-        Optional<String> id = Optional.ofNullable(modelObject.getId())
+    public static ApiResponseBody map(Identifiable identifiable) {
+        Optional<String> id = Optional.ofNullable(identifiable.getId())
                                       .map(Key::uuidValue);
         return new ApiResponseBody(true, id,
-                String.format("%s created successfully.", upperFirst(modelObject.getModelType())));
+                String.format("%s created successfully.", upperFirst(identifiable.getModelType())));
     }
 
     private static String upperFirst(String in) {

@@ -25,88 +25,86 @@ import org.veo.test.VeoSpec
 class ModelValidatorSpec extends VeoSpec {
 
     def "a properly initialized Person instance passes validation"() {
-        given : "a valid modelobject"
+        given : "a valid person"
         Unit unit = newUnit(null)
         Person person = newPerson(unit)
 
-        when : "model and validator is created"
+        when : "it is validated"
         ModelValidator.validate(person)
 
-        then: "the validation of is succesful"
+        then: "the validation of is successful"
         notThrown(ModelValidationException)
 
     }
     def "a properly initialized Asset instance passes validation"() {
-        given : "a valid modelobject"
+        given : "a valid asset"
         Unit unit = newUnit(null)
         Asset asset = newAsset(unit)
 
-        when : "model and validator is created"
+        when : "it is validated"
         ModelValidator.validate(asset)
 
-        then: "the validation of is succesful"
+        then: "the validation of is successful"
         notThrown(ModelValidationException)
 
     }
     def "a properly initialized Process instance passes validation"() {
-        given : "a valid modelobject"
+        given : "a valid process"
         Unit unit = newUnit(null)
         Process process = newProcess(unit)
 
-        when : "model and validator is created"
-
+        when : "it is validated"
         ModelValidator.validate(process)
 
-        then: "the validation of is succesful"
+        then: "the validation of is successful"
         notThrown(ModelValidationException)
 
     }
     def "a properly initialized Document instance passes validation"() {
-        given : "a valid modelobject"
-
+        given : "a valid document"
         Unit unit = newUnit(null)
         Document document = newDocument(unit)
 
-        when : "model and validator is created"
+        when : "it is validated"
         ModelValidator.validate(document)
 
-        then: "the validation of is succesful"
+        then: "the validation of is successful"
         notThrown(ModelValidationException)
 
     }
     def "a properly initialized Control instance passes validation"() {
-        given : "a valid modelobject"
+        given : "a valid control"
         Unit unit = newUnit(null)
         Control control = newControl(unit)
 
-        when : "model and validator is created"
+        when : "it is validated"
         ModelValidator.validate(control)
 
-        then: "the validation of is succesful"
+        then: "the validation of is successful"
         notThrown(ModelValidationException)
 
     }
     def "a properly initialized Domain instance passes validation"() {
-        given : "a valid modelobject"
+        given : "a valid domain"
         Domain domain = newDomain()
 
-        when : "model and validator is created"
+        when : "it is validated"
         ModelValidator.validate(domain)
 
-        then: "the validation of is succesful"
+        then: "the validation of is successful"
         notThrown(ModelValidationException)
 
     }
     def "a properly initialized Unit instance passes validation"() {
-        given : "a valid modelobject"
+        given : "a valid unit"
         Unit unit = newUnit(Mock(Client)) {
             parent = Mock(Unit)
         }
 
-        when : "model and validator is created"
+        when : "it is validated"
         ModelValidator.validate(unit)
 
-        then: "the validation of is succesful"
+        then: "the validation of is successful"
         notThrown(ModelValidationException)
 
     }

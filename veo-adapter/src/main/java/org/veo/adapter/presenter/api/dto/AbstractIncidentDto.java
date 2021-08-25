@@ -20,8 +20,8 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.List;
 import java.util.Map;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.ModelObject;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -70,7 +70,7 @@ public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident> {
     }
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Incident.class;
     }
 }

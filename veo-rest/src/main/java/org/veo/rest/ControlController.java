@@ -67,7 +67,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
@@ -240,10 +240,10 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                                          (Supplier<CreateEntityUseCase.InputData<Control>>) () -> {
 
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Control(dto,
-                                                                                                 modelObjectReferenceResolver),
+                                                                                                 idRefResolver),
                                                      client);
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -267,10 +267,10 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                                              @Override
                                              public InputData<Control> get() {
                                                  Client client = getClient(user);
-                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Control>(
                                                          dtoToEntityTransformer.transformDto2Control(controlDto,
-                                                                                                     modelObjectReferenceResolver),
+                                                                                                     idRefResolver),
                                                          client, eTag, user.getUsername());
                                              }
 

@@ -27,16 +27,15 @@ import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class ClientRepositoryImpl extends AbstractModelObjectRepository<Client, ClientData>
-        implements ClientRepository {
+public class ClientRepositoryImpl extends
+        AbstractIdentifiableVersionedRepository<Client, ClientData> implements ClientRepository {
 
     private final ClientDataRepository clientDataRepository;
 
-    public ClientRepositoryImpl(ClientDataRepository dataRepository,
-            ModelObjectValidation validator) {
+    public ClientRepositoryImpl(ClientDataRepository dataRepository, ValidationService validator) {
         super(dataRepository, validator);
         clientDataRepository = dataRepository;
     }

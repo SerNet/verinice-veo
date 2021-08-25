@@ -22,7 +22,7 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -67,7 +67,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedDto
     private Set<AbstractCatalogDto> catalogs;
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return DomainTemplate.class;
     }
 }

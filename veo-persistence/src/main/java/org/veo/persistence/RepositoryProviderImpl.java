@@ -30,9 +30,9 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
@@ -98,7 +98,7 @@ public class RepositoryProviderImpl implements RepositoryProvider {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ModelObject> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
+    public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
         if (EntityLayerSupertype.class.isAssignableFrom(entityType)) {
             return (Repository<T, Key<UUID>>) getEntityLayerSupertypeRepositoryFor((Class<EntityLayerSupertype>) entityType);
         }

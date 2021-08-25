@@ -74,7 +74,7 @@ public interface CatalogItem extends ElementOwner {
     void setNamespace(String aNamespace);
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return CatalogItem.class;
     }
 

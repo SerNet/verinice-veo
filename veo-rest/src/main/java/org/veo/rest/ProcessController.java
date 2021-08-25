@@ -70,7 +70,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
@@ -223,10 +223,10 @@ public class ProcessController extends AbstractEntityController implements Proce
         return useCaseInteractor.execute(createProcessUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Process>>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Process(dto,
-                                                                                                 modelObjectReferenceResolver),
+                                                                                                 idRefResolver),
                                                      client);
                                          }
 
@@ -251,10 +251,10 @@ public class ProcessController extends AbstractEntityController implements Proce
                                              @Override
                                              public ModifyEntityUseCase.InputData<Process> get() {
                                                  Client client = getClient(user);
-                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Process>(
                                                          dtoToEntityTransformer.transformDto2Process(processDto,
-                                                                                                     modelObjectReferenceResolver),
+                                                                                                     idRefResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          }

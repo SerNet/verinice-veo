@@ -25,7 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.ModelObjectType
+import org.veo.core.entity.EntityType
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
@@ -117,7 +117,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "allowed entity schema types are listed"() {
         given: "existing entity types"
-        def schemaTypes = ModelObjectType.ENTITY_TYPES
+        def schemaTypes = EntityType.ENTITY_TYPES
                 .collect{it.singularTerm}
                 .sort()
 

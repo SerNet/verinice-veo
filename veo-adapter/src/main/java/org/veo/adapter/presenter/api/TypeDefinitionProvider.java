@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.core.entity.ModelObjectType;
+import org.veo.core.entity.EntityType;
 import org.veo.core.usecase.UseCase;
 
 import lombok.AllArgsConstructor;
@@ -33,12 +33,12 @@ public class TypeDefinitionProvider {
     private final ReferenceAssembler referenceAssembler;
 
     public Map<String, TypeDefinition> getAll() {
-        return ModelObjectType.ENTITY_TYPES.stream()
-                                           .collect(Collectors.toMap(ModelObjectType::getSingularTerm,
-                                                                     this::buildDefinition));
+        return EntityType.ENTITY_TYPES.stream()
+                                      .collect(Collectors.toMap(EntityType::getSingularTerm,
+                                                                this::buildDefinition));
     }
 
-    private TypeDefinition buildDefinition(ModelObjectType type) {
+    private TypeDefinition buildDefinition(EntityType type) {
         return new TypeDefinition(referenceAssembler.resourcesReferenceOf(type.getType()),
                 referenceAssembler.searchesReferenceOf(type.getType()),
                 referenceAssembler.schemaReferenceOf(type.getSingularTerm()));

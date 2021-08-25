@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.dto;
 
 import javax.validation.constraints.NotNull;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCustomLinkTarget;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefCustomLinkTarget;
 import org.veo.core.entity.EntityLayerSupertype;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,7 +38,7 @@ public class CustomLinkDto extends CustomPropertiesDto {
 
     @NotNull(message = "A target must be present.")
     @ToString.Include
-    @Schema(required = true, implementation = ModelObjectReferenceCustomLinkTarget.class)
-    private ModelObjectReference<EntityLayerSupertype> target;
+    @Schema(required = true, implementation = IdRefCustomLinkTarget.class)
+    private IdRef<EntityLayerSupertype> target;
 
 }

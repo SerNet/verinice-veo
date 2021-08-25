@@ -22,11 +22,11 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCatalogItemCatalog;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemCatalog;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -37,8 +37,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogItemDto extends AbstractVersionedDto implements ModelDto {
     @NotNull(message = "A catalog must be present.")
-    @Schema(implementation = ModelObjectReferenceCatalogItemCatalog.class)
-    private ModelObjectReference<Catalog> catalog;
+    @Schema(implementation = IdRefCatalogItemCatalog.class)
+    private IdRef<Catalog> catalog;
     @Schema(description = "The tailoring references of this catalog item.")
     private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
     @ToString.Include
@@ -46,7 +46,7 @@ public abstract class AbstractCatalogItemDto extends AbstractVersionedDto implem
     private String namespace;
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return CatalogItem.class;
     }
 

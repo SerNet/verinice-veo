@@ -69,7 +69,7 @@ import lombok.ToString;
                           @NamedAttributeNode(value = "links"),
                           @NamedAttributeNode(value = "subTypeAspects") })
 @HasOwnerOrContainingCatalogItem
-public abstract class EntityLayerSupertypeData extends BaseModelObjectData
+public abstract class EntityLayerSupertypeData extends IdentifiableVersionedData
         implements NameableData, EntityLayerSupertype {
 
     public static final String FULL_AGGREGATE_GRAPH = "fullAggregateGraph";

@@ -28,8 +28,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Scope;
 
 import lombok.EqualsAndHashCode;
@@ -50,7 +50,7 @@ public class ScopeData extends EntityLayerSupertypeData implements Scope {
     private final Set<EntityLayerSupertype> members = new HashSet<>();
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Scope.class;
     }
 

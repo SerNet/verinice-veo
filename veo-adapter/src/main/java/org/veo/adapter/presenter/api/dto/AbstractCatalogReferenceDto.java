@@ -22,8 +22,8 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCatalogReferenceCatalogItem;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefCatalogReferenceCatalogItem;
 import org.veo.core.entity.CatalogItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,8 +33,8 @@ import lombok.Data;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractCatalogReferenceDto implements VersionedDto {
 
-    @Schema(implementation = ModelObjectReferenceCatalogReferenceCatalogItem.class)
-    private ModelObjectReference<CatalogItem> catalogItem;
+    @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
+    private IdRef<CatalogItem> catalogItem;
 
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z",

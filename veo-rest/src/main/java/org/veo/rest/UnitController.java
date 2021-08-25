@@ -52,9 +52,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
@@ -154,25 +154,25 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                          description = "Catalog items incarnated.",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = IncarnateDescriptionsDto.class))) })
-    public CompletableFuture<ResponseEntity<List<ModelObjectReference<Catalogable>>>> applyIncarnations(
+    public CompletableFuture<ResponseEntity<List<IdRef<Catalogable>>>> applyIncarnations(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String unitId,
             @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
         Client client = getAuthenticatedClient(auth);
-        CompletableFuture<List<ModelObjectReference<Catalogable>>> completableFuture = useCaseInteractor.execute(applyIncarnationDescriptionUseCase,
-                                                                                                                 (Supplier<ApplyIncarnationDescriptionUseCase.InputData>) () -> {
-                                                                                                                     ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
-                                                                                                                     return new ApplyIncarnationDescriptionUseCase.InputData(
-                                                                                                                             client,
-                                                                                                                             Key.uuidFrom(unitId),
-                                                                                                                             applyInformation.dto2Model(modelObjectReferenceResolver));
+        CompletableFuture<List<IdRef<Catalogable>>> completableFuture = useCaseInteractor.execute(applyIncarnationDescriptionUseCase,
+                                                                                                  (Supplier<ApplyIncarnationDescriptionUseCase.InputData>) () -> {
+                                                                                                      IdRefResolver idRefResolver = createIdRefResolver(client);
+                                                                                                      return new ApplyIncarnationDescriptionUseCase.InputData(
+                                                                                                              client,
+                                                                                                              Key.uuidFrom(unitId),
+                                                                                                              applyInformation.dto2Model(idRefResolver));
 
-                                                                                                                 },
-                                                                                                                 output -> output.getNewElements()
-                                                                                                                                 .stream()
-                                                                                                                                 .map(c -> ModelObjectReference.from(c,
-                                                                                                                                                                     referenceAssembler))
-                                                                                                                                 .collect(Collectors.toList()));
+                                                                                                  },
+                                                                                                  output -> output.getNewElements()
+                                                                                                                  .stream()
+                                                                                                                  .map(c -> IdRef.from(c,
+                                                                                                                                       referenceAssembler))
+                                                                                                                  .collect(Collectors.toList()));
         return completableFuture.thenApply(result -> ResponseEntity.status(201)
                                                                    .body(result));
     }
@@ -265,10 +265,10 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         return useCaseInteractor.execute(putUnitUseCase,
                                          (Supplier<ChangeUnitUseCase.InputData>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new UpdateUnitUseCase.InputData(
                                                      dtoToEntityTransformer.transformDto2Unit(unitDto,
-                                                                                              modelObjectReferenceResolver),
+                                                                                              idRefResolver),
                                                      client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));

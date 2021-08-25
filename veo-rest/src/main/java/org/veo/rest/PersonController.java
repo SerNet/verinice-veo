@@ -67,7 +67,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -236,10 +236,10 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
         return useCaseInteractor.execute(createPersonUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Person>>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Person(dto,
-                                                                                                modelObjectReferenceResolver),
+                                                                                                idRefResolver),
                                                      client);
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -263,10 +263,10 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
                                              @Override
                                              public org.veo.core.usecase.base.ModifyEntityUseCase.InputData<Person> get() {
                                                  Client client = getClient(user);
-                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
                                                  return new ModifyEntityUseCase.InputData<Person>(
                                                          dtoToEntityTransformer.transformDto2Person(personDto,
-                                                                                                    modelObjectReferenceResolver),
+                                                                                                    idRefResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          },

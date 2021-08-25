@@ -20,8 +20,8 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Collections;
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferencePart;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefPart;
 import org.veo.core.entity.EntityLayerSupertype;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -39,10 +39,10 @@ import lombok.ToString;
 public abstract class CompositeEntityDto<T extends EntityLayerSupertype>
         extends AbstractEntityLayerSupertypeDto {
 
-    private Set<ModelObjectReference<T>> parts = Collections.emptySet();
+    private Set<IdRef<T>> parts = Collections.emptySet();
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferencePart.class))
-    public Set<ModelObjectReference<T>> getParts() {
+    @ArraySchema(schema = @Schema(implementation = IdRefPart.class))
+    public Set<IdRef<T>> getParts() {
         return parts;
     }
 

@@ -24,7 +24,7 @@ package org.veo.adapter.presenter.api.common;
  * also features URIs that can be used to query or access the complete
  * collection of entities.
  */
-public interface IModelObjectReference {
+public interface IIdRef {
 
     /**
      * A user friendly name of the target object.

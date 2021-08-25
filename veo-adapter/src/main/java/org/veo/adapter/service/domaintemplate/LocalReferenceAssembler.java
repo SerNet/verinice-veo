@@ -20,19 +20,18 @@ package org.veo.adapter.service.domaintemplate;
 import java.util.Set;
 import java.util.UUID;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 
 public class LocalReferenceAssembler implements ReferenceAssembler {
 
     @Override
-    public String targetReferenceOf(ModelObject modelObject) {
-        return SyntheticModelObjectReference.toUrl(modelObject.getModelInterface(),
-                                                   modelObject.getId()
-                                                              .uuidValue());
+    public String targetReferenceOf(Identifiable identifiable) {
+        return SyntheticIdRef.toUrl(identifiable.getModelInterface(), identifiable.getId()
+                                                                                  .uuidValue());
     }
 
     @Override
@@ -41,17 +40,17 @@ public class LocalReferenceAssembler implements ReferenceAssembler {
     }
 
     @Override
-    public String searchesReferenceOf(Class<? extends ModelObject> type) {
+    public String searchesReferenceOf(Class<? extends Identifiable> type) {
         return null;
     }
 
     @Override
-    public String resourcesReferenceOf(Class<? extends ModelObject> type) {
+    public String resourcesReferenceOf(Class<? extends Identifiable> type) {
         return null;
     }
 
     @Override
-    public Class<? extends ModelObject> parseType(String uri) {
+    public Class<? extends Identifiable> parseType(String uri) {
         return null;
     }
 
@@ -61,12 +60,12 @@ public class LocalReferenceAssembler implements ReferenceAssembler {
     }
 
     @Override
-    public Key<UUID> toKey(ModelObjectReference<? extends ModelObject> reference) {
+    public Key<UUID> toKey(IdRef<? extends Identifiable> reference) {
         return null;
     }
 
     @Override
-    public Set<Key<UUID>> toKeys(Set<? extends ModelObjectReference<?>> references) {
+    public Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references) {
         return null;
     }
 

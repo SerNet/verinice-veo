@@ -27,20 +27,20 @@ import java.util.stream.StreamSupport;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.repository.Repository;
-import org.veo.persistence.entity.jpa.BaseModelObjectData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Transactional(readOnly = true)
-abstract class AbstractModelObjectRepository<T extends ModelObject, S extends BaseModelObjectData>
+abstract class AbstractIdentifiableVersionedRepository<T extends Identifiable, S extends IdentifiableVersionedData>
         implements Repository<T, Key<UUID>> {
     protected final CrudRepository<S, String> dataRepository;
-    protected final ModelObjectValidation validation;
+    protected final ValidationService validation;
 
-    protected AbstractModelObjectRepository(CrudRepository<S, String> dataRepository,
-            ModelObjectValidation validation) {
+    protected AbstractIdentifiableVersionedRepository(CrudRepository<S, String> dataRepository,
+            ValidationService validation) {
         this.dataRepository = dataRepository;
         this.validation = validation;
     }
@@ -48,14 +48,14 @@ abstract class AbstractModelObjectRepository<T extends ModelObject, S extends Ba
     @Override
     @Transactional
     public T save(T entity) {
-        validation.validateModelObject(entity);
+        validation.validate(entity);
         return (T) dataRepository.save((S) entity);
     }
 
     @Override
     @Transactional
     public List<T> saveAll(Set<T> entities) {
-        entities.forEach(validation::validateModelObject);
+        entities.forEach(validation::validate);
         return (List<T>) dataRepository.saveAll((Set<S>) entities);
     }
 

@@ -25,7 +25,7 @@ import java.util.Set;
  * https://v.de/veo/domain-templates/DOMAIN-NAME/VERSION DOMAIN-NAME:
  * authority-name VERSION: version.revision
  */
-public interface DomainTemplate extends Nameable, ModelObject {
+public interface DomainTemplate extends Nameable, Identifiable, Versioned {
     String SINGULAR_TERM = "domaintemplate";
     String PLURAL_TERM = "domaintemplates";
 
@@ -66,7 +66,7 @@ public interface DomainTemplate extends Nameable, ModelObject {
     void removeFromCatalog(Catalog aCatalog);
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return DomainTemplate.class;
     }
 

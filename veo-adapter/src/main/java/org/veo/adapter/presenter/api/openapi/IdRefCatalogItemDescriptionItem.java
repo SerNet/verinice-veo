@@ -17,12 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public interface ModelObjectReferenceIncarnateCatalogItemDescriptionItem
-        extends IModelObjectReference {
+public interface IdRefCatalogItemDescriptionItem extends IIdRef {
 
     @Schema(description = "A friendly human readable title of the catalog item to incarnate.")
     @Override

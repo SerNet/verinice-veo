@@ -39,7 +39,7 @@ public interface TailoringReference extends CatalogReference {
     void setReferenceType(TailoringReferenceType aReferenceType);
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return TailoringReference.class;
     }
 

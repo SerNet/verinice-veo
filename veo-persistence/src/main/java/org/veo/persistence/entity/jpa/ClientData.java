@@ -40,7 +40,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class ClientData extends BaseModelObjectData implements Client, Nameable {
+public class ClientData extends IdentifiableVersionedData implements Client, Nameable {
 
     @Id
     @ToString.Include

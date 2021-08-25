@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2020  Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,29 +17,28 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Swagger documentation for the reference 'parent' of 'Unit': The container
- * unit.
+ * This class is for documentation only. It specifies type-specific comments and
+ * examples for a reference to a CatalogItemReference.
+ *
+ * It is only supposed to be used in OpenApi annotations and should not be
+ * extended and implemented.
  */
+@Schema(name = "CatalogItemReference", description = "A catalog reference's catalog item")
+public interface IdRefCatalogReferenceCatalogItem extends IIdRef {
 
-@Schema(name = "UnitParentReference",
-        description = "The parent unit if this is a sub-unit. Empty if this is a top-level "
-                + "unit directly associated with a client.")
-
-public interface ModelObjectReferenceUnitParent extends IModelObjectReference {
-
-    @Schema(description = "A friendly human readable title of the referenced unit.",
-            example = "My Unit")
+    @Schema(description = "A friendly human readable title of the referenced catalog item.",
+            example = "EU GDPR 2016-05-04")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced unit.",
-            example = "http://<api.example.org>/api/v1/unit/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced catalog item.",
+            example = "http://<api.example.org>/api/v1/catalogitems/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 

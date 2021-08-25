@@ -27,17 +27,16 @@ import org.veo.core.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.ProcessData;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class ProcessRepositoryImpl
         extends AbstractRiskAffectedRepository<Process, ProcessRisk, ProcessData>
         implements ProcessRepository {
 
-    public ProcessRepositoryImpl(ProcessDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
+    public ProcessRepositoryImpl(ProcessDataRepository dataRepository, ValidationService validation,
+            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
 

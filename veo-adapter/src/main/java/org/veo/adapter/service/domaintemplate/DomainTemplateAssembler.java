@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
@@ -86,7 +86,7 @@ public class DomainTemplateAssembler {
 
         objectMapper = new ObjectMapper().addMixIn(CatalogableDto.class,
                                                    TransformCatalogableDto.class)
-                                         .registerModule(new SimpleModule().addDeserializer(ModelObjectReference.class,
+                                         .registerModule(new SimpleModule().addDeserializer(IdRef.class,
                                                                                             deserializer))
                                          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                                                     false)
@@ -161,7 +161,7 @@ public class DomainTemplateAssembler {
         TransformDomainTemplateDto domainTemplateDto = new TransformDomainTemplateDto();
         domainTemplateDto.setId(id);
 
-        catalogs.forEach(c -> c.setDomainTemplate(new SyntheticModelObjectReference<DomainTemplate>(
+        catalogs.forEach(c -> c.setDomainTemplate(new SyntheticIdRef<DomainTemplate>(
                 domainTemplateDto.getId(), DomainTemplate.class, assembler)));
         domainTemplateDto.setCatalogs(catalogs);
 
@@ -208,15 +208,14 @@ public class DomainTemplateAssembler {
         for (Entry<String, CatalogableDto> e : readElements.entrySet()) {
             TransformCatalogItemDto itemDto = new TransformCatalogItemDto();
             itemDto.setElement(e.getValue());
-            itemDto.setCatalog(SyntheticModelObjectReference.from(catalogId, Catalog.class));
+            itemDto.setCatalog(SyntheticIdRef.from(catalogId, Catalog.class));
             EntityLayerSupertypeDto supertypeDto = (EntityLayerSupertypeDto) e.getValue();
             itemDto.setNamespace(toNamespace.apply(supertypeDto));
             itemDto.setId(Key.newUuid()
                              .uuidValue());
-            supertypeDto.setOwner(SyntheticModelObjectReference.from(itemDto.getId(),
-                                                                     ElementOwner.class,
-                                                                     CatalogItem.class));
-            supertypeDto.setType(SyntheticModelObjectReference.toSingularTerm(supertypeDto.getModelInterface()));
+            supertypeDto.setOwner(SyntheticIdRef.from(itemDto.getId(), ElementOwner.class,
+                                                      CatalogItem.class));
+            supertypeDto.setType(SyntheticIdRef.toSingularTerm(supertypeDto.getModelInterface()));
             cache.put(e.getKey(), itemDto);
         }
         return cache;
@@ -237,8 +236,8 @@ public class DomainTemplateAssembler {
                    TransformCatalogItemDto itemDto = catalogItems.get(l.getTarget()
                                                                        .getId());
                    CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
-                   referenceDto.setCatalogItem(new SyntheticModelObjectReference<CatalogItem>(
-                           itemDto.getId(), CatalogItem.class, assembler));
+                   referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
+                           CatalogItem.class, assembler));
                    referenceDto.setReferenceType(TailoringReferenceType.LINK);
                    currentItem.getTailoringReferences()
                               .add(referenceDto);
@@ -248,8 +247,8 @@ public class DomainTemplateAssembler {
              .forEach(p -> {
                  TransformCatalogItemDto itemDto = catalogItems.get(p.getId());
                  CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
-                 referenceDto.setCatalogItem(new SyntheticModelObjectReference<CatalogItem>(
-                         itemDto.getId(), CatalogItem.class, assembler));
+                 referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
+                         CatalogItem.class, assembler));
                  currentItem.getTailoringReferences()
                             .add(referenceDto);
                  referenceDto.setReferenceType(TailoringReferenceType.COPY);

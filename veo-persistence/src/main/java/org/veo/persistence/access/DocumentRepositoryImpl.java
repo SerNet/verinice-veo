@@ -25,7 +25,7 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.DocumentDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.DocumentData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class DocumentRepositoryImpl
@@ -33,7 +33,7 @@ public class DocumentRepositoryImpl
         implements DocumentRepository {
 
     public DocumentRepositoryImpl(DocumentDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ValidationService validation, CustomLinkDataRepository linkDataRepository,
             ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }

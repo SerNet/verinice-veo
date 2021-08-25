@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2021  Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,20 +17,27 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public interface ModelObjectReferenceTailoringReferenceParameterReferencedCatalogable
-        extends IModelObjectReference {
-    @Schema(description = "A friendly human readable title of the catalogable which will be linked.",
-            example = "CTL_1")
+/**
+ * This class is for documentation only. It specifies type-specific comments and
+ * examples for a reference to a DomainCatalogs.
+ *
+ * It is only supposed to be used in OpenApi annotations and should not be
+ * extended and implemented.
+ */
+@Schema(name = "DomainCatalogs", description = "The domain's catalogs")
+public interface IdRefDomainCatalogs extends IIdRef {
+    @Schema(description = "A friendly human readable title of the referenced catalog.",
+            example = "Catalog 1")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced element.",
-            example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced catalog.",
+            example = "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 
@@ -39,5 +46,4 @@ public interface ModelObjectReferenceTailoringReferenceParameterReferencedCatalo
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     String getResourcesUri();
-
 }

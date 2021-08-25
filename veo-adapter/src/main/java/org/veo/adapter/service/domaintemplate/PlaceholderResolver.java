@@ -23,18 +23,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.IdRefResolver;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.core.entity.Catalogable;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 
-class PlaceholderResolver extends ModelObjectReferenceResolver {
-    Map<String, ModelObject> cache = new HashMap<>();
+class PlaceholderResolver extends IdRefResolver {
+    Map<String, Identifiable> cache = new HashMap<>();
     Map<String, IdentifiableDto> dtoCache = new HashMap<>();
 
     private final DtoToEntityTransformer entityTransformer;
@@ -45,21 +45,21 @@ class PlaceholderResolver extends ModelObjectReferenceResolver {
     }
 
     @Override
-    public <TEntity extends ModelObject> TEntity resolve(
-            ModelObjectReference<TEntity> objectReference) throws NotFoundException {
+    public <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
+            throws NotFoundException {
         if (objectReference == null) {
             return null;
         }
         String id = objectReference.getId();
-        ModelObject modelObject = cache.computeIfAbsent(id,
-                                                        a -> createElement(id,
-                                                                           objectReference.getType()));
-        return (TEntity) modelObject;
+        Identifiable identifiable = cache.computeIfAbsent(id,
+                                                          a -> createElement(id,
+                                                                             objectReference.getType()));
+        return (TEntity) identifiable;
     }
 
     @Override
-    public <TEntity extends ModelObject> Set<TEntity> resolve(
-            Set<ModelObjectReference<TEntity>> objectReferences) {
+    public <TEntity extends Identifiable> Set<TEntity> resolve(
+            Set<IdRef<TEntity>> objectReferences) {
 
         return objectReferences.stream()
                                .map(o -> resolve(o))
@@ -69,7 +69,7 @@ class PlaceholderResolver extends ModelObjectReferenceResolver {
     /**
      * Creates the missing element from the dto in the cache.
      */
-    private ModelObject createElement(String id, Class<? extends ModelObject> type) {
+    private Identifiable createElement(String id, Class<? extends Identifiable> type) {
         IdentifiableDto catalogableDto = dtoCache.get(id);
         if (catalogableDto != null) {
             EntityLayerSupertypeDto es = (EntityLayerSupertypeDto) catalogableDto;

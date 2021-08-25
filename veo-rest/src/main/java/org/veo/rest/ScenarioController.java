@@ -67,7 +67,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -240,10 +240,10 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
         return useCaseInteractor.execute(createScenarioUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Scenario>>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scenario(dto,
-                                                                                                  modelObjectReferenceResolver),
+                                                                                                  idRefResolver),
                                                      client);
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -266,10 +266,10 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                                              @Override
                                              public InputData<Scenario> get() {
                                                  Client client = getClient(user);
-                                                 ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
                                                  return new InputData<Scenario>(
                                                          dtoToEntityTransformer.transformDto2Scenario(scenarioDto,
-                                                                                                      modelObjectReferenceResolver),
+                                                                                                      idRefResolver),
                                                          client, eTag, user.getUsername());
                                              }
                                          }

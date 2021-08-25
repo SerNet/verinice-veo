@@ -27,12 +27,12 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -41,16 +41,16 @@ import org.veo.core.repository.Repository;
 import org.veo.core.repository.RepositoryProvider;
 
 /**
- * Resolves {@link ModelObjectReference}s by fetching the target entity from a
- * repository. Instances of this class should NOT be long-lived, because it uses
- * an entity cache.
+ * Resolves {@link IdRef}s by fetching the target entity from a repository.
+ * Instances of this class should NOT be long-lived, because it uses an entity
+ * cache.
  */
-public class ModelObjectReferenceResolver {
+public class IdRefResolver {
     private final RepositoryProvider repositoryProvider;
     private final Client client;
-    private final Map<ModelObjectReference<?>, ModelObject> cache = new HashMap<>();
+    private final Map<IdRef<?>, Identifiable> cache = new HashMap<>();
 
-    public ModelObjectReferenceResolver(RepositoryProvider repositoryProvider, Client client) {
+    public IdRefResolver(RepositoryProvider repositoryProvider, Client client) {
         this.repositoryProvider = repositoryProvider;
         this.client = client;
     }
@@ -68,8 +68,8 @@ public class ModelObjectReferenceResolver {
      * @throws org.veo.core.entity.specification.ClientBoundaryViolationException
      *             when entity does not belong to this resolver's client.
      */
-    public <TEntity extends ModelObject> TEntity resolve(
-            ModelObjectReference<TEntity> objectReference) throws NotFoundException {
+    public <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
+            throws NotFoundException {
         return resolve(Collections.singleton(objectReference)).iterator()
                                                               .next();
     }
@@ -89,17 +89,17 @@ public class ModelObjectReferenceResolver {
      *             when one or more entities do not belong to this resolver's
      *             client.
      */
-    public <TEntity extends ModelObject> Set<TEntity> resolve(
-            Set<ModelObjectReference<TEntity>> objectReferences) {
+    public <TEntity extends Identifiable> Set<TEntity> resolve(
+            Set<IdRef<TEntity>> objectReferences) {
         if (objectReferences.isEmpty()) {
             return Collections.emptySet();
         }
         HashSet<TEntity> result = new HashSet<>(objectReferences.size());
-        HashSet<ModelObjectReference<TEntity>> copyOfReferences = new HashSet<>(objectReferences);
-        Iterator<ModelObjectReference<TEntity>> it = copyOfReferences.iterator();
+        HashSet<IdRef<TEntity>> copyOfReferences = new HashSet<>(objectReferences);
+        Iterator<IdRef<TEntity>> it = copyOfReferences.iterator();
         while (it.hasNext()) {
-            ModelObjectReference<TEntity> ref = it.next();
-            ModelObject cachedEntry = cache.get(ref);
+            IdRef<TEntity> ref = it.next();
+            Identifiable cachedEntry = cache.get(ref);
             if (cachedEntry != null) {
                 result.add((TEntity) cachedEntry);
                 it.remove();
@@ -113,16 +113,16 @@ public class ModelObjectReferenceResolver {
                                                     .next()
                                                     .getType();
 
-        Repository<? extends ModelObject, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(entityType);
+        Repository<? extends Identifiable, Key<UUID>> entityRepository = repositoryProvider.getRepositoryFor(entityType);
 
-        Set<? extends ModelObject> entities = entityRepository.getByIds(copyOfReferences.stream()
-                                                                                        .map(ModelObjectReference::getId)
-                                                                                        .map(Key::uuidFrom)
-                                                                                        .collect(Collectors.toSet()));
+        Set<? extends Identifiable> entities = entityRepository.getByIds(copyOfReferences.stream()
+                                                                                         .map(IdRef::getId)
+                                                                                         .map(Key::uuidFrom)
+                                                                                         .collect(Collectors.toSet()));
 
-        Map<String, ModelObjectReference<TEntity>> copyOfReferencesById = copyOfReferences.stream()
-                                                                                          .collect(Collectors.toMap(ModelObjectReference::getId,
-                                                                                                                    Function.identity()));
+        Map<String, IdRef<TEntity>> copyOfReferencesById = copyOfReferences.stream()
+                                                                           .collect(Collectors.toMap(IdRef::getId,
+                                                                                                     Function.identity()));
 
         entities.forEach(entity -> {
             if (entity instanceof Unit) {
@@ -136,8 +136,8 @@ public class ModelObjectReferenceResolver {
                     throw new ClientBoundaryViolationException(entity, client);
             }
             result.add((TEntity) entity);
-            ModelObjectReference<TEntity> reference = copyOfReferencesById.get(entity.getId()
-                                                                                     .uuidValue());
+            IdRef<TEntity> reference = copyOfReferencesById.get(entity.getId()
+                                                                      .uuidValue());
             cache.put(reference, entity);
             copyOfReferences.remove(reference);
         });
@@ -145,7 +145,7 @@ public class ModelObjectReferenceResolver {
             throw new NotFoundException(
                     "Unable to resolve references of type %s to objects: missing IDs: %s",
                     entityType, copyOfReferences.stream()
-                                                .map(ModelObjectReference::getId)
+                                                .map(IdRef::getId)
                                                 .collect(Collectors.joining(", ")));
         }
         return result;

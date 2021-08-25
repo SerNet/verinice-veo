@@ -26,9 +26,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceOwner;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefDomains;
+import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Nameable;
@@ -73,13 +73,13 @@ public abstract class AbstractEntityLayerSupertypeDto extends AbstractVersionedD
     @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
+    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
     @Valid
-    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+    private Set<IdRef<Domain>> domains = Collections.emptySet();
 
     @NotNull(message = "An owner must be present.")
-    @Schema(required = true, implementation = ModelObjectReferenceOwner.class)
-    private ModelObjectReference<ElementOwner> owner;
+    @Schema(required = true, implementation = IdRefOwner.class)
+    private IdRef<ElementOwner> owner;
 
     @Valid
     @Schema(description = "Custom relations which do not affect the behavior.",

@@ -25,12 +25,12 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomains;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceUnitParent;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefDomains;
+import org.veo.adapter.presenter.api.openapi.IdRefUnitParent;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 
@@ -57,19 +57,19 @@ public abstract class AbstractUnitDto extends AbstractVersionedDto implements Na
     private String description;
 
     @JsonIgnore
-    private ModelObjectReference<Client> client;
+    private IdRef<Client> client;
 
     @Schema(description = "The sub units for the Unit.", accessMode = Schema.AccessMode.READ_ONLY)
-    private Set<ModelObjectReference<Unit>> units = Collections.emptySet();
+    private Set<IdRef<Unit>> units = Collections.emptySet();
 
-    @Schema(implementation = ModelObjectReferenceUnitParent.class)
-    private ModelObjectReference<Unit> parent;
+    @Schema(implementation = IdRefUnitParent.class)
+    private IdRef<Unit> parent;
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomains.class))
-    private Set<ModelObjectReference<Domain>> domains = Collections.emptySet();
+    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
+    private Set<IdRef<Domain>> domains = Collections.emptySet();
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Unit.class;
     }
 }

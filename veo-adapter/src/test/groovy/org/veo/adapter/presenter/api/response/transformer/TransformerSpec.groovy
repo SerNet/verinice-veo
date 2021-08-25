@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import java.time.Instant
 
-import org.veo.adapter.ModelObjectReferenceResolver
-import org.veo.adapter.presenter.api.common.ModelObjectReference
+import org.veo.adapter.IdRefResolver
+import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
@@ -47,7 +47,7 @@ class TransformerSpec extends Specification {
     def factory = Mock(EntityFactory)
 
     def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler), Mock(SubTypeTransformer))
-    def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
+    def idRefResolver = Mock(IdRefResolver)
     def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, null)
 
     def createUnit() {
@@ -78,7 +78,7 @@ class TransformerSpec extends Specification {
 
 
     def AbstractUnitDto createUnitDto() {
-        def subUnitDto = Mock(ModelObjectReference) {
+        def subUnitDto = Mock(IdRef) {
             it.id >> subUnitId
         }
 
@@ -115,7 +115,7 @@ class TransformerSpec extends Specification {
         factory.createUnit(_,_) >> u
 
         when: "The parent unit DTO is transformed into a unit"
-        def unit = dtoToEntityTransformer.transformDto2Unit( unitDto, modelObjectReferenceResolver)
+        def unit = dtoToEntityTransformer.transformDto2Unit( unitDto, idRefResolver)
 
         then: "The unit contains all data"
         unit.id.uuidValue() == unitId

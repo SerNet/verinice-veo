@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.response.code
 
 import java.time.Instant
 
-import org.veo.adapter.ModelObjectReferenceResolver
-import org.veo.adapter.presenter.api.common.ModelObjectReference
+import org.veo.adapter.IdRefResolver
+import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
@@ -44,7 +44,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
     def refAssembler = Mock(ReferenceAssembler)
     def factory = Mock(EntityFactory)
     def subTypeTransformer = Mock(SubTypeTransformer)
-    def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
+    def idRefResolver = Mock(IdRefResolver)
     def entitySchemaLoader = Mock(EntitySchemaLoader)
     def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler, subTypeTransformer)
     def dtoToEntityTransformer = new DtoToEntityTransformer(factory, entitySchemaLoader, subTypeTransformer)
@@ -147,8 +147,8 @@ class CompositeEntityDtoTransformerSpec extends Specification {
 
     def "Transform composite entity DTO with parts to entity"() {
         given: "an asset composite entity DTO with two parts"
-        def asset1Ref = Mock(ModelObjectReference)
-        def asset2Ref = Mock(ModelObjectReference)
+        def asset1Ref = Mock(IdRef)
+        def asset2Ref = Mock(IdRef)
         def asset1 = Mock(Asset)
         def asset2 = Mock(Asset)
         def newCompositeAssetEntity = Mock(Asset) {
@@ -166,11 +166,11 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         }
 
         when: "transforming the DTO to an entity"
-        def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, modelObjectReferenceResolver)
+        def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, idRefResolver)
 
         then: "the composite entity is transformed with parts"
         1 * factory.createAsset("Composite Asset", null) >> newCompositeAssetEntity
-        1 * modelObjectReferenceResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
+        1 * idRefResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
         result == newCompositeAssetEntity
         1 * newCompositeAssetEntity.setParts([asset1, asset2].toSet())
         1 * subTypeTransformer.mapSubTypesToEntity(compositeAssetDto, newCompositeAssetEntity)
@@ -196,7 +196,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
 
         then: "The composite entity contains itself as it is not forbidden"
         dto.parts == [
-            ModelObjectReference.from(compositeAsset, refAssembler)
+            IdRef.from(compositeAsset, refAssembler)
         ] as Set
     }
 }

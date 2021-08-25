@@ -24,7 +24,7 @@ import java.util.Set;
  * is a company or other large closed organizational entity. The client could be
  * used for high level authorization.
  */
-public interface Client extends ModelObject {
+public interface Client extends Identifiable, Versioned {
 
     String SINGULAR_TERM = "client";
     String PLURAL_TERM = "clients";
@@ -52,7 +52,7 @@ public interface Client extends ModelObject {
     void setDomains(Set<Domain> aDomains);
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Client.class;
     }
 

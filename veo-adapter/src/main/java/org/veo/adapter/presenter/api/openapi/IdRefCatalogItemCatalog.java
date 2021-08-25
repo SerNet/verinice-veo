@@ -17,28 +17,28 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * This class is for documentation only. It specifies type-specific comments and
- * examples for a reference to a specific type of ModelObject.
+ * examples for a reference to a CatalogRef".
  *
  * It is only supposed to be used in OpenApi annotations and should not be
  * extended and implemented.
  */
-@Schema(name = "CatalogItemReference", description = "A catalog reference's catalog item")
-public interface ModelObjectReferenceCatalogReferenceCatalogItem extends IModelObjectReference {
+@Schema(name = "CatalogRef", description = "The ref of a catalog item to a catalog")
+public interface IdRefCatalogItemCatalog extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the referenced catalog item.",
+    @Schema(description = "A friendly human readable title of the referenced catalog.",
             example = "EU GDPR 2016-05-04")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced catalog item.",
-            example = "http://<api.example.org>/api/v1/catalogitems/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced catalog.",
+            example = "http://<api.example.org>/api/v1/catalog/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 

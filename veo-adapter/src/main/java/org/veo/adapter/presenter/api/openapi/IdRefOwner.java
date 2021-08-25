@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Swagger documentation for the reference 'owner' of 'Asset':
  */
 @Schema(name = "OwnerReference", description = "A reference to the unit containing this entity.")
-public interface ModelObjectReferenceOwner extends IModelObjectReference {
+public interface IdRefOwner extends IIdRef {
 
     // TODO: update reference doc for OwnerReference
 

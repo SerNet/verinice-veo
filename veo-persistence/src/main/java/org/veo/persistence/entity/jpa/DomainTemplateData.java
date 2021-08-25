@@ -43,7 +43,8 @@ import lombok.ToString;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class DomainTemplateData extends BaseModelObjectData implements DomainTemplate, Nameable {
+public class DomainTemplateData extends IdentifiableVersionedData
+        implements DomainTemplate, Nameable {
     @Id
     @ToString.Include
     private String dbId;

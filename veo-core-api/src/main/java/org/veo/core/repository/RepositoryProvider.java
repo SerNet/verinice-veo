@@ -20,8 +20,8 @@ package org.veo.core.repository;
 import java.util.UUID;
 
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 
 /**
  * A service that helps to retrieve the correct {@link Repository} for a given
@@ -32,5 +32,5 @@ public interface RepositoryProvider {
     public <T extends EntityLayerSupertype> EntityLayerSupertypeRepository<T> getEntityLayerSupertypeRepositoryFor(
             Class<T> entityType);
 
-    public <T extends ModelObject> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
+    public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
 }

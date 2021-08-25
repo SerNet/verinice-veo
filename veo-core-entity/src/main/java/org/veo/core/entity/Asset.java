@@ -34,7 +34,7 @@ public interface Asset
     }
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Asset.class;
     }
 

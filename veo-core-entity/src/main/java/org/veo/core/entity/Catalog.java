@@ -30,7 +30,7 @@ import java.util.Set;
  * template elements from other domainTemplates. <br>
  * usecase: compliance mapping
  */
-public interface Catalog extends ModelObject, Nameable, ClientOwned {
+public interface Catalog extends Identifiable, Nameable, ClientOwned, Versioned {
     String SINGULAR_TERM = "catalog";
     String PLURAL_TERM = "catalogs";
 
@@ -53,7 +53,7 @@ public interface Catalog extends ModelObject, Nameable, ClientOwned {
     void setDomainTemplate(DomainTemplate aDomaintemplate);
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Catalog.class;
     }
 

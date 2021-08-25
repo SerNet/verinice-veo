@@ -21,19 +21,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
 
 public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto, CatalogableDto {
 
-    ModelObjectReference<ElementOwner> getOwner();
+    IdRef<ElementOwner> getOwner();
 
     void setDesignator(String designator);
 
-    void setDomains(Set<ModelObjectReference<Domain>> domains);
+    void setDomains(Set<IdRef<Domain>> domains);
 
-    void setOwner(ModelObjectReference<ElementOwner> owner);
+    void setOwner(IdRef<ElementOwner> owner);
 
     Map<String, List<CustomLinkDto>> getLinks();
 

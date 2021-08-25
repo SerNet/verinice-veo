@@ -68,7 +68,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -261,10 +261,10 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
         return useCaseInteractor.execute(createAssetUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Asset>>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Asset(dto,
-                                                                                               modelObjectReferenceResolver),
+                                                                                               idRefResolver),
                                                      client);
                                          }, output -> {
                                              ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
@@ -284,10 +284,10 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
         return useCaseInteractor.execute(updateAssetUseCase,
                                          (Supplier<ModifyEntityUseCase.InputData<Asset>>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new ModifyEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Asset(assetDto,
-                                                                                               modelObjectReferenceResolver),
+                                                                                               idRefResolver),
                                                      client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformAsset2Dto(output.getEntity()));

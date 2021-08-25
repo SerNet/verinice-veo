@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
@@ -51,9 +51,9 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -93,10 +93,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     @SuppressFBWarnings // ignore warning on call to method proxy factory
-    public String targetReferenceOf(ModelObject modelObject) {
-        Class<? extends ModelObject> type = modelObject.getModelInterface();
-        String id = modelObject.getId()
-                               .uuidValue();
+    public String targetReferenceOf(Identifiable identifiable) {
+        Class<? extends Identifiable> type = identifiable.getModelInterface();
+        String id = identifiable.getId()
+                                .uuidValue();
         if (Scope.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH,
                                                                    id)).withRel(ScopeController.URL_BASE_PATH)
@@ -153,7 +153,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                            .getHref();
         }
         if (CatalogItem.class.isAssignableFrom(type)) {
-            CatalogItem catalogItem = (CatalogItem) modelObject;
+            CatalogItem catalogItem = (CatalogItem) identifiable;
             return linkTo(methodOn(CatalogController.class).getCatalogItem(ANY_AUTH,
                                                                            catalogItem.getCatalog()
                                                                                       .getId()
@@ -163,7 +163,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                                      .expand()
                                                                                      .getHref();
         }
-        // Some model object types have no endpoint.
+        // Some types have no endpoint.
         if (Client.class.isAssignableFrom(type) || DomainTemplate.class.isAssignableFrom(type)
                 || CatalogReference.class.isAssignableFrom(type)) {
             return null;
@@ -198,7 +198,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
 
     @Override
-    public String searchesReferenceOf(Class<? extends ModelObject> type) {
+    public String searchesReferenceOf(Class<? extends Identifiable> type) {
         if (Scope.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScopeController.class).createSearch(ANY_AUTH,
                                                                        ANY_SEARCH)).withRel(ScopeController.URL_BASE_PATH)
@@ -249,7 +249,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                         ANY_SEARCH)).withRel(DomainController.URL_BASE_PATH)
                                                                                     .getHref();
         }
-        // Some model object types have no endpoint.
+        // Some types have no endpoint.
         if (Client.class.isAssignableFrom(type) || Catalog.class.isAssignableFrom(type)
                 || CatalogItem.class.isAssignableFrom(type)
                 || DomainTemplate.class.isAssignableFrom(type)) {
@@ -261,7 +261,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     @SuppressFBWarnings // ignore warnings on calls to method proxy factories
-    public String resourcesReferenceOf(Class<? extends ModelObject> type) {
+    public String resourcesReferenceOf(Class<? extends Identifiable> type) {
         if (Scope.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScopeController.class).getScopes(ANY_AUTH, ANY_STRING,
                                                                     ANY_STRING, ANY_STRING,
@@ -348,7 +348,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             return linkTo(methodOn(DomainController.class).getDomains(ANY_AUTH)).withSelfRel()
                                                                                 .getHref();
         }
-        // Some model object types have no endpoint.
+        // Some types have no endpoint.
         if (Client.class.isAssignableFrom(type) || Catalog.class.isAssignableFrom(type)
                 || CatalogItem.class.isAssignableFrom(type)
                 || DomainTemplate.class.isAssignableFrom(type)) {
@@ -368,7 +368,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
      * @return the class of the entity that is mapped by the DTO
      */
     @Override
-    public Class<? extends ModelObject> parseType(String uriString) {
+    public Class<? extends Identifiable> parseType(String uriString) {
         try {
             return typeExtractor.parseDtoType(uriString)
                                 .orElseThrow()
@@ -396,14 +396,14 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
 
     @Override
-    public Key<UUID> toKey(ModelObjectReference<? extends ModelObject> reference) {
+    public Key<UUID> toKey(IdRef<? extends Identifiable> reference) {
         if (reference == null)
             return null;
         return Key.uuidFrom(reference.getId());
     }
 
     @Override
-    public Set<Key<UUID>> toKeys(Set<? extends ModelObjectReference<?>> references) {
+    public Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references) {
         return references.stream()
                          .map(this::toKey)
                          .collect(Collectors.toSet());

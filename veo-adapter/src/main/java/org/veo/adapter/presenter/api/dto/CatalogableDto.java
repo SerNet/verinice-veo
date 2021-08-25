@@ -19,16 +19,16 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
 
 public interface CatalogableDto {
 
-    Set<ModelObjectReference<Domain>> getDomains();
+    Set<IdRef<Domain>> getDomains();
 
-    ModelObjectReference<ElementOwner> getOwner();
+    IdRef<ElementOwner> getOwner();
 
-    void setOwner(ModelObjectReference<ElementOwner> owner);
+    void setOwner(IdRef<ElementOwner> owner);
 
 }

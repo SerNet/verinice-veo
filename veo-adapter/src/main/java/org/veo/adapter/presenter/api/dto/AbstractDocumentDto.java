@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.veo.core.entity.Document;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -70,7 +70,7 @@ public abstract class AbstractDocumentDto extends CompositeEntityDto<Document> {
     }
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Document.class;
     }
 }

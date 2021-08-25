@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.common
+package org.veo.core.entity
 
-import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Key
-
-import spock.lang.Issue
 import spock.lang.Specification
 
-class ModelObjectReferenceSpec extends Specification {
+class IdentifiableTypeSpec extends Specification{
 
-    @Issue('VEO-560')
-    def "create ModelObjectReference for CatalogItem"() {
-        given:
-        CatalogItem catalogItem = Stub {
-            getId() >> Key.newUuid()
-            getModelInterface() >> CatalogItem
-            getDisplayName() >> null
-        }
-        ReferenceAssembler referenceAssembler = Mock()
-        when:
-        def mor = ModelObjectReference.from(catalogItem, referenceAssembler)
-        then:
-        mor.displayName == null
+    def "it should list all type designators"() {
+        expect:
+        // There is one type designator for each ELS and one that is common to all types of risks.
+        EntityType.TYPE_DESIGNATORS.size() == EntityType.ENTITY_TYPES.size() + 1
     }
 }
