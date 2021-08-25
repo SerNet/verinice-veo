@@ -27,8 +27,8 @@ import org.springframework.web.util.NestedServletException
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
-import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -178,7 +178,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieve an asset"() {
         given: "a saved asset"
 
-        CustomProperties simpleProps = newCustomProperties("simpleAspect") {
+        CustomAspect simpleProps = newCustomAspect("simpleAspect") {
             attributes = [
                 "simpleProp": "simpleValue"
             ]
@@ -464,7 +464,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     def "put an asset with custom properties"() {
         given: "a saved asset"
 
-        CustomProperties cp = newCustomProperties("my.new.type")
+        CustomAspect cp = newCustomAspect("my.new.type")
 
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {

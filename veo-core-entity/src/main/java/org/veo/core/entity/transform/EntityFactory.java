@@ -26,8 +26,8 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -46,7 +46,7 @@ import org.veo.core.entity.Unit;
  * @author urszeidler
  */
 public interface EntityFactory {
-    CustomProperties createCustomProperties();
+    CustomAspect createCustomAspect();
 
     Person createPerson(String name, ElementOwner unit);
 

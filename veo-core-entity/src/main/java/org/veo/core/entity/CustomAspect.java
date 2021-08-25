@@ -28,7 +28,7 @@ import java.util.Set;
  * generated report), but must never be used for any other computations such as
  * risk calculations.
  */
-public interface CustomProperties {
+public interface CustomAspect {
 
     String getType();
 

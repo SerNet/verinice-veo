@@ -27,8 +27,8 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -49,8 +49,8 @@ import org.veo.persistence.entity.jpa.CatalogData;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
+import org.veo.persistence.entity.jpa.CustomAspectData;
 import org.veo.persistence.entity.jpa.CustomLinkData;
-import org.veo.persistence.entity.jpa.CustomPropertiesData;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.DomainTemplateData;
@@ -65,8 +65,8 @@ import org.veo.persistence.entity.jpa.UnitData;
 public class EntityDataFactory implements EntityFactory {
 
     @Override
-    public CustomProperties createCustomProperties() {
-        return new CustomPropertiesData();
+    public CustomAspect createCustomAspect() {
+        return new CustomAspectData();
     }
 
     @Override

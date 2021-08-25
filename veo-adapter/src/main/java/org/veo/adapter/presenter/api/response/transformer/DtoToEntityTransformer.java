@@ -44,8 +44,8 @@ import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
@@ -61,8 +61,8 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -259,9 +259,9 @@ public final class DtoToEntityTransformer {
     }
 
     // CustomPropertiesDto->CustomProperties
-    public CustomProperties transformDto2CustomProperties(EntityFactory factory,
-            CustomPropertiesDto source, String type, EntitySchema entitySchema) {
-        var target = factory.createCustomProperties();
+    public CustomAspect transformDto2CustomProperties(EntityFactory factory, CustomAspectDto source,
+            String type, EntitySchema entitySchema) {
+        var target = factory.createCustomAspect();
         target.setAttributes(source.getAttributes());
         target.setType(type);
         entitySchema.validateCustomAspect(target);
@@ -362,8 +362,8 @@ public final class DtoToEntityTransformer {
         return new HashSet<>();
     }
 
-    private Set<CustomProperties> mapCustomAspects(EntityLayerSupertypeDto dto,
-            EntityFactory factory, EntitySchema entitySchema) {
+    private Set<CustomAspect> mapCustomAspects(EntityLayerSupertypeDto dto, EntityFactory factory,
+            EntitySchema entitySchema) {
         return dto.getCustomAspects()
                   .entrySet()
                   .stream()

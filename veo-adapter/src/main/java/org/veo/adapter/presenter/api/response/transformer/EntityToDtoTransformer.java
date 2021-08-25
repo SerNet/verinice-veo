@@ -33,8 +33,8 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.CustomPropertiesDto;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
@@ -61,8 +61,8 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeEntity;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
@@ -357,8 +357,8 @@ public final class EntityToDtoTransformer {
 
     // CustomProperties ->
     // CustomPropertiesDto
-    public CustomPropertiesDto transformCustomProperties2Dto(@Valid CustomProperties source) {
-        var target = new CustomPropertiesDto();
+    public CustomAspectDto transformCustomAspect2Dto(@Valid CustomAspect source) {
+        var target = new CustomAspectDto();
         target.setAttributes(source.getAttributes());
         target.setDomains(convertReferenceSet(source.getDomains()));
         return target;
@@ -402,9 +402,8 @@ public final class EntityToDtoTransformer {
                                                                     .collect(toList())));
     }
 
-    private Map<String, CustomPropertiesDto> mapCustomAspects(Set<CustomProperties> customAspects) {
+    private Map<String, CustomAspectDto> mapCustomAspects(Set<CustomAspect> customAspects) {
         return customAspects.stream()
-                            .collect(toMap(CustomProperties::getType,
-                                           this::transformCustomProperties2Dto));
+                            .collect(toMap(CustomAspect::getType, this::transformCustomAspect2Dto));
     }
 }

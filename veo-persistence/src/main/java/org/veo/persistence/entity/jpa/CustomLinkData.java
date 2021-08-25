@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
 @Entity(name = "customlink")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CustomLinkData extends CustomPropertiesData implements CustomLink {
+public class CustomLinkData extends CustomAspectData implements CustomLink {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY,

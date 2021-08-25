@@ -66,7 +66,7 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process> {
 
     @Schema(description = "The customAspects for the process.")
     @Override
-    public Map<String, CustomPropertiesDto> getCustomAspects() {
+    public Map<String, CustomAspectDto> getCustomAspects() {
         return super.getCustomAspects();
     }
 

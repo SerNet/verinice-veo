@@ -22,8 +22,8 @@ import java.util.Optional;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
@@ -100,8 +100,8 @@ public abstract class ModelSwitch<T> {
             if (object != null)
                 return object;
         }
-        if (o instanceof CustomProperties) {
-            T object = caseCustomProperties((CustomProperties) o);
+        if (o instanceof CustomAspect) {
+            T object = caseCustomAspect((CustomAspect) o);
             if (object != null)
                 return object;
         }
@@ -152,7 +152,7 @@ public abstract class ModelSwitch<T> {
         return null;
     }
 
-    public T caseCustomProperties(CustomProperties object) {
+    public T caseCustomAspect(CustomAspect object) {
         return null;
     }
 

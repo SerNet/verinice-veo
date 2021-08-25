@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.persistence.migrations
 
-/**
- * A link connects two {@link EntityLayerSupertype} objects. It serves
- * documentation purposes only. It's defined by its source (owning) entity &
- * target entity, but may also hold dynamic attributes that document the link
- * (just like the attributes on a custom aspect).
- *
- * @see CustomAspect
- */
-public interface CustomLink extends CustomAspect {
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-    EntityLayerSupertype getTarget();
+class V3__rename_custom_properties_to_custom_aspect extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        context.getConnection().createStatement().execute("""
 
-    void setTarget(EntityLayerSupertype aTarget);
+    alter table customproperties rename to custom_aspect;
 
-    EntityLayerSupertype getSource();
+    alter table customproperties_domains rename to custom_aspect_domains;
+    alter table custom_aspect_domains
+       rename column customproperties_db_id to custom_aspect_db_id;
+    alter table custom_aspect_domains
+       rename constraint FK_customproperties_db_id to FK_custom_aspect_db_id;
 
-    void setSource(EntityLayerSupertype aSource);
-
+""")
+    }
 }

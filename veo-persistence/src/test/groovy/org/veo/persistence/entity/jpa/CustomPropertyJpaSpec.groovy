@@ -46,7 +46,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given:
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomPropertiesData(
+                new CustomAspectData(
                 dbId: UUID.randomUUID().toString(),
                 attributes: [
                     "k1": "uno",
@@ -70,7 +70,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given: 'a saved asset with a string prop'
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomPropertiesData(
+                new CustomAspectData(
                 dbId: UUID.randomUUID().toString(),
                 attributes: [
                     "k1": "uno"
@@ -95,7 +95,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given: 'a saved asset with two props'
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomPropertiesData(
+                new CustomAspectData(
                 dbId: UUID.randomUUID().toString(),
                 attributes: [
                     "k1": "uno",
@@ -119,7 +119,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         def longString = "X" * stringLength
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomPropertiesData(
+                new CustomAspectData(
                 dbId: UUID.randomUUID().toString(),
                 attributes: ["p": longString]
                 )

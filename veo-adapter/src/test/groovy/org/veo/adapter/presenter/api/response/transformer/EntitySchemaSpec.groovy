@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import com.fasterxml.jackson.databind.ObjectMapper
 
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
-import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityLayerSupertype
 
@@ -143,7 +143,7 @@ class EntitySchemaSpec extends Specification {
 
     def "validates custom aspect attributes"() {
         given:
-        def aspect = Mock(CustomProperties) {
+        def aspect = Mock(CustomAspect) {
             attributes >> [
                 "foo1": "bar",
                 "foo2": 5,
@@ -160,7 +160,7 @@ class EntitySchemaSpec extends Specification {
 
     def "invalid aspect attribute data type causes exception"() {
         given:
-        def aspect = Mock(CustomProperties) {
+        def aspect = Mock(CustomAspect) {
             attributes >> [
                 "foo1": "bar",
                 "foo2": "5",
@@ -177,7 +177,7 @@ class EntitySchemaSpec extends Specification {
 
     def "unknown aspect causes exception"() {
         given:
-        def aspect = Mock(CustomProperties) {
+        def aspect = Mock(CustomAspect) {
             attributes >> [
                 "foo1": "bar",
                 "foo2": 5,
@@ -194,7 +194,7 @@ class EntitySchemaSpec extends Specification {
 
     def "unknown aspect attribute type causes exception"() {
         given:
-        def aspect = Mock(CustomProperties) {
+        def aspect = Mock(CustomAspect) {
             attributes >> [
                 "fantasyFoo": "baritone",
             ]

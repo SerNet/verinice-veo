@@ -27,7 +27,7 @@ import org.springframework.web.util.NestedServletException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
@@ -282,7 +282,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a process with custom aspect"() {
         given: "a saved process"
 
-        CustomProperties cp = newCustomProperties("my.new.type")
+        CustomAspect cp = newCustomAspect("my.new.type")
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
@@ -356,7 +356,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def "overwrite a custom aspect attribute"() {
         given: "a saved process"
 
-        CustomProperties cp = newCustomProperties("process_privacyImpactAssessment") {
+        CustomAspect cp = newCustomAspect("process_privacyImpactAssessment") {
             attributes = [
                 'process_privacyImpactAssessment_approvedComment': 'old comment'
             ]

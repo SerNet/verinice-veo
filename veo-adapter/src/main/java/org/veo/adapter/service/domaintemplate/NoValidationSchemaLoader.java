@@ -19,8 +19,8 @@ package org.veo.adapter.service.domaintemplate;
 
 import org.veo.adapter.presenter.api.response.transformer.EntitySchema;
 import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 
 /**
  * A json schema loader which loads nothing and always validates.
@@ -35,7 +35,7 @@ public final class NoValidationSchemaLoader extends EntitySchemaLoader {
         }
 
         @Override
-        public void validateCustomAspect(CustomProperties customProperties) {
+        public void validateCustomAspect(CustomAspect customAspect) {
         }
 
         @Override

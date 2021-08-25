@@ -27,7 +27,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeEntity
-import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
@@ -509,7 +509,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     def saveProcessWithCustomAspects(int count) {
         def process = newProcess(unit)
         for (i in 0..<count) {
-            CustomProperties cp = newCustomProperties("aType")
+            CustomAspect cp = newCustomAspect("aType")
             process.addToCustomAspects(cp)
         }
         processRepository.save(process)
@@ -551,7 +551,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     @Transactional
     def Process saveProcessWithCustomAspect() {
         def process = newProcess(unit)
-        CustomProperties cp = newCustomProperties("aType")
+        CustomAspect cp = newCustomAspect("aType")
         cp.attributes = [
             PROP_KEY: "ok"
         ]

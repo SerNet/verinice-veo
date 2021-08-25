@@ -28,12 +28,11 @@ import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.test.VeoSpec
 
 @SpringBootTest(classes = CustomAspectPersistenceSpec.class
 )
@@ -52,7 +51,7 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
     def "create an asset with a customAspect and save-load it"() {
         given: "a Unit and an asset"
 
-        CustomProperties cp = newCustomProperties('my.new.linktype')
+        CustomAspect cp = newCustomAspect('my.new.linktype')
 
         Client client = clientRepository.save(newClient())
         Unit unit = newUnit(client)

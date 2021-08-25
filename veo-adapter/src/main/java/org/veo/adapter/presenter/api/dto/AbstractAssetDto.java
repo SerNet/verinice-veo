@@ -63,7 +63,7 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> {
 
     @Schema(description = "The customAspects for the asset.")
     @Override
-    public Map<String, CustomPropertiesDto> getCustomAspects() {
+    public Map<String, CustomAspectDto> getCustomAspects() {
         return super.getCustomAspects();
     }
 

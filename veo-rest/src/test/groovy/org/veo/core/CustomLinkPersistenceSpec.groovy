@@ -25,8 +25,8 @@ import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
-import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -109,7 +109,7 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
         savedAsset.present
         when:
         assetData = savedAsset.get()
-        CustomProperties savedCp = assetData.getLinks().first()
+        CustomAspect savedCp = assetData.getLinks().first()
 
         then: "numbers also"
         savedCp.attributes["my.key.1"] == 10

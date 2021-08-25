@@ -65,7 +65,7 @@ public abstract class AbstractDocumentDto extends CompositeEntityDto<Document> {
 
     @Schema(description = "The customAspects for the document.")
     @Override
-    public Map<String, CustomPropertiesDto> getCustomAspects() {
+    public Map<String, CustomAspectDto> getCustomAspects() {
         return super.getCustomAspects();
     }
 

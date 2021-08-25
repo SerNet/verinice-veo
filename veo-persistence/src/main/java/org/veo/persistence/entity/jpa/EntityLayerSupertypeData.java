@@ -42,8 +42,8 @@ import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Nameable;
@@ -111,10 +111,10 @@ public abstract class EntityLayerSupertypeData extends IdentifiableVersionedData
     @Column(name = "customaspects")
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
-               targetEntity = CustomPropertiesData.class,
+               targetEntity = CustomAspectData.class,
                mappedBy = "owner",
                fetch = FetchType.LAZY)
-    final private Set<CustomProperties> customAspects = new HashSet<>();
+    final private Set<CustomAspect> customAspects = new HashSet<>();
 
     @Column(name = "sub_type_aspects")
     @OneToMany(cascade = CascadeType.ALL,
@@ -167,11 +167,11 @@ public abstract class EntityLayerSupertypeData extends IdentifiableVersionedData
         links.addAll(newLinks);
     }
 
-    public void setCustomAspects(Set<CustomProperties> aCustomAspects) {
+    public void setCustomAspects(Set<CustomAspect> aCustomAspects) {
         this.customAspects.clear();
         aCustomAspects.forEach(aspect -> {
-            if (aspect instanceof CustomPropertiesData) {
-                ((CustomPropertiesData) aspect).setOwner(this);
+            if (aspect instanceof CustomAspectData) {
+                ((CustomAspectData) aspect).setOwner(this);
             }
         });
         this.customAspects.addAll(aCustomAspects);
@@ -223,28 +223,28 @@ public abstract class EntityLayerSupertypeData extends IdentifiableVersionedData
     }
 
     /**
-     * Add the given CustomProperties to the collection customAspects.
+     * Add the given {@link CustomAspect} to the collection customAspects.
      *
      * @return true if added
      */
-    public boolean addToCustomAspects(CustomProperties aCustomProperties) {
-        if (aCustomProperties instanceof CustomPropertiesData) {
-            ((CustomPropertiesData) aCustomProperties).setOwner(this);
+    public boolean addToCustomAspects(CustomAspect aCustomAspect) {
+        if (aCustomAspect instanceof CustomAspectData) {
+            ((CustomAspectData) aCustomAspect).setOwner(this);
         }
-        return this.customAspects.add(aCustomProperties);
+        return this.customAspects.add(aCustomAspect);
     }
 
     /**
-     * Remove the given CustomProperties from the collection customAspects.
+     * Remove the given {@link CustomAspect} from the collection customAspects.
      *
      * @return true if removed
      */
-    public boolean removeFromCustomAspects(CustomProperties aCustomProperties) {
-        if (aCustomProperties instanceof CustomPropertiesData) {
-            CustomPropertiesData propertiesData = (CustomPropertiesData) aCustomProperties;
+    public boolean removeFromCustomAspects(CustomAspect aCustomAspect) {
+        if (aCustomAspect instanceof CustomAspectData) {
+            CustomAspectData propertiesData = (CustomAspectData) aCustomAspect;
             propertiesData.setOwner(null);
         }
-        return this.customAspects.remove(aCustomProperties);
+        return this.customAspects.remove(aCustomAspect);
     }
 
     @Transient

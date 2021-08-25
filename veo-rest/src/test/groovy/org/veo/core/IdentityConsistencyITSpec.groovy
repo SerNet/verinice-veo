@@ -28,7 +28,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -38,8 +38,8 @@ import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.AssetRiskData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
+import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
-import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
@@ -232,23 +232,23 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
     }
 
     @Transactional
-    def "The identity of the entity 'customPropertiesData' is consistent over state transitions"() {
+    def "The identity of the entity CustomAspectData is consistent over state transitions"() {
         given:
         def asset = newAsset(unit)
         assetDataRepository.save(asset)
         entityManager.flush()
 
         when:
-        def aspect = new CustomPropertiesData()
-        asset.setCustomAspects([aspect] as Set<CustomProperties>)
+        def aspect = new CustomAspectData()
+        asset.setCustomAspects([aspect] as Set<CustomAspect>)
 
-        testIdentityConsistency(CustomPropertiesData.class, aspect)
+        testIdentityConsistency(CustomAspectData.class, aspect)
 
         then:
         notThrown(Exception)
 
         and: "two different entities are not equal"
-        aspect != new CustomPropertiesData()
+        aspect != new CustomAspectData()
     }
 
     @Transactional

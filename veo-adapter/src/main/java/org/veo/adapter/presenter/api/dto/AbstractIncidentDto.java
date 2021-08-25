@@ -65,7 +65,7 @@ public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident> {
 
     @Schema(description = "The customAspects for the incident.")
     @Override
-    public Map<String, CustomPropertiesDto> getCustomAspects() {
+    public Map<String, CustomAspectDto> getCustomAspects() {
         return super.getCustomAspects();
     }
 
