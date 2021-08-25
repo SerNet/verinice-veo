@@ -27,7 +27,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -39,7 +39,7 @@ import lombok.ToString;
 public class ControlData extends EntityLayerSupertypeData implements Control {
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Control.class;
     }
 

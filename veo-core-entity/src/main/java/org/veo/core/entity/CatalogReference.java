@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Basic type for catalog references.
  */
-public interface CatalogReference extends ModelObject, ClientOwned {
+public interface CatalogReference extends Identifiable, ClientOwned, Versioned {
 
     /**
      * The reference to an other catalogitem.

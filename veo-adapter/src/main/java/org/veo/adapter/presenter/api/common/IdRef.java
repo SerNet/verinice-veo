@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.Displayable;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -35,7 +35,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class ModelObjectReference<T extends ModelObject> implements IModelObjectReference {
+public class IdRef<T extends Identifiable> implements IIdRef {
 
     @JsonIgnore
     @ToString.Include
@@ -56,35 +56,34 @@ public class ModelObjectReference<T extends ModelObject> implements IModelObject
     private String uri;
 
     @JsonIgnore
-    private ModelObject entity;
+    private Identifiable entity;
 
-    private ModelObjectReference(ModelObject entity, String id, String displayName, Class<T> type,
+    private IdRef(Identifiable entity, String id, String displayName, Class<T> type,
             ReferenceAssembler referenceAssembler) {
         this(id, displayName, type, referenceAssembler, null, entity);
     }
 
-    private ModelObjectReference(String uri, String id, Class<T> type,
-            ReferenceAssembler referenceAssembler) {
+    private IdRef(String uri, String id, Class<T> type, ReferenceAssembler referenceAssembler) {
         this(id, null, type, referenceAssembler, uri, null);
     }
 
     /**
-     * Create a ModelObjectReference for the given entity.
+     * Create a IdRef for the given entity.
      */
-    public static <T extends ModelObject> ModelObjectReference<T> from(T entity,
+    public static <T extends Identifiable> IdRef<T> from(T entity,
             @NonNull ReferenceAssembler urlAssembler) {
         if (entity == null)
             return null;
-        return new ModelObjectReference<>(entity, entity.getId()
-                                                        .uuidValue(),
+        return new IdRef<>(entity, entity.getId()
+                                         .uuidValue(),
                 ((Displayable) entity).getDisplayName(), (Class<T>) entity.getModelInterface(),
                 urlAssembler);
     }
 
-    public static <T extends ModelObject> ModelObjectReference<T> fromUri(String uri,
+    public static <T extends Identifiable> IdRef<T> fromUri(String uri,
             @NonNull ReferenceAssembler urlAssembler) {
-        return new ModelObjectReference<>(uri, urlAssembler.parseId(uri),
-                (Class<T>) urlAssembler.parseType(uri), urlAssembler);
+        return new IdRef<>(uri, urlAssembler.parseId(uri), (Class<T>) urlAssembler.parseType(uri),
+                urlAssembler);
     }
 
     @Override

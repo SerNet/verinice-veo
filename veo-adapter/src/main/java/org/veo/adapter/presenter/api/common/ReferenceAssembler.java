@@ -21,11 +21,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 
 /**
- * Construct and deconstruct references to model objects.
+ * Construct and deconstruct references to {@link Identifiable} &
+ * {@link AbstractRisk} objects.
  *
  * These may be HTTP-URLs in a REST application with the correct hostname based
  * on the received request.
@@ -35,11 +36,11 @@ public interface ReferenceAssembler {
     /**
      * Returns an absolute reference to the target object of this reference.
      *
-     * @param modelObject
-     *            the model object
+     * @param identifiable
+     *            the {@link Identifiable} object
      * @return the URI of the specific target object
      */
-    String targetReferenceOf(ModelObject modelObject);
+    String targetReferenceOf(Identifiable identifiable);
 
     /**
      * Returns an absolute reference to the target object, where the target object
@@ -61,30 +62,30 @@ public interface ReferenceAssembler {
      * search").
      *
      * @param type
-     *            the model object type
+     *            the {@link Identifiable} type
      * @return the URI of the resource collection for searches or {@code null} if
      *         the resource does not support searches.
      */
-    String searchesReferenceOf(Class<? extends ModelObject> type);
+    String searchesReferenceOf(Class<? extends Identifiable> type);
 
     /**
      * Returns a reference to the resource collection of the target type.
      *
      * @param type
-     *            the type of model object
+     *            the {@link Identifiable}
      * @return the URI of the resource collection or {@code null} if no resource
      *         collection for the type is exposed.
      */
-    String resourcesReferenceOf(Class<? extends ModelObject> type);
+    String resourcesReferenceOf(Class<? extends Identifiable> type);
 
     /**
      * Extract the objects type from the given URI.
      *
      * @param uri
      *            the URI which may be a URL.
-     * @returnThe class of the correct type of model object.
+     * @return The class of the specific {@link Identifiable} type.
      */
-    Class<? extends ModelObject> parseType(String uri);
+    Class<? extends Identifiable> parseType(String uri);
 
     /**
      * Extract the objects ID from the given URI.
@@ -97,12 +98,12 @@ public interface ReferenceAssembler {
     /**
      * Transforms the given adapter layer reference to an entity key.
      */
-    Key<UUID> toKey(ModelObjectReference<? extends ModelObject> reference);
+    Key<UUID> toKey(IdRef<? extends Identifiable> reference);
 
     /**
      * Transforms the given adapter layer references to entity keys.
      */
-    Set<Key<UUID>> toKeys(Set<? extends ModelObjectReference<?>> references);
+    Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references);
 
     String schemaReferenceOf(String typeSingularTerm);
 }

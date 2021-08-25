@@ -29,15 +29,15 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.core.entity.ModelObject;
-import org.veo.core.entity.ModelObjectType;
+import org.veo.core.entity.EntityType;
+import org.veo.core.entity.Identifiable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ReferenceDeserializer extends JsonDeserializer<SyntheticModelObjectReference<?>> {
+public class ReferenceDeserializer extends JsonDeserializer<SyntheticIdRef<?>> {
     private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
     public static final String TARGET_URI = "targetUri";
@@ -48,7 +48,7 @@ public class ReferenceDeserializer extends JsonDeserializer<SyntheticModelObject
     }
 
     @Override
-    public SyntheticModelObjectReference<?> deserialize(JsonParser p, DeserializationContext ctxt)
+    public SyntheticIdRef<?> deserialize(JsonParser p, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
         TreeNode treeNode = p.getCodec()
                              .readTree(p);
@@ -60,9 +60,9 @@ public class ReferenceDeserializer extends JsonDeserializer<SyntheticModelObject
         Matcher matcher = compile.matcher(asText);
         if (matcher.matches()) {
             String term = matcher.group(1);
-            Class<ModelObject> type = (Class<ModelObject>) ModelObjectType.getTypeForPluralTerm(term);
+            Class<Identifiable> type = (Class<Identifiable>) EntityType.getTypeForPluralTerm(term);
             String id = matcher.group(2);
-            return new SyntheticModelObjectReference<ModelObject>(id, type, urlAssembler);
+            return new SyntheticIdRef<Identifiable>(id, type, urlAssembler);
         }
 
         return null;

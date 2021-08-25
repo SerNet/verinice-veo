@@ -18,7 +18,7 @@
 package org.veo.core.entity;
 
 /**
- * A control represents something with can be applied to an modelobject.
+ * A control represents something with can be applied to an entity.
  */
 public interface Control extends EntityLayerSupertype, CompositeEntity<Control> {
 

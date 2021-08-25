@@ -41,7 +41,7 @@ import lombok.NonNull;
  * NIST 800-30 terms this would be the information owner - not the risk
  * assessor). This is also optional.
  * <p>
- * Unlike many other entities, risks are no {@link ModelObject}s, because they
+ * Unlike many other entities, risks are no {@link Identifiable}s, because they
  * are no aggregate roots but are owned by their {@link RiskAffected} entity
  * (hence why risks have no ID of their own).
  */

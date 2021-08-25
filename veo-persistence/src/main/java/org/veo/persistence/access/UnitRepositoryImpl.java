@@ -26,16 +26,16 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.UnitRepository;
 import org.veo.persistence.access.jpa.UnitDataRepository;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.UnitData;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class UnitRepositoryImpl extends AbstractModelObjectRepository<Unit, UnitData>
+public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<Unit, UnitData>
         implements UnitRepository {
 
     private final UnitDataRepository dataRepository;
 
-    public UnitRepositoryImpl(UnitDataRepository dataRepository, ModelObjectValidation validation) {
+    public UnitRepositoryImpl(UnitDataRepository dataRepository, ValidationService validation) {
         super(dataRepository, validation);
         this.dataRepository = dataRepository;
     }

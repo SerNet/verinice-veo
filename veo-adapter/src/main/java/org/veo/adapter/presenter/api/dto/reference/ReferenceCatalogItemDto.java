@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.reference;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceCatalogItemElement;
+import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemElement;
 import org.veo.core.entity.Catalogable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +37,7 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class ReferenceCatalogItemDto extends AbstractCatalogItemDto {
 
-    @Schema(implementation = ModelObjectReferenceCatalogItemElement.class)
-    private ModelObjectReference<Catalogable> element;
+    @Schema(implementation = IdRefCatalogItemElement.class)
+    private IdRef<Catalogable> element;
 
 }

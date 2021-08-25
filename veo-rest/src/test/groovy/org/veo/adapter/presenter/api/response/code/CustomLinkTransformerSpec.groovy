@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
-import org.veo.adapter.ModelObjectReferenceResolver
-import org.veo.adapter.presenter.api.common.ModelObjectReference
+import org.veo.adapter.IdRefResolver
+import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
@@ -37,7 +37,7 @@ class CustomLinkTransformerSpec extends Specification {
     def referenceAssembler = Mock(ReferenceAssembler)
     def factory = Mock(EntityFactory)
     def subTypeTransformer = Mock(SubTypeTransformer)
-    def modelObjectReferenceResolver = Mock(ModelObjectReferenceResolver)
+    def idRefResolver = Mock(IdRefResolver)
     def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler, subTypeTransformer)
     def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, subTypeTransformer)
 
@@ -60,7 +60,7 @@ class CustomLinkTransformerSpec extends Specification {
 
         then: "all properties are transformed"
         with(dto) {
-            target == ModelObjectReference.from(targetAsset, referenceAssembler)
+            target == IdRef.from(targetAsset, referenceAssembler)
             attributes == link.attributes
         }
     }
@@ -74,15 +74,15 @@ class CustomLinkTransformerSpec extends Specification {
         def newLink = Mock(CustomLink)
         def schema = Mock(EntitySchema)
         def linkDto = new CustomLinkDto().tap {
-            target = ModelObjectReference.from(targetAsset, Mock(ReferenceAssembler))
+            target = IdRef.from(targetAsset, Mock(ReferenceAssembler))
             attributes = [:]
         }
 
         when: "transforming it to an entity"
-        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "good type", schema, modelObjectReferenceResolver)
+        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "good type", schema, idRefResolver)
 
         then: "all properties are transformed"
-        1 * modelObjectReferenceResolver.resolve(linkDto.target) >> targetAsset
+        1 * idRefResolver.resolve(linkDto.target) >> targetAsset
         1 * factory.createCustomLink(targetAsset, null) >> newLink
         entity == newLink
         1 * newLink.setType("good type")

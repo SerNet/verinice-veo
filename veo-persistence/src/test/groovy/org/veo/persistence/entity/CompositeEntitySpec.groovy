@@ -54,8 +54,8 @@ class CompositeEntitySpec extends VeoSpec {
         composite.createdAt?.isBefore(Instant.now())
     }
 
-    // This used to be guaranteed by the model, now it can't be verified without using external validation
-    // of model objects. It can't be tested without relying on external classes.
+    // This used to be guaranteed by the model, now it can't be verified without using external validation.
+    //  It can't be tested without relying on external classes.
     @Ignore("TODO VEO-427 prevent creation of entities with no unit")
     def "A composite must have a unit" () {
         when: "a composite is created with no unit"

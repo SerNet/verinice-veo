@@ -36,14 +36,15 @@ import org.veo.core.repository.EntityLayerSupertypeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.BaseModelObjectData;
 import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 import org.veo.persistence.entity.jpa.ScopeData;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Transactional(readOnly = true)
 abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>
-        extends AbstractModelObjectRepository<T, S> implements EntityLayerSupertypeRepository<T> {
+        extends AbstractIdentifiableVersionedRepository<T, S>
+        implements EntityLayerSupertypeRepository<T> {
 
     protected final EntityLayerSupertypeDataRepository<S> dataRepository;
     private final CustomLinkDataRepository linkDataRepository;
@@ -51,7 +52,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     final ScopeDataRepository scopeDataRepository;
 
     AbstractEntityLayerSupertypeRepository(EntityLayerSupertypeDataRepository<S> dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ValidationService validation, CustomLinkDataRepository linkDataRepository,
             ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation);
         this.dataRepository = dataRepository;
@@ -69,7 +70,7 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
         var entities = dataRepository.findByUnits(singleton(owner.getId()
                                                                  .uuidValue()));
         var entityIDs = entities.stream()
-                                .map(BaseModelObjectData::getDbId)
+                                .map(IdentifiableVersionedData::getDbId)
                                 .collect(Collectors.toSet());
         var links = linkDataRepository.findLinksByTargetIds(entityIDs);
 

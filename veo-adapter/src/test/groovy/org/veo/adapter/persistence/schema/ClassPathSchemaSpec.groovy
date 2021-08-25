@@ -22,7 +22,7 @@ import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
-import org.veo.core.entity.ModelObjectType
+import org.veo.core.entity.EntityType
 import org.veo.core.service.EntitySchemaService
 
 import io.swagger.v3.core.util.Json
@@ -83,7 +83,7 @@ class ClassPathSchemaSpec extends Specification {
     }
 
     private static List<JsonNode> getEntitySchemas() {
-        ModelObjectType.ENTITY_TYPES
+        EntityType.ENTITY_TYPES
                 .collect { it.singularTerm }
                 .collect { entitySchemaService.findSchema(it, null) }
                 .collect {  Json.mapper().readTree(it) }

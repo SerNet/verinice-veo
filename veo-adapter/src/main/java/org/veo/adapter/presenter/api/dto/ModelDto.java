@@ -19,9 +19,9 @@ package org.veo.adapter.presenter.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 public interface ModelDto {
     @JsonIgnore
-    Class<? extends ModelObject> getModelInterface();
+    Class<? extends Identifiable> getModelInterface();
 }

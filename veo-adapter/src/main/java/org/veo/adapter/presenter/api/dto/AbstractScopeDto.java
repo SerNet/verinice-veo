@@ -20,9 +20,9 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Collections;
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scope;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,10 +37,10 @@ import lombok.ToString;
 public abstract class AbstractScopeDto extends AbstractEntityLayerSupertypeDto {
 
     @Schema(description = "The scope's members")
-    private Set<ModelObjectReference<EntityLayerSupertype>> members = Collections.emptySet();
+    private Set<IdRef<EntityLayerSupertype>> members = Collections.emptySet();
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Scope.class;
     }
 }

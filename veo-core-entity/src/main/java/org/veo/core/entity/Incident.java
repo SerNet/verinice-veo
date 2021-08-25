@@ -32,7 +32,7 @@ public interface Incident extends EntityLayerSupertype, CompositeEntity<Incident
     }
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Incident.class;
     }
 

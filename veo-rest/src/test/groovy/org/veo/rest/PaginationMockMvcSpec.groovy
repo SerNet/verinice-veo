@@ -22,8 +22,8 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.EntityType
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelObjectType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -152,6 +152,6 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         thrown(IllegalArgumentException)
 
         where:
-        type << ModelObjectType.values().findAll { EntityLayerSupertype.isAssignableFrom(it.type) }*.pluralTerm
+        type << EntityType.values().findAll { EntityLayerSupertype.isAssignableFrom(it.type) }*.pluralTerm
     }
 }

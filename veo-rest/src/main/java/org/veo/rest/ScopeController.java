@@ -68,7 +68,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -250,10 +250,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
         return useCaseInteractor.execute(createScopeUseCase,
                                          (Supplier<CreateEntityUseCase.InputData<Scope>>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new CreateEntityUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scope(createScopeDto,
-                                                                                               modelObjectReferenceResolver),
+                                                                                               idRefResolver),
                                                      client);
                                          }, output -> {
                                              Scope scope = output.getEntity();
@@ -281,10 +281,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
         return useCaseInteractor.execute(updateScopeUseCase,
                                          (Supplier<ModifyEntityUseCase.InputData<Scope>>) () -> {
                                              Client client = getClient(user);
-                                             ModelObjectReferenceResolver modelObjectReferenceResolver = createModelObjectReferenceResolver(client);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new UpdateScopeUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scope(scopeDto,
-                                                                                               modelObjectReferenceResolver),
+                                                                                               idRefResolver),
                                                      client, eTag, user.getUsername());
                                          },
                                          output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));

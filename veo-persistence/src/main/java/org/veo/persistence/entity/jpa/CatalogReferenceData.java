@@ -35,7 +35,8 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class CatalogReferenceData extends BaseModelObjectData implements CatalogReference {
+public abstract class CatalogReferenceData extends IdentifiableVersionedData
+        implements CatalogReference {
     @Id
     @ToString.Include
     @GeneratedValue(generator = "UUID")

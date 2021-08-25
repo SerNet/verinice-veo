@@ -20,7 +20,7 @@ package org.veo.adapter.presenter.api.dto.reference;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.core.entity.CatalogItem;
 
@@ -39,6 +39,6 @@ import lombok.ToString;
 public abstract class ReferenceCatalogDto extends AbstractCatalogDto {
 
     @Schema(description = "The catalog-items for the catalog.")
-    private Set<ModelObjectReference<CatalogItem>> catalogItems = new HashSet<>();
+    private Set<IdRef<CatalogItem>> catalogItems = new HashSet<>();
 
 }

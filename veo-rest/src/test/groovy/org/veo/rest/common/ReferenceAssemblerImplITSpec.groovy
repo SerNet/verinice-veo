@@ -23,8 +23,8 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.EntityType
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelObjectType
 import org.veo.rest.configuration.TypeExtractor
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
@@ -54,7 +54,7 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
         notThrown(Exception)
 
         where:
-        type << ModelObjectType.TYPES
+        type << EntityType.TYPES
     }
 
     def createEntity(type) {

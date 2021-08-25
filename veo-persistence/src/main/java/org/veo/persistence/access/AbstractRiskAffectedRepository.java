@@ -33,10 +33,10 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ScenarioData;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 abstract class AbstractRiskAffectedRepository<S extends CompositeEntity<S> & RiskAffected<S, R>, R extends AbstractRisk<S, R>, T extends RiskAffectedData<S, R> & CompositeEntity<S>>
         extends AbstractCompositeEntityRepositoryImpl<S, T>
@@ -45,7 +45,7 @@ abstract class AbstractRiskAffectedRepository<S extends CompositeEntity<S> & Ris
     private final RiskAffectedDataRepository<T> riskAffectedRepo;
 
     AbstractRiskAffectedRepository(RiskAffectedDataRepository<T> riskAffectedRepo,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
+            ValidationService validation, CustomLinkDataRepository linkDataRepository,
             ScopeDataRepository scopeDataRepository) {
         super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);
         this.riskAffectedRepo = riskAffectedRepo;

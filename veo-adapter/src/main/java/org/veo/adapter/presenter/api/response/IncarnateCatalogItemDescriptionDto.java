@@ -20,10 +20,10 @@ package org.veo.adapter.presenter.api.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.IdRefResolver;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceIncarnateCatalogItemDescriptionItem;
+import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemDescriptionItem;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
@@ -40,36 +40,33 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Describes the incarnation parameters of the item.")
 public class IncarnateCatalogItemDescriptionDto {
 
-    @Schema(required = true,
-            implementation = ModelObjectReferenceIncarnateCatalogItemDescriptionItem.class)
-    private ModelObjectReference<CatalogItem> item;
+    @Schema(required = true, implementation = IdRefCatalogItemDescriptionItem.class)
+    private IdRef<CatalogItem> item;
     @ArraySchema(schema = @Schema(implementation = TailoringReferenceParameterDto.class))
     private List<TailoringReferenceParameterDto> references;
 
     public IncarnateCatalogItemDescriptionDto(IncarnateCatalogItemDescription p,
             ReferenceAssembler urlAssembler) {
-        item = ModelObjectReference.from(p.getItem(), urlAssembler);
+        item = IdRef.from(p.getItem(), urlAssembler);
         references = p.getReferences()
                       .stream()
                       .map(r -> new TailoringReferenceParameterDto(
-                              ModelObjectReference.from(r.getReferencedCatalogable(), urlAssembler),
+                              IdRef.from(r.getReferencedCatalogable(), urlAssembler),
                               r.getReferenceKey(), r.getReferenceType()))
                       .collect(Collectors.toList());
 
     }
 
-    public IncarnateCatalogItemDescription dto2Model(
-            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+    public IncarnateCatalogItemDescription dto2Model(IdRefResolver idRefResolver) {
         List<TailoringReferenceParameter> list = getReferences().stream()
                                                                 .map(t -> new TailoringReferenceParameter(
                                                                         t.getReferencedCatalogable() == null
                                                                                 ? null
-                                                                                : modelObjectReferenceResolver.resolve(t.getReferencedCatalogable()),
+                                                                                : idRefResolver.resolve(t.getReferencedCatalogable()),
                                                                         t.getReferenceType(),
                                                                         t.getReferenceKey()))
                                                                 .collect(Collectors.toList());
-        return new IncarnateCatalogItemDescription(modelObjectReferenceResolver.resolve(item),
-                list);
+        return new IncarnateCatalogItemDescription(idRefResolver.resolve(item), list);
     }
 
 }

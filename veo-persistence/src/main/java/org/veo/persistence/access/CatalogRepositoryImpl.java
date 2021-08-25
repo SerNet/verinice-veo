@@ -23,14 +23,14 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.persistence.access.jpa.CatalogDataRepository;
 import org.veo.persistence.entity.jpa.CatalogData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class CatalogRepositoryImpl extends AbstractModelObjectRepository<Catalog, CatalogData>
-        implements CatalogRepository {
+public class CatalogRepositoryImpl extends
+        AbstractIdentifiableVersionedRepository<Catalog, CatalogData> implements CatalogRepository {
 
     public CatalogRepositoryImpl(CatalogDataRepository dataRepository,
-            ModelObjectValidation validator) {
+            ValidationService validator) {
         super(dataRepository, validator);
     }
 }

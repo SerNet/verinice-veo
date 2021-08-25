@@ -27,7 +27,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.veo.core.entity.Document;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -39,7 +39,7 @@ import lombok.ToString;
 public class DocumentData extends EntityLayerSupertypeData implements Document {
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Document.class;
     }
 

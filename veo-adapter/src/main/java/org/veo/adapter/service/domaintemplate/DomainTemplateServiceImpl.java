@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
@@ -94,7 +94,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 NoValidationSchemaLoader.NO_VALIDATION_LOADER, subTypeTransformer);
         assembler = new LocalReferenceAssembler();
         deserializer = new ReferenceDeserializer(assembler);
-        objectMapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(ModelObjectReference.class,
+        objectMapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(IdRef.class,
                                                                                             deserializer))
                                          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                                                     false);
@@ -230,7 +230,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                          .forEach(c -> {
                              Catalog createCatalog = factory.createCatalog(domainPlaceholder);
                              ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
-                             c.setDomainTemplate(new SyntheticModelObjectReference<DomainTemplate>(
+                             c.setDomainTemplate(new SyntheticIdRef<DomainTemplate>(
                                      domainTemplateDto.getId(), DomainTemplate.class, assembler));
                          });
 
@@ -347,7 +347,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     }
 
     private Object transformTailorRef(TransformCatalogItemDto source,
-            Map<String, CatalogItem> itemCache, PlaceholderResolver modelObjectReferenceResolver) {
+            Map<String, CatalogItem> itemCache, PlaceholderResolver idRefResolver) {
 
         CatalogItem target = itemCache.get(source.getId());
         target.getTailoringReferences()
@@ -356,22 +356,20 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                             .stream()
                                             .map(tr -> entityTransformer.transformDto2TailoringReference(tr,
                                                                                                          target,
-                                                                                                         modelObjectReferenceResolver))
+                                                                                                         idRefResolver))
                                             .collect(Collectors.toSet()));
 
         return target;
     }
 
     private CatalogItem transformCatalogItem(TransformCatalogItemDto source,
-            Map<String, Catalogable> elementCache,
-            PlaceholderResolver modelObjectReferenceResolver) {
+            Map<String, Catalogable> elementCache, PlaceholderResolver idRefResolver) {
         Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>(
                 source.getTailoringReferences());
         source.getTailoringReferences()
               .clear();
-        var target = entityTransformer.transformDto2CatalogItem(source,
-                                                                modelObjectReferenceResolver,
-                                                                modelObjectReferenceResolver.resolve(source.getCatalog()));
+        var target = entityTransformer.transformDto2CatalogItem(source, idRefResolver,
+                                                                idRefResolver.resolve(source.getCatalog()));
         source.getTailoringReferences()
               .addAll(tailoringReferences);
         String id = ((IdentifiableDto) source.getElement()).getId();

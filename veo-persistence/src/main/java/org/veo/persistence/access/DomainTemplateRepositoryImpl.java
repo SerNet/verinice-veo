@@ -27,15 +27,15 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository;
 import org.veo.persistence.entity.jpa.DomainTemplateData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class DomainTemplateRepositoryImpl
-        extends AbstractModelObjectRepository<DomainTemplate, DomainTemplateData>
+        extends AbstractIdentifiableVersionedRepository<DomainTemplate, DomainTemplateData>
         implements DomainTemplateRepository {
 
     public DomainTemplateRepositoryImpl(DomainTemplateDataRepository dataRepository,
-            ModelObjectValidation validator) {
+            ValidationService validator) {
         super(dataRepository, validator);
     }
 

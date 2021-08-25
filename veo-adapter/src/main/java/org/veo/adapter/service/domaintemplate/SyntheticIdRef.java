@@ -19,16 +19,15 @@ package org.veo.adapter.service.domaintemplate;
 
 import java.lang.reflect.Field;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SyntheticModelObjectReference<T extends ModelObject> extends ModelObjectReference<T> {
-    public SyntheticModelObjectReference(String id, Class<T> type,
-            ReferenceAssembler urlAssembler) {
+public class SyntheticIdRef<T extends Identifiable> extends IdRef<T> {
+    public SyntheticIdRef(String id, Class<T> type, ReferenceAssembler urlAssembler) {
         super(id, null, type, null, null, null);
     }
 
@@ -52,17 +51,16 @@ public class SyntheticModelObjectReference<T extends ModelObject> extends ModelO
         return toUrl(getType(), getId());
     }
 
-    public static <T extends ModelObject> SyntheticModelObjectReference<T> from(String id,
-            Class<T> type) {
-        return new SyntheticModelObjectReference<>(id, type, null);
+    public static <T extends Identifiable> SyntheticIdRef<T> from(String id, Class<T> type) {
+        return new SyntheticIdRef<>(id, type, null);
     }
 
-    public static <T extends ModelObject> SyntheticModelObjectReference<T> from(String id,
-            Class<T> declaredType, Class<?> realType) {
-        return new SyntheticModelObjectReference<T>(id, (Class<T>) realType, null);
+    public static <T extends Identifiable> SyntheticIdRef<T> from(String id, Class<T> declaredType,
+            Class<?> realType) {
+        return new SyntheticIdRef<T>(id, (Class<T>) realType, null);
     }
 
-    public static <T extends ModelObject> String toUrl(Class<T> type, String id) {
+    public static <T extends Identifiable> String toUrl(Class<T> type, String id) {
         try {
             return "/" + toPluralTerm(type) + "/" + id;
         } catch (SecurityException | NoSuchFieldException | IllegalAccessException e) {
@@ -71,14 +69,14 @@ public class SyntheticModelObjectReference<T extends ModelObject> extends ModelO
         return null;
     }
 
-    public static <T extends ModelObject> String toPluralTerm(Class<T> type)
+    public static <T extends Identifiable> String toPluralTerm(Class<T> type)
             throws NoSuchFieldException, IllegalAccessException {
         Field field = type.getField("PLURAL_TERM");
         Object object = field.get(type);
         return (String) object;
     }
 
-    public static <T extends ModelObject> String toSingularTerm(Class<T> type) {
+    public static <T extends Identifiable> String toSingularTerm(Class<T> type) {
         try {
             Field field = type.getField("SINGULAR_TERM");
             Object object = field.get(type);

@@ -20,7 +20,7 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.List;
 import java.util.Map;
 
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -71,7 +71,7 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process> {
     }
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Process.class;
     }
 }

@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 
 import org.veo.core.entity.Account;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObjectType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
@@ -56,14 +56,14 @@ public class GetUnitDumpUseCase implements
     }
 
     private Set<EntityLayerSupertype> getEntities(Unit unit) {
-        return ModelObjectType.ENTITY_TYPE_CLASSES.stream()
-                                                  .map(repositoryProvider::getEntityLayerSupertypeRepositoryFor)
-                                                  .map(repo -> repo.query(unit.getClient()))
-                                                  .map(query -> query.whereUnitIn(Set.of(unit)))
-                                                  .flatMap(query -> query.execute(PagingConfiguration.UNPAGED)
-                                                                         .getResultPage()
-                                                                         .stream())
-                                                  .collect(Collectors.toSet());
+        return EntityType.ENTITY_TYPE_CLASSES.stream()
+                                             .map(repositoryProvider::getEntityLayerSupertypeRepositoryFor)
+                                             .map(repo -> repo.query(unit.getClient()))
+                                             .map(query -> query.whereUnitIn(Set.of(unit)))
+                                             .flatMap(query -> query.execute(PagingConfiguration.UNPAGED)
+                                                                    .getResultPage()
+                                                                    .stream())
+                                             .collect(Collectors.toSet());
     }
 
     @Data

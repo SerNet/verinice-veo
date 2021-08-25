@@ -23,17 +23,17 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 
 /**
  * Utility class to create entity specifications
  */
 public final class EntitySpecifications {
 
-    private static final EntitySpecification<ModelObject> MATCH_ALL = modelObject -> true;
+    private static final EntitySpecification<Identifiable> MATCH_ALL = identifiable -> true;
 
-    public static <T extends ModelObject> EntitySpecification<T> matchAll() {
+    public static <T extends Identifiable> EntitySpecification<T> matchAll() {
         return (EntitySpecification<T>) MATCH_ALL;
     }
 
@@ -41,7 +41,7 @@ public final class EntitySpecifications {
         return Domain::isActive;
     }
 
-    public static EntitySpecification<ModelObject> hasId(Key<UUID> id) {
+    public static EntitySpecification<Identifiable> hasId(Key<UUID> id) {
         return o -> o.getId()
                      .equals(id);
     }

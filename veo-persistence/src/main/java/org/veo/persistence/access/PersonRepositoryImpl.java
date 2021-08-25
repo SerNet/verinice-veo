@@ -34,8 +34,8 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
 import org.veo.persistence.entity.jpa.PersonData;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<Person, PersonData>
@@ -44,10 +44,9 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
     private final AssetDataRepository assetDataRepository;
     private final ProcessDataRepository processDataRepository;
 
-    public PersonRepositoryImpl(PersonDataRepository dataRepository,
-            ModelObjectValidation validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository,
-            ProcessDataRepository processDataRepository) {
+    public PersonRepositoryImpl(PersonDataRepository dataRepository, ValidationService validation,
+            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository,
+            AssetDataRepository assetDataRepository, ProcessDataRepository processDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
         this.assetDataRepository = assetDataRepository;
         this.processDataRepository = processDataRepository;

@@ -17,14 +17,14 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 
 import lombok.Getter;
 
 /**
  * This event should be triggered by the persistence layer when a
- * {@link ModelObject} is being persisted, updated or removed.
+ * {@link Identifiable} is being persisted, updated or removed.
  */
 public class VersioningEvent {
     @Getter

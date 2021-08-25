@@ -32,7 +32,7 @@ public interface Process
     }
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Process.class;
     }
 

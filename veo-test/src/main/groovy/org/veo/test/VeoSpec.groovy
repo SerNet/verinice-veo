@@ -34,9 +34,9 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.ElementOwner
 import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
-import org.veo.core.entity.ModelObject
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
@@ -248,7 +248,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    private static def name(ModelObject target) {
+    private static def name(Identifiable target) {
         if (target.name == null) {
             target.name = target.modelType + " " + target.id
         }

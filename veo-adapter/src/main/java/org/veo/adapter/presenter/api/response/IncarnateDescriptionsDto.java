@@ -20,7 +20,7 @@ package org.veo.adapter.presenter.api.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.ModelObjectReferenceResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
 
@@ -45,10 +45,9 @@ public class IncarnateDescriptionsDto {
                                     .collect(Collectors.toList());
     }
 
-    public List<IncarnateCatalogItemDescription> dto2Model(
-            ModelObjectReferenceResolver modelObjectReferenceResolver) {
+    public List<IncarnateCatalogItemDescription> dto2Model(IdRefResolver idRefResolver) {
         return getParameters().stream()
-                              .map(a -> a.dto2Model(modelObjectReferenceResolver))
+                              .map(a -> a.dto2Model(idRefResolver))
                               .collect(Collectors.toList());
     }
 }

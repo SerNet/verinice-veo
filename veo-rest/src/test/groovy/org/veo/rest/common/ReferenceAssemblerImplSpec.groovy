@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.common
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference
+import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto
@@ -169,7 +169,7 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "create a key for a reference to a #type with id #id "() {
         expect:
-        referenceAssembler.toKey(new ModelObjectReference(null, id, type, referenceAssembler)) == key
+        referenceAssembler.toKey(new IdRef(null, id, type, referenceAssembler)) == key
 
         where:
         type     | id                                     | key
@@ -184,8 +184,8 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "create multiple keys for a reference to a #type with keys #id1, #id2 "() {
         expect:
         def refs = referenceAssembler.toKeys([
-            new ModelObjectReference(null, id1, type, referenceAssembler),
-            new ModelObjectReference(null, id2, type, referenceAssembler)
+            new IdRef(null, id1, type, referenceAssembler),
+            new IdRef(null, id2, type, referenceAssembler)
         ] as Set
         )
         refs.contains(Key.uuidFrom(id1))

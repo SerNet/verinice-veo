@@ -31,7 +31,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.StoredEvent;
 import org.veo.core.events.StoredEventService;
@@ -110,8 +110,8 @@ public class VersioningEventListener {
     }
 
     private String getUri(Versioned entity) {
-        if (entity instanceof ModelObject) {
-            return referenceAssembler.targetReferenceOf((ModelObject) entity);
+        if (entity instanceof Identifiable) {
+            return referenceAssembler.targetReferenceOf((Identifiable) entity);
         }
         if (entity instanceof AbstractRisk) {
             return referenceAssembler.targetReferenceOf((AbstractRisk<?, ?>) entity);

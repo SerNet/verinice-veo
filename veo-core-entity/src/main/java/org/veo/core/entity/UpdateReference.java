@@ -38,7 +38,7 @@ public interface UpdateReference extends CatalogReference {
     void setUpdateType(ItemUpdateType aUpdateType);
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return UpdateReference.class;
     }
 

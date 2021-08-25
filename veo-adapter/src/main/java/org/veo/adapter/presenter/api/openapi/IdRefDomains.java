@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2019  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,30 +17,27 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * This class is for documentation only. It specifies type-specific comments and
- * examples for a reference to a specific type of ModelObject.
- *
- * It is only supposed to be used in OpenApi annotations and should not be
- * extended and implemented.
+ * Swagger documentation for the reference 'domains': The domains the entity is
+ * part of.
  */
-@Schema(name = "CatalogItemElement",
-        description = "The actual model instance of this catalog item",
-        required = true)
-public interface ModelObjectReferenceCatalogItemElement extends IModelObjectReference {
+@Schema(name = "DomainsReference", description = "A reference to a domain")
+public interface IdRefDomains extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the referenced element.",
-            example = "EU GDPR 2016-05-04")
+    // TODO: update reference doc for DomainsReference
+
+    @Schema(description = "A friendly human readable title of the referenced domain.",
+            example = "ISO 27001:2013")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced element.",
-            example = "http://<api.example.org>/api/v1/control/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced domains.",
+            example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 

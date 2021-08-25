@@ -26,13 +26,13 @@ import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.ModelObjectValidation;
+import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class AssetRepositoryImpl extends AbstractRiskAffectedRepository<Asset, AssetRisk, AssetData>
         implements AssetRepository {
 
-    public AssetRepositoryImpl(AssetDataRepository dataRepository, ModelObjectValidation validation,
+    public AssetRepositoryImpl(AssetDataRepository dataRepository, ValidationService validation,
             CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }

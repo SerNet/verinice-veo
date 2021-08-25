@@ -23,12 +23,12 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference;
-import org.veo.adapter.presenter.api.openapi.ModelObjectReferenceDomainCatalogs;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.openapi.IdRefDomainCatalogs;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -75,13 +75,13 @@ public abstract class AbstractDomainDto extends AbstractVersionedDto implements 
     @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
     private String revision;
 
-    @ArraySchema(schema = @Schema(implementation = ModelObjectReferenceDomainCatalogs.class))
-    private Set<ModelObjectReference<Catalog>> catalogs = new HashSet<>();
+    @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))
+    private Set<IdRef<Catalog>> catalogs = new HashSet<>();
 
-    private ModelObjectReference<DomainTemplate> domainTemplate;
+    private IdRef<DomainTemplate> domainTemplate;
 
     @Override
-    public Class<? extends ModelObject> getModelInterface() {
+    public Class<? extends Identifiable> getModelInterface() {
         return Domain.class;
     }
 }

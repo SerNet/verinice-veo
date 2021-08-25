@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Swagger documentation for a rerefence to a composite entity's part:
  */
 @Schema(name = "PartReference", description = "A reference to an entity's part")
-public interface ModelObjectReferencePart extends IModelObjectReference {
+public interface IdRefPart extends IIdRef {
 
     @Schema(description = "A friendly human readable title of the referenced entity.",
             example = "My Entity")

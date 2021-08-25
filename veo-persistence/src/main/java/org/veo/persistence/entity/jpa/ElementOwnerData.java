@@ -34,7 +34,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class ElementOwnerData extends BaseModelObjectData implements ElementOwner {
+public abstract class ElementOwnerData extends IdentifiableVersionedData implements ElementOwner {
     @Id
     @ToString.Include
     @GeneratedValue(generator = "UUID")

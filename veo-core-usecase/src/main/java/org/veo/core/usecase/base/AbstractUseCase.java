@@ -23,8 +23,8 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObject;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -65,12 +65,12 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
             throw new ClientBoundaryViolationException(domain, authenticatedClient);
     }
 
-    protected <M extends ModelObject> Optional<M> findEntity(Class<M> clazz, Key<UUID> id) {
+    protected <M extends Identifiable> Optional<M> findEntity(Class<M> clazz, Key<UUID> id) {
         return repositoryProvider.getRepositoryFor(clazz)
                                  .findById(id);
     }
 
-    protected <M extends ModelObject> Set<M> findEntities(Class<M> clazz, Set<Key<UUID>> ids) {
+    protected <M extends Identifiable> Set<M> findEntities(Class<M> clazz, Set<Key<UUID>> ids) {
         return repositoryProvider.getRepositoryFor(clazz)
                                  .getByIds(ids);
     }

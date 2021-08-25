@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2021  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,28 +17,19 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * This class is for documentation only. It specifies type-specific comments and
- * examples for a reference to a specific type of ModelObject.
- *
- * It is only supposed to be used in OpenApi annotations and should not be
- * extended and implemented.
- */
-@Schema(name = "CatalogRef", description = "The ref of a catalog item to a catalog")
-public interface ModelObjectReferenceCatalogItemCatalog extends IModelObjectReference {
-
-    @Schema(description = "A friendly human readable title of the referenced catalog.",
-            example = "EU GDPR 2016-05-04")
+public interface IdRefTailoringReferenceParameterReferencedCatalogable extends IIdRef {
+    @Schema(description = "A friendly human readable title of the catalogable which will be linked.",
+            example = "CTL_1")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced catalog.",
-            example = "http://<api.example.org>/api/v1/catalog/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced element.",
+            example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 
@@ -47,4 +38,5 @@ public interface ModelObjectReferenceCatalogItemCatalog extends IModelObjectRefe
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     String getResourcesUri();
+
 }

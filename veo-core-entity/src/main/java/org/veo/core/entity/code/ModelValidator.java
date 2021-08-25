@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.veo.core.entity.ModelObject;
+import org.veo.core.entity.Identifiable;
 
 /**
  * Provides access to the model validator.
@@ -31,7 +31,7 @@ public final class ModelValidator {
     /**
      * Base class for all model validators.
      */
-    public abstract static class AbstractModelValidator<T extends ModelObject> {
+    public abstract static class AbstractModelValidator<T extends Identifiable> {
 
         /**
          * Performs checks for domain model invariants. Should use
@@ -39,9 +39,9 @@ public final class ModelValidator {
          * implemented rules when possible.
          *
          * @param object
-         *            a valid ModelObject. Valid means it has fully annotated with JSR
-         *            380 bean validation annotations with no validation errors.
-         *            Field-level checks will not be performed by this method.
+         *            a valid object. Valid means it has fully annotated with JSR 380
+         *            bean validation annotations with no validation errors. Field-level
+         *            checks will not be performed by this method.
          */
         public final void validate(T object) {
             LinkedList<String> validationErrors = new LinkedList<>();
@@ -56,7 +56,7 @@ public final class ModelValidator {
          * This method may be used to implement additional checks for specific types.
          *
          * @param object
-         *            a valid model object type
+         *            a valid {@link T} type
          * @param validationErrors
          *            an output parameter for validation error messages
          */
@@ -64,16 +64,16 @@ public final class ModelValidator {
 
     }
 
-    public static class ModelObjectValidator extends AbstractModelValidator<ModelObject> {
+    public static class IdentifiableValidator extends AbstractModelValidator<Identifiable> {
 
         @Override
-        public void doValidate(ModelObject object, List<String> validationErrors) {
+        public void doValidate(Identifiable object, List<String> validationErrors) {
             // no specific validation is done for this type
         }
     }
 
-    public static void validate(ModelObject target) {
-        new ModelObjectValidator().validate(target);
+    public static void validate(Identifiable target) {
+        new IdentifiableValidator().validate(target);
     }
 
     private ModelValidator() {

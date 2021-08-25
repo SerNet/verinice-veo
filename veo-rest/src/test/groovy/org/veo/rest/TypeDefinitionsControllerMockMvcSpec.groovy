@@ -21,7 +21,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.ModelObjectType
+import org.veo.core.entity.EntityType
 
 @WithUserDetails("user@domain.example")
 class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
@@ -29,7 +29,7 @@ class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
         when:
         def result = parseJson(get("/types"))
         then:
-        result.size() == ModelObjectType.ENTITY_TYPES.size()
+        result.size() == EntityType.ENTITY_TYPES.size()
         result.values().each {
             // Try using the collection URI (removing hateoas param placeholders).
             get(it.collectionUri.replaceFirst("\\{.*\\}", ""))

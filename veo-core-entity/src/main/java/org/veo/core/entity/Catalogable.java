@@ -25,7 +25,7 @@ import java.util.Set;
  * catalogItem. A catalogable can refers several catalogItems which it represent
  * in the different domains.
  */
-public interface Catalogable extends ModelObject, Displayable {
+public interface Catalogable extends Identifiable, Displayable, Versioned {
 
     /**
      * Stores the references of the applied catalog items. Question: Should this be

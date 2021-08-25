@@ -42,7 +42,7 @@ import org.veo.core.entity.specification.EntitySpecifications;
  * should exclusively be used to model ownership and high-level access
  * restrictions.
  */
-public interface Unit extends Nameable, ModelObject, ElementOwner {
+public interface Unit extends Nameable, Identifiable, ElementOwner, Versioned {
 
     String SINGULAR_TERM = "unit";
     String PLURAL_TERM = "units";
@@ -93,7 +93,7 @@ public interface Unit extends Nameable, ModelObject, ElementOwner {
     }
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Unit.class;
     }
 

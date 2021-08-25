@@ -33,7 +33,7 @@ public interface Scenario extends EntityLayerSupertype, CompositeEntity<Scenario
     }
 
     @Override
-    default Class<? extends ModelObject> getModelInterface() {
+    default Class<? extends Identifiable> getModelInterface() {
         return Scenario.class;
     }
 

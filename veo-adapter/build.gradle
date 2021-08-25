@@ -124,10 +124,10 @@ task checkTranslations {
             }
         }
 
-        // ModelObject base attributes
-        handleTranslationKey('name', 'ModelObject base attributes')
-        handleTranslationKey('abbreviation', 'ModelObject base attributes')
-        handleTranslationKey('description', 'ModelObject base attributes')
+        // Nameable base attributes
+        handleTranslationKey('name', 'Nameable base attributes')
+        handleTranslationKey('abbreviation', 'Nameable base attributes')
+        handleTranslationKey('description', 'Nameable base attributes')
 
         customSchemaFiles.each { file->
             logger.info "Loading $file"

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2020  Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,28 +17,30 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.adapter.presenter.api.common.IModelObjectReference;
+import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * This class is for documentation only. It specifies type-specific comments and
- * examples for a reference to a specific type of ModelObject.
+ * examples for a reference to a CatalogItemElement.
  *
  * It is only supposed to be used in OpenApi annotations and should not be
  * extended and implemented.
  */
-@Schema(name = "DomaintemplateReference", description = "The reference to a domaintemplate.")
-public interface ModelObjectReferenceCatalogDomainTemplate extends IModelObjectReference {
+@Schema(name = "CatalogItemElement",
+        description = "The actual model instance of this catalog item",
+        required = true)
+public interface IdRefCatalogItemElement extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the referenced domaintemplate.",
+    @Schema(description = "A friendly human readable title of the referenced element.",
             example = "EU GDPR 2016-05-04")
     @Override
     String getDisplayName();
 
     @Schema(required = true,
-            description = "The resource URL of the referenced domain.",
-            example = "http://<api.example.org>/api/v1/domaintemplates/<00000000-0000-0000-0000-000000000000>")
+            description = "The resource URL of the referenced element.",
+            example = "http://<api.example.org>/api/v1/control/<00000000-0000-0000-0000-000000000000>")
     @Override
     String getTargetUri();
 

@@ -26,8 +26,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.ModelObjectType;
 import org.veo.core.repository.DesignatorSequenceRepository;
 
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
      * called before fetching any sequence vales for that client.
      */
     public void createSequences(Key<UUID> clientId) {
-        ModelObjectType.TYPE_DESIGNATORS.forEach(typeDesignator -> {
+        EntityType.TYPE_DESIGNATORS.forEach(typeDesignator -> {
             em.createNativeQuery("CREATE SEQUENCE IF NOT EXISTS "
                     + getSequenceName(clientId, typeDesignator))
               .executeUpdate();
@@ -67,7 +67,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
      * performed as a cleanup when the client is removed.
      */
     public void deleteSequences(Key<UUID> clientId) {
-        ModelObjectType.TYPE_DESIGNATORS.forEach(typeDesignator -> {
+        EntityType.TYPE_DESIGNATORS.forEach(typeDesignator -> {
             em.createNativeQuery("DROP SEQUENCE IF EXISTS "
                     + getSequenceName(clientId, typeDesignator))
               .executeUpdate();

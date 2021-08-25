@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter
 
-import org.veo.adapter.presenter.api.common.ModelObjectReference
+import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -28,11 +28,11 @@ import org.veo.core.repository.RepositoryProvider
 
 import spock.lang.Specification
 
-class ModelObjectReferenceResolverSpec extends Specification {
+class IdentifiableReferenceResolverSpec extends Specification {
 
     RepositoryProvider repositoryProvider = Mock()
     Client client = Mock()
-    ModelObjectReferenceResolver referenceResolver = new ModelObjectReferenceResolver(repositoryProvider, client)
+    IdRefResolver referenceResolver = new IdRefResolver(repositoryProvider, client)
 
     Repository<Asset, Key<UUID>> assetRepo = Mock()
     Repository<Person, Key<UUID>> personRepo = Mock()
@@ -49,8 +49,8 @@ class ModelObjectReferenceResolverSpec extends Specification {
             it.getModelInterface() >> Asset
         }
 
-        when: "resolving references to the model objects"
-        def result = referenceResolver.resolve(ModelObjectReference.from(asset, Mock(ReferenceAssembler)))
+        when: "resolving references to the asset"
+        def result = referenceResolver.resolve(IdRef.from(asset, Mock(ReferenceAssembler)))
         then: "the asset is returned"
         1 * assetRepo.getByIds(Set.of(asset.id)) >> [asset]
         result == asset
@@ -82,10 +82,10 @@ class ModelObjectReferenceResolverSpec extends Specification {
         }
 
         when: "resolving the references initially"
-        referenceResolver.resolve(ModelObjectReference.from(asset1, Mock(ReferenceAssembler)))
-        referenceResolver.resolve(ModelObjectReference.from(asset2, Mock(ReferenceAssembler)))
-        referenceResolver.resolve(ModelObjectReference.from(person1, Mock(ReferenceAssembler)))
-        referenceResolver.resolve(ModelObjectReference.from(person2, Mock(ReferenceAssembler)))
+        referenceResolver.resolve(IdRef.from(asset1, Mock(ReferenceAssembler)))
+        referenceResolver.resolve(IdRef.from(asset2, Mock(ReferenceAssembler)))
+        referenceResolver.resolve(IdRef.from(person1, Mock(ReferenceAssembler)))
+        referenceResolver.resolve(IdRef.from(person2, Mock(ReferenceAssembler)))
         then: "the entities are fetched from the repo"
         1 * assetRepo.getByIds(Set.of(asset1.id)) >> [asset1]
         1 * assetRepo.getByIds(Set.of(asset2.id)) >> [asset2]
@@ -93,10 +93,10 @@ class ModelObjectReferenceResolverSpec extends Specification {
         1 * personRepo.getByIds(Set.of(person2.id)) >> [person2]
 
         when: "resolving the references again"
-        def retrievedAsset1 = referenceResolver.resolve(ModelObjectReference.from(asset1, Mock(ReferenceAssembler)))
-        def retrievedAsset2 = referenceResolver.resolve(ModelObjectReference.from(asset2, Mock(ReferenceAssembler)))
-        def retrievedPerson1 = referenceResolver.resolve(ModelObjectReference.from(person1, Mock(ReferenceAssembler)))
-        def retrievedPerson2 = referenceResolver.resolve(ModelObjectReference.from(person2, Mock(ReferenceAssembler)))
+        def retrievedAsset1 = referenceResolver.resolve(IdRef.from(asset1, Mock(ReferenceAssembler)))
+        def retrievedAsset2 = referenceResolver.resolve(IdRef.from(asset2, Mock(ReferenceAssembler)))
+        def retrievedPerson1 = referenceResolver.resolve(IdRef.from(person1, Mock(ReferenceAssembler)))
+        def retrievedPerson2 = referenceResolver.resolve(IdRef.from(person2, Mock(ReferenceAssembler)))
         then: "they are not fetched again"
         0 * assetRepo.getByIds(_)
         0 * personRepo.getByIds(_)
@@ -108,8 +108,8 @@ class ModelObjectReferenceResolverSpec extends Specification {
 
         when: "resolving a cached and an uncached reference"
         def retrievedAssets = referenceResolver.resolve([
-            ModelObjectReference.from(asset1, Mock(ReferenceAssembler)),
-            ModelObjectReference.from(asset3, Mock(ReferenceAssembler))
+            IdRef.from(asset1, Mock(ReferenceAssembler)),
+            IdRef.from(asset3, Mock(ReferenceAssembler))
         ] as Set)
         then: "only the uncached asset is fetched"
         1 * assetRepo.getByIds(Set.of(asset3.id)) >> [asset3]
