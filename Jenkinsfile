@@ -110,7 +110,8 @@ pipeline {
           stage('HTTP REST Test') {
                     environment {
                         def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
-                        KEYCLOAK_CREDS = credentials('veo_authentication_credentials')
+                        KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
+                        KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
                         RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
                         VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.RESTTESTMESSAGE.${tag}."
                         VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_RESTTEST_QUEUE_${tag}"
@@ -130,8 +131,10 @@ pipeline {
                                      docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
                                          sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                                export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                               export VEO_RESTTEST_USER=$KEYCLOAK_CREDS_USR && \
-                                               export VEO_RESTTEST_PASS=$KEYCLOAK_CREDS_PSW && \
+                                               export VEO_RESTTEST_USERS_DEFAULT_NAME=$KEYCLOAK_DEFAULT_CREDS_USR && \
+                                               export VEO_RESTTEST_USERS_DEFAULT_PASS=$KEYCLOAK_DEFAULT_CREDS_PSW && \
+                                               export VEO_RESTTEST_USERS_ADMIN_NAME=$KEYCLOAK_ADMIN_CREDS_USR && \
+                                               export VEO_RESTTEST_USERS_ADMIN_PASS=$KEYCLOAK_ADMIN_CREDS_PSW && \
                                                ./gradlew --no-daemon veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128'''
                                          junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
                                          publishHTML([

@@ -33,7 +33,7 @@ class UnitRestTestITSpec extends VeoRestTest {
     }
 
     def "Create a unit"() {
-        def user = this.user
+        def user = defaultUserName
 
         when: "a unit is created"
         def beforeCreation = Instant.now()
@@ -63,7 +63,7 @@ class UnitRestTestITSpec extends VeoRestTest {
     }
 
     def "Update a unit"() {
-        def user = this.user
+        def user = defaultUserName
 
         given: "a unit"
         def postResponseBody = postNewUnit(UNIT_NAME)

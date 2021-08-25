@@ -30,18 +30,13 @@ import org.keycloak.authorization.client.Configuration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.web.client.RestTemplateBuilder
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Profile
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
-
-import com.fasterxml.jackson.databind.node.ObjectNode
 
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
@@ -67,55 +62,37 @@ class VeoRestTest extends spock.lang.Specification {
     @Shared
     EntityFactory factory = new EntityDataFactory()
 
-    @Value('${veo.resttest.user}')
-    String user
-
     @Value('${veo.resttest.baseUrl}')
     String baseUrl
 
-    @TestConfiguration
-    @Profile("resttest")
-    static class TestRestTemplateAuthenticationConfiguration {
+    @Value('${veo.resttest.oidcUrl}')
+    def oidcUrl = 'https://keycloak.staging.verinice.com'
 
-        @Value('${veo.resttest.oidcUrl}')
-        def oidcUrl = 'https://keycloak.staging.verinice.com'
+    @Value('${veo.resttest.realm}')
+    def realm = 'verinice-veo'
 
-        @Value('${veo.resttest.realm}')
-        def realm = 'verinice-veo'
+    @Value('${veo.resttest.clientId}')
+    def clientId = 'veo-development-client'
 
-        @Value('${veo.resttest.clientId}')
-        def clientId = 'veo-development-client'
+    @Value('${veo.resttest.users.default.name}')
+    String defaultUserName
 
-        @Value('${veo.resttest.user}')
-        private String user
+    @Value('${veo.resttest.users.default.pass}')
+    private String defaultUserPass
 
-        @Value('${veo.resttest.pass}')
-        private String pass
+    @Value('${veo.resttest.users.admin.name}')
+    String adminUserName
 
-        @Value('${veo.resttest.proxyHost}')
-        private String proxyHost
+    @Value('${veo.resttest.users.admin.pass}')
+    private String adminUserPass
 
-        @Value('${veo.resttest.proxyPort}')
-        private int proxyPort
+    @Value('${veo.resttest.proxyHost}')
+    private String proxyHost
 
-        @Bean
-        public RestTemplateBuilder restTemplateBuilder() {
-            HttpHost proxy = new HttpHost(proxyHost, proxyPort)
-            def user = this.user
-            def pass = this.pass
+    @Value('${veo.resttest.proxyPort}')
+    private int proxyPort
 
-            def accessToken = HttpClientBuilder.create().with {
-                it.proxy = proxy
-                build()
-            }.withCloseable {
-                Configuration configuration = new Configuration("$oidcUrl/auth", realm, clientId, ['secret':''], it)
-                AuthzClient authzClient = AuthzClient.create(configuration)
-                def accessTokenResponse = authzClient.obtainAccessToken(user, pass)
-                accessTokenResponse.token
-            }
-            return new RestTemplateBuilder().defaultHeader('Authorization', 'Bearer ' + accessToken)
-        }
-    }
+    private userTokenCache = [:]
 
     class Response{
         Map headers
@@ -136,11 +113,8 @@ class VeoRestTest extends spock.lang.Specification {
         }
     }
 
-
-
-    Response get(String relativeUri, int assertStatusCode = 200) {
-        def absoluteUrl = baseUrl + relativeUri
-        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.GET, null, String.class)
+    Response get(String relativeUri, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+        def resp = exchange(relativeUri, HttpMethod.GET, new HttpHeaders(), null, userType)
         assert resp.statusCodeValue == assertStatusCode
         log.info(resp.body.toString())
         new Response(
@@ -148,32 +122,27 @@ class VeoRestTest extends spock.lang.Specification {
                 body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    Response post(String relativeUri, Object requestBody, int assertStatusCode = 201) {
-        def absoluteUrl = baseUrl + relativeUri
+    Response post(String relativeUri, Object requestBody, int assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
-        HttpEntity<String> request = new HttpEntity<>(toJson(requestBody), headers)
 
-        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.POST, request, String.class)
+        def resp = exchange(relativeUri, HttpMethod.POST, headers, requestBody, userType)
         assert resp.statusCodeValue == assertStatusCode
         new Response(headers: resp.headers,
         body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    void put(String relativeUri, Object requestBody, String etagHeader, int assertStatusCode = 200) {
-        def absoluteUrl = baseUrl + relativeUri
+    void put(String relativeUri, Object requestBody, String etagHeader, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setIfMatch(getETag(etagHeader))
         headers.setContentType(MediaType.APPLICATION_JSON)
-        HttpEntity putEntity = new HttpEntity(toJson(requestBody), headers)
 
-        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.PUT, putEntity, String.class)
+        def resp = exchange(relativeUri, HttpMethod.PUT, headers, requestBody, userType)
         assert resp.statusCodeValue == assertStatusCode
     }
 
-    void delete(String relativeUri, int assertStatusCode = 204) {
-        def absoluteUrl = baseUrl + relativeUri
-        def resp = restTemplate.exchange(absoluteUrl, HttpMethod.DELETE, null, String.class)
+    void delete(String relativeUri, int assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
+        def resp = exchange(relativeUri, HttpMethod.DELETE, new HttpHeaders(), null, userType)
         assert resp.statusCodeValue == assertStatusCode
     }
 
@@ -198,5 +167,36 @@ class VeoRestTest extends spock.lang.Specification {
 
     def getControl(id) {
         get("/controls/${id}").body
+    }
+
+    ResponseEntity<String> exchange(String relativeUri, HttpMethod httpMethod, HttpHeaders headers, Object requestBody = null, UserType userType = UserType.DEFAULT) {
+        headers.put("Authorization", [
+            "Bearer " + getToken(userType)
+        ])
+        return restTemplate.exchange(baseUrl + relativeUri, httpMethod, new HttpEntity(requestBody?.with { toJson(it) }, headers), String.class)
+    }
+
+    private String getToken(UserType userType) {
+        def user = defaultUserName
+        def pass = defaultUserPass
+        if (userType == UserType.ADMIN) {
+            user = adminUserName
+            pass = adminUserPass
+        }
+        if (userTokenCache.hasProperty(user)) {
+            return userTokenCache[user]
+        }
+        def proxy = new HttpHost(proxyHost, proxyPort)
+        def newToken = HttpClientBuilder.create().with {
+            it.proxy = proxy
+            build()
+        }.withCloseable {
+            Configuration configuration = new Configuration("$oidcUrl/auth", realm, clientId, ['secret': ''], it)
+            AuthzClient authzClient = AuthzClient.create(configuration)
+            def accessTokenResponse = authzClient.obtainAccessToken(user, pass)
+            accessTokenResponse.token
+        }
+        userTokenCache[user] = newToken
+        return newToken
     }
 }

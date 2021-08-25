@@ -7,8 +7,13 @@ veo:
     oidcUrl: 'https://keycloak.staging.verinice.com'
     realm: 'realm'
     clientId: 'clientid'
-    user: ''
-    pass: ''
+    users:
+      default:
+        name: ''
+        pass: ''
+      admin:
+        name: ''
+        pass: ''
     proxyHost: cache.company.private
     proxyPort: 3128
 
