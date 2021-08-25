@@ -212,8 +212,7 @@ public abstract class EntityLayerSupertypeData extends BaseModelObjectData
     }
 
     /**
-     * Remove the given CustomLink from the collection links. opposite of
-     * EntityLayerSupertype.source
+     * Remove the given CustomLink from the collection links.
      *
      * @return true if removed
      */
