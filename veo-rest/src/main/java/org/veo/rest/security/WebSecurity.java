@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -73,9 +76,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
                         "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
-                .hasAuthority("SCOPE_veo-user")
+                .hasRole("veo-user")
 
-                .antMatchers("/admin/**").hasAuthority("SCOPE_veo-admin")
+                .antMatchers("/admin/**").hasRole("veo-admin")
 
                 .anyRequest().authenticated() // CAUTION:
                                                                              // this
@@ -85,9 +88,20 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                                                                              // see
                                                                              // above
 
-                .and().oauth2ResourceServer().jwt();
+                .and().oauth2ResourceServer().jwt()
+                .jwtAuthenticationConverter(jwtAuthenticationConverter());
 
         // @formatter:on
+    }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
     }
 
     @Override
@@ -108,11 +122,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
         final String NIL_UUID = "00000000-0000-0000-0000-000000000000";
 
-        ApplicationUser basicUser = ApplicationUser.authenticatedUser("user", NIL_UUID, "veo-user");
+        ApplicationUser basicUser = ApplicationUser.authenticatedUser("user", NIL_UUID, "veo-user",
+                                                                      Collections.emptyList());
         basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
 
         ApplicationUser adminUser = ApplicationUser.authenticatedUser("admin", NIL_UUID,
-                                                                      "veo-admin");
+                                                                      "veo-admin",
+                                                                      Collections.emptyList());
         adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
 
         return new CustomUserDetailsManager(List.of(basicUser, adminUser));

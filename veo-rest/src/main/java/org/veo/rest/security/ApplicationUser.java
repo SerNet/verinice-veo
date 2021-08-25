@@ -66,8 +66,7 @@ public class ApplicationUser implements UserDetails {
                 extractClientId(jwt.getClaimAsStringList("groups")), jwt.getClaimAsString("scope"),
                 jwt.getClaimAsString("email"), jwt.getClaimAsString("name"),
                 jwt.getClaimAsString("given_name"), jwt.getClaimAsString("family_name"),
-                jwt.getClaimAsStringList("groups"), (List<String>) jwt.getClaimAsMap("realm_access")
-                                                                      .get("roles"));
+                jwt.getClaimAsStringList("groups"), jwt.getClaimAsStringList("roles"));
         this.claims = jwt.getClaims();
     }
 
@@ -95,10 +94,10 @@ public class ApplicationUser implements UserDetails {
         throw new IllegalArgumentException("Principal does not represent an authenticated user.");
     }
 
-    public static ApplicationUser authenticatedUser(String username, String clientId,
-            String scopes) {
+    public static ApplicationUser authenticatedUser(String username, String clientId, String scopes,
+            List<String> roles) {
         return new ApplicationUser(username, clientId, scopes, "", "", "", "",
-                Collections.emptyList(), Collections.emptyList());
+                Collections.emptyList(), roles);
     }
 
     public boolean isAdmin() {

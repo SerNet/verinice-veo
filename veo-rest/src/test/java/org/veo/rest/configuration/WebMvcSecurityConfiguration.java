@@ -47,13 +47,16 @@ public class WebMvcSecurityConfiguration {
     @Primary
     public UserDetailsService userDetailsService() {
         ApplicationUser basicUser = ApplicationUser.authenticatedUser("user@domain.example",
-                                                                      TESTCLIENT_UUID, "veo-user");
-        basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
+                                                                      TESTCLIENT_UUID, "veo-user",
+                                                                      List.of("veo-user"));
+        basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user")));
 
         ApplicationUser adminUser = ApplicationUser.authenticatedUser("admin", TESTCLIENT_UUID,
-                                                                      "veo-admin");
-        adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user"),
-                                         new SimpleGrantedAuthority("SCOPE_veo-admin")));
+                                                                      "veo-admin",
+                                                                      List.of("veo-user",
+                                                                              "veo-admin"));
+        adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user"),
+                                         new SimpleGrantedAuthority("ROLE_veo-admin")));
 
         return new CustomUserDetailsManager(Arrays.asList(basicUser, adminUser));
     }
