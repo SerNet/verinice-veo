@@ -30,8 +30,8 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
-import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.ProcessData
 
 import net.ttddyy.dsproxy.QueryCountHolder
@@ -78,7 +78,7 @@ class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
             processes.add(newProcess(unit) {
                 domains = [domain] as Set
                 customAspects = [
-                    new CustomPropertiesData().tap {
+                    new CustomAspectData().tap {
                         it.type = "my_custom_aspect"
                         it.attributes = [
                             "foo": "bar"

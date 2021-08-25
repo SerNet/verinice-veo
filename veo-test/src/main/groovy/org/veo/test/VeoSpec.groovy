@@ -27,8 +27,8 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Catalogable
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
-import org.veo.core.entity.CustomProperties
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
@@ -50,8 +50,8 @@ import org.veo.persistence.entity.jpa.CatalogData
 import org.veo.persistence.entity.jpa.CatalogItemData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
+import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
-import org.veo.persistence.entity.jpa.CustomPropertiesData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.DomainData
 import org.veo.persistence.entity.jpa.DomainTemplateData
@@ -225,9 +225,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CustomPropertiesData newCustomProperties(String type, @DelegatesTo(value = CustomProperties.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomProperties") Closure init = null) {
-        return factory.createCustomProperties().tap{
+    static CustomAspectData newCustomAspect(String type, @DelegatesTo(value = CustomAspect.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomAspect") Closure init = null) {
+        return factory.createCustomAspect().tap{
             it.type = type
             VeoSpec.execute(it, init)
         }

@@ -298,7 +298,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a control with custom properties"() {
         given: "a saved control"
 
-        def cp = newCustomProperties("my.new.type")
+        def cp = newCustomAspect("my.new.type")
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {

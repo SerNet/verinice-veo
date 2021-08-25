@@ -24,7 +24,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.CustomProperties
+import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -199,7 +199,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     def "put a person with custom properties"() {
         given: "a saved person"
 
-        CustomProperties cp = newCustomProperties("my.new.type")
+        CustomAspect cp = newCustomAspect("my.new.type")
 
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {

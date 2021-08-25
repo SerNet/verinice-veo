@@ -39,9 +39,9 @@ public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto, Cata
 
     void setLinks(Map<String, List<CustomLinkDto>> links);
 
-    Map<String, CustomPropertiesDto> getCustomAspects();
+    Map<String, CustomAspectDto> getCustomAspects();
 
-    void setCustomAspects(Map<String, CustomPropertiesDto> customAspects);
+    void setCustomAspects(Map<String, CustomAspectDto> customAspects);
 
     Map<String, String> getSubType();
 

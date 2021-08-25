@@ -34,7 +34,7 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
-import org.veo.core.entity.CustomProperties;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityLayerSupertype;
 
@@ -42,12 +42,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Entity(name = "customproperties")
+@Entity(name = "custom_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @TypeDef(name = "json", typeClass = JsonType.class)
-public class CustomPropertiesData implements CustomProperties {
+public class CustomAspectData implements CustomAspect {
 
     @Id
     @ToString.Include
@@ -61,7 +61,7 @@ public class CustomPropertiesData implements CustomProperties {
     @EqualsAndHashCode.Include
     @ManyToOne(fetch = FetchType.LAZY,
                targetEntity = EntityLayerSupertypeData.class,
-               // 'links' are also customProperties, saved in the same table but mapped by
+               // 'links' are also custom aspects, saved in the same table but mapped by
                // 'source'
                // column, due to the single-table inheritance mapping used here.
                // 'owner' must therefore be nullable for these entities:

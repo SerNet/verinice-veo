@@ -28,8 +28,8 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.CustomProperties;
 
 import lombok.NonNull;
 
@@ -59,9 +59,9 @@ public class EntitySchema {
     /**
      * Validates if the custom aspects attributes are allowed by the schema.
      */
-    public void validateCustomAspect(CustomProperties customProperties) {
-        validateAgainstSchema(customProperties.getAttributes(),
-                              getAspectAttrSchema(customProperties.getType()));
+    public void validateCustomAspect(CustomAspect customAspect) {
+        validateAgainstSchema(customAspect.getAttributes(),
+                              getAspectAttrSchema(customAspect.getType()));
     }
 
     /**

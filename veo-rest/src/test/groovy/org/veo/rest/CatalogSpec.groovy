@@ -160,12 +160,12 @@ class CatalogSpec extends VeoMvcSpec {
                     description = "a process with subtype"
                     setSubType(domain, "MY_SUBTYPE")
                     customAspects = [
-                        newCustomProperties("process_resilience") {
+                        newCustomAspect("process_resilience") {
                             attributes = [
                                 "process_resilience_impact":"process_resilience_impact_low"
                             ]
                         },
-                        newCustomProperties("process_processingDetails") {
+                        newCustomAspect("process_processingDetails") {
                             attributes = [
                                 "process_processingDetails_comment":"my comment",
                                 "process_processingDetails_operatingStage":"process_processingDetails_operatingStage_operation"

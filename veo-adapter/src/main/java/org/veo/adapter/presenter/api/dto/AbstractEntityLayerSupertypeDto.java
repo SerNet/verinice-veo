@@ -89,7 +89,7 @@ public abstract class AbstractEntityLayerSupertypeDto extends AbstractVersionedD
     @Valid
     @Schema(description = "A custom property which is determined by the requested entity schema - see '/schemas'",
             title = "CustomAspect")
-    private Map<String, CustomPropertiesDto> customAspects = Collections.emptyMap();
+    private Map<String, CustomAspectDto> customAspects = Collections.emptyMap();
 
     @Valid
     @Schema(description = "The sub type this entity has in each domain. Domain ID is key, sub type is value.",

@@ -34,7 +34,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomLinkDto extends CustomPropertiesDto {
+public class CustomLinkDto extends CustomAspectDto {
 
     @NotNull(message = "A target must be present.")
     @ToString.Include

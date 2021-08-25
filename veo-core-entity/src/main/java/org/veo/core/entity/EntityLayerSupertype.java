@@ -85,22 +85,22 @@ public interface EntityLayerSupertype
     void setSubType(Domain domain, String subType);
 
     /**
-     * Add the given CustomProperties to the collection customAspects.
+     * Add the given {@link CustomAspect} to the collection customAspects.
      *
      * @return true if added
      */
-    boolean addToCustomAspects(CustomProperties aCustomProperties);
+    boolean addToCustomAspects(CustomAspect aCustomAspect);
 
     /**
-     * Remove the given CustomProperties from the collection customAspects.
+     * Remove the given {@link CustomAspect} from the collection customAspects.
      *
      * @return true if removed
      */
-    boolean removeFromCustomAspects(CustomProperties aCustomProperties);
+    boolean removeFromCustomAspects(CustomAspect aCustomAspect);
 
-    Set<CustomProperties> getCustomAspects();
+    Set<CustomAspect> getCustomAspects();
 
-    void setCustomAspects(Set<CustomProperties> aCustomAspects);
+    void setCustomAspects(Set<CustomAspect> aCustomAspects);
 
     /**
      * @throws ClientBoundaryViolationException

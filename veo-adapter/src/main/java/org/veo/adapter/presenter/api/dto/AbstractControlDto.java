@@ -64,7 +64,7 @@ public abstract class AbstractControlDto extends CompositeEntityDto<Control> {
 
     @Schema(description = "The customAspects for the control.")
     @Override
-    public Map<String, CustomPropertiesDto> getCustomAspects() {
+    public Map<String, CustomAspectDto> getCustomAspects() {
         return super.getCustomAspects();
     }
 

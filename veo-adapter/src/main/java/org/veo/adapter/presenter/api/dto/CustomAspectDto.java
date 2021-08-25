@@ -28,7 +28,7 @@ import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.core.entity.CustomProperties;
+import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -37,11 +37,11 @@ import lombok.Data;
 import lombok.ToString;
 
 /**
- * Transfer object for CustomProperties.
+ * Transfer object for {@link CustomAspect}s.
  */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomPropertiesDto {
+public class CustomAspectDto {
 
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z")
@@ -67,9 +67,9 @@ public class CustomPropertiesDto {
 
     private Set<IdRef<Domain>> domains = Collections.emptySet();
 
-    public static CustomPropertiesDto from(@Valid CustomProperties control,
+    public static CustomAspectDto from(@Valid CustomAspect control,
             EntityToDtoTransformer entityToDtoTransformer) {
-        return entityToDtoTransformer.transformCustomProperties2Dto(control);
+        return entityToDtoTransformer.transformCustomAspect2Dto(control);
     }
 
     @Schema(description = "The properties of the element described by the schema of the type attribute.",
