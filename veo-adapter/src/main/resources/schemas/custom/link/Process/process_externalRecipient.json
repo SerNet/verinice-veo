@@ -81,6 +81,11 @@
             "enum": [
               "person"
             ]
+          },
+          "subType": {
+            "enum": [
+              "PER_Person"
+            ]
           }
         },
         "type": "object"

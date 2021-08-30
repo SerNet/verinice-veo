@@ -4,12 +4,6 @@
     "attributes": {
       "additionalProperties": false,
       "properties": {
-        "process_privacyImpactAssessment_approved": {
-          "type": "boolean"
-        },
-        "process_privacyImpactAssessment_approvedComment": {
-          "type": "string"
-        },
         "process_privacyImpactAssessment_blacklistComment": {
           "type": "string"
         },

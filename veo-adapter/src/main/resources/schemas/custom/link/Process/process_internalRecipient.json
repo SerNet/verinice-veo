@@ -77,6 +77,11 @@
             "title": "The id of the target object.",
             "type": "string"
           },
+          "subType": {
+            "enum": [
+              "PER_Person"
+            ]
+          },
           "type": {
             "enum": [
               "person"

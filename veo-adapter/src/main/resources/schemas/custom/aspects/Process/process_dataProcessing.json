@@ -35,8 +35,7 @@
               "process_dataProcessing_legalBasis_P26Abs1BDSG",
               "process_dataProcessing_legalBasis_P26Abs2BDSG",
               "process_dataProcessing_legalBasis_P26Abs4Satz1BDSG",
-              "process_dataProcessing_legalBasis_P4BDSG",
-              "process_dataProcessing_legalBasis_others"
+              "process_dataProcessing_legalBasis_P4BDSG"
             ]
           },
           "type": "array"

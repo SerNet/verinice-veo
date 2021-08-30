@@ -26,8 +26,7 @@
               "process_dataSubjects_dataSubjects_patients",
               "process_dataSubjects_dataSubjects_pupils",
               "process_dataSubjects_dataSubjects_students",
-              "process_dataSubjects_dataSubjects_websiteVisitors",
-              "process_dataSubjects_dataSubjects_other"
+              "process_dataSubjects_dataSubjects_websiteVisitors"
             ]
           },
           "type": "array"
