@@ -66,7 +66,7 @@ class VeoRestTest extends spock.lang.Specification {
     String baseUrl
 
     @Value('${veo.resttest.oidcUrl}')
-    def oidcUrl = 'https://keycloak.staging.verinice.com'
+    def oidcUrl
 
     @Value('${veo.resttest.realm}')
     def realm = 'verinice-veo'
