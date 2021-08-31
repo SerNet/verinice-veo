@@ -1,79 +1,78 @@
 {
-  "type": "array",
   "items": {
-    "type": "object",
+    "additionalProperties": false,
     "properties": {
-      "id": {
-        "type": "string",
-        "title": "The UUID to identify the element",
-        "format": "regex",
-        "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      "attributes": {
+        "additionalProperties": false,
+        "properties": {
+          
+        },
+        "type": "object"
       },
       "domains": {
-        "type": "array",
-        "title": "The list of domains in which this element is present.",
         "description": "The ids of elements of the type domain.",
         "items": {
-          "type": "object",
           "properties": {
             "displayName": {
-              "type": "string",
-              "description": "A friendly human readable title of the referenced domain."
+              "description": "A friendly human readable title of the referenced domain.",
+              "type": "string"
             },
             "targetUri": {
-              "type": "string",
-              "description": "The resource URL of the referenced domain."
+              "description": "The resource URL of the referenced domain.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "targetUri"
+          ],
+          "type": "object"
+        },
+        "title": "The list of domains in which this element is present.",
+        "type": "array",
+        "uniqueItems": true
+      },
+      "id": {
+        "format": "regex",
+        "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+        "title": "The UUID to identify the element",
+        "type": "string"
+      },
+      "references": {
+        "items": {
+          "properties": {
+            "displayName": {
+              "description": "A friendly human readable title of the referenced object.",
+              "type": "string"
+            },
+            "targetUri": {
+              "description": "The resource URL of the referenced object.",
+              "type": "string"
             }
           },
           "required": [
             "targetUri"
           ]
         },
-        "uniqueItems": true
-      },
-      "references": {
-        "type": "array",
-        "items": {
-          "properties": {
-            "displayName": {
-              "type": "string",
-              "description": "A friendly human readable title of the referenced object."
-            },
-            "targetUri": {
-              "type": "string",
-              "description": "The resource URL of the referenced object."
-            }
-          },
-          "required": [
-            "targetUri"
-          ]
-        }
+        "type": "array"
       },
       "target": {
-        "type": "object",
         "properties": {
+          "subType": {
+            "enum": [
+              "SCP_ResponsibleBody"
+            ]
+          },
           "targetUri": {
-            "type": "string",
-            "title": "The id of the target object."
+            "title": "The id of the target object.",
+            "type": "string"
           },
           "type": {
             "enum": [
               "scope"
             ]
-          },
-          "subType": {
-            "enum": [
-              "SCP_ResponsibleBody"
-            ]
           }
-        }
-      },
-      "attributes": {
-        "additionalProperties": false,
-        "type": "object",
-        "properties": {
-          
-        }
+        },
+        "type": "object"
       },
       "type": {
         "description": "The name of the type described by this schema.",
@@ -82,9 +81,10 @@
         ]
       }
     },
-    "additionalProperties": false,
     "required": [
       "target"
-    ]
-  }
+    ],
+    "type": "object"
+  },
+  "type": "array"
 }

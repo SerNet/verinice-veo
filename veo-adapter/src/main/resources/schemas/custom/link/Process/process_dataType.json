@@ -42,13 +42,13 @@
               "process_dataType_deletionPeriodStart_consentWithdrawal"
             ]
           },
+          "process_dataType_descriptionDeletionProcedure": {
+            "type": "string"
+          },
           "process_dataType_otherDataOrigin": {
             "type": "string"
           },
           "process_dataType_otherDeletionPeriod": {
-            "type": "string"
-          },
-          "process_dataType_descriptionDeletionProcedure": {
             "type": "string"
           },
           "process_dataType_otherDeletionPeriodStart": {

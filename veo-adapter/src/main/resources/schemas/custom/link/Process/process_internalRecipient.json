@@ -73,14 +73,14 @@
       },
       "target": {
         "properties": {
-          "targetUri": {
-            "title": "The id of the target object.",
-            "type": "string"
-          },
           "subType": {
             "enum": [
               "PER_Person"
             ]
+          },
+          "targetUri": {
+            "title": "The id of the target object.",
+            "type": "string"
           },
           "type": {
             "enum": [
