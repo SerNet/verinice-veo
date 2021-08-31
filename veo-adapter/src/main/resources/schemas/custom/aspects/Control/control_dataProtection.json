@@ -13,7 +13,8 @@
               "control_dataProtection_objectives_availability",
               "control_dataProtection_objectives_resilience",
               "control_dataProtection_objectives_recoverability",
-              "control_dataProtection_objectives_effectiveness"
+              "control_dataProtection_objectives_effectiveness",
+              "control_dataProtection_objectives_encryption"
             ]
           },
           "type": "array"
