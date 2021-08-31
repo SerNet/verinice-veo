@@ -320,7 +320,7 @@
       "scope_contactInformation_fax": "Fax",
       "scope_contactInformation_email": "E-Mail",
       "scope_contactInformation_website": "Webseite",
-      "scope_thirdCountry_status": "Sitz des Verantwortlichen außerhalb der EU?",
+      "scope_thirdCountry_status": "Sitz der Verantwortlichen Stelle außerhalb der EU?",
       "scope_thirdCountry_name": "Name",
       "scope_thirdCountry_description": "Beschreibung",
       "scope_thirdCountry_address1": "Straße und Hausnummer oder Postfach",
