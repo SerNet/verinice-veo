@@ -70,6 +70,13 @@ class ClassPathSchemaSpec extends Specification {
         schema << entitySchemas
     }
 
+    def "designator is marked read-only in entity schema #schema.title"() {
+        expect:
+        schema.get("properties").get("designator").get("readOnly").booleanValue()
+        where:
+        schema << entitySchemas
+    }
+
     private JsonSchema getMetaSchema(String file) throws IOException {
         return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
                 .getSchema(getClass().getClassLoader().getResource("schemas/meta/"+file).openStream())
