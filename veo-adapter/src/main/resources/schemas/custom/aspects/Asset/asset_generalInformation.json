@@ -57,12 +57,6 @@
         ]
       },
       "type": "array"
-    },
-    "type": {
-      "description": "The name of the type described by this schema.",
-      "enum": [
-        "asset_generalInformation"
-      ]
     }
   },
   "type": "object"

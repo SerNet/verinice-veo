@@ -70,12 +70,6 @@
         ]
       },
       "type": "array"
-    },
-    "type": {
-      "description": "The name of the type described by this schema.",
-      "enum": [
-        "person_address"
-      ]
     }
   },
   "type": "object"
