@@ -37,8 +37,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class SchemaMerger {
     private ObjectMapper mapper = new ObjectMapper();
-    private Map<String, List<JsonNode>> customAspects;
-    private Map<String, List<JsonNode>> customlinks;
+    private Map<String, Map<String, JsonNode>> customAspects;
+    private Map<String, Map<String, JsonNode>> customlinks;
 
     public SchemaMerger(Path basePathCustom) throws IOException {
         Path customEntitesPath = basePathCustom.resolve("custom/aspects/");
@@ -49,11 +49,11 @@ public class SchemaMerger {
 
     public void extendSchema(JsonNode schema, String type) {
         var aspectExtensions = Optional.ofNullable(customAspects.get(type))
-                                       .orElseGet(Collections::emptyList);
+                                       .orElseGet(Collections::emptyMap);
         processCustomAspects(aspectExtensions, schema);
 
         var linkExtensions = Optional.ofNullable(customlinks.get(type))
-                                     .orElseGet(Collections::emptyList);
+                                     .orElseGet(Collections::emptyMap);
         processLinkSchemas(linkExtensions, schema);
     }
 
@@ -61,50 +61,25 @@ public class SchemaMerger {
      * Add all the given custom aspect schemas in the customAspects section of the
      * given entity schema.
      */
-    private void processCustomAspects(List<JsonNode> customAspectSchemas, JsonNode entitySchema) {
+    private void processCustomAspects(Map<String, JsonNode> customAspectSchemas,
+            JsonNode entitySchema) {
         List<JsonNode> aspectNodes = entitySchema.findValues("customAspects");
         assert (aspectNodes.size() == 1);
         ObjectNode propertiesNode = Objects.requireNonNull(addPropertiesNode((ObjectNode) aspectNodes.get(0)),
                                                            "Unable to find target node in "
                                                                    + aspectNodes);
-        for (JsonNode customSchema : customAspectSchemas) {
-            String type = extractAspectType(customSchema);
-            removeAspectType(customSchema);
-            propertiesNode.set(type, customSchema);
-        }
-    }
-
-    /**
-     * Remove the type attribute (which becomes redundant after it has been used as
-     * the fieldName for the customAspect).
-     */
-    private void removeAspectType(JsonNode customSchema) {
-        ((ObjectNode) customSchema.get("properties")).remove("type");
+        customAspectSchemas.forEach(propertiesNode::set);
     }
 
     /**
      * Add all the given link schemas in the link section of the given entity
      * schema.
      */
-    private void processLinkSchemas(List<JsonNode> linkSchemas, JsonNode entitySchema) {
+    private void processLinkSchemas(Map<String, JsonNode> linkSchemas, JsonNode entitySchema) {
         List<JsonNode> linkNodes = entitySchema.findValues("links");
         assert (linkNodes.size() == 1);
         ObjectNode jsonNode = addPropertiesNode((ObjectNode) linkNodes.get(0));
-
-        for (JsonNode customSchema : linkSchemas) {
-            String type = extractLinkType(customSchema);
-            removeLinkType(customSchema);
-            jsonNode.set(type, customSchema);
-        }
-    }
-
-    /**
-     * Remove the type attribute (which becomes redundant after it has been used as
-     * the fieldName for the customLink).
-     */
-    private void removeLinkType(JsonNode customSchema) {
-        ((ObjectNode) customSchema.get("items")
-                                  .get("properties")).remove("type");
+        linkSchemas.forEach(jsonNode::set);
     }
 
     /**
@@ -117,47 +92,30 @@ public class SchemaMerger {
     }
 
     /**
-     * Extract the type field from a customLink schema.
+     * Returns a map of entity type name to map of schema name to schema. The entity
+     * type name is made by the sub directory of the customEntitesPath and the
+     * schema name is made by the schema file name.
      */
-    private String extractLinkType(JsonNode customSchema) {
-        return customSchema.get("items")
-                           .get("properties")
-                           .get("type")
-                           .get("enum")
-                           .get(0)
-                           .asText();
-    }
-
-    /**
-     * Extract the type field from a customProperties schema.
-     */
-    private String extractAspectType(JsonNode customSchema) {
-        return customSchema.get("properties")
-                           .get("type")
-                           .get("enum")
-                           .get(0)
-                           .asText();
-    }
-
-    /**
-     * Returns the map of entityTypeName<->List<CustomSchemas>. The entityTypeName
-     * is made by the sub directory of the customEntitesPath.
-     */
-    private Map<String, List<JsonNode>> readSchemas(Path customEntitesPath) throws IOException {
+    private Map<String, Map<String, JsonNode>> readSchemas(Path customEntitesPath)
+            throws IOException {
         try (Stream<Path> dirs = Files.list(customEntitesPath)
                                       .filter(Files::isDirectory)) {
             return dirs.collect(Collectors.toMap((Path dir) -> dir.getFileName()
                                                                   .toString(),
                                                  dir -> {
                                                      try (Stream<Path> files = Files.list(dir)) {
-                                                         return files.map(schemaFile -> {
-                                                             try {
-                                                                 return mapper.readTree(schemaFile.toFile());
-                                                             } catch (IOException e) {
-                                                                 throw new RuntimeException(e);
-                                                             }
-                                                         })
-                                                                     .collect(Collectors.toList());
+                                                         return files.collect(Collectors.toMap(file -> file.getFileName()
+                                                                                                           .toString()
+                                                                                                           .replace(".json",
+                                                                                                                    ""),
+                                                                                               file -> {
+                                                                                                   try {
+                                                                                                       return mapper.readTree(file.toFile());
+                                                                                                   } catch (IOException e) {
+                                                                                                       throw new RuntimeException(
+                                                                                                               e);
+                                                                                                   }
+                                                                                               }));
                                                      } catch (IOException e) {
                                                          throw new RuntimeException(e);
                                                      }
