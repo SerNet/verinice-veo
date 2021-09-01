@@ -28,7 +28,7 @@ import org.veo.core.service.EntitySchemaService
 import io.swagger.v3.core.util.Json
 import spock.lang.Specification
 
-class ClassPathMetaSchemaConformitySpec extends Specification {
+class ClassPathSchemaSpec extends Specification {
     private static final String SCHEMA_FILES_PATH = "/schemas/entity/";
 
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl(SCHEMA_FILES_PATH)
