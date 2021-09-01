@@ -135,7 +135,7 @@ task checkTranslations {
                 // relevant data is nested in link schemas
                 data = data.items
                 // link IDs should be translated, custom aspect IDs should not
-                handleTranslationKey(data.properties.type.enum.first(), "$file.name (custom link id)")
+                handleTranslationKey(file.name.replace(".json", ""), "$file.name (custom link id)")
             }
 
             def properties = data.properties.attributes.properties
