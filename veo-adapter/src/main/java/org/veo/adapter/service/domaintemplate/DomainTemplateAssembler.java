@@ -131,6 +131,7 @@ public class DomainTemplateAssembler {
                                   .writeValue(new File(outFile), templateDto);
         } catch (IOException e) {
             log.error("Error writing domain", e);
+            System.exit(1);
         }
     }
 
