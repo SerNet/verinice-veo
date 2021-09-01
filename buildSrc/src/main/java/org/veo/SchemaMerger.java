@@ -93,12 +93,12 @@ public class SchemaMerger {
 
     /**
      * Returns a map of entity type name to map of schema name to schema. The entity
-     * type name is made by the sub directory of the customEntitesPath and the
+     * type name is made by the sub directory of the customEntitiesPath and the
      * schema name is made by the schema file name.
      */
-    private Map<String, Map<String, JsonNode>> readSchemas(Path customEntitesPath)
+    private Map<String, Map<String, JsonNode>> readSchemas(Path customEntitiesPath)
             throws IOException {
-        try (Stream<Path> dirs = Files.list(customEntitesPath)
+        try (Stream<Path> dirs = Files.list(customEntitiesPath)
                                       .filter(Files::isDirectory)) {
             return dirs.collect(Collectors.toMap((Path dir) -> dir.getFileName()
                                                                   .toString(),
