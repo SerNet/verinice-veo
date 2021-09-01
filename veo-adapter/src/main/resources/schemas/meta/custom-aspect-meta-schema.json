@@ -39,41 +39,6 @@
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
           }
         },
-        "type": {
-          "$id": "#/properties/properties/properties/type",
-          "type": "object",
-          "required": [
-            "enum"
-          ],
-          "properties": {
-            "description": {
-              "$id": "#description",
-              "type": "string",
-              "title": "The description schema",
-              "description": "An explanation about the purpose of this instance.",
-              "default": ""
-            },
-            "enum": {
-              "$id": "#/properties/properties/properties/type/properties/enum",
-              "type": "array",
-              "title": "The enum Type",
-              "description": "The type this schema describes.",
-              "additionalItems": false,
-              "items": {
-                "$id": "#/properties/properties/properties/type/properties/enum/items",
-                "anyOf": [
-                  {
-                    "$id": "#/properties/properties/properties/type/properties/enum/items/anyOf/0",
-                    "type": "string",
-                    "title": "the type enum",
-                    "default": "my-custom-aspect"
-                  }
-                ]
-              }
-            }
-          },
-          "additionalProperties": true
-        },
         "domains": {
           "$id": "#/properties/properties/properties/domains",
           "const": {

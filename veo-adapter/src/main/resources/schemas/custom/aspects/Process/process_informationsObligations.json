@@ -61,12 +61,6 @@
         ]
       },
       "type": "array"
-    },
-    "type": {
-      "description": "The name of the type described by this schema.",
-      "enum": [
-        "process_informationsObligations"
-      ]
     }
   },
   "type": "object"
