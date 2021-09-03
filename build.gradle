@@ -192,6 +192,13 @@ subprojects {
 
     // specific "continuous integration" settings needed by Jenkins
     if (continuousIntegrationBuild) {
+
+        // The recordIssues Jenkins plugin reads from the console output, so we need to write the warnings
+        // on every build. Otherwise Jenkins will assume the warnings have been fixed.
+        tasks.withType(JavaCompile) {
+            outputs.upToDateWhen { false }
+        }
+
         tasks.withType(Test) {
             // Don't let failing tests fail the build, let the junit step in the Jenkins pipeline decide what to do
             ignoreFailures = true
