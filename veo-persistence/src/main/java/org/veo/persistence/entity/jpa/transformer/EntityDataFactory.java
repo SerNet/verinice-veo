@@ -35,6 +35,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -44,6 +45,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.CatalogData;
@@ -62,6 +64,7 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.TailoringReferenceData;
 import org.veo.persistence.entity.jpa.UnitData;
+import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
 public class EntityDataFactory implements EntityFactory {
 
@@ -221,5 +224,16 @@ public class EntityDataFactory implements EntityFactory {
         catalogItem.getTailoringReferences()
                    .add(tailoringReference);
         return tailoringReference;
+    }
+
+    @Override
+    public UpdateReference createUpdateReference(CatalogItem catalogItem,
+            ItemUpdateType updateType) {
+        UpdateReferenceData updateReference = new UpdateReferenceData();
+        updateReference.setOwner(catalogItem);
+        updateReference.setUpdateType(updateType);
+        catalogItem.getUpdateReferences()
+                   .add(updateReference);
+        return updateReference;
     }
 }
