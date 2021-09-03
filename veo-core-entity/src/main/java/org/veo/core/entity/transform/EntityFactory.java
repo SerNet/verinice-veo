@@ -34,6 +34,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -42,6 +43,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.UpdateReference;
 
 /**
  * @author urszeidler
@@ -92,4 +94,5 @@ public interface EntityFactory {
     TailoringReference createTailoringReference(CatalogItem catalogItem,
             TailoringReferenceType referenceType);
 
+    UpdateReference createUpdateReference(CatalogItem catalogItem, ItemUpdateType updateType);
 }

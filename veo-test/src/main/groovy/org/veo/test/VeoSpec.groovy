@@ -36,6 +36,7 @@ import org.veo.core.entity.Element
 import org.veo.core.entity.ElementOwner
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
+import org.veo.core.entity.ItemUpdateType
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
@@ -44,6 +45,7 @@ import org.veo.core.entity.Scope
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
@@ -63,6 +65,7 @@ import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.TailoringReferenceData
 import org.veo.persistence.entity.jpa.UnitData
+import org.veo.persistence.entity.jpa.UpdateReferenceData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
 import groovy.transform.stc.ClosureParams
@@ -184,6 +187,14 @@ abstract class VeoSpec extends Specification {
     static TailoringReferenceData newTailoringReference(CatalogItem catalogItem, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
         return factory.createTailoringReference(catalogItem, type).tap {
+            VeoSpec.execute(it, init)
+            VeoSpec.version(it)
+        }
+    }
+
+    static UpdateReferenceData newUpdateReference(CatalogItem catalogItem, ItemUpdateType type, @DelegatesTo(value = UpdateReference.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.UpdateReference") Closure init = null) {
+        return factory.createUpdateReference(catalogItem, type).tap {
             VeoSpec.execute(it, init)
             VeoSpec.version(it)
         }
