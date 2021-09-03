@@ -44,6 +44,7 @@ task generateEntitySchemas(type: JavaExec) {
     def targetDirectory = file("$generatedSchemasDir/schemas")
     def schemaSnippetDir = file("src/main/resources/schemas")
     outputs.dir targetDirectory
+    outputs.cacheIf { true }
     inputs.files compileJava.outputs
     inputs.files schemaSnippetDir
     classpath compileJava.outputs.files
@@ -70,6 +71,7 @@ task assembleDomainTemplates(type: JavaExec) {
     def targetDirectory = file("$domainTemplatesDir/domaintemplates/")
     def templateSnippetDir = rootProject.file('domaintemplates/')
     outputs.dir targetDirectory
+    outputs.cacheIf { true }
     inputs.files compileJava.outputs
     inputs.files templateSnippetDir
     classpath compileJava.outputs.files
