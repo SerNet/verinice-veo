@@ -18,6 +18,7 @@
 package org.veo.core
 
 import javax.transaction.Transactional
+import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -255,5 +256,24 @@ class ClientRepositorySpec extends VeoSpringSpec {
         c.domains.first().owner == c
         c.domains.first().catalogs.size() == 1
         c.domains.first().catalogs.first().catalogItems.size() == 3
+    }
+
+    def "a client cannot be saved with an invalid catalog item"() {
+        given: "a client with a catalog containing an item"
+        Client client = newClient()
+        def domain = newDomain(client)
+        def catalog = newCatalog(domain)
+        def catalogItem = newCatalogItem(catalog) {
+            newControl(it)
+        }
+        catalogItem.element = null
+
+        when: "the client is saved"
+        repository.save(client)
+
+        then: "the validation cascades down to the invalid item"
+        ConstraintViolationException ex = thrown(ConstraintViolationException)
+        ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogs\[].catalogItems\[].element/
+        ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
     }
 }
