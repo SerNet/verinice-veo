@@ -67,19 +67,47 @@ bootRun {
     }
 }
 
+def continuousIntegrationBuild = rootProject.hasProperty('ci')
+
+// some of the data we include in the build and git info property files make the
+// UP-TO-DATE check fail because they change with every build.
+// we only need that data for builds that we are going to deploy, so
+// we exclude them for the other builds to make them faster
+def includeRealInfo = continuousIntegrationBuild && rootProject.getProperty('ciJobName').with {
+    it.endsWith('develop') || it.endsWith('master')
+}
+
 // create build-info.properties with build information
 springBoot {
     buildInfo {
         properties {
+            if (!includeRealInfo) {
+                time = null
+            }
             // add additional CI information when building in Jenkins
-            if (rootProject.hasProperty('ciBuildNumber')) {
-                additional = [
-                    'ci.buildnumber': rootProject.getProperty('ciBuildNumber'),
+            if (continuousIntegrationBuild) {
+                def additionalInfo = [
                     'ci.jobname': rootProject.getProperty('ciJobName')
                 ]
+                if (includeRealInfo) {
+                    additionalInfo.'ci.buildnumber' = rootProject.getProperty('ciBuildNumber')
+                }
+                additional = additionalInfo
             }
         }
     }
+}
+
+// since we're building in Docker containers which don't have a fixed hostname,
+// this information is not useful and leads to UP-TO-DATE checks failing
+gitProperties {
+    keys -= 'git.build.host'
+}
+
+// the git properties file contains changing information (like the git commit)
+// that causes  UP-TO-DATE checks to fail.
+tasks.withType(com.gorylenko.GenerateGitPropertiesTask).all {
+    enabled = includeRealInfo
 }
 
 test {
@@ -98,8 +126,6 @@ tasks.register('restTest', Test) {
         includeTestsMatching "org.veo.rest.test.*"
     }
 }
-
-def continuousIntegrationBuild = rootProject.hasProperty('ci')
 
 // specific "continuous integration" settings needed by Jenkins
 if (continuousIntegrationBuild) {
