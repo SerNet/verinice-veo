@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.Valid;
 
 import org.veo.core.entity.Scenario;
 
@@ -42,6 +43,7 @@ public class ScenarioData extends ElementData implements Scenario {
     @JoinTable(name = "scenario_parts",
                joinColumns = @JoinColumn(name = "composite_id"),
                inverseJoinColumns = @JoinColumn(name = "part_id"))
+    @Valid
     @Getter
     private final Set<Scenario> parts = new HashSet<>();
 

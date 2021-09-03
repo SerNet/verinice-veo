@@ -18,10 +18,13 @@
 package org.veo.core
 
 import javax.transaction.Transactional
+import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
+import org.veo.core.entity.Client
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -35,9 +38,17 @@ class ScopePersistenceSpec extends VeoSpringSpec {
     private ClientRepositoryImpl clientRepository
     @Autowired
     private UnitRepositoryImpl unitRepository
-
     @Autowired
     private ScopeRepositoryImpl scopeRepository
+
+    private Client client
+    private Unit unit
+
+    def setup() {
+        client = clientRepository.save(newClient())
+        unit = unitRepository.save(newUnit(this.client))
+    }
+
 
     def "save a scope"() {
         given: "a client and a unit"
@@ -67,5 +78,31 @@ class ScopePersistenceSpec extends VeoSpringSpec {
         scope.present
         scope.get().name == 'My scope'
         scope.get().members == [john, jane] as Set
+    }
+
+    def "cascading relations are validated"() {
+        when:
+        scopeRepository.save(newScope(unit) {
+            customAspects = [
+                newCustomAspect(null)
+            ]
+            links = [
+                newCustomLink(null, "goodLink")
+            ]
+            members = [
+                newScope(unit) {
+                    designator = "super bad designator"
+                }
+            ]
+            setSubType(null, "fun sub type")
+        })
+        then:
+        def ex = thrown(ConstraintViolationException)
+        ex.constraintViolations*.propertyPath*.toString().sort() == [
+            "customAspects[].type",
+            "links[].target",
+            "members[].designator",
+            "subTypeAspects[].domain"
+        ]
     }
 }

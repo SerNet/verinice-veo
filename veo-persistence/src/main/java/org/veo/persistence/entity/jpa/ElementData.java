@@ -35,6 +35,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -106,6 +107,7 @@ public abstract class ElementData extends IdentifiableVersionedData
                targetEntity = CustomLinkData.class,
                mappedBy = "source",
                fetch = FetchType.LAZY)
+    @Valid
     final private Set<CustomLink> links = new HashSet<>();
 
     @Column(name = "customaspects")
@@ -114,6 +116,7 @@ public abstract class ElementData extends IdentifiableVersionedData
                targetEntity = CustomAspectData.class,
                mappedBy = "owner",
                fetch = FetchType.LAZY)
+    @Valid
     final private Set<CustomAspect> customAspects = new HashSet<>();
 
     @Column(name = "sub_type_aspects")
@@ -122,6 +125,7 @@ public abstract class ElementData extends IdentifiableVersionedData
                targetEntity = SubTypeAspectData.class,
                mappedBy = "owner",
                fetch = FetchType.LAZY)
+    @Valid
     private Set<SubTypeAspect> subTypeAspects = new HashSet<>();
 
     @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)

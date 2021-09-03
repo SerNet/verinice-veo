@@ -26,6 +26,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.Valid;
 
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -46,6 +47,7 @@ public class ScopeData extends ElementData implements Scope {
     @JoinTable(name = "scope_members",
                joinColumns = @JoinColumn(name = "scope_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
+    @Valid
     @Getter
     private final Set<Element> members = new HashSet<>();
 

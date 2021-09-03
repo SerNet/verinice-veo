@@ -27,6 +27,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Catalog;
@@ -57,6 +58,7 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
                targetEntity = TailoringReferenceData.class,
                mappedBy = "owner",
                fetch = FetchType.LAZY)
+    @Valid
     private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
     @OneToOne(targetEntity = ElementData.class,
@@ -67,6 +69,7 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
     // Note: 'optional = false' would not be validated because the relation is
     // mapped from the targetEntity. We have to rely on javax.validation here:
     @NotNull
+    @Valid
     private Catalogable element;
 
     @Column(name = "updatereferences")
@@ -75,6 +78,7 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
                targetEntity = UpdateReferenceData.class,
                mappedBy = "owner",
                fetch = FetchType.LAZY)
+    @Valid
     private Set<UpdateReference> updateReferences = new HashSet<>();
 
     @ToString.Include

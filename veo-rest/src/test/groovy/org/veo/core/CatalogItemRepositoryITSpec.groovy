@@ -81,4 +81,28 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         ex.getConstraintViolations().first().propertyPath ==~ /element/
         ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
     }
+
+    def "cascading relations are validated"() {
+        given: "a client with a catalog containing an item"
+        def client = clientRepository.save(newClient{
+            newDomain(it)
+        })
+        def catalog = catalogDataRepository.save(newCatalog(client.domains.first()))
+        when:
+        catalogItemRepository.save(newCatalogItem(catalog, {
+            newControl(it) {
+                designator = "very bad designator"
+            }
+        },{
+            newUpdateReference(it, null)
+            newTailoringReference(it, null)
+        }))
+        then:
+        def ex = thrown(ConstraintViolationException)
+        ex.constraintViolations*.propertyPath*.toString().sort() == [
+            "element.designator",
+            "tailoringReferences[].referenceType",
+            "updateReferences[].updateType",
+        ]
+    }
 }
