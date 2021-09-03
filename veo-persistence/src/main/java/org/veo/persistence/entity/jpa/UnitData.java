@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
@@ -66,6 +67,7 @@ public class UnitData extends ElementOwnerData implements NameableData, Unit {
                fetch = FetchType.LAZY,
                targetEntity = UnitData.class,
                cascade = CascadeType.ALL)
+    @Valid
     private final Set<Unit> units = new HashSet<>();
 
     @ManyToOne(targetEntity = UnitData.class)

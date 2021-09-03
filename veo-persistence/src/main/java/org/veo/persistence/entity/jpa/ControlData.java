@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.Valid;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
@@ -48,6 +49,7 @@ public class ControlData extends ElementData implements Control {
     @JoinTable(name = "control_parts",
                joinColumns = @JoinColumn(name = "composite_id"),
                inverseJoinColumns = @JoinColumn(name = "part_id"))
+    @Valid
     @Getter
     private final Set<Control> parts = new HashSet<>();
 

@@ -28,6 +28,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Process;
@@ -50,6 +51,7 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     @JoinTable(name = "process_parts",
                joinColumns = @JoinColumn(name = "composite_id"),
                inverseJoinColumns = @JoinColumn(name = "part_id"))
+    @Valid
     @Getter
     private final Set<Process> parts = new HashSet<>();
 

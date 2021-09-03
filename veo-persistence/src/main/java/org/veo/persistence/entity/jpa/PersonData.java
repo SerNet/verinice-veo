@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.Valid;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Person;
@@ -49,5 +50,6 @@ public class PersonData extends ElementData implements Person {
                joinColumns = @JoinColumn(name = "composite_id"),
                inverseJoinColumns = @JoinColumn(name = "part_id"))
     @Getter
+    @Valid
     private final Set<Person> parts = new HashSet<>();
 }

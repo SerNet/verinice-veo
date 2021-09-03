@@ -18,10 +18,13 @@
 package org.veo.core
 
 import javax.transaction.Transactional
+import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
+import org.veo.core.entity.Client
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -35,17 +38,18 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
     private ClientRepositoryImpl clientRepository
     @Autowired
     private UnitRepositoryImpl unitRepository
-
     @Autowired
     private PersonRepositoryImpl personRepository
+    private Client client
+    private Unit unit
+
+    def setup() {
+        client = clientRepository.save(newClient())
+        unit = unitRepository.save(newUnit(this.client))
+    }
 
     def "save a composite person"() {
-        given: "a client and a unit"
-        def client = clientRepository.save(newClient())
-        def unit = unitRepository.save(newUnit(client))
-
         when:
-
         def john = newPerson(unit)
         def jane = newPerson(unit)
 
@@ -68,5 +72,31 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
         compositePerson.present
         compositePerson.get().name == 'My composite person'
         compositePerson.get().parts == [john, jane] as Set
+    }
+
+    def "cascading relations are validated"() {
+        when:
+        personRepository.save(newPerson(unit) {
+            customAspects = [
+                newCustomAspect(null)
+            ]
+            links = [
+                newCustomLink(null, "goodLink")
+            ]
+            parts = [
+                newPerson(unit) {
+                    designator = "super bad designator"
+                }
+            ]
+            setSubType(null, "fun sub type")
+        })
+        then:
+        def ex = thrown(ConstraintViolationException)
+        ex.constraintViolations*.propertyPath*.toString().sort() == [
+            "customAspects[].type",
+            "links[].target",
+            "parts[].designator",
+            "subTypeAspects[].domain"
+        ]
     }
 }
