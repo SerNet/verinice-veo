@@ -60,9 +60,7 @@ pipeline {
                 }
             }
             steps {
-                // The recordIssues Jenkins plugin reads from the console output, so we need to write the warnings
-                // on every build. Otherwise Jenkins will assume the warnings have been fixed.
-                sh './gradlew --no-daemon --rerun-tasks classes generateLicenseReport'
+                sh './gradlew --no-daemon classes generateLicenseReport'
             }
             post {
                 always {
