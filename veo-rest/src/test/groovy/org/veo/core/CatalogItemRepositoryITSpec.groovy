@@ -81,25 +81,4 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         ex.getConstraintViolations().first().propertyPath ==~ /element/
         ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
     }
-
-    def "a client cannot be saved with an invalid catalog item"() {
-        given: "a client with a catalog containing an item"
-        Client client = newClient()
-        def domain = newDomain(client)
-        def catalog = newCatalog(domain)
-        def catalogItem = newCatalogItem(catalog) {
-            newControl(it) {
-                name = 'Control 1'
-            }
-        }
-        catalogItem.element = null
-
-        when: "the client is saved"
-        clientRepository.save(client)
-
-        then: "the validation cascades down to the invalid item"
-        ConstraintViolationException ex = thrown(ConstraintViolationException)
-        ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogs\[].catalogItems\[].element/
-        ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
-    }
 }
