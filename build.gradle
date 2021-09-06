@@ -153,7 +153,7 @@ subprojects {
                 'jsonschema-module-jackson',
                 'jsonschema-module-javax-validation',
                 'jsonschema-module-swagger-2'
-            ].each { dependency "com.github.victools:$it:4.18.0" }
+            ].each { dependency "com.github.victools:$it:4.20.0" }
             dependency 'net.ttddyy:datasource-proxy:1.7'
             dependency 'com.networknt:json-schema-validator:1.0.58'
             dependency "org.testcontainers:testcontainers:$versions.testcontainers"
