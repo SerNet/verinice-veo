@@ -60,7 +60,7 @@ pipeline {
                 }
             }
             steps {
-                sh './gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME classes generateLicenseReport'
+                sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME classes generateLicenseReport'
             }
             post {
                 always {
@@ -85,7 +85,7 @@ pipeline {
                                 docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
                                     sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                           export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                          ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
+                                          ./gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
                                     jacoco classPattern: '**/build/classes/java/main'
                                     junit allowEmptyResults: true,
                                     testResults: '**/build/test-results/test/*.xml',
@@ -144,7 +144,7 @@ pipeline {
                                                    export VEO_RESTTEST_USERS_DEFAULT_PASS=$KEYCLOAK_DEFAULT_CREDS_PSW && \
                                                    export VEO_RESTTEST_USERS_ADMIN_NAME=$KEYCLOAK_ADMIN_CREDS_USR && \
                                                    export VEO_RESTTEST_USERS_ADMIN_PASS=$KEYCLOAK_ADMIN_CREDS_PSW && \
-                                                   ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128'''
+                                                   ./gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128'''
                                     junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
                                     publishHTML([
                                         allowMissing: false,
@@ -174,7 +174,7 @@ pipeline {
                 }
             }
             steps {
-                sh './gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
+                sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
                 archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar', fingerprint: true
             }
         }
@@ -199,7 +199,7 @@ pipeline {
                         }
                     }
                     // work around https://github.com/spotbugs/spotbugs-gradle-plugin/issues/391
-                    sh './gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME check -x test -x spotbugsTest'
+                    sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME check -x test -x spotbugsTest'
                 }
             }
             post {
