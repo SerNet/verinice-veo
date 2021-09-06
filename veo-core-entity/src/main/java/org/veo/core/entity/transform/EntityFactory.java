@@ -40,13 +40,14 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 
 /**
  * @author urszeidler
  */
 public interface EntityFactory {
-    CustomAspect createCustomAspect();
+    CustomAspect createCustomAspect(String type);
 
     Person createPerson(String name, ElementOwner unit);
 
@@ -72,7 +73,7 @@ public interface EntityFactory {
      */
     Domain createDomain(String name, String authority, String templateVersion, String revision);
 
-    CustomLink createCustomLink(Element linkTarget, Element linkSource);
+    CustomLink createCustomLink(Element linkTarget, Element linkSource, String type);
 
     Scope createScope(String name, ElementOwner owner);
 
@@ -88,6 +89,7 @@ public interface EntityFactory {
     CatalogItem createCatalogItem(Catalog catalog,
             Function<CatalogItem, Catalogable> catalogableFactory);
 
-    TailoringReference createTailoringReference(CatalogItem catalogItem);
+    TailoringReference createTailoringReference(CatalogItem catalogItem,
+            TailoringReferenceType referenceType);
 
 }

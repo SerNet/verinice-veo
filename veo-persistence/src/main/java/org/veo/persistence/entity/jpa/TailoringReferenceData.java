@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogReference;
 import org.veo.core.entity.TailoringReference;
@@ -34,5 +35,6 @@ public class TailoringReferenceData extends CatalogReferenceData
         implements TailoringReference, CatalogReference {
 
     @Column(name = "referencetype")
+    @NotNull
     private TailoringReferenceType referenceType;
 }

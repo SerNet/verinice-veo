@@ -46,13 +46,12 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given:
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomAspectData(
-                dbId: UUID.randomUUID().toString(),
-                attributes: [
-                    "k1": "uno",
-                    "k2": 2
-                ]
-                )
+                newCustomAspect("goodAspect") {
+                    attributes = [
+                        "k1": "uno",
+                        "k2": 2
+                    ]
+                }
             ]
         }
         when:
@@ -70,12 +69,11 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given: 'a saved asset with a string prop'
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomAspectData(
-                dbId: UUID.randomUUID().toString(),
-                attributes: [
-                    "k1": "uno"
-                ]
-                )
+                newCustomAspect("goodAspect") {
+                    attributes = [
+                        "k1": "uno"
+                    ]
+                }
             ]
         }
         assetRepository.save(asset)
@@ -95,13 +93,12 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         given: 'a saved asset with two props'
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomAspectData(
-                dbId: UUID.randomUUID().toString(),
-                attributes: [
-                    "k1": "uno",
-                    "k2": "due",
-                ]
-                )
+                newCustomAspect("goodAspect") {
+                    attributes = [
+                        "k1": "uno",
+                        "k2": "due",
+                    ]
+                }
             ]
         }
         assetRepository.save(asset)
@@ -119,10 +116,9 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         def longString = "X" * stringLength
         def asset = newAsset(unit) {
             customAspects = [
-                new CustomAspectData(
-                dbId: UUID.randomUUID().toString(),
-                attributes: ["p": longString]
-                )
+                newCustomAspect("goodAspect") {
+                    attributes = ["p": longString]
+                }
             ]
         }
         when:

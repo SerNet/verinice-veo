@@ -110,13 +110,11 @@ class CatalogSpec extends VeoMvcSpec {
                     name = 'c3'
                 }
             })
-            newTailoringReference(item3) {
+            newTailoringReference(item3, TailoringReferenceType.COPY) {
                 catalogItem = item2
-                referenceType = TailoringReferenceType.COPY
             }
-            newTailoringReference(item3) {
+            newTailoringReference(item3, TailoringReferenceType.COPY_ALWAYS) {
                 catalogItem = item1
-                referenceType = TailoringReferenceType.COPY_ALWAYS
             }
 
             item4 = newCatalogItem(catalog, {
@@ -126,22 +124,16 @@ class CatalogSpec extends VeoMvcSpec {
                 }
             })
 
-            newTailoringReference(item4) {
+            newTailoringReference(item4, TailoringReferenceType.LINK) {
                 catalogItem = item1
-                referenceType = TailoringReferenceType.LINK
             }
-            newTailoringReference(item4) {
+            newTailoringReference(item4, TailoringReferenceType.LINK) {
                 catalogItem = item2
-                referenceType = TailoringReferenceType.LINK
             }
 
             item4.element.links = [
-                newCustomLink(item1.element) {
-                    type = "link_to_item_1"
-                },
-                newCustomLink(item2.element) {
-                    type = "link_to_item_2"
-                }
+                newCustomLink(item1.element, "link_to_item_1"),
+                newCustomLink(item2.element, "link_to_item_2")
             ] as Set
 
 
@@ -173,16 +165,13 @@ class CatalogSpec extends VeoMvcSpec {
                         }
                     ]
                     links = [
-                        newCustomLink(item1.element) {
-                            type = "link_to_item_1"
-                        }
+                        newCustomLink(item1.element, "link_to_item_1")
                     ]
                 }
             })
 
-            newTailoringReference(item6) {
+            newTailoringReference(item6, TailoringReferenceType.LINK) {
                 catalogItem = item1
-                referenceType = TailoringReferenceType.LINK
             }
             domain1 = newDomain {
                 description = "ISO/IEC2"

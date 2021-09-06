@@ -79,13 +79,12 @@ class CustomLinkTransformerSpec extends Specification {
         }
 
         when: "transforming it to an entity"
-        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "good type", schema, idRefResolver)
+        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "goodType", schema, idRefResolver)
 
         then: "all properties are transformed"
         1 * idRefResolver.resolve(linkDto.target) >> targetAsset
-        1 * factory.createCustomLink(targetAsset, null) >> newLink
+        1 * factory.createCustomLink(targetAsset, null, "goodType") >> newLink
         entity == newLink
-        1 * newLink.setType("good type")
         1 * newLink.setAttributes(linkDto.attributes)
         1 * schema.validateCustomLink(newLink)
     }

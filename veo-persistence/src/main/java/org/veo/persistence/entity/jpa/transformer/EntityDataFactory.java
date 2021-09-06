@@ -42,6 +42,7 @@ import org.veo.core.entity.Process.Status;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
@@ -65,8 +66,10 @@ import org.veo.persistence.entity.jpa.UnitData;
 public class EntityDataFactory implements EntityFactory {
 
     @Override
-    public CustomAspect createCustomAspect() {
-        return new CustomAspectData();
+    public CustomAspect createCustomAspect(String type) {
+        var aspect = new CustomAspectData();
+        aspect.setType(type);
+        return aspect;
     }
 
     @Override
@@ -154,8 +157,9 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CustomLink createCustomLink(Element linkTarget, Element linkSource) {
+    public CustomLink createCustomLink(Element linkTarget, Element linkSource, String type) {
         CustomLink link = new CustomLinkData();
+        link.setType(type);
         link.setTarget(linkTarget);
         link.setSource(linkSource);
         return link;
@@ -209,9 +213,11 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public TailoringReference createTailoringReference(CatalogItem catalogItem) {
+    public TailoringReference createTailoringReference(CatalogItem catalogItem,
+            TailoringReferenceType referenceType) {
         TailoringReferenceData tailoringReference = new TailoringReferenceData();
         tailoringReference.setOwner(catalogItem);
+        tailoringReference.setReferenceType(referenceType);
         catalogItem.getTailoringReferences()
                    .add(tailoringReference);
         return tailoringReference;
