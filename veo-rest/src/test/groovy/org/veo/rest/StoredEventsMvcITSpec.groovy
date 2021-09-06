@@ -26,7 +26,6 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.DomainRepository
-import org.veo.core.repository.DomainTemplateRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -311,7 +310,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             newCatalog(it) {
                 def item1 = newCatalogItem(it, VeoSpec.&newAsset)
                 def item2 = newCatalogItem(it, VeoSpec.&newControl)
-                newTailoringReference(item2) {
+                newTailoringReference(item2, TailoringReferenceType.COPY) {
                     catalogItem = item1
                 }
             }

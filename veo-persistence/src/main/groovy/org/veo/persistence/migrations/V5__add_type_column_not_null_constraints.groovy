@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.persistence.migrations
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.CatalogReference;
-import org.veo.core.entity.ItemUpdateType;
-import org.veo.core.entity.UpdateReference;
+class V5__add_type_column_not_null_constraints extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        context.getConnection().createStatement().execute("""
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+    alter table custom_aspect alter column type set not null;
 
-@Entity(name = "updatereference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@Data
-public class UpdateReferenceData extends CatalogReferenceData
-        implements UpdateReference, CatalogReference {
+    alter table tailoringreference alter column referencetype set not null;
 
-    @Column(name = "updatetype")
-    @NotNull
-    private ItemUpdateType updateType;
+    alter table updatereference alter column updatetype set not null;
+
+""")
+    }
 }

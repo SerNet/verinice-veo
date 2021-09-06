@@ -470,12 +470,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def person = savePerson()
 
         process.setLinks([
-            newCustomLink(asset) {
-                type = "aLink"
-            },
-            newCustomLink(person) {
-                type = "anotherLink"
-            }
+            newCustomLink(asset, "aLink"),
+            newCustomLink(person, "anotherLink")
         ] as Set)
         processRepository.save(process)
     }
@@ -585,31 +581,21 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def process = newProcess(unit)
         process = processRepository.save(process)
 
-        def link_person_asset = newCustomLink(asset) {
-            type = "type1"
-        }
+        def link_person_asset = newCustomLink(asset, " type1")
         compositePerson.addToLinks(link_person_asset)
         compositePerson = personRepository.save(compositePerson)
 
-        def link_asset_person = newCustomLink(compositePerson) {
-            type = "type2"
-        }
-        def link_asset_process = newCustomLink(process) {
-            type = "type3"
-        }
+        def link_asset_person = newCustomLink(compositePerson, "type2")
+        def link_asset_process = newCustomLink(process, "type3")
         asset.addToLinks(link_asset_process)
         asset.addToLinks(link_asset_person)
         asset = assetRepository.save(asset)
 
-        def link_process_person = newCustomLink(compositePerson) {
-            type = "type4"
-        }
+        def link_process_person = newCustomLink(compositePerson, "type4")
         process.addToLinks(link_process_person)
         process = processRepository.save(process)
 
-        def link_asset_asset = newCustomLink(asset2) {
-            type = "type5"
-        }
+        def link_asset_asset = newCustomLink(asset2, "type5")
         asset.addToLinks(link_asset_asset)
         asset = assetRepository.save(asset)
     }

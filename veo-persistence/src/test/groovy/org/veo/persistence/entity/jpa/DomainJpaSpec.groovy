@@ -25,7 +25,6 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
-import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -217,9 +216,8 @@ class DomainJpaSpec extends AbstractJpaSpec {
                     name = 'c3'
                 }
             })
-            newTailoringReference(item3) {
+            newTailoringReference(item3, TailoringReferenceType.COPY) {
                 catalogItem = item2
-                referenceType = TailoringReferenceType.COPY
             }
         }
 
@@ -278,9 +276,8 @@ class DomainJpaSpec extends AbstractJpaSpec {
                 name = 'c3'
             }
         })
-        newTailoringReference(item3) {
+        newTailoringReference(item3, TailoringReferenceType.COPY) {
             catalogItem = item2
-            referenceType = TailoringReferenceType.COPY
         }
         CatalogItem item4 = newCatalogItem(catalog, { catalogItem->
             newAsset(catalogItem) {
@@ -298,13 +295,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
                 setSubType(domain0, "Test")
             }
         })
-        newTailoringReference(item5) {
+        newTailoringReference(item5, TailoringReferenceType.COPY) {
             catalogItem = item2
-            referenceType = TailoringReferenceType.COPY
         }
-        newTailoringReference(item5) {
+        newTailoringReference(item5, TailoringReferenceType.LINK) {
             catalogItem = item3
-            referenceType = TailoringReferenceType.LINK
         }
         catalog = catalogRepository.save(catalog)
 

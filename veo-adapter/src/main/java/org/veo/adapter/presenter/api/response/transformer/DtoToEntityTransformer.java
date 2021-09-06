@@ -214,13 +214,12 @@ public final class DtoToEntityTransformer {
 
     public TailoringReference transformDto2TailoringReference(AbstractTailoringReferenceDto source,
             CatalogItem owner, IdRefResolver idRefResolver) {
-        var target = factory.createTailoringReference(owner);
+        var target = factory.createTailoringReference(owner, source.getReferenceType());
         mapIdentifiableProperties(source, target);
         if (source.getCatalogItem() != null) {
             CatalogItem resolve = idRefResolver.resolve(source.getCatalogItem());
             target.setCatalogItem(resolve);
         }
-        target.setReferenceType(source.getReferenceType());
         return target;
     }
 
@@ -249,10 +248,9 @@ public final class DtoToEntityTransformer {
             linkTarget = idRefResolver.resolve(source.getTarget());
         }
 
-        var target = factory.createCustomLink(linkTarget, null);
+        var target = factory.createCustomLink(linkTarget, null, type);
 
         target.setAttributes(source.getAttributes());
-        target.setType(type);
         entitySchema.validateCustomLink(target);
         return target;
 
@@ -261,9 +259,8 @@ public final class DtoToEntityTransformer {
     // CustomPropertiesDto->CustomProperties
     public CustomAspect transformDto2CustomProperties(EntityFactory factory, CustomAspectDto source,
             String type, EntitySchema entitySchema) {
-        var target = factory.createCustomAspect();
+        var target = factory.createCustomAspect(type);
         target.setAttributes(source.getAttributes());
-        target.setType(type);
         entitySchema.validateCustomAspect(target);
         return target;
     }

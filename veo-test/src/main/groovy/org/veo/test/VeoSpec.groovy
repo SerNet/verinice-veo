@@ -42,6 +42,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.TailoringReference
+import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.transform.EntityFactory
@@ -180,9 +181,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static TailoringReferenceData newTailoringReference(CatalogItem catalogItem, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+    static TailoringReferenceData newTailoringReference(CatalogItem catalogItem, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
-        return factory.createTailoringReference(catalogItem).tap {
+        return factory.createTailoringReference(catalogItem, type).tap {
             VeoSpec.execute(it, init)
             VeoSpec.version(it)
         }
@@ -227,15 +228,14 @@ abstract class VeoSpec extends Specification {
 
     static CustomAspectData newCustomAspect(String type, @DelegatesTo(value = CustomAspect.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomAspect") Closure init = null) {
-        return factory.createCustomAspect().tap{
-            it.type = type
+        return factory.createCustomAspect(type).tap{
             VeoSpec.execute(it, init)
         }
     }
 
-    static CustomLinkData newCustomLink(Element linkTarget, @DelegatesTo(value = CustomLink.class)
+    static CustomLinkData newCustomLink(Element linkTarget, String type, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
-        return factory.createCustomLink(linkTarget, null).tap{
+        return factory.createCustomLink(linkTarget, null, type).tap{
             VeoSpec.execute(it, init)
         }
     }

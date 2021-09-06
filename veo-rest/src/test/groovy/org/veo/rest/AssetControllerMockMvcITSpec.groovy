@@ -265,9 +265,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(unit) {
                 domains = [domain1] as Set
                 links = [
-                    newCustomLink(targetAsset) {
-                        type = "mypreciouslink"
-                    }
+                    newCustomLink(targetAsset, "mypreciouslink")
                 ]
                 name = "Test asset-1"
             })
@@ -564,7 +562,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 domains = [domain1] as Set
             })
         }
-        CustomLink link = newCustomLink(targetAsset)
+        CustomLink link = newCustomLink(targetAsset, "goodLink")
         sourceAsset.links =[link] as Set
 
         when: "a delete request is sent to the server for link target"
