@@ -164,7 +164,7 @@ pipeline {
                 }
             }
             steps {
-                sh './gradlew --no-daemon -PciBuildNumer=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
+                sh './gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
                 archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar', fingerprint: true
             }
         }
