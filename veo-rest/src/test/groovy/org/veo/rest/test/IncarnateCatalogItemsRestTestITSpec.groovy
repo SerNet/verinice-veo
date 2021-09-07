@@ -53,7 +53,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
         log.info("===========> get incarnation description")
         incarnationDescription = getIncarnationDescriptions(unitId, itemc1)
-        incarnationDescription.parameters.first().references[0].put("referencedCatalogable", ["targetUri":createdElementC1])
+        incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
         log.info("===========> {}", incarnationDescription)
 
         log.info("===========> post incarnation description")
@@ -116,7 +116,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         log.info("===========> create element cc-1 by incarnation linked to c-1")
         def itemCC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR cc-1 Control-cc-1")
         incarnationDescription = getIncarnationDescriptions(unitId, itemCC1Id)
-        incarnationDescription.parameters.first().references[0].put("referencedCatalogable", ["targetUri":createdElementC1])
+        incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
         postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
         def controlCC1Id = extractLastId(postApply.first().targetUri)
         def controlCC1TargetUri = postApply.first().targetUri
@@ -127,7 +127,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         log.info("===========> create element {}", incarnationDescription)
 
         then: "the link reference is filled with the suggested cc-1"
-        incarnationDescription.parameters[0].references[0].referencedCatalogable.targetUri == controlCC1TargetUri
+        incarnationDescription.parameters[0].references[0].referencedElement.targetUri == controlCC1TargetUri
 
         when: "we post the given incarnationDescription"
         postApply = postIncarnationDescriptions(unitId, incarnationDescription)
@@ -165,7 +165,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def itemCC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR cc-1 Control-cc-1")
         incarnationDescription = getIncarnationDescriptions(unitId, itemCC1Id)
         10.times {
-            incarnationDescription.parameters.first().references[0].put("referencedCatalogable", ["targetUri":createdElement])
+            incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElement])
             postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
             createdElement = postApply.first().targetUri
         }

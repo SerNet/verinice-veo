@@ -41,14 +41,13 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
-import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformCatalogableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
@@ -84,8 +83,8 @@ public class DomainTemplateAssembler {
             ReferenceDeserializer deserializer) {
         this.assembler = assembler;
 
-        objectMapper = new ObjectMapper().addMixIn(CatalogableDto.class,
-                                                   TransformCatalogableDto.class)
+        objectMapper = new ObjectMapper().addMixIn(AbstractElementDto.class,
+                                                   TransformElementDto.class)
                                          .registerModule(new SimpleModule().addDeserializer(IdRef.class,
                                                                                             deserializer))
                                          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
@@ -175,7 +174,7 @@ public class DomainTemplateAssembler {
     }
 
     /**
-     * Create a catalog from a set of Catalogables which are supplied as a resources
+     * Create a catalog from a set of Elements which are supplied as a resources
      * array. The catalog is stored in the assembler and will be added to the domain
      * when {@link #createDomainTemplateDto()} is called.
      */
@@ -184,12 +183,12 @@ public class DomainTemplateAssembler {
             throws JsonParseException, JsonMappingException, IOException {
         String catalogId = Key.newUuid()
                               .uuidValue();
-        Map<String, CatalogableDto> readElements = readElements(resources);
+        Map<String, AbstractElementDto> readElements = readElements(resources);
         Map<String, TransformCatalogItemDto> catalogItems = createCatalogItems(readElements,
                                                                                catalogId,
                                                                                toNamespace);
 
-        for (Entry<String, CatalogableDto> e : readElements.entrySet()) {
+        for (Entry<String, AbstractElementDto> e : readElements.entrySet()) {
             createTailoringReferences(e.getValue(), catalogItems);
         }
         TransformCatalogDto catalogDto = new TransformCatalogDto();
@@ -202,14 +201,14 @@ public class DomainTemplateAssembler {
     }
 
     private Map<String, TransformCatalogItemDto> createCatalogItems(
-            Map<String, CatalogableDto> readElements, String catalogId,
+            Map<String, AbstractElementDto> readElements, String catalogId,
             Function<AbstractElementDto, String> toNamespace) {
         Map<String, TransformCatalogItemDto> cache = new HashMap<>();
-        for (Entry<String, CatalogableDto> e : readElements.entrySet()) {
+        for (Entry<String, AbstractElementDto> e : readElements.entrySet()) {
             TransformCatalogItemDto itemDto = new TransformCatalogItemDto();
             itemDto.setElement(e.getValue());
             itemDto.setCatalog(SyntheticIdRef.from(catalogId, Catalog.class));
-            AbstractElementDto elementDto = (AbstractElementDto) e.getValue();
+            AbstractElementDto elementDto = e.getValue();
             itemDto.setNamespace(toNamespace.apply(elementDto));
             itemDto.setId(Key.newUuid()
                              .uuidValue());
@@ -221,59 +220,57 @@ public class DomainTemplateAssembler {
         return cache;
     }
 
-    private void createTailoringReferences(CatalogableDto value,
+    private void createTailoringReferences(AbstractElementDto value,
             Map<String, TransformCatalogItemDto> catalogItems) {
-        if (value instanceof AbstractElementDto) {
-            AbstractElementDto els = (AbstractElementDto) value;
-            TransformCatalogItemDto currentItem = catalogItems.get(((IdentifiableDto) value).getId());
-            currentItem.setTailoringReferences(new HashSet<AbstractTailoringReferenceDto>());
-            els.getLinks()
-               .entrySet()
-               .stream()
-               .flatMap(e -> e.getValue()
-                              .stream())
-               .forEach(l -> {
-                   TransformCatalogItemDto itemDto = catalogItems.get(l.getTarget()
-                                                                       .getId());
-                   CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
-                   referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
-                           CatalogItem.class, assembler));
-                   referenceDto.setReferenceType(TailoringReferenceType.LINK);
-                   currentItem.getTailoringReferences()
-                              .add(referenceDto);
-               });
-            CompositeEntityDto<?> e = (CompositeEntityDto<?>) els;
-            e.getParts()
-             .forEach(p -> {
-                 TransformCatalogItemDto itemDto = catalogItems.get(p.getId());
+        TransformCatalogItemDto currentItem = catalogItems.get(((IdentifiableDto) value).getId());
+        currentItem.setTailoringReferences(new HashSet<AbstractTailoringReferenceDto>());
+        value.getLinks()
+             .entrySet()
+             .stream()
+             .flatMap(e -> e.getValue()
+                            .stream())
+             .forEach(l -> {
+                 TransformCatalogItemDto itemDto = catalogItems.get(l.getTarget()
+                                                                     .getId());
                  CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
                  referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
                          CatalogItem.class, assembler));
+                 referenceDto.setReferenceType(TailoringReferenceType.LINK);
                  currentItem.getTailoringReferences()
                             .add(referenceDto);
-                 referenceDto.setReferenceType(TailoringReferenceType.COPY);
              });
-        }
+        CompositeEntityDto<?> e = (CompositeEntityDto<?>) value;
+        e.getParts()
+         .forEach(p -> {
+             TransformCatalogItemDto itemDto = catalogItems.get(p.getId());
+             CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
+             referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
+                     CatalogItem.class, assembler));
+             currentItem.getTailoringReferences()
+                        .add(referenceDto);
+             referenceDto.setReferenceType(TailoringReferenceType.COPY);
+         });
     }
 
-    private Map<String, CatalogableDto> readElements(File[] resources)
+    private Map<String, AbstractElementDto> readElements(File[] resources)
             throws JsonParseException, JsonMappingException, IOException {
-        Map<String, CatalogableDto> cache = new HashMap<>();
+        Map<String, AbstractElementDto> cache = new HashMap<>();
         for (File resource : resources) {
-            CatalogableDto catalogableDto = readInstanceFile(resource);
-            if (catalogableDto instanceof IdentifiableDto) {
-                IdentifiableDto idto = (IdentifiableDto) catalogableDto;
-                cache.put(idto.getId(), catalogableDto);
+            AbstractElementDto elementDto = readInstanceFile(resource);
+            if (elementDto instanceof IdentifiableDto) {
+                IdentifiableDto idto = (IdentifiableDto) elementDto;
+                cache.put(idto.getId(), elementDto);
             }
         }
         return cache;
     }
 
-    private CatalogableDto readInstanceFile(File resource)
+    private AbstractElementDto readInstanceFile(File resource)
             throws JsonParseException, JsonMappingException, IOException {
         try (BufferedReader br = Files.newBufferedReader(resource.toPath(),
                                                          StandardCharsets.UTF_8)) {
-            CatalogableDto domainTemplateDto = objectMapper.readValue(br, CatalogableDto.class);
+            AbstractElementDto domainTemplateDto = objectMapper.readValue(br,
+                                                                          AbstractElementDto.class);
             return domainTemplateDto;
         }
     }

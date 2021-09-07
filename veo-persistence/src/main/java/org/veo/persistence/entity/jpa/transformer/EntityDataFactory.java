@@ -24,7 +24,6 @@ import java.util.function.Function;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
@@ -215,12 +214,12 @@ public class EntityDataFactory implements EntityFactory {
 
     @Override
     public CatalogItem createCatalogItem(Catalog catalog,
-            Function<CatalogItem, Catalogable> catalogableFactory) {
+            Function<CatalogItem, Element> elementFactory) {
         CatalogItem catalogItem = new CatalogItemData();
         catalogItem.setCatalog(catalog);
-        Catalogable catalogable = catalogableFactory.apply(catalogItem);
-        catalogable.setContainingCatalogItem(catalogItem);
-        catalogItem.setElement(catalogable);
+        Element element = elementFactory.apply(catalogItem);
+        element.setContainingCatalogItem(catalogItem);
+        catalogItem.setElement(element);
         catalog.getCatalogItems()
                .add(catalogItem);
         return catalogItem;

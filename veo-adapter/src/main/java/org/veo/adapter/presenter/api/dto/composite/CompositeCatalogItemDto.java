@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
-import org.veo.adapter.presenter.api.dto.CatalogableDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
@@ -53,6 +53,6 @@ public class CompositeCatalogItemDto extends AbstractCatalogItemDto {
             @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
             @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
             @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM) })
-    private CatalogableDto element;
+    private AbstractElementDto element;
 
 }

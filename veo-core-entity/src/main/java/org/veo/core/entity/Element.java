@@ -32,7 +32,7 @@ import org.veo.core.entity.specification.EntitySpecifications;
  * sub type.
  */
 public interface Element
-        extends Nameable, Identifiable, ClientOwned, Catalogable, Designated, Versioned {
+        extends Nameable, Identifiable, ClientOwned, Designated, Versioned, Displayable {
 
     /**
      * Can be null when the owner is a catalogitem owned by a domain template.
@@ -107,9 +107,9 @@ public interface Element
      *             if the passed client is not equal to the client in the unit to
      *             which the entity belongs
      */
-    default void checkSameClient(Catalogable catalogable) {
-        checkSameClient(catalogable.getOwnerOrContainingCatalogItem()
-                                   .getClient());
+    default void checkSameClient(Element element) {
+        checkSameClient(element.getOwnerOrContainingCatalogItem()
+                               .getClient());
     }
 
     /**
@@ -133,4 +133,36 @@ public interface Element
     }
 
     Set<SubTypeAspect> getSubTypeAspects();
+
+    /**
+     * Stores the references of the applied catalog items.
+     */
+    // TODO VEO-889: Should this be unique in one domain/template? Should an object
+    // exist in two different version of the same domainTemplate?
+    Set<CatalogItem> getAppliedCatalogItems();
+
+    void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
+
+    Unit getOwner();
+
+    void setOwner(Unit unit);
+
+    default ElementOwner getOwnerOrContainingCatalogItem() {
+        return Optional.<ElementOwner> ofNullable(getOwner())
+                       .orElse(getContainingCatalogItem());
+    }
+
+    default void setOwnerOrContainingCatalogItem(ElementOwner owner) {
+        if (owner instanceof Unit) {
+            this.setOwner((Unit) owner);
+            this.setContainingCatalogItem(null);
+        } else {
+            this.setOwner(null);
+            this.setContainingCatalogItem((CatalogItem) owner);
+        }
+    }
+
+    CatalogItem getContainingCatalogItem();
+
+    void setContainingCatalogItem(CatalogItem containigCatalogItem);
 }

@@ -20,8 +20,8 @@ package org.veo.core.entity;
 /**
  * This reference type is used to describe the {@link CustomLink} of an existing
  * {@link EntityLayerSupertype} which will be added to it when this
- * {@link CatalogItem} is applied and points to the created {@link Catalogable}.
- * It defines the opposite site of a link.
+ * {@link CatalogItem} is applied and points to the created {@link Element}. It
+ * defines the opposite site of a link.
  */
 public interface ExternalTailoringReference extends TailoringReference {
 

@@ -43,7 +43,6 @@ import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
-import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -60,7 +59,6 @@ import org.veo.adapter.service.domaintemplate.dto.TransformExternalTailoringRefe
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
@@ -284,25 +282,25 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public Catalogable transformDto2Catalogable(CatalogableDto catalogableDto,
+    public Element transformDto2Element(AbstractElementDto elementDto,
             IdRefResolver idRefResolver) {
-        if (catalogableDto instanceof AbstractAssetDto) {
-            return transformDto2Asset((AbstractAssetDto) catalogableDto, idRefResolver);
-        } else if (catalogableDto instanceof AbstractControlDto) {
-            return transformDto2Control((AbstractControlDto) catalogableDto, idRefResolver);
-        } else if (catalogableDto instanceof AbstractDocumentDto) {
-            return transformDto2Document((AbstractDocumentDto) catalogableDto, idRefResolver);
-        } else if (catalogableDto instanceof AbstractIncidentDto) {
-            return transformDto2Incident((AbstractIncidentDto) catalogableDto, idRefResolver);
-        } else if (catalogableDto instanceof AbstractPersonDto) {
-            return transformDto2Person((AbstractPersonDto) catalogableDto, idRefResolver);
-        } else if (catalogableDto instanceof AbstractProcessDto) {
-            return transformDto2Process((AbstractProcessDto) catalogableDto, idRefResolver);
-        } else if (catalogableDto instanceof AbstractScenarioDto) {
-            return transformDto2Scenario((AbstractScenarioDto) catalogableDto, idRefResolver);
+        if (elementDto instanceof AbstractAssetDto) {
+            return transformDto2Asset((AbstractAssetDto) elementDto, idRefResolver);
+        } else if (elementDto instanceof AbstractControlDto) {
+            return transformDto2Control((AbstractControlDto) elementDto, idRefResolver);
+        } else if (elementDto instanceof AbstractDocumentDto) {
+            return transformDto2Document((AbstractDocumentDto) elementDto, idRefResolver);
+        } else if (elementDto instanceof AbstractIncidentDto) {
+            return transformDto2Incident((AbstractIncidentDto) elementDto, idRefResolver);
+        } else if (elementDto instanceof AbstractPersonDto) {
+            return transformDto2Person((AbstractPersonDto) elementDto, idRefResolver);
+        } else if (elementDto instanceof AbstractProcessDto) {
+            return transformDto2Process((AbstractProcessDto) elementDto, idRefResolver);
+        } else if (elementDto instanceof AbstractScenarioDto) {
+            return transformDto2Scenario((AbstractScenarioDto) elementDto, idRefResolver);
         }
-        throw new IllegalArgumentException("unkown type: " + catalogableDto.getClass()
-                                                                           .getName());
+        throw new IllegalArgumentException("unkown type: " + elementDto.getClass()
+                                                                       .getName());
     }
 
     private void mapDomainTemplate(AbstractDomainTemplateDto source, IdRefResolver idRefResolver,
@@ -397,24 +395,21 @@ public final class DtoToEntityTransformer {
         var target = factory.createCatalogItem(catalog, catalogItem -> {
             if (source instanceof CompositeCatalogItemDto) {
                 CompositeCatalogItemDto catalogitem = (CompositeCatalogItemDto) source;
-                CatalogableDto catalogableDto = catalogitem.getElement();
-                if (catalogableDto instanceof AbstractAssetDto) {
-                    return transformDto2Asset((AbstractAssetDto) catalogableDto, idRefResolver);
-                } else if (catalogableDto instanceof AbstractControlDto) {
-                    return transformDto2Control((AbstractControlDto) catalogableDto, idRefResolver);
-                } else if (catalogableDto instanceof AbstractDocumentDto) {
-                    return transformDto2Document((AbstractDocumentDto) catalogableDto,
-                                                 idRefResolver);
-                } else if (catalogableDto instanceof AbstractIncidentDto) {
-                    return transformDto2Incident((AbstractIncidentDto) catalogableDto,
-                                                 idRefResolver);
-                } else if (catalogableDto instanceof AbstractPersonDto) {
-                    return transformDto2Person((AbstractPersonDto) catalogableDto, idRefResolver);
-                } else if (catalogableDto instanceof AbstractProcessDto) {
-                    return transformDto2Process((AbstractProcessDto) catalogableDto, idRefResolver);
-                } else if (catalogableDto instanceof AbstractScenarioDto) {
-                    return transformDto2Scenario((AbstractScenarioDto) catalogableDto,
-                                                 idRefResolver);
+                AbstractElementDto elementDto = catalogitem.getElement();
+                if (elementDto instanceof AbstractAssetDto) {
+                    return transformDto2Asset((AbstractAssetDto) elementDto, idRefResolver);
+                } else if (elementDto instanceof AbstractControlDto) {
+                    return transformDto2Control((AbstractControlDto) elementDto, idRefResolver);
+                } else if (elementDto instanceof AbstractDocumentDto) {
+                    return transformDto2Document((AbstractDocumentDto) elementDto, idRefResolver);
+                } else if (elementDto instanceof AbstractIncidentDto) {
+                    return transformDto2Incident((AbstractIncidentDto) elementDto, idRefResolver);
+                } else if (elementDto instanceof AbstractPersonDto) {
+                    return transformDto2Person((AbstractPersonDto) elementDto, idRefResolver);
+                } else if (elementDto instanceof AbstractProcessDto) {
+                    return transformDto2Process((AbstractProcessDto) elementDto, idRefResolver);
+                } else if (elementDto instanceof AbstractScenarioDto) {
+                    return transformDto2Scenario((AbstractScenarioDto) elementDto, idRefResolver);
                 }
             } else if (source instanceof ReferenceCatalogItemDto) {
                 ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;

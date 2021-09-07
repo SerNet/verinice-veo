@@ -179,7 +179,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
                     // change apply info:
                     if (sourceElementUri != null) {
-                        applyInfo.parameters.first().references.first().put("referencedCatalogable", [
+                        applyInfo.parameters.first().references.first().put("referencedElement", [
                             "targetUri": "$sourceElementUri"
                         ])
                     }
@@ -189,7 +189,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                     // skip items that have references pointing towards other elements when
                     // those elements have not been created yet (see the fix-me regarding VEO-726):
                     if (applyInfo.parameters.first().references.size() == 0 // no reference present
-                            || applyInfo.parameters.first().references[0].referencedCatalogable != null // reference to an element previously created from catalog
+                            || applyInfo.parameters.first().references[0].referencedElement != null // reference to an element previously created from catalog
                             ) {
                         log.info("Will be applied: {}", it.displayName)
 

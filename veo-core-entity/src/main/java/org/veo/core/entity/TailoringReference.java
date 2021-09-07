@@ -22,7 +22,7 @@ package org.veo.core.entity;
  * connected and need to be applied also. Like a set of controls connected to a
  * scenario. The following constrains applies to the tailoring refs: 1. The
  * reference catalogItem always point to a catalogitem in the same catalog. 2.1.
- * All references defined by the catalogable, need to refers a Catalogable of a
+ * All references defined by the element need to refer to an element of a
  * catalogitem in the same catalog. 2.2. For each such reference a coresponding
  * tailref of type LINK must exist, pointing to the catalogItem which holds the
  * refered element.

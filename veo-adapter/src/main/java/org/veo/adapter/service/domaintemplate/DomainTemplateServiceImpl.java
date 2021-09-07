@@ -40,8 +40,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
-import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -52,7 +52,6 @@ import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.VeoInputStreamResource;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -236,7 +235,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                      domainTemplateDto.getId(), DomainTemplate.class, assembler));
                          });
 
-        Map<String, Catalogable> elementCache = createElementCache(domainTemplateDto, ref);
+        Map<String, Element> elementCache = createElementCache(domainTemplateDto, ref);
         Map<String, CatalogItem> itemCache = createCatalogItemCache(domainTemplateDto, ref,
                                                                     elementCache);
         Domain domain = entityTransformer.transformDomainTemplateDto2Domain(domainTemplateDto, ref);
@@ -264,7 +263,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     private Map<String, CatalogItem> createCatalogItemCache(
             TransformDomainTemplateDto domainTemplateDto, PlaceholderResolver ref,
-            Map<String, Catalogable> elementCache) {
+            Map<String, Element> elementCache) {
         domainTemplateDto.getCatalogs()
                          .stream()
                          .map(c -> (TransformCatalogDto) c)
@@ -295,37 +294,36 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     /**
      * Fills the ref.cache and dtoCache with the elements and fix links.
      */
-    private Map<String, Catalogable> createElementCache(
-            TransformDomainTemplateDto domainTemplateDto, PlaceholderResolver ref) {
-        Map<String, IdentifiableDto> catalogableDtos = domainTemplateDto.getCatalogs()
-                                                                        .stream()
-                                                                        .map(TransformCatalogDto.class::cast)
-                                                                        .flatMap(c -> c.getCatalogItems()
-                                                                                       .stream())
-                                                                        .map(TransformCatalogItemDto.class::cast)
-                                                                        .map(ci -> {
-                                                                            ci.getElement()
-                                                                              .setOwner(null);
-                                                                            return ci.getElement();
-                                                                        })
-                                                                        .collect(Collectors.toMap(i -> ((IdentifiableDto) i).getId(),
-                                                                                                  i -> (IdentifiableDto) i));
+    private Map<String, Element> createElementCache(TransformDomainTemplateDto domainTemplateDto,
+            PlaceholderResolver ref) {
+        Map<String, IdentifiableDto> elementDtos = domainTemplateDto.getCatalogs()
+                                                                    .stream()
+                                                                    .map(TransformCatalogDto.class::cast)
+                                                                    .flatMap(c -> c.getCatalogItems()
+                                                                                   .stream())
+                                                                    .map(TransformCatalogItemDto.class::cast)
+                                                                    .map(ci -> {
+                                                                        ci.getElement()
+                                                                          .setOwner(null);
+                                                                        return ci.getElement();
+                                                                    })
+                                                                    .collect(Collectors.toMap(i -> ((IdentifiableDto) i).getId(),
+                                                                                              i -> (IdentifiableDto) i));
 
-        ref.dtoCache = catalogableDtos;
+        ref.dtoCache = elementDtos;
 
-        catalogableDtos.values()
-                       .stream()
-                       .map(e -> entityTransformer.transformDto2Catalogable(((CatalogableDto) e),
-                                                                            ref))
-                       .forEach(c -> ref.cache.put(c.getId()
-                                                    .uuidValue(),
-                                                   c));
+        elementDtos.values()
+                   .stream()
+                   .map(e -> entityTransformer.transformDto2Element(((AbstractElementDto) e), ref))
+                   .forEach(c -> ref.cache.put(c.getId()
+                                                .uuidValue(),
+                                               c));
 
-        Map<String, Catalogable> elementCache = ref.cache.entrySet()
-                                                         .stream()
-                                                         .filter(e -> (e.getValue() instanceof Catalogable))
-                                                         .collect(Collectors.toMap(e -> e.getKey(),
-                                                                                   e -> (Catalogable) e.getValue()));
+        Map<String, Element> elementCache = ref.cache.entrySet()
+                                                     .stream()
+                                                     .filter(e -> (e.getValue() instanceof Element))
+                                                     .collect(Collectors.toMap(e -> e.getKey(),
+                                                                               e -> (Element) e.getValue()));
 
         ref.cache.entrySet()
                  .stream()
@@ -336,10 +334,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                        .forEach(link -> {
                            if (link.getTarget()
                                    .getId() != null) {
-                               Catalogable catalogable = elementCache.get(link.getTarget()
-                                                                              .getId()
-                                                                              .uuidValue());
-                               link.setTarget((Element) catalogable);
+                               Element element = elementCache.get(link.getTarget()
+                                                                      .getId()
+                                                                      .uuidValue());
+                               link.setTarget(element);
                            }
 
                        });
@@ -365,7 +363,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     }
 
     private CatalogItem transformCatalogItem(TransformCatalogItemDto source,
-            Map<String, Catalogable> elementCache, PlaceholderResolver idRefResolver) {
+            Map<String, Element> elementCache, PlaceholderResolver idRefResolver) {
         Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>(
                 source.getTailoringReferences());
         source.getTailoringReferences()
@@ -375,8 +373,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         source.getTailoringReferences()
               .addAll(tailoringReferences);
         String id = ((IdentifiableDto) source.getElement()).getId();
-        Catalogable aCatalogable = elementCache.get(id);
-        target.setElement(aCatalogable);
+        Element aElement = elementCache.get(id);
+        target.setElement(aElement);
         if (target.getElement() != null) {
             target.getElement()
                   .setContainingCatalogItem(target);

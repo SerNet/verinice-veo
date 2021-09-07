@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
@@ -122,7 +121,7 @@ public class GetIncarnationDescriptionUseCase implements
         TailoringReferenceParameter tailoringReferenceParameter = new TailoringReferenceParameter(
                 ref.getReferenceType(), name);
         findReferencedAppliedItem(unit,
-                                  ref.getCatalogItem()).ifPresent(tailoringReferenceParameter::setReferencedCatalogable);
+                                  ref.getCatalogItem()).ifPresent(tailoringReferenceParameter::setReferencedElement);
 
         return tailoringReferenceParameter;
     }
@@ -142,9 +141,9 @@ public class GetIncarnationDescriptionUseCase implements
      */
     private Optional<CustomLink> getLinkForReference(TailoringReference ref) {
         CatalogItem catalogItem = ref.getOwner();
-        Catalogable element = catalogItem.getElement();
-        Catalogable linkTarget = ref.getCatalogItem()
-                                    .getElement();
+        Element element = catalogItem.getElement();
+        Element linkTarget = ref.getCatalogItem()
+                                .getElement();
         switch (ref.getReferenceType()) {
         case LINK_EXTERNAL:
             if (ref instanceof ExternalTailoringReference) {
@@ -153,20 +152,17 @@ public class GetIncarnationDescriptionUseCase implements
             } else
                 throw new IllegalArgumentException();
         case LINK:
-            if (element instanceof Element) {
-                Element el = (Element) element;
-                return el.getLinks()
-                         .stream()
-                         .filter(l -> l.getTarget()
-                                       .equals(linkTarget))
-                         .findFirst();
-            }
+            return element.getLinks()
+                          .stream()
+                          .filter(l -> l.getTarget()
+                                        .equals(linkTarget))
+                          .findFirst();
         default:
             return Optional.empty();
         }
     }
 
-    private Optional<Catalogable> findReferencedAppliedItem(Unit unit, CatalogItem catalogItem) {
+    private Optional<Element> findReferencedAppliedItem(Unit unit, CatalogItem catalogItem) {
         List<Element> list = findReferencedAppliedItems(unit, catalogItem);
         return list.size() == 0 ? Optional.empty() : Optional.of(list.get(0));
     }

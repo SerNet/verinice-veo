@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.parameter;
 
-import org.veo.core.entity.Catalogable;
+import org.veo.core.entity.Element;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,8 +26,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 /**
- * Represents a concrete reference on a concrete {@link Catalogable}.
+ * Represents a concrete reference on a concrete {@link Element}.
  */
 public abstract class CatalogReferenceParameter {
-    private Catalogable referencedCatalogable;
+    private Element referencedElement;
 }

@@ -55,7 +55,7 @@ public class IncarnateCatalogItemDescriptionDto {
         references = p.getReferences()
                       .stream()
                       .map(r -> new TailoringReferenceParameterDto(
-                              IdRef.from(r.getReferencedCatalogable(), urlAssembler),
+                              IdRef.from(r.getReferencedElement(), urlAssembler),
                               r.getReferenceKey(), r.getReferenceType()))
                       .collect(Collectors.toList());
 
@@ -64,9 +64,9 @@ public class IncarnateCatalogItemDescriptionDto {
     public IncarnateCatalogItemDescription dto2Model(IdRefResolver idRefResolver) {
         List<TailoringReferenceParameter> list = getReferences().stream()
                                                                 .map(t -> new TailoringReferenceParameter(
-                                                                        t.getReferencedCatalogable() == null
+                                                                        t.getReferencedElement() == null
                                                                                 ? null
-                                                                                : idRefResolver.resolve(t.getReferencedCatalogable()),
+                                                                                : idRefResolver.resolve(t.getReferencedElement()),
                                                                         t.getReferenceType(),
                                                                         t.getReferenceKey()))
                                                                 .collect(Collectors.toList());

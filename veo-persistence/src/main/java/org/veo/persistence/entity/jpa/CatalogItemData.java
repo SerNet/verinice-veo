@@ -32,9 +32,9 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.UpdateReference;
@@ -70,7 +70,7 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
     // mapped from the targetEntity. We have to rely on javax.validation here:
     @NotNull
     @Valid
-    private Catalogable element;
+    private Element element;
 
     @Column(name = "updatereferences")
     @OneToMany(cascade = CascadeType.ALL,

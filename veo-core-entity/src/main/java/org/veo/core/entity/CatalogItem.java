@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
 /**
  * CatalogItem The catalog item contains an element and/other related catalog
  * item. It describes currently two different abstract use cases: 1. Apply the
- * containt catalogable: defined by KEa.1 and KEa.2 2. Update an entity from an
- * old to a new version of the domainTemplate to the new one. Usecase 1 is
- * defined by the catalogable and a set of TailoringReferences. Usecase 2 is
- * defined by a set of UpdateReferences.
+ * contained element: defined by KEa.1 and KEa.2 2. Update an entity from an old
+ * to a new version of the domainTemplate to the new one. Usecase 1 is defined
+ * by the element and a set of TailoringReferences. Usecase 2 is defined by a
+ * set of UpdateReferences.
  */
 public interface CatalogItem extends ElementOwner {
     String SINGULAR_TERM = "catalogitem";
@@ -99,12 +99,12 @@ public interface CatalogItem extends ElementOwner {
     }
 
     /**
-     * The catalogable is the template element which will applied. A copy of the
-     * object will be inserted.
+     * The template element which will be applied. A copy of the object will be
+     * inserted.
      */
-    Catalogable getElement();
+    Element getElement();
 
-    void setElement(Catalogable aCatalogable);
+    void setElement(Element element);
 
     /**
      * All the update refreneces for this catalog item.

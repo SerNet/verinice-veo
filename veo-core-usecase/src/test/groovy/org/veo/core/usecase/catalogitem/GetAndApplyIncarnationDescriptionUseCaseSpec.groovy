@@ -17,12 +17,9 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Client
+
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
-import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
@@ -41,7 +38,6 @@ import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputData
-import org.veo.core.usecase.parameter.TailoringReferenceParameter
 
 class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
     EntityFactory factory = Mock()
@@ -143,7 +139,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         output.references.first().references.first().referenceKey == "link.type"
 
         when: "we set control2 as the target of the link"
-        output.references.first().references.first().referencedCatalogable = control2
+        output.references.first().references.first().referencedElement = control2
         def o1 = usecasePut.execute(new ApplyIncarnationDescriptionUseCase.InputData(existingClient, existingUnit.id, output.references))
 
         then: "the control is saved and the link ist set to control2"

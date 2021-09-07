@@ -20,13 +20,11 @@ package org.veo.adapter.service.domaintemplate;
 import java.util.Collections;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -49,28 +47,24 @@ public class CatalogItemServiceImpl implements CatalogItemService {
     }
 
     @Override
-    public Catalogable createInstance(CatalogItem item, Domain domain) {
-        Catalogable catalogElement = item.getElement();
-        CatalogableDto dto = (CatalogableDto) dtoTransformer.transform2Dto(catalogElement);
+    public Element createInstance(CatalogItem item, Domain domain) {
+        Element catalogElement = item.getElement();
+        AbstractElementDto dto = dtoTransformer.transform2Dto(catalogElement);
         prepareDto(dto);
         PlaceholderResolver placeholderResolver = new PlaceholderResolver(entityTransformer);
-        Catalogable newCatalogable = entityTransformer.transformDto2Catalogable(dto,
-                                                                                placeholderResolver);
-        preparations.prepareElement(domain, newCatalogable, false);
-        if (catalogElement instanceof Element) {
-            Element newELST = (Element) newCatalogable;
-            Element catalogELST = (Element) catalogElement;
-            catalogELST.getLinks()
-                       .stream()
-                       .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
-                       .forEach(orgLink -> newELST.addToLinks(copyLink(domain, placeholderResolver,
-                                                                       orgLink)));
-            catalogELST.getSubTypeAspects()
-                       .forEach(st -> newELST.setSubType(domain, st.getSubType()));
-            // TODO: VEO-612 handle parts
-        }
-        newCatalogable.setAppliedCatalogItems(Collections.singleton(item));
-        return newCatalogable;
+        Element newElement = entityTransformer.transformDto2Element(dto, placeholderResolver);
+        preparations.prepareElement(domain, newElement, false);
+        catalogElement.getLinks()
+                      .stream()
+                      .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
+                      .forEach(orgLink -> newElement.addToLinks(copyLink(domain,
+                                                                         placeholderResolver,
+                                                                         orgLink)));
+        catalogElement.getSubTypeAspects()
+                      .forEach(st -> newElement.setSubType(domain, st.getSubType()));
+        // TODO: VEO-612 handle parts
+        newElement.setAppliedCatalogItems(Collections.singleton(item));
+        return newElement;
     }
 
     /**
@@ -92,17 +86,14 @@ public class CatalogItemServiceImpl implements CatalogItemService {
      * Prepare the dto for transformation by removing references, like links and
      * clears the domain.
      */
-    private void prepareDto(CatalogableDto dto) {
+    private void prepareDto(AbstractElementDto dto) {
         dto.setOwner(null);
         dto.getDomains()
            .clear();
-        if (dto instanceof AbstractElementDto) {
-            AbstractElementDto edto = (AbstractElementDto) dto;
-            edto.getLinks()
-                .clear();
-            edto.getSubType()
-                .clear();
-        }
+        dto.getLinks()
+           .clear();
+        dto.getSubType()
+           .clear();
     }
 
 }

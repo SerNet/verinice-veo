@@ -18,8 +18,8 @@
 package org.veo.core.service;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 
 /**
  * The CatalogItemService creates elements based on the given
@@ -29,11 +29,11 @@ public interface CatalogItemService {
     /**
      * Creates the element instance of an {@link CatalogItem#getElement()} and set
      * the domain in all parts. It also add the item to the field
-     * {@link Catalogable#getAppliedCatalogItems()}. It creates an so called
-     * incarnation of the given {@link CatalogItem#getElement()}. It creates an
-     * exact copy of the {@link CatalogItem#getElement()} with no owner set, and all
-     * references linking the catalog elements. The instance need to be saved and
-     * the link targets set to concrete elements in order to be persistent.
+     * {@link Element#getAppliedCatalogItems()}. It creates an so called incarnation
+     * of the given {@link CatalogItem#getElement()}. It creates an exact copy of
+     * the {@link CatalogItem#getElement()} with no owner set, and all references
+     * linking the catalog elements. The instance need to be saved and the link
+     * targets set to concrete elements in order to be persistent.
      */
-    Catalogable createInstance(CatalogItem item, Domain domain);
+    Element createInstance(CatalogItem item, Domain domain);
 }

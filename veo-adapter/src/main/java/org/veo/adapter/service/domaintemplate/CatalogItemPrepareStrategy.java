@@ -22,14 +22,13 @@ import java.util.stream.Collectors;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
 /**
- * Defines the behavior to prepare {@link CatalogItem} or {@link Catalogable}
- * for reuse as catalogElement or incarnation. All subparts are associated with
- * the given domain.
+ * Defines the behavior to prepare {@link CatalogItem} or {@link Element} for
+ * reuse as catalogElement or incarnation. All subparts are associated with the
+ * given domain.
  */
 public class CatalogItemPrepareStrategy {
     private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
@@ -40,34 +39,26 @@ public class CatalogItemPrepareStrategy {
     public void prepareCatalogItem(Domain domain, Catalog catalog, CatalogItem item) {
         item.setId(null);
         item.setCatalog(catalog);
-        Catalogable element = item.getElement();
+        Element element = item.getElement();
         if (element != null) {
             prepareElement(domain, element, true);
         }
     }
 
     /**
-     * Clean up and relink a {@link Catalogable}. Add the domain to each sub
-     * element. Prepare the {@link Catalogable} for usage in a catalog or as an
-     * incarnation.
+     * Clean up and relink a {@link Element}. Add the domain to each sub element.
+     * Prepare the {@link Element} for usage in a catalog or as an incarnation.
      */
-    public void prepareElement(Domain domain, Catalogable element, boolean isCatalogElement) {
+    public void prepareElement(Domain domain, Element element, boolean isCatalogElement) {
         element.setId(null);
         element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
-        if (element instanceof Element) {
-            Element est = (Element) element;
-            est.getDomains()
+        element.getDomains()
                .clear();
-            est.addToDomains(domain);
-            processSubTypes(domain, est);
-            processLinks(domain, est);
-            processCustomAspects(domain, est);
-            // TODO: VEO-612 add parts from CompositeEntity
-        } else {
-            throw new IllegalArgumentException(
-                    "Element not of known type: " + element.getModelInterface()
-                                                           .getSimpleName());
-        }
+        element.addToDomains(domain);
+        processSubTypes(domain, element);
+        processLinks(domain, element);
+        processCustomAspects(domain, element);
+        // TODO: VEO-612 add parts from CompositeEntity
     }
 
     private void processCustomAspects(Domain domain, Element est) {

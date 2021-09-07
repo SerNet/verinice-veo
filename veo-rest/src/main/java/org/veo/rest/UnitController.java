@@ -59,11 +59,11 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedCatalogable;
+import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedElement;
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
@@ -158,27 +158,27 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             @ApiResponse(responseCode = "201",
                          description = "Catalog items incarnated.",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = IdRefTailoringReferenceParameterReferencedCatalogable.class,
+                                            array = @ArraySchema(schema = @Schema(implementation = IdRefTailoringReferenceParameterReferencedElement.class,
                                                                                   description = "A reference list of the created elements")))) })
-    public CompletableFuture<ResponseEntity<List<IdRef<Catalogable>>>> applyIncarnations(
+    public CompletableFuture<ResponseEntity<List<IdRef<Element>>>> applyIncarnations(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Parameter(description = "The target unit for the catalog items.") @PathVariable String unitId,
             @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
         Client client = getAuthenticatedClient(auth);
-        CompletableFuture<List<IdRef<Catalogable>>> completableFuture = useCaseInteractor.execute(applyIncarnationDescriptionUseCase,
-                                                                                                  (Supplier<ApplyIncarnationDescriptionUseCase.InputData>) () -> {
-                                                                                                      IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                                                                      return new ApplyIncarnationDescriptionUseCase.InputData(
-                                                                                                              client,
-                                                                                                              Key.uuidFrom(unitId),
-                                                                                                              applyInformation.dto2Model(idRefResolver));
+        CompletableFuture<List<IdRef<Element>>> completableFuture = useCaseInteractor.execute(applyIncarnationDescriptionUseCase,
+                                                                                              (Supplier<ApplyIncarnationDescriptionUseCase.InputData>) () -> {
+                                                                                                  IdRefResolver idRefResolver = createIdRefResolver(client);
+                                                                                                  return new ApplyIncarnationDescriptionUseCase.InputData(
+                                                                                                          client,
+                                                                                                          Key.uuidFrom(unitId),
+                                                                                                          applyInformation.dto2Model(idRefResolver));
 
-                                                                                                  },
-                                                                                                  output -> output.getNewElements()
-                                                                                                                  .stream()
-                                                                                                                  .map(c -> IdRef.from(c,
-                                                                                                                                       referenceAssembler))
-                                                                                                                  .collect(Collectors.toList()));
+                                                                                              },
+                                                                                              output -> output.getNewElements()
+                                                                                                              .stream()
+                                                                                                              .map(c -> IdRef.from(c,
+                                                                                                                                   referenceAssembler))
+                                                                                                              .collect(Collectors.toList()));
         return completableFuture.thenApply(result -> ResponseEntity.status(201)
                                                                    .body(result));
     }

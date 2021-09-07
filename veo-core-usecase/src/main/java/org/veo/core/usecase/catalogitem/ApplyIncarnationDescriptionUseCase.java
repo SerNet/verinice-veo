@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
@@ -75,36 +74,35 @@ public class ApplyIncarnationDescriptionUseCase implements
         Client authenticatedClient = input.authenticatedClient;
         unit.checkSameClient(authenticatedClient);
 
-        List<Catalogable> createdCatalogables = input.getReferencesToApply()
-                                                     .stream()
-                                                     .map(ra -> {
-                                                         CatalogItem catalogItem = catalogItemRepository.findById(ra.getItem()
-                                                                                                                    .getId())
-                                                                                                        .orElseThrow(() -> new NotFoundException(
-                                                                                                                "CatalogItem not found %s",
-                                                                                                                ra.getItem()
-                                                                                                                  .getId()));
+        List<Element> createdElement = input.getReferencesToApply()
+                                            .stream()
+                                            .map(ra -> {
+                                                CatalogItem catalogItem = catalogItemRepository.findById(ra.getItem()
+                                                                                                           .getId())
+                                                                                               .orElseThrow(() -> new NotFoundException(
+                                                                                                       "CatalogItem not found %s",
+                                                                                                       ra.getItem()
+                                                                                                         .getId()));
 
-                                                         Domain domain = (Domain) catalogItem.getCatalog()
-                                                                                             .getDomainTemplate();
-                                                         UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(),
-                                                                                                 domain);
-                                                         return createElementFromItem(unit,
-                                                                                      authenticatedClient,
-                                                                                      catalogItem,
-                                                                                      domain,
-                                                                                      ra.getReferences());
-                                                     })
-                                                     .collect(Collectors.toList());
-        log.info("ApplyIncarnationDescriptionUseCase elements created: {}", createdCatalogables);
-        return new ApplyIncarnationDescriptionUseCase.OutputData(createdCatalogables);
+                                                Domain domain = (Domain) catalogItem.getCatalog()
+                                                                                    .getDomainTemplate();
+                                                UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(),
+                                                                                        domain);
+                                                return createElementFromItem(unit,
+                                                                             authenticatedClient,
+                                                                             catalogItem, domain,
+                                                                             ra.getReferences());
+                                            })
+                                            .collect(Collectors.toList());
+        log.info("ApplyIncarnationDescriptionUseCase elements created: {}", createdElement);
+        return new ApplyIncarnationDescriptionUseCase.OutputData(createdElement);
     }
 
     private Element createElementFromItem(Unit unit, Client authenticatedClient,
             CatalogItem catalogItem, Domain domain,
             List<TailoringReferenceParameter> referencesToApply) {
         validateItem(catalogItem, referencesToApply);
-        Catalogable copyItem = catalogItemservice.createInstance(catalogItem, domain);
+        Element copyItem = catalogItemservice.createInstance(catalogItem, domain);
         applyLinkTailoringReferences(copyItem, referencesToApply.stream()
                                                                 .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
                                                                 .collect(Collectors.toList()));
@@ -119,27 +117,24 @@ public class ApplyIncarnationDescriptionUseCase implements
         return entity;
     }
 
-    private void applyLinkTailoringReferences(Catalogable copyItem,
+    private void applyLinkTailoringReferences(Element copyItem,
             List<TailoringReferenceParameter> referencesToApply) {
-        if (copyItem instanceof Element) {
-            Element el = (Element) copyItem;
-            List<CustomLink> orderByExecution = el.getLinks()
-                                                  .stream()
-                                                  .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
-                                                  .collect(Collectors.toList());
+        List<CustomLink> orderByExecution = copyItem.getLinks()
+                                                    .stream()
+                                                    .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
+                                                    .collect(Collectors.toList());
 
-            if (orderByExecution.size() > referencesToApply.size()) {
-                throw new IllegalArgumentException(
-                        "Number of defined links cannot be smaller than number of references to apply.");
-            }
-
-            for (int i = 0; i < orderByExecution.size(); i++) {
-                CustomLink customLink = orderByExecution.get(i);
-                customLink.setTarget((Element) referencesToApply.get(i)
-                                                                .getReferencedCatalogable());
-            }
-            // TODO: VEO-612 handle parts
+        if (orderByExecution.size() > referencesToApply.size()) {
+            throw new IllegalArgumentException(
+                    "Number of defined links cannot be smaller than number of references to apply.");
         }
+
+        for (int i = 0; i < orderByExecution.size(); i++) {
+            CustomLink customLink = orderByExecution.get(i);
+            customLink.setTarget(referencesToApply.get(i)
+                                                  .getReferencedElement());
+        }
+        // TODO: VEO-612 handle parts
     }
 
     private void applyExternalTailoringReferences(Element linkTargetEntity, Domain domain,
@@ -148,15 +143,11 @@ public class ApplyIncarnationDescriptionUseCase implements
         Iterator<TailoringReferenceParameter> parameter = referencesToApply.iterator();
         for (ExternalTailoringReference catalogReference : externalTailoringRefs) {
             TailoringReferenceParameter tailoringReferenceParameter = parameter.next();
-            Catalogable catalogable = tailoringReferenceParameter.getReferencedCatalogable();
-            if (catalogable instanceof Element) {
-                Element linkSourceEntity = (Element) catalogable;
-                copyLink(linkSourceEntity, linkTargetEntity, domain,
-                         catalogReference.getExternalLink());
-                @SuppressWarnings("unchecked")
-                ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) catalogable.getModelInterface());
-                linkSourceEntity = repository.save(linkSourceEntity);
-            }
+            Element element = tailoringReferenceParameter.getReferencedElement();
+            copyLink(element, linkTargetEntity, domain, catalogReference.getExternalLink());
+            @SuppressWarnings("unchecked")
+            ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) element.getModelInterface());
+            element = repository.save(element);
         }
     }
 
@@ -192,7 +183,7 @@ public class ApplyIncarnationDescriptionUseCase implements
             throw new IllegalArgumentException("Tailoring references (EXTERNAL_LINK) don't match.");
         }
         if (referencesToApply.stream()
-                             .anyMatch(t -> t.getReferencedCatalogable() == null)) {
+                             .anyMatch(t -> t.getReferencedElement() == null)) {
             throw new IllegalArgumentException("Tailoring references target undefined.");// need to
                                                                                          // change
                                                                                          // with
@@ -228,7 +219,7 @@ public class ApplyIncarnationDescriptionUseCase implements
     @Value
     public static class OutputData implements UseCase.OutputData {
         @Valid
-        List<Catalogable> newElements;
+        List<Element> newElements;
     }
 
 }

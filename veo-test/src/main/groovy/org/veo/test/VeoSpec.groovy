@@ -24,7 +24,6 @@ import java.util.regex.Pattern
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Catalogable
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomAspect
@@ -172,10 +171,10 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CatalogItemData newCatalogItem(Catalog catalog,@DelegatesTo(value = Catalogable.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CatalogItem") Closure catalogableSupplier, @DelegatesTo(value = CatalogItem.class, strategy = Closure.DELEGATE_FIRST)
+    static CatalogItemData newCatalogItem(Catalog catalog,@DelegatesTo(value = Element.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CatalogItem") Closure elementSupplier, @DelegatesTo(value = CatalogItem.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CatalogItem") Closure init = null) {
-        return factory.createCatalogItem(catalog, catalogableSupplier).tap {
+        return factory.createCatalogItem(catalog, elementSupplier).tap {
             VeoSpec.execute(it, init)
             VeoSpec.version(it)
         }

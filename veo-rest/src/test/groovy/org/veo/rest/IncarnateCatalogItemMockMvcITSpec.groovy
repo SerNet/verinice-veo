@@ -107,8 +107,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the parameter object is returned and the links are set to item1 and item2"
         result.parameters.size() == 1
         result.parameters[0].references.size() == 2
-        elementList.contains(result.parameters[0].references[0].referencedCatalogable.targetUri)
-        elementList.contains(result.parameters[0].references[1].referencedCatalogable.targetUri)
+        elementList.contains(result.parameters[0].references[0].referencedElement.targetUri)
+        elementList.contains(result.parameters[0].references[1].referencedElement.targetUri)
 
         when: "post the data to create item4 with the unaltered links set to item1 and item2"
         postResult = postIncarnationDescriptions(unit,result)
@@ -136,8 +136,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${item4.id.uuidValue()}"))
 
         when: "post the data to create item4 with the altered links set to c-3"
-        result.parameters[0].references[0].referencedCatalogable.targetUri = elementList[0]
-        result.parameters[0].references[1].referencedCatalogable.targetUri = elementList[0]
+        result.parameters[0].references[0].referencedElement.targetUri = elementList[0]
+        result.parameters[0].references[1].referencedElement.targetUri = elementList[0]
 
         postResult = postIncarnationDescriptions(unit,result)
         then: "the parameter object is returned"
@@ -252,7 +252,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         when: "we get the description for the tom"
         incarnationDescriptions = getIncarnationDescriptions(unit,item7)
         and: "we set the link to p3"
-        incarnationDescriptions.parameters[0].references[0].referencedCatalogable.targetUri = postResult[0].targetUri
+        incarnationDescriptions.parameters[0].references[0].referencedElement.targetUri = postResult[0].targetUri
         and:"create the tom and a link in p3"
         postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
         and: "we get the created tom"
@@ -295,23 +295,23 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
 
-    private validateNewElementAgainstCatalogItem(catalogable, CatalogItem catalogItem, Domain domain) {
+    private validateNewElementAgainstCatalogItem(element, CatalogItem catalogItem, Domain domain) {
         verifyAll(catalogItem.element) {
-            it.name == catalogable.name
-            it.abbreviation == catalogable.abbreviation
-            it.description == catalogable.description
-            it.links.size() == catalogable.links.size()
-            it.customAspects.size() == catalogable.customAspects.size()
+            it.name == element.name
+            it.abbreviation == element.abbreviation
+            it.description == element.description
+            it.links.size() == element.links.size()
+            it.customAspects.size() == element.customAspects.size()
         }
-        verifyAll(catalogable) {
+        verifyAll(element) {
             it.domains.size() == 1
             it.domains[0].targetUri.endsWith(domain.id.uuidValue())
         }
-        catalogable.links.each {
+        element.links.each {
             assert it.value.domains.size() == 1
             assert it.value.domains[0].targetUri[0].endsWith(domain.id.uuidValue())
         }
-        catalogable.customAspects.each {
+        element.customAspects.each {
             assert it.value.domains.size() == 1
             assert it.value.domains[0].targetUri.endsWith(domain.id.uuidValue())
         }

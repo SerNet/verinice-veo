@@ -88,7 +88,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         TailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
-        tr.referencedCatalogable >> item2
+        tr.referencedElement >> item2
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
@@ -105,7 +105,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         TailoringReferenceParameter ref = Mock()
         ref.referenceType >> TailoringReferenceType.LINK
-        ref.referencedCatalogable >> control3
+        ref.referencedElement >> control3
 
         existingDomain.catalogs >> [catalog]
         catalog.domainTemplate >> existingDomain
@@ -157,7 +157,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         newControl.links >> []
 
         TailoringReferenceParameter ref = Mock()
-        ref.referencedCatalogable >> control3
+        ref.referencedElement >> control3
         ref.referenceType >> TailoringReferenceType.LINK_EXTERNAL
 
         existingDomain.catalogs >> [catalog]

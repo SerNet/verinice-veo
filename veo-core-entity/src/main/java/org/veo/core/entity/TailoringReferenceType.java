@@ -34,7 +34,7 @@ public enum TailoringReferenceType {
      */
     LINK,
     /**
-     * Defines a link in another {@link Catalogable} which points to the
+     * Defines a link in another {@link Element} which points to the
      * {@link CatalogItem#getElement()}. The property
      * {@link TailoringReference#getCatalogItem()} points to the {@link CatalogItem}
      * in which the {@link ExternalTailoringReference#getExternalLink()} object is

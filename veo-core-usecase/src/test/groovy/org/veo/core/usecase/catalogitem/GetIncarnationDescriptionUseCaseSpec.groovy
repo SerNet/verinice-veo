@@ -17,33 +17,18 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Catalogable
-import org.veo.core.entity.Client
+
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.Element
 import org.veo.core.entity.ExternalTailoringReference
 import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.repository.ElementQuery
-import org.veo.core.repository.ElementRepository
-import org.veo.core.repository.PagedResult
-import org.veo.core.repository.PagingConfiguration
-import org.veo.core.repository.RepositoryProvider
-import org.veo.core.repository.UnitRepository
-import org.veo.core.service.CatalogItemService
-import org.veo.core.service.DomainTemplateService
-import org.veo.core.usecase.DesignatorService
-import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputData
-import org.veo.core.usecase.parameter.TailoringReferenceParameter
 
 class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
 
@@ -185,7 +170,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
     def "get the apply information for a catalog-item with link to an unknown feature "() {
         given:
 
-        Catalogable someThing = Mock()
+        Element someThing = Mock()
         item1.element >> someThing
 
         TailoringReference tr = Mock()

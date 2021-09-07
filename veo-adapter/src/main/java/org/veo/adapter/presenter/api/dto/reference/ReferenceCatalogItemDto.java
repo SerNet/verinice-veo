@@ -20,7 +20,7 @@ package org.veo.adapter.presenter.api.dto.reference;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemElement;
-import org.veo.core.entity.Catalogable;
+import org.veo.core.entity.Element;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,6 +38,6 @@ import lombok.ToString;
 public abstract class ReferenceCatalogItemDto extends AbstractCatalogItemDto {
 
     @Schema(implementation = IdRefCatalogItemElement.class)
-    private IdRef<Catalogable> element;
+    private IdRef<Element> element;
 
 }

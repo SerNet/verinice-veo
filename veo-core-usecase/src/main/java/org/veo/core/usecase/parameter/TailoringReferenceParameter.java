@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.parameter;
 
-import org.veo.core.entity.Catalogable;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
 
@@ -44,9 +44,9 @@ public class TailoringReferenceParameter extends CatalogReferenceParameter
     @EqualsAndHashCode.Include
     private String referenceKey;
 
-    public TailoringReferenceParameter(Catalogable linkedCatalogable,
-            TailoringReferenceType referenceType, String referenceName) {
+    public TailoringReferenceParameter(Element linkedElement, TailoringReferenceType referenceType,
+            String referenceName) {
         this(referenceType, referenceName);
-        setReferencedCatalogable(linkedCatalogable);
+        setReferencedElement(linkedElement);
     }
 }

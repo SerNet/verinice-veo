@@ -26,8 +26,8 @@ public class HasOwnerOrContainingCatalogItemValidator
         implements ConstraintValidator<HasOwnerOrContainingCatalogItem, ElementData> {
 
     @Override
-    public boolean isValid(ElementData catalogable, ConstraintValidatorContext context) {
+    public boolean isValid(ElementData element, ConstraintValidatorContext context) {
         // that's an XOR
-        return catalogable.getOwner() != null ^ catalogable.getContainingCatalogItem() != null;
+        return element.getOwner() != null ^ element.getContainingCatalogItem() != null;
     }
 }

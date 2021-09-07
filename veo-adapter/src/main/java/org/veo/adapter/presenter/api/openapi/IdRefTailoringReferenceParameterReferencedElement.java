@@ -21,8 +21,8 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public interface IdRefTailoringReferenceParameterReferencedCatalogable extends IIdRef {
-    @Schema(description = "A friendly human readable title of the catalogable which will be linked.",
+public interface IdRefTailoringReferenceParameterReferencedElement extends IIdRef {
+    @Schema(description = "A friendly human readable title of the element which will be linked.",
             example = "CTL_1",
             accessMode = Schema.AccessMode.READ_ONLY)
     @Override

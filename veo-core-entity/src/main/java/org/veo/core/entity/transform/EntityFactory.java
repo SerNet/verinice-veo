@@ -23,7 +23,6 @@ import java.util.function.Function;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
@@ -91,8 +90,7 @@ public interface EntityFactory {
      * Creates a catalogItem and add it to the catalog. Careful this changes the
      * catalog entity.
      */
-    CatalogItem createCatalogItem(Catalog catalog,
-            Function<CatalogItem, Catalogable> catalogableFactory);
+    CatalogItem createCatalogItem(Catalog catalog, Function<CatalogItem, Element> elementFactory);
 
     TailoringReference createTailoringReference(CatalogItem catalogItem,
             TailoringReferenceType referenceType);

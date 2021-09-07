@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
@@ -57,8 +56,8 @@ import lombok.ToString;
  * This DTO represent the contained {@link Element} defined by a FullXXXDto. It
  * uses the 'type' property in the json to determine the actual type.
  */
-@EqualsAndHashCode()
 @Data
+@EqualsAndHashCode
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes({ @JsonSubTypes.Type(value = FullAssetDto.class, name = Asset.SINGULAR_TERM),
         @JsonSubTypes.Type(value = FullControlDto.class, name = Control.SINGULAR_TERM),
@@ -67,7 +66,7 @@ import lombok.ToString;
         @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
         @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
         @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM) })
-public class TransformCatalogableDto implements CatalogableDto, IdentifiableDto {
+public class TransformElementDto implements IdentifiableDto {
 
     @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
     @Schema(description = "ID must be a valid UUID string following RFC 4122.",

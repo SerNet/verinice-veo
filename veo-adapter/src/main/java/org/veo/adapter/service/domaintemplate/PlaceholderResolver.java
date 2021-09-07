@@ -29,7 +29,7 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.core.entity.Catalogable;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -70,16 +70,16 @@ class PlaceholderResolver extends IdRefResolver {
      * Creates the missing element from the dto in the cache.
      */
     private Identifiable createElement(String id, Class<? extends Identifiable> type) {
-        IdentifiableDto catalogableDto = dtoCache.get(id);
-        if (catalogableDto != null) {
-            AbstractElementDto es = (AbstractElementDto) catalogableDto;
+        IdentifiableDto elementDto = dtoCache.get(id);
+        if (elementDto != null) {
+            AbstractElementDto es = (AbstractElementDto) elementDto;
             HashMap<String, List<CustomLinkDto>> hashMap = new HashMap<>(es.getLinks());
             es.getLinks()
               .clear();
-            Catalogable catalogable = entityTransformer.transformDto2Catalogable(es, this);
+            Element element = entityTransformer.transformDto2Element(es, this);
             es.getLinks()
               .putAll(hashMap);
-            return catalogable;
+            return element;
         }
         throw new IllegalArgumentException("Unknown type (not dtoCached):" + type + "  id:" + id);
     }
