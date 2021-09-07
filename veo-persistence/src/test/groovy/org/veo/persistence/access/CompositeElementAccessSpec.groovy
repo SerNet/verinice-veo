@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.CompositeEntity
+import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.AssetRepository
@@ -45,7 +45,7 @@ import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ValidationService
 
-class CompositeEntityAccessSpec extends AbstractJpaSpec {
+class CompositeElementAccessSpec extends AbstractJpaSpec {
 
 
     @Autowired
@@ -111,7 +111,7 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
     }
 
     def "delete parts from a #type.simpleName composite"() {
-        given: "A nested structure of composites and entities"
+        given: "A nested structure of composites and elements"
         def typeRepository = getProperty("${type.simpleName.toLowerCase()}Repository")
         def part = "new${type.simpleName}"(unit)
         def composite = "new${type.simpleName}"(unit) {
@@ -131,7 +131,7 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
             typeRepository.delete(composite)
         }
 
-        then: "the entities remain"
+        then: "the elements remain"
         typeRepository.findById(part.id).present
         typeRepository.findById(composite.id).empty
 
@@ -141,6 +141,6 @@ class CompositeEntityAccessSpec extends AbstractJpaSpec {
         persistedScope.get().members.empty
 
         where:
-        type << EntityType.ENTITY_TYPE_CLASSES.findAll{CompositeEntity.isAssignableFrom(it)}
+        type << EntityType.ELEMENT_TYPE_CLASSES.findAll{CompositeElement.isAssignableFrom(it)}
     }
 }

@@ -26,12 +26,12 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 
 /**
- * Base type for entities that belong to a unit (a.k.a domain objects). ELS
+ * Base type for entities that belong to a unit (a.k.a domain objects). Element
  * instances may be assigned to a set of domains and may hold aspects, custom
  * aspects & links within certain domains. They can also be of a domain-specific
  * sub type.
  */
-public interface EntityLayerSupertype
+public interface Element
         extends Nameable, Identifiable, ClientOwned, Catalogable, Designated, Versioned {
 
     /**

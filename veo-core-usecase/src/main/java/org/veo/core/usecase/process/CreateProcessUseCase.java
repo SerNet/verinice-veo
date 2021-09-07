@@ -21,12 +21,12 @@ import org.veo.core.entity.Process;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.base.CreateEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
 
 /**
  * Creates a persistent new process object.
  */
-public class CreateProcessUseCase extends CreateEntityUseCase<Process> {
+public class CreateProcessUseCase extends CreateElementUseCase<Process> {
 
     public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository entityRepo,
             DesignatorService designatorService) {

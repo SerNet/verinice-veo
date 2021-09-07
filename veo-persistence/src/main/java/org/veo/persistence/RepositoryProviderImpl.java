@@ -29,7 +29,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -45,7 +45,7 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
@@ -99,8 +99,8 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
-        if (EntityLayerSupertype.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) getEntityLayerSupertypeRepositoryFor((Class<EntityLayerSupertype>) entityType);
+        if (Element.class.isAssignableFrom(entityType)) {
+            return (Repository<T, Key<UUID>>) getElementRepositoryFor((Class<Element>) entityType);
         }
         if (Client.class.isAssignableFrom(entityType)) {
             return (Repository<T, Key<UUID>>) clientRepository;
@@ -122,31 +122,30 @@ public class RepositoryProviderImpl implements RepositoryProvider {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends EntityLayerSupertype> EntityLayerSupertypeRepository<T> getEntityLayerSupertypeRepositoryFor(
-            Class<T> entityType) {
+    public <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType) {
         if (Scope.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) scopeRepository;
+            return (ElementRepository<T>) scopeRepository;
         }
         if (Person.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) personRepository;
+            return (ElementRepository<T>) personRepository;
         }
         if (Asset.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) assetRepository;
+            return (ElementRepository<T>) assetRepository;
         }
         if (Incident.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) incidentRepository;
+            return (ElementRepository<T>) incidentRepository;
         }
         if (Scenario.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) scenarioRepository;
+            return (ElementRepository<T>) scenarioRepository;
         }
         if (Process.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) processRepository;
+            return (ElementRepository<T>) processRepository;
         }
         if (Document.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) documentRepository;
+            return (ElementRepository<T>) documentRepository;
         }
         if (Control.class.isAssignableFrom(entityType)) {
-            return (EntityLayerSupertypeRepository<T>) controlRepository;
+            return (ElementRepository<T>) controlRepository;
         }
 
         throw new IllegalArgumentException("Unsupported entity type " + entityType);

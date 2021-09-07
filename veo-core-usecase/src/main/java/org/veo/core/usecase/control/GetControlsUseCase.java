@@ -20,13 +20,13 @@ package org.veo.core.usecase.control;
 import org.veo.core.entity.Control;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ControlRepository;
-import org.veo.core.usecase.base.DefaultGetEntitiesUseCase;
+import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 /**
  * Reinstantiate persisted control objects.
  */
-public class GetControlsUseCase extends DefaultGetEntitiesUseCase<Control> {
+public class GetControlsUseCase extends DefaultGetElementsUseCase<Control> {
 
     public GetControlsUseCase(ClientRepository clientRepository,
             ControlRepository controlRepository, UnitHierarchyProvider unitHierarchyProvider) {

@@ -46,7 +46,7 @@ import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
@@ -59,14 +59,14 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
-import org.veo.core.entity.CompositeEntity;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -150,16 +150,16 @@ public final class DtoToEntityTransformer {
 
     public Scope transformDto2Scope(AbstractScopeDto source, IdRefResolver idRefResolver) {
         var target = factory.createScope(source.getName(), null);
-        mapEntityLayerSupertype(source, target, idRefResolver);
-        Set<IdRef<EntityLayerSupertype>> memberReferences = source.getMembers();
-        Map<Class<EntityLayerSupertype>, Set<IdRef<EntityLayerSupertype>>> memberReferencesByType = memberReferences.stream()
-                                                                                                                    .collect(Collectors.groupingBy(IdRef::getType,
-                                                                                                                                                   Collectors.toSet()));
-        Set<EntityLayerSupertype> members = memberReferencesByType.values()
-                                                                  .stream()
-                                                                  .flatMap(refs -> idRefResolver.resolve(refs)
-                                                                                                .stream())
-                                                                  .collect(Collectors.toSet());
+        mapElement(source, target, idRefResolver);
+        Set<IdRef<Element>> memberReferences = source.getMembers();
+        Map<Class<Element>, Set<IdRef<Element>>> memberReferencesByType = memberReferences.stream()
+                                                                                          .collect(Collectors.groupingBy(IdRef::getType,
+                                                                                                                         Collectors.toSet()));
+        Set<Element> members = memberReferencesByType.values()
+                                                     .stream()
+                                                     .flatMap(refs -> idRefResolver.resolve(refs)
+                                                                                   .stream())
+                                                     .collect(Collectors.toSet());
 
         target.setMembers(members);
         return target;
@@ -244,7 +244,7 @@ public final class DtoToEntityTransformer {
     // CustomLinkDto->CustomLink
     public CustomLink transformDto2CustomLink(CustomLinkDto source, String type,
             EntitySchema entitySchema, IdRefResolver idRefResolver) {
-        EntityLayerSupertype linkTarget = null;
+        Element linkTarget = null;
         if (source.getTarget() != null) {
             linkTarget = idRefResolver.resolve(source.getTarget());
         }
@@ -302,14 +302,14 @@ public final class DtoToEntityTransformer {
         }
     }
 
-    private <T extends EntityLayerSupertype> void mapCompositeEntity(CompositeEntityDto<T> source,
-            CompositeEntity<T> target, IdRefResolver idRefResolver) {
-        mapEntityLayerSupertype(source, target, idRefResolver);
+    private <T extends Element> void mapCompositeEntity(CompositeEntityDto<T> source,
+            CompositeElement<T> target, IdRefResolver idRefResolver) {
+        mapElement(source, target, idRefResolver);
         target.setParts(idRefResolver.resolve(source.getParts()));
     }
 
-    private <TDto extends EntityLayerSupertypeDto, TEntity extends EntityLayerSupertype> void mapEntityLayerSupertype(
-            TDto source, TEntity target, IdRefResolver idRefResolver) {
+    private <TDto extends ElementDto, TEntity extends Element> void mapElement(TDto source,
+            TEntity target, IdRefResolver idRefResolver) {
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
         target.setDomains(idRefResolver.resolve(source.getDomains()));
@@ -328,8 +328,8 @@ public final class DtoToEntityTransformer {
         }
     }
 
-    private Set<CustomLink> mapLinks(EntityLayerSupertype entity, EntityLayerSupertypeDto dto,
-            EntitySchema entitySchema, IdRefResolver idRefResolver) {
+    private Set<CustomLink> mapLinks(Element entity, ElementDto dto, EntitySchema entitySchema,
+            IdRefResolver idRefResolver) {
         return dto.getLinks()
                   .entrySet()
                   .stream()
@@ -362,7 +362,7 @@ public final class DtoToEntityTransformer {
         return new HashSet<>();
     }
 
-    private Set<CustomAspect> mapCustomAspects(EntityLayerSupertypeDto dto, EntityFactory factory,
+    private Set<CustomAspect> mapCustomAspects(ElementDto dto, EntityFactory factory,
             EntitySchema entitySchema) {
         return dto.getCustomAspects()
                   .entrySet()

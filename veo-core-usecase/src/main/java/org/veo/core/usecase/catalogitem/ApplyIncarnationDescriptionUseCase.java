@@ -28,12 +28,12 @@ import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.CatalogItemRepository;
-import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.CatalogItemService;
 import org.veo.core.usecase.DesignatorService;
@@ -91,15 +91,15 @@ public class ApplyIncarnationDescriptionUseCase implements
         return new ApplyIncarnationDescriptionUseCase.OutputData(createdCatalogables);
     }
 
-    private EntityLayerSupertype createElementFromItem(Unit unit, Client authenticatedClient,
+    private Element createElementFromItem(Unit unit, Client authenticatedClient,
             CatalogItem catalogItem, Domain domain,
             List<TailoringReferenceParameter> referecesToApply) {
         validateItem(catalogItem, referecesToApply);
         Catalogable copyItem = catalogItemservice.createInstance(catalogItem, domain);
         applyTailoringReferences(copyItem, referecesToApply);
         @SuppressWarnings("unchecked")
-        EntityLayerSupertypeRepository<EntityLayerSupertype> repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor((Class<EntityLayerSupertype>) copyItem.getModelInterface());
-        EntityLayerSupertype entity = (EntityLayerSupertype) copyItem;
+        ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) copyItem.getModelInterface());
+        Element entity = (Element) copyItem;
         entity.setOwner(unit);
         designatorService.assignDesignator(entity, authenticatedClient);
         entity = repository.save(entity);
@@ -118,8 +118,8 @@ public class ApplyIncarnationDescriptionUseCase implements
 
     private void applyTailoringReferences(Catalogable copyItem,
             List<TailoringReferenceParameter> referencesToApply) {
-        if (copyItem instanceof EntityLayerSupertype) {
-            EntityLayerSupertype el = (EntityLayerSupertype) copyItem;
+        if (copyItem instanceof Element) {
+            Element el = (Element) copyItem;
             List<CustomLink> orderByExecution = el.getLinks()
                                                   .stream()
                                                   .sorted(UseCaseTools.BY_LINK_EXECUTION)
@@ -132,8 +132,8 @@ public class ApplyIncarnationDescriptionUseCase implements
 
             for (int i = 0; i < orderByExecution.size(); i++) {
                 CustomLink customLink = orderByExecution.get(i);
-                customLink.setTarget((EntityLayerSupertype) referencesToApply.get(i)
-                                                                             .getReferencedCatalogable());
+                customLink.setTarget((Element) referencesToApply.get(i)
+                                                                .getReferencedCatalogable());
             }
             // TODO: VEO-612 handle parts
         }

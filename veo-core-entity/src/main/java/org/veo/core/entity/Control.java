@@ -20,7 +20,7 @@ package org.veo.core.entity;
 /**
  * A control represents something with can be applied to an entity.
  */
-public interface Control extends EntityLayerSupertype, CompositeEntity<Control> {
+public interface Control extends Element, CompositeElement<Control> {
 
     String SINGULAR_TERM = "control";
     String PLURAL_TERM = "controls";

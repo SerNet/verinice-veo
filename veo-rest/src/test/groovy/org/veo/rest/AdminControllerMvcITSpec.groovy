@@ -53,7 +53,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
     }
 
     def "generates unit dump"() {
-        given: "a unit with a bunch of entities and risks"
+        given: "a unit with a bunch of elements and risks"
         def unitId = parseJson(post("/units", [name: "you knit"])).resourceId
         def domainId = parseJson(get("/domains")).first().id
         def owner = [targetUri: "/units/$unitId"]
@@ -113,11 +113,11 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         when: "requesting a unit dump"
         def dump = parseJson(get("/admin/unit-dump/$unitId"))
 
-        then: "it contains the unit and all its entities"
+        then: "it contains the unit and all its elements"
         with(dump) {
             unit.name == "you knit"
             domains.size == 1
-            entities*.type.sort() == [
+            elements*.type.sort() == [
                 "asset",
                 "control",
                 "document",

@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 
 /**
@@ -51,7 +51,7 @@ public interface EntitySpecification<T extends Identifiable> extends Predicate<T
     boolean test(T entity);
 
     /**
-     * @deprecated use {@link #test(EntityLayerSupertype)}
+     * @deprecated use {@link #test(Element)}
      */
     @Deprecated
     default boolean isSatisfiedBy(T entity) {

@@ -20,7 +20,7 @@ package org.veo.persistence.entity.jpa;
 import javax.persistence.Entity;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
 import lombok.AccessLevel;
@@ -35,7 +35,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
 public class SubTypeAspectData extends AspectData implements SubTypeAspect {
-    public SubTypeAspectData(Domain domain, EntityLayerSupertype owner, String subType) {
+    public SubTypeAspectData(Domain domain, Element owner, String subType) {
         super(domain, owner);
         this.subType = subType;
     }

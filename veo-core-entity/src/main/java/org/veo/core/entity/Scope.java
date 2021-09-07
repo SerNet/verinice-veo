@@ -20,10 +20,10 @@ package org.veo.core.entity;
 import java.util.Set;
 
 /**
- * A group of {@link EntityLayerSupertype} objects that form a logical unit. An
- * object may belong to zero, one or multiple scopes. Scopes can contain scopes.
+ * A group of {@link Element} objects that form a logical unit. An object may
+ * belong to zero, one or multiple scopes. Scopes can contain scopes.
  */
-public interface Scope extends EntityLayerSupertype {
+public interface Scope extends Element {
 
     String SINGULAR_TERM = "scope";
     String PLURAL_TERM = "scopes";
@@ -39,25 +39,25 @@ public interface Scope extends EntityLayerSupertype {
         return Scope.class;
     }
 
-    Set<EntityLayerSupertype> getMembers();
+    Set<Element> getMembers();
 
-    default boolean addMember(EntityLayerSupertype member) {
+    default boolean addMember(Element member) {
         return getMembers().add(member);
     }
 
-    default boolean addMembers(Set<EntityLayerSupertype> members) {
+    default boolean addMembers(Set<Element> members) {
         return getMembers().addAll(members);
     }
 
-    default boolean removeMember(EntityLayerSupertype member) {
+    default boolean removeMember(Element member) {
         return getMembers().remove(member);
     }
 
-    default boolean removeMembers(Set<EntityLayerSupertype> members) {
+    default boolean removeMembers(Set<Element> members) {
         return getMembers().removeAll(members);
     }
 
-    default void setMembers(Set<EntityLayerSupertype> members) {
+    default void setMembers(Set<Element> members) {
         getMembers().clear();
         getMembers().addAll(members);
     }

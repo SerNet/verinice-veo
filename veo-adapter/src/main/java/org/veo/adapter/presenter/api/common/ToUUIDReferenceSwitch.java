@@ -18,14 +18,14 @@
 package org.veo.adapter.presenter.api.common;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.util.ModelSwitch;
 
 public class ToUUIDReferenceSwitch extends ModelSwitch<String> {
 
     @Override
-    public String caseEntityLayerSupertype(EntityLayerSupertype object) {
+    public String caseElement(Element object) {
         return object.getId()
                      .uuidValue();
     }

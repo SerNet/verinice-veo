@@ -21,9 +21,9 @@ import org.veo.core.entity.Control;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.base.CreateEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
 
-public class CreateControlUseCase extends CreateEntityUseCase<Control> {
+public class CreateControlUseCase extends CreateElementUseCase<Control> {
 
     public CreateControlUseCase(UnitRepository unitRepository, ControlRepository entityRepo,
             DesignatorService designatorService) {

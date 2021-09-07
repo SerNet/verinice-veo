@@ -32,8 +32,8 @@ import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.Element
 import org.veo.core.entity.ElementOwner
-import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
@@ -80,7 +80,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Asset") Closure init = null) {
         return factory.createAsset(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -100,7 +100,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Control") Closure init = null) {
         return factory.createControl(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -109,7 +109,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Document") Closure init = null) {
         return factory.createDocument(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -119,7 +119,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Incident") Closure init = null) {
         return factory.createIncident(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -128,7 +128,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scenario") Closure init = null) {
         return factory.createScenario(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -192,7 +192,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Person") Closure init = null) {
         return factory.createPerson(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -202,7 +202,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Process") Closure init = null) {
         return factory.createProcess(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -211,7 +211,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scope") Closure init = null) {
         return factory.createScope(null, owner).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.initEntityLayerSupertype(it)
+            VeoSpec.initElement(it)
         }
     }
 
@@ -233,7 +233,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CustomLinkData newCustomLink(EntityLayerSupertype linkTarget, @DelegatesTo(value = CustomLink.class)
+    static CustomLinkData newCustomLink(Element linkTarget, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
         return factory.createCustomLink(linkTarget, null).tap{
             VeoSpec.execute(it, init)
@@ -254,7 +254,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    private static initEntityLayerSupertype(EntityLayerSupertype target) {
+    private static initElement(Element target) {
         if(target.designator == null) {
             target.designator = "${target.typeDesignator}-${designatorCounter++}"
         }

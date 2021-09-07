@@ -20,14 +20,13 @@ package org.veo.core.repository;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
-public interface EntityLayerSupertypeRepository<T extends EntityLayerSupertype>
-        extends Repository<T, Key<UUID>> {
+public interface ElementRepository<T extends Element> extends Repository<T, Key<UUID>> {
 
     public void deleteByUnit(Unit owner);
 
-    public EntityLayerSupertypeQuery<T> query(Client client);
+    public ElementQuery<T> query(Client client);
 }

@@ -20,10 +20,10 @@ package org.veo.core.usecase.base;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -31,24 +31,22 @@ import org.veo.core.usecase.UseCase.EmptyOutput;
 
 import lombok.Value;
 
-public class DeleteEntityUseCase
-        implements TransactionalUseCase<DeleteEntityUseCase.InputData, EmptyOutput> {
+public class DeleteElementUseCase
+        implements TransactionalUseCase<DeleteElementUseCase.InputData, EmptyOutput> {
 
     private final RepositoryProvider repositoryProvider;
 
-    public DeleteEntityUseCase(RepositoryProvider repositoryProvider) {
+    public DeleteElementUseCase(RepositoryProvider repositoryProvider) {
         this.repositoryProvider = repositoryProvider;
     }
 
     @Override
     public EmptyOutput execute(InputData input) {
-        EntityLayerSupertypeRepository<? extends EntityLayerSupertype> repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor(input.entityClass);
-        EntityLayerSupertype entity = repository.findById(input.getId())
-                                                .orElseThrow(() -> new NotFoundException(
-                                                        "%s %s was not found.",
-                                                        input.entityClass.getSimpleName(),
-                                                        input.getId()
-                                                             .uuidValue()));
+        ElementRepository<? extends Element> repository = repositoryProvider.getElementRepositoryFor(input.entityClass);
+        Element entity = repository.findById(input.getId())
+                                   .orElseThrow(() -> new NotFoundException("%s %s was not found.",
+                                           input.entityClass.getSimpleName(), input.getId()
+                                                                                   .uuidValue()));
         entity.checkSameClient(input.authenticatedClient);
         repository.deleteById(entity.getId());
         return EmptyOutput.INSTANCE;
@@ -56,7 +54,7 @@ public class DeleteEntityUseCase
 
     @Value
     public static class InputData implements UseCase.InputData {
-        Class<? extends EntityLayerSupertype> entityClass;
+        Class<? extends Element> entityClass;
         Key<UUID> id;
         Client authenticatedClient;
 

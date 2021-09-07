@@ -32,9 +32,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.entity.jpa.ElementData;
 
-public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSupertypeData>
+public interface ElementDataRepository<T extends ElementData>
         extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
 
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
@@ -48,7 +48,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     @Override
     @Nonnull
     @Transactional(readOnly = true)
-    @EntityGraph(EntityLayerSupertypeData.FULL_AGGREGATE_GRAPH)
+    @EntityGraph(ElementData.FULL_AGGREGATE_GRAPH)
     List<T> findAllById(Iterable<String> ids);
 
     @Override
@@ -59,7 +59,7 @@ public interface EntityLayerSupertypeDataRepository<T extends EntityLayerSuperty
     Page<T> findAll(Specification<T> specification, Pageable pageable);
 
     /**
-     * Find all entities of the repository's type in the given units. (This includes
+     * Find all elements of the repository's type in the given units. (This includes
      * composites.)
      *
      * @param unitIds

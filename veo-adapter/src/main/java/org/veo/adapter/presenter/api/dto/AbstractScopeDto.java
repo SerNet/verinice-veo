@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scope;
 
@@ -34,10 +34,10 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "scope", description = "Schema for scope")
-public abstract class AbstractScopeDto extends AbstractEntityLayerSupertypeDto {
+public abstract class AbstractScopeDto extends AbstractElementDto {
 
     @Schema(description = "The scope's members")
-    private Set<IdRef<EntityLayerSupertype>> members = Collections.emptySet();
+    private Set<IdRef<Element>> members = Collections.emptySet();
 
     @Override
     public Class<? extends Identifiable> getModelInterface() {

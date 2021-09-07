@@ -73,14 +73,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.ProcessSearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -88,9 +88,9 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Process.Status;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
@@ -133,7 +133,7 @@ public class ProcessController extends AbstractEntityController implements Proce
     private final CreateProcessUseCase createProcessUseCase;
     private final GetProcessUseCase getProcessUseCase;
     private final UpdateProcessUseCase updateProcessUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
     private final GetProcessesUseCase getProcessesUseCase;
     private final GetProcessRiskUseCase getProcessRiskUseCase;
     private final CreateProcessRiskUseCase createProcessRiskUseCase;
@@ -146,7 +146,7 @@ public class ProcessController extends AbstractEntityController implements Proce
 
     public ProcessController(UseCaseInteractor useCaseInteractor,
             CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
-            UpdateProcessUseCase putProcessUseCase, DeleteEntityUseCase deleteEntityUseCase,
+            UpdateProcessUseCase putProcessUseCase, DeleteElementUseCase deleteElementUseCase,
             GetProcessesUseCase getProcessesUseCase,
             CreateProcessRiskUseCase createProcessRiskUseCase,
             GetProcessRiskUseCase getProcessRiskUseCase,
@@ -156,7 +156,7 @@ public class ProcessController extends AbstractEntityController implements Proce
         this.createProcessUseCase = createProcessUseCase;
         this.getProcessUseCase = getProcessUseCase;
         this.updateProcessUseCase = putProcessUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
         this.getProcessesUseCase = getProcessesUseCase;
         this.createProcessRiskUseCase = createProcessRiskUseCase;
         this.getProcessRiskUseCase = getProcessRiskUseCase;
@@ -199,7 +199,7 @@ public class ProcessController extends AbstractEntityController implements Proce
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class)))),
             @ApiResponse(responseCode = "404", description = "Process not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+    public @Valid CompletableFuture<List<ElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -221,10 +221,10 @@ public class ProcessController extends AbstractEntityController implements Proce
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateProcessDto dto) {
         return useCaseInteractor.execute(createProcessUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Process>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Process>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Process(dto,
                                                                                                  idRefResolver),
                                                      client);
@@ -246,13 +246,13 @@ public class ProcessController extends AbstractEntityController implements Proce
             @PathVariable String id, @Valid @RequestBody FullProcessDto processDto) {
         processDto.applyResourceId(id);
         return useCaseInteractor.execute(updateProcessUseCase,
-                                         new Supplier<ModifyEntityUseCase.InputData<Process>>() {
+                                         new Supplier<ModifyElementUseCase.InputData<Process>>() {
 
                                              @Override
-                                             public ModifyEntityUseCase.InputData<Process> get() {
+                                             public ModifyElementUseCase.InputData<Process> get() {
                                                  Client client = getClient(user);
                                                  IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new ModifyEntityUseCase.InputData<Process>(
+                                                 return new ModifyElementUseCase.InputData<Process>(
                                                          dtoToEntityTransformer.transformDto2Process(processDto,
                                                                                                      idRefResolver),
                                                          client, eTag, user.getUsername());
@@ -270,8 +270,8 @@ public class ProcessController extends AbstractEntityController implements Proce
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProcess(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Process.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Process.class,
                                                  Key.uuidFrom(uuid), getAuthenticatedClient(auth)),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -309,7 +309,7 @@ public class ProcessController extends AbstractEntityController implements Proce
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getProcesses(GetEntitiesInputMapper.map(client, parentUuid, displayName, subType,
+        return getProcesses(GetElementsInputMapper.map(client, parentUuid, displayName, subType,
                                                        description, designator, name, updatedBy,
                                                        status,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
@@ -320,7 +320,7 @@ public class ProcessController extends AbstractEntityController implements Proce
     private CompletableFuture<PageDto<FullProcessDto>> getProcesses(
             GetProcessesUseCase.InputData inputData) {
         return useCaseInteractor.execute(getProcessesUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformProcess2Dto));
     }
 
@@ -359,7 +359,7 @@ public class ProcessController extends AbstractEntityController implements Proce
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getProcesses(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getProcesses(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                            ProcessSearchQueryDto.decodeFromSearchId(searchId),
                                                            PagingMapper.toConfig(pageSize,
                                                                                  pageNumber,

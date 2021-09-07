@@ -36,7 +36,7 @@ import lombok.ToString;
 @Entity(name = "control")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ControlData extends EntityLayerSupertypeData implements Control {
+public class ControlData extends ElementData implements Control {
 
     @Override
     public Class<? extends Identifiable> getModelInterface() {

@@ -19,18 +19,13 @@ package org.veo.core.service.domainservice
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.context.ActiveProfiles
 
-import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityLayerSupertype
 import org.veo.core.entity.Unit
-import org.veo.core.repository.PagedResult
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.service.CatalogItemService
 import org.veo.persistence.access.ClientRepositoryImpl

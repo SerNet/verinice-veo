@@ -42,7 +42,7 @@ public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
     @Transactional
     @Override
     public OutputData<R> execute(InputData input) {
-        // Retrieve required entities for operation:
+        // Retrieve required elements for operation:
         var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
 
         var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();

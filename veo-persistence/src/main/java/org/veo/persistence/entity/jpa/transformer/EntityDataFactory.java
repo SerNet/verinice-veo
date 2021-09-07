@@ -32,8 +32,8 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
-import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
@@ -72,7 +72,7 @@ public class EntityDataFactory implements EntityFactory {
     @Override
     public Person createPerson(String name, ElementOwner unit) {
         Person person = new PersonData();
-        setEntityLayerData(person, name, unit);
+        setElementData(person, name, unit);
         return person;
     }
 
@@ -80,7 +80,7 @@ public class EntityDataFactory implements EntityFactory {
     public Process createProcess(String name, ElementOwner unit) {
         Process process = new ProcessData();
         process.setStatus(Status.NEW);
-        setEntityLayerData(process, name, unit);
+        setElementData(process, name, unit);
         return process;
     }
 
@@ -96,28 +96,28 @@ public class EntityDataFactory implements EntityFactory {
     @Override
     public Asset createAsset(String name, ElementOwner unit) {
         Asset asset = new AssetData();
-        setEntityLayerData(asset, name, unit);
+        setElementData(asset, name, unit);
         return asset;
     }
 
     @Override
     public Control createControl(String name, ElementOwner unit) {
         Control control = new ControlData();
-        setEntityLayerData(control, name, unit);
+        setElementData(control, name, unit);
         return control;
     }
 
     @Override
     public Incident createIncident(String name, ElementOwner unit) {
         Incident incident = new IncidentData();
-        setEntityLayerData(incident, name, unit);
+        setElementData(incident, name, unit);
         return incident;
     }
 
     @Override
     public Scenario createScenario(String name, ElementOwner unit) {
         Scenario scenario = new ScenarioData();
-        setEntityLayerData(scenario, name, unit);
+        setElementData(scenario, name, unit);
         return scenario;
     }
 
@@ -136,7 +136,7 @@ public class EntityDataFactory implements EntityFactory {
     @Override
     public Document createDocument(String name, ElementOwner parent) {
         Document document = new DocumentData();
-        setEntityLayerData(document, name, parent);
+        setElementData(document, name, parent);
         return document;
     }
 
@@ -154,8 +154,7 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CustomLink createCustomLink(EntityLayerSupertype linkTarget,
-            EntityLayerSupertype linkSource) {
+    public CustomLink createCustomLink(Element linkTarget, Element linkSource) {
         CustomLink link = new CustomLinkData();
         link.setTarget(linkTarget);
         link.setSource(linkSource);
@@ -170,10 +169,9 @@ public class EntityDataFactory implements EntityFactory {
         return group;
     }
 
-    private void setEntityLayerData(EntityLayerSupertype entityLayerSupertype, String name,
-            ElementOwner unit) {
-        entityLayerSupertype.setName(name);
-        entityLayerSupertype.setOwnerOrContainingCatalogItem(unit);
+    private void setElementData(Element element, String name, ElementOwner unit) {
+        element.setName(name);
+        element.setOwnerOrContainingCatalogItem(unit);
     }
 
     @Override

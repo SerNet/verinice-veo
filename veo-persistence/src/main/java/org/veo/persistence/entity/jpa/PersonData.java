@@ -36,7 +36,7 @@ import lombok.ToString;
 @Entity(name = "person")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class PersonData extends EntityLayerSupertypeData implements Person {
+public class PersonData extends ElementData implements Person {
 
     @Override
     public Class<? extends Identifiable> getModelInterface() {

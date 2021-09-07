@@ -156,7 +156,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieving all incidents for a unit returns composite entities and their parts"() {
+    def "retrieving all incidents for a unit returns composite elements and their parts"() {
         given: "a saved incident and a composite incident containing it"
         txTemplate.execute {
             incidentRepository.save(newIncident(unit) {
@@ -302,7 +302,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "deleting composite entity leaves parts and containers intact"() {
+    def "deleting composite element leaves parts and containers intact"() {
         given: "Incident a, b, and C where a ∈ b, a ∈ c, b ∈ c"
         def (a,b,c) = txTemplate.execute {
             def a = incidentRepository.save(newIncident(unit))

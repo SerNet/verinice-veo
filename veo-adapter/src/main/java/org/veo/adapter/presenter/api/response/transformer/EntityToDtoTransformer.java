@@ -35,7 +35,7 @@ import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
@@ -59,13 +59,13 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.CompositeEntity;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Nameable;
@@ -94,8 +94,8 @@ public final class EntityToDtoTransformer {
     }
 
     public VersionedDto transform2Dto(Versioned source) {
-        if (source instanceof EntityLayerSupertype) {
-            return transform2Dto((EntityLayerSupertype) source);
+        if (source instanceof Element) {
+            return transform2Dto((Element) source);
         }
         if (source instanceof Domain) {
             return transformDomain2Dto((Domain) source);
@@ -119,7 +119,7 @@ public final class EntityToDtoTransformer {
                                                                                       .getSimpleName());
     }
 
-    public EntityLayerSupertypeDto transform2Dto(@Valid EntityLayerSupertype source) {
+    public ElementDto transform2Dto(@Valid Element source) {
 
         if (source instanceof Person) {
             return transformPerson2Dto((Person) source);
@@ -221,7 +221,7 @@ public final class EntityToDtoTransformer {
     // ScopeDto
     public FullScopeDto transformScope2Dto(@Valid Scope source) {
         FullScopeDto target = new FullScopeDto();
-        mapEntityLayerSupertype(source, target);
+        mapElement(source, target);
         target.setMembers(convertReferenceSet(source.getMembers()));
         return target;
     }
@@ -329,8 +329,8 @@ public final class EntityToDtoTransformer {
 
     }
 
-    private <TDto extends EntityLayerSupertypeDto & IdentifiableDto> void mapEntityLayerSupertype(
-            EntityLayerSupertype source, TDto target) {
+    private <TDto extends ElementDto & IdentifiableDto> void mapElement(Element source,
+            TDto target) {
         target.setId(source.getId()
                            .uuidValue());
         target.setDesignator(source.getDesignator());
@@ -349,9 +349,9 @@ public final class EntityToDtoTransformer {
         }
     }
 
-    private <TEntity extends EntityLayerSupertype, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(
-            CompositeEntity<TEntity> source, TDto target) {
-        mapEntityLayerSupertype(source, target);
+    private <TEntity extends Element, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(
+            CompositeElement<TEntity> source, TDto target) {
+        mapElement(source, target);
         target.setParts(convertReferenceSet(source.getParts()));
     }
 

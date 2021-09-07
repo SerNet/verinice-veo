@@ -29,8 +29,8 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
-import org.veo.core.repository.EntityLayerSupertypeQuery
-import org.veo.core.repository.EntityLayerSupertypeRepository
+import org.veo.core.repository.ElementQuery
+import org.veo.core.repository.ElementRepository
 import org.veo.core.repository.PagedResult
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
@@ -52,7 +52,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
     def setup() {
         catalogItemservice.createInstance(item1, existingDomain) >> newControl
-        entityRepo.getEntityLayerSupertypeRepositoryFor(_) >> repo
+        entityRepo.getElementRepositoryFor(_) >> repo
         repo.query(existingClient) >> emptyQuery
 
         catalogItemRepository.findById(item1.id) >> Optional.of(item1)

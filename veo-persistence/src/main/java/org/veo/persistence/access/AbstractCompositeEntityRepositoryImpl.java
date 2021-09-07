@@ -21,16 +21,16 @@ import static java.util.Collections.singleton;
 
 import java.util.UUID;
 
-import org.veo.core.entity.CompositeEntity;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Key;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
-abstract class AbstractCompositeEntityRepositoryImpl<S extends CompositeEntity<?>, T extends EntityLayerSupertypeData & CompositeEntity<?>>
-        extends AbstractEntityLayerSupertypeRepository<S, T> {
+abstract class AbstractCompositeEntityRepositoryImpl<S extends CompositeElement<?>, T extends ElementData & CompositeElement<?>>
+        extends AbstractElementRepository<S, T> {
 
     private final CompositeEntityDataRepository<T> compositeRepo;
 

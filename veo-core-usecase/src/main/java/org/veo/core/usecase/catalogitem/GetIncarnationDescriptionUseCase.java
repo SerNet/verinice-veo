@@ -29,14 +29,14 @@ import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.CatalogItemRepository;
-import org.veo.core.repository.EntityLayerSupertypeQuery;
-import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.ElementQuery;
+import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.UnitRepository;
@@ -142,8 +142,8 @@ public class GetIncarnationDescriptionUseCase implements
         Catalogable linkTarget = ref.getCatalogItem()
                                     .getElement();
 
-        if (element instanceof EntityLayerSupertype) {
-            EntityLayerSupertype el = (EntityLayerSupertype) element;
+        if (element instanceof Element) {
+            Element el = (Element) element;
             return el.getLinks()
                      .stream()
                      .filter(l -> l.getTarget()
@@ -155,29 +155,28 @@ public class GetIncarnationDescriptionUseCase implements
     }
 
     private Optional<Catalogable> findReferencedAppliedItem(Unit unit, CatalogItem catalogItem) {
-        List<EntityLayerSupertype> list = findReferencedAppliedItems(unit, catalogItem);
+        List<Element> list = findReferencedAppliedItems(unit, catalogItem);
         return list.size() == 0 ? Optional.empty() : Optional.of(list.get(0));
     }
 
     /**
-     * Searches for {@link EntityLayerSupertype} in the unit which have the given
-     * catalogItem applied.
+     * Searches for {@link Element} in the unit which have the given catalogItem
+     * applied.
      */
-    private List<EntityLayerSupertype> findReferencedAppliedItems(Unit unit,
-            CatalogItem catalogItem) {
+    private List<Element> findReferencedAppliedItems(Unit unit, CatalogItem catalogItem) {
         return findReferencedAppliedItems(unit, catalogItem,
                                           PagingConfiguration.UNPAGED).getResultPage();
     }
 
     /**
-     * Searches for {@link EntityLayerSupertype} in the unit which have the given
-     * catalogItem applied.
+     * Searches for {@link Element} in the unit which have the given catalogItem
+     * applied.
      */
-    private PagedResult<EntityLayerSupertype> findReferencedAppliedItems(Unit unit,
-            CatalogItem catalogItem, PagingConfiguration pagingConfiguration) {
-        EntityLayerSupertypeRepository<EntityLayerSupertype> repository = repositoryProvider.getEntityLayerSupertypeRepositoryFor((Class<EntityLayerSupertype>) catalogItem.getElement()
-                                                                                                                                                                           .getModelInterface());
-        EntityLayerSupertypeQuery<EntityLayerSupertype> query = repository.query(unit.getClient());
+    private PagedResult<Element> findReferencedAppliedItems(Unit unit, CatalogItem catalogItem,
+            PagingConfiguration pagingConfiguration) {
+        ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) catalogItem.getElement()
+                                                                                                                       .getModelInterface());
+        ElementQuery<Element> query = repository.query(unit.getClient());
         query.whereOwnerIs(unit);
         query.whereAppliedItemsContains(catalogItem);
         return query.execute(pagingConfiguration);

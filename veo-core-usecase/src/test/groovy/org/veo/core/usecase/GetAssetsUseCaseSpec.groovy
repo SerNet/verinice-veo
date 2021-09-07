@@ -21,16 +21,16 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.repository.AssetRepository
-import org.veo.core.repository.EntityLayerSupertypeQuery
+import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.QueryCondition
 import org.veo.core.usecase.asset.GetAssetsUseCase
-import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
+import org.veo.core.usecase.base.GetElementsUseCase.InputData
 
 class GetAssetsUseCaseSpec extends UseCaseSpec {
 
     AssetRepository assetRepository = Mock()
-    EntityLayerSupertypeQuery<Person> query = Mock()
+    ElementQuery<Person> query = Mock()
     PagingConfiguration pagingConfiguration = Mock()
 
     GetAssetsUseCase usecase = new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider)
@@ -51,7 +51,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
-        output.entities.resultPage*.id == [id]
+        output.elements.resultPage*.id == [id]
     }
 
 
@@ -73,6 +73,6 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeMatches(input.subType)
         1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
-        output.entities.resultPage*.id == [id]
+        output.elements.resultPage*.id == [id]
     }
 }

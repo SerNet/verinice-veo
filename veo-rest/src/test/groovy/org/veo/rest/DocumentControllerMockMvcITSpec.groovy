@@ -156,7 +156,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieving all documents for a unit returns composite entities and their parts"() {
+    def "retrieving all documents for a unit returns composite elements and their parts"() {
         given: "a saved document and a composite document containing it"
 
         txTemplate.execute {

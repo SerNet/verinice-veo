@@ -19,10 +19,10 @@ package org.veo.core.entity
 
 import spock.lang.Specification
 
-class EntityLayerSupertypeSpec extends Specification {
+class ElementSpec extends Specification {
     def "formats complete display name"() {
-        given: "an EntityLayerSupertype spy"
-        def spy = Spy(EntityLayerSupertype)
+        given: "an Element spy"
+        def spy = Spy(Element)
 
         when: "setting abbreviation, name, and designator"
         spy.abbreviation >> "FF"
@@ -33,8 +33,8 @@ class EntityLayerSupertypeSpec extends Specification {
     }
 
     def "formats display name without abbreviation"() {
-        given: "an EntityLayerSupertype spy"
-        def spy = Spy(EntityLayerSupertype)
+        given: "an Element spy"
+        def spy = Spy(Element)
 
         when: "setting the abbreviation to null"
         spy.abbreviation >> null

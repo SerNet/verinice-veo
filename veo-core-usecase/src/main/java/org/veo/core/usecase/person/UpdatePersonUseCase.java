@@ -19,9 +19,9 @@ package org.veo.core.usecase.person;
 
 import org.veo.core.entity.Person;
 import org.veo.core.repository.PersonRepository;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 
-public class UpdatePersonUseCase extends ModifyEntityUseCase<Person> {
+public class UpdatePersonUseCase extends ModifyElementUseCase<Person> {
 
     public UpdatePersonUseCase(PersonRepository personRepository) {
         super(personRepository);

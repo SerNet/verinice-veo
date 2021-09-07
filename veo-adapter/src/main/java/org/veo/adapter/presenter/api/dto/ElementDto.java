@@ -25,7 +25,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
 
-public interface EntityLayerSupertypeDto extends NameableDto, VersionedDto, CatalogableDto {
+public interface ElementDto extends NameableDto, VersionedDto, CatalogableDto {
 
     IdRef<ElementOwner> getOwner();
 

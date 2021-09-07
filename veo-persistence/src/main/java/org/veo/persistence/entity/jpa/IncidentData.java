@@ -35,7 +35,7 @@ import lombok.ToString;
 @Entity(name = "incident")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class IncidentData extends EntityLayerSupertypeData implements Incident {
+public class IncidentData extends ElementData implements Incident {
 
     @ManyToMany(targetEntity = IncidentData.class,
                 cascade = { CascadeType.PERSIST, CascadeType.MERGE })

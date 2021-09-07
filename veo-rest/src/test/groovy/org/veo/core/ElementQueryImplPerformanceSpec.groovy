@@ -36,9 +36,9 @@ import org.veo.persistence.entity.jpa.ProcessData
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
-@SpringBootTest(classes = EntityLayerSupertypeQueryImplPerformanceSpec.class)
+@SpringBootTest(classes = ElementQueryImplPerformanceSpec.class)
 @ActiveProfiles(["test", "stats"])
-class EntityLayerSupertypeQueryImplPerformanceSpec extends VeoSpringSpec {
+class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository

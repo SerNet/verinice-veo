@@ -65,7 +65,7 @@ import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.catalog.GetCatalogUseCase;
 import org.veo.core.usecase.catalog.GetCatalogsUseCase;
@@ -383,8 +383,8 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public DeleteEntityUseCase deleteEntityUseCase(RepositoryProvider repositoryProvider) {
-        return new DeleteEntityUseCase(repositoryProvider);
+    public DeleteElementUseCase deleteElementUseCase(RepositoryProvider repositoryProvider) {
+        return new DeleteElementUseCase(repositoryProvider);
     }
 
     @Bean

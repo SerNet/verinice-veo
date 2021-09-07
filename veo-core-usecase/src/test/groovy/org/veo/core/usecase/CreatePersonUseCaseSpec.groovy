@@ -19,7 +19,7 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Person
 import org.veo.core.repository.PersonRepository
-import org.veo.core.usecase.base.CreateEntityUseCase
+import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.person.CreatePersonUseCase
 
 class CreatePersonUseCaseSpec extends UseCaseSpec {
@@ -36,7 +36,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         p.owner >> existingUnit
 
         when:
-        def output = usecase.execute(new CreateEntityUseCase.InputData(p, existingClient))
+        def output = usecase.execute(new CreateElementUseCase.InputData(p, existingClient))
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * personRepository.save(p) >> p

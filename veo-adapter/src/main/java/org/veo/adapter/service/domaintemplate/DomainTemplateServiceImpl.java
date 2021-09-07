@@ -56,7 +56,7 @@ import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
@@ -327,8 +327,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         ref.cache.entrySet()
                  .stream()
-                 .filter(e -> (e.getValue() instanceof EntityLayerSupertype))
-                 .map(e -> (EntityLayerSupertype) e.getValue())
+                 .filter(e -> (e.getValue() instanceof Element))
+                 .map(e -> (Element) e.getValue())
                  .forEach(es -> {
                      es.getLinks()
                        .forEach(link -> {
@@ -337,7 +337,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                Catalogable catalogable = elementCache.get(link.getTarget()
                                                                               .getId()
                                                                               .uuidValue());
-                               link.setTarget((EntityLayerSupertype) catalogable);
+                               link.setTarget((Element) catalogable);
                            }
 
                        });

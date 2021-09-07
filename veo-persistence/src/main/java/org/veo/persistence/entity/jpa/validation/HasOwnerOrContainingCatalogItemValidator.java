@@ -20,14 +20,13 @@ package org.veo.persistence.entity.jpa.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.entity.jpa.ElementData;
 
 public class HasOwnerOrContainingCatalogItemValidator
-        implements ConstraintValidator<HasOwnerOrContainingCatalogItem, EntityLayerSupertypeData> {
+        implements ConstraintValidator<HasOwnerOrContainingCatalogItem, ElementData> {
 
     @Override
-    public boolean isValid(EntityLayerSupertypeData catalogable,
-            ConstraintValidatorContext context) {
+    public boolean isValid(ElementData catalogable, ConstraintValidatorContext context) {
         // that's an XOR
         return catalogable.getOwner() != null ^ catalogable.getContainingCatalogItem() != null;
     }

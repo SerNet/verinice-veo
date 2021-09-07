@@ -21,9 +21,9 @@ import org.veo.core.entity.Person;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.base.CreateEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
 
-public class CreatePersonUseCase extends CreateEntityUseCase<Person> {
+public class CreatePersonUseCase extends CreateElementUseCase<Person> {
 
     public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository entityRepo,
             DesignatorService designatorService) {

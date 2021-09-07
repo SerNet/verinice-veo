@@ -19,9 +19,9 @@ package org.veo.core.usecase.scope;
 
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.ScopeRepository;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 
-public class UpdateScopeUseCase extends ModifyEntityUseCase<Scope> {
+public class UpdateScopeUseCase extends ModifyElementUseCase<Scope> {
 
     public UpdateScopeUseCase(ScopeRepository scopeRepository) {
         super(scopeRepository);

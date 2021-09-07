@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.core.entity.Catalogable;
@@ -72,7 +72,7 @@ class PlaceholderResolver extends IdRefResolver {
     private Identifiable createElement(String id, Class<? extends Identifiable> type) {
         IdentifiableDto catalogableDto = dtoCache.get(id);
         if (catalogableDto != null) {
-            EntityLayerSupertypeDto es = (EntityLayerSupertypeDto) catalogableDto;
+            ElementDto es = (ElementDto) catalogableDto;
             HashMap<String, List<CustomLinkDto>> hashMap = new HashMap<>(es.getLinks());
             es.getLinks()
               .clear();

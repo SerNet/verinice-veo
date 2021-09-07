@@ -21,7 +21,7 @@ import java.util.Collections;
 
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
@@ -29,7 +29,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.service.CatalogItemService;
 import org.veo.core.usecase.UseCaseTools;
@@ -57,9 +57,9 @@ public class CatalogItemServiceImpl implements CatalogItemService {
         Catalogable newCatalogable = entityTransformer.transformDto2Catalogable(dto,
                                                                                 placeholderResolver);
         preparations.prepareElement(domain, newCatalogable, false);
-        if (catalogElement instanceof EntityLayerSupertype) {
-            EntityLayerSupertype newELST = (EntityLayerSupertype) newCatalogable;
-            EntityLayerSupertype catalogELST = (EntityLayerSupertype) catalogElement;
+        if (catalogElement instanceof Element) {
+            Element newELST = (Element) newCatalogable;
+            Element catalogELST = (Element) catalogElement;
             catalogELST.getLinks()
                        .stream()
                        .sorted(UseCaseTools.BY_LINK_EXECUTION)
@@ -96,8 +96,8 @@ public class CatalogItemServiceImpl implements CatalogItemService {
         dto.setOwner(null);
         dto.getDomains()
            .clear();
-        if (dto instanceof EntityLayerSupertypeDto) {
-            EntityLayerSupertypeDto edto = (EntityLayerSupertypeDto) dto;
+        if (dto instanceof ElementDto) {
+            ElementDto edto = (ElementDto) dto;
             edto.getLinks()
                 .clear();
             edto.getSubType()

@@ -65,7 +65,7 @@ class SwaggerSpec extends VeoSpringSpec {
     }
 
 
-    def "displayName is not required for parts when putting composite entities"() {
+    def "displayName is not required for parts when putting composite elements"() {
         when:
         def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto
         then:
@@ -79,7 +79,7 @@ class SwaggerSpec extends VeoSpringSpec {
         !partReferenceSchema.required.contains('displayName')
     }
 
-    def "targetUri is required for parts when putting composite entities"() {
+    def "targetUri is required for parts when putting composite elements"() {
         when:
         def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto
         then:
@@ -117,7 +117,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "allowed entity schema types are listed"() {
         given: "existing entity types"
-        def schemaTypes = EntityType.ENTITY_TYPES
+        def schemaTypes = EntityType.ELEMENT_TYPES
                 .collect{it.singularTerm}
                 .sort()
 

@@ -24,11 +24,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.entity.jpa.ElementData;
 
 @NoRepositoryBean
-public interface CompositeEntityDataRepository<T extends EntityLayerSupertypeData>
-        extends EntityLayerSupertypeDataRepository<T> {
+public interface CompositeEntityDataRepository<T extends ElementData>
+        extends ElementDataRepository<T> {
 
     //@formatter:off
     @Query("select distinct e from #{#entityName} as e "

@@ -60,14 +60,14 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         usecase.execute(input)
 
         then: "the client for the unit is retrieved"
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Asset) >> assetRepository
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Control) >> controlRepository
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentRepository
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Incident) >> incidentRepository
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personRepository
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processRepository
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scenario) >> scenarioRepository
-        1 * repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scope) >> scopeRepository
+        1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
+        1 * repositoryProvider.getElementRepositoryFor(Control) >> controlRepository
+        1 * repositoryProvider.getElementRepositoryFor(Document) >> documentRepository
+        1 * repositoryProvider.getElementRepositoryFor(Incident) >> incidentRepository
+        1 * repositoryProvider.getElementRepositoryFor(Person) >> personRepository
+        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
+        1 * repositoryProvider.getElementRepositoryFor(Scenario) >> scenarioRepository
+        1 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
         1 * clientRepository.findById(_) >> Optional.of(existingClient)
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * scopeRepository.deleteByUnit(existingUnit)

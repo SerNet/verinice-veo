@@ -22,7 +22,7 @@ import java.util.UUID;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
@@ -50,12 +50,11 @@ public final class EntitySpecifications {
         return catalogItem -> namespace.equals(catalogItem.getNamespace());
     }
 
-    public static <T extends EntityLayerSupertype> SameClientSpecification<T> hasSameClient(
-            Client client) {
+    public static <T extends Element> SameClientSpecification<T> hasSameClient(Client client) {
         return new SameClientSpecification<>(client);
     }
 
-    public static ValidUnitSpecification<EntityLayerSupertype> hasValidUnit() {
+    public static ValidUnitSpecification<Element> hasValidUnit() {
         return ValidUnitSpecification.INSTANCE;
     }
 

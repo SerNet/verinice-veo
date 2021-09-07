@@ -19,9 +19,9 @@ package org.veo.core.usecase.incident;
 
 import org.veo.core.entity.Incident;
 import org.veo.core.repository.IncidentRepository;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 
-public class UpdateIncidentUseCase extends ModifyEntityUseCase<Incident> {
+public class UpdateIncidentUseCase extends ModifyElementUseCase<Incident> {
 
     public UpdateIncidentUseCase(IncidentRepository incidentRepository) {
         super(incidentRepository);

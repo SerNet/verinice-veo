@@ -41,10 +41,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
-
-    private static final List<String> VALID_TYPE_SINGULAR_TERMS = EntityType.ENTITY_TYPES.stream()
-                                                                                         .map(EntityType::getSingularTerm)
-                                                                                         .collect(Collectors.toList());
+    private static final List<String> VALID_TYPE_SINGULAR_TERMS = EntityType.ELEMENT_TYPES.stream()
+                                                                                          .map(EntityType::getSingularTerm)
+                                                                                          .collect(Collectors.toList());
     private final String schemaFilePath;
 
     public EntitySchemaServiceClassPathImpl(@NonNull @NotNull String schemaFilePath) {
@@ -78,9 +77,7 @@ public class EntitySchemaServiceClassPathImpl implements EntitySchemaService {
         log.debug("Loading file form classpath: {}", file);
         try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass()
                                                                               .getResourceAsStream(file),
-                StandardCharsets.UTF_8
-
-        ))) {
+                StandardCharsets.UTF_8))) {
             return br.lines()
                      .collect(Collectors.joining("\n"));
         } catch (IOException e) {

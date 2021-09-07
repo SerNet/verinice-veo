@@ -31,8 +31,8 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
-import org.veo.core.entity.EntityLayerSupertype;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
@@ -72,7 +72,7 @@ public interface EntityFactory {
      */
     Domain createDomain(String name, String authority, String templateVersion, String revision);
 
-    CustomLink createCustomLink(EntityLayerSupertype linkTarget, EntityLayerSupertype linkSource);
+    CustomLink createCustomLink(Element linkTarget, Element linkSource);
 
     Scope createScope(String name, ElementOwner owner);
 

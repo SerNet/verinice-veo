@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCustomLinkTarget;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -39,6 +39,6 @@ public class CustomLinkDto extends CustomAspectDto {
     @NotNull(message = "A target must be present.")
     @ToString.Include
     @Schema(required = true, implementation = IdRefCustomLinkTarget.class)
-    private IdRef<EntityLayerSupertype> target;
+    private IdRef<Element> target;
 
 }

@@ -19,9 +19,9 @@ package org.veo.core.usecase.scenario;
 
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ScenarioRepository;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 
-public class UpdateScenarioUseCase extends ModifyEntityUseCase<Scenario> {
+public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
 
     public UpdateScenarioUseCase(ScenarioRepository scenarioRepository) {
         super(scenarioRepository);

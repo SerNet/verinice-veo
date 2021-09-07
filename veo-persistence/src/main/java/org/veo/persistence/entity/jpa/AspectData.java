@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.Aspect;
 
 import lombok.Data;
@@ -42,7 +42,7 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AspectData implements Aspect {
 
-    public AspectData(Domain domain, EntityLayerSupertype owner) {
+    public AspectData(Domain domain, Element owner) {
         this.domain = domain;
         this.owner = owner;
     }
@@ -63,8 +63,6 @@ public abstract class AspectData implements Aspect {
     private Domain domain;
 
     @EqualsAndHashCode.Include
-    @ManyToOne(fetch = FetchType.LAZY,
-               targetEntity = EntityLayerSupertypeData.class,
-               optional = false)
-    private EntityLayerSupertype owner;
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
+    private Element owner;
 }

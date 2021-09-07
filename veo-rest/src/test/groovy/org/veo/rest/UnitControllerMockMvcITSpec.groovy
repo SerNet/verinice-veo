@@ -344,7 +344,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "delete a unit containing linked entities"() {
+    def "delete a unit containing linked elements"() {
         given: "a unit with linked asset and process"
         def unit = createTestClientUnit()
 

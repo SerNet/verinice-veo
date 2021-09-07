@@ -18,21 +18,21 @@
 package org.veo.core.entity;
 
 /**
- * A link connects two {@link EntityLayerSupertype} objects. It serves
- * documentation purposes only. It's defined by its source (owning) entity &
- * target entity, but may also hold dynamic attributes that document the link
- * (just like the attributes on a custom aspect).
+ * A link connects two {@link Element} objects. It serves documentation purposes
+ * only. It's defined by its source (owning) entity & target entity, but may
+ * also hold dynamic attributes that document the link (just like the attributes
+ * on a custom aspect).
  *
  * @see CustomAspect
  */
 public interface CustomLink extends CustomAspect {
 
-    EntityLayerSupertype getTarget();
+    Element getTarget();
 
-    void setTarget(EntityLayerSupertype aTarget);
+    void setTarget(Element aTarget);
 
-    EntityLayerSupertype getSource();
+    Element getSource();
 
-    void setSource(EntityLayerSupertype aSource);
+    void setSource(Element aSource);
 
 }

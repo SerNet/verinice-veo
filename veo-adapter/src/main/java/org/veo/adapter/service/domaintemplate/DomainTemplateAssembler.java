@@ -42,7 +42,7 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CatalogableDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
@@ -180,7 +180,7 @@ public class DomainTemplateAssembler {
      * when {@link #createDomainTemplateDto()} is called.
      */
     private void createCatalog(File[] resources, String catalogName,
-            Function<EntityLayerSupertypeDto, String> toNamespace)
+            Function<ElementDto, String> toNamespace)
             throws JsonParseException, JsonMappingException, IOException {
         String catalogId = Key.newUuid()
                               .uuidValue();
@@ -203,19 +203,19 @@ public class DomainTemplateAssembler {
 
     private Map<String, TransformCatalogItemDto> createCatalogItems(
             Map<String, CatalogableDto> readElements, String catalogId,
-            Function<EntityLayerSupertypeDto, String> toNamespace) {
+            Function<ElementDto, String> toNamespace) {
         Map<String, TransformCatalogItemDto> cache = new HashMap<>();
         for (Entry<String, CatalogableDto> e : readElements.entrySet()) {
             TransformCatalogItemDto itemDto = new TransformCatalogItemDto();
             itemDto.setElement(e.getValue());
             itemDto.setCatalog(SyntheticIdRef.from(catalogId, Catalog.class));
-            EntityLayerSupertypeDto supertypeDto = (EntityLayerSupertypeDto) e.getValue();
-            itemDto.setNamespace(toNamespace.apply(supertypeDto));
+            ElementDto elementDto = (ElementDto) e.getValue();
+            itemDto.setNamespace(toNamespace.apply(elementDto));
             itemDto.setId(Key.newUuid()
                              .uuidValue());
-            supertypeDto.setOwner(SyntheticIdRef.from(itemDto.getId(), ElementOwner.class,
-                                                      CatalogItem.class));
-            supertypeDto.setType(SyntheticIdRef.toSingularTerm(supertypeDto.getModelInterface()));
+            elementDto.setOwner(SyntheticIdRef.from(itemDto.getId(), ElementOwner.class,
+                                                    CatalogItem.class));
+            elementDto.setType(SyntheticIdRef.toSingularTerm(elementDto.getModelInterface()));
             cache.put(e.getKey(), itemDto);
         }
         return cache;
@@ -223,8 +223,8 @@ public class DomainTemplateAssembler {
 
     private void createTailoringReferences(CatalogableDto value,
             Map<String, TransformCatalogItemDto> catalogItems) {
-        if (value instanceof EntityLayerSupertypeDto) {
-            EntityLayerSupertypeDto els = (EntityLayerSupertypeDto) value;
+        if (value instanceof ElementDto) {
+            ElementDto els = (ElementDto) value;
             TransformCatalogItemDto currentItem = catalogItems.get(((IdentifiableDto) value).getId());
             currentItem.setTailoringReferences(new HashSet<AbstractTailoringReferenceDto>());
             els.getLinks()

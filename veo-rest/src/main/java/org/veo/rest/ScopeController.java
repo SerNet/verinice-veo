@@ -70,22 +70,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.scope.CreateScopeUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
@@ -124,18 +124,18 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
     private final GetScopeUseCase getScopeUseCase;
     private final GetScopesUseCase getScopesUseCase;
     private final UpdateScopeUseCase updateScopeUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
 
     public ScopeController(UseCaseInteractor useCaseInteractor,
             CreateScopeUseCase createScopeUseCase, GetScopeUseCase getScopeUseCase,
             GetScopesUseCase getScopesUseCase, UpdateScopeUseCase updateScopeUseCase,
-            DeleteEntityUseCase deleteEntityUseCase) {
+            DeleteElementUseCase deleteElementUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createScopeUseCase = createScopeUseCase;
         this.getScopeUseCase = getScopeUseCase;
         this.getScopesUseCase = getScopesUseCase;
         this.updateScopeUseCase = updateScopeUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
     }
 
     @GetMapping
@@ -174,7 +174,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        final GetEntitiesUseCase.InputData inputData = GetEntitiesInputMapper.map(client, unitUuid,
+        final GetElementsUseCase.InputData inputData = GetElementsInputMapper.map(client, unitUuid,
                                                                                   displayName,
                                                                                   subType,
                                                                                   description,
@@ -188,9 +188,9 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
     }
 
     private CompletableFuture<PageDto<FullScopeDto>> getScopes(
-            GetEntitiesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getScopesUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformScope2Dto));
     }
 
@@ -226,7 +226,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
             @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getMembers(
+    public @Valid CompletableFuture<List<ElementDto>> getMembers(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -248,10 +248,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateScopeDto createScopeDto) {
         return useCaseInteractor.execute(createScopeUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Scope>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Scope>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scope(createScopeDto,
                                                                                                idRefResolver),
                                                      client);
@@ -279,7 +279,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
             @Valid @NotNull @RequestBody FullScopeDto scopeDto) {
         scopeDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updateScopeUseCase,
-                                         (Supplier<ModifyEntityUseCase.InputData<Scope>>) () -> {
+                                         (Supplier<ModifyElementUseCase.InputData<Scope>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
                                              return new UpdateScopeUseCase.InputData<>(
@@ -299,8 +299,8 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
 
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Scope.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Scope.class,
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -333,7 +333,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getScopes(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getScopes(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                         SearchQueryDto.decodeFromSearchId(searchId),
                                                         PagingMapper.toConfig(pageSize, pageNumber,
                                                                               sortColumn,

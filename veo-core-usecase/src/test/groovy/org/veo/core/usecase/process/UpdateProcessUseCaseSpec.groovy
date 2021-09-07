@@ -21,7 +21,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.ModifyEntityUseCase.InputData
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {

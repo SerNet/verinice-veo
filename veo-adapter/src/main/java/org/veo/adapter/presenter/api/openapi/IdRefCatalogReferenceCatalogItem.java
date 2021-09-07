@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * This class is for documentation only. It specifies type-specific comments and
- * examples for a reference to a CatalogItemReference.
+ * examples for a reference to a catalog item.
  *
  * It is only supposed to be used in OpenApi annotations and should not be
  * extended and implemented.

@@ -22,7 +22,7 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * Swagger documentation for a rerefence to a composite entity's part:
+ * Swagger documentation for a rerefence to a composite element's part:
  */
 @Schema(name = "PartReference", description = "A reference to an entity's part")
 public interface IdRefPart extends IIdRef {

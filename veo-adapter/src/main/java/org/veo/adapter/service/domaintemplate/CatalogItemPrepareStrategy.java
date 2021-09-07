@@ -24,7 +24,7 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Catalogable;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 
 /**
  * Defines the behavior to prepare {@link CatalogItem} or {@link Catalogable}
@@ -54,8 +54,8 @@ public class CatalogItemPrepareStrategy {
     public void prepareElement(Domain domain, Catalogable element, boolean isCatalogElement) {
         element.setId(null);
         element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
-        if (element instanceof EntityLayerSupertype) {
-            EntityLayerSupertype est = (EntityLayerSupertype) element;
+        if (element instanceof Element) {
+            Element est = (Element) element;
             est.getDomains()
                .clear();
             est.addToDomains(domain);
@@ -70,7 +70,7 @@ public class CatalogItemPrepareStrategy {
         }
     }
 
-    private void processCustomAspects(Domain domain, EntityLayerSupertype est) {
+    private void processCustomAspects(Domain domain, Element est) {
         est.getCustomAspects()
            .forEach(ca -> {
                ca.getDomains()
@@ -79,7 +79,7 @@ public class CatalogItemPrepareStrategy {
            });
     }
 
-    private void processLinks(Domain domain, EntityLayerSupertype est) {
+    private void processLinks(Domain domain, Element est) {
         est.getLinks()
            .forEach(link -> {
                link.getDomains()
@@ -88,7 +88,7 @@ public class CatalogItemPrepareStrategy {
            });
     }
 
-    private void processSubTypes(Domain domain, EntityLayerSupertype est) {
+    private void processSubTypes(Domain domain, Element est) {
         if (!est.getSubTypeAspects()
                 .isEmpty()) {
             List<String> aspects = est.getSubTypeAspects()

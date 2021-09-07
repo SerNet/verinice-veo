@@ -99,7 +99,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
     }
 
     def "delete a scope containing composites"() {
-        given: "A nested structure of scopes, composites and entities"
+        given: "A nested structure of scopes, composites and elements"
         def scope = txTemplate.execute {
             assetDataRepository.save(assetComposite)
             personDataRepository.save(personComposite)
@@ -132,7 +132,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
     }
 
     def "delete composites that are memebers of a scope"() {
-        given: "A nested structure of scopes, composites and entities"
+        given: "A nested structure of scopes, composites and elements"
         def scope = txTemplate.execute {
             assetComposite = assetDataRepository.save(assetComposite)
             asset = assetDataRepository.save(asset)
@@ -160,7 +160,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
 
         then: "the scope still contains all members"
         // this behaviour is expected - scope members have to be removed by business logic
-        // when entities are removed. Currently this is implemented in the repositories
+        // when elements are removed. Currently this is implemented in the repositories
         // (caution: not JPA-repositories)
         def persistedScope = scopeDataRepository.findById(scope.id.uuidValue())
         persistedScope.present

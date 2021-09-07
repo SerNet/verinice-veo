@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Account;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -52,18 +52,18 @@ public class GetUnitDumpUseCase implements
         var unit = unitRepository.findById(input.unitId)
                                  .orElseThrow(() -> new NotFoundException(
                                          String.format("Unit %s does not exist.", input.unitId)));
-        return new OutputData(unit, getEntities(unit));
+        return new OutputData(unit, getElements(unit));
     }
 
-    private Set<EntityLayerSupertype> getEntities(Unit unit) {
-        return EntityType.ENTITY_TYPE_CLASSES.stream()
-                                             .map(repositoryProvider::getEntityLayerSupertypeRepositoryFor)
-                                             .map(repo -> repo.query(unit.getClient()))
-                                             .map(query -> query.whereUnitIn(Set.of(unit)))
-                                             .flatMap(query -> query.execute(PagingConfiguration.UNPAGED)
-                                                                    .getResultPage()
-                                                                    .stream())
-                                             .collect(Collectors.toSet());
+    private Set<Element> getElements(Unit unit) {
+        return EntityType.ELEMENT_TYPE_CLASSES.stream()
+                                              .map(repositoryProvider::getElementRepositoryFor)
+                                              .map(repo -> repo.query(unit.getClient()))
+                                              .map(query -> query.whereUnitIn(Set.of(unit)))
+                                              .flatMap(query -> query.execute(PagingConfiguration.UNPAGED)
+                                                                     .getResultPage()
+                                                                     .stream())
+                                              .collect(Collectors.toSet());
     }
 
     @Data
@@ -77,6 +77,6 @@ public class GetUnitDumpUseCase implements
     @AllArgsConstructor
     public static class OutputData implements UseCase.OutputData {
         private Unit unit;
-        private Set<EntityLayerSupertype> entities;
+        private Set<Element> elements;
     }
 }

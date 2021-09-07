@@ -27,7 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
@@ -39,15 +39,15 @@ import lombok.ToString;
 @Entity(name = "scope")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ScopeData extends EntityLayerSupertypeData implements Scope {
+public class ScopeData extends ElementData implements Scope {
 
-    @ManyToMany(targetEntity = EntityLayerSupertypeData.class,
+    @ManyToMany(targetEntity = ElementData.class,
                 cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "scope_members",
                joinColumns = @JoinColumn(name = "scope_id"),
                inverseJoinColumns = @JoinColumn(name = "member_id"))
     @Getter
-    private final Set<EntityLayerSupertype> members = new HashSet<>();
+    private final Set<Element> members = new HashSet<>();
 
     @Override
     public Class<? extends Identifiable> getModelInterface() {

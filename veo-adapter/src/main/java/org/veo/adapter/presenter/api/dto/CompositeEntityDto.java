@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefPart;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,8 +36,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public abstract class CompositeEntityDto<T extends EntityLayerSupertype>
-        extends AbstractEntityLayerSupertypeDto {
+public abstract class CompositeEntityDto<T extends Element> extends AbstractElementDto {
 
     private Set<IdRef<T>> parts = Collections.emptySet();
 

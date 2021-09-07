@@ -22,7 +22,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.CreateEntityUseCase
+import org.veo.core.usecase.base.CreateElementUseCase
 
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 
@@ -37,7 +37,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         process.name >> "John's process"
 
         when:
-        def output = usecase.execute(new CreateEntityUseCase.InputData(process, existingClient))
+        def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient))
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * processRepository.save(process) >> process

@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Element
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -60,7 +60,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
                 ]
             ])
         }
-        expect: "pagination works when getting all entities"
+        expect: "pagination works when getting all elements"
         with(parseJson(get("/$type?size=2&sortBy=abbreviation&sortOrder=desc"))) {
             items*.abbreviation == ["5", "4"]
             page == 0
@@ -105,7 +105,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         then:
         thrown(IllegalArgumentException)
 
-        expect: "pagination works when running a search for all entities in the unit"
+        expect: "pagination works when running a search for all elements in the unit"
         def searchUri = parseJson(post("/$type/searches", [:])).searchUrl
         with(parseJson(get("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc"))) {
             items*.abbreviation == ["5", "4"]
@@ -152,6 +152,6 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         thrown(IllegalArgumentException)
 
         where:
-        type << EntityType.values().findAll { EntityLayerSupertype.isAssignableFrom(it.type) }*.pluralTerm
+        type << EntityType.values().findAll { Element.isAssignableFrom(it.type) }*.pluralTerm
     }
 }

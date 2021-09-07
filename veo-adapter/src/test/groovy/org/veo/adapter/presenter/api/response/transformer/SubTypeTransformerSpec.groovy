@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto
+import org.veo.adapter.presenter.api.dto.ElementDto
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Element
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.specification.DomainBoundaryViolationException
@@ -28,8 +28,8 @@ import spock.lang.Specification
 
 class SubTypeTransformerSpec extends Specification {
 
-    EntityLayerSupertypeDto dto = Mock()
-    EntityLayerSupertype entity = Mock()
+    ElementDto dto = Mock()
+    Element entity = Mock()
     SubTypeTransformer aspectTransformer = new SubTypeTransformer()
     Domain domain0 = Mock(Domain) { it.id >> Key.newUuid() }
     Domain domain1 = Mock(Domain) { it.id >> Key.newUuid() }

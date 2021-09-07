@@ -21,7 +21,7 @@ package org.veo.core.entity;
  * A process is a series of business activities that use specific assets.
  */
 public interface Process
-        extends EntityLayerSupertype, CompositeEntity<Process>, RiskAffected<Process, ProcessRisk> {
+        extends Element, CompositeElement<Process>, RiskAffected<Process, ProcessRisk> {
 
     String SINGULAR_TERM = "process";
     String PLURAL_TERM = "processes";

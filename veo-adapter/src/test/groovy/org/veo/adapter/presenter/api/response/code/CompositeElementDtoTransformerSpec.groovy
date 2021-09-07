@@ -35,7 +35,7 @@ import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
 
-class CompositeEntityDtoTransformerSpec extends Specification {
+class CompositeElementDtoTransformerSpec extends Specification {
     def unitName = "Test unit"
     def unitId = "2e63d3f8-b326-4304-84e6-c12efbbcaaa4"
     def subUnitName = "Test subunit"
@@ -75,8 +75,8 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         return unit
     }
 
-    def "Transform simple composite entity to DTO"() {
-        given: "A unit with a composite entity"
+    def "Transform simple composite element to DTO"() {
+        given: "A unit with a composite element"
         Unit unit = createUnit()
 
         Asset compositeAsset = Mock()
@@ -96,7 +96,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         compositeAsset.getCreatedAt() >> Instant.now()
         compositeAsset.getUpdatedAt() >> Instant.now()
 
-        when: "the composite entity is transformed into a DTO"
+        when: "the composite element is transformed into a DTO"
         def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
 
         then: "The DTO contains all required data"
@@ -105,8 +105,8 @@ class CompositeEntityDtoTransformerSpec extends Specification {
 
     }
 
-    def "Transform composite entity with parts to DTO"() {
-        given: "A composite entity with two parts"
+    def "Transform composite element with parts to DTO"() {
+        given: "A composite element with two parts"
         Asset asset1 = Mock(Asset) {
             it.id >> Key.newUuid()
             it.displayName >> "Asset 1"
@@ -133,7 +133,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         }
 
 
-        when: "the composite entity is transformed to a DTO"
+        when: "the composite element is transformed to a DTO"
         def compositeAssetDto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
         then: "the DTO contains references to both parts"
         compositeAssetDto.parts.size() == 2
@@ -145,8 +145,8 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         ]
     }
 
-    def "Transform composite entity DTO with parts to entity"() {
-        given: "an asset composite entity DTO with two parts"
+    def "Transform composite element DTO with parts to entity"() {
+        given: "an asset composite element DTO with two parts"
         def asset1Ref = Mock(IdRef)
         def asset2Ref = Mock(IdRef)
         def asset1 = Mock(Asset)
@@ -168,7 +168,7 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         when: "transforming the DTO to an entity"
         def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, idRefResolver)
 
-        then: "the composite entity is transformed with parts"
+        then: "the composite element is transformed with parts"
         1 * factory.createAsset("Composite Asset", null) >> newCompositeAssetEntity
         1 * idRefResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
         result == newCompositeAssetEntity
@@ -176,8 +176,8 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         1 * subTypeTransformer.mapSubTypesToEntity(compositeAssetDto, newCompositeAssetEntity)
     }
 
-    def "Transform composite entity that contains itself"() {
-        given: "A composite entity that contains itself"
+    def "Transform composite element that contains itself"() {
+        given: "A composite element that contains itself"
 
         Asset compositeAsset = Mock()
         compositeAsset.id >> (Key.newUuid())
@@ -191,10 +191,10 @@ class CompositeEntityDtoTransformerSpec extends Specification {
         compositeAsset.updatedAt >> Instant.now()
 
 
-        when: "the composite entity is transformed"
+        when: "the composite element is transformed"
         def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
 
-        then: "The composite entity contains itself as it is not forbidden"
+        then: "The composite element contains itself as it is not forbidden"
         dto.parts == [
             IdRef.from(compositeAsset, refAssembler)
         ] as Set

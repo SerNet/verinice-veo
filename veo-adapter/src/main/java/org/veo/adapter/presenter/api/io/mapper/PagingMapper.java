@@ -21,14 +21,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.dto.PageDto;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 
 public class PagingMapper {
 
-    public static <TDto, TEntity extends EntityLayerSupertype> PageDto<TDto> toPage(
-            PagedResult<TEntity> input, Function<TEntity, TDto> mapper) {
+    public static <TDto, TElement extends Element> PageDto<TDto> toPage(PagedResult<TElement> input,
+            Function<TElement, TDto> mapper) {
         return new PageDto<TDto>(input.getResultPage()
                                       .stream()
                                       .map(mapper)

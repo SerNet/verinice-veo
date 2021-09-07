@@ -26,9 +26,9 @@ import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.CompositeEntity
+import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.CustomAspect
-import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Element
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
@@ -361,13 +361,13 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
         given:
         createClient()
-        createLinkedEntities()
+        createLinkedElements()
 
         when:
         def queryCounts = trackQueryCounts{
             deleteUnit()
         }
-        then: "all entities are removed"
+        then: "all elements are removed"
         with(personRepository.query(client)) {
             whereUnitIn([unit] as Set)
             execute(PagingConfiguration.UNPAGED).totalResults == 0
@@ -453,7 +453,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     }
 
     @Transactional
-    Scope saveScope(String name, List<CompositeEntity<EntityLayerSupertype>> members = []) {
+    Scope saveScope(String name, List<CompositeElement<Element>> members = []) {
         return scopeRepository.save(newScope(unit).tap {
             it.name = name
             it.members = members
@@ -570,7 +570,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     }
 
     @Transactional
-    def createLinkedEntities() {
+    def createLinkedElements() {
         def compositePerson = savePerson([
             newPerson(unit),
             newPerson(unit)

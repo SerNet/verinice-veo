@@ -19,12 +19,12 @@ package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.repository.AssetRepository;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 
 /**
  * @author urszeidler
  */
-public class UpdateAssetUseCase extends ModifyEntityUseCase<Asset> {
+public class UpdateAssetUseCase extends ModifyElementUseCase<Asset> {
     public UpdateAssetUseCase(AssetRepository assetRepository) {
         super(assetRepository);
     }

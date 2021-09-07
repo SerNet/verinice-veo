@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -128,8 +128,8 @@ public class IdRefResolver {
             if (entity instanceof Unit) {
                 ((Unit) entity).checkSameClient(client);
             }
-            if (entity instanceof EntityLayerSupertype) {
-                ((EntityLayerSupertype) entity).checkSameClient(client);
+            if (entity instanceof Element) {
+                ((Element) entity).checkSameClient(client);
             }
             if (entity instanceof Domain) {
                 if (!(EntitySpecifications.hasSameClient(client)).isSatisfiedBy(((Domain) entity).getOwner()))

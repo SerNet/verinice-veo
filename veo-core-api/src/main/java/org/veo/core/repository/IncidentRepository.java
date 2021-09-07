@@ -25,6 +25,6 @@ import org.veo.core.entity.Incident;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface IncidentRepository extends EntityLayerSupertypeRepository<Incident> {
+public interface IncidentRepository extends ElementRepository<Incident> {
 
 }

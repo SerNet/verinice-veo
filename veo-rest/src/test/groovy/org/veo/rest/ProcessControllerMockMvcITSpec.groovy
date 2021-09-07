@@ -739,7 +739,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "A risk can be created for a process"() {
-        given: "saved entities"
+        given: "saved elements"
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'New process-2'
@@ -849,7 +849,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "A risk can be updated with new information"() {
-        given: "a process risk and additional entities"
+        given: "a process risk and additional elements"
         def beforeCreation = Instant.now()
         def (Process process, ScenarioData scenario, Object postResult) = createRisk()
 
