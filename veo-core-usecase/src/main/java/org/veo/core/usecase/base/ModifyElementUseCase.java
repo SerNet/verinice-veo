@@ -20,8 +20,8 @@ package org.veo.core.usecase.base;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.entity.Element;
+import org.veo.core.repository.ElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
@@ -29,20 +29,20 @@ import org.veo.core.usecase.common.ETagMismatchException;
 
 import lombok.Value;
 
-public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype> implements
-        TransactionalUseCase<ModifyEntityUseCase.InputData<T>, ModifyEntityUseCase.OutputData<T>> {
+public abstract class ModifyElementUseCase<T extends Element> implements
+        TransactionalUseCase<ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>> {
 
-    private final EntityLayerSupertypeRepository<T> repo;
+    private final ElementRepository<T> repo;
 
-    public ModifyEntityUseCase(EntityLayerSupertypeRepository<T> repo) {
+    public ModifyElementUseCase(ElementRepository<T> repo) {
         this.repo = repo;
     }
 
     @Override
     public OutputData<T> execute(InputData<T> input) {
-        T entity = input.getEntity();
+        T entity = input.getElement();
         entity.checkSameClient(input.getAuthenticatedClient());
-        var storedEntity = repo.findById(input.entity.getId())
+        var storedEntity = repo.findById(input.element.getId())
                                .orElseThrow();
         checkETag(storedEntity, input);
         entity.version(input.username, storedEntity);
@@ -52,8 +52,7 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype> implem
         return new OutputData<T>(repo.save(entity));
     }
 
-    private void checkETag(EntityLayerSupertype storedElement,
-            InputData<? extends EntityLayerSupertype> input) {
+    private void checkETag(Element storedElement, InputData<? extends Element> input) {
         if (!ETag.matches(storedElement.getId()
                                        .uuidValue(),
                           storedElement.getVersion(), input.getETag())) {
@@ -64,9 +63,8 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype> implem
         }
     }
 
-    protected void checkClientBoundaries(InputData<? extends EntityLayerSupertype> input,
-            EntityLayerSupertype storedEntity) {
-        EntityLayerSupertype entity = input.getEntity();
+    protected void checkClientBoundaries(InputData<? extends Element> input, Element storedEntity) {
+        Element entity = input.getElement();
         entity.checkSameClient(storedEntity.getOwner()
                                            .getClient());
         entity.checkSameClient(input.getAuthenticatedClient());
@@ -77,7 +75,7 @@ public abstract class ModifyEntityUseCase<T extends EntityLayerSupertype> implem
     public static class InputData<T> implements UseCase.InputData {
 
         @Valid
-        T entity;
+        T element;
 
         @Valid
         Client authenticatedClient;

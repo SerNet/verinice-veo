@@ -69,23 +69,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
@@ -117,13 +117,14 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
     public DocumentController(UseCaseInteractor useCaseInteractor,
             GetDocumentUseCase getDocumentUseCase, GetDocumentsUseCase getDocumentsUseCase,
             CreateDocumentUseCase createDocumentUseCase,
-            UpdateDocumentUseCase updateDocumentUseCase, DeleteEntityUseCase deleteEntityUseCase) {
+            UpdateDocumentUseCase updateDocumentUseCase,
+            DeleteElementUseCase deleteElementUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getDocumentUseCase = getDocumentUseCase;
         this.getDocumentsUseCase = getDocumentsUseCase;
         this.createDocumentUseCase = createDocumentUseCase;
         this.updateDocumentUseCase = updateDocumentUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
     }
 
     public static final String URL_BASE_PATH = "/" + Document.PLURAL_TERM;
@@ -133,7 +134,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
     private final UpdateDocumentUseCase updateDocumentUseCase;
     private final GetDocumentUseCase getDocumentUseCase;
     private final GetDocumentsUseCase getDocumentsUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
 
     @GetMapping
     @Operation(summary = "Loads all documents")
@@ -166,7 +167,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getDocuments(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
+        return getDocuments(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
                                                        description, designator, name, updatedBy,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
                                                                              sortColumn,
@@ -174,9 +175,9 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
     }
 
     private CompletableFuture<PageDto<FullDocumentDto>> getDocuments(
-            GetEntitiesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getDocumentsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformDocument2Dto));
     }
 
@@ -213,7 +214,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
             @ApiResponse(responseCode = "404", description = "Document not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+    public @Valid CompletableFuture<List<ElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -235,10 +236,10 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateDocumentDto dto) {
         return useCaseInteractor.execute(createDocumentUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Document>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Document>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Document(dto,
                                                                                                   idRefResolver),
                                                      client);
@@ -278,8 +279,8 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Document.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Document.class,
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -311,7 +312,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getDocuments(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getDocuments(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                            SearchQueryDto.decodeFromSearchId(searchId),
                                                            PagingMapper.toConfig(pageSize,
                                                                                  pageNumber,

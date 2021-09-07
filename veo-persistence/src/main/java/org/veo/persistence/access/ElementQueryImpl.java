@@ -38,33 +38,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
-import org.veo.core.repository.EntityLayerSupertypeQuery;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
-import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.access.jpa.ElementDataRepository;
+import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.UnitData;
 
 /**
- * Implements {@link EntityLayerSupertypeQuery} using {@link Specification} API.
+ * Implements {@link ElementQuery} using {@link Specification} API.
  */
-public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSupertype, TDataClass extends EntityLayerSupertypeData>
-        implements EntityLayerSupertypeQuery<TInterface> {
+public class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementData>
+        implements ElementQuery<TInterface> {
 
-    private final EntityLayerSupertypeDataRepository<TDataClass> dataRepository;
+    private final ElementDataRepository<TDataClass> dataRepository;
     protected Specification<TDataClass> mySpec;
 
-    public EntityLayerSupertypeQueryImpl(EntityLayerSupertypeDataRepository<TDataClass> repo,
-            Client client) {
+    public ElementQueryImpl(ElementDataRepository<TDataClass> repo, Client client) {
         this.dataRepository = repo;
         mySpec = createSpecification(client);
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereAppliedItemsContains(CatalogItem item) {
+    public ElementQuery<TInterface> whereAppliedItemsContains(CatalogItem item) {
         mySpec = mySpec.and((root, query,
                 criteriaBuilder) -> criteriaBuilder.equal(root.join("appliedCatalogItems",
                                                                     JoinType.LEFT),
@@ -73,22 +72,21 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereOwnerIs(Unit unit) {
+    public ElementQuery<TInterface> whereOwnerIs(Unit unit) {
         mySpec = mySpec.and((root, query,
                 criteriaBuilder) -> criteriaBuilder.equal(root.join("owner"), unit));
         return this;
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereUnitIn(Set<Unit> units) {
+    public ElementQuery<TInterface> whereUnitIn(Set<Unit> units) {
         mySpec = mySpec.and((root, query, criteriaBuilder) -> in(root.get("owner"), units,
                                                                  criteriaBuilder));
         return this;
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereSubTypeMatches(
-            QueryCondition<String> condition) {
+    public ElementQuery<TInterface> whereSubTypeMatches(QueryCondition<String> condition) {
         mySpec = mySpec.and((root, query,
                 criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)
                                            .get("subType"),
@@ -97,35 +95,34 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereDisplayNameMatchesIgnoringCase(
+    public ElementQuery<TInterface> whereDisplayNameMatchesIgnoringCase(
             QueryCondition<String> condition) {
         inIgnoringCase(condition, "displayName");
         return this;
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereDescriptionMatchesIgnoreCase(
+    public ElementQuery<TInterface> whereDescriptionMatchesIgnoreCase(
             QueryCondition<String> condition) {
         inIgnoringCase(condition, "description");
         return this;
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereDesignatorMatchesIgnoreCase(
+    public ElementQuery<TInterface> whereDesignatorMatchesIgnoreCase(
             QueryCondition<String> condition) {
         inIgnoringCase(condition, "designator");
         return this;
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereNameMatchesIgnoreCase(
-            QueryCondition<String> condition) {
+    public ElementQuery<TInterface> whereNameMatchesIgnoreCase(QueryCondition<String> condition) {
         inIgnoringCase(condition, "name");
         return this;
     }
 
     @Override
-    public EntityLayerSupertypeQuery<TInterface> whereUpdatedByContainsIgnoreCase(
+    public ElementQuery<TInterface> whereUpdatedByContainsIgnoreCase(
             QueryCondition<String> condition) {
         inIgnoringCase(condition, "updatedBy");
         return this;
@@ -136,7 +133,7 @@ public class EntityLayerSupertypeQueryImpl<TInterface extends EntityLayerSuperty
     public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
         Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
         List<String> ids = items.stream()
-                                .map(EntityLayerSupertypeData::getDbId)
+                                .map(ElementData::getDbId)
                                 .collect(Collectors.toList());
         List<TDataClass> fullyLoadedItems = dataRepository.findAllById(ids);
         fullyLoadedItems.sort(Comparator.comparingInt(item -> ids.indexOf(item.getDbId())));

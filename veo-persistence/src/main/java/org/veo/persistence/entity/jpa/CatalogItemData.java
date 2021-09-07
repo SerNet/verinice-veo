@@ -59,7 +59,7 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
                fetch = FetchType.LAZY)
     private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
-    @OneToOne(targetEntity = EntityLayerSupertypeData.class,
+    @OneToOne(targetEntity = ElementData.class,
               cascade = CascadeType.ALL,
               orphanRemoval = true,
               mappedBy = "containingCatalogItem",

@@ -69,23 +69,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateIncidentDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
@@ -117,13 +117,14 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
     public IncidentController(UseCaseInteractor useCaseInteractor,
             GetIncidentUseCase getIncidentUseCase, GetIncidentsUseCase getIncidentsUseCase,
             CreateIncidentUseCase createIncidentUseCase,
-            UpdateIncidentUseCase updateIncidentUseCase, DeleteEntityUseCase deleteEntityUseCase) {
+            UpdateIncidentUseCase updateIncidentUseCase,
+            DeleteElementUseCase deleteElementUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getIncidentUseCase = getIncidentUseCase;
         this.getIncidentsUseCase = getIncidentsUseCase;
         this.createIncidentUseCase = createIncidentUseCase;
         this.updateIncidentUseCase = updateIncidentUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
     }
 
     public static final String URL_BASE_PATH = "/" + Incident.PLURAL_TERM;
@@ -133,7 +134,7 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
     private final UpdateIncidentUseCase updateIncidentUseCase;
     private final GetIncidentUseCase getIncidentUseCase;
     private final GetIncidentsUseCase getIncidentsUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
 
     @GetMapping
     @Operation(summary = "Loads all incidents")
@@ -166,7 +167,7 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getIncidents(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
+        return getIncidents(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
                                                        description, designator, name, updatedBy,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
                                                                              sortColumn,
@@ -174,9 +175,9 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
     }
 
     private CompletableFuture<PageDto<FullIncidentDto>> getIncidents(
-            GetEntitiesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getIncidentsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformIncident2Dto));
     }
 
@@ -216,7 +217,7 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullIncidentDto.class)))),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+    public @Valid CompletableFuture<List<ElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -238,10 +239,10 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateIncidentDto dto) {
         return useCaseInteractor.execute(createIncidentUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Incident>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Incident>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Incident(dto,
                                                                                                   idRefResolver),
                                                      client);
@@ -287,8 +288,8 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Incident.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Incident.class,
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -321,7 +322,7 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getIncidents(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getIncidents(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                            SearchQueryDto.decodeFromSearchId(searchId),
                                                            PagingMapper.toConfig(pageSize,
                                                                                  pageNumber,

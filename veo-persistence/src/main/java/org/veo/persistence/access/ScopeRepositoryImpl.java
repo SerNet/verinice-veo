@@ -27,7 +27,7 @@ import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class ScopeRepositoryImpl extends AbstractEntityLayerSupertypeRepository<Scope, ScopeData>
+public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeData>
         implements ScopeRepository {
 
     public ScopeRepositoryImpl(ScopeDataRepository dataRepository, ValidationService validation,

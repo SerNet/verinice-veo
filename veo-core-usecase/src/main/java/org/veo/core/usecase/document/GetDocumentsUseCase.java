@@ -20,13 +20,13 @@ package org.veo.core.usecase.document;
 import org.veo.core.entity.Document;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DocumentRepository;
-import org.veo.core.usecase.base.DefaultGetEntitiesUseCase;
+import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 /**
  * Reinstantiate persisted document objects.
  */
-public class GetDocumentsUseCase extends DefaultGetEntitiesUseCase<Document> {
+public class GetDocumentsUseCase extends DefaultGetElementsUseCase<Document> {
 
     public GetDocumentsUseCase(ClientRepository clientRepository,
             DocumentRepository documentRepository, UnitHierarchyProvider unitHierarchyProvider) {

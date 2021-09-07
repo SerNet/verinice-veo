@@ -22,7 +22,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.CreateEntityUseCase
+import org.veo.core.usecase.base.CreateElementUseCase
 
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 
@@ -40,7 +40,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scope.owner >> unit
 
         when:
-        def output = usecase.execute(new CreateEntityUseCase.InputData( scope, existingClient))
+        def output = usecase.execute(new CreateElementUseCase.InputData( scope, existingClient))
 
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)

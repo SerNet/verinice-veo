@@ -27,7 +27,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
-class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
+class ElementJpaSpec extends AbstractJpaSpec {
 
     @Autowired
     AssetDataRepository assetRepository
@@ -52,7 +52,7 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         owner2 = unitRepository.save(newUnit(client))
     }
 
-    def 'finds entities by owners'() {
+    def 'finds elements by owners'() {
         given: "three assets from different owners"
 
         assetRepository.save(newAsset(owner0) {
@@ -78,7 +78,7 @@ class EntityLayerSupertypeJpaSpec extends AbstractJpaSpec {
         }
     }
 
-    def 'finding entities by owners includes composites and their parts'() {
+    def 'finding elements by owners includes composites and their parts'() {
         given: "a normal asset and an asset composite, both from the same owner"
         def part = assetRepository.save(newAsset(owner0) {
             name = "part"

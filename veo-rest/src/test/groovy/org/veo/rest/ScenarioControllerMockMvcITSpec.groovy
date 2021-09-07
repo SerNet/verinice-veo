@@ -162,7 +162,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieving all scenarios for a unit returns composite entities and their parts"() {
+    def "retrieving all scenarios for a unit returns composite elements and their parts"() {
         given: "a saved scenario  and a composite document containing it"
 
 

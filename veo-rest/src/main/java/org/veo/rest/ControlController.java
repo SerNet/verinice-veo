@@ -70,24 +70,24 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
@@ -123,18 +123,18 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
     private final GetControlUseCase getControlUseCase;
     private final GetControlsUseCase getControlsUseCase;
     private final UpdateControlUseCase updateControlUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
 
     public ControlController(UseCaseInteractor useCaseInteractor,
             CreateControlUseCase createControlUseCase, GetControlUseCase getControlUseCase,
             GetControlsUseCase getControlsUseCase, UpdateControlUseCase updateControlUseCase,
-            DeleteEntityUseCase deleteEntityUseCase) {
+            DeleteElementUseCase deleteElementUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createControlUseCase = createControlUseCase;
         this.getControlUseCase = getControlUseCase;
         this.getControlsUseCase = getControlsUseCase;
         this.updateControlUseCase = updateControlUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
     }
 
     @GetMapping
@@ -168,7 +168,7 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getControls(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
+        return getControls(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
                                                       description, designator, name, updatedBy,
                                                       PagingMapper.toConfig(pageSize, pageNumber,
                                                                             sortColumn,
@@ -176,9 +176,9 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
     }
 
     private CompletableFuture<PageDto<FullControlDto>> getControls(
-            GetEntitiesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getControlsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformControl2Dto));
     }
 
@@ -215,7 +215,7 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+    public @Valid CompletableFuture<List<ElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -237,11 +237,11 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateControlDto dto) {
         return useCaseInteractor.execute(createControlUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Control>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Control>>) () -> {
 
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Control(dto,
                                                                                                  idRefResolver),
                                                      client);
@@ -262,13 +262,13 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
             @Valid @NotNull @RequestBody FullControlDto controlDto) {
         controlDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updateControlUseCase,
-                                         new Supplier<ModifyEntityUseCase.InputData<Control>>() {
+                                         new Supplier<ModifyElementUseCase.InputData<Control>>() {
 
                                              @Override
                                              public InputData<Control> get() {
                                                  Client client = getClient(user);
                                                  IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new ModifyEntityUseCase.InputData<Control>(
+                                                 return new ModifyElementUseCase.InputData<Control>(
                                                          dtoToEntityTransformer.transformDto2Control(controlDto,
                                                                                                      idRefResolver),
                                                          client, eTag, user.getUsername());
@@ -287,8 +287,8 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Control.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Control.class,
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -321,7 +321,7 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getControls(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getControls(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                           SearchQueryDto.decodeFromSearchId(searchId),
                                                           PagingMapper.toConfig(pageSize,
                                                                                 pageNumber,

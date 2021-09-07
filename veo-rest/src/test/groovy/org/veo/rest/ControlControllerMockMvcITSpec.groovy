@@ -235,7 +235,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieving all controls for a unit returns composite entities and their parts"() {
+    def "retrieving all controls for a unit returns composite elements and their parts"() {
         given: "a saved control  and a composite document containing it"
         txTemplate.execute {
             controlRepository.save(newControl(unit) {

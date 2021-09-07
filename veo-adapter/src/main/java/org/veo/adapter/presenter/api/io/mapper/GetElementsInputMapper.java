@@ -31,15 +31,15 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Process.Status;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 
-public class GetEntitiesInputMapper {
+public class GetElementsInputMapper {
 
-    public static GetEntitiesUseCase.InputData map(Client client, String unitUuid,
+    public static GetElementsUseCase.InputData map(Client client, String unitUuid,
             String displayName, String subType, String description, String designator, String name,
             String updatedBy, PagingConfiguration pagingConfiguration) {
-        return new GetEntitiesUseCase.InputData(client, createUuidCondition(unitUuid),
+        return new GetElementsUseCase.InputData(client, createUuidCondition(unitUuid),
                 createStringFilter(displayName), createNonEmptyCondition(subType),
                 createStringFilter(description), createStringFilter(designator),
                 createStringFilter(name), createStringFilter(updatedBy), pagingConfiguration);
@@ -55,9 +55,9 @@ public class GetEntitiesInputMapper {
                 createNonEmptyCondition(status), pagingConfiguration);
     }
 
-    public static GetEntitiesUseCase.InputData map(Client client, SearchQueryDto searchQuery,
+    public static GetElementsUseCase.InputData map(Client client, SearchQueryDto searchQuery,
             PagingConfiguration pagingConfiguration) {
-        return new GetEntitiesUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
+        return new GetElementsUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
                 transformCondition(searchQuery.getDisplayName()),
                 transformCondition(searchQuery.getSubType()),
                 transformCondition(searchQuery.getDescription()),

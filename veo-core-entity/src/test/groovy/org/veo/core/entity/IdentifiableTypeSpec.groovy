@@ -23,7 +23,7 @@ class IdentifiableTypeSpec extends Specification{
 
     def "it should list all type designators"() {
         expect:
-        // There is one type designator for each ELS and one that is common to all types of risks.
-        EntityType.TYPE_DESIGNATORS.size() == EntityType.ENTITY_TYPES.size() + 1
+        // There is one type designator for each element type and one that is common to all types of risks.
+        EntityType.TYPE_DESIGNATORS.size() == EntityType.ELEMENT_TYPES.size() + 1
     }
 }

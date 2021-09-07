@@ -25,6 +25,6 @@ import org.veo.core.entity.Scope;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface ScopeRepository extends EntityLayerSupertypeRepository<Scope> {
+public interface ScopeRepository extends ElementRepository<Scope> {
 
 }

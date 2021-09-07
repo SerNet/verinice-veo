@@ -69,23 +69,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase.InputData;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
@@ -117,13 +117,14 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
     public ScenarioController(UseCaseInteractor useCaseInteractor,
             GetScenarioUseCase getScenarioUseCase, GetScenariosUseCase getScenariosUseCase,
             CreateScenarioUseCase createScenarioUseCase,
-            UpdateScenarioUseCase updateScenarioUseCase, DeleteEntityUseCase deleteEntityUseCase) {
+            UpdateScenarioUseCase updateScenarioUseCase,
+            DeleteElementUseCase deleteElementUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.getScenarioUseCase = getScenarioUseCase;
         this.getScenariosUseCase = getScenariosUseCase;
         this.createScenarioUseCase = createScenarioUseCase;
         this.updateScenarioUseCase = updateScenarioUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
     }
 
     public static final String URL_BASE_PATH = "/" + Scenario.PLURAL_TERM;
@@ -133,7 +134,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
     private final UpdateScenarioUseCase updateScenarioUseCase;
     private final GetScenarioUseCase getScenarioUseCase;
     private final GetScenariosUseCase getScenariosUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
 
     @GetMapping
     @Operation(summary = "Loads all scenarios")
@@ -166,7 +167,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getScenarios(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
+        return getScenarios(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
                                                        description, designator, name, updatedBy,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
                                                                              sortColumn,
@@ -174,9 +175,9 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
     }
 
     private CompletableFuture<PageDto<FullScenarioDto>> getScenarios(
-            GetEntitiesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getScenariosUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformScenario2Dto));
     }
 
@@ -216,7 +217,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
             @ApiResponse(responseCode = "404", description = "Scenario not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+    public @Valid CompletableFuture<List<ElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -238,10 +239,10 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreateScenarioDto dto) {
         return useCaseInteractor.execute(createScenarioUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Scenario>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Scenario>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Scenario(dto,
                                                                                                   idRefResolver),
                                                      client);
@@ -287,8 +288,8 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Scenario.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Scenario.class,
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -321,7 +322,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getScenarios(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getScenarios(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                            SearchQueryDto.decodeFromSearchId(searchId),
                                                            PagingMapper.toConfig(pageSize,
                                                                                  pageNumber,

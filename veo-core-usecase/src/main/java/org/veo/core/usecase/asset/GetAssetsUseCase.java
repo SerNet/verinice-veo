@@ -20,13 +20,13 @@ package org.veo.core.usecase.asset;
 import org.veo.core.entity.Asset;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.usecase.base.DefaultGetEntitiesUseCase;
+import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 /**
  * Reinstantiate persisted asset objects.
  */
-public class GetAssetsUseCase extends DefaultGetEntitiesUseCase<Asset> {
+public class GetAssetsUseCase extends DefaultGetElementsUseCase<Asset> {
 
     public GetAssetsUseCase(ClientRepository clientRepository, AssetRepository assetRepository,
             UnitHierarchyProvider unitHierarchyProvider) {

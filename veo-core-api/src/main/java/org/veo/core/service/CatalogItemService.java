@@ -33,7 +33,7 @@ public interface CatalogItemService {
      * incarnation of the given {@link CatalogItem#getElement()}. It creates an
      * exact copy of the {@link CatalogItem#getElement()} with no owner set, and all
      * references linking the catalog elements. The instance need to be saved and
-     * the link targets set to concrete entities in order to be persistent.
+     * the link targets set to concrete elements in order to be persistent.
      */
     Catalogable createInstance(CatalogItem item, Domain domain);
 }

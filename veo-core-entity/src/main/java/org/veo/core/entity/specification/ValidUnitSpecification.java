@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 
 /**
@@ -33,16 +33,15 @@ import org.veo.core.entity.Unit;
  *
  * @param <T>
  */
-final class ValidUnitSpecification<T extends EntityLayerSupertype>
-        implements EntitySpecification<T> {
+final class ValidUnitSpecification<T extends Element> implements EntitySpecification<T> {
 
     private ValidUnitSpecification() {
     }
 
-    static final ValidUnitSpecification<EntityLayerSupertype> INSTANCE = new ValidUnitSpecification<>();
+    static final ValidUnitSpecification<Element> INSTANCE = new ValidUnitSpecification<>();
 
     @Override
-    public boolean test(EntityLayerSupertype entity) {
+    public boolean test(Element entity) {
         return isSatisfiedBy(entity.getOwner());
     }
 

@@ -32,7 +32,7 @@ import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Element
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
@@ -148,7 +148,7 @@ class ReferenceAssemblerImplSpec extends Specification {
 
     def "target reference for #type and compound-id #entityId/#scenarioId is #reference"() {
         def risk = Stub(type) {
-            entity >> Stub(entityType as Class<EntityLayerSupertype>) {
+            entity >> Stub(entityType as Class<Element>) {
                 id >> Key.uuidFrom(entityId)
             }
             scenario >> Stub(Scenario) {

@@ -248,7 +248,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
     }
 
 
-    def 'domain with catalog with linked entities'() {
+    def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"
 
         domain0 = newDomain(client)
@@ -344,7 +344,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             it[4].tailoringReferences.size() == 2
         }
 
-        when: "create entities linked to catalogItems"
+        when: "create elements linked to catalogItems"
         def firstItemFromCatalog = loadedCatalog.catalogItems.sort {
             it.element.name
         }.first()

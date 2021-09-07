@@ -45,7 +45,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
@@ -58,19 +58,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name = "entitylayersupertype")
+@Entity(name = "element")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@NamedEntityGraph(name = EntityLayerSupertypeData.FULL_AGGREGATE_GRAPH,
+@NamedEntityGraph(name = ElementData.FULL_AGGREGATE_GRAPH,
                   attributeNodes = { @NamedAttributeNode(value = "customAspects"),
                           @NamedAttributeNode(value = "domains"),
                           @NamedAttributeNode(value = "appliedCatalogItems"),
                           @NamedAttributeNode(value = "links"),
                           @NamedAttributeNode(value = "subTypeAspects") })
 @HasOwnerOrContainingCatalogItem
-public abstract class EntityLayerSupertypeData extends IdentifiableVersionedData
-        implements NameableData, EntityLayerSupertype {
+public abstract class ElementData extends IdentifiableVersionedData
+        implements NameableData, Element {
 
     public static final String FULL_AGGREGATE_GRAPH = "fullAggregateGraph";
     @Id
@@ -202,7 +202,7 @@ public abstract class EntityLayerSupertypeData extends IdentifiableVersionedData
 
     /**
      * Add the given CustomLink to the collection of links. Manages the association
-     * between EntityLayerSupertype and CustomLink.
+     * between Element and CustomLink.
      *
      * @return true if the link was successfully added
      */

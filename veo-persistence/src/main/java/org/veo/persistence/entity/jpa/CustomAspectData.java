@@ -36,7 +36,7 @@ import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -60,13 +60,13 @@ public class CustomAspectData implements CustomAspect {
 
     @EqualsAndHashCode.Include
     @ManyToOne(fetch = FetchType.LAZY,
-               targetEntity = EntityLayerSupertypeData.class,
+               targetEntity = ElementData.class,
                // 'links' are also custom aspects, saved in the same table but mapped by
                // 'source'
                // column, due to the single-table inheritance mapping used here.
                // 'owner' must therefore be nullable for these entities:
                optional = true)
-    private EntityLayerSupertype owner;
+    private Element owner;
 
     @ManyToMany(targetEntity = DomainData.class)
     final protected Set<Domain> domains = new HashSet<>();

@@ -23,12 +23,12 @@ import java.util.UUID;
 import org.veo.core.entity.specification.EntitySpecification;
 
 /**
- * An entity whose parts can optionally be modeled as well
+ * An element whose parts can optionally be modeled as well
  *
  * @param <T>
  *            the type of the entity and its parts
  */
-public interface CompositeEntity<T extends EntityLayerSupertype> extends EntityLayerSupertype {
+public interface CompositeElement<T extends Element> extends Element {
 
     Set<T> getParts();
 
@@ -42,7 +42,7 @@ public interface CompositeEntity<T extends EntityLayerSupertype> extends EntityL
     }
 
     default boolean addParts(Set<T> parts) {
-        parts.forEach(CompositeEntity.this::checkSameClient);
+        parts.forEach(CompositeElement.this::checkSameClient);
         return getParts().addAll(parts);
     }
 
@@ -56,7 +56,7 @@ public interface CompositeEntity<T extends EntityLayerSupertype> extends EntityL
 
     default void setParts(Set<T> parts) {
         parts.stream()
-             .forEach(CompositeEntity.this::checkSameClient);
+             .forEach(CompositeElement.this::checkSameClient);
         getParts().clear();
         getParts().addAll(parts);
     }

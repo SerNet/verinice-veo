@@ -33,7 +33,7 @@ import org.veo.core.entity.exception.ModelConsistencyException;
  * scenarios.
  */
 public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends EntityLayerSupertype {
+        extends Element {
 
     default void setRisks(Set<R> newRisks) {
         getRisks().clear();

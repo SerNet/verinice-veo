@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,22 +36,30 @@ import lombok.EqualsAndHashCode;
 public class CustomLinkData extends CustomAspectData implements CustomLink {
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY,
-               targetEntity = EntityLayerSupertypeData.class,
-               optional = true) // due to the single-table inheritance mapping, this must be
-                                // nullable
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
+                                                                                          // the
+                                                                                          // single-table
+                                                                                          // inheritance
+                                                                                          // mapping,
+                                                                                          // this
+                                                                                          // must be
+                                                                                          // nullable
     @JoinColumn(name = "target_id")
     @EqualsAndHashCode.Include
-    private EntityLayerSupertype target;
+    private Element target;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY,
-               targetEntity = EntityLayerSupertypeData.class,
-               optional = true) // due to the single-table inheritance mapping, this must be
-                                // nullable
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
+                                                                                          // the
+                                                                                          // single-table
+                                                                                          // inheritance
+                                                                                          // mapping,
+                                                                                          // this
+                                                                                          // must be
+                                                                                          // nullable
     @JoinColumn(name = "source_id")
     @EqualsAndHashCode.Include
-    private EntityLayerSupertype source;
+    private Element source;
 
     /**
      * Add the given Domain to the collection domains.
@@ -71,7 +79,7 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
         return this.domains.remove(aDomain);
     }
 
-    public void setSource(EntityLayerSupertype aSource) {
+    public void setSource(Element aSource) {
         this.source = aSource;
     }
 }

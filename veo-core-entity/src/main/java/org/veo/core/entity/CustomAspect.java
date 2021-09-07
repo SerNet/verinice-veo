@@ -21,12 +21,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A custom aspect - it describes a subset of an {@link EntityLayerSupertype}
- * object's attributes in a set of domains. Attributes must conform to the
- * dynamic object schema. A custom aspect is for documentation purposes only -
- * it may be edited by humans and presented to humans (e.g. in a web form or
- * generated report), but must never be used for any other computations such as
- * risk calculations.
+ * A custom aspect - it describes a subset of an {@link Element} object's
+ * attributes in a set of domains. Attributes must conform to the dynamic object
+ * schema. A custom aspect is for documentation purposes only - it may be edited
+ * by humans and presented to humans (e.g. in a web form or generated report),
+ * but must never be used for any other computations such as risk calculations.
  */
 public interface CustomAspect {
 

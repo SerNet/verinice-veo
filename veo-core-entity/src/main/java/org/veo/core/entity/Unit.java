@@ -30,15 +30,15 @@ import org.veo.core.entity.specification.EntitySpecifications;
  * Units may contain other units. For instance, a unit could be a division, a
  * department or a project. Unit is a component that defines ownership and
  * primary responsibility. An organizational unit. Units may have sub-units.
- * Every entity object is assigned to exactly one unit at all times. When the
- * unit is deleted, all its entities will be deleted as well. A unit defines
+ * Every element object is assigned to exactly one unit at all times. When the
+ * unit is deleted, all its elements will be deleted as well. A unit defines
  * object ownership. Small and medium organizations may just have one unit.
  * Large enterprises may have multiple units for different subsidiaries. Service
  * providers might have one unit for each client that is using the software. A
- * unit always belongs to exactly one client. This means that every entity also
+ * unit always belongs to exactly one client. This means that every element also
  * transitively belongs to exactly one client. Units cannot be moved between
  * clients. The {@link Scope} object is much more flexible and the preferred
- * choice to group entities together for business modeling purposes. Units
+ * choice to group elements together for business modeling purposes. Units
  * should exclusively be used to model ownership and high-level access
  * restrictions.
  */

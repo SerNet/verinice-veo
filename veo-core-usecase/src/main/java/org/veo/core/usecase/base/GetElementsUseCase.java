@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.EntityLayerSupertypeQuery;
-import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.ElementQuery;
+import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
@@ -41,15 +41,14 @@ import lombok.experimental.NonFinal;
 /**
  * Reinstantiate persisted entity objects.
  */
-public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, I extends GetEntitiesUseCase.InputData>
-        implements TransactionalUseCase<I, GetEntitiesUseCase.OutputData<T>> {
+public abstract class GetElementsUseCase<T extends Element, I extends GetElementsUseCase.InputData>
+        implements TransactionalUseCase<I, GetElementsUseCase.OutputData<T>> {
 
-    private final EntityLayerSupertypeRepository<T> repository;
+    private final ElementRepository<T> repository;
     private final ClientRepository clientRepository;
     private final UnitHierarchyProvider unitHierarchyProvider;
 
-    public GetEntitiesUseCase(ClientRepository clientRepository,
-            EntityLayerSupertypeRepository<T> repository,
+    public GetElementsUseCase(ClientRepository clientRepository, ElementRepository<T> repository,
             UnitHierarchyProvider unitHierarchyProvider) {
         this.clientRepository = clientRepository;
         this.repository = repository;
@@ -72,11 +71,11 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, I exten
         return new OutputData<>(query.execute(input.getPagingConfiguration()));
     }
 
-    protected EntityLayerSupertypeQuery<T> createQuery(Client client, I input) {
+    protected ElementQuery<T> createQuery(Client client, I input) {
         return repository.query(client);
     }
 
-    private void applyDefaultQueryParameters(I input, EntityLayerSupertypeQuery<T> query) {
+    private void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
         if (input.getUnitUuid() != null) {
             query.whereUnitIn(input.getUnitUuid()
                                    .getValues()
@@ -129,6 +128,6 @@ public abstract class GetEntitiesUseCase<T extends EntityLayerSupertype, I exten
     @Value
     public static class OutputData<T> implements UseCase.OutputData {
         @Valid
-        PagedResult<T> entities;
+        PagedResult<T> elements;
     }
 }

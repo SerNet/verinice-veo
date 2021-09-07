@@ -30,7 +30,7 @@ import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.ProcessQuery;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.QueryCondition;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 import lombok.EqualsAndHashCode;
@@ -40,7 +40,7 @@ import lombok.Value;
  * Reinstantiate persisted process objects.
  */
 public class GetProcessesUseCase
-        extends GetEntitiesUseCase<Process, GetProcessesUseCase.InputData> {
+        extends GetElementsUseCase<Process, GetProcessesUseCase.InputData> {
 
     private final ProcessRepository repository;
 
@@ -62,7 +62,7 @@ public class GetProcessesUseCase
     @Valid
     @Value
     @EqualsAndHashCode(callSuper = true)
-    public static class InputData extends GetEntitiesUseCase.InputData {
+    public static class InputData extends GetElementsUseCase.InputData {
 
         public InputData(Client authenticatedClient, QueryCondition<Key<UUID>> unitUuid,
                 QueryCondition<String> displayName, QueryCondition<String> subType,

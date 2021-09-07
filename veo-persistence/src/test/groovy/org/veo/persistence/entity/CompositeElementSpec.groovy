@@ -30,7 +30,7 @@ import org.veo.test.VeoSpec
 
 import spock.lang.Ignore
 
-class CompositeEntitySpec extends VeoSpec {
+class CompositeElementSpec extends VeoSpec {
     Client client
     Unit unit
 
@@ -40,7 +40,7 @@ class CompositeEntitySpec extends VeoSpec {
     }
 
 
-    def "A composite entity can be created"() {
+    def "A composite element can be created"() {
         given: "a timestamp"
         Instant beforeCreation = Instant.now()
 
@@ -56,7 +56,7 @@ class CompositeEntitySpec extends VeoSpec {
 
     // This used to be guaranteed by the model, now it can't be verified without using external validation.
     //  It can't be tested without relying on external classes.
-    @Ignore("TODO VEO-427 prevent creation of entities with no unit")
+    @Ignore("TODO VEO-427 prevent creation of elements with no unit")
     def "A composite must have a unit" () {
         when: "a composite is created with no unit"
         newAsset(unit)
@@ -239,9 +239,7 @@ class CompositeEntitySpec extends VeoSpec {
     }
 
     /*
-     * Any interface implemented by the layer-supertype can be called for individual
-     * objects or for composites of objects. The composite may implement different behaviour
-     * than individual objects, i.e. involving its parts in the operation.
+     * Any functionality defined by {@link Entity} type can be called for individual objects or for composites of objects. The composite may implement different behaviour than individual objects, i.e. involving its parts in the operation.
      */
     def "A composite can be used just like a single element of the same type"() {
         given: "a set of two processes"

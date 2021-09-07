@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2021  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,22 +17,20 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import java.util.UUID;
+import org.veo.core.entity.Element;
+import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ElementRepository;
 
-import javax.validation.Valid;
+/**
+ * Base class for get-elements use cases that use the default
+ * {@link GetElementsUseCase.InputData}
+ */
+public abstract class DefaultGetElementsUseCase<T extends Element>
+        extends GetElementsUseCase<T, GetElementsUseCase.InputData> {
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
-import org.veo.core.entity.Key;
-
-import lombok.Value;
-
-@Valid
-@Value
-public class CreateEntityInputData<T extends EntityLayerSupertype> {
-
-    Key<UUID> unitId;
-    T entity;
-    Client authenticatedClient;
+    protected DefaultGetElementsUseCase(ClientRepository clientRepository,
+            ElementRepository<T> repository, UnitHierarchyProvider unitHierarchyProvider) {
+        super(clientRepository, repository, unitHierarchyProvider);
+    }
 
 }

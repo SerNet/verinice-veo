@@ -20,34 +20,34 @@ package org.veo.core.repository;
 import java.util.Set;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Unit;
 
 /**
- * A dynamic database query for retrieving {@link EntityLayerSupertype} objects.
+ * A dynamic database query for retrieving {@link Element} objects.
  *
  * @param <T>
  *            Entity type
  */
-public interface EntityLayerSupertypeQuery<T extends EntityLayerSupertype> {
+public interface ElementQuery<T extends Element> {
 
-    EntityLayerSupertypeQuery<T> whereUnitIn(Set<Unit> units);
+    ElementQuery<T> whereUnitIn(Set<Unit> units);
 
-    EntityLayerSupertypeQuery<T> whereSubTypeMatches(QueryCondition<String> values);
+    ElementQuery<T> whereSubTypeMatches(QueryCondition<String> values);
 
-    EntityLayerSupertypeQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
+    ElementQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
 
-    EntityLayerSupertypeQuery<T> whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
+    ElementQuery<T> whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
 
-    EntityLayerSupertypeQuery<T> whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
+    ElementQuery<T> whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
 
-    EntityLayerSupertypeQuery<T> whereNameMatchesIgnoreCase(QueryCondition<String> values);
+    ElementQuery<T> whereNameMatchesIgnoreCase(QueryCondition<String> values);
 
-    EntityLayerSupertypeQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
+    ElementQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 
-    EntityLayerSupertypeQuery<T> whereAppliedItemsContains(CatalogItem item);
+    ElementQuery<T> whereAppliedItemsContains(CatalogItem item);
 
-    EntityLayerSupertypeQuery<T> whereOwnerIs(Unit unit);
+    ElementQuery<T> whereOwnerIs(Unit unit);
 
     PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }

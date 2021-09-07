@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Element
 
 import spock.lang.Specification
 
@@ -231,7 +231,7 @@ class EntitySchemaSpec extends Specification {
                 "fa1": "na",
                 "fa2": true,
             ]
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 modelType >> "target_type"
             }
             type >> "SuperLink"
@@ -250,7 +250,7 @@ class EntitySchemaSpec extends Specification {
                 "fa1": "na",
                 "fa2": true,
             ]
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 modelType >> "target_type"
             }
             type >> "MissingLink"
@@ -268,7 +268,7 @@ class EntitySchemaSpec extends Specification {
             attributes >> [
                 "fantasyFa:": "na-na-na",
             ]
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 modelType >> "target_type"
             }
             type >> "SuperLink"
@@ -288,7 +288,7 @@ class EntitySchemaSpec extends Specification {
                 "fa2": true,
             ]
             type >> "SuperLink"
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 modelType >> "no_target_type"
             }
         }
@@ -305,7 +305,7 @@ class EntitySchemaSpec extends Specification {
         def link = Mock(CustomLink) {
             attributes >> [:]
             type >> "UltimateLink"
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 modelType >> "another_target_type"
             }
         }
@@ -325,7 +325,7 @@ class EntitySchemaSpec extends Specification {
         def link = Mock(CustomLink) {
             attributes >> [:]
             type >> "SubTypeSensitiveLink"
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 domains >> [domain1, domain2]
                 modelType >> "target_type"
                 getSubType(domain1) >> Optional.of("wrong_type")
@@ -346,7 +346,7 @@ class EntitySchemaSpec extends Specification {
         def link = Mock(CustomLink) {
             attributes >> [:]
             type >> "SubTypeSensitiveLink"
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 domains >> [domain]
                 modelType >> "target_type"
                 getSubType(domain) >> Optional.of("wrong_type")
@@ -366,7 +366,7 @@ class EntitySchemaSpec extends Specification {
         def link = Mock(CustomLink) {
             attributes >> [:]
             type >> "SubTypeSensitiveLink"
-            target >> Mock(EntityLayerSupertype) {
+            target >> Mock(Element) {
                 domains >> [domain]
                 modelType >> "target_type"
                 getSubType(domain) >> Optional.empty()

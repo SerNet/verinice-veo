@@ -33,7 +33,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.CatalogItemRepository
-import org.veo.core.repository.EntityLayerSupertypeRepository
+import org.veo.core.repository.ElementRepository
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.CatalogItemService
@@ -53,7 +53,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
     def setup() {
         catalogItemservice.createInstance(item1, existingDomain) >> newControl
-        entityRepo.getEntityLayerSupertypeRepositoryFor(_) >> repo
+        entityRepo.getElementRepositoryFor(_) >> repo
 
         catalogItemRepository.findById(item1.id) >> Optional.of(item1)
         catalogItemRepository.findById(item2.id) >> Optional.of(item2)

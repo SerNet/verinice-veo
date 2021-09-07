@@ -26,7 +26,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -45,8 +45,8 @@ public abstract class ModelSwitch<T> {
     }
 
     public T doSwitch(Object o) {
-        if (o instanceof EntityLayerSupertype) {
-            T object = caseEntityLayerSupertype((EntityLayerSupertype) o);
+        if (o instanceof Element) {
+            T object = caseElement((Element) o);
             if (object != null)
                 return object;
         }
@@ -108,7 +108,7 @@ public abstract class ModelSwitch<T> {
         return null;
     }
 
-    public T caseEntityLayerSupertype(EntityLayerSupertype object) {
+    public T caseElement(Element object) {
         return null;
     }
 

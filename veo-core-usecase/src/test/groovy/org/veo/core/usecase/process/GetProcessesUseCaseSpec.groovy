@@ -50,7 +50,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
 
-        output.entities.resultPage*.id == [id]
+        output.elements.resultPage*.id == [id]
     }
 
 
@@ -73,6 +73,6 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         1 * query.whereSubTypeMatches(input.subType)
         1 * query.whereStatusMatches(input.status)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
-        output.entities.resultPage*.id == [id]
+        output.elements.resultPage*.id == [id]
     }
 }

@@ -666,7 +666,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "A risk can be created for an asset"() {
-        given: "saved entities"
+        given: "saved elements"
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'New asset-2'
@@ -776,7 +776,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "A risk can be updated with new information"() {
-        given: "an asset risk and additional entities"
+        given: "an asset risk and additional elements"
         def beforeCreation = Instant.now()
         def (Asset asset, ScenarioData scenario, Object postResult) = createRisk()
 

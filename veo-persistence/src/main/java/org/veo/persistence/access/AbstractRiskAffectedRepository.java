@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.CompositeEntity;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
@@ -38,7 +38,7 @@ import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
-abstract class AbstractRiskAffectedRepository<S extends CompositeEntity<S> & RiskAffected<S, R>, R extends AbstractRisk<S, R>, T extends RiskAffectedData<S, R> & CompositeEntity<S>>
+abstract class AbstractRiskAffectedRepository<S extends CompositeElement<S> & RiskAffected<S, R>, R extends AbstractRisk<S, R>, T extends RiskAffectedData<S, R> & CompositeElement<S>>
         extends AbstractCompositeEntityRepositoryImpl<S, T>
         implements RiskAffectedRepository<S, R> {
 

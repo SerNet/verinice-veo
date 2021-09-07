@@ -27,33 +27,31 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
-import org.veo.core.repository.EntityLayerSupertypeQuery;
-import org.veo.core.repository.EntityLayerSupertypeRepository;
+import org.veo.core.repository.ElementQuery;
+import org.veo.core.repository.ElementRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
-import org.veo.persistence.access.jpa.EntityLayerSupertypeDataRepository;
+import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Transactional(readOnly = true)
-abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSupertype, S extends EntityLayerSupertypeData>
-        extends AbstractIdentifiableVersionedRepository<T, S>
-        implements EntityLayerSupertypeRepository<T> {
+abstract class AbstractElementRepository<T extends Element, S extends ElementData>
+        extends AbstractIdentifiableVersionedRepository<T, S> implements ElementRepository<T> {
 
-    protected final EntityLayerSupertypeDataRepository<S> dataRepository;
+    protected final ElementDataRepository<S> dataRepository;
     private final CustomLinkDataRepository linkDataRepository;
 
     final ScopeDataRepository scopeDataRepository;
 
-    AbstractEntityLayerSupertypeRepository(EntityLayerSupertypeDataRepository<S> dataRepository,
-            ValidationService validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
+    AbstractElementRepository(ElementDataRepository<S> dataRepository, ValidationService validation,
+            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation);
         this.dataRepository = dataRepository;
         this.linkDataRepository = linkDataRepository;
@@ -61,26 +59,26 @@ abstract class AbstractEntityLayerSupertypeRepository<T extends EntityLayerSuper
     }
 
     @Override
-    public EntityLayerSupertypeQuery<T> query(Client client) {
-        return new EntityLayerSupertypeQueryImpl<>(dataRepository, client);
+    public ElementQuery<T> query(Client client) {
+        return new ElementQueryImpl<>(dataRepository, client);
     }
 
     @Transactional
     public void deleteByUnit(Unit owner) {
-        var entities = dataRepository.findByUnits(singleton(owner.getId()
+        var elements = dataRepository.findByUnits(singleton(owner.getId()
                                                                  .uuidValue()));
-        var entityIDs = entities.stream()
+        var entityIDs = elements.stream()
                                 .map(IdentifiableVersionedData::getDbId)
                                 .collect(Collectors.toSet());
         var links = linkDataRepository.findLinksByTargetIds(entityIDs);
 
-        // remove the unit's entities from scope members:
-        var scopes = scopeDataRepository.findDistinctByMembersIn(entities);
-        scopes.forEach(scope -> scope.removeMembers(new HashSet<>(entities)));
+        // remove the unit's elements from scope members:
+        var scopes = scopeDataRepository.findDistinctByMembersIn(elements);
+        scopes.forEach(scope -> scope.removeMembers(new HashSet<>(elements)));
 
         // using deleteAll() to utilize batching and optimistic locking:
         linkDataRepository.deleteAll(links);
-        dataRepository.deleteAll(entities);
+        dataRepository.deleteAll(elements);
     }
 
     @Override

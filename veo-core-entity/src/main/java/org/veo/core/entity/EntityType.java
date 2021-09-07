@@ -65,13 +65,13 @@ public enum EntityType {
                                                                          .map(et -> et.type)
                                                                          .collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<EntityType> ENTITY_TYPES = Stream.of(values())
-                                                             .filter(type -> EntityLayerSupertype.class.isAssignableFrom(type.type))
-                                                             .collect(Collectors.toUnmodifiableSet());
+    public static final Set<EntityType> ELEMENT_TYPES = Stream.of(values())
+                                                              .filter(type -> Element.class.isAssignableFrom(type.type))
+                                                              .collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<Class<? extends EntityLayerSupertype>> ENTITY_TYPE_CLASSES = ENTITY_TYPES.stream()
-                                                                                                     .map(t -> (Class<? extends EntityLayerSupertype>) t.type)
-                                                                                                     .collect(Collectors.toUnmodifiableSet());
+    public static final Set<Class<? extends Element>> ELEMENT_TYPE_CLASSES = ELEMENT_TYPES.stream()
+                                                                                          .map(t -> (Class<? extends Element>) t.type)
+                                                                                          .collect(Collectors.toUnmodifiableSet());
 
     public static final Set<String> TYPE_DESIGNATORS = Set.of(AbstractRisk.TYPE_DESIGNATOR,
                                                               Asset.TYPE_DESIGNATOR,

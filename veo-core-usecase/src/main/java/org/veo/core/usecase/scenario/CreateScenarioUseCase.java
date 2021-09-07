@@ -21,9 +21,9 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.base.CreateEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
 
-public class CreateScenarioUseCase extends CreateEntityUseCase<Scenario> {
+public class CreateScenarioUseCase extends CreateElementUseCase<Scenario> {
 
     public CreateScenarioUseCase(UnitRepository unitRepository, ScenarioRepository entityRepo,
             DesignatorService designatorService) {

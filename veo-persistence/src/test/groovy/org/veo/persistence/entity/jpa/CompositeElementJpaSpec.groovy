@@ -27,7 +27,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
-class CompositeEntityJpaSpec extends AbstractJpaSpec {
+class CompositeElementJpaSpec extends AbstractJpaSpec {
 
 
     @Autowired
@@ -61,7 +61,7 @@ class CompositeEntityJpaSpec extends AbstractJpaSpec {
             assetDataRepository.save(composite1).id.uuidValue()
         }
 
-        then: "the entities can be retrieved"
+        then: "the elements can be retrieved"
         def retrievedComposite1 = (Asset)assetDataRepository.findById(composite1Id).get()
         def retrievedComposite2 = (Asset)retrievedComposite1.parts.first()
 

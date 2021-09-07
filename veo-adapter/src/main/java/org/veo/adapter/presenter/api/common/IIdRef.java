@@ -18,11 +18,12 @@
 package org.veo.adapter.presenter.api.common;
 
 /**
- * A representation of a URI reference to an entity resource. Offers methods to
- * retrieve a resource identifier / resource locator to the resource itself and
- * an end-user friendly name that can be used when rendering the URI/URL. It
- * also features URIs that can be used to query or access the complete
- * collection of entities.
+ * A representation of a URI reference to an
+ * {@link org.veo.core.entity.Identifiable} resource. Offers methods to retrieve
+ * a resource identifier / resource locator to the resource itself and an
+ * end-user friendly name that can be used when rendering the URI/URL. It also
+ * features URIs that can be used to query or access the complete collection of
+ * identifiable resources.
  */
 public interface IIdRef {
 

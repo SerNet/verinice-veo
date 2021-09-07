@@ -23,7 +23,7 @@ import org.veo.core.entity.Process.Status;
 /**
  * A dynamic database query for retrieving {@link Process} objects.
  */
-public interface ProcessQuery extends EntityLayerSupertypeQuery<Process> {
+public interface ProcessQuery extends ElementQuery<Process> {
 
     ProcessQuery whereStatusMatches(QueryCondition<Status> condition);
 

@@ -32,9 +32,9 @@ import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.DeleteEntityUseCase.InputData
+import org.veo.core.usecase.base.DeleteElementUseCase.InputData
 
-public class DeleteEntityUseCaseSpec extends UseCaseSpec {
+public class DeleteElementUseCaseSpec extends UseCaseSpec {
 
     AssetRepository assetRepository = Mock()
     ControlRepository controlRepository = Mock()
@@ -44,15 +44,15 @@ public class DeleteEntityUseCaseSpec extends UseCaseSpec {
     ScopeRepository scopeRepository = Mock()
 
 
-    def usecase = new DeleteEntityUseCase(repositoryProvider)
+    def usecase = new DeleteElementUseCase(repositoryProvider)
 
     def setup() {
-        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Asset) >> assetRepository
-        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Control) >> controlRepository
-        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Document) >> documentRepository
-        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Person) >> personRepository
-        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Process) >> processRepository
-        repositoryProvider.getEntityLayerSupertypeRepositoryFor(Scope) >> scopeRepository
+        repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
+        repositoryProvider.getElementRepositoryFor(Control) >> controlRepository
+        repositoryProvider.getElementRepositoryFor(Document) >> documentRepository
+        repositoryProvider.getElementRepositoryFor(Person) >> personRepository
+        repositoryProvider.getElementRepositoryFor(Process) >> processRepository
+        repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
     }
 
     def "Delete a process" () {

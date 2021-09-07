@@ -18,14 +18,14 @@
 package org.veo.persistence.entity.jpa
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityLayerSupertype
+import org.veo.core.entity.Element
 
 import spock.lang.Specification
 
 class SubtypeAspectDataSpec extends Specification{
     def "domain affects identity"() {
         given: "two aspects with different domains"
-        def commonOwner = Mock(EntityLayerSupertype)
+        def commonOwner = Mock(Element)
         def aspect1 = new SubTypeAspectData().tap {
             setDomain(Mock(Domain))
             setOwner(commonOwner)
@@ -46,12 +46,12 @@ class SubtypeAspectDataSpec extends Specification{
         def commonDomain = Mock(Domain)
         def aspect1 = new SubTypeAspectData().tap {
             setDomain(commonDomain)
-            setOwner(Mock(EntityLayerSupertype))
+            setOwner(Mock(Element))
             setSubType("a")
         }
         def aspect2 = new SubTypeAspectData().tap {
             setDomain(commonDomain)
-            setOwner(Mock(EntityLayerSupertype))
+            setOwner(Mock(Element))
             setSubType("a")
         }
         expect: "different hashCodes"
@@ -62,7 +62,7 @@ class SubtypeAspectDataSpec extends Specification{
     def "subType does not affect identity"() {
         given: "two aspects with different sub types"
         def commonDomain = Mock(Domain)
-        def commonOwner = Mock(EntityLayerSupertype)
+        def commonOwner = Mock(Element)
         def aspect1 = new SubTypeAspectData().tap {
             setDomain(commonDomain)
             setOwner(commonOwner)

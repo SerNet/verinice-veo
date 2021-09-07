@@ -23,12 +23,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Scope;
-import org.veo.persistence.entity.jpa.EntityLayerSupertypeData;
+import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
-public interface ScopeDataRepository extends EntityLayerSupertypeDataRepository<ScopeData> {
+public interface ScopeDataRepository extends ElementDataRepository<ScopeData> {
 
-    <T extends EntityLayerSupertypeData> Set<Scope> findDistinctByMembersIn(Set<T> entities);
+    <T extends ElementData> Set<Scope> findDistinctByMembersIn(Set<T> elements);
 
     @Query("select distinct e from #{#entityName} as e " + "inner join e.members m "
             + "where m.dbId IN ?1")

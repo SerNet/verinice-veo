@@ -69,23 +69,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
@@ -121,18 +121,18 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
     private final GetPersonUseCase getPersonUseCase;
     private final GetPersonsUseCase getPersonsUseCase;
     private final UpdatePersonUseCase updatePersonUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
 
     public PersonController(UseCaseInteractor useCaseInteractor,
             CreatePersonUseCase createPersonUseCase, GetPersonUseCase getPersonUseCase,
             GetPersonsUseCase getPersonsUseCase, UpdatePersonUseCase updatePersonUseCase,
-            DeleteEntityUseCase deleteEntityUseCase) {
+            DeleteElementUseCase deleteElementUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createPersonUseCase = createPersonUseCase;
         this.getPersonUseCase = getPersonUseCase;
         this.getPersonsUseCase = getPersonsUseCase;
         this.updatePersonUseCase = updatePersonUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
     }
 
     @GetMapping
@@ -166,16 +166,16 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getPersons(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
+        return getPersons(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
                                                      description, designator, name, updatedBy,
                                                      PagingMapper.toConfig(pageSize, pageNumber,
                                                                            sortColumn, sortOrder)));
     }
 
     private CompletableFuture<PageDto<FullPersonDto>> getPersons(
-            GetEntitiesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getPersonsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformPerson2Dto));
     }
 
@@ -212,7 +212,7 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullPersonDto.class)))),
             @ApiResponse(responseCode = "404", description = "Person not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+    public @Valid CompletableFuture<List<ElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -234,10 +234,10 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody CreatePersonDto dto) {
         return useCaseInteractor.execute(createPersonUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Person>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Person>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Person(dto,
                                                                                                 idRefResolver),
                                                      client);
@@ -258,13 +258,13 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
             @Valid @NotNull @RequestBody FullPersonDto personDto) {
         personDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updatePersonUseCase,
-                                         new Supplier<ModifyEntityUseCase.InputData<Person>>() {
+                                         new Supplier<ModifyElementUseCase.InputData<Person>>() {
 
                                              @Override
-                                             public org.veo.core.usecase.base.ModifyEntityUseCase.InputData<Person> get() {
+                                             public ModifyElementUseCase.InputData<Person> get() {
                                                  Client client = getClient(user);
                                                  IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new ModifyEntityUseCase.InputData<Person>(
+                                                 return new ModifyElementUseCase.InputData<Person>(
                                                          dtoToEntityTransformer.transformDto2Person(personDto,
                                                                                                     idRefResolver),
                                                          client, eTag, user.getUsername());
@@ -282,8 +282,8 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Person.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Person.class,
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -316,7 +316,7 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getPersons(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getPersons(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                          SearchQueryDto.decodeFromSearchId(searchId),
                                                          PagingMapper.toConfig(pageSize, pageNumber,
                                                                                sortColumn,

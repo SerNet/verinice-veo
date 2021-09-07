@@ -39,7 +39,7 @@ import lombok.ToString;
 @Data
 @Entity
 public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends EntityLayerSupertypeData implements RiskAffected<T, R> {
+        extends ElementData implements RiskAffected<T, R> {
 
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,

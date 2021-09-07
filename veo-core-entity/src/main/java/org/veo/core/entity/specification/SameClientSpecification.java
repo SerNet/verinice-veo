@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 
 /**
  * Clients must be strictly separated. All references from one object to another
@@ -33,8 +33,7 @@ import org.veo.core.entity.EntityLayerSupertype;
  * collections in addition to the entity checks from the interface
  * <code>IEntitySecification</code>.
  */
-public class SameClientSpecification<T extends EntityLayerSupertype>
-        implements EntitySpecification<T> {
+public class SameClientSpecification<T extends Element> implements EntitySpecification<T> {
 
     private Client client;
 

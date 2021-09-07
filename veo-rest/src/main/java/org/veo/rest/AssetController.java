@@ -70,14 +70,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.EntityLayerSupertypeDto;
+import org.veo.adapter.presenter.api.dto.ElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetEntitiesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
@@ -92,10 +92,10 @@ import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
-import org.veo.core.usecase.base.CreateEntityUseCase;
-import org.veo.core.usecase.base.DeleteEntityUseCase;
-import org.veo.core.usecase.base.GetEntitiesUseCase;
-import org.veo.core.usecase.base.ModifyEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.ParameterUuid;
@@ -128,7 +128,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
 
     public AssetController(UseCaseInteractor useCaseInteractor, GetAssetUseCase getAssetUseCase,
             GetAssetsUseCase getAssetsUseCase, CreateAssetUseCase createAssetUseCase,
-            UpdateAssetUseCase updateAssetUseCase, DeleteEntityUseCase deleteEntityUseCase,
+            UpdateAssetUseCase updateAssetUseCase, DeleteElementUseCase deleteElementUseCase,
             CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
             DeleteRiskUseCase deleteRiskUseCase, UpdateAssetRiskUseCase updateAssetRiskUseCase,
             GetAssetRisksUseCase getAssetRisksUseCase) {
@@ -137,7 +137,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
         this.getAssetsUseCase = getAssetsUseCase;
         this.createAssetUseCase = createAssetUseCase;
         this.updateAssetUseCase = updateAssetUseCase;
-        this.deleteEntityUseCase = deleteEntityUseCase;
+        this.deleteElementUseCase = deleteElementUseCase;
         this.createAssetRiskUseCase = createAssetRiskUseCase;
         this.getAssetRiskUseCase = getAssetRiskUseCase;
         this.deleteRiskUseCase = deleteRiskUseCase;
@@ -152,7 +152,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
     private final UpdateAssetUseCase updateAssetUseCase;
     private final GetAssetUseCase getAssetUseCase;
     private final GetAssetsUseCase getAssetsUseCase;
-    private final DeleteEntityUseCase deleteEntityUseCase;
+    private final DeleteElementUseCase deleteElementUseCase;
     private final CreateAssetRiskUseCase createAssetRiskUseCase;
     private final GetAssetRiskUseCase getAssetRiskUseCase;
 
@@ -187,16 +187,16 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getAssets(GetEntitiesInputMapper.map(client, unitUuid, displayName, subType,
+        return getAssets(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
                                                     description, designator, name, updatedBy,
                                                     PagingMapper.toConfig(pageSize, pageNumber,
                                                                           sortColumn, sortOrder)));
     }
 
     private CompletableFuture<PageDto<FullAssetDto>> getAssets(
-            GetEntitiesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getAssetsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getEntities(),
+                                         output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformAsset2Dto));
     }
 
@@ -236,7 +236,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public @Valid CompletableFuture<List<EntityLayerSupertypeDto>> getParts(
+    public @Valid CompletableFuture<List<ElementDto>> getParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         Client client = getAuthenticatedClient(auth);
@@ -259,10 +259,10 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
             @Valid @NotNull @RequestBody CreateAssetDto dto) {
 
         return useCaseInteractor.execute(createAssetUseCase,
-                                         (Supplier<CreateEntityUseCase.InputData<Asset>>) () -> {
+                                         (Supplier<CreateElementUseCase.InputData<Asset>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateEntityUseCase.InputData<>(
+                                             return new CreateElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Asset(dto,
                                                                                                idRefResolver),
                                                      client);
@@ -282,10 +282,10 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
             @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
         assetDto.applyResourceId(id);
         return useCaseInteractor.execute(updateAssetUseCase,
-                                         (Supplier<ModifyEntityUseCase.InputData<Asset>>) () -> {
+                                         (Supplier<ModifyElementUseCase.InputData<Asset>>) () -> {
                                              Client client = getClient(user);
                                              IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new ModifyEntityUseCase.InputData<>(
+                                             return new ModifyElementUseCase.InputData<>(
                                                      dtoToEntityTransformer.transformDto2Asset(assetDto,
                                                                                                idRefResolver),
                                                      client, eTag, user.getUsername());
@@ -302,8 +302,8 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(deleteEntityUseCase,
-                                         new DeleteEntityUseCase.InputData(Asset.class,
+        return useCaseInteractor.execute(deleteElementUseCase,
+                                         new DeleteElementUseCase.InputData(Asset.class,
                                                  Key.uuidFrom(uuid), client),
                                          output -> ResponseEntity.noContent()
                                                                  .build());
@@ -336,7 +336,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
-            return getAssets(GetEntitiesInputMapper.map(getAuthenticatedClient(auth),
+            return getAssets(GetElementsInputMapper.map(getAuthenticatedClient(auth),
                                                         SearchQueryDto.decodeFromSearchId(searchId),
                                                         PagingMapper.toConfig(pageSize, pageNumber,
                                                                               sortColumn,

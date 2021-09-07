@@ -19,17 +19,17 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
-import org.veo.core.repository.EntityLayerSupertypeQuery
+import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.QueryCondition
-import org.veo.core.usecase.base.GetEntitiesUseCase.InputData
+import org.veo.core.usecase.base.GetElementsUseCase.InputData
 import org.veo.core.usecase.person.GetPersonsUseCase
 
 class GetPersonsUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
-    EntityLayerSupertypeQuery<Person> query = Mock()
+    ElementQuery<Person> query = Mock()
     PagingConfiguration pagingConfiguration = Mock()
 
     GetPersonsUseCase usecase = new GetPersonsUseCase(clientRepository, personRepository, unitHierarchyProvider)
@@ -51,7 +51,7 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(person, pagingConfiguration)
-        output.entities.resultPage*.id == [id]
+        output.elements.resultPage*.id == [id]
     }
 
 
@@ -75,6 +75,6 @@ class GetPersonsUseCaseSpec extends UseCaseSpec {
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeMatches(input.subType)
         1 * query.execute(pagingConfiguration) >> singleResult(person, pagingConfiguration)
-        output.entities.resultPage*.id == [id]
+        output.elements.resultPage*.id == [id]
     }
 }

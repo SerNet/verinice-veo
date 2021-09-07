@@ -36,7 +36,7 @@ import lombok.ToString;
 @Entity(name = "document")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class DocumentData extends EntityLayerSupertypeData implements Document {
+public class DocumentData extends ElementData implements Document {
 
     @Override
     public Class<? extends Identifiable> getModelInterface() {

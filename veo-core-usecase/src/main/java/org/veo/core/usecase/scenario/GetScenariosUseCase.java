@@ -20,13 +20,13 @@ package org.veo.core.usecase.scenario;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ScenarioRepository;
-import org.veo.core.usecase.base.DefaultGetEntitiesUseCase;
+import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 /**
  * Reinstantiate persisted scenario objects.
  */
-public class GetScenariosUseCase extends DefaultGetEntitiesUseCase<Scenario> {
+public class GetScenariosUseCase extends DefaultGetElementsUseCase<Scenario> {
 
     public GetScenariosUseCase(ClientRepository clientRepository,
             ScenarioRepository scenarioRepository, UnitHierarchyProvider unitHierarchyProvider) {

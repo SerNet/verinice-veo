@@ -25,7 +25,7 @@ import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Account;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
@@ -38,18 +38,18 @@ public class UnitDumpMapper {
 
     public static UnitDumpDto mapOutput(GetUnitDumpUseCase.OutputData useCaseOutput,
             EntityToDtoTransformer entityToDtoTransformer) {
-        var entityDtos = useCaseOutput.getEntities()
-                                      .stream()
-                                      .map(entityToDtoTransformer::transform2Dto)
-                                      .collect(Collectors.toSet());
+        var elementDtos = useCaseOutput.getElements()
+                                       .stream()
+                                       .map(entityToDtoTransformer::transform2Dto)
+                                       .collect(Collectors.toSet());
         return new UnitDumpDto(entityToDtoTransformer.transformUnit2Dto(useCaseOutput.getUnit()),
-                mapDomains(useCaseOutput, entityToDtoTransformer), entityDtos,
-                getRisks(useCaseOutput.getEntities(), entityToDtoTransformer));
+                mapDomains(useCaseOutput, entityToDtoTransformer), elementDtos,
+                getRisks(useCaseOutput.getElements(), entityToDtoTransformer));
     }
 
-    private static Set<AbstractRiskDto> getRisks(Set<EntityLayerSupertype> entities,
+    private static Set<AbstractRiskDto> getRisks(Set<Element> elements,
             EntityToDtoTransformer transformer) {
-        return entities.stream()
+        return elements.stream()
                        .filter(i -> i instanceof RiskAffected)
                        .map(i -> (RiskAffected<?, ?>) i)
                        .flatMap(a -> a.getRisks()

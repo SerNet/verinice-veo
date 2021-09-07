@@ -22,16 +22,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Process.Status;
-import org.veo.core.repository.EntityLayerSupertypeQuery;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ProcessQuery;
 import org.veo.core.repository.QueryCondition;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.entity.jpa.ProcessData;
 
 /**
- * Implements {@link EntityLayerSupertypeQuery} using {@link Specification} API.
+ * Implements {@link ElementQuery} using {@link Specification} API.
  */
-public class ProcessQueryImpl extends EntityLayerSupertypeQueryImpl<Process, ProcessData>
+public class ProcessQueryImpl extends ElementQueryImpl<Process, ProcessData>
         implements ProcessQuery {
 
     public ProcessQueryImpl(ProcessDataRepository repo, Client client) {

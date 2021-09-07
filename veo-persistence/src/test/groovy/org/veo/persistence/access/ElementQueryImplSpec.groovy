@@ -22,7 +22,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 import org.veo.core.entity.Asset
-import org.veo.core.repository.EntityLayerSupertypeQuery
+import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
@@ -36,7 +36,7 @@ import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.UnitData
 
-class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
+class ElementQueryImplSpec extends AbstractJpaSpec {
 
     @Autowired
     ProcessDataRepository processDataRepository
@@ -55,13 +55,13 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
 
     ClientData client
     UnitData unit
-    EntityLayerSupertypeQuery<Asset> query
+    ElementQuery<Asset> query
 
     def setup() {
         client = clientDataRepository.save(newClient {})
         unit = unitDataRepository.save(newUnit(client))
 
-        query = new EntityLayerSupertypeQueryImpl<>(processDataRepository, client)
+        query = new ElementQueryImpl<>(processDataRepository, client)
     }
 
     def 'queries by client'() {
@@ -355,7 +355,7 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
     def 'Paging configuration is correctly passed to data repository'() {
         given: 'a repository'
         AssetDataRepository dataRepository = Mock()
-        def query = new EntityLayerSupertypeQueryImpl<>(dataRepository, client)
+        def query = new ElementQueryImpl<>(dataRepository, client)
         when:
         def result = query.execute(new PagingConfiguration(2, 0, 'foo', SortOrder.ASCENDING))
         then:
@@ -378,7 +378,7 @@ class EntityLayerSupertypeQueryImplSpec extends AbstractJpaSpec {
             }
         })
         when: "querying processes sorted by designator ascending"
-        def query = new EntityLayerSupertypeQueryImpl<>(personDataRepository, client)
+        def query = new ElementQueryImpl<>(personDataRepository, client)
 
         def result = query.execute(new PagingConfiguration(100, 0, 'designator', SortOrder.ASCENDING))
 

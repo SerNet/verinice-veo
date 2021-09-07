@@ -4,7 +4,7 @@
   "properties": {
     "abbreviation": {
       "type": "string",
-      "description": "The abbreviation for the EntityLayerSupertype."
+      "description": "The abbreviation for the Element."
     },
     "createdAt": {
       "type": "string",
@@ -460,7 +460,7 @@
     },
     "description": {
       "type": "string",
-      "description": "The description for the EntityLayerSupertype."
+      "description": "The description for the Element."
     },
     "domains": {
       "type": "array",
@@ -502,7 +502,7 @@
     },
     "name": {
       "type": "string",
-      "description": "The name for the EntityLayerSupertype."
+      "description": "The name for the Element."
     },
     "owner": {
       "type": "object",

@@ -23,7 +23,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -37,16 +37,16 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 @AllArgsConstructor
-public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> implements
-        TransactionalUseCase<CreateEntityUseCase.InputData<TEntity>, CreateEntityUseCase.OutputData<TEntity>> {
+public abstract class CreateElementUseCase<TEntity extends Element> implements
+        TransactionalUseCase<CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>> {
     private final UnitRepository unitRepository;
     private final Repository<TEntity, Key<UUID>> entityRepo;
     private final DesignatorService designatorService;
 
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
-    public CreateEntityUseCase.OutputData<TEntity> execute(
-            CreateEntityUseCase.InputData<TEntity> input) {
+    public CreateElementUseCase.OutputData<TEntity> execute(
+            CreateElementUseCase.InputData<TEntity> input) {
         var entity = input.getNewEntity();
         Unit unit = unitRepository.findById(entity.getOwner()
                                                   .getId())
@@ -56,7 +56,7 @@ public abstract class CreateEntityUseCase<TEntity extends EntityLayerSupertype> 
                                                 .uuidValue()));
         unit.checkSameClient(input.authenticatedClient);
         designatorService.assignDesignator(entity, input.authenticatedClient);
-        return new CreateEntityUseCase.OutputData<>(entityRepo.save(entity));
+        return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
     }
 
     @Valid

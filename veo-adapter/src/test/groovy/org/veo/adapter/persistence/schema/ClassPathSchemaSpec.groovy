@@ -83,7 +83,7 @@ class ClassPathSchemaSpec extends Specification {
     }
 
     private static List<JsonNode> getEntitySchemas() {
-        EntityType.ENTITY_TYPES
+        EntityType.ELEMENT_TYPES
                 .collect { it.singularTerm }
                 .collect { entitySchemaService.findSchema(it, null) }
                 .collect {  Json.mapper().readTree(it) }

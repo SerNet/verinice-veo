@@ -24,16 +24,16 @@ import spock.lang.Specification
 class CustomLinkSpec extends Specification{
     def "target affects hashCode"() {
         given: "links with different targets"
-        def commonSource = Mock(EntityLayerSupertype)
+        def commonSource = Mock(Element)
         def link1 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
-            setTarget(Mock(EntityLayerSupertype))
+            setTarget(Mock(Element))
         }
         def link2 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
-            setTarget(Mock(EntityLayerSupertype))
+            setTarget(Mock(Element))
         }
         expect: "different hashCodes"
         link1.hashCode() != link2.hashCode()
@@ -42,8 +42,8 @@ class CustomLinkSpec extends Specification{
 
     def "type affects hashCode"() {
         given: "two links with different types"
-        def commonSource = Mock(EntityLayerSupertype)
-        def commonTarget = Mock(EntityLayerSupertype)
+        def commonSource = Mock(Element)
+        def commonTarget = Mock(Element)
         def link1 = new CustomLinkData().tap {
             setSource(commonSource)
             setTarget(commonTarget)
@@ -61,8 +61,8 @@ class CustomLinkSpec extends Specification{
 
     def "name does not affect hashCode"() {
         given: "two links with different names"
-        def commonSource = Mock(EntityLayerSupertype)
-        def commonTarget = Mock(EntityLayerSupertype)
+        def commonSource = Mock(Element)
+        def commonTarget = Mock(Element)
         def link1 = new CustomLinkData().tap {
             setSource(commonSource)
             setTarget(commonTarget)

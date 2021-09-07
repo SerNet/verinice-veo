@@ -29,7 +29,7 @@ class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
         when:
         def result = parseJson(get("/types"))
         then:
-        result.size() == EntityType.ENTITY_TYPES.size()
+        result.size() == EntityType.ELEMENT_TYPES.size()
         result.values().each {
             // Try using the collection URI (removing hateoas param placeholders).
             get(it.collectionUri.replaceFirst("\\{.*\\}", ""))

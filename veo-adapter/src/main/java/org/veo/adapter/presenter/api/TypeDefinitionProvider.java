@@ -33,9 +33,9 @@ public class TypeDefinitionProvider {
     private final ReferenceAssembler referenceAssembler;
 
     public Map<String, TypeDefinition> getAll() {
-        return EntityType.ENTITY_TYPES.stream()
-                                      .collect(Collectors.toMap(EntityType::getSingularTerm,
-                                                                this::buildDefinition));
+        return EntityType.ELEMENT_TYPES.stream()
+                                       .collect(Collectors.toMap(EntityType::getSingularTerm,
+                                                                 this::buildDefinition));
     }
 
     private TypeDefinition buildDefinition(EntityType type) {

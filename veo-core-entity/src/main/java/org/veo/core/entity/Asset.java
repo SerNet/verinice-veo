@@ -21,8 +21,7 @@ package org.veo.core.entity;
  * An asset describes a part in the unit. It could be a physical element like a
  * computer, but also something not physical like a software for example.
  */
-public interface Asset
-        extends EntityLayerSupertype, CompositeEntity<Asset>, RiskAffected<Asset, AssetRisk> {
+public interface Asset extends Element, CompositeElement<Asset>, RiskAffected<Asset, AssetRisk> {
 
     String SINGULAR_TERM = "asset";
     String PLURAL_TERM = "assets";

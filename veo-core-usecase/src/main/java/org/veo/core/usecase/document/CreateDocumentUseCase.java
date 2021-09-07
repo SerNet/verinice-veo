@@ -21,9 +21,9 @@ import org.veo.core.entity.Document;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.base.CreateEntityUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
 
-public class CreateDocumentUseCase extends CreateEntityUseCase<Document> {
+public class CreateDocumentUseCase extends CreateElementUseCase<Document> {
 
     public CreateDocumentUseCase(UnitRepository unitRepository, DocumentRepository entityRepo,
             DesignatorService designatorService) {

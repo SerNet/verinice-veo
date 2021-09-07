@@ -32,19 +32,19 @@ import org.veo.core.entity.Scenario;
  * with more specific methods - i.e. queries based on particular fields.
  */
 public interface RiskAffectedRepository<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends EntityLayerSupertypeRepository<T> {
+        extends ElementRepository<T> {
     /**
-     * Retrieves entities that have risks resulting from the given scenario.
+     * Retrieves elements that have risks resulting from the given scenario.
      */
     Set<T> findByRisk(Scenario cause);
 
     /**
-     * Retrieves entities that have risks that are mitigated by the given control.
+     * Retrieves elements that have risks that are mitigated by the given control.
      */
     Set<T> findByRisk(Control mitigatedBy);
 
     /**
-     * Retrieves entities that have risks for which the given person is the risk
+     * Retrieves elements that have risks for which the given person is the risk
      * owner.
      */
     Set<T> findByRisk(Person riskOwner);

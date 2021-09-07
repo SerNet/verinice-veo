@@ -22,8 +22,8 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Key
 import org.veo.core.repository.CatalogItemRepository
-import org.veo.core.repository.EntityLayerSupertypeQuery
-import org.veo.core.repository.EntityLayerSupertypeRepository
+import org.veo.core.repository.ElementQuery
+import org.veo.core.repository.ElementRepository
 import org.veo.core.repository.PagedResult
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
@@ -36,14 +36,14 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     CatalogItemService catalogItemservice = Mock()
     CatalogItemRepository catalogItemRepository = Mock()
     RepositoryProvider entityRepo = Mock()
-    EntityLayerSupertypeRepository repo = Mock()
+    ElementRepository repo = Mock()
     UnitRepository unitRepo = Mock()
     CatalogItem item1 = Mock()
     CatalogItem item2 = Mock()
     Catalog catalog = Mock()
     Control control = Mock()
     Control newControl = Mock()
-    EntityLayerSupertypeQuery emptyQuery = Mock()
+    ElementQuery emptyQuery = Mock()
     PagedResult emptyQueryResult = Mock()
 
     def setup() {

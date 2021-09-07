@@ -21,7 +21,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.ModifyEntityUseCase
+import org.veo.core.usecase.base.ModifyElementUseCase
 import org.veo.core.usecase.common.ETag
 
 class UpdateScopeUseCaseSpec extends UseCaseSpec {
@@ -47,7 +47,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
         when:
         def eTag = ETag.from(scope.getId().uuidValue(), 0)
-        def output = usecase.execute(new ModifyEntityUseCase.InputData(scope, existingClient,  eTag, USER_NAME))
+        def output = usecase.execute(new ModifyElementUseCase.InputData(scope, existingClient,  eTag, USER_NAME))
         then:
 
         1 * scopeRepository.findById(scopeId) >> Optional.of(existingScope)

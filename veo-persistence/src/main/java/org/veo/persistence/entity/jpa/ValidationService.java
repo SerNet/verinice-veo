@@ -26,7 +26,7 @@ import javax.validation.Validator;
 
 import org.springframework.stereotype.Service;
 
-import org.veo.core.entity.EntityLayerSupertype;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.code.ModelValidationException;
 import org.veo.core.entity.code.ModelValidator;
@@ -51,14 +51,14 @@ public class ValidationService {
         if (!violations.isEmpty())
             throw new ConstraintViolationException(violations);
 
-        if (!(identifiable instanceof EntityLayerSupertype))
+        if (!(identifiable instanceof Element))
             return;
 
         // execute additional model validations:
-        EntityLayerSupertype entity = (EntityLayerSupertype) identifiable;
-        AbstractModelValidator<EntityLayerSupertype> modelValidator = new ModelValidator.AbstractModelValidator<>() {
+        Element entity = (Element) identifiable;
+        AbstractModelValidator<Element> modelValidator = new ModelValidator.AbstractModelValidator<>() {
             @Override
-            protected void doValidate(EntityLayerSupertype object, List<String> validationErrors) {
+            protected void doValidate(Element object, List<String> validationErrors) {
                 return; // no additional validation needed
             }
         };
