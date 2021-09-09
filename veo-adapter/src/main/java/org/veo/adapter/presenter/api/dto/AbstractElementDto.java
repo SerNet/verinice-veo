@@ -83,7 +83,7 @@ public abstract class AbstractElementDto extends AbstractVersionedDto implements
     private Map<String, List<CustomLinkDto>> links = Collections.emptyMap();
 
     @Valid
-    @Schema(description = "A custom property which is determined by the requested entity schema - see '/schemas'",
+    @Schema(description = "Groups of customizable attributes - see '/schemas'",
             title = "CustomAspect")
     private Map<String, CustomAspectDto> customAspects = Collections.emptyMap();
 

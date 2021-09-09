@@ -24,7 +24,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
-class CustomPropertyJpaSpec extends AbstractJpaSpec {
+class CustomAspectJpaSpec extends AbstractJpaSpec {
     @Autowired
     AssetDataRepository assetRepository
 
@@ -42,7 +42,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         unit = unitRepository.save(unit)
     }
 
-    def 'custom props are inserted'() {
+    def 'attributes are inserted'() {
         given:
         def asset = newAsset(unit) {
             customAspects = [
@@ -65,7 +65,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         ]
     }
 
-    def 'property type can be changed'() {
+    def 'attribute type can be changed'() {
         given: 'a saved asset with a string prop'
         def asset = newAsset(unit) {
             customAspects = [
@@ -89,7 +89,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         ]
     }
 
-    def 'property can be removed'() {
+    def 'attribute can be removed'() {
         given: 'a saved asset with two props'
         def asset = newAsset(unit) {
             customAspects = [
@@ -110,7 +110,7 @@ class CustomPropertyJpaSpec extends AbstractJpaSpec {
         retrievedAsset.get().customAspects[0].attributes == ["k2": "due"]
     }
 
-    def 'long custom property value is accepted'() {
+    def 'long attribute value is accepted'() {
         given:
         def stringLength = 18000
         def longString = "X" * stringLength
