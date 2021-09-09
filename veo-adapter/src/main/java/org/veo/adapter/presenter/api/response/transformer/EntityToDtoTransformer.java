@@ -161,23 +161,18 @@ public final class EntityToDtoTransformer {
                                                                      .getSimpleName());
     }
 
-    // Person ->
-    // PersonDto
     public FullPersonDto transformPerson2Dto(@Valid Person source) {
         FullPersonDto target = new FullPersonDto();
         mapCompositeEntity(source, target);
         return target;
     }
 
-    // Asset -> AssetDto
     public FullAssetDto transformAsset2Dto(@Valid Asset source) {
         FullAssetDto target = new FullAssetDto();
         mapCompositeEntity(source, target);
         return target;
     }
 
-    // Process ->
-    // ProcessDto
     public FullProcessDto transformProcess2Dto(@Valid Process source) {
         FullProcessDto target = new FullProcessDto();
         mapCompositeEntity(source, target);
@@ -185,40 +180,30 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    // Document ->
-    // DocumentDto
     public FullDocumentDto transformDocument2Dto(@Valid Document source) {
         FullDocumentDto target = new FullDocumentDto();
         mapCompositeEntity(source, target);
         return target;
     }
 
-    // Control ->
-    // ControlDto
     public FullControlDto transformControl2Dto(@Valid Control source) {
         FullControlDto target = new FullControlDto();
         mapCompositeEntity(source, target);
         return target;
     }
 
-    // Incident ->
-    // IncidentDto
     public FullIncidentDto transformIncident2Dto(@Valid Incident source) {
         FullIncidentDto target = new FullIncidentDto();
         mapCompositeEntity(source, target);
         return target;
     }
 
-    // Scenario ->
-    // ScenarioDto
     public FullScenarioDto transformScenario2Dto(@Valid Scenario source) {
         FullScenarioDto target = new FullScenarioDto();
         mapCompositeEntity(source, target);
         return target;
     }
 
-    // Scope ->
-    // ScopeDto
     public FullScopeDto transformScope2Dto(@Valid Scope source) {
         FullScopeDto target = new FullScopeDto();
         mapElement(source, target);
@@ -226,8 +211,6 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    // Domain ->
-    // DomainDto
     public FullDomainDto transformDomain2Dto(@Valid Domain source) {
         var target = new FullDomainDto();
         target.setId(source.getId()
@@ -293,7 +276,6 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    // Unit -> UnitDto
     public FullUnitDto transformUnit2Dto(@Valid Unit source) {
         var target = new FullUnitDto();
         target.setId(source.getId()
@@ -314,8 +296,6 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    // CustomLink ->
-    // CustomLinkDto
     public CustomLinkDto transformCustomLink2Dto(@Valid CustomLink source) {
         var target = new CustomLinkDto();
         target.setAttributes(source.getAttributes());
@@ -355,8 +335,6 @@ public final class EntityToDtoTransformer {
         target.setParts(convertReferenceSet(source.getParts()));
     }
 
-    // CustomProperties ->
-    // CustomPropertiesDto
     public CustomAspectDto transformCustomAspect2Dto(@Valid CustomAspect source) {
         var target = new CustomAspectDto();
         target.setAttributes(source.getAttributes());
