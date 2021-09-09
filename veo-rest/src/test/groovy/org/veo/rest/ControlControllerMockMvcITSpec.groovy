@@ -112,7 +112,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "create a control with custom properties"() {
+    def "create a control with a custom aspect"() {
         given: "a request body"
 
         Map request = [
@@ -152,7 +152,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             }
         }
 
-        then: 'the custom properties are saved'
+        then: 'the custom aspect is saved'
         savedControl.customAspects.first().type == 'control_dataProtection'
     }
 
@@ -295,14 +295,14 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put a control with custom properties"() {
+    def "put a control with a custom aspect"() {
         given: "a saved control"
 
-        def cp = newCustomAspect("my.new.type")
+        def customAspect = newCustomAspect("my.new.type")
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
-                customAspects = [cp] as Set
+                customAspects = [customAspect] as Set
                 domains = [domain1] as Set
             })
         }

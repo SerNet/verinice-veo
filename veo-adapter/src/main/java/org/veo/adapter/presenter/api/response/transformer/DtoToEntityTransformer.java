@@ -246,7 +246,7 @@ public final class DtoToEntityTransformer {
 
     }
 
-    public CustomAspect transformDto2CustomProperties(EntityFactory factory, CustomAspectDto source,
+    public CustomAspect transformDto2CustomAspect(EntityFactory factory, CustomAspectDto source,
             String type, EntitySchema entitySchema) {
         var target = factory.createCustomAspect(type);
         target.setAttributes(source.getAttributes());
@@ -353,8 +353,8 @@ public final class DtoToEntityTransformer {
         return dto.getCustomAspects()
                   .entrySet()
                   .stream()
-                  .map(entry -> transformDto2CustomProperties(factory, entry.getValue(),
-                                                              entry.getKey(), entitySchema))
+                  .map(entry -> transformDto2CustomAspect(factory, entry.getValue(), entry.getKey(),
+                                                          entitySchema))
                   .collect(Collectors.toSet());
     }
 

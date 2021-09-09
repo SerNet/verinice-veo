@@ -196,16 +196,16 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put a person with custom properties"() {
+    def "put a person with a custom aspect"() {
         given: "a saved person"
 
-        CustomAspect cp = newCustomAspect("my.new.type")
+        CustomAspect customAspect = newCustomAspect("my.new.type")
 
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
                 name = 'Test person-1'
                 domains = [domain1] as Set
-                customAspects = [cp] as Set
+                customAspects = [customAspect] as Set
             })
         }
 
