@@ -17,7 +17,7 @@
     "customAspects": {
       "type": "object",
       "title": "CustomAspect",
-      "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
+      "description": "Groups of customizable attributes - see '/schemas'",
       "properties": {
         "person_generalInformation": {
           "type": "object",
