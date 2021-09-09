@@ -96,21 +96,18 @@ public final class DtoToEntityTransformer {
     private final EntitySchemaLoader entitySchemaLoader;
     private final SubTypeTransformer subTypeTransformer;
 
-    // PersonDto->Person
     public Person transformDto2Person(AbstractPersonDto source, IdRefResolver idRefResolver) {
         var target = factory.createPerson(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
         return target;
     }
 
-    // AssetDto->Asset
     public Asset transformDto2Asset(AbstractAssetDto source, IdRefResolver idRefResolver) {
         var target = factory.createAsset(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
         return target;
     }
 
-    // ProcessDto->Process
     public Process transformDto2Process(AbstractProcessDto source, IdRefResolver idRefResolver) {
         var target = factory.createProcess(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
@@ -120,28 +117,24 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    // DocumentDto->Document
     public Document transformDto2Document(AbstractDocumentDto source, IdRefResolver idRefResolver) {
         var target = factory.createDocument(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
         return target;
     }
 
-    // ControlDto->Control
     public Control transformDto2Control(AbstractControlDto source, IdRefResolver idRefResolver) {
         var target = factory.createControl(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
         return target;
     }
 
-    // IncidentDto->Incident
     public Incident transformDto2Incident(AbstractIncidentDto source, IdRefResolver idRefResolver) {
         var target = factory.createIncident(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
         return target;
     }
 
-    // ScenarioDto->Scenario
     public Scenario transformDto2Scenario(AbstractScenarioDto source, IdRefResolver idRefResolver) {
         var target = factory.createScenario(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
@@ -165,7 +158,6 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    // DomainDto->Domain
     public Domain transformDto2Domain(AbstractDomainDto source, Key<UUID> key) {
         var target = factory.createDomain(source.getName(), "", "", "");
         mapIdentifiableProperties(source, target);
@@ -223,7 +215,6 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    // UnitDto->Unit
     public Unit transformDto2Unit(AbstractUnitDto source, IdRefResolver idRefResolver) {
         var target = factory.createUnit(source.getName(), null);
         mapIdentifiableProperties(source, target);
@@ -240,7 +231,6 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    // CustomLinkDto->CustomLink
     public CustomLink transformDto2CustomLink(CustomLinkDto source, String type,
             EntitySchema entitySchema, IdRefResolver idRefResolver) {
         Element linkTarget = null;
@@ -256,7 +246,6 @@ public final class DtoToEntityTransformer {
 
     }
 
-    // CustomPropertiesDto->CustomProperties
     public CustomAspect transformDto2CustomProperties(EntityFactory factory, CustomAspectDto source,
             String type, EntitySchema entitySchema) {
         var target = factory.createCustomAspect(type);
