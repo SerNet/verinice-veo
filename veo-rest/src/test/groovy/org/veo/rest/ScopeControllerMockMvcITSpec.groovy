@@ -318,14 +318,14 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
 
     @WithUserDetails("user@domain.example")
-    def "put a scope with custom properties"() {
+    def "put a scope with a custom aspect"() {
         given: "a saved scope"
 
-        CustomAspect cp = newCustomAspect("my.new.type")
+        CustomAspect customAspect = newCustomAspect("my.new.type")
 
         def scope = txTemplate.execute {
             scopeRepository.save(newScope(unit) {
-                customAspects = [cp]
+                customAspects = [customAspect]
                 domains = [domain1]
             })
         }

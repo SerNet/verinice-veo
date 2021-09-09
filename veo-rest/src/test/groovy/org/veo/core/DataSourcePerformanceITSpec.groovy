@@ -156,7 +156,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.select == 0
     }
 
-    def "SQL performance for saving 1 process with 1 customAspect with custom properties"() {
+    def "SQL performance for saving 1 process with 1 custom aspect"() {
         given:
         createClient()
 
@@ -505,8 +505,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     def saveProcessWithCustomAspects(int count) {
         def process = newProcess(unit)
         for (i in 0..<count) {
-            CustomAspect cp = newCustomAspect("aType")
-            process.addToCustomAspects(cp)
+            CustomAspect customAspect = newCustomAspect("aType")
+            process.addToCustomAspects(customAspect)
         }
         processRepository.save(process)
     }
@@ -547,11 +547,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     @Transactional
     def Process saveProcessWithCustomAspect() {
         def process = newProcess(unit)
-        CustomAspect cp = newCustomAspect("aType")
-        cp.attributes = [
+        CustomAspect customAspect = newCustomAspect("aType")
+        customAspect.attributes = [
             PROP_KEY: "ok"
         ]
-        process.addToCustomAspects(cp)
+        process.addToCustomAspects(customAspect)
         return processRepository.save(process)
     }
 

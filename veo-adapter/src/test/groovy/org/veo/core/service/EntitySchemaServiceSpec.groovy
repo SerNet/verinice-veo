@@ -28,14 +28,14 @@ class EntitySchemaServiceSpec extends Specification {
 
     EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl(SCHEMA_FILES_PATH)
 
-    def "custom properties are contained in 'attributes' array"() {
+    def "custom aspect attributes are contained in 'attributes' object"() {
         given: 'The control schema for with GDPR extensions'
         def schema = entitySchemaService.findSchema("control", ["GDPR"])
         def s = new JsonSlurper().parseText(schema)
         expect: 'the schema has the control_dataProtection extension'
         def controlDataProtection = s.properties.customAspects.properties.control_dataProtection
         controlDataProtection != null
-        and: 'the custom properties added by the extension are not added to the root properties ...'
+        and: 'the attributes added by the extension are not added to the root properties ...'
         controlDataProtection.properties.control_dataProtection == null
         and: '''... but to the 'attributes' property'''
         controlDataProtection.properties.attributes.properties.control_dataProtection_objectives != null

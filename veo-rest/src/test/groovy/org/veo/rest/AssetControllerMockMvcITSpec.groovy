@@ -459,16 +459,16 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "put an asset with custom properties"() {
+    def "put an asset with a custom aspect"() {
         given: "a saved asset"
 
-        CustomAspect cp = newCustomAspect("my.new.type")
+        CustomAspect customAspect = newCustomAspect("my.new.type")
 
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = "Test asset-1"
                 domains = [domain1] as Set
-                customAspects = [cp] as Set
+                customAspects = [customAspect] as Set
             })
         }
 
