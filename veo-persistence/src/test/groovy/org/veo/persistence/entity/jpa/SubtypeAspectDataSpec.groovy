@@ -19,50 +19,47 @@ package org.veo.persistence.entity.jpa
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
-import org.veo.core.entity.InvalidSubTypeException
 
 import spock.lang.Specification
 
 class SubtypeAspectDataSpec extends Specification{
-    def "domain affects identity"() {
-        given: "two aspects with different domains"
+    def "transient instances are never equal"() {
+        given: "two aspects with the same parameters"
         def commonOwner = Mock(Element)
-        def aspect1 = new SubTypeAspectData(Mock(Domain), commonOwner, "a", "NEW")
-        def aspect2 = new SubTypeAspectData(Mock(Domain), commonOwner, "a", "NEW")
-        expect: "different hashCodes"
-        aspect1.hashCode() != aspect2.hashCode()
+        def commonDomain = Mock(Domain)
+        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
+        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
+        expect: "objects are not equal"
         aspect1 != aspect2
     }
 
-    def "owner affects identity"() {
-        given: "two aspects with different owners"
+    def "managed instances with different IDs are not equal"() {
+        given: "two aspects with different IDs"
+        def commonOwner = Mock(Element)
         def commonDomain = Mock(Domain)
-        def aspect1 = new SubTypeAspectData(commonDomain, Mock(Element), "a", "NEW")
-        def aspect2 = new SubTypeAspectData(commonDomain, Mock(Element), "a", "NEW")
-        expect: "different hashCodes"
-        aspect1.hashCode() != aspect2.hashCode()
+        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW").tap {
+            dbId = 'abcde'
+        }
+        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW").tap {
+            dbId = 'abcd'
+        }
+        expect: "objects are not equal"
         aspect1 != aspect2
     }
 
-    def "subType does not affect identity"() {
-        given: "two aspects with different sub types"
-        def commonDomain = Mock(Domain)
+    def "managed instances with the same ID are equal"() {
+        given: "two aspects with the same ID"
         def commonOwner = Mock(Element)
-        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
-        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "b", "NEW")
-        expect: "same hashCodes"
-        aspect1.hashCode() == aspect2.hashCode()
-        aspect1 == aspect2
-    }
-
-    def "status does not affect identity"() {
-        given: "two aspects with different status"
         def commonDomain = Mock(Domain)
-        def commonOwner = Mock(Element)
-        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
-        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "OLD")
-        expect: "same hashCodes"
-        aspect1.hashCode() == aspect2.hashCode()
+        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "new").tap {
+            dbId = 'abcde'
+        }
+        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "new").tap {
+            dbId = 'abcde'
+        }
+        expect: "objects are equal"
         aspect1 == aspect2
+        and: 'have the same hashCode'
+        aspect1.hashCode() == aspect2.hashCode()
     }
 }

@@ -107,6 +107,6 @@ class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
             links.first() != null
         }
 
-        QueryCountHolder.grandTotal.select == 4
+        QueryCountHolder.grandTotal.select == 3
     }
 }

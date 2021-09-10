@@ -45,7 +45,6 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
                                                                                           // must be
                                                                                           // nullable
     @JoinColumn(name = "target_id")
-    @EqualsAndHashCode.Include
     private Element target;
 
     @NotNull
@@ -58,7 +57,6 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
                                                                                           // must be
                                                                                           // nullable
     @JoinColumn(name = "source_id")
-    @EqualsAndHashCode.Include
     private Element source;
 
     /**

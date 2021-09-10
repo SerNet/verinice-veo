@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import org.hibernate.Hibernate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
@@ -99,6 +100,8 @@ class ProcessRiskITSpec extends VeoSpringSpec {
             Set<Process> processes = processRepository.findByRisk(scenario1)
             def processRisk = processes.first().risks.first()
             assert processRisk.domains.first() == domain1
+            // initialize hibernate proxy
+            Hibernate.initialize(processRisk.scenario)
             return processRisk
         }
 

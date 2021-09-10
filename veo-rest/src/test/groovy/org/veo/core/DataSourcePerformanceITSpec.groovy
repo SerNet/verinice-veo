@@ -509,7 +509,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         executeInTransaction {
             def process = newProcess(unit)
             for (i in 0..<count) {
-                CustomAspect customAspect = newCustomAspect("aType")
+                CustomAspect customAspect = newCustomAspect("aType $i")
                 process.addToCustomAspects(customAspect)
             }
             processRepository.save(process)

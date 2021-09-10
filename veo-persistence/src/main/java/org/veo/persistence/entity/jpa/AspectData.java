@@ -32,10 +32,8 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.Aspect;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Entity(name = "aspect")
 @Data
@@ -59,10 +57,34 @@ public abstract class AspectData implements Aspect {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
     @JoinColumn(name = "domain_id")
-    @EqualsAndHashCode.Include
     private Domain domain;
 
-    @EqualsAndHashCode.Include
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
     private Element owner;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
+        if (this == o)
+            return true;
+
+        if (!(o instanceof AspectData))
+            return false;
+
+        AspectData other = (AspectData) o;
+        // Transient (unmanaged) entities have an ID of 'null'. Only managed
+        // (persisted and detached) entities have an identity. JPA requires that
+        // an entity's identity remains the same over all state changes.
+        // Therefore a transient entity must never equal another entity.
+        String dbId = getDbId();
+        return dbId != null && dbId.equals(other.getDbId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 }

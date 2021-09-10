@@ -44,7 +44,6 @@ import org.veo.core.entity.exception.ModelConsistencyException;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +51,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "abstractriskdata")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @ToString(onlyExplicitlyIncluded = true)
 @Data
 @RequiredArgsConstructor
@@ -83,7 +81,6 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     @NotNull
     @NonNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ScenarioData.class, optional = false)
-    @EqualsAndHashCode.Include
     @Setter(AccessLevel.PROTECTED)
     private Scenario scenario;
 
@@ -95,7 +92,6 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     @NotNull
     @NonNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = RiskAffectedData.class, optional = false)
-    @EqualsAndHashCode.Include
     @Setter(AccessLevel.PRIVATE)
     private T entity;
 
@@ -140,6 +136,31 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
     public R appoint(@Nullable Person riskOwner) {
         setRiskOwner(riskOwner);
         return (R) this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
+        if (this == o)
+            return true;
+
+        if (!(o instanceof AbstractRiskData))
+            return false;
+
+        AbstractRiskData other = (AbstractRiskData) o;
+        // Transient (unmanaged) entities have an ID of 'null'. Only managed
+        // (persisted and detached) entities have an identity. JPA requires that
+        // an entity's identity remains the same over all state changes.
+        // Therefore a transient entity must never equal another entity.
+        String dbId = getDbId();
+        return dbId != null && dbId.equals(other.getDbId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 
 }

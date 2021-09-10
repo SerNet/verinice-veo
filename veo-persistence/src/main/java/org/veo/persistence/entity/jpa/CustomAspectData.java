@@ -40,11 +40,9 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "custom_aspect")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @TypeDef(name = "json", typeClass = JsonType.class)
@@ -57,10 +55,8 @@ public class CustomAspectData implements CustomAspect {
 
     @NotNull
     @ToString.Include
-    @EqualsAndHashCode.Include
     private String type;
 
-    @EqualsAndHashCode.Include
     @ManyToOne(fetch = FetchType.LAZY,
                targetEntity = ElementData.class,
                // 'links' are also custom aspects, saved in the same table but mapped by
@@ -99,5 +95,30 @@ public class CustomAspectData implements CustomAspect {
     public void setDomains(Set<Domain> newDomains) {
         domains.clear();
         domains.addAll(newDomains);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
+        if (this == o)
+            return true;
+
+        if (!(o instanceof CustomAspectData))
+            return false;
+
+        CustomAspectData other = (CustomAspectData) o;
+        // Transient (unmanaged) entities have an ID of 'null'. Only managed
+        // (persisted and detached) entities have an identity. JPA requires that
+        // an entity's identity remains the same over all state changes.
+        // Therefore a transient entity must never equal another entity.
+        String dbId = getDbId();
+        return dbId != null && dbId.equals(other.getDbId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

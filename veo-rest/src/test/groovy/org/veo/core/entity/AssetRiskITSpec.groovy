@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import org.hibernate.Hibernate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
@@ -95,6 +96,8 @@ class AssetRiskITSpec extends VeoSpringSpec {
             Set<Asset> assets = assetRepository.findByRisk(scenario1)
             def assetRisk = assets.first().risks.first()
             assert assetRisk.domains.first() == domain1
+            // initialize hibernate proxy
+            Hibernate.initialize(assetRisk.scenario)
             return assetRisk
         }
 

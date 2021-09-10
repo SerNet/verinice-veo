@@ -22,59 +22,67 @@ import org.veo.persistence.entity.jpa.CustomLinkData
 import spock.lang.Specification
 
 class CustomLinkSpec extends Specification{
-    def "target affects hashCode"() {
-        given: "links with different targets"
+
+    def "transient instances are never equal"() {
+        given: "two aspects with the same parameters"
         def commonSource = Mock(Element)
+        def commonTarget = Mock(Element)
+
         def link1 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
-            setTarget(Mock(Element))
+            setTarget(commonTarget)
         }
         def link2 = new CustomLinkData().tap {
             setType("a")
             setSource(commonSource)
-            setTarget(Mock(Element))
+            setTarget(commonTarget)
         }
-        expect: "different hashCodes"
-        link1.hashCode() != link2.hashCode()
+        expect: "objects are not equal"
         link1 != link2
     }
 
-    def "type affects hashCode"() {
-        given: "two links with different types"
+    def "managed instances with different IDs are not equal"() {
+        given: "two aspects with different IDs"
         def commonSource = Mock(Element)
         def commonTarget = Mock(Element)
+
         def link1 = new CustomLinkData().tap {
+            setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            setType("a")
+            dbId = 'a'
         }
         def link2 = new CustomLinkData().tap {
+            setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            setType("b")
+            dbId = 'b'
         }
-        expect: "different hashCodes"
-        link1.hashCode() != link2.hashCode()
+        expect: "objects are not equal"
         link1 != link2
     }
 
-    def "name does not affect hashCode"() {
-        given: "two links with different names"
+    def "managed instances with the same ID are equal"() {
+        given: "two aspects with the same ID"
         def commonSource = Mock(Element)
         def commonTarget = Mock(Element)
+
         def link1 = new CustomLinkData().tap {
+            setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            setType("a")
+            dbId = 'a'
         }
         def link2 = new CustomLinkData().tap {
+            setType("a")
             setSource(commonSource)
             setTarget(commonTarget)
-            setType("a")
+            dbId = 'a'
         }
-        expect: "identical hashCodes"
-        link1.hashCode() == link2.hashCode()
+        expect: "objects are equal"
         link1 == link2
+        and: 'have the same hashCode'
+        link1.hashCode() == link2.hashCode()
     }
 }
