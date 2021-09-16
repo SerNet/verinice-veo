@@ -1,3 +1,5 @@
+import org.veo.JsonSortStep
+
 plugins {
     id 'org.springframework.boot' version '2.5.4' apply false
     id "com.github.spotbugs" version '4.7.1'
@@ -76,9 +78,10 @@ allprojects  {
             indentWithTabs()
             endWithNewline()
         }
-        format 'json', {
+        json {
             target '**/*.json'
             targetExclude '**/bin/**', '**/target/**'
+            addStep JsonSortStep.create()
             eclipseWtp('json').configFile rootProject.file('misc/eclipse/json-format.prefs')
             endWithNewline()
         }

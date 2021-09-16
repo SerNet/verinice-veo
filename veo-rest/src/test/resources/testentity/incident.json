@@ -1,39 +1,38 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
+  "description": "Schema for Incident",
   "properties": {
     "abbreviation": {
-      "type": "string",
-      "description": "The abbreviation for the Element."
+      "description": "The abbreviation for the Element.",
+      "type": "string"
     },
     "createdAt": {
-      "type": "string",
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "type": "string"
     },
     "createdBy": {
-      "type": "string",
-      "description": "The username of the user who created this object."
+      "description": "The username of the user who created this object.",
+      "type": "string"
     },
     "customAspects": {
-      "type": "object",
-      "title": "CustomAspect",
       "description": "Groups of customizable attributes - see '/schemas'",
       "properties": {
         
-      }
+      },
+      "title": "CustomAspect",
+      "type": "object"
     },
     "description": {
-      "type": "string",
-      "description": "The description for the Element."
+      "description": "The description for the Element.",
+      "type": "string"
     },
     "domains": {
-      "type": "array",
       "items": {
-        "type": "object",
+        "description": "A reference to a domain",
         "properties": {
           "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced domain."
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
           },
           "resourcesUri": {
             "type": "string"
@@ -42,38 +41,39 @@
             "type": "string"
           },
           "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced domains."
+            "description": "The resource URL of the referenced domains.",
+            "type": "string"
           }
         },
         "required": [
           "targetUri"
         ],
-        "description": "A reference to a domain"
-      }
+        "type": "object"
+      },
+      "type": "array"
     },
     "id": {
-      "type": "string",
-      "description": "ID must be a valid UUID string following RFC 4122."
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "type": "string"
     },
     "links": {
-      "type": "object",
-      "title": "CustomLink",
       "description": "Custom relations which do not affect the behavior.",
       "properties": {
         
-      }
+      },
+      "title": "CustomLink",
+      "type": "object"
     },
     "name": {
-      "type": "string",
-      "description": "The name for the Element."
+      "description": "The name for the Element.",
+      "type": "string"
     },
     "owner": {
-      "type": "object",
+      "description": "A reference to the unit containing this entity.",
       "properties": {
         "displayName": {
-          "type": "string",
-          "description": "A friendly human readable title of the referenced unit."
+          "description": "A friendly human readable title of the referenced unit.",
+          "type": "string"
         },
         "resourcesUri": {
           "type": "string"
@@ -82,23 +82,22 @@
           "type": "string"
         },
         "targetUri": {
-          "type": "string",
-          "description": "The resource URL of the referenced unit."
+          "description": "The resource URL of the referenced unit.",
+          "type": "string"
         }
       },
       "required": [
         "targetUri"
       ],
-      "description": "A reference to the unit containing this entity."
+      "type": "object"
     },
     "parts": {
-      "type": "array",
       "items": {
-        "type": "object",
+        "description": "A reference to an entity's part",
         "properties": {
           "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced entity."
+            "description": "A friendly human readable title of the referenced entity.",
+            "type": "string"
           },
           "resourcesUri": {
             "type": "string"
@@ -107,32 +106,33 @@
             "type": "string"
           },
           "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced entity."
+            "description": "The resource URL of the referenced entity.",
+            "type": "string"
           }
         },
         "required": [
           "targetUri"
         ],
-        "description": "A reference to an entity's part"
-      }
+        "type": "object"
+      },
+      "type": "array"
     },
     "subType": {
-      "type": "object",
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
       "title": "SubType",
-      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value."
+      "type": "object"
     },
     "type": {
-      "type": "string",
-      "description": "Entity type identifier"
+      "description": "Entity type identifier",
+      "type": "string"
     },
     "updatedAt": {
-      "type": "string",
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "type": "string"
     },
     "updatedBy": {
-      "type": "string",
-      "description": "The username of the user who last updated this object."
+      "description": "The username of the user who last updated this object.",
+      "type": "string"
     }
   },
   "required": [
@@ -140,5 +140,5 @@
     "owner"
   ],
   "title": "incident",
-  "description": "Schema for Incident"
+  "type": "object"
 }
