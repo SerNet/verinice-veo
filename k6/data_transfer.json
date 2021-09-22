@@ -1,0 +1,50 @@
+{
+  "name": "Bewerberauswahlverfahren ",
+  "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungsprüfung weitergeleitet ",
+  "domains": [
+    {
+      "targetUri": "https://veo.develop.verinice.com/domains/2cef4503-dd41-48cf-9030-16820797a300"
+    }
+  ],
+  "owner": {
+    "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
+  },
+  "links": {
+    "process_dataType": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/assets/fd6493d6-350f-412f-be93-333d5af5e579"
+        }
+      }
+    ],
+    "process_internalRecipient": [
+      {
+        "domains": [],
+        "attributes": {
+          "process_internalRecipient_thirdCountryProcessing": false
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/persons/b2ab8085-9419-4227-bd86-74f480d5c709"
+        }
+      }
+    ]
+  },
+  "customAspects": {
+    "process_recipient": {
+      "domains": [],
+      "attributes": {
+        "process_recipient_type": "process_recipient_type_internal"
+      }
+    }
+  },
+  "subType": {
+    
+  },
+  "type": "process",
+  "parts": [],
+  "status": "NEW"
+}

@@ -1,0 +1,176 @@
+{
+  "name": "Bewerbermanagement",
+  "description": "Bewerbungen können postalisch und auf elektronischem Wege erfolgen. Dies ist insbesondere dann der Fall, wenn ein Bewerber entsprechende Bewerbungsunterlagen auf dem elektronischen Wege, beispielsweise per E-Mail, an den für die Verarbeitung Verantwortlichen übermittelt",
+  "domains": [
+    {
+      "targetUri": "https://veo.develop.verinice.com/domains/2cef4503-dd41-48cf-9030-16820797a300"
+    }
+  ],
+  "owner": {
+    "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
+  },
+  "links": {
+    "process_responsiblePerson": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/persons/48cbe187-bd5f-4273-9e18-9be57e6b054d"
+        }
+      }
+    ],
+    "process_responsibleBody": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/scopes/27809ca4-4d89-4e03-b9ab-ca0d70a23c5d"
+        }
+      }
+    ],
+    "process_jointControllership": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/scopes/9a7bfae1-b908-4b1e-bb54-cfc77b380336"
+        }
+      }
+    ],
+    "process_dataType": [
+      {
+        "domains": [],
+        "attributes": {
+          "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+          "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_6m",
+          "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure"
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/assets/78f1c565-329a-41d3-be72-2931964857c6"
+        }
+      }
+    ],
+    "process_requiredApplications": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/assets/d236eb12-d952-4c2b-9d91-f7ae2428e2e7"
+        }
+      }
+    ],
+    "process_tom": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/controls/2ec217e3-6792-4f7c-8f46-0e4c82d6fb95"
+        }
+      }
+    ],
+    "process_requiredITSystems": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/assets/ae685f47-ca01-4adc-ad84-77c3850e8ef2"
+        }
+      }
+    ],
+    "process_dataTransmission": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/processes/4a55ed91-7652-4522-9db7-27ee010438b6"
+        }
+      }
+    ]
+  },
+  "customAspects": {
+    "process_accessAuthorization": {
+      "domains": [],
+      "attributes": {
+        "process_accessAuthorization_concept": true,
+        "process_accessAuthorization_description": "Zuständiger Sachbearbeiter im Personalbereich, Teamleiter, ggf. Geschäftsführer"
+      }
+    },
+    "process_processing": {
+      "domains": [],
+      "attributes": {
+        "process_processing_asProcessor": false
+      }
+    },
+    "process_processingDetails": {
+      "domains": [],
+      "attributes": {
+        "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+        "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
+        "process_processingDetails_surveyConductedOn": "2021-08-02",
+        "process_processingDetails_responsibleDepartment": "Personalabteilung"
+      }
+    },
+    "process_dataProcessing": {
+      "domains": [],
+      "attributes": {
+        "process_dataProcessing_explanation": "Für die Begründung eines Beschäftigungsverhältnisses",
+        "process_dataProcessing_otherLegalBasis": "§ 26 III BDSG"
+      }
+    },
+    "process_opinionDPO": {
+      "domains": [],
+      "attributes": {
+        "process_opinionDPO_comment": "Erfordernis ergibt sich bereits aus der Blacklist. \nEntwurf DSFA-Bericht bereits vorhanden, siehe =>DSFA-Bericht Personaleinstellungen ",
+        "process_opinionDPO_findings": "Löschung der Daten 6 Monate nach Vergabe der Stelle, außer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt",
+        "process_opinionDPO_privacyImpactAssessment": true
+      }
+    },
+    "process_tomAssessment": {
+      "domains": [],
+      "attributes": {
+        "process_tomAssessment_certification": false,
+        "process_tomAssessment_securityConcept": false
+      }
+    },
+    "process_dataSubjects": {
+      "domains": [],
+      "attributes": {
+        "process_dataSubjects_dataSubjects": [
+          "process_dataSubjects_dataSubjects_applicants"
+        ]
+      }
+    },
+    "process_intendedPurpose": {
+      "domains": [],
+      "attributes": {
+        "process_intendedPurpose_intendedPurpose": "Begründung von Beschäftigungsverhältnissen, Personalbeschaffung"
+      }
+    },
+    "process_informationsObligations": {
+      "domains": [],
+      "attributes": {
+        "process_informationsObligations_status": true
+      }
+    }
+  },
+  "subType": {
+    
+  },
+  "type": "process",
+  "parts": [],
+  "status": "IN_PROGRESS"
+}

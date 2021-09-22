@@ -1,0 +1,44 @@
+{
+  "owner": {
+    "targetUri": "/units/76d22240-5736-4a4d-ac93-a9adc9574bad"
+  },
+  "designator": "",
+  "subType": {
+    
+  },
+  "domains": [
+    {
+      "targetUri": "/domains/774e14f3-a8a8-4f22-aa1d-4344ac39517b"
+    }
+  ],
+  "name": "Hans Mustermann",
+  "customAspects": {
+    "person_generalInformation": {
+      "attributes": {
+        "person_generalInformation_givenName": "Hans",
+        "person_generalInformation_familyName": "Mustermann",
+        "person_generalInformation_salutation": "Herr"
+      },
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "person_generalInformation"
+    },
+    "person_address": {
+      "attributes": {
+        "person_address_address1": "Hauptstr. 1",
+        "person_address_postcode": "10000",
+        "person_address_city": "Berlin",
+        "person_address_country": "Deutschland"
+      },
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "person_address"
+    },
+    "person_contactInformation": {
+      "attributes": {
+        "person_contactInformation_office": "01511094321",
+        "person_contactInformation_email": "dies-ist-keine@email.com"
+      },
+      "id": "00000000-0000-0000-0000-000000000000",
+      "type": "person_contactInformation"
+    }
+  }
+}

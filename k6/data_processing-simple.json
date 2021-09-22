@@ -1,0 +1,80 @@
+{
+  "name": "Bewerbermanagement",
+  "description": "Bewerbermanagement",
+  "domains": [
+    {
+      "targetUri": "https://veo.develop.verinice.com/domains/2cef4503-dd41-48cf-9030-16820797a300"
+    }
+  ],
+  "owner": {
+    "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
+  },
+  "links": {
+    "process_dataType": [
+      {
+        "domains": [],
+        "attributes": {
+          "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+          "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_6m",
+          "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure"
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/assets/78f1c565-329a-41d3-be72-2931964857c6"
+        }
+      }
+    ],
+    "process_requiredApplications": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/assets/d236eb12-d952-4c2b-9d91-f7ae2428e2e7"
+        }
+      }
+    ],
+    "process_tom": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/controls/2ec217e3-6792-4f7c-8f46-0e4c82d6fb95"
+        }
+      }
+    ],
+    "process_requiredITSystems": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/assets/ae685f47-ca01-4adc-ad84-77c3850e8ef2"
+        }
+      }
+    ],
+    "process_dataTransmission": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "https://veo.develop.verinice.com/processes/4a55ed91-7652-4522-9db7-27ee010438b6"
+        }
+      }
+    ]
+  },
+  "customAspects": {
+    
+  },
+  "subType": {
+    
+  },
+  "type": "process",
+  "parts": [],
+  "status": "IN_PROGRESS"
+}
