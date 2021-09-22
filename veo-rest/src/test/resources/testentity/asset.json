@@ -1,23 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "Schema for Asset",
+  "type": "object",
   "properties": {
     "abbreviation": {
-      "description": "The abbreviation for the Element.",
-      "type": "string"
+      "type": "string",
+      "description": "The abbreviation for the Element."
     },
     "createdAt": {
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-      "type": "string"
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
     },
     "createdBy": {
-      "description": "The username of the user who created this object.",
-      "type": "string"
+      "type": "string",
+      "description": "The username of the user who created this object."
     },
     "customAspects": {
+      "type": "object",
+      "title": "CustomAspect",
       "description": "Groups of customizable attributes - see '/schemas'",
       "properties": {
-        "asset_availability": {
+        "asset_integrity": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -28,83 +30,12 @@
             },
             "attributes": {
               "properties": {
-                "asset_availability_impact": {
+                "asset_integrity_impact": {
                   "enum": [
-                    "asset_availability_impact_low",
-                    "asset_availability_impact_normal",
-                    "asset_availability_impact_high",
-                    "asset_availability_impact_veryHigh"
-                  ]
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "asset_confidentiality": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "asset_confidentiality_impact": {
-                  "enum": [
-                    "asset_confidentiality_impact_low",
-                    "asset_confidentiality_impact_normal",
-                    "asset_confidentiality_impact_high",
-                    "asset_confidentiality_impact_veryHigh"
+                    "asset_integrity_impact_low",
+                    "asset_integrity_impact_normal",
+                    "asset_integrity_impact_high",
+                    "asset_integrity_impact_veryHigh"
                   ]
                 }
               },
@@ -312,7 +243,7 @@
           },
           "type": "object"
         },
-        "asset_integrity": {
+        "asset_confidentiality": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -323,12 +254,12 @@
             },
             "attributes": {
               "properties": {
-                "asset_integrity_impact": {
+                "asset_confidentiality_impact": {
                   "enum": [
-                    "asset_integrity_impact_low",
-                    "asset_integrity_impact_normal",
-                    "asset_integrity_impact_high",
-                    "asset_integrity_impact_veryHigh"
+                    "asset_confidentiality_impact_low",
+                    "asset_confidentiality_impact_normal",
+                    "asset_confidentiality_impact_high",
+                    "asset_confidentiality_impact_veryHigh"
                   ]
                 }
               },
@@ -453,22 +384,92 @@
             }
           },
           "type": "object"
+        },
+        "asset_availability": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "properties": {
+                "asset_availability_impact": {
+                  "enum": [
+                    "asset_availability_impact_low",
+                    "asset_availability_impact_normal",
+                    "asset_availability_impact_high",
+                    "asset_availability_impact_veryHigh"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
         }
-      },
-      "title": "CustomAspect",
-      "type": "object"
+      }
     },
     "description": {
-      "description": "The description for the Element.",
-      "type": "string"
+      "type": "string",
+      "description": "The description for the Element."
     },
     "domains": {
+      "type": "array",
       "items": {
-        "description": "A reference to a domain",
+        "type": "object",
         "properties": {
           "displayName": {
-            "description": "A friendly human readable title of the referenced domain.",
-            "type": "string"
+            "type": "string",
+            "description": "A friendly human readable title of the referenced domain."
           },
           "resourcesUri": {
             "type": "string"
@@ -477,39 +478,38 @@
             "type": "string"
           },
           "targetUri": {
-            "description": "The resource URL of the referenced domains.",
-            "type": "string"
+            "type": "string",
+            "description": "The resource URL of the referenced domains."
           }
         },
         "required": [
           "targetUri"
         ],
-        "type": "object"
-      },
-      "type": "array"
+        "description": "A reference to a domain"
+      }
     },
     "id": {
-      "description": "ID must be a valid UUID string following RFC 4122.",
-      "type": "string"
+      "type": "string",
+      "description": "ID must be a valid UUID string following RFC 4122."
     },
     "links": {
+      "type": "object",
+      "title": "CustomLink",
       "description": "Custom relations which do not affect the behavior.",
       "properties": {
         
-      },
-      "title": "CustomLink",
-      "type": "object"
+      }
     },
     "name": {
-      "description": "The name for the Element.",
-      "type": "string"
+      "type": "string",
+      "description": "The name for the Element."
     },
     "owner": {
-      "description": "A reference to the unit containing this entity.",
+      "type": "object",
       "properties": {
         "displayName": {
-          "description": "A friendly human readable title of the referenced unit.",
-          "type": "string"
+          "type": "string",
+          "description": "A friendly human readable title of the referenced unit."
         },
         "resourcesUri": {
           "type": "string"
@@ -518,22 +518,23 @@
           "type": "string"
         },
         "targetUri": {
-          "description": "The resource URL of the referenced unit.",
-          "type": "string"
+          "type": "string",
+          "description": "The resource URL of the referenced unit."
         }
       },
       "required": [
         "targetUri"
       ],
-      "type": "object"
+      "description": "A reference to the unit containing this entity."
     },
     "parts": {
+      "type": "array",
       "items": {
-        "description": "A reference to an entity's part",
+        "type": "object",
         "properties": {
           "displayName": {
-            "description": "A friendly human readable title of the referenced entity.",
-            "type": "string"
+            "type": "string",
+            "description": "A friendly human readable title of the referenced entity."
           },
           "resourcesUri": {
             "type": "string"
@@ -542,33 +543,32 @@
             "type": "string"
           },
           "targetUri": {
-            "description": "The resource URL of the referenced entity.",
-            "type": "string"
+            "type": "string",
+            "description": "The resource URL of the referenced entity."
           }
         },
         "required": [
           "targetUri"
         ],
-        "type": "object"
-      },
-      "type": "array"
+        "description": "A reference to an entity's part"
+      }
     },
     "subType": {
-      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
+      "type": "object",
       "title": "SubType",
-      "type": "object"
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value."
     },
     "type": {
-      "description": "Entity type identifier",
-      "type": "string"
+      "type": "string",
+      "description": "Entity type identifier"
     },
     "updatedAt": {
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-      "type": "string"
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
     },
     "updatedBy": {
-      "description": "The username of the user who last updated this object.",
-      "type": "string"
+      "type": "string",
+      "description": "The username of the user who last updated this object."
     }
   },
   "required": [
@@ -576,5 +576,5 @@
     "owner"
   ],
   "title": "asset",
-  "type": "object"
+  "description": "Schema for Asset"
 }

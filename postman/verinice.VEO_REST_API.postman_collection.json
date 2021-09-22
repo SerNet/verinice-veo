@@ -1,90 +1,16 @@
 {
-  "auth": {
-    "oauth2": [
-      {
-        "key": "tokenType",
-        "type": "string",
-        "value": "bearer"
-      },
-      {
-        "key": "accessToken",
-        "type": "string",
-        "value": "{{accessToken}}"
-      },
-      {
-        "key": "scope",
-        "type": "string",
-        "value": "veo-user"
-      },
-      {
-        "key": "accessTokenUrl",
-        "type": "string",
-        "value": "https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token"
-      },
-      {
-        "key": "authUrl",
-        "type": "string",
-        "value": "https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth"
-      },
-      {
-        "key": "client_authentication",
-        "type": "string",
-        "value": "body"
-      },
-      {
-        "key": "clientId",
-        "type": "string",
-        "value": "veo-development-client"
-      },
-      {
-        "key": "redirect_uri",
-        "type": "string",
-        "value": "http://localhost:8070"
-      },
-      {
-        "key": "tokenName",
-        "type": "string",
-        "value": "veotoken"
-      },
-      {
-        "key": "addTokenTo",
-        "type": "string",
-        "value": "header"
-      }
-    ],
-    "type": "oauth2"
-  },
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "exec": [
-          ""
-        ],
-        "type": "text/javascript"
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "exec": [
-          ""
-        ],
-        "type": "text/javascript"
-      }
-    }
-  ],
   "info": {
     "_postman_id": "407ec445-5c1b-488e-b7ce-f126828464e3",
-    "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "name": "verinice.VEO REST API",
+    "description": "OpenAPI documentation for verinice.VEO.\n\nContact Support:\n Email: verinice@sernet.de",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "description": "Basic CRUD operations",
+      "name": "Basic CRUD operations",
       "item": [
         {
+          "name": "Create a unit",
           "event": [
             {
               "listen": "test",
@@ -113,32 +39,32 @@
               }
             }
           ],
-          "name": "Create a unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "units"
-              ],
-              "raw": "{{baseUrl}}/units"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the unit",
           "event": [
             {
               "listen": "test",
@@ -169,11 +95,11 @@
               }
             }
           ],
-          "name": "Load the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -181,12 +107,11 @@
                 "units",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/units/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -194,6 +119,7 @@
           "response": []
         },
         {
+          "name": "Load all units",
           "event": [
             {
               "listen": "test",
@@ -215,23 +141,23 @@
               }
             }
           ],
-          "name": "Load all units",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "units"
-              ],
-              "raw": "{{baseUrl}}/units"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Update the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -259,12 +185,8 @@
               }
             }
           ],
-          "name": "Update the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{unitId}}\",\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -276,8 +198,12 @@
                 "value": "{{unitETag}}"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{unitId}}\",\n    \"name\": \"{{unitName}}\"\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -285,12 +211,11 @@
                 "units",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/units/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -298,6 +223,7 @@
           "response": []
         },
         {
+          "name": "Update the unit concurrently",
           "event": [
             {
               "listen": "prerequest",
@@ -320,12 +246,8 @@
               }
             }
           ],
-          "name": "Update the unit concurrently",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{unitId}}\",\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -337,8 +259,12 @@
                 "value": "{{unitETag}}"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{unitId}}\",\n    \"name\": \"{{unitName}}\"\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -346,12 +272,11 @@
                 "units",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/units/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -359,6 +284,7 @@
           "response": []
         },
         {
+          "name": "Create an asset inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -387,32 +313,32 @@
               }
             }
           ],
-          "name": "Create an asset inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets"
-              ],
-              "raw": "{{baseUrl}}/assets"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the asset",
           "event": [
             {
               "listen": "test",
@@ -446,11 +372,11 @@
               }
             }
           ],
-          "name": "Load the asset",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -458,12 +384,11 @@
                 "assets",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/assets/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -471,6 +396,7 @@
           "response": []
         },
         {
+          "name": "Load all assets in the unit",
           "event": [
             {
               "listen": "test",
@@ -492,11 +418,11 @@
               }
             }
           ],
-          "name": "Load all assets in the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -508,13 +434,13 @@
                   "key": "unit",
                   "value": "{{unitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/assets?unit={{unitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Updates the asset",
           "event": [
             {
               "listen": "prerequest",
@@ -542,12 +468,8 @@
               }
             }
           ],
-          "name": "Updates the asset",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -555,12 +477,16 @@
               },
               {
                 "key": "If-Match",
-                "type": "text",
-                "value": "{{assetETag}}"
+                "value": "{{assetETag}}",
+                "type": "text"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -568,12 +494,11 @@
                 "assets",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/assets/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -581,6 +506,7 @@
           "response": []
         },
         {
+          "name": "Update the asset concurrently",
           "event": [
             {
               "listen": "prerequest",
@@ -603,12 +529,8 @@
               }
             }
           ],
-          "name": "Update the asset concurrently",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -620,8 +542,12 @@
                 "value": "{{assetETag}}"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -629,12 +555,11 @@
                 "assets",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/assets/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -642,6 +567,7 @@
           "response": []
         },
         {
+          "name": "Create a person inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -670,32 +596,32 @@
               }
             }
           ],
-          "name": "Create a person inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/persons",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "persons"
-              ],
-              "raw": "{{baseUrl}}/persons"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load all persons in the unit",
           "event": [
             {
               "listen": "test",
@@ -717,11 +643,11 @@
               }
             }
           ],
-          "name": "Load all persons in the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/persons?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -733,13 +659,13 @@
                   "key": "unit",
                   "value": "{{unitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/persons?unit={{unitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the person",
           "event": [
             {
               "listen": "test",
@@ -773,11 +699,11 @@
               }
             }
           ],
-          "name": "Load the person",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/persons/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -785,12 +711,11 @@
                 "persons",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/persons/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -798,6 +723,7 @@
           "response": []
         },
         {
+          "name": "Update the person",
           "event": [
             {
               "listen": "prerequest",
@@ -825,12 +751,8 @@
               }
             }
           ],
-          "name": "Update the person",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -842,8 +764,12 @@
                 "value": "{{personETag}}"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/persons/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -851,12 +777,11 @@
                 "persons",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/persons/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -864,6 +789,7 @@
           "response": []
         },
         {
+          "name": "Update the person concurrently",
           "event": [
             {
               "listen": "prerequest",
@@ -886,12 +812,8 @@
               }
             }
           ],
-          "name": "Update the person concurrently",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -903,8 +825,12 @@
                 "value": "{{personETag}}"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/persons/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -912,12 +838,11 @@
                 "persons",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/persons/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -925,6 +850,7 @@
           "response": []
         },
         {
+          "name": "Create a control inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -953,32 +879,32 @@
               }
             }
           ],
-          "name": "Create a control inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/controls",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "controls"
-              ],
-              "raw": "{{baseUrl}}/controls"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load all controls in the unit",
           "event": [
             {
               "listen": "test",
@@ -1000,11 +926,11 @@
               }
             }
           ],
-          "name": "Load all controls in the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/controls?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1016,13 +942,13 @@
                   "key": "unit",
                   "value": "{{unitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/controls?unit={{unitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the control",
           "event": [
             {
               "listen": "test",
@@ -1056,11 +982,11 @@
               }
             }
           ],
-          "name": "Load the control",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/controls/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1068,12 +994,11 @@
                 "controls",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/controls/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1081,6 +1006,7 @@
           "response": []
         },
         {
+          "name": "Update the control",
           "event": [
             {
               "listen": "prerequest",
@@ -1108,12 +1034,8 @@
               }
             }
           ],
-          "name": "Update the control",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -1125,8 +1047,12 @@
                 "value": "{{controlETag}}"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/controls/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1134,12 +1060,11 @@
                 "controls",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/controls/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1147,6 +1072,7 @@
           "response": []
         },
         {
+          "name": "Update the control concurrently",
           "event": [
             {
               "listen": "prerequest",
@@ -1169,12 +1095,8 @@
               }
             }
           ],
-          "name": "Update the control concurrently",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "PUT",
             "header": [
               {
                 "key": "Content-Type",
@@ -1186,8 +1108,12 @@
                 "value": "{{controlETag}}"
               }
             ],
-            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/controls/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1195,12 +1121,11 @@
                 "controls",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/controls/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1208,6 +1133,7 @@
           "response": []
         },
         {
+          "name": "Delete the asset",
           "event": [
             {
               "listen": "test",
@@ -1222,11 +1148,11 @@
               }
             }
           ],
-          "name": "Delete the asset",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1234,12 +1160,11 @@
                 "assets",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/assets/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1247,6 +1172,7 @@
           "response": []
         },
         {
+          "name": "Delete the person",
           "event": [
             {
               "listen": "test",
@@ -1261,11 +1187,11 @@
               }
             }
           ],
-          "name": "Delete the person",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/persons/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1273,12 +1199,11 @@
                 "persons",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/persons/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1286,6 +1211,7 @@
           "response": []
         },
         {
+          "name": "Delete the control",
           "event": [
             {
               "listen": "test",
@@ -1300,11 +1226,11 @@
               }
             }
           ],
-          "name": "Delete the control",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/controls/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1312,12 +1238,11 @@
                 "controls",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/controls/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1325,6 +1250,7 @@
           "response": []
         },
         {
+          "name": "Delete the unit",
           "event": [
             {
               "listen": "test",
@@ -1339,11 +1265,11 @@
               }
             }
           ],
-          "name": "Delete the unit",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1351,12 +1277,11 @@
                 "units",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/units/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1364,6 +1289,7 @@
           "response": []
         },
         {
+          "name": "Create a new work  unit",
           "event": [
             {
               "listen": "test",
@@ -1392,32 +1318,32 @@
               }
             }
           ],
-          "name": "Create a new work  unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "units"
-              ],
-              "raw": "{{baseUrl}}/units"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create an asset inside the unit for linking",
           "event": [
             {
               "listen": "prerequest",
@@ -1446,32 +1372,32 @@
               }
             }
           ],
-          "name": "Create an asset inside the unit for linking",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets"
-              ],
-              "raw": "{{baseUrl}}/assets"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a person inside the unit with properties",
           "event": [
             {
               "listen": "prerequest",
@@ -1500,37 +1426,37 @@
               }
             }
           ],
-          "name": "Create a person inside the unit with properties",
           "request": {
-            "body": {
-              "mode": "raw",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              },
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_generalInformation\": {\n            \"type\": \"person_generalInformation\",\n            \"domains\": [],\n            \"attributes\": {\n                \"person_generalInformation_salutation\": \"person_commons_salutation_ms\",\n                \"person_generalInformation_familyName\": \"Schmidt\"\n            }\n        }\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_generalInformation\": {\n            \"type\": \"person_generalInformation\",\n            \"domains\": [],\n            \"attributes\": {\n                \"person_generalInformation_salutation\": \"person_commons_salutation_ms\",\n                \"person_generalInformation_familyName\": \"Schmidt\"\n            }\n        }\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
+              "raw": "{{baseUrl}}/persons",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "persons"
-              ],
-              "raw": "{{baseUrl}}/persons"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the person with properties",
           "event": [
             {
               "listen": "test",
@@ -1554,11 +1480,11 @@
               }
             }
           ],
-          "name": "Load the person with properties",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/persons/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1566,12 +1492,11 @@
                 "persons",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/persons/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1579,6 +1504,7 @@
           "response": []
         },
         {
+          "name": "Create a control inside the unit with properties",
           "event": [
             {
               "listen": "prerequest",
@@ -1607,32 +1533,32 @@
               }
             }
           ],
-          "name": "Create a control inside the unit with properties",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"control_dataProtection\": {\n            \"type\": \"control_dataProtection\",\n            \"domains\": [],\n            \"attributes\": {\n                \"control_dataProtection_objectives\": [\"control_dataProtection_objectives_pseudonymization\"]\n            }\n        }\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"control_dataProtection\": {\n            \"type\": \"control_dataProtection\",\n            \"domains\": [],\n            \"attributes\": {\n                \"control_dataProtection_objectives\": [\"control_dataProtection_objectives_pseudonymization\"]\n            }\n        }\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/controls",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "controls"
-              ],
-              "raw": "{{baseUrl}}/controls"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the control with properties",
           "event": [
             {
               "listen": "test",
@@ -1656,11 +1582,11 @@
               }
             }
           ],
-          "name": "Load the control with properties",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/controls/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1668,12 +1594,11 @@
                 "controls",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/controls/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1681,6 +1606,7 @@
           "response": []
         },
         {
+          "name": "Create an asset inside the unit with properties",
           "event": [
             {
               "listen": "prerequest",
@@ -1709,32 +1635,32 @@
               }
             }
           ],
-          "name": "Create an asset inside the unit with properties",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_operatingStage\": \"asset_details_operatingStage_planning\"\n            }\n        }\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_operatingStage\": \"asset_details_operatingStage_planning\"\n            }\n        }\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets"
-              ],
-              "raw": "{{baseUrl}}/assets"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the asset",
           "event": [
             {
               "listen": "test",
@@ -1757,11 +1683,11 @@
               }
             }
           ],
-          "name": "Load the asset",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1769,12 +1695,11 @@
                 "assets",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/assets/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1782,6 +1707,7 @@
           "response": []
         },
         {
+          "name": "Delete the work unit",
           "event": [
             {
               "listen": "test",
@@ -1796,11 +1722,11 @@
               }
             }
           ],
-          "name": "Delete the work unit",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1808,12 +1734,11 @@
                 "units",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/units/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -1821,11 +1746,13 @@
           "response": []
         }
       ],
-      "name": "Basic CRUD operations"
+      "description": "Basic CRUD operations"
     },
     {
+      "name": "Filter functions",
       "item": [
         {
+          "name": "Create a unit",
           "event": [
             {
               "listen": "test",
@@ -1854,32 +1781,32 @@
               }
             }
           ],
-          "name": "Create a unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "units"
-              ],
-              "raw": "{{baseUrl}}/units"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a sub-unit",
           "event": [
             {
               "listen": "test",
@@ -1908,32 +1835,32 @@
               }
             }
           ],
-          "name": "Create a sub-unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"sub-unit\",\n    \"parent\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"sub-unit\",\n    \"parent\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "units"
-              ],
-              "raw": "{{baseUrl}}/units"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create an asset inside the sub-unit",
           "event": [
             {
               "listen": "prerequest",
@@ -1962,32 +1889,32 @@
               }
             }
           ],
-          "name": "Create an asset inside the sub-unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets"
-              ],
-              "raw": "{{baseUrl}}/assets"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a process inside the sub-unit",
           "event": [
             {
               "listen": "prerequest",
@@ -2016,32 +1943,32 @@
               }
             }
           ],
-          "name": "Create a process inside the sub-unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/processes",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "processes"
-              ],
-              "raw": "{{baseUrl}}/processes"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a person inside the sub-unit",
           "event": [
             {
               "listen": "prerequest",
@@ -2070,32 +1997,32 @@
               }
             }
           ],
-          "name": "Create a person inside the sub-unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/persons",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "persons"
-              ],
-              "raw": "{{baseUrl}}/persons"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a control inside the sub-unit",
           "event": [
             {
               "listen": "prerequest",
@@ -2124,32 +2051,32 @@
               }
             }
           ],
-          "name": "Create a control inside the sub-unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/controls",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "controls"
-              ],
-              "raw": "{{baseUrl}}/controls"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load the unit",
           "event": [
             {
               "listen": "test",
@@ -2168,11 +2095,11 @@
               }
             }
           ],
-          "name": "Load the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units/:id",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2180,12 +2107,11 @@
                 "units",
                 ":id"
               ],
-              "raw": "{{baseUrl}}/units/:id",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "id",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2193,6 +2119,7 @@
           "response": []
         },
         {
+          "name": "Load all assets in the unit",
           "event": [
             {
               "listen": "test",
@@ -2214,11 +2141,11 @@
               }
             }
           ],
-          "name": "Load all assets in the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2230,13 +2157,13 @@
                   "key": "unit",
                   "value": "{{unitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/assets?unit={{unitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load all processes in the unit",
           "event": [
             {
               "listen": "test",
@@ -2258,11 +2185,11 @@
               }
             }
           ],
-          "name": "Load all processes in the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/processes?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2274,13 +2201,13 @@
                   "key": "unit",
                   "value": "{{unitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/processes?unit={{unitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load all persons in the unit",
           "event": [
             {
               "listen": "test",
@@ -2302,11 +2229,11 @@
               }
             }
           ],
-          "name": "Load all persons in the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/persons?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2318,13 +2245,13 @@
                   "key": "unit",
                   "value": "{{unitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/persons?unit={{unitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load all controls in the unit",
           "event": [
             {
               "listen": "test",
@@ -2346,11 +2273,11 @@
               }
             }
           ],
-          "name": "Load all controls in the unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/controls?unit={{unitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2362,13 +2289,13 @@
                   "key": "unit",
                   "value": "{{unitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/controls?unit={{unitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Load all assets in the sub-unit",
           "event": [
             {
               "listen": "test",
@@ -2390,11 +2317,11 @@
               }
             }
           ],
-          "name": "Load all assets in the sub-unit",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets?unit={{subUnitId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2406,13 +2333,13 @@
                   "key": "unit",
                   "value": "{{subUnitId}}"
                 }
-              ],
-              "raw": "{{baseUrl}}/assets?unit={{subUnitId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Loading assets with invalid unit fails",
           "event": [
             {
               "listen": "test",
@@ -2427,11 +2354,11 @@
               }
             }
           ],
-          "name": "Loading assets with invalid unit fails",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets?unit=12aae97e-e0b1-4900-a961-96a19b972f72",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2443,13 +2370,13 @@
                   "key": "unit",
                   "value": "12aae97e-e0b1-4900-a961-96a19b972f72"
                 }
-              ],
-              "raw": "{{baseUrl}}/assets?unit=12aae97e-e0b1-4900-a961-96a19b972f72"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Delete the asset",
           "event": [
             {
               "listen": "test",
@@ -2464,11 +2391,11 @@
               }
             }
           ],
-          "name": "Delete the asset",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2476,12 +2403,11 @@
                 "assets",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/assets/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2489,6 +2415,7 @@
           "response": []
         },
         {
+          "name": "Delete the process",
           "event": [
             {
               "listen": "test",
@@ -2503,11 +2430,11 @@
               }
             }
           ],
-          "name": "Delete the process",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/processes/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2515,12 +2442,11 @@
                 "processes",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/processes/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{processId}}"
+                  "value": "{{processId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2528,6 +2454,7 @@
           "response": []
         },
         {
+          "name": "Delete the person",
           "event": [
             {
               "listen": "test",
@@ -2542,11 +2469,11 @@
               }
             }
           ],
-          "name": "Delete the person",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/persons/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2554,12 +2481,11 @@
                 "persons",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/persons/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{personId}}"
+                  "value": "{{personId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2567,6 +2493,7 @@
           "response": []
         },
         {
+          "name": "Delete the control",
           "event": [
             {
               "listen": "test",
@@ -2581,11 +2508,11 @@
               }
             }
           ],
-          "name": "Delete the control",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/controls/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2593,12 +2520,11 @@
                 "controls",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/controls/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{controlId}}"
+                  "value": "{{controlId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2606,45 +2532,7 @@
           "response": []
         },
         {
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Validate status code\", function () {",
-                  "    pm.response.to.have.status(204);",
-                  "});",
-                  ""
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
           "name": "Delete the sub-unit",
-          "request": {
-            "header": [],
-            "method": "DELETE",
-            "url": {
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "units",
-                ":uuid"
-              ],
-              "raw": "{{baseUrl}}/units/:uuid",
-              "variable": [
-                {
-                  "description": "(Required) ",
-                  "key": "uuid",
-                  "value": "{{subUnitId}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "event": [
             {
               "listen": "test",
@@ -2659,11 +2547,11 @@
               }
             }
           ],
-          "name": "Delete the unit",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2671,24 +2559,63 @@
                 "units",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/units/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{unitId}}"
+                  "value": "{{subUnitId}}",
+                  "description": "(Required) "
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete the unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Validate status code\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "units",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
           },
           "response": []
         }
-      ],
-      "name": "Filter functions"
+      ]
     },
     {
+      "name": "Search functions",
       "item": [
         {
+          "name": "Create a unit",
           "event": [
             {
               "listen": "test",
@@ -2717,32 +2644,32 @@
               }
             }
           ],
-          "name": "Create a unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "units"
-              ],
-              "raw": "{{baseUrl}}/units"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create an asset inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -2771,32 +2698,32 @@
               }
             }
           ],
-          "name": "Create an asset inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets"
-              ],
-              "raw": "{{baseUrl}}/assets"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a search",
           "event": [
             {
               "listen": "test",
@@ -2816,33 +2743,33 @@
               }
             }
           ],
-          "name": "Create a search",
           "request": {
+            "method": "POST",
+            "header": [],
             "body": {
               "mode": "raw",
+              "raw": "{\n    \"unitId\": {\"values\": [\"{{unitId}}\"]}\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
-              },
-              "raw": "{\n    \"unitId\": {\"values\": [\"{{unitId}}\"]}\n}"
+              }
             },
-            "header": [],
-            "method": "POST",
             "url": {
+              "raw": "{{baseUrl}}/assets/searches",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets",
                 "searches"
-              ],
-              "raw": "{{baseUrl}}/assets/searches"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Run a search",
           "event": [
             {
               "listen": "test",
@@ -2856,20 +2783,20 @@
               }
             }
           ],
-          "name": "Run a search",
           "request": {
-            "header": [],
             "method": "GET",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}{{searchId}}",
               "host": [
                 "{{baseUrl}}{{searchId}}"
-              ],
-              "raw": "{{baseUrl}}{{searchId}}"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Delete the asset",
           "event": [
             {
               "listen": "test",
@@ -2884,11 +2811,11 @@
               }
             }
           ],
-          "name": "Delete the asset",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/assets/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2896,12 +2823,11 @@
                 "assets",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/assets/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{assetId}}"
+                  "value": "{{assetId}}",
+                  "description": "(Required) "
                 }
               ]
             }
@@ -2909,6 +2835,7 @@
           "response": []
         },
         {
+          "name": "Delete the unit",
           "event": [
             {
               "listen": "test",
@@ -2923,11 +2850,11 @@
               }
             }
           ],
-          "name": "Delete the unit",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2935,24 +2862,24 @@
                 "units",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/units/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
           },
           "response": []
         }
-      ],
-      "name": "Search functions"
+      ]
     },
     {
+      "name": "Scope and composite tests",
       "item": [
         {
+          "name": "Create a unit",
           "event": [
             {
               "listen": "test",
@@ -2981,32 +2908,32 @@
               }
             }
           ],
-          "name": "Create a unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{unitName}}\"\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/units",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "units"
-              ],
-              "raw": "{{baseUrl}}/units"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create an asset inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -3035,32 +2962,32 @@
               }
             }
           ],
-          "name": "Create an asset inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets"
-              ],
-              "raw": "{{baseUrl}}/assets"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a composite asset inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -3089,32 +3016,32 @@
               }
             }
           ],
-          "name": "Create a composite asset inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{compositeAssetName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"parts\": [\n        {\n            \"targetUri\": \"/assets/{{assetId}}\"\n        }\n    ]\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{compositeAssetName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"parts\": [\n        {\n            \"targetUri\": \"/assets/{{assetId}}\"\n        }\n    ]\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/assets",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "assets"
-              ],
-              "raw": "{{baseUrl}}/assets"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a person inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -3143,32 +3070,32 @@
               }
             }
           ],
-          "name": "Create a person inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/persons",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "persons"
-              ],
-              "raw": "{{baseUrl}}/persons"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a composite person inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -3197,32 +3124,32 @@
               }
             }
           ],
-          "name": "Create a composite person inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{compositePersonName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"parts\": [\n        {\n            \"targetUri\": \"/persons/{{personId}}\"\n        }\n    ]\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{compositePersonName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"parts\": [\n        {\n            \"targetUri\": \"/persons/{{personId}}\"\n        }\n    ]\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/persons",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "persons"
-              ],
-              "raw": "{{baseUrl}}/persons"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Create a scope inside the unit",
           "event": [
             {
               "listen": "prerequest",
@@ -3251,32 +3178,32 @@
               }
             }
           ],
-          "name": "Create a scope inside the unit",
           "request": {
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"{{scopeName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"members\": [\n        {\n            \"targetUri\": \"/assets/{{compositeAssetId}}\"\n        },\n        {\n            \"targetUri\": \"/persons/{{compositePersonId}}\"\n        }\n    ]\n}"
-            },
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
-            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{scopeName}}\",\n    \"owner\": {\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"members\": [\n        {\n            \"targetUri\": \"/assets/{{compositeAssetId}}\"\n        },\n        {\n            \"targetUri\": \"/persons/{{compositePersonId}}\"\n        }\n    ]\n}"
+            },
             "url": {
+              "raw": "{{baseUrl}}/scopes",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "scopes"
-              ],
-              "raw": "{{baseUrl}}/scopes"
+              ]
             }
           },
           "response": []
         },
         {
+          "name": "Delete the work unit",
           "event": [
             {
               "listen": "test",
@@ -3291,11 +3218,11 @@
               }
             }
           ],
-          "name": "Delete the work unit",
           "request": {
-            "header": [],
             "method": "DELETE",
+            "header": [],
             "url": {
+              "raw": "{{baseUrl}}/units/:uuid",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3303,20 +3230,93 @@
                 "units",
                 ":uuid"
               ],
-              "raw": "{{baseUrl}}/units/:uuid",
               "variable": [
                 {
-                  "description": "(Required) ",
                   "key": "uuid",
-                  "value": "{{unitId}}"
+                  "value": "{{unitId}}",
+                  "description": "(Required) "
                 }
               ]
             }
           },
           "response": []
         }
-      ],
-      "name": "Scope and composite tests"
+      ]
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "tokenType",
+        "value": "bearer",
+        "type": "string"
+      },
+      {
+        "key": "accessToken",
+        "value": "{{accessToken}}",
+        "type": "string"
+      },
+      {
+        "key": "scope",
+        "value": "veo-user",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth",
+        "type": "string"
+      },
+      {
+        "key": "client_authentication",
+        "value": "body",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "veo-development-client",
+        "type": "string"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "http://localhost:8070",
+        "type": "string"
+      },
+      {
+        "key": "tokenName",
+        "value": "veotoken",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
     }
   ],
   "variable": [

@@ -5,7 +5,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5'
     implementation 'com.diffplug.spotless:spotless-lib:2.15.1'
     implementation 'com.diffplug.spotless:spotless-lib-extra:2.15.1'
     [
