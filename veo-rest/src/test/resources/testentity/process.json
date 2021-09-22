@@ -1,23 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "Schema for Process",
+  "type": "object",
   "properties": {
     "abbreviation": {
-      "description": "The abbreviation for the Element.",
-      "type": "string"
+      "type": "string",
+      "description": "The abbreviation for the Element."
     },
     "createdAt": {
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-      "type": "string"
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
     },
     "createdBy": {
-      "description": "The username of the user who created this object.",
-      "type": "string"
+      "type": "string",
+      "description": "The username of the user who created this object."
     },
     "customAspects": {
+      "type": "object",
+      "title": "CustomAspect",
       "description": "Groups of customizable attributes - see '/schemas'",
       "properties": {
-        "process_accessAuthorization": {
+        "process_resilience": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -28,16 +30,103 @@
             },
             "attributes": {
               "properties": {
-                "process_accessAuthorization_concept": {
+                "process_resilience_impact": {
+                  "enum": [
+                    "process_resilience_impact_low",
+                    "process_resilience_impact_normal",
+                    "process_resilience_impact_high",
+                    "process_resilience_impact_veryHigh"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_processingDetails": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "properties": {
+                "process_processingDetails_comment": {
+                  "type": "string"
+                },
+                "process_processingDetails_operatingStage": {
+                  "enum": [
+                    "process_processingDetails_operatingStage_operation",
+                    "process_processingDetails_operatingStage_planning",
+                    "process_processingDetails_operatingStage_test",
+                    "process_processingDetails_operatingStage_rollout"
+                  ]
+                },
+                "process_processingDetails_processorArt30II": {
                   "type": "boolean"
                 },
-                "process_accessAuthorization_description": {
+                "process_processingDetails_responsibleDepartment": {
                   "type": "string"
                 },
-                "process_accessAuthorization_document": {
-                  "format": "uri",
-                  "pattern": "^(https?|ftp)://",
+                "process_processingDetails_surveyConductedOn": {
+                  "format": "date",
                   "type": "string"
+                },
+                "process_processingDetails_typeOfSurvey": {
+                  "enum": [
+                    "process_processingDetails_typeOfSurvey_new",
+                    "process_processingDetails_typeOfSurvey_change"
+                  ]
                 }
               },
               "type": "object"
@@ -162,7 +251,7 @@
           },
           "type": "object"
         },
-        "process_confidentiality": {
+        "process_integrity": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -173,13 +262,281 @@
             },
             "attributes": {
               "properties": {
-                "process_confidentiality_impact": {
+                "process_integrity_impact": {
                   "enum": [
-                    "process_confidentiality_impact_low",
-                    "process_confidentiality_impact_normal",
-                    "process_confidentiality_impact_high",
-                    "process_confidentiality_impact_veryHigh"
+                    "process_integrity_impact_low",
+                    "process_integrity_impact_normal",
+                    "process_integrity_impact_high",
+                    "process_integrity_impact_veryHigh"
                   ]
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_informationsObligations": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "properties": {
+                "process_informationsObligations_document": {
+                  "type": "string"
+                },
+                "process_informationsObligations_explanation": {
+                  "type": "string"
+                },
+                "process_informationsObligations_status": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_privacyImpactAssessment": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "properties": {
+                "process_privacyImpactAssessment_approved": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_approvedComment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_blacklistComment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_comment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_otherExclusions": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_otherExclusionsComment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_otherReasons": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_processingCriteria": {
+                  "items": {
+                    "enum": [
+                      "process_privacyImpactAssessment_processingCriteria_profiling",
+                      "process_privacyImpactAssessment_processingCriteria_automated",
+                      "process_privacyImpactAssessment_processingCriteria_monitoring",
+                      "process_privacyImpactAssessment_processingCriteria_specialCategories",
+                      "process_privacyImpactAssessment_processingCriteria_Art9",
+                      "process_privacyImpactAssessment_processingCriteria_Art10",
+                      "process_privacyImpactAssessment_processingCriteria_matching",
+                      "process_privacyImpactAssessment_processingCriteria_vulnerability",
+                      "process_privacyImpactAssessment_processingCriteria_newTechnology",
+                      "process_privacyImpactAssessment_processingCriteria_execution"
+                    ]
+                  },
+                  "type": "array"
+                },
+                "process_privacyImpactAssessment_processingOnBlacklistArt35": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_processingOnWhitelist": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_processingOperationAccordingArt35": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_supervisoryAuthorityComment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_supervisoryAuthorityConsulted": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_twoProcessingCriteria": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_twoProcessingCriteriaComment": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_accessAuthorization": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "properties": {
+                "process_accessAuthorization_concept": {
+                  "type": "boolean"
+                },
+                "process_accessAuthorization_description": {
+                  "type": "string"
+                },
+                "process_accessAuthorization_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
                 }
               },
               "type": "object"
@@ -433,217 +790,6 @@
           },
           "type": "object"
         },
-        "process_generalInformation": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "process_generalInformation_document": {
-                  "format": "uri",
-                  "pattern": "^(https?|ftp)://",
-                  "type": "string"
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "process_informationsObligations": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "process_informationsObligations_document": {
-                  "type": "string"
-                },
-                "process_informationsObligations_explanation": {
-                  "type": "string"
-                },
-                "process_informationsObligations_status": {
-                  "type": "boolean"
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "process_integrity": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "process_integrity_impact": {
-                  "enum": [
-                    "process_integrity_impact_low",
-                    "process_integrity_impact_normal",
-                    "process_integrity_impact_high",
-                    "process_integrity_impact_veryHigh"
-                  ]
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
         "process_opinionDPO": {
           "additionalProperties": false,
           "properties": {
@@ -727,7 +873,7 @@
           },
           "type": "object"
         },
-        "process_privacyImpactAssessment": {
+        "process_generalInformation": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -738,63 +884,9 @@
             },
             "attributes": {
               "properties": {
-                "process_privacyImpactAssessment_approved": {
-                  "type": "boolean"
-                },
-                "process_privacyImpactAssessment_approvedComment": {
-                  "type": "string"
-                },
-                "process_privacyImpactAssessment_blacklistComment": {
-                  "type": "string"
-                },
-                "process_privacyImpactAssessment_comment": {
-                  "type": "string"
-                },
-                "process_privacyImpactAssessment_otherExclusions": {
-                  "type": "boolean"
-                },
-                "process_privacyImpactAssessment_otherExclusionsComment": {
-                  "type": "string"
-                },
-                "process_privacyImpactAssessment_otherReasons": {
-                  "type": "string"
-                },
-                "process_privacyImpactAssessment_processingCriteria": {
-                  "items": {
-                    "enum": [
-                      "process_privacyImpactAssessment_processingCriteria_profiling",
-                      "process_privacyImpactAssessment_processingCriteria_automated",
-                      "process_privacyImpactAssessment_processingCriteria_monitoring",
-                      "process_privacyImpactAssessment_processingCriteria_specialCategories",
-                      "process_privacyImpactAssessment_processingCriteria_Art9",
-                      "process_privacyImpactAssessment_processingCriteria_Art10",
-                      "process_privacyImpactAssessment_processingCriteria_matching",
-                      "process_privacyImpactAssessment_processingCriteria_vulnerability",
-                      "process_privacyImpactAssessment_processingCriteria_newTechnology",
-                      "process_privacyImpactAssessment_processingCriteria_execution"
-                    ]
-                  },
-                  "type": "array"
-                },
-                "process_privacyImpactAssessment_processingOnBlacklistArt35": {
-                  "type": "boolean"
-                },
-                "process_privacyImpactAssessment_processingOnWhitelist": {
-                  "type": "boolean"
-                },
-                "process_privacyImpactAssessment_processingOperationAccordingArt35": {
-                  "type": "boolean"
-                },
-                "process_privacyImpactAssessment_supervisoryAuthorityComment": {
-                  "type": "string"
-                },
-                "process_privacyImpactAssessment_supervisoryAuthorityConsulted": {
-                  "type": "boolean"
-                },
-                "process_privacyImpactAssessment_twoProcessingCriteria": {
-                  "type": "boolean"
-                },
-                "process_privacyImpactAssessment_twoProcessingCriteriaComment": {
+                "process_generalInformation_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
                   "type": "string"
                 }
               },
@@ -849,7 +941,7 @@
           },
           "type": "object"
         },
-        "process_processingDetails": {
+        "process_confidentiality": {
           "additionalProperties": false,
           "properties": {
             "applicableTo": {
@@ -860,102 +952,12 @@
             },
             "attributes": {
               "properties": {
-                "process_processingDetails_comment": {
-                  "type": "string"
-                },
-                "process_processingDetails_operatingStage": {
+                "process_confidentiality_impact": {
                   "enum": [
-                    "process_processingDetails_operatingStage_operation",
-                    "process_processingDetails_operatingStage_planning",
-                    "process_processingDetails_operatingStage_test",
-                    "process_processingDetails_operatingStage_rollout"
-                  ]
-                },
-                "process_processingDetails_processorArt30II": {
-                  "type": "boolean"
-                },
-                "process_processingDetails_responsibleDepartment": {
-                  "type": "string"
-                },
-                "process_processingDetails_surveyConductedOn": {
-                  "format": "date",
-                  "type": "string"
-                },
-                "process_processingDetails_typeOfSurvey": {
-                  "enum": [
-                    "process_processingDetails_typeOfSurvey_new",
-                    "process_processingDetails_typeOfSurvey_change"
-                  ]
-                }
-              },
-              "type": "object"
-            },
-            "domains": {
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced domain.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced domain.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ],
-                "type": "object"
-              },
-              "title": "The list of domains in which this element is present.",
-              "type": "array",
-              "uniqueItems": true
-            },
-            "id": {
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-              "title": "The UUID to identify the element",
-              "type": "string"
-            },
-            "references": {
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "description": "A friendly human readable title of the referenced object.",
-                    "type": "string"
-                  },
-                  "targetUri": {
-                    "description": "The resource URL of the referenced object.",
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "type": "array"
-            }
-          },
-          "type": "object"
-        },
-        "process_resilience": {
-          "additionalProperties": false,
-          "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            "attributes": {
-              "properties": {
-                "process_resilience_impact": {
-                  "enum": [
-                    "process_resilience_impact_low",
-                    "process_resilience_impact_normal",
-                    "process_resilience_impact_high",
-                    "process_resilience_impact_veryHigh"
+                    "process_confidentiality_impact_low",
+                    "process_confidentiality_impact_normal",
+                    "process_confidentiality_impact_high",
+                    "process_confidentiality_impact_veryHigh"
                   ]
                 }
               },
@@ -1010,25 +1012,24 @@
           },
           "type": "object"
         }
-      },
-      "title": "CustomAspect",
-      "type": "object"
+      }
     },
     "description": {
-      "description": "The description for the Element.",
-      "type": "string"
+      "type": "string",
+      "description": "The description for the Element."
     },
     "designator": {
-      "description": "Compact human-readable identifier that is unique within the client.",
-      "type": "string"
+      "type": "string",
+      "description": "Compact human-readable identifier that is unique within the client."
     },
     "domains": {
+      "type": "array",
       "items": {
-        "description": "A reference to a domain",
+        "type": "object",
         "properties": {
           "displayName": {
-            "description": "A friendly human readable title of the referenced domain.",
-            "type": "string"
+            "type": "string",
+            "description": "A friendly human readable title of the referenced domain."
           },
           "resourcesUri": {
             "type": "string"
@@ -1037,25 +1038,26 @@
             "type": "string"
           },
           "targetUri": {
-            "description": "The resource URL of the referenced domains.",
-            "type": "string"
+            "type": "string",
+            "description": "The resource URL of the referenced domains."
           }
         },
         "required": [
           "targetUri"
         ],
-        "type": "object"
-      },
-      "type": "array"
+        "description": "A reference to a domain"
+      }
     },
     "id": {
-      "description": "ID must be a valid UUID string following RFC 4122.",
-      "type": "string"
+      "type": "string",
+      "description": "ID must be a valid UUID string following RFC 4122."
     },
     "links": {
+      "type": "object",
+      "title": "CustomLink",
       "description": "Custom relations which do not affect the behavior.",
       "properties": {
-        "process_controller": {
+        "process_processor": {
           "items": {
             "additionalProperties": false,
             "properties": {
@@ -1067,9 +1069,21 @@
               },
               "attributes": {
                 "properties": {
-                  "process_controller_document": {
+                  "process_processor_thirdCountryDocument": {
                     "format": "uri",
                     "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  },
+                  "process_processor_thirdCountryExplanation": {
+                    "type": "string"
+                  },
+                  "process_processor_thirdCountryGuarantees": {
+                    "type": "string"
+                  },
+                  "process_processor_thirdCountryProcessing": {
+                    "type": "boolean"
+                  },
+                  "process_processor_thirdCoutryName": {
                     "type": "string"
                   }
                 },
@@ -1123,22 +1137,17 @@
               },
               "target": {
                 "properties": {
-                  "subType": {
-                    "enum": [
-                      "PER_Controller"
-                    ]
-                  },
                   "targetUri": {
                     "title": "The id of the target object.",
                     "type": "string"
                   },
                   "type": {
                     "enum": [
-                      "person"
+                      "scope"
                     ]
                   }
                 },
-                "title": "Auftraggeber",
+                "title": "Auftragsverarbeiter",
                 "type": "object"
               }
             },
@@ -1394,7 +1403,7 @@
           },
           "type": "array"
         },
-        "process_processor": {
+        "process_controller": {
           "items": {
             "additionalProperties": false,
             "properties": {
@@ -1406,21 +1415,9 @@
               },
               "attributes": {
                 "properties": {
-                  "process_processor_thirdCountryDocument": {
+                  "process_controller_document": {
                     "format": "uri",
                     "pattern": "^(https?|ftp)://",
-                    "type": "string"
-                  },
-                  "process_processor_thirdCountryExplanation": {
-                    "type": "string"
-                  },
-                  "process_processor_thirdCountryGuarantees": {
-                    "type": "string"
-                  },
-                  "process_processor_thirdCountryProcessing": {
-                    "type": "boolean"
-                  },
-                  "process_processor_thirdCoutryName": {
                     "type": "string"
                   }
                 },
@@ -1474,17 +1471,22 @@
               },
               "target": {
                 "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Controller"
+                    ]
+                  },
                   "targetUri": {
                     "title": "The id of the target object.",
                     "type": "string"
                   },
                   "type": {
                     "enum": [
-                      "scope"
+                      "person"
                     ]
                   }
                 },
-                "title": "Auftragsverarbeiter",
+                "title": "Auftraggeber",
                 "type": "object"
               }
             },
@@ -1495,20 +1497,18 @@
           },
           "type": "array"
         }
-      },
-      "title": "CustomLink",
-      "type": "object"
+      }
     },
     "name": {
-      "description": "The name for the Element.",
-      "type": "string"
+      "type": "string",
+      "description": "The name for the Element."
     },
     "owner": {
-      "description": "A reference to the unit containing this entity.",
+      "type": "object",
       "properties": {
         "displayName": {
-          "description": "A friendly human readable title of the referenced unit.",
-          "type": "string"
+          "type": "string",
+          "description": "A friendly human readable title of the referenced unit."
         },
         "resourcesUri": {
           "type": "string"
@@ -1517,22 +1517,23 @@
           "type": "string"
         },
         "targetUri": {
-          "description": "The resource URL of the referenced unit.",
-          "type": "string"
+          "type": "string",
+          "description": "The resource URL of the referenced unit."
         }
       },
       "required": [
         "targetUri"
       ],
-      "type": "object"
+      "description": "A reference to the unit containing this entity."
     },
     "parts": {
+      "type": "array",
       "items": {
-        "description": "A reference to an entity's part",
+        "type": "object",
         "properties": {
           "displayName": {
-            "description": "A friendly human readable title of the referenced entity.",
-            "type": "string"
+            "type": "string",
+            "description": "A friendly human readable title of the referenced entity."
           },
           "resourcesUri": {
             "type": "string"
@@ -1541,33 +1542,32 @@
             "type": "string"
           },
           "targetUri": {
-            "description": "The resource URL of the referenced entity.",
-            "type": "string"
+            "type": "string",
+            "description": "The resource URL of the referenced entity."
           }
         },
         "required": [
           "targetUri"
         ],
-        "type": "object"
-      },
-      "type": "array"
+        "description": "A reference to an entity's part"
+      }
     },
     "subType": {
-      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
+      "type": "object",
       "title": "SubType",
-      "type": "object"
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value."
     },
     "type": {
-      "description": "Entity type identifier",
-      "type": "string"
+      "type": "string",
+      "description": "Entity type identifier"
     },
     "updatedAt": {
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-      "type": "string"
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
     },
     "updatedBy": {
-      "description": "The username of the user who last updated this object.",
-      "type": "string"
+      "type": "string",
+      "description": "The username of the user who last updated this object."
     }
   },
   "required": [
@@ -1576,5 +1576,5 @@
     "owner"
   ],
   "title": "process",
-  "type": "object"
+  "description": "Schema for Process"
 }

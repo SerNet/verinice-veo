@@ -1,16 +1,16 @@
 {
-  "customAspects": {
-    
-  },
-  "id": "392a5687-b415-4b2c-afde-a0ea355751be",
+  "name": "Test process-1",
+  "status": "NEW",
   "links": {
     
   },
-  "name": "Test process-1",
-  "parts": [],
-  "status": "NEW",
+  "customAspects": {
+    
+  },
   "subType": {
     
   },
-  "type": "process"
+  "type": "process",
+  "parts": [],
+  "id": "392a5687-b415-4b2c-afde-a0ea355751be"
 }

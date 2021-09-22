@@ -1,47 +1,20 @@
 {
+  "name": "DSGVO",
   "abbreviation": "DSGVO",
   "authority": "SERNET",
+  "templateVersion": "1.0",
+  "revision": "latest",
   "catalogs": [
     {
+      "name": "DVGO-Controls",
+      "domainTemplate": {
+        "targetUri": "/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824"
+      },
       "catalogItems": [
         {
           "catalog": {
             "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
           },
-          "element": {
-            "abbreviation": "c-3",
-            "customAspects": {
-              
-            },
-            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-            "domains": [],
-            "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e061",
-            "links": {
-              "Control_details_Control": [
-                {
-                  "attributes": {
-                    
-                  },
-                  "domains": [],
-                  "name": "control",
-                  "target": {
-                    "targetUri": "/controls/2a7e4df3-2bfc-4f87-9b9c-764eaf07e063"
-                  }
-                }
-              ]
-            },
-            "name": "Control-3",
-            "owner": {
-              "targetUri": "/catalogitems/f6ed0e04-9cb3-4730-a8ad-5e7413b3f155"
-            },
-            "parts": [],
-            "subType": {
-              
-            },
-            "type": "control"
-          },
-          "id": "f6ed0e04-9cb3-4730-a8ad-5e7413b3f155",
-          "namespace": "TOM.c-3",
           "tailoringReferences": [
             {
               "catalogItem": {
@@ -49,46 +22,46 @@
               },
               "referenceType": "LINK"
             }
-          ]
+          ],
+          "namespace": "TOM.c-3",
+          "element": {
+            "name": "Control-3",
+            "abbreviation": "c-3",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
+            "domains": [],
+            "owner": {
+              "targetUri": "/catalogitems/f6ed0e04-9cb3-4730-a8ad-5e7413b3f155"
+            },
+            "links": {
+              "Control_details_Control": [
+                {
+                  "domains": [],
+                  "attributes": {
+                    
+                  },
+                  "name": "control",
+                  "target": {
+                    "targetUri": "/controls/2a7e4df3-2bfc-4f87-9b9c-764eaf07e063"
+                  }
+                }
+              ]
+            },
+            "customAspects": {
+              
+            },
+            "subType": {
+              
+            },
+            "type": "control",
+            "parts": [],
+            "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e061"
+          },
+          "id": "f6ed0e04-9cb3-4730-a8ad-5e7413b3f155"
         },
         {
           "catalog": {
             "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
           },
-          "element": {
-            "abbreviation": "cc-1",
-            "customAspects": {
-              
-            },
-            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-            "domains": [],
-            "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e001",
-            "links": {
-              "Control_details_Control": [
-                {
-                  "attributes": {
-                    
-                  },
-                  "domains": [],
-                  "name": "control",
-                  "target": {
-                    "targetUri": "/controls/6f7e4df3-2bfc-4f87-9b9c-764eaf07e002"
-                  }
-                }
-              ]
-            },
-            "name": "Control-cc-1",
-            "owner": {
-              "targetUri": "/catalogitems/0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
-            },
-            "parts": [],
-            "subType": {
-              
-            },
-            "type": "control"
-          },
-          "id": "0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6",
-          "namespace": "TOM.cc-1",
           "tailoringReferences": [
             {
               "catalogItem": {
@@ -96,75 +69,75 @@
               },
               "referenceType": "LINK"
             }
-          ]
-        },
-        {
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
-          },
+          ],
+          "namespace": "TOM.cc-1",
           "element": {
-            "abbreviation": "c-2",
-            "customAspects": {
-              
-            },
-            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-            "domains": [],
-            "id": "4b7e4df3-2bfc-4f87-9b9c-764eaf07e063",
-            "links": {
-              
-            },
-            "name": "Control-2",
-            "owner": {
-              "targetUri": "/catalogitems/6796b233-03de-4acd-812e-de4d27c6e0cb"
-            },
-            "parts": [],
-            "subType": {
-              
-            },
-            "type": "control"
-          },
-          "id": "6796b233-03de-4acd-812e-de4d27c6e0cb",
-          "namespace": "TOM.c-2",
-          "tailoringReferences": []
-        },
-        {
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
-          },
-          "element": {
-            "abbreviation": "cc-2",
-            "customAspects": {
-              
-            },
+            "name": "Control-cc-1",
+            "abbreviation": "cc-1",
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": [],
-            "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e002",
+            "owner": {
+              "targetUri": "/catalogitems/0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
+            },
             "links": {
               "Control_details_Control": [
                 {
+                  "domains": [],
                   "attributes": {
                     
                   },
-                  "domains": [],
                   "name": "control",
                   "target": {
-                    "targetUri": "/controls/6f7e4df3-2bfc-4f87-9b9c-764eaf07e001"
+                    "targetUri": "/controls/6f7e4df3-2bfc-4f87-9b9c-764eaf07e002"
                   }
                 }
               ]
             },
-            "name": "Control-cc-2",
-            "owner": {
-              "targetUri": "/catalogitems/02b6bc1c-ef85-44e1-b701-2539893a5fb3"
+            "customAspects": {
+              
             },
-            "parts": [],
             "subType": {
               
             },
-            "type": "control"
+            "type": "control",
+            "parts": [],
+            "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e001"
           },
-          "id": "02b6bc1c-ef85-44e1-b701-2539893a5fb3",
-          "namespace": "TOM.cc-2",
+          "id": "0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.c-2",
+          "element": {
+            "name": "Control-2",
+            "abbreviation": "c-2",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+            "domains": [],
+            "owner": {
+              "targetUri": "/catalogitems/6796b233-03de-4acd-812e-de4d27c6e0cb"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "subType": {
+              
+            },
+            "type": "control",
+            "parts": [],
+            "id": "4b7e4df3-2bfc-4f87-9b9c-764eaf07e063"
+          },
+          "id": "6796b233-03de-4acd-812e-de4d27c6e0cb"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
+          },
           "tailoringReferences": [
             {
               "catalogItem": {
@@ -172,47 +145,74 @@
               },
               "referenceType": "LINK"
             }
-          ]
+          ],
+          "namespace": "TOM.cc-2",
+          "element": {
+            "name": "Control-cc-2",
+            "abbreviation": "cc-2",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
+            "domains": [],
+            "owner": {
+              "targetUri": "/catalogitems/02b6bc1c-ef85-44e1-b701-2539893a5fb3"
+            },
+            "links": {
+              "Control_details_Control": [
+                {
+                  "domains": [],
+                  "attributes": {
+                    
+                  },
+                  "name": "control",
+                  "target": {
+                    "targetUri": "/controls/6f7e4df3-2bfc-4f87-9b9c-764eaf07e001"
+                  }
+                }
+              ]
+            },
+            "customAspects": {
+              
+            },
+            "subType": {
+              
+            },
+            "type": "control",
+            "parts": [],
+            "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e002"
+          },
+          "id": "02b6bc1c-ef85-44e1-b701-2539893a5fb3"
         },
         {
           "catalog": {
             "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
           },
+          "tailoringReferences": [],
+          "namespace": "TOM.c-1",
           "element": {
+            "name": "Control-1",
             "abbreviation": "c-1",
-            "customAspects": {
-              
-            },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
             "domains": [],
-            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e063",
-            "links": {
-              
-            },
-            "name": "Control-1",
             "owner": {
               "targetUri": "/catalogitems/a82b9bce-2732-48a1-abda-e5a157abfcb5"
             },
-            "parts": [],
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
             "subType": {
               
             },
-            "type": "control"
+            "type": "control",
+            "parts": [],
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e063"
           },
-          "id": "a82b9bce-2732-48a1-abda-e5a157abfcb5",
-          "namespace": "TOM.c-1",
-          "tailoringReferences": []
+          "id": "a82b9bce-2732-48a1-abda-e5a157abfcb5"
         }
       ],
-      "domainTemplate": {
-        "targetUri": "/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824"
-      },
-      "id": "31abf42d-9527-4570-a532-5e9935f4dffa",
-      "name": "DVGO-Controls"
+      "id": "31abf42d-9527-4570-a532-5e9935f4dffa"
     }
   ],
-  "id": "f8ed22b1-b277-56ec-a2ce-0dbd94e24824",
-  "name": "DSGVO",
-  "revision": "latest",
-  "templateVersion": "1.0"
+  "id": "f8ed22b1-b277-56ec-a2ce-0dbd94e24824"
 }
