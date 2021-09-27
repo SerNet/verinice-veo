@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2021  Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,19 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest.security;
+package org.veo.persistence.access;
 
-import org.veo.core.entity.Account;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
+import org.veo.core.repository.ClientReadOnlyRepository;
+import org.veo.persistence.access.jpa.ClientDataRepository;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 
+@Repository
+@Transactional(readOnly = true)
 @AllArgsConstructor
-@Getter
-public class AccountImpl implements Account {
+public class ClientReadOnlyRepositoryImpl implements ClientReadOnlyRepository {
 
-    private final boolean isAdmin;
-    private final Client client;
+    private final ClientDataRepository clientDataRepository;
 
+    @Override
+    public Optional<Client> findById(Key<UUID> id) {
+        return clientDataRepository.findById(id.uuidValue())
+                                   .map(Client.class::cast);
+    }
 }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2021  Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.code;
+package org.veo.core.repository;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import org.veo.core.entity.DomainException;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 
-public class ModelValidationException extends DomainException {
-
-    private static final long serialVersionUID = 2434637292465687030L;
-    private List<String> validationErrors;
-
-    public ModelValidationException(String message, List<String> validationErrors) {
-        super(message);
-        this.validationErrors = validationErrors;
-    }
-
-    public List<String> getValidationErrors() {
-        return validationErrors;
-    }
-
+/**
+ * A repository for {@link Client} entities.
+ *
+ * Only implements operations that do not modify or create clients. Therefore it
+ * does not need a validator service. It should be used during authentication
+ * operations that do not require write access to clients.
+ */
+public interface ClientReadOnlyRepository {
+    public Optional<Client> findById(Key<UUID> id);
 }

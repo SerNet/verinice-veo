@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2020  Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,10 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.code;
 
-public interface Account {
-    boolean isAdmin();
+import java.util.List;
 
-    Client getClient();
+import org.veo.core.entity.DomainException;
+import org.veo.core.entity.specification.EntitySpecification;
+
+public class EntityValidationException extends DomainException {
+
+    private static final long serialVersionUID = 2434637292465687030L;
+    private List<String> validationErrors;
+
+    public <TEntity> EntityValidationException(TEntity entity,
+            EntitySpecification<TEntity> failedSpecification) {
+        super(String.format("%s failed on %s", failedSpecification.getClass()
+                                                                  .getSimpleName(),
+                            entity.toString()));
+    }
+
 }

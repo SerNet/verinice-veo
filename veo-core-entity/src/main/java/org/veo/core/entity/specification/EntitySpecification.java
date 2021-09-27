@@ -23,7 +23,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 
 /**
  * An intention-revealing interface for business rule specifications.
@@ -37,7 +36,7 @@ import org.veo.core.entity.Identifiable;
  * If a repositories is given a specification it can implement its own version
  * that can based on database-queries.
  */
-public interface EntitySpecification<T extends Identifiable> extends Predicate<T> {
+public interface EntitySpecification<T> extends Predicate<T> {
 
     /**
      * Determines if this specification is fulfilled by the provided entity.

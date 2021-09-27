@@ -44,6 +44,7 @@ import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.entity.AccountProvider;
+import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
@@ -562,6 +563,11 @@ public class ModuleConfiguration {
     public GetUnitDumpUseCase getUnitDumpUseCase(AccountProvider accountProvider,
             RepositoryProvider repositoryProvider, UnitRepository unitRepository) {
         return new GetUnitDumpUseCase(accountProvider, repositoryProvider, unitRepository);
+    }
+
+    @Bean
+    public EntityValidator entityValidator(AccountProvider accountProvider) {
+        return new EntityValidator(accountProvider);
     }
 
     @Bean

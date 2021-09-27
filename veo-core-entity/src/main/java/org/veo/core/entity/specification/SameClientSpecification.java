@@ -17,12 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Element;
+import org.veo.core.entity.ClientOwned;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Clients must be strictly separated. All references from one object to another
@@ -33,29 +31,18 @@ import org.veo.core.entity.Element;
  * collections in addition to the entity checks from the interface
  * <code>IEntitySecification</code>.
  */
-public class SameClientSpecification<T extends Element> implements EntitySpecification<T> {
+@RequiredArgsConstructor
+public class SameClientSpecification implements EntitySpecification<ClientOwned> {
 
-    private Client client;
-
-    SameClientSpecification(Client client) {
-        this.client = client;
-    }
+    private final Client client;
 
     @Override
-    public boolean test(T entity) {
-        return isSatisfiedBy(entity.getOwner()
-                                   .getClient());
-    }
-
-    @Override
-    public Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
-        return collection.stream()
-                         .filter(this::test)
-                         .collect(Collectors.toSet());
+    public boolean test(ClientOwned entity) {
+        return isSatisfiedBy(entity.getOwningClient()
+                                   .orElse(null));
     }
 
     public boolean isSatisfiedBy(Client otherClient) {
-        return this.client.equals(otherClient);
+        return client.equals(otherClient);
     }
-
 }

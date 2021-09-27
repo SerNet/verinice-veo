@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -28,24 +27,24 @@ import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.code.ModelValidationException;
-import org.veo.core.entity.code.ModelValidator;
-import org.veo.core.entity.code.ModelValidator.AbstractModelValidator;
+import org.veo.core.entity.code.EntityValidationException;
+import org.veo.core.entity.specification.EntityValidator;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Validation Service that uses an injected JSR380 validator to check all
  * annotated validation rules before validating model invariants.
  */
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ValidationService {
 
-    private Validator beanValidator;
+    private final Validator beanValidator;
+    private final EntityValidator entityValidator;
 
     public void validate(Identifiable identifiable)
-            throws ModelValidationException, ConstraintViolationException {
+            throws EntityValidationException, ConstraintViolationException {
         // execute JSR 380 validations on model entities:
         Set<ConstraintViolation<Identifiable>> violations = beanValidator.validate(identifiable);
         if (!violations.isEmpty())
@@ -54,14 +53,8 @@ public class ValidationService {
         if (!(identifiable instanceof Element))
             return;
 
-        // execute additional model validations:
-        Element entity = (Element) identifiable;
-        AbstractModelValidator<Element> modelValidator = new ModelValidator.AbstractModelValidator<>() {
-            @Override
-            protected void doValidate(Element object, List<String> validationErrors) {
-                return; // no additional validation needed
-            }
-        };
-        modelValidator.validate(entity);
+        if (entityValidator != null) {
+            entityValidator.validate(identifiable);
+        }
     }
 }

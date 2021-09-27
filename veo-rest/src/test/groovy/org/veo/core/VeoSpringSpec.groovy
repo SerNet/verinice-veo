@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -46,6 +46,7 @@ import org.veo.test.VeoSpec
  */
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(NopEntityValidationConfiguration)
 @ImportAutoConfiguration
 @ComponentScan("org.veo")
 abstract class VeoSpringSpec extends VeoSpec {

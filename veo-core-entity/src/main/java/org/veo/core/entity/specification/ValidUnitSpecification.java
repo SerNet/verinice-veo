@@ -33,12 +33,12 @@ import org.veo.core.entity.Unit;
  *
  * @param <T>
  */
-final class ValidUnitSpecification<T extends Element> implements EntitySpecification<T> {
+final class ValidUnitSpecification implements EntitySpecification<Element> {
 
     private ValidUnitSpecification() {
     }
 
-    static final ValidUnitSpecification<Element> INSTANCE = new ValidUnitSpecification<>();
+    static final ValidUnitSpecification INSTANCE = new ValidUnitSpecification();
 
     @Override
     public boolean test(Element entity) {
@@ -51,5 +51,4 @@ final class ValidUnitSpecification<T extends Element> implements EntitySpecifica
                 && unit.getName() != null && !unit.getName()
                                                   .isEmpty());
     }
-
 }

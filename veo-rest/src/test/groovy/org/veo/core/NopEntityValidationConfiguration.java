@@ -15,10 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core;
 
-public interface Account {
-    boolean isAdmin();
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
-    Client getClient();
+import org.veo.core.entity.code.EntityValidationException;
+import org.veo.core.entity.specification.EntityValidator;
+
+@TestConfiguration
+public class NopEntityValidationConfiguration {
+    @Bean
+    @Primary
+    EntityValidator nopEntityValidator() {
+        return new EntityValidator(null) {
+            @Override
+            public void validate(Object entity) throws EntityValidationException {
+                // ok
+            }
+        };
+    }
 }

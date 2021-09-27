@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
@@ -31,10 +30,8 @@ import org.veo.core.entity.Key;
  */
 public final class EntitySpecifications {
 
-    private static final EntitySpecification<Identifiable> MATCH_ALL = identifiable -> true;
-
     public static <T extends Identifiable> EntitySpecification<T> matchAll() {
-        return (EntitySpecification<T>) MATCH_ALL;
+        return i -> true;
     }
 
     public static EntitySpecification<Domain> isActive() {
@@ -50,16 +47,15 @@ public final class EntitySpecifications {
         return catalogItem -> namespace.equals(catalogItem.getNamespace());
     }
 
-    public static <T extends Element> SameClientSpecification<T> hasSameClient(Client client) {
-        return new SameClientSpecification<>(client);
+    public static SameClientSpecification hasSameClient(Client client) {
+        return new SameClientSpecification(client);
     }
 
-    public static ValidUnitSpecification<Element> hasValidUnit() {
+    public static ValidUnitSpecification hasValidUnit() {
         return ValidUnitSpecification.INSTANCE;
     }
 
     private EntitySpecifications() {
 
     }
-
 }
