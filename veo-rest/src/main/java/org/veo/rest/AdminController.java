@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,9 +36,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
-import org.veo.rest.security.AccountImpl;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
@@ -58,20 +55,16 @@ public class AdminController {
 
     @DeleteMapping("/client/{clientId}")
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteClient(
-            @Parameter(hidden = true) Authentication auth, @PathVariable String clientId) {
-        return useCaseInteractor.execute(deleteClientUseCase,
-                                         new DeleteClientUseCase.InputData(AccountImpl.from(auth),
-                                                 Key.uuidFrom(clientId)),
-                                         out -> ResponseEntity.noContent()
+            @PathVariable String clientId) {
+        return useCaseInteractor.execute(deleteClientUseCase, new DeleteClientUseCase.InputData(
+                Key.uuidFrom(clientId)), out -> ResponseEntity.noContent()
                                                               .build());
     }
 
     @GetMapping("/unit-dump/{unitId}")
-    public CompletableFuture<UnitDumpDto> getUnitDump(@Parameter(hidden = true) Authentication auth,
-            @PathVariable String unitId) {
+    public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable String unitId) {
         return useCaseInteractor.execute(getUnitDumpUseCase,
-                                         (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(AccountImpl.from(auth),
-                                                                                                                unitId),
+                                         (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(unitId),
                                          out -> UnitDumpMapper.mapOutput(out,
                                                                          entityToDtoTransformer));
     }

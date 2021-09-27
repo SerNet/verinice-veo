@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.veo.core.entity.Account;
+import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
@@ -41,12 +41,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GetUnitDumpUseCase implements
         TransactionalUseCase<GetUnitDumpUseCase.InputData, GetUnitDumpUseCase.OutputData> {
+    private final AccountProvider accountProvider;
     private final RepositoryProvider repositoryProvider;
     private final UnitRepository unitRepository;
 
     @Override
     public OutputData execute(InputData input) {
-        if (!input.account.isAdmin()) {
+        if (!accountProvider.getCurrentUserAccount()
+                            .isAdmin()) {
             throw new MissingAdminPrivilegesException();
         }
         var unit = unitRepository.findById(input.unitId)
@@ -69,7 +71,6 @@ public class GetUnitDumpUseCase implements
     @Data
     @AllArgsConstructor
     public static class InputData implements UseCase.InputData {
-        private Account account;
         private Key<UUID> unitId;
     }
 

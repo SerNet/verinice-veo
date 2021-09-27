@@ -17,14 +17,26 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
 import org.veo.core.entity.Account;
+import org.veo.core.entity.AccountProvider;
+import org.veo.core.repository.ClientRepository;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
-@Getter
-public class AccountImpl implements Account {
+@Component
+@RequiredArgsConstructor
+public class AccountProviderImpl implements AccountProvider {
 
-    private final boolean isAdmin;
+    private final ClientRepository clientRepository;
+
+    @Override
+    public Account getCurrentUserAccount() {
+        var user = ApplicationUser.authenticatedUser(SecurityContextHolder.getContext()
+                                                                          .getAuthentication()
+                                                                          .getPrincipal());
+        return new AccountImpl(user.isAdmin());
+    }
 }

@@ -15,16 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest.security;
+package org.veo.core.entity;
 
-import org.veo.core.entity.Account;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@AllArgsConstructor
-@Getter
-public class AccountImpl implements Account {
-
-    private final boolean isAdmin;
+public interface AccountProvider {
+    Account getCurrentUserAccount();
 }

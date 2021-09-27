@@ -43,6 +43,7 @@ import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
+import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
@@ -550,15 +551,17 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public DeleteClientUseCase deleteClientUseCase(ClientRepository clientRepository,
-            UnitRepository unitRepository, DeleteUnitUseCase deleteUnitUseCase) {
-        return new DeleteClientUseCase(clientRepository, deleteUnitUseCase, unitRepository);
+    public DeleteClientUseCase deleteClientUseCase(AccountProvider accountProvider,
+            ClientRepository clientRepository, UnitRepository unitRepository,
+            DeleteUnitUseCase deleteUnitUseCase) {
+        return new DeleteClientUseCase(accountProvider, clientRepository, deleteUnitUseCase,
+                unitRepository);
     }
 
     @Bean
-    public GetUnitDumpUseCase getUnitDumpUseCase(RepositoryProvider repositoryProvider,
-            UnitRepository unitRepository) {
-        return new GetUnitDumpUseCase(repositoryProvider, unitRepository);
+    public GetUnitDumpUseCase getUnitDumpUseCase(AccountProvider accountProvider,
+            RepositoryProvider repositoryProvider, UnitRepository unitRepository) {
+        return new GetUnitDumpUseCase(accountProvider, repositoryProvider, unitRepository);
     }
 
     @Bean

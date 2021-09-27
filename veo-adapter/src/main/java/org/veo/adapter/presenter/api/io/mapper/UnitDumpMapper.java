@@ -24,7 +24,6 @@ import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.core.entity.Account;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
@@ -32,8 +31,8 @@ import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 
 public class UnitDumpMapper {
 
-    public static GetUnitDumpUseCase.InputData mapInput(Account user, String unitId) {
-        return new GetUnitDumpUseCase.InputData(user, Key.uuidFrom(unitId));
+    public static GetUnitDumpUseCase.InputData mapInput(String unitId) {
+        return new GetUnitDumpUseCase.InputData(Key.uuidFrom(unitId));
     }
 
     public static UnitDumpDto mapOutput(GetUnitDumpUseCase.OutputData useCaseOutput,

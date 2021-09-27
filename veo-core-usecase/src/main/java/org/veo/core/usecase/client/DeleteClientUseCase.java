@@ -19,7 +19,7 @@ package org.veo.core.usecase.client;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Account;
+import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
@@ -36,13 +36,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DeleteClientUseCase
         implements TransactionalUseCase<DeleteClientUseCase.InputData, UseCase.EmptyOutput> {
+    private final AccountProvider accountProvider;
     private final ClientRepository clientRepository;
     private final DeleteUnitUseCase deleteUnitUseCase;
     private final UnitRepository unitRepository;
 
     @Override
     public EmptyOutput execute(InputData input) {
-        if (!input.account.isAdmin()) {
+        if (!accountProvider.getCurrentUserAccount()
+                            .isAdmin()) {
             throw new MissingAdminPrivilegesException();
         }
         var client = clientRepository.findById(input.clientId)
@@ -61,7 +63,6 @@ public class DeleteClientUseCase
     @AllArgsConstructor
     @Getter
     public static class InputData implements UseCase.InputData {
-        public Account account;
         public Key<UUID> clientId;
     }
 }
