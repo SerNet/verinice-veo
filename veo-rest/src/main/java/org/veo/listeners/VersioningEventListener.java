@@ -89,11 +89,7 @@ public class VersioningEventListener {
         tree.put("author", author);
         tree.put("clientId", client.getId()
                                    .uuidValue());
-
-        if (type != VersioningEvent.Type.REMOVE) {
-            tree.set("content",
-                     objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
-        }
+        tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
         return tree;
     }
 

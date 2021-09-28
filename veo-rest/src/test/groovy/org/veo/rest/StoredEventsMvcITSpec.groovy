@@ -143,7 +143,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             uri == "/documents/$documentId"
             author == "user@domain.example"
             changeNumber == 2
-            content == null
+            with(content) {
+                id == documentId
+                name == "super doc"
+            }
         }
     }
 
