@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.listeners;
 
+import java.time.Instant;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -84,8 +86,8 @@ public class VersioningEventListener {
         tree.put("uri", getUri(entity));
         tree.put("type", convertType(type));
         tree.put("changeNumber", getChangeNumber(entity, type));
-        tree.put("time", entity.getUpdatedAt()
-                               .toString());
+        tree.put("time", Instant.now()
+                                .toString());
         tree.put("author", author);
         tree.put("clientId", client.getId()
                                    .uuidValue());
