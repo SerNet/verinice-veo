@@ -1,5 +1,7 @@
 server:
   port: 8070
+  servlet:
+    context-path: /veo/
 
 veo:
   cors:
@@ -29,8 +31,6 @@ veo:
       #consume:
           #queue: veo.entity_test_queue
           #routing_key: veo.testmessage.#
-
-
 
 spring:
   data:
