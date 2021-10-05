@@ -4,18 +4,7 @@
   "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
   "domains": [],
   "links": {
-    "control_tom": [
-      {
-        "domains": [],
-        "attributes": {
-          
-        },
-        "name": "process",
-        "target": {
-          "targetUri": "/processes/392a5687-b415-4b2c-afde-a0ea355751be"
-        }
-      }
-    ]
+    
   },
   "customAspects": {
     

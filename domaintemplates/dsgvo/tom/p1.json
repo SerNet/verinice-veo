@@ -1,8 +1,28 @@
 {
+  "abbreviation": "p-1",
   "name": "Test process-1",
   "status": "NEW",
   "links": {
-    
+    "process_tom": [
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "/controls/2a7e4df3-2bfc-4f87-9b9c-764eaf07e063"
+        }
+      },
+      {
+        "domains": [],
+        "attributes": {
+          
+        },
+        "target": {
+          "targetUri": "/controls/4b7e4df3-2bfc-4f87-9b9c-764eaf07e063"
+        }
+      }
+    ]
   },
   "customAspects": {
     

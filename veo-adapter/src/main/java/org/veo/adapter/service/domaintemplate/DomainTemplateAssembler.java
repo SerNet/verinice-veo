@@ -24,10 +24,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -42,12 +44,15 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
+import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.CustomTypedLinkDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformExternalTailoringReference;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
@@ -183,19 +188,20 @@ public class DomainTemplateAssembler {
             throws JsonParseException, JsonMappingException, IOException {
         String catalogId = Key.newUuid()
                               .uuidValue();
-        Map<String, AbstractElementDto> readElements = readElements(resources);
-        Map<String, TransformCatalogItemDto> catalogItems = createCatalogItems(readElements,
-                                                                               catalogId,
-                                                                               toNamespace);
+        Map<String, AbstractElementDto> elementsById = readElements(resources);
+        Map<String, TransformCatalogItemDto> catalogItemsById = createCatalogItems(elementsById,
+                                                                                   catalogId,
+                                                                                   toNamespace);
 
-        for (Entry<String, AbstractElementDto> e : readElements.entrySet()) {
-            createTailoringReferences(e.getValue(), catalogItems);
+        for (Entry<String, AbstractElementDto> e : elementsById.entrySet()) {
+            createTailoringReferences(e.getValue(), catalogItemsById);
+            createExternalTailoringReferences(e.getKey(), catalogItemsById);
         }
         TransformCatalogDto catalogDto = new TransformCatalogDto();
         catalogDto.setName(catalogName);
         catalogDto.setId(catalogId);
         catalogDto.getCatalogItems()
-                  .addAll(catalogItems.values());
+                  .addAll(catalogItemsById.values());
 
         catalogs.add(catalogDto);
     }
@@ -206,6 +212,7 @@ public class DomainTemplateAssembler {
         Map<String, TransformCatalogItemDto> cache = new HashMap<>();
         for (Entry<String, AbstractElementDto> e : readElements.entrySet()) {
             TransformCatalogItemDto itemDto = new TransformCatalogItemDto();
+            itemDto.setTailoringReferences(new HashSet<AbstractTailoringReferenceDto>());
             itemDto.setElement(e.getValue());
             itemDto.setCatalog(SyntheticIdRef.from(catalogId, Catalog.class));
             AbstractElementDto elementDto = e.getValue();
@@ -218,6 +225,48 @@ public class DomainTemplateAssembler {
             cache.put(e.getKey(), itemDto);
         }
         return cache;
+    }
+
+    /**
+     * Creates the opposite feature for the element defined by targetId. So for
+     * every link in an element we create an externalTairoRef in the target of the
+     * link with the link data. Except for it self.
+     */
+    private void createExternalTailoringReferences(String targetId,
+            Map<String, TransformCatalogItemDto> catalogItems) {
+        TransformCatalogItemDto targetItem = catalogItems.get(targetId);
+        catalogItems.entrySet()
+                    .stream()
+                    .filter(entries -> !entries.getKey()
+                                               .equals(targetId))// exclude self
+                    .map(entries -> entries.getValue())
+                    .forEach(catalogItemDto -> {
+                        AbstractElementDto element = catalogItemDto.getElement();
+                        for (Entry<String, List<CustomLinkDto>> typedLinks : element.getLinks()
+                                                                                    .entrySet()) {
+                            Stream<CustomLinkDto> allLinksToTarget = typedLinks.getValue()
+                                                                               .stream()
+                                                                               .filter(link -> link.getTarget()
+                                                                                                   .getId()
+                                                                                                   .equals(targetId));
+                            allLinksToTarget.forEach(link -> {
+                                CustomTypedLinkDto linkData = new CustomTypedLinkDto();
+                                linkData.setTarget(new SyntheticIdRef<>(targetId, link.getTarget()
+                                                                                      .getType(),
+                                        assembler));
+                                linkData.setAttributes(new HashMap<>(link.getAttributes()));
+                                linkData.setType(typedLinks.getKey());
+
+                                TransformExternalTailoringReference referenceDto = new TransformExternalTailoringReference();
+                                referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(
+                                        targetItem.getId(), CatalogItem.class, assembler));
+                                referenceDto.setReferenceType(TailoringReferenceType.LINK_EXTERNAL);
+                                referenceDto.setExternalLink(linkData);
+                                targetItem.getTailoringReferences()
+                                          .add(referenceDto);
+                            });
+                        }
+                    });
     }
 
     private void createTailoringReferences(AbstractElementDto value,
@@ -267,6 +316,7 @@ public class DomainTemplateAssembler {
 
     private AbstractElementDto readInstanceFile(File resource)
             throws JsonParseException, JsonMappingException, IOException {
+        log.info("process file: {}", resource);
         try (BufferedReader br = Files.newBufferedReader(resource.toPath(),
                                                          StandardCharsets.UTF_8)) {
             AbstractElementDto domainTemplateDto = objectMapper.readValue(br,
