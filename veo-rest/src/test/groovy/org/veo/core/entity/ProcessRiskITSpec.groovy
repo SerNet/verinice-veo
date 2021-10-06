@@ -107,7 +107,6 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         retrievedRisk1.scenario == scenario1
         retrievedRisk1.domains.first() == domain1
         retrievedRisk1.entity == process1
-        retrievedRisk1.scenario == scenario1
         def riskData = (ProcessRiskData) retrievedRisk1
         riskData.createdAt != null
         riskData.updatedAt != null

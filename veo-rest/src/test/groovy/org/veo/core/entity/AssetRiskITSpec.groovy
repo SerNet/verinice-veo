@@ -103,7 +103,6 @@ class AssetRiskITSpec extends VeoSpringSpec {
         retrievedRisk1.scenario == scenario1
         retrievedRisk1.domains.first() == domain1
         retrievedRisk1.entity == asset1
-        retrievedRisk1.scenario == scenario1
         def riskData = (AssetRiskData) retrievedRisk1
         riskData.createdAt != null
         riskData.updatedAt != null
