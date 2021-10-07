@@ -17,10 +17,16 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -32,6 +38,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
@@ -51,9 +58,15 @@ import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Uses a list of {@link IncarnateCatalogItemDescription} to create items from a
+ * catalog in a unit.
+ */
 @AllArgsConstructor
 @Slf4j
 public class ApplyIncarnationDescriptionUseCase implements
@@ -74,51 +87,85 @@ public class ApplyIncarnationDescriptionUseCase implements
         Client authenticatedClient = input.authenticatedClient;
         unit.checkSameClient(authenticatedClient);
 
-        List<Element> createdElement = input.getReferencesToApply()
-                                            .stream()
-                                            .map(ra -> {
-                                                CatalogItem catalogItem = catalogItemRepository.findById(ra.getItem()
-                                                                                                           .getId())
-                                                                                               .orElseThrow(() -> new NotFoundException(
-                                                                                                       "CatalogItem not found %s",
-                                                                                                       ra.getItem()
-                                                                                                         .getId()));
+        Supplier<IncarnationResult> supplier = IncarnationResult::new;
+        BiConsumer<IncarnationResult, ElementResult> consumer = (elementData, iElement) -> {
+            elementData.elements.add(iElement.element);
+            elementData.internalLinks.addAll(iElement.getInternalLinks());
+        };
+        BinaryOperator<IncarnationResult> operator = (source, data) -> {
+            source.elements.addAll(data.elements);
+            source.internalLinks.addAll(data.internalLinks);
+            return source;
+        };
+        Function<IncarnationResult, List<Element>> function = elementData -> {
+            processInternalLinks(elementData.internalLinks, elementData.elements);
+            return elementData.elements;
+        };
+        List<Element> createdElements = input.getReferencesToApply()
+                                             .stream()
+                                             .map(ra -> {
+                                                 CatalogItem catalogItem = catalogItemRepository.findById(ra.getItem()
+                                                                                                            .getId())
+                                                                                                .orElseThrow(() -> new NotFoundException(
+                                                                                                        "CatalogItem not found %s",
+                                                                                                        ra.getItem()
+                                                                                                          .getId()));
 
-                                                Domain domain = (Domain) catalogItem.getCatalog()
-                                                                                    .getDomainTemplate();
-                                                UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(),
-                                                                                        domain);
-                                                return createElementFromItem(unit,
-                                                                             authenticatedClient,
-                                                                             catalogItem, domain,
-                                                                             ra.getReferences());
-                                            })
-                                            .collect(Collectors.toList());
-        log.info("ApplyIncarnationDescriptionUseCase elements created: {}", createdElement);
-        return new ApplyIncarnationDescriptionUseCase.OutputData(createdElement);
+                                                 Domain domain = (Domain) catalogItem.getCatalog()
+                                                                                     .getDomainTemplate();
+                                                 UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(),
+                                                                                         domain);
+                                                 return createElementFromCatalogItem(unit,
+                                                                                     authenticatedClient,
+                                                                                     catalogItem,
+                                                                                     domain,
+                                                                                     ra.getReferences());
+                                             })
+                                             .collect(Collector.of(supplier, consumer, operator,
+                                                                   function));
+        log.info("ApplyIncarnationDescriptionUseCase elements created: {}", createdElements);
+        return new ApplyIncarnationDescriptionUseCase.OutputData(createdElements);
     }
 
-    private Element createElementFromItem(Unit unit, Client authenticatedClient,
+    /**
+     * Incarnate a catalogItem, uses the
+     * {@link CatalogItemService#createInstance(CatalogItem, Domain)} to create a
+     * copy of the element. Set the customLinkTargets of this element to the given
+     * referencesToApply. Assign the designator, save the element and create the
+     * links in the opposite objects which are defined by the
+     * {@link ExternalTailoringReference}.
+     */
+    private ElementResult createElementFromCatalogItem(Unit unit, Client authenticatedClient,
             CatalogItem catalogItem, Domain domain,
             List<TailoringReferenceParameter> referencesToApply) {
         validateItem(catalogItem, referencesToApply);
-        Element copyItem = catalogItemservice.createInstance(catalogItem, domain);
-        applyLinkTailoringReferences(copyItem, referencesToApply.stream()
-                                                                .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
-                                                                .collect(Collectors.toList()));
-        @SuppressWarnings("unchecked")
-        ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) copyItem.getModelInterface());
-        Element entity = (Element) copyItem;
+        Element entity = catalogItemservice.createInstance(catalogItem, domain);
+        List<InternalResolveInfo> internalLinks = applyLinkTailoringReferences(entity,
+                                                                               referencesToApply.stream()
+                                                                                                .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
+                                                                                                .collect(Collectors.toList()),
+                                                                               catalogItem, domain);
         entity.setOwner(unit);
         designatorService.assignDesignator(entity, authenticatedClient);
-        entity = repository.save(entity);
+        entity = saveElement(entity);
         applyExternalTailoringReferences(entity, domain, externalTailorReferences(catalogItem),
                                          externalTailorReferencesParameters(referencesToApply));
-        return entity;
+        return new ElementResult(entity, internalLinks);
     }
 
-    private void applyLinkTailoringReferences(Element copyItem,
-            List<TailoringReferenceParameter> referencesToApply) {
+    /**
+     * Apply the parameters from the incarnation description to the newly created
+     * object. This method handles the {@link TailoringReferenceType#LINK} type. It
+     * takes the parameter
+     * {@link TailoringReferenceParameter#getReferencedElement()} and sets it as the
+     * target of the corresponding link. When the
+     * {@link TailoringReferenceParameter#getReferencedElement()} is null the link
+     * will be removed from the element and linked later in
+     * {@link #processInternalLinks(List, List)}.
+     */
+    private List<InternalResolveInfo> applyLinkTailoringReferences(Element copyItem,
+            List<TailoringReferenceParameter> referencesToApply, CatalogItem catalogItem,
+            Domain domain) {
         List<CustomLink> orderByExecution = copyItem.getLinks()
                                                     .stream()
                                                     .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
@@ -128,15 +175,43 @@ public class ApplyIncarnationDescriptionUseCase implements
             throw new IllegalArgumentException(
                     "Number of defined links cannot be smaller than number of references to apply.");
         }
-
+        List<InternalResolveInfo> internalLinks = new ArrayList<>();
+        List<TailoringReference> trefList = linkTailorReferences(catalogItem);
         for (int i = 0; i < orderByExecution.size(); i++) {
             CustomLink customLink = orderByExecution.get(i);
-            customLink.setTarget(referencesToApply.get(i)
-                                                  .getReferencedElement());
+            TailoringReferenceParameter parameter = referencesToApply.get(i);
+            if (parameter.getReferencedElement() == null) {
+                TailoringReference tailoringReference = trefList.get(i);
+                internalLinks.add(new InternalResolveInfo(
+                        copyLink(copyItem, customLink.getTarget(), domain, customLink), copyItem,
+                        tailoringReference.getCatalogItem()));
+                copyItem.getLinks()
+                        .remove(customLink);
+            } else {
+                customLink.setTarget(parameter.getReferencedElement());
+            }
         }
         // TODO: VEO-612 handle parts
+        return internalLinks;
     }
 
+    /**
+     * Apply the parameters from the incarnation description to the newly created
+     * object. This method handles the {@link TailoringReferenceType#LINK_EXTERNAL}
+     * type. It copies the link defined in
+     * {@link ExternalTailoringReference#getExternalLink()}, sets the
+     * linktargetEntity as the target of this link and adds it to the
+     * {@link TailoringReferenceParameter#getReferencedElement()} and saves it. As
+     * the {@link TailoringReferenceType#LINK_EXTERNAL} and
+     * {@link TailoringReferenceType#LINK} are symmetrical, for each
+     * {@link TailoringReferenceType#LINK} there needs to be an opposite
+     * {@link TailoringReferenceType#LINK_EXTERNAL} pointing to each other. We
+     * should not create such a link when the
+     * {@link TailoringReferenceParameter#getReferencedElement()} is null, as we
+     * demand the set of objects to create in one batch is complete and therefore
+     * the link gets created by the {@link TailoringReferenceType#LINK} of the other
+     * element.
+     */
     private void applyExternalTailoringReferences(Element linkTargetEntity, Domain domain,
             List<ExternalTailoringReference> externalTailoringRefs,
             List<TailoringReferenceParameter> referencesToApply) {
@@ -144,10 +219,10 @@ public class ApplyIncarnationDescriptionUseCase implements
         for (ExternalTailoringReference catalogReference : externalTailoringRefs) {
             TailoringReferenceParameter tailoringReferenceParameter = parameter.next();
             Element element = tailoringReferenceParameter.getReferencedElement();
-            copyLink(element, linkTargetEntity, domain, catalogReference.getExternalLink());
-            @SuppressWarnings("unchecked")
-            ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) element.getModelInterface());
-            element = repository.save(element);
+            if (element != null) {
+                copyLink(element, linkTargetEntity, domain, catalogReference.getExternalLink());
+                saveElement(element);
+            }
         }
     }
 
@@ -155,43 +230,77 @@ public class ApplyIncarnationDescriptionUseCase implements
      * Creates a new link between source and target, as a value copy of the
      * linkToCopy. Adds the domain to this link.
      */
-    private void copyLink(Element source, Element target, Domain domain, CustomLink linkToCopy) {
+    private CustomLink copyLink(Element source, Element target, Domain domain,
+            CustomLink linkToCopy) {
         CustomLink link = factory.createCustomLink(target, source, linkToCopy.getType());
         link.setAttributes(linkToCopy.getAttributes() == null ? null
                 : new HashMap<>(linkToCopy.getAttributes()));
         link.addToDomains(domain);
         link.setType(linkToCopy.getType());
         source.addToLinks(link);
+        return link;
     }
 
+    /**
+     * Links all {@code resolveInfo} objects with elements created in this batch.
+     * Throws an error when the target is not part of the set of created elements.
+     */
+    private void processInternalLinks(List<InternalResolveInfo> internalLinks,
+            List<Element> createdCatalogables) {
+        for (InternalResolveInfo ri : internalLinks) {
+            Element internalTarget = createdCatalogables.stream()
+                                                        .filter(c -> c.getAppliedCatalogItems()
+                                                                      .contains(ri.sourceItem))
+                                                        .findFirst()
+                                                        .orElseThrow(() -> new NotFoundException(
+                                                                "CatalogItem %s:%s not included in request but required by %s:%s.",
+                                                                ri.sourceItem.getNamespace(),
+                                                                ri.sourceItem.getDisplayName(),
+                                                                ri.source.getDesignator(),
+                                                                ri.source.getName()));
+            ri.link.setTarget(internalTarget);
+            ri.source.addToLinks(ri.link);
+        }
+    }
+
+    /**
+     * Validates the incarnation parameters for the catalogItem against the catalog
+     * description. (aka Tailoringreferences).
+     */
     private void validateItem(CatalogItem catalogItem,
             List<TailoringReferenceParameter> referencesToApply) {
-        if (catalogItem.getTailoringReferences()
-                       .stream()
-                       .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
-                       .count() != referencesToApply.stream()
-                                                    .filter(r -> r.getReferenceType() == TailoringReferenceType.LINK)
-                                                    .count()) {
+        if (linkTailorReferences(catalogItem).size() != linkTailorReferencesParameters(referencesToApply).size()) {
             throw new IllegalArgumentException("Tailoring references (LINK) don't match.");
         }
-        if (catalogItem.getTailoringReferences()
-                       .stream()
-                       .filter(r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL)
-                       .count() != referencesToApply.stream()
-                                                    .filter(r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL)
-                                                    .count()) {
+        if (externalTailorReferences(catalogItem).size() != externalTailorReferencesParameters(referencesToApply).size()) {
             throw new IllegalArgumentException("Tailoring references (EXTERNAL_LINK) don't match.");
-        }
-        if (referencesToApply.stream()
-                             .anyMatch(t -> t.getReferencedElement() == null)) {
-            throw new IllegalArgumentException("Tailoring references target undefined.");// need to
-                                                                                         // change
-                                                                                         // with
-                                                                                         // VEO-726
         }
     }
 
-    private List<ExternalTailoringReference> externalTailorReferences(CatalogItem catalogItem) {
+    private Element saveElement(Element entity) {
+        @SuppressWarnings("unchecked")
+        ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor((Class<Element>) entity.getModelInterface());
+        return repository.save(entity);
+    }
+
+    /**
+     * Return the list of TailoringReference filtered by IS_LINK_PREDICATE and
+     * ordered BY_EXECUTION for the given catalogItem.
+     */
+    private static List<TailoringReference> linkTailorReferences(CatalogItem catalogItem) {
+        return catalogItem.getTailoringReferences()
+                          .stream()
+                          .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
+                          .sorted(TailoringReferenceComparators.BY_EXECUTION)
+                          .collect(Collectors.toList());
+    }
+
+    /**
+     * Return the list of ExternalTailoringReference filtered by IS_LINK_PREDICATE
+     * and ordered BY_EXECUTION for the given catalogItem.
+     */
+    private static List<ExternalTailoringReference> externalTailorReferences(
+            CatalogItem catalogItem) {
         return catalogItem.getTailoringReferences()
                           .stream()
                           .filter(TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
@@ -200,7 +309,21 @@ public class ApplyIncarnationDescriptionUseCase implements
                           .collect(Collectors.toList());
     }
 
-    private List<TailoringReferenceParameter> externalTailorReferencesParameters(
+    /**
+     * Return a list of TailoringReferenceParameter filtered by IS_LINK_PREDICATE.
+     */
+    private static List<TailoringReferenceParameter> linkTailorReferencesParameters(
+            List<TailoringReferenceParameter> referencesToApply) {
+        return referencesToApply.stream()
+                                .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
+                                .collect(Collectors.toList());
+    }
+
+    /**
+     * Return a list of TailoringReferenceParameter filtered by
+     * IS_EXTERNALLINK_PREDICATE.
+     */
+    private static List<TailoringReferenceParameter> externalTailorReferencesParameters(
             List<TailoringReferenceParameter> referencesToApply) {
         return referencesToApply.stream()
                                 .filter(TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
@@ -222,4 +345,30 @@ public class ApplyIncarnationDescriptionUseCase implements
         List<Element> newElements;
     }
 
+    /**
+     * Contains the created elements and the links to resolve later of all these
+     * elements.
+     */
+    @Data
+    private static class IncarnationResult {
+        private final List<Element> elements = new ArrayList<Element>();
+        private final List<InternalResolveInfo> internalLinks = new ArrayList<InternalResolveInfo>();
+    }
+
+    /**
+     * Contains the created element and the links to resolve later.
+     */
+    @Data
+    @RequiredArgsConstructor
+    private static class ElementResult {
+        private final Element element;
+        private final List<InternalResolveInfo> internalLinks;
+    }
+
+    @AllArgsConstructor
+    private static class InternalResolveInfo {
+        CustomLink link;
+        Element source;
+        CatalogItem sourceItem;
+    }
 }

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.veo.core.entity.Catalog
+
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -26,7 +28,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def postResponse
     def testDomain
-    def getCatalog
+    def catalog
     String unitId
     String catalogId
 
@@ -35,13 +37,13 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         unitId = postResponse.resourceId
         testDomain = getDomains().find { it.name == "test-domain" }
         catalogId = extractLastId(testDomain.catalogs.first().targetUri)
-        getCatalog = getCatalog(catalogId)
+        catalog = getCatalog(catalogId)
     }
 
     def "Create a unit and incarnate c-1 and cc-1"() {
         log.info("Create a unit and incarnate c-1 and cc-1")
         when:
-        def itemc1 = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR c-1 Control-1")
+        def itemc1 = itemIdByDisplayName(catalog, "NO_DESIGNATOR c-1 Control-1")
 
         log.info("===========> get incarnation description")
         def incarnationDescription = getIncarnationDescriptions(unitId, itemc1)
@@ -49,7 +51,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
         def createdElementC1 = postApply.first().targetUri
 
-        itemc1 = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR cc-1 Control-cc-1")
+        itemc1 = itemIdByDisplayName(catalog, "NO_DESIGNATOR cc-1 Control-cc-1")
 
         log.info("===========> get incarnation description")
         incarnationDescription = getIncarnationDescriptions(unitId, itemc1)
@@ -82,8 +84,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         log.info("Create a unit and incarnate c-1 and c-2 in one request")
 
         when: "we get c1 and c2 id"
-        def itemC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR c-1 Control-1")
-        def itemC2Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR c-2 Control-2")
+        def itemC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR c-1 Control-1")
+        def itemC2Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR c-2 Control-2")
         def incarnationDescription = getIncarnationDescriptions(unitId, itemC1Id, itemC2Id)
 
         and: "we post the given description"
@@ -108,14 +110,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         log.info("Create a unit and incarnate c-1 and cc-1->c-1, and cc-2 linked default to cc-1")
 
         when:
-        def itemC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR c-1 Control-1")
+        def itemC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR c-1 Control-1")
         log.info("===========> create element c1 by incarnation")
         def incarnationDescription = getIncarnationDescriptions(unitId, itemC1Id)
         def postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
         def createdElementC1 = postApply.first().targetUri
 
         log.info("===========> create element cc-1 by incarnation linked to c-1")
-        def itemCC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR cc-1 Control-cc-1")
+        def itemCC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR cc-1 Control-cc-1")
         incarnationDescription = getIncarnationDescriptions(unitId, itemCC1Id)
         incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
         postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
@@ -123,7 +125,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def controlCC1TargetUri = postApply.first().targetUri
 
         log.info("===========> create element cc-2 by incarnation linked to cc-1")
-        def itemCC2Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR cc-2 Control-cc-2")
+        def itemCC2Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR cc-2 Control-cc-2")
         incarnationDescription = getIncarnationDescriptions(unitId, itemCC2Id)
         log.info("===========> create element {}", incarnationDescription)
 
@@ -157,14 +159,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         log.info("Create a unit incarnate c-1 and build a list by linking the last cc-1 10 times")
 
         when:
-        def itemC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR c-1 Control-1")
+        def itemC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR c-1 Control-1")
         log.info("===========> create element c1 by incarnation as head of the list")
         def incarnationDescription = getIncarnationDescriptions(unitId, itemC1Id)
         def postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
         def createdElement = postApply.first().targetUri
 
         log.info("===========> create linked list")
-        def itemCC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR cc-1 Control-cc-1")
+        def itemCC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR cc-1 Control-cc-1")
         incarnationDescription = getIncarnationDescriptions(unitId, itemCC1Id)
         10.times {
             incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElement])
@@ -196,7 +198,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-2 10 times"() {
         when:
-        def itemC1Id = itemIdByDisplayName(getCatalog, "NO_DESIGNATOR c-2 Control-2")
+        def itemC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR c-2 Control-2")
         def incarnationDescription = getIncarnationDescriptions(postResponse.resourceId, itemC1Id)
         10.times {
             def postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
@@ -219,6 +221,66 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         }
     }
 
+    def "Create a unit and incarnate cc-1->cc-2 in one step"() {
+        log.info("Create a unit and incarnate cc-1->cc-2 in one step")
+
+        when:
+        log.info("===========> create element cc-1 and cc-2")
+        def itemCC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR cc-1 Control-cc-1")
+        def itemCC2Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR cc-2 Control-cc-2")
+        def incarnationDescription = getIncarnationDescriptions(unitId, itemCC1Id, itemCC2Id)
+        def postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
+
+        def controlCC1Id = extractLastId(postApply[0].targetUri)
+        def controlCC1TargetUri = postApply[0].targetUri
+        def controlCC1tResult = getControl(controlCC1Id)
+
+        def controlCC2Id = extractLastId(postApply[1].targetUri)
+        def controlCC2TargetUri = postApply[1].targetUri
+        def controlCC2tResult = getControl(controlCC2Id)
+        def domainId = testDomain.id
+
+        then: "the controll cc-1 ist created and linked to cc-2 and cc-2 is created and linked to cc-1"
+        postApply != null
+        with(controlCC1tResult) {
+            name == "Control-cc-1"
+            abbreviation == "cc-1"
+            description.startsWith("Lorem ipsum")
+            domains[domainId] == [:]
+            links.size() ==1
+            links["Control_details_Control"].domains.size() == 1
+            links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
+            links["Control_details_Control"].target.targetUri[0] == controlCC2TargetUri
+        }
+        controlCC1tResult.owner.displayName == "Testunit"
+
+        with(controlCC2tResult) {
+            name == "Control-cc-2"
+            abbreviation == "cc-2"
+            description.startsWith("Lorem ipsum")
+            domains[domainId] == [:]
+            links.size() ==1
+            links["Control_details_Control"].domains.size() == 1
+            links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
+            links["Control_details_Control"].target.targetUri[0] == controlCC1TargetUri
+        }
+        controlCC2tResult.owner.displayName == "Testunit"
+    }
+
+    def "Create a unit and the whole catalog in one step"() {
+        log.info("Create a unit and the whole catalog in one step")
+
+        when: "We create all elements"
+        def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
+
+        log.info("-->"+allItems)
+        def incarnationDescription = get("/units/${postResponse.resourceId}/incarnations?itemIds=${allItems}").body
+        def postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
+
+        then: "all items of the catalog are created"
+        postApply.size() == catalog.catalogItems.size()
+    }
+
     private itemIdByDisplayName(catalog, displayName) {
         String tu = catalog.catalogItems
                 .find{it.displayName == displayName}.targetUri
@@ -230,6 +292,10 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     }
 
     private getIncarnationDescriptions(String unitId, String... itemIds) {
+        get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}").body
+    }
+
+    private getIncarnationDescriptions(String unitId,List itemIds) {
         get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}").body
     }
 

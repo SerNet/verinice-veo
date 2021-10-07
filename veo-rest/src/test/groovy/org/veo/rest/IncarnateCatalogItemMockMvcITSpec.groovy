@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 
 class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
@@ -284,6 +285,44 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def postResults = post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, false)
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for zz1 und zz2 post in one step"() {
+        given: "the created catalogitems"
+
+        when: "a request is made to the server"
+        def result = getIncarnationDescriptions(unit,cc1,cc2)
+
+        then: "the parameter object is returned"
+        result.parameters.size() == 2
+
+        when: "post the data"
+        def postResult = postIncarnationDescriptions(unit,result)
+        then: "the 2 elements are created"
+        postResult.size() == 2
+
+        def cc1Result = parseJson(get(postResult[0].targetUri))
+        def cc2Result = parseJson(get(postResult[1].targetUri))
+
+        validateNewElementAgainstCatalogItem(cc1Result, cc1, domain)
+        validateNewElementAgainstCatalogItem(cc2Result, cc2, domain)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for zz1 und c1 post for an incomplete set"() {
+        given: "the created catalogitems"
+
+        when: "a request is made to the server"
+        def result = getIncarnationDescriptions(unit,cc1,item1)
+
+        then: "the parameter object is returned"
+        result.parameters.size() == 2
+
+        when: "post the data"
+        def postResult = post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, false)
+        then: "the data is rejected"
+        NotFoundException ex = thrown()
     }
 
     private getIncarnationDescriptions(Unit unit, CatalogItem... items) {

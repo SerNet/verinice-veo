@@ -66,6 +66,8 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem item5
     CatalogItem item6
     CatalogItem item7
+    CatalogItem cc1
+    CatalogItem cc2
     CatalogItem otherItem
     Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
     Client client
@@ -190,6 +192,35 @@ class CatalogSpec extends VeoMvcSpec {
                 }
             }
 
+            cc1 = newCatalogItem(catalog, {
+                newControl(it) {
+                    name = 'zz1'
+                    description = "a control linked in a circle"
+                    setSubType(domain, "CTL_TOM", "NEW")
+                }
+            })
+            cc2 = newCatalogItem(catalog, {
+                newControl(it) {
+                    name = 'zz2'
+                    description = "a control linked in a circle"
+                    setSubType(domain, "CTL_TOM", "NEW")
+                }
+            })
+
+            cc1.element.links = [
+                newCustomLink(cc2.element, "link_to_zz2")
+            ] as Set
+            cc2.element.links = [
+                newCustomLink(cc1.element, "link_to_zz1")
+            ] as Set
+            newTailoringReference(cc1, TailoringReferenceType.LINK) {
+                catalogItem = cc2
+            }
+            newTailoringReference(cc2, TailoringReferenceType.LINK) {
+                catalogItem = cc1
+            }
+
+
             domain1 = newDomain {
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
@@ -211,7 +242,7 @@ class CatalogSpec extends VeoMvcSpec {
             domain1 = client.domains.toList().get(1)
             catalog = domain.catalogs.first()
 
-            (item1, item2, item3, item4, item5, item6, item7) = catalog.catalogItems.sort{it.element.name}
+            (item1, item2, item3, item4, item5, item6, item7, cc1, cc2) = catalog.catalogItems.sort{it.element.name}
 
             domain3 = newDomain {
                 abbreviation = "D1"

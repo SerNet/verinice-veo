@@ -38,9 +38,6 @@ import groovy.util.logging.Slf4j
  * be created from C-3 to C-1.
  * A second pass will then be run to create a second instance of C-1 and C-2 as well as
  * one instance of C-3.
- *
- * CC-1 and CC-2 cannot be created currently - see the issue linked below.
- *
  */
 class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
@@ -106,9 +103,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                 .target
                 .targetUri
         assert extractLastId(uri) == pass1Element1Id
-
-        // FIXME VEO-726 Note that CC-1 and CC-2 cannot be created because circular references cannot be resolved yet
-        // The two-pass approach will no longer be necessary with VEO-726 as well.
     }
 
     def "Create elements with reversed links from catalog"() {
@@ -239,6 +233,36 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         then:"The process is linked with the controlls"
         processVVT.links.size() == 1
         processVVT.links.process_tom.size() == 8
+    }
+
+    def "Create all linked elements from the dsgvo catalog in one step"() {
+        log.info("Create all linked elements from the dsgvo catalog in one step")
+
+        given:
+        postResponse = postNewUnit(UNIT_NAME)
+        unitId = postResponse.resourceId
+
+        when: "the catalog is retrieved"
+        def catalogId = extractLastId(getDomains().find { it.name == "DSGVO" }.catalogs.first().targetUri)
+        def catalog = getCatalog(catalogId)
+
+        then: "the expected catalog was instantiated"
+        with(catalog) {
+            catalogItems.size() == 9
+            name == "DS-GVO-Controls"
+        }
+
+        when:"we create all controls"
+
+        def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
+        log.debug("==> allItems: {}", allItems)
+
+        def incarnationDescription = get("/units/${postResponse.resourceId}/incarnations?itemIds=${allItems}").body
+        def elementResults = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
+
+        log.debug("==> elementResults: {}", elementResults)
+        then: "all elements are created"
+        elementResults.size() == 9
     }
 
     private applyCatalogItems(catalog) {
