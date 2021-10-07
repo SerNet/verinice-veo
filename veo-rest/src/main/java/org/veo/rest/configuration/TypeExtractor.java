@@ -23,6 +23,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
 
+import javax.servlet.ServletContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -49,10 +51,13 @@ import lombok.extern.slf4j.Slf4j;
 public class TypeExtractor {
 
     @Autowired
-    private ApplicationContext context;
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private ServletContext servletContext;
 
     private RequestMappingHandlerMapping getRequestHandlerMapping() {
-        return context.getBean(RequestMappingHandlerMapping.class);
+        return applicationContext.getBean(RequestMappingHandlerMapping.class);
     }
 
     public Optional<Class<? extends ModelDto>> parseDtoType(String uriString) {
@@ -62,6 +67,9 @@ public class TypeExtractor {
         if (pathComponent == null)
             return Optional.empty();
         log.debug("Reduced URI string {} to path component {}", uriString, pathComponent);
+
+        var strippedPathComponent = removeServletContextPath(pathComponent);
+
         var returnValue = getRequestHandlerMapping().getHandlerMethods()
                                                     .entrySet()
                                                     .stream()
@@ -74,12 +82,13 @@ public class TypeExtractor {
                                                                   .getPatternsCondition() != null)
                                                     .filter(not(e -> e.getKey()
                                                                       .getPatternsCondition()
-                                                                      .getMatchingPatterns(pathComponent)
+                                                                      .getMatchingPatterns(strippedPathComponent)
                                                                       .isEmpty()))
                                                     .peek(a -> log.debug("Found match for {} in {}",
-                                                                         pathComponent, a.getKey()
-                                                                                         .getPatternsCondition()
-                                                                                         .getPatterns()))
+                                                                         strippedPathComponent,
+                                                                         a.getKey()
+                                                                          .getPatternsCondition()
+                                                                          .getPatterns()))
                                                     .map(e -> e.getValue()
                                                                .getReturnType())
                                                     .peek(e -> log.debug("Found return type {} for URI string {}",
@@ -96,6 +105,14 @@ public class TypeExtractor {
                                                     });
 
         return extractDtoType(returnValue.getGenericParameterType());
+    }
+
+    private String removeServletContextPath(String pathComponent) {
+        var contextPath = servletContext.getContextPath();
+        if (pathComponent.startsWith(contextPath))
+            return pathComponent.substring(contextPath.length());
+        else
+            return pathComponent;
     }
 
     private Optional<Class<? extends ModelDto>> extractDtoType(Type type) {
