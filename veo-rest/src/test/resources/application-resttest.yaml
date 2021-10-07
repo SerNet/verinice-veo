@@ -3,7 +3,7 @@ veo:
     dispatch:
       routing-key-prefix: 'veo.resttestmessage.'
   resttest:
-    baseUrl: '/veo/' # i.e. "https://veo.develop.verinice.com". Leave empty for local tests.
+    baseUrl: '' # i.e. "https://veo.develop.verinice.com". Leave empty for local tests.
     oidcUrl: 'https://keycloak.staging.verinice.com'
     realm: 'realm'
     clientId: 'clientid'
@@ -47,4 +47,4 @@ spring:
 
 server:
   servlet:
-    context-path: /veo/
+    context-path: /veoresttest/

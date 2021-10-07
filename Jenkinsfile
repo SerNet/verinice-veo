@@ -114,7 +114,6 @@ pipeline {
                         VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.RESTTESTMESSAGE.${tag}."
                         VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_RESTTEST_QUEUE_${tag}"
                         VEO_TEST_MESSAGE_CONSUME_ROUTING_KEY = "VEO.RESTTESTMESSAGE.${tag}.#"
-                        VEO_RESTTEST_BASEURL = ""
                         VEO_RESTTEST_OIDCURL = "https://keycloak.staging.verinice.com"
                         VEO_RESTTEST_REALM = "verinice-veo"
                         VEO_RESTTEST_CLIENTID = "veo-development-client"
