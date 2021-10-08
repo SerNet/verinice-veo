@@ -40,10 +40,13 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Describes the incarnation parameters of one catalogitem.")
 public class IncarnateCatalogItemDescriptionDto {
 
-    @Schema(required = true, implementation = IdRefCatalogItemDescriptionItem.class)
+    @Schema(title = "Reference the catalogitem to be incarnated.",
+            required = true,
+            implementation = IdRefCatalogItemDescriptionItem.class)
     private IdRef<CatalogItem> item;
 
-    @ArraySchema(schema = @Schema(implementation = TailoringReferenceParameterDto.class))
+    @ArraySchema(schema = @Schema(title = "A list of references this element needs to set.",
+                                  implementation = TailoringReferenceParameterDto.class))
     private List<TailoringReferenceParameterDto> references;
 
     public IncarnateCatalogItemDescriptionDto(IncarnateCatalogItemDescription p,

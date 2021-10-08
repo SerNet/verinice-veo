@@ -59,6 +59,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedCatalogable;
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Catalogable;
@@ -118,16 +119,18 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     private final GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
 
     @GetMapping(value = "/{unitId}/incarnations{?itemIds}")
-    @Operation(summary = "Loads the information to incarnate catalogItems.")
+    @Operation(summary = "Get the information to incarnate a set of catalogItems in a unit.",
+               tags = "modeling")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                         description = "incarnation description loaded",
+                         description = "incarnation description provided",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = IncarnateDescriptionsDto.class))),
             @ApiResponse(responseCode = "404", description = "incarnation description not found") })
     public @Valid CompletableFuture<ResponseEntity<IncarnateDescriptionsDto>> getIncarnations(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String unitId, @RequestParam(required = true) List<String> itemIds) {
+            @Parameter(description = "The target unit for the catalog items.") @PathVariable String unitId,
+            @Parameter(description = "The list of catalog items to create in the unit.") @RequestParam(required = true) List<String> itemIds) {
         Client client = getAuthenticatedClient(auth);
         Key<UUID> containerId = Key.uuidFrom(unitId);
         List<Key<UUID>> list = itemIds.stream()
@@ -148,15 +151,18 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     }
 
     @PostMapping("/{unitId}/incarnations")
-    @Operation(summary = "Applies the incarnation descriptions to the unit.")
+    @Operation(summary = "Applies an incarnation descriptions to an unit. "
+            + "This description need to be obtained by the system via the corresponding "
+            + "GET operation for a set of catalog items.", tags = "modeling")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                          description = "Catalog items incarnated.",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = IncarnateDescriptionsDto.class))) })
+                                            array = @ArraySchema(schema = @Schema(implementation = IdRefTailoringReferenceParameterReferencedCatalogable.class,
+                                                                                  description = "A reference list of the created elements")))) })
     public CompletableFuture<ResponseEntity<List<IdRef<Catalogable>>>> applyIncarnations(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String unitId,
+            @Parameter(description = "The target unit for the catalog items.") @PathVariable String unitId,
             @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
         Client client = getAuthenticatedClient(auth);
         CompletableFuture<List<IdRef<Catalogable>>> completableFuture = useCaseInteractor.execute(applyIncarnationDescriptionUseCase,

@@ -21,6 +21,7 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "A reference to a catalog item.")
 public interface IdRefCatalogItemDescriptionItem extends IIdRef {
 
     @Schema(description = "A friendly human readable title of the catalog item to incarnate.",

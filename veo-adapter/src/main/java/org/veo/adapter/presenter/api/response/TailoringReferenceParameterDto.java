@@ -26,6 +26,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.TailoringReferenceType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,20 +34,30 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Describes a Tailoringreference of this CatalogItem. It describes a link feature in the catalogItem which will be applied when the Catalogitem is incarnated. The referencedCatalogable need to be changed to link an acual element. ")
+@Schema(description = "Describes a reference of this element. "
+        + "It describes a link feature in the catalogItem which will be applied "
+        + "when the Catalogitem is incarnated. The referencedCatalogable needs "
+        + "to be changed to link an actual element. ")
 public class TailoringReferenceParameterDto {
 
-    @Schema(required = true,
+    @Schema(description = "The actual reference to an existing element "
+            + "in the unit(it may be set or left like it is), or NULL "
+            + "when this reference should be resolved internally.",
+            required = true,
+            accessMode = AccessMode.READ_WRITE,
             implementation = IdRefTailoringReferenceParameterReferencedCatalogable.class)
     private IdRef<Catalogable> referencedCatalogable;
 
-    @Schema(description = "The translatable key of the reference type. For customLinks this is the type of the link.",
-            example = "proc_1")
+    @Schema(description = "The translatable key of the reference type. For customLinks "
+            + "this is the type of the link.",
+            example = "proc_1",
+            accessMode = AccessMode.READ_ONLY)
     @Size(max = CustomAspect.TYPE_MAX_LENGTH)
     private String referenceKey;
 
     @Schema(description = "The type of the Tailoringreference.",
             example = "LINK or LINK_EXTERNAL",
+            accessMode = AccessMode.READ_ONLY,
             required = true)
     private TailoringReferenceType referenceType;
 }
