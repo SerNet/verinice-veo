@@ -235,7 +235,7 @@ pipeline {
                                 timeout(1) {
                                     waitUntil {
                                         script {
-                                            def r = sh returnStatus:true, script: 'wget -q http://localhost:8070/ -O /dev/null'
+                                            def r = sh returnStatus:true, script: 'wget -q http://localhost:8070/veo -O /dev/null'
                                             return (r == 0);
                                         }
                                     }
