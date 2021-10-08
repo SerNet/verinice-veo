@@ -1,4 +1,6 @@
 veo:
+  cors:
+    origins: https://*.verinice.example, https://frontend.somewhereelse.example
   message:
     dispatch:
       routing-key-prefix: 'veo.resttestmessage.'

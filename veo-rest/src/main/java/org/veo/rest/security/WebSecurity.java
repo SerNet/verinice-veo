@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,21 +42,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.LenientCurrentUserProviderImpl;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This class bundles custom API security configurations.
  */
 @EnableWebSecurity
+@Slf4j
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Value("${veo.cors.origins}")
-    private List<String> origins;
+    private String[] origins;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         // Keep the formatter off or you will never understand what this does.
         // #whitespacematters #pythonmeetsjava.
-        http.csrf().disable().cors()
+        http
+                .csrf().disable()
+
+                .cors()
 
                 // Anonymous access (a user with role "ROLE_ANONYMOUS" must be
                 // enabled for
@@ -113,7 +120,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfig = new CorsConfiguration();
-        origins.forEach(corsConfig::addAllowedOrigin);
+        Arrays.stream(origins)
+              .peek(s -> log.debug("Added CORS origin pattern: {}", s))
+              .forEach(corsConfig::addAllowedOriginPattern);
         source.registerCorsConfiguration("/**", corsConfig);
         return source;
     }
