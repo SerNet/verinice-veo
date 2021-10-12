@@ -27,6 +27,7 @@ import javax.validation.constraints.Pattern;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.common.RiskRef;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -35,7 +36,6 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -48,9 +48,6 @@ import lombok.Singular;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class ProcessRiskDto extends AbstractRiskDto {
 
-    @Schema(description = "A valid reference to this resource.", format = "uri")
-    private String _self = "";
-
     @Valid
     private IdRef<Process> process;
 
@@ -60,10 +57,10 @@ public class ProcessRiskDto extends AbstractRiskDto {
             @Valid IdRef<Control> mitigatedBy, @Valid IdRef<Person> riskOwner,
             @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
             @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
-            @Valid IdRef<Process> process, String self, long version, String designator) {
+            @Valid IdRef<Process> process, RiskRef selfRef, long version, String designator) {
         super(designator, domains, scenario, mitigatedBy, riskOwner);
         this.process = process;
-        this._self = self;
+        setSelfRef(selfRef);
         setCreatedAt(createdAt);
         setCreatedBy(createdBy);
         setUpdatedAt(updatedAt);
@@ -90,7 +87,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
                                           .stream()
                                           .map(o -> IdRef.from(o, referenceAssembler))
                                           .collect(Collectors.toSet()))
-                             .self(referenceAssembler.targetReferenceOf(risk))
+                             .selfRef(new RiskRef(referenceAssembler, risk))
                              .build();
     }
 }

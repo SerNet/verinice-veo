@@ -129,6 +129,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         getETag(results) != null
         and:
         def result = parseJson(results)
+        result._self == "http://localhost/documents/${document.id.uuidValue()}"
         result.name == 'Test document-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }

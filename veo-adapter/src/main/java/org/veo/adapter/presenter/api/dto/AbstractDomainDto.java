@@ -43,7 +43,8 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public abstract class AbstractDomainDto extends AbstractVersionedDto implements NameableDto {
+public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencingDto
+        implements NameableDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Domain.", example = "Data protection", required = true)

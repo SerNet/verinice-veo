@@ -98,6 +98,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         getETag(results) != null
         and:
         def result = parseJson(results)
+        result._self == "http://localhost/domains/${testDomain.id.uuidValue()}"
         result.name == testDomain.name
         result.catalogs.size() == 1
         when:

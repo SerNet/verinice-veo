@@ -45,7 +45,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @Valid
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractRiskDto extends AbstractVersionedDto {
+public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto {
 
     @Schema(description = "Compact human-readable identifier that is unique within the client.",
             example = "A-155",

@@ -129,6 +129,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         getETag(results) != null
         and:
         def result = parseJson(results)
+        result._self == "http://localhost/incidents/${incident.id.uuidValue()}"
         result.name == 'Test incident-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }

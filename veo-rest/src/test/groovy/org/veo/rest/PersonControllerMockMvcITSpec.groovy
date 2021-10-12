@@ -130,6 +130,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         getETag(results) != null
         and:
         def result = parseJson(results)
+        result._self == "http://localhost/persons/${person.id.uuidValue()}"
         result.name == 'Test person-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }

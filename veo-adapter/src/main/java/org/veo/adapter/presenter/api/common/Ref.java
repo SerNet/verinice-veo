@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,29 +18,11 @@
 package org.veo.adapter.presenter.api.common;
 
 /**
- * A representation of a URI reference to an
- * {@link org.veo.core.entity.Identifiable} resource. Offers methods to retrieve
- * a resource identifier / resource locator to the resource itself and an
- * end-user friendly name that can be used when rendering the URI/URL. It also
- * features URIs that can be used to query or access the complete collection of
- * identifiable resources.
+ * References a veo resource using a URI.
  */
-public interface IIdRef extends Ref {
-
+public interface Ref {
     /**
-     * A user friendly name of the target object.
+     * Returns a URI of the target object which may be a URL.
      */
-    String getDisplayName();
-
-    /**
-     * Returns a URI of searches for the target type that can be used for discovery.
-     * It may be a URL.
-     */
-    String getSearchesUri();
-
-    /**
-     * Returns a URI of a collection of objects for the target type that may be used
-     * for discovery. It may be a URL.
-     */
-    String getResourcesUri();
+    String getTargetUri();
 }

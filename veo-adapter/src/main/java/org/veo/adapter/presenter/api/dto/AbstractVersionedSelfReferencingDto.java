@@ -17,18 +17,42 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.Optional;
+
 import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.common.Ref;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
+/**
+ * Implements all members of {@link Versioned} and has a self reference.
+ *
+ * TODO VEO-902 rename back to AbstractVersionedDto when all Versioned types can
+ * have a self reference.
+ */
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractVersionedDto implements VersionedDto {
+public abstract class AbstractVersionedSelfReferencingDto implements VersionedDto {
+
+    @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    private Ref selfRef;
+
+    @JsonProperty(value = "_self", access = JsonProperty.Access.READ_ONLY)
+    @Schema(description = "A valid reference to this resource.", format = "uri", required = true)
+    public String getSelf() {
+        return Optional.ofNullable(selfRef)
+                       .map(Ref::getTargetUri)
+                       .orElse(null);
+    }
 
     @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
             example = "1990-12-31T23:59:60Z",

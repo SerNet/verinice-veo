@@ -33,7 +33,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractCatalogDto extends AbstractVersionedDto implements NameableDto {
+public abstract class AbstractCatalogDto extends AbstractVersionedSelfReferencingDto
+        implements NameableDto {
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Catalog.", required = true)
     @Size(max = Nameable.NAME_MAX_LENGTH)

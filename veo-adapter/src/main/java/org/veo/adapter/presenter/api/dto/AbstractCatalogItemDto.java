@@ -36,7 +36,8 @@ import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractCatalogItemDto extends AbstractVersionedDto implements ModelDto {
+public abstract class AbstractCatalogItemDto extends AbstractVersionedSelfReferencingDto
+        implements ModelDto {
     @NotNull(message = "A catalog must be present.")
     @Schema(implementation = IdRefCatalogItemCatalog.class)
     private IdRef<Catalog> catalog;

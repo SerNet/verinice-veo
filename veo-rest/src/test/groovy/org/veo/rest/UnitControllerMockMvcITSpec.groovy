@@ -127,6 +127,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the units are returned"
         result.size() == 1
+        result.first()._self == "http://localhost/units/${unit.id.uuidValue()}"
         result.first().name == "Test unit foo"
     }
 

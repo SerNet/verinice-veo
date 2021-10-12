@@ -45,7 +45,8 @@ import lombok.ToString;
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractElementDto extends AbstractVersionedDto implements NameableDto {
+public abstract class AbstractElementDto extends AbstractVersionedSelfReferencingDto
+        implements NameableDto {
 
     abstract public Class<? extends Identifiable> getModelInterface();
 

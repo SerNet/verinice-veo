@@ -173,6 +173,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(get("/processes/${process.id.uuidValue()}"))
 
         then: "the process is found"
+        result._self == "http://localhost/processes/${process.id.uuidValue()}"
         result.name == 'Test process'
         result.owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
     }

@@ -198,6 +198,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(get("/scopes/${scope.id.uuidValue()}"))
 
         then: "the scope is found"
+        result._self == "http://localhost/scopes/${scope.id.uuidValue()}"
         result.name == 'Test scope'
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
         and: "is has the correct members"

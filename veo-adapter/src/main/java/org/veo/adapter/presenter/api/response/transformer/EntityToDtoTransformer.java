@@ -33,6 +33,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
+import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -216,7 +217,7 @@ public final class EntityToDtoTransformer {
         target.setId(source.getId()
                            .uuidValue());
         target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
+        mapVersionedSelfReferencingProperties(source, target);
         mapNameableProperties(source, target);
         target.setCatalogs(convertReferenceSet(source.getCatalogs()));
         return target;
@@ -228,7 +229,7 @@ public final class EntityToDtoTransformer {
         target.setId(source.getId()
                            .uuidValue());
         mapNameableProperties(source, target);
-        mapVersionedProperties(source, target);
+        mapVersionedSelfReferencingProperties(source, target);
 
         if (source.getDomainTemplate() != null) {
             target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
@@ -244,7 +245,7 @@ public final class EntityToDtoTransformer {
 
         target.setId(source.getId()
                            .uuidValue());
-        mapVersionedProperties(source, target);
+        mapVersionedSelfReferencingProperties(source, target);
         target.setNamespace(source.getNamespace());
         if (source.getCatalog() != null) {
             target.setCatalog(IdRef.from(source.getCatalog(), referenceAssembler));
@@ -287,7 +288,7 @@ public final class EntityToDtoTransformer {
                            .uuidValue());
         target.setVersion(source.getVersion());
         target.setUnits(convertSet(source.getUnits(), u -> IdRef.from(u, referenceAssembler)));
-        mapVersionedProperties(source, target);
+        mapVersionedSelfReferencingProperties(source, target);
         mapNameableProperties(source, target);
 
         target.setDomains(convertReferenceSet(source.getDomains()));
@@ -320,7 +321,7 @@ public final class EntityToDtoTransformer {
                            .uuidValue());
         target.setDesignator(source.getDesignator());
         target.setVersion(source.getVersion());
-        mapVersionedProperties(source, target);
+        mapVersionedSelfReferencingProperties(source, target);
         mapNameableProperties(source, target);
 
         target.setDomains(convertReferenceSet(source.getDomains()));
@@ -332,6 +333,12 @@ public final class EntityToDtoTransformer {
         if (source.getOwner() != null) {
             target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
         }
+    }
+
+    private <TDto extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(
+            TDto source, AbstractVersionedSelfReferencingDto target) {
+        target.setSelfRef(IdRef.from(source, referenceAssembler));
+        mapVersionedProperties(source, target);
     }
 
     private <TEntity extends Element, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(

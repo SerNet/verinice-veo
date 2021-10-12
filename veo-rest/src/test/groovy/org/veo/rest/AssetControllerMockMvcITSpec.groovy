@@ -200,6 +200,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         and: "the response contains the expected data"
         def result = parseJson(results)
         result == [
+            _self: "http://localhost/assets/${asset.id.uuidValue()}",
             customAspects:[
                 simpleAspect:[
                     attributes:[

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,30 +17,25 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.veo.core.entity.AbstractRisk;
+
+import lombok.RequiredArgsConstructor;
+
 /**
- * A representation of a URI reference to an
- * {@link org.veo.core.entity.Identifiable} resource. Offers methods to retrieve
- * a resource identifier / resource locator to the resource itself and an
- * end-user friendly name that can be used when rendering the URI/URL. It also
- * features URIs that can be used to query or access the complete collection of
- * identifiable resources.
+ * Points to an {@link AbstractRisk} resource.
  */
-public interface IIdRef extends Ref {
+@RequiredArgsConstructor
+public class RiskRef implements Ref {
 
-    /**
-     * A user friendly name of the target object.
-     */
-    String getDisplayName();
+    @JsonIgnore
+    private final ReferenceAssembler assembler;
+    @JsonIgnore
+    private final AbstractRisk target;
 
-    /**
-     * Returns a URI of searches for the target type that can be used for discovery.
-     * It may be a URL.
-     */
-    String getSearchesUri();
-
-    /**
-     * Returns a URI of a collection of objects for the target type that may be used
-     * for discovery. It may be a URL.
-     */
-    String getResourcesUri();
+    @Override
+    public String getTargetUri() {
+        return assembler.targetReferenceOf(target);
+    }
 }

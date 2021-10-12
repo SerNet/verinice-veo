@@ -42,7 +42,8 @@ import lombok.Data;
  * Base transfer object for Units. Contains common data for all Unit DTOs.
  */
 @Data
-public abstract class AbstractUnitDto extends AbstractVersionedDto implements NameableDto {
+public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDto
+        implements NameableDto {
 
     @NotNull(message = "A name must be present.")
     @Schema(description = "The name for the Unit.", example = "My unit", required = true)

@@ -128,8 +128,8 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
                 "scope"
             ]
             risks*._self.sort() == [
-                "/assets/$assetId/risks/$scenarioId",
-                "/processes/$processId/risks/$scenarioId"
+                "http://localhost/assets/$assetId/risks/$scenarioId",
+                "http://localhost/processes/$processId/risks/$scenarioId"
             ]
         }
     }
