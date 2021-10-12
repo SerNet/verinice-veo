@@ -32,7 +32,7 @@ class CORSRestTest extends VeoRestTest{
 
         then: "the request was denied"
         status == 403
-        headers.getVary().sort() == [
+        headers.getVary().toSorted() == [
             'Access-Control-Request-Headers',
             'Access-Control-Request-Method',
             'Origin'
