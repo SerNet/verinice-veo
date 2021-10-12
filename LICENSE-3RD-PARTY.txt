@@ -1,5 +1,5 @@
 
-Dependency License Report for verinice veo 0.5
+Dependency License Report for verinice veo 0.7
 
 1. Group: antlr  Name: antlr  Version: 2.7.7
 
@@ -26409,5 +26409,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Tue Oct 05 11:32:37 CEST 2021.
+This report was generated at Tue Oct 12 08:39:12 CEST 2021.
 

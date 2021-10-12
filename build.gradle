@@ -22,7 +22,7 @@ def continuousIntegrationBuild = rootProject.hasProperty('ci')
 
 allprojects  {
     group = 'org.veo'
-    version = '0.5'
+    version = '0.7'
 
     apply plugin: "com.diffplug.spotless"
     def currentUserName = "git config user.name".execute().text.trim() ?: "<name>"
@@ -89,6 +89,14 @@ allprojects  {
             trimTrailingWhitespace()
         }
     }
+}
+
+// work around for license report not being updated when the project's version number changes
+// https://github.com/jk1/Gradle-License-Report/issues/223
+
+generateLicenseReport.outputs.with {
+    upToDateWhen { false }
+    cacheIf { false }
 }
 
 task copy3rdPartyLicenseFile {
