@@ -55,6 +55,7 @@ import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformExternalTailoringReference;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Key;
@@ -222,6 +223,8 @@ public class DomainTemplateAssembler {
             elementDto.setOwner(SyntheticIdRef.from(itemDto.getId(), ElementOwner.class,
                                                     CatalogItem.class));
             elementDto.setType(SyntheticIdRef.toSingularTerm(elementDto.getModelInterface()));
+            elementDto.getDomains()
+                      .add(SyntheticIdRef.from(id, Domain.class, Domain.class));
             cache.put(e.getKey(), itemDto);
         }
         return cache;
