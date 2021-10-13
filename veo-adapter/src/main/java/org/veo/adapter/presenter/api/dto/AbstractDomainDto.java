@@ -61,21 +61,21 @@ public abstract class AbstractDomainDto extends AbstractVersionedDto implements 
     private String description;
 
     @NotNull(message = "An authority must be present.")
-    @Schema(description = "The authority for the DomainTemplate.",
+    @Schema(description = "The orgnization that published a standard",
             example = "ISO",
             required = true,
             accessMode = Schema.AccessMode.READ_ONLY)
     private String authority;
 
     @NotNull(message = "A templateVersion must be present.")
-    @Schema(description = "The templateVersion for the DomainTemplate.",
+    @Schema(description = "Template version in semver format",
             example = "1.0",
             accessMode = Schema.AccessMode.READ_ONLY)
     private String templateVersion;
 
     @NotNull(message = "A revision must be present.")
-    @Schema(description = "The revision for the DomainTemplate.",
-            example = "0",
+    @Schema(description = "Addition version info",
+            example = "latest",
             required = true,
             accessMode = Schema.AccessMode.READ_ONLY)
     private String revision;
