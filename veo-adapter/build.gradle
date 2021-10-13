@@ -86,7 +86,7 @@ task assembleDomainTemplates(type: JavaExec) {
         'domaintemplate.out.file': "${targetDirectory}/dsgvo-example.json",
         'domaintemplate.revision': "latest",
         'domaintemplate.templateVersion': "1.0",
-        'tom.catalog.name': "DSGVO-Controls",
+        'tom.catalog.name': "DS-GVO-Controls",
         'tom.dir': "${templateSnippetDir}/dsgvo/tom",
         'tom.prefix': "TOM."
     ]

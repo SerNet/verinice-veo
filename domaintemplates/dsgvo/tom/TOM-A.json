@@ -1,0 +1,22 @@
+{
+  "abbreviation": "TOM-A",
+  "name": "TOM zur Gewährleistung der Verfügbarkeit",
+  "description": "Gewährleistung der Verfügbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DSGVO hinsichtlich der Fähigkeit, die Verfügbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+  "domains": [],
+  "links": {
+    
+  },
+  "customAspects": {
+    "control_dataProtection": {
+      "attributes": {
+        "control_dataProtection_objectives": "control_dataProtection_objectives_availability"
+      }
+    }
+  },
+  "subType": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": "CTL_TOM"
+  },
+  "type": "control",
+  "parts": [],
+  "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e000"
+}
