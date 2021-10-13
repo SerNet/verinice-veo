@@ -60,11 +60,45 @@ class CORSRestTest extends VeoRestTest{
         body =~ /Invalid CORS request/
     }
 
+    def "preflight requests work"() {
+        given:
+        def origin = 'https://domian.verinice.example'
+
+        when: "a preflight requests comes from a valid origin"
+        def (status, headers, body) = preflight(origin, '/units', HttpMethod.OPTIONS)
+
+        then: "CORS is allowed"
+        status == 200
+        headers.getAccessControlAllowOrigin() == origin
+        headers.getAccessControlAllowMethods() == [
+            HttpMethod.GET,
+            HttpMethod.POST,
+            HttpMethod.PUT,
+            HttpMethod.DELETE,
+            HttpMethod.OPTIONS
+        ]
+        headers.getAccessControlAllowHeaders().contains("Authorization")
+    }
+
     def getWithOrigin(String testOrigin, String relativeUri) {
         HttpHeaders headers = new HttpHeaders().tap {
             origin = testOrigin
         }
         def resp = exchange(relativeUri, HttpMethod.GET, headers, null)
+        return [
+            resp.statusCodeValue,
+            resp.headers,
+            resp.body.toString()
+        ]
+    }
+
+    def preflight(String testOrigin, String relativeUri, HttpMethod method = HttpMethod.GET) {
+        HttpHeaders headers = new HttpHeaders().tap {
+            origin = testOrigin
+            accessControlRequestMethod = method.name()
+            accessControlRequestHeaders = ["Authorization"]
+        }
+        def resp = exchange(relativeUri, HttpMethod.OPTIONS, headers, null)
         return [
             resp.statusCodeValue,
             resp.headers,

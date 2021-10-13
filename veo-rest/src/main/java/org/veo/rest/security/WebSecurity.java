@@ -54,6 +54,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Value("${veo.cors.origins}")
     private String[] origins;
 
+    @Value("${veo.cors.headers}")
+    private String[] allowedHeaders;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
@@ -120,6 +123,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // Authorization is always needed, additional headers are configurable:
+        corsConfig.addAllowedHeader("Authorization");
+        Arrays.stream(allowedHeaders)
+              .peek(s -> log.debug("Added CORS allowed header: {}", s))
+              .forEach(corsConfig::addAllowedHeader);
         Arrays.stream(origins)
               .peek(s -> log.debug("Added CORS origin pattern: {}", s))
               .forEach(corsConfig::addAllowedOriginPattern);

@@ -8,6 +8,10 @@ veo:
     # A comma-separated list of allowed CORS origin-patterns.
     # Example: https://*.domain1.com, https://*.domain1.com:[8080,8081], https://*.domain1.com:[*]
     origins: https://veo-web.verinice.example
+    # A comma-separated-list of additional headres to allow in CORS pre-flight requests
+    # Note: The 'Authorization' header is always allowed.
+    # Example: X-Ample, X-Custom-Header
+    headers:
   # Salt for hashing the ETags, enter a 10 random characters
   # etag:
     # salt:
