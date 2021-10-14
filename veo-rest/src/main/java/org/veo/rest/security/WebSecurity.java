@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -124,8 +125,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Authorization is always needed, additional headers are configurable:
-        corsConfig.addAllowedHeader("Authorization");
+        // Authorization & Content-Type are always needed, additional headers are
+        // configurable:
+        corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
+        corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE);
         Arrays.stream(allowedHeaders)
               .peek(s -> log.debug("Added CORS allowed header: {}", s))
               .forEach(corsConfig::addAllowedHeader);

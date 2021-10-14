@@ -26,29 +26,36 @@ import org.springframework.http.MediaType
  */
 class CORSRestTest extends VeoRestTest{
 
-    def "get units with wrong CORS header"() {
+    def "get units with wrong origin header"() {
         when: "the list of units is requested from a wrong origin"
         def (status, headers, body) = getWithOrigin('https://notreal.notverinice.example', '/units')
 
         then: "the request was denied"
         status == 403
-        headers.getVary().toSorted() == [
-            'Access-Control-Request-Headers',
-            'Access-Control-Request-Method',
-            'Origin'
-        ]
-        headers.getAccessControlAllowOrigin() == null
+        with(headers) {
+            getVary().toSorted() == [
+                'Access-Control-Request-Headers',
+                'Access-Control-Request-Method',
+                'Origin'
+            ]
+            getAccessControlAllowOrigin() == null
+        }
         body =~ /Invalid CORS request/
     }
 
-    def "Get units with correct CORS header"() {
+    def "Get units with correct origin header"() {
+        given:
+        def origin = 'https://domian.verinice.example'
+
         when: "Request from a valid origin"
-        def (status, headers, body) = getWithOrigin('https://domian.verinice.example', '/units')
+        def (status, headers, body) = getWithOrigin(origin, '/units')
 
         then: "the request was successful"
         status == 200
-        headers.getAccessControlAllowOrigin() == 'https://domian.verinice.example'
-        body =~ /displayName/
+        headers.getAccessControlAllowOrigin() == origin
+
+        and: 'the body contains a JSON array.'
+        body.startsWith("[")
     }
 
     def "'null' origin is not allowed"() {
@@ -65,27 +72,32 @@ class CORSRestTest extends VeoRestTest{
         def origin = 'https://domian.verinice.example'
 
         when: "a preflight requests comes from a valid origin"
-        def (status, headers, body) = preflight(origin, '/units', HttpMethod.OPTIONS)
+        def (status, headers, body) = preflight(origin, '/units', HttpMethod.POST)
 
         then: "CORS is allowed"
         status == 200
-        headers.getAccessControlAllowOrigin() == origin
-        headers.getAccessControlAllowMethods() == [
-            HttpMethod.GET,
-            HttpMethod.POST,
-            HttpMethod.PUT,
-            HttpMethod.DELETE,
-            HttpMethod.OPTIONS
-        ]
-        headers.getAccessControlAllowHeaders().contains("Authorization")
+        with(headers) {
+            getAccessControlAllowOrigin() == origin
+            getAccessControlAllowMethods() == [
+                HttpMethod.GET,
+                HttpMethod.POST,
+                HttpMethod.PUT,
+                HttpMethod.DELETE,
+                HttpMethod.OPTIONS
+            ]
+            with(getAccessControlAllowHeaders()) {
+                contains(HttpHeaders.AUTHORIZATION)
+                contains(HttpHeaders.CONTENT_TYPE)
+            }
+        }
     }
 
     def getWithOrigin(String testOrigin, String relativeUri) {
         HttpHeaders headers = new HttpHeaders().tap {
-            origin = testOrigin
+            setOrigin(testOrigin)
         }
         def resp = exchange(relativeUri, HttpMethod.GET, headers, null)
-        return [
+        [
             resp.statusCodeValue,
             resp.headers,
             resp.body.toString()
@@ -94,12 +106,15 @@ class CORSRestTest extends VeoRestTest{
 
     def preflight(String testOrigin, String relativeUri, HttpMethod method = HttpMethod.GET) {
         HttpHeaders headers = new HttpHeaders().tap {
-            origin = testOrigin
-            accessControlRequestMethod = method.name()
-            accessControlRequestHeaders = ["Authorization"]
+            setOrigin(testOrigin)
+            setAccessControlRequestMethod(method)
+            setAccessControlRequestHeaders([
+                HttpHeaders.AUTHORIZATION,
+                HttpHeaders.CONTENT_TYPE
+            ])
         }
         def resp = exchange(relativeUri, HttpMethod.OPTIONS, headers, null)
-        return [
+        [
             resp.statusCodeValue,
             resp.headers,
             resp.body.toString()
