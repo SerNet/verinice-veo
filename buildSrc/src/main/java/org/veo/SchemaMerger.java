@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
@@ -39,12 +40,15 @@ public class SchemaMerger {
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, Map<String, JsonNode>> customAspects;
     private Map<String, Map<String, JsonNode>> customlinks;
+    private Map<String, Map<String, JsonNode>> subTypes;
 
     public SchemaMerger(Path basePathCustom) throws IOException {
         Path customEntitesPath = basePathCustom.resolve("custom/aspects/");
         Path linkPath = basePathCustom.resolve("custom/link/");
+        Path subTypePath = basePathCustom.resolve("subTypes/");
         customAspects = readSchemas(customEntitesPath);
         customlinks = readSchemas(linkPath);
+        subTypes = readSchemas(subTypePath);
     }
 
     public void extendSchema(JsonNode schema, String type) {
@@ -55,6 +59,10 @@ public class SchemaMerger {
         var linkExtensions = Optional.ofNullable(customlinks.get(type))
                                      .orElseGet(Collections::emptyMap);
         processLinkSchemas(linkExtensions, schema);
+
+        var subTypeExtensions = Optional.ofNullable(subTypes.get(type))
+                                        .orElseGet(Collections::emptyMap);
+        processSubTypes(subTypeExtensions, schema);
     }
 
     /**
@@ -80,6 +88,17 @@ public class SchemaMerger {
         assert (linkNodes.size() == 1);
         ObjectNode jsonNode = addPropertiesNode((ObjectNode) linkNodes.get(0));
         linkSchemas.forEach(jsonNode::set);
+    }
+
+    /**
+     * Add the given sub type schema to the given entity schema.
+     */
+    private void processSubTypes(Map<String, JsonNode> subTypeSchemas, JsonNode entitySchema) {
+        ObjectNode subTypeNode = (ObjectNode) entitySchema.at("/properties/subType");
+        subTypeSchemas.forEach(subTypeNode::set);
+        if (!subTypeSchemas.isEmpty()) {
+            subTypeNode.set("additionalProperties", BooleanNode.FALSE);
+        }
     }
 
     /**
