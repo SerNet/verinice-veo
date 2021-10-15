@@ -72,6 +72,9 @@
             ]
           }
         },
+        "required": [
+          "targetUri"
+        ],
         "type": "object"
       }
     },

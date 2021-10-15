@@ -95,7 +95,8 @@
           },
           "required": [
             "type",
-            "properties"
+            "properties",
+            "required"
           ],
           "properties": {
             "type": {
@@ -210,6 +211,11 @@
                 }
               },
               "additionalProperties": false
+            },
+            "required": {
+              "const": [
+                "targetUri"
+              ]
             }
           },
           "additionalProperties": true

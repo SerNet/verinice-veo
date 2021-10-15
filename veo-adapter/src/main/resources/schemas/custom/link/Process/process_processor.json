@@ -88,6 +88,9 @@
             ]
           }
         },
+        "required": [
+          "targetUri"
+        ],
         "type": "object"
       }
     },

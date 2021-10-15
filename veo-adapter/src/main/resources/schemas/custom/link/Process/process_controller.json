@@ -76,6 +76,9 @@
             ]
           }
         },
+        "required": [
+          "targetUri"
+        ],
         "type": "object"
       }
     },
