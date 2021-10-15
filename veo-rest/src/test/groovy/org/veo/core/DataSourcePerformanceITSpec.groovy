@@ -21,7 +21,6 @@ import javax.persistence.SequenceGenerator
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -47,7 +46,6 @@ import net.ttddyy.dsproxy.QueryCount
 import net.ttddyy.dsproxy.QueryCountHolder
 
 @SpringBootTest(classes = DataSourcePerformanceITSpec.class)
-@ActiveProfiles(["test", "stats"])
 class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     public static final String PROP_KEY = "propKey"
