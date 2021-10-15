@@ -205,7 +205,10 @@ subprojects {
         tasks.withType(Test) {
             // Don't let failing tests fail the build, let the junit step in the Jenkins pipeline decide what to do
             ignoreFailures = true
-            testLogging { exceptionFormat = 'full' }
+            testLogging {
+                showStandardStreams = true
+                exceptionFormat = 'full'
+            }
         }
 
         // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
