@@ -18,7 +18,6 @@
 package org.veo.core
 
 import javax.persistence.SequenceGenerator
-import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -105,9 +104,9 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 6
+        queryCounts.insert == 5
         queryCounts.update == 0
-        queryCounts.select == 7
+        queryCounts.select == 3
     }
 
     def "SQL performance for saving 1 process"() {
@@ -135,7 +134,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 7
+        queryCounts.insert == 5
         queryCounts.update == 0
         queryCounts.select == 0
     }
@@ -184,7 +183,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 0
         queryCounts.update == 1
-        queryCounts.select == 6
+        queryCounts.select == 1
     }
 
     def "SQL performance for saving 1 composite person with 2 parts"() {
@@ -383,10 +382,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 0
 
         and:
-        queryCounts.delete == 12
+        queryCounts.delete == 10
         queryCounts.insert == 4
         queryCounts.update == 0
-        queryCounts.select == 35
+        queryCounts.select == 28
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
@@ -418,195 +417,217 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.select == 6
     }
 
-    @Transactional
     void createClient() {
-        client = clientRepository.save(newClient())
-        def domain = domainRepository.save(newDomain{
-            owner = this.client
-            name = "domain1"
-        })
+        executeInTransaction {
+            client = clientRepository.save(newClient())
+            def domain = domainRepository.save(newDomain{
+                owner = this.client
+                name = "domain1"
+            })
 
-        client.addToDomains(domain)
-        client = clientRepository.save(client)
+            client.addToDomains(domain)
+            client = clientRepository.save(client)
 
-        unit = newUnit(client)
-        unit.setClient(client)
-        unit.addToDomains(domain)
+            unit = newUnit(client)
+            unit.setClient(client)
+            unit.addToDomains(domain)
 
-        unit = unitRepository.save(unit)
-        unit.client = this.client
+            unit = unitRepository.save(unit)
+            unit.client = this.client
+        }
     }
 
-    @Transactional
     Asset saveAsset(String assetName) {
-        return assetRepository.save(newAsset(unit).with {
-            name = assetName
-            it
-        })
+        executeInTransaction {
+            return assetRepository.save(newAsset(unit).with {
+                name = assetName
+                it
+            })
+        }
     }
 
-    @Transactional
     Process saveProcess(String processName) {
-        return processRepository.save(newProcess(unit).tap {
-            name = processName
-        })
+        executeInTransaction {
+            return processRepository.save(newProcess(unit).tap {
+                name = processName
+            })
+        }
     }
 
-    @Transactional
     Scope saveScope(String name, List<CompositeElement<Element>> members = []) {
-        return scopeRepository.save(newScope(unit).tap {
-            it.name = name
-            it.members = members
-        })
+        executeInTransaction {
+            return scopeRepository.save(newScope(unit).tap {
+                it.name = name
+                it.members = members
+            })
+        }
     }
 
-    @Transactional
     Process saveProcessWithLinks() {
-        def asset = saveAsset("asset1")
-        def process = newProcess(unit).with {
-            name = "process1"
-            it
-        }
-        def person = savePerson()
+        executeInTransaction {
+            def asset = saveAsset("asset1")
+            def process = newProcess(unit).with {
+                name = "process1"
+                it
+            }
+            def person = savePerson()
 
-        process.setLinks([
-            newCustomLink(asset, "aLink"),
-            newCustomLink(person, "anotherLink")
-        ] as Set)
-        processRepository.save(process)
+            process.setLinks([
+                newCustomLink(asset, "aLink"),
+                newCustomLink(person, "anotherLink")
+            ] as Set)
+            processRepository.save(process)
+        }
     }
 
-    @Transactional
     Person savePerson(List<Person> parts = []) {
-        def person = newPerson(unit) {
-            it.parts = parts
-        }
-        return personRepository.save(person)
-    }
-
-    @Transactional
-    def saveWithAddedCompositePersons(int count, String baseName, Scope scope ) {
-        def compositePersons = (0..<count).collect {
-            def dolly = newPerson(unit)
-            def minime = newPerson(unit)
+        executeInTransaction {
             def person = newPerson(unit) {
-                name = baseName+count
+                it.parts = parts
             }
-            person.tap {
-                parts = [dolly, minime]
-            }
+            return personRepository.save(person)
         }
-
-        scope.members.addAll(compositePersons)
-        scopeRepository.save(scope)
     }
 
-    @Transactional
+    def saveWithAddedCompositePersons(int count, String baseName, Scope scope ) {
+        executeInTransaction {
+            def compositePersons = (0..<count).collect {
+                def dolly = newPerson(unit)
+                def minime = newPerson(unit)
+                def person = newPerson(unit) {
+                    name = baseName+count
+                }
+                person.tap {
+                    parts = [dolly, minime]
+                }
+            }
+
+            scope.members.addAll(compositePersons)
+            scopeRepository.save(scope)
+        }
+    }
+
     def saveProcessWithCustomAspects(int count) {
-        def process = newProcess(unit)
-        for (i in 0..<count) {
-            CustomAspect customAspect = newCustomAspect("aType")
-            process.addToCustomAspects(customAspect)
+        executeInTransaction {
+            def process = newProcess(unit)
+            for (i in 0..<count) {
+                CustomAspect customAspect = newCustomAspect("aType")
+                process.addToCustomAspects(customAspect)
+            }
+            processRepository.save(process)
         }
-        processRepository.save(process)
     }
 
-    @Transactional
     HashSet<Unit> createClientUnits(int count) {
-        def units = new HashSet<Unit>()
-        for (i in 0..<count) {
-            def unit = newUnit(client).tap {
-                name = "unit" + count
+        executeInTransaction {
+            def units = new HashSet<Unit>()
+            for (i in 0..<count) {
+                def unit = newUnit(client).tap {
+                    name = "unit" + count
+                }
+                units.add(unitRepository.save(unit))
             }
-            units.add(unitRepository.save(unit))
+            units
         }
-        units
     }
 
-    @Transactional
-    selectUnits() {
-        unitRepository.findByClient(client)
+    def selectUnits() {
+        executeInTransaction {
+            unitRepository.findByClient(client)
+        }
     }
 
-    @Transactional
     void createSubUnits(int count) {
-        for (i in 0..<count) {
-            def unit = newUnit(client).tap {
-                name = "unit" + count
-                parent = unit
+        executeInTransaction {
+            for (i in 0..<count) {
+                def unit = newUnit(client).tap {
+                    name = "unit" + count
+                    parent = unit
+                }
+                unitRepository.save(unit)
             }
-            unitRepository.save(unit)
         }
     }
 
-    @Transactional
     List<Unit> selectSubUnits(Unit owner) {
-        unitRepository.findByParent(owner)
+        executeInTransaction {
+            unitRepository.findByParent(owner)
+        }
     }
 
-    @Transactional
     def Process saveProcessWithCustomAspect() {
-        def process = newProcess(unit)
-        CustomAspect customAspect = newCustomAspect("aType")
-        customAspect.attributes = [
-            PROP_KEY: "ok"
-        ]
-        process.addToCustomAspects(customAspect)
-        return processRepository.save(process)
+        executeInTransaction {
+            def process = newProcess(unit)
+            CustomAspect customAspect = newCustomAspect("aType")
+            customAspect.attributes = [
+                PROP_KEY: "ok"
+            ]
+            process.addToCustomAspects(customAspect)
+            return processRepository.save(process)
+        }
     }
 
-    @Transactional
     def void updateProcessWithCustomAspect(Process detachedProcess) {
-        def process = processRepository.findById(detachedProcess.getId()).get()
-        // adding 1 value to the end of the list:
-        process.customAspects.first().attributes = [
-            PROP_KEY: "updated val"
-        ]
-        processRepository.save(process)
+        executeInTransaction {
+            def process = processRepository.findById(detachedProcess.getId()).get()
+            // adding 1 value to the end of the list:
+            process.customAspects.first().attributes = [
+                PROP_KEY: "updated val"
+            ]
+            processRepository.save(process)
+        }
     }
 
-    @Transactional
     def createLinkedElements() {
-        def compositePerson = savePerson([
-            newPerson(unit),
-            newPerson(unit)
-        ]) // creates person with 2 parts
+        executeInTransaction {
+            def compositePerson = savePerson([
+                newPerson(unit),
+                newPerson(unit)
+            ]) // creates person with 2 parts
 
-        def asset = newAsset(unit)
-        asset = assetRepository.save(asset)
+            def asset = newAsset(unit)
+            asset = assetRepository.save(asset)
 
-        def asset2 = newAsset(unit)
-        asset2 = assetRepository.save(asset2)
+            def asset2 = newAsset(unit)
+            asset2 = assetRepository.save(asset2)
 
-        def process = newProcess(unit)
-        process = processRepository.save(process)
+            def process = newProcess(unit)
+            process = processRepository.save(process)
 
-        def link_person_asset = newCustomLink(asset, " type1")
-        compositePerson.addToLinks(link_person_asset)
-        compositePerson = personRepository.save(compositePerson)
+            def link_person_asset = newCustomLink(asset, " type1")
+            compositePerson.addToLinks(link_person_asset)
+            compositePerson = personRepository.save(compositePerson)
 
-        def link_asset_person = newCustomLink(compositePerson, "type2")
-        def link_asset_process = newCustomLink(process, "type3")
-        asset.addToLinks(link_asset_process)
-        asset.addToLinks(link_asset_person)
-        asset = assetRepository.save(asset)
+            def link_asset_person = newCustomLink(compositePerson, "type2")
+            def link_asset_process = newCustomLink(process, "type3")
+            asset.addToLinks(link_asset_process)
+            asset.addToLinks(link_asset_person)
+            asset = assetRepository.save(asset)
 
-        def link_process_person = newCustomLink(compositePerson, "type4")
-        process.addToLinks(link_process_person)
-        process = processRepository.save(process)
+            def link_process_person = newCustomLink(compositePerson, "type4")
+            process.addToLinks(link_process_person)
+            process = processRepository.save(process)
 
-        def link_asset_asset = newCustomLink(asset2, "type5")
-        asset.addToLinks(link_asset_asset)
-        asset = assetRepository.save(asset)
+            def link_asset_asset = newCustomLink(asset2, "type5")
+            asset.addToLinks(link_asset_asset)
+            asset = assetRepository.save(asset)
+        }
     }
 
-    @Transactional
     def deleteUnit() {
-        assetRepository.deleteByUnit(unit)
-        personRepository.deleteByUnit(unit)
-        processRepository.deleteByUnit(unit)
-        scopeRepository.deleteByUnit(unit)
-        unitRepository.delete(unit)
+        executeInTransaction {
+            assetRepository.deleteByUnit(unit)
+            personRepository.deleteByUnit(unit)
+            processRepository.deleteByUnit(unit)
+            scopeRepository.deleteByUnit(unit)
+            unitRepository.delete(unit)
+        }
+    }
+
+    def executeInTransaction(Closure cl) {
+        txTemplate.execute {
+            cl.call()
+        }
     }
 
     static QueryCount trackQueryCounts(Closure cl) {
