@@ -274,7 +274,7 @@ pipeline {
     }
     post {
         failure {
-            emailext attachLog: true, body: 'see log', recipientProviders: [culprits()], subject: 'your build failed'
+            emailext body: '${JELLY_SCRIPT,template="text"}', subject: '$DEFAULT_SUBJECT', attachLog: true, recipientProviders: [culprits()]
         }
         always {
            node('') {
