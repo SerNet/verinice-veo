@@ -116,7 +116,7 @@ class VeoRestTest extends spock.lang.Specification {
     Response get(String relativeUri, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         def resp = exchange(relativeUri, HttpMethod.GET, new HttpHeaders(), null, userType)
         assert resp.statusCodeValue == assertStatusCode
-        log.info(resp.body.toString())
+        log.debug("retrieved data: {}", resp.body)
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()))
