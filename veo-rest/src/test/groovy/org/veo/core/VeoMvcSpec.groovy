@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
@@ -102,7 +101,6 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int successfulStatusCode, boolean expectSuccessfulRequest) throws Exception {
         ResultActions asyncActions = mvc
                 .perform(MockMvcRequestBuilders.asyncDispatch(prepareAsyncRequest(requestBuilder)))
-                .andDo(MockMvcResultHandlers.print())
         MvcResult asyncResult = asyncActions.andReturn()
 
         if (expectSuccessfulRequest) {
