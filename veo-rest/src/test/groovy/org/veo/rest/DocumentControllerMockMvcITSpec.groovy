@@ -98,7 +98,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Document',
             owner: [
                 displayName: 'documentDataProtectionObjectivesEugdprEncryption',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -193,7 +193,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 (domain.id.uuidValue()): [:]
@@ -247,7 +247,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         put("/documents/${document2.id.uuidValue()}", [
             id: document1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -258,7 +258,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new document"
         def id = parseJson(post("/documents/", [
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/documents/$id")
 
@@ -274,7 +274,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         post("/documents/", [
             description: "!".repeat(Nameable.DESCRIPTION_MAX_LENGTH+1),
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ], false)
 
         then:

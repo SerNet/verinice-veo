@@ -67,7 +67,7 @@ class BasicCrudITSpec extends VeoMvcSpec {
         result = parseJson(post('/assets', [
             name : 'My CRUD asset',
             owner: [
-                targetUri: "/units/$unitId"
+                targetUri: "http://localhost/units/$unitId"
             ]
         ]))
         then:
@@ -77,14 +77,14 @@ class BasicCrudITSpec extends VeoMvcSpec {
         result = parseJson(post('/processes', [
             name : 'My CRUD process',
             owner: [
-                targetUri: "/units/$unitId"
+                targetUri: "http://localhost/units/$unitId"
             ],
             links: [
                 'process_dataType':[
                     [
                         target:
                         [
-                            targetUri: "/assets/$assetId"
+                            targetUri: "http://localhost/assets/$assetId"
                         ]
                     ]
                 ]
@@ -113,14 +113,14 @@ class BasicCrudITSpec extends VeoMvcSpec {
         result = parseJson(post('/scopes', [
             name : 'My CRUD scope',
             owner: [
-                targetUri: "/units/$unitId"
+                targetUri: "http://localhost/units/$unitId"
             ],
             members: [
                 [
-                    targetUri: "/assets/$assetId"
+                    targetUri: "http://localhost/assets/$assetId"
                 ],
                 [
-                    targetUri: "/processes/$processId"
+                    targetUri: "http://localhost/processes/$processId"
                 ],
             ]
         ]))

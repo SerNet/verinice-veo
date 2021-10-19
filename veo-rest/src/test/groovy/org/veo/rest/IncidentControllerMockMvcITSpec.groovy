@@ -97,7 +97,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Incident',
             owner: [
                 displayName: 'incidentDataProtectionObjectivesEugdprEncryption',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -192,7 +192,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 (domain.id.uuidValue()): [:]
@@ -249,7 +249,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         put("/incidents/${incident2.id.uuidValue()}", [
             id: incident1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -260,7 +260,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new incident"
         def id = parseJson(post("/incidents/", [
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/incidents/$id")
 
@@ -282,7 +282,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'Composite incident',
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ],
             parts: [
                 [targetUri : "http://localhost/incidents/${incident.id.uuidValue()}"]

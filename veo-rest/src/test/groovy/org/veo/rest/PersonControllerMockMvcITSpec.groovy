@@ -99,7 +99,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Person',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -172,7 +172,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 (domain.id.uuidValue()): [:]
@@ -213,7 +213,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
                 (domain.id.uuidValue()): [:]
@@ -297,7 +297,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         put("/persons/${person2.id.uuidValue()}", [
             id: person1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -308,7 +308,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new person"
         def id = parseJson(post("/persons/", [
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/persons/$id")
 

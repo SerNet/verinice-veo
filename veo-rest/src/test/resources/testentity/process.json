@@ -1730,7 +1730,7 @@
                 "properties": {
                   "subType": {
                     "enum": [
-                      "PER_Controller"
+                      "PER_DataProtectionOfficer"
                     ]
                   },
                   "targetUri": {
@@ -1835,8 +1835,6 @@
     }
   },
   "required": [
-    "_self",
-    "designator",
     "name",
     "owner"
   ],

@@ -98,7 +98,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Scenario',
             owner: [
                 displayName: 'scenarioDataProtectionObjectivesEugdprEncryption',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -201,7 +201,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 (domain.id.uuidValue()): [:]
@@ -257,7 +257,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         put("/scenarios/${scenario2.id.uuidValue()}", [
             id: scenario1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -268,7 +268,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new scenario"
         def id = parseJson(post("/scenarios/", [
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/scenarios/$id")
 

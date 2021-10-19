@@ -114,7 +114,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Scope',
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ]
 
@@ -141,7 +141,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Assets',
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ],
             members: [
                 [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
@@ -337,7 +337,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: "/units/${unit.id.uuidValue()}",
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}",
                 displayName: 'test unit'
             ], domains: [
                 (domain.id.uuidValue()): [:]
@@ -402,7 +402,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         put("/scopes/${scope2.id.uuidValue()}", [
             id: scope1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -415,7 +415,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new scope"
         def id = parseJson(post("/scopes", [
             name: 'My Scope',
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/scopes/$id")
 
@@ -436,7 +436,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Assets',
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ],
             members: [
                 [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]

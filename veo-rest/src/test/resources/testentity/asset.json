@@ -612,7 +612,7 @@
         "targetUri": {
           "type": "string",
           "description": "The resource URL of the referenced unit.",
-          "format": "uri"
+          "readOnly": true
         }
       },
       "required": [
@@ -667,8 +667,6 @@
     }
   },
   "required": [
-    "_self",
-    "designator",
     "name",
     "owner"
   ],

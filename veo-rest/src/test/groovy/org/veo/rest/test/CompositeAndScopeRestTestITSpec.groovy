@@ -30,20 +30,20 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         given: "two assets"
         def partAId = post("/assets", [
             name: "part a",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
         def partBId = post("/assets", [
             name: "part b",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
 
         when: "creating and retrieving a composite asset containing the two existing assets"
         def compositeId = post("/assets", [
             name: "composite",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             parts: [
-                [targetUri: "/assets/$partAId"],
-                [targetUri: "/assets/$partBId"],
+                [targetUri: "http://localhost/assets/$partAId"],
+                [targetUri: "http://localhost/assets/$partBId"],
             ],
         ]).body.resourceId
         def compositeResponse = get("/assets/$compositeId")
@@ -57,9 +57,9 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         when: "removing a part from the composite"
         put("/assets/$compositeId", [
             name: "composite",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             parts: [
-                [targetUri: "/assets/$partBId"],
+                [targetUri: "http://localhost/assets/$partBId"],
             ]
         ], getETag(compositeResponse.headers["ETag"]))
 
@@ -85,22 +85,22 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         given: "a composite asset"
         def assetPartId = post("/assets", [
             name: "asset part",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
         def assetCompositeId = post("/assets", [
             name: "asset composite",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             parts: [
-                [targetUri: "/assets/$assetPartId"]
+                [targetUri: "http://localhost/assets/$assetPartId"]
             ],
         ]).body.resourceId
 
         when: "creating & retrieving a scope that contains the composite"
         def scopeId = post("/scopes", [
             name: "scope of everything",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             members: [
-                [targetUri: "/assets/$assetCompositeId"]
+                [targetUri: "http://localhost/assets/$assetCompositeId"]
             ]
         ]).body.resourceId
         def scopeResponse = get("/scopes/$scopeId")
@@ -114,21 +114,21 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         when: "adding another composite to the part"
         def personPartId = post("/persons", [
             name: "person part",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
         def personCompositeId = post("/persons", [
             name: "person composite",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             parts: [
-                [targetUri: "/persons/$personPartId"]
+                [targetUri: "http://localhost/persons/$personPartId"]
             ],
         ]).body.resourceId
         put("/scopes/$scopeId", [
             name: "scope of everything",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             members: [
-                [targetUri: "/assets/$assetCompositeId"],
-                [targetUri: "/persons/$personCompositeId"],
+                [targetUri: "http://localhost/assets/$assetCompositeId"],
+                [targetUri: "http://localhost/persons/$personCompositeId"],
             ]
         ], getETag(scopeResponse.headers["ETag"]))
 

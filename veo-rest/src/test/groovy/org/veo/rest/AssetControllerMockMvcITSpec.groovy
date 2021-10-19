@@ -120,7 +120,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Asset',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -149,7 +149,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'My Assets',
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ],
             parts: [
                 [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
@@ -435,7 +435,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],
             domains: [
@@ -476,7 +476,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],
             domains: [
@@ -608,7 +608,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         put("/assets/${asset2.id.uuidValue()}", [
             id: asset1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -619,7 +619,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new asset"
         def id = parseJson(post("/assets/", [
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/assets/$id")
 
@@ -641,7 +641,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'Composite asset',
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ],
             parts: [
                 [targetUri : "http://localhost/assets/${asset.id.uuidValue()}"]
@@ -675,9 +675,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a new risk can be created successfully"
         def json = parseJson(post("/assets/"+asset.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
+            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+                [targetUri: 'http://localhost/domains/'+ domain1.id.uuidValue() ]
             ]
         ]))
 
@@ -732,15 +732,15 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
         post("/assets/"+asset.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario2.id.uuidValue() ],
+            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario2.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+                [targetUri: 'http://localhost/domains/'+ domain1.id.uuidValue() ]
             ]
         ] as Map)
         post("/assets/"+asset.id.uuidValue()+"/risks", [
-            scenario: [ targetUri: '/scenarios/'+ scenario3.id.uuidValue() ],
+            scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario3.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+                [targetUri: 'http://localhost/domains/'+ domain1.id.uuidValue() ]
             ]
         ] as Map)
 
@@ -798,8 +798,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when: "The risk is updated"
         def beforeUpdate = Instant.now()
         def putBody = getResult + [
-            mitigation: [targetUri: '/controls/' + control.id.uuidValue()],
-            riskOwner: [targetUri: '/persons/' + person.id.uuidValue()]
+            mitigation: [targetUri: 'http://localhost/controls/' + control.id.uuidValue()],
+            riskOwner: [targetUri: 'http://localhost/persons/' + person.id.uuidValue()]
         ]
         Map headers = [
             'If-Match': eTag
@@ -879,9 +879,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
         def postResult = parseJson(
                 post("/assets/" + asset.id.uuidValue() + "/risks", [
-                    scenario: [targetUri: '/scenarios/' + scenario.id.uuidValue()],
+                    scenario: [targetUri: 'http://localhost/scenarios/' + scenario.id.uuidValue()],
                     domains : [
-                        [targetUri: '/domains/' + domain1.id.uuidValue()]
+                        [targetUri: 'http://localhost/domains/' + domain1.id.uuidValue()]
                     ]
                 ]))
         return [asset, scenario, postResult]

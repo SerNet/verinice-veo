@@ -64,15 +64,15 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         given: "three persons"
         def person1 = parseJson(post("/persons", [
             name: "person 1",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
         def person2 = parseJson(post("/persons", [
             name: "person 2",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
         def person3 = parseJson(post("/persons", [
             name: "person 3",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
 
         when: "creating a scope with different links to all persons"
@@ -80,23 +80,23 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             links: [
                 scope_dataProtectionOfficer: [
                     [
-                        target: [targetUri: "/persons/$person1"]
+                        target: [targetUri: "http://localhost/persons/$person1"]
                     ],
                     [
-                        target: [targetUri: "/persons/$person2"]
+                        target: [targetUri: "http://localhost/persons/$person2"]
                     ]
                 ],
                 scope_headOfDataProcessing: [
                     [
-                        target: [targetUri: "/persons/$person2"]
+                        target: [targetUri: "http://localhost/persons/$person2"]
                     ],
                     [
-                        target: [targetUri: "/persons/$person3"]
+                        target: [targetUri: "http://localhost/persons/$person3"]
                     ]
                 ]
             ],
             name : "scope",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
         def retrievedScope = parseJson(get("/scopes/$scopeId"))
 
@@ -117,20 +117,20 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         given:
         def controllerPerson = parseJson(post("/persons", [
             name: "Jane",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
-                    subType: "PER_Controller",
+                    subType: "PER_DataProtectionOfficer",
                     status: "NEW"
                 ]
             ]
         ])).resourceId
         def randomPerson = parseJson(post("/persons", [
             name: "John",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
-                    subType: "PER_Plex",
+                    subType: "PER_Person",
                     status: "NEW"
                 ]
             ]
@@ -140,16 +140,17 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         post("/processes", [
             name: "My little process",
             owner: [
-                targetUri: "/units/$unitId"
+                targetUri: "http://localhost/units/$unitId"
             ],
             links: [
                 process_controller: [
                     [
                         target: [
-                            targetUri: "/persons/$controllerPerson"
+                            targetUri: "http://localhost/persons/$controllerPerson"
                         ]
                     ]
-                ]]
+                ]
+            ]
         ])
         then:
         noExceptionThrown()
@@ -158,16 +159,17 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         post("/processes", [
             name: "My little process",
             owner: [
-                targetUri: "/units/$unitId"
+                targetUri: "http://localhost/units/$unitId"
             ],
             links: [
                 process_controller: [
                     [
                         target: [
-                            targetUri: "/persons/$randomPerson"
+                            targetUri: "http://localhost/persons/$randomPerson"
                         ]
                     ]
-                ]]
+                ]
+            ]
         ], false)
         then:
         thrown(IllegalArgumentException)

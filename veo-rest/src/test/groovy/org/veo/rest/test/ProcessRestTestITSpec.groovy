@@ -30,7 +30,7 @@ class ProcessRestTestITSpec extends VeoRestTest{
         given: "a target asset"
         def assetId = post("/assets", [
             name: "target asset for process",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
 
         when: "creating a process"
@@ -49,13 +49,13 @@ class ProcessRestTestITSpec extends VeoRestTest{
                 process_dataType: [
                     [
                         target: [
-                            targetUri: "/assets/$assetId"
+                            targetUri: "http://localhost/assets/$assetId"
                         ]
                     ]
                 ]
             ],
             name: "process",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
 
         then: "it can be retrieved"

@@ -97,7 +97,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String documentId = parseJson(post("/documents", [
             name: "doc",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
 
@@ -118,7 +118,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         put("/documents/$documentId", [
             name: "super doc",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ], ["If-Match": eTag])
 
@@ -180,7 +180,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 (domain.id.uuidValue()): [:]
             ],
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         String scenarioId = parseJson(post("/scenarios", [
@@ -189,13 +189,13 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 (domain.id.uuidValue()): [:]
             ],
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         post("/assets/$assetId/risks", [
-            scenario: [targetUri: "/scenarios/$scenarioId"],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]
+                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
             ]
         ])
 
@@ -210,14 +210,14 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         when:
         String controlId = parseJson(post("/controls", [
             name: "Im in control",
-            owner: [targetUri: "/units/${unit.id.uuidValue()}"]
+            owner: [targetUri: "http://localhost/units/${unit.id.uuidValue()}"]
         ])).resourceId
         String riskETag = parseETag(get("/assets/$assetId/risks/$scenarioId"))
         put("/assets/$assetId/risks/$scenarioId", [
             mitigation: [targetUri:  "/controls/$controlId"],
-            scenario: [targetUri: "/scenarios/$scenarioId"],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]
+                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
             ]
         ], ["If-Match": riskETag])
 
@@ -240,7 +240,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 (domain.id.uuidValue()): [:]
             ],
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         String scenarioId = parseJson(post("/scenarios", [
@@ -249,13 +249,13 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 (domain.id.uuidValue()): [:]
             ],
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         post("/processes/$processId/risks", [
-            scenario: [targetUri: "/scenarios/$scenarioId"],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]
+                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
             ]
         ])
 
@@ -270,14 +270,14 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         when:
         String controlId = parseJson(post("/controls", [
             name: "Im in control",
-            owner: [targetUri: "/units/${unit.id.uuidValue()}"]
+            owner: [targetUri: "http://localhost/units/${unit.id.uuidValue()}"]
         ])).resourceId
         String riskETag = parseETag(get("/processes/$processId/risks/$scenarioId"))
         put("/processes/$processId/risks/$scenarioId", [
             mitigation: [targetUri:  "/controls/$controlId"],
-            scenario: [targetUri: "/scenarios/$scenarioId"],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "/domains/${domain.id.uuidValue()}"]
+                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
             ]
         ], ["If-Match": riskETag])
 

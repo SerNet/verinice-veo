@@ -56,7 +56,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         given: "a unit with a bunch of elements and risks"
         def unitId = parseJson(post("/units", [name: "you knit"])).resourceId
         def domainId = parseJson(get("/domains")).first().id
-        def owner = [targetUri: "/units/$unitId"]
+        def owner = [targetUri: "http://localhost/units/$unitId"]
 
         def assetId = parseJson(post("/assets", [
             domains: [
@@ -99,15 +99,15 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
 
         post("/assets/$assetId/risks", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                [targetUri: "http://localhost/domains/$domainId"]
             ],
-            scenario: [targetUri: "/scenarios/$scenarioId"]
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
         post("/processes/$processId/risks", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                [targetUri: "http://localhost/domains/$domainId"]
             ],
-            scenario: [targetUri: "/scenarios/$scenarioId"]
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
 
         when: "requesting a unit dump"

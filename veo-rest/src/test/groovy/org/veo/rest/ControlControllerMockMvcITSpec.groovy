@@ -96,7 +96,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Control',
             owner: [
                 displayName: 'controlDataProtectionObjectivesEugdprEncryption',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -119,7 +119,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Control',
             owner: [
                 displayName: 'controlDataProtectionObjectivesEugdprEncryption',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ], customAspects:
             [
                 'control_dataProtection' :
@@ -271,7 +271,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
                 (domain.id.uuidValue()): [:]
@@ -305,12 +305,13 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
         Map request = [
+            designator: ''+control.getDesignator(),
             name: 'New control-2',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
                 (domain.id.uuidValue()): [:]
@@ -375,7 +376,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         put("/controls/${control2.id.uuidValue()}", [
             id: control1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -387,7 +388,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new control"
         def id = parseJson(post("/controls/", [
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/controls/$id")
 

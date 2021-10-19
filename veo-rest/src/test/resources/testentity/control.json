@@ -543,8 +543,6 @@
     }
   },
   "required": [
-    "_self",
-    "designator",
     "name",
     "owner"
   ],

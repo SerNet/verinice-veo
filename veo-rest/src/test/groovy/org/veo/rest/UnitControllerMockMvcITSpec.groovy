@@ -151,7 +151,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             domains: [
                 [
-                    targetUri: '/domains/'+client.domains.first().id.uuidValue(),
+                    targetUri: 'http://localhost/domains/'+client.domains.first().id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -182,7 +182,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             domains: [
                 [
-                    targetUri: '/domains/'+client.domains.first().id.uuidValue(),
+                    targetUri: 'http://localhost/domains/'+client.domains.first().id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -230,7 +230,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def postSubUnitResult = post('/units', [
             name: 'sub-unit-1',
             parent: [
-                targetUri: '/units/'+parent.resourceId,
+                targetUri: 'http://localhost/units/'+parent.resourceId,
                 displayName: 'test ddd'
             ]
         ])
@@ -353,7 +353,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Asset',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
         def creatAssetResponse = post('/assets', createAssetRequest)
@@ -363,7 +363,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
         def createProcessResponse = post('/processes', createProcessRequest)
@@ -376,10 +376,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
-            ]
-            ,
+            ],
             domains: [
                 (domain.id.uuidValue()): [:]
             ],
@@ -394,7 +393,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                         ],
                         target:
                         [
-                            targetUri: '/assets/'+createAssetResult.resourceId,
+                            targetUri: 'http://localhost/assets/'+createAssetResult.resourceId,
                             displayName: 'test ddd'
                         ]
                     ]

@@ -81,7 +81,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             name: "asset",
             owner: [
-                targetUri: "/units/"+unitId,
+                targetUri: "http://localhost/units/"+unitId,
             ]])).resourceId
         def createdAssetJson = parseNode(get("/assets/$assetId"))
 
@@ -105,7 +105,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             name: "control",
             owner: [
-                targetUri: "/units/"+unitId,
+                targetUri: "http://localhost/units/"+unitId,
             ]])).resourceId
         def createdControlJson = parseNode(get("/controls/$controlId"))
 
@@ -122,7 +122,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def documentId = (String)parseJson(post("/documents", [
             name: "doc",
             owner: [
-                targetUri: "/units/"+unitId
+                targetUri: "http://localhost/units/"+unitId
             ],
             customAspects: [
                 document_details: [
@@ -148,7 +148,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def incidentId = (String)parseJson(post("/incidents", [
             name: "incident",
             owner: [
-                targetUri: "/units/"+unitId
+                targetUri: "http://localhost/units/"+unitId
             ]
         ])).resourceId
         def createdIncidentJson = parseNode(get("/incidents/$incidentId"))
@@ -166,7 +166,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def personId = (String)parseJson(post("/persons", [
             name: "person",
             owner: [
-                targetUri: "/units/"+unitId
+                targetUri: "http://localhost/units/"+unitId
             ],
             customAspects: [
                 person_address: [
@@ -197,13 +197,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             name: "scope",
             owner: [
-                targetUri: "/units/"+unitId
+                targetUri: "http://localhost/units/"+unitId
             ]
         ])).resourceId
         def processId = (String)parseJson(post("/processes", [
             name: "process",
             owner: [
-                targetUri: "/units/"+unitId
+                targetUri: "http://localhost/units/"+unitId
             ],
             links: [
                 process_controller: [
@@ -212,7 +212,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                             process_controller_document: "http://example.org/doc"
                         ],
                         target: [
-                            targetUri: "/scopes/$scopeId"
+                            targetUri: "http://localhost/scopes/$scopeId"
                         ]
                     ]
                 ]
@@ -240,7 +240,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def scenarioId = (String)parseJson(post("/scenarios", [
             name: "scenario",
             owner: [
-                targetUri: "/units/"+unitId
+                targetUri: "http://localhost/units/"+unitId
             ],
             customAspects: [
                 scenario_threat: [
@@ -265,12 +265,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def memberAssetId = parseJson(post("/assets", [
             name: "member",
             owner: [
-                targetUri: "/units/"+unitId,
+                targetUri: "http://localhost/units/"+unitId,
             ]])).resourceId
         def targetPersonId = parseJson(post("/persons", [
             name: "target",
             owner: [
-                targetUri: "/units/"+unitId,
+                targetUri: "http://localhost/units/"+unitId,
             ],
             domains: [
                 (domainId): [
@@ -281,7 +281,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def scopeId = parseJson(post("/scopes", [
             name: "scope",
             owner: [
-                targetUri: "/units/"+unitId,
+                targetUri: "http://localhost/units/"+unitId,
+            ],
+            domains: [
+                (domainId): [
+                    subType: "SCP_Controller",
+                    status: "NEW"
+                ]
             ],
             customAspects: [
                 scope_address: [
@@ -294,14 +300,14 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 scope_dataProtectionOfficer: [
                     [
                         target: [
-                            targetUri: "/persons/$targetPersonId"
+                            targetUri: "http://localhost/persons/$targetPersonId"
                         ]
                     ]
                 ]
             ],
             members: [
                 [
-                    targetUri: "/assets/$memberAssetId"
+                    targetUri: "http://localhost/assets/$memberAssetId"
                 ]
             ]
         ])).resourceId

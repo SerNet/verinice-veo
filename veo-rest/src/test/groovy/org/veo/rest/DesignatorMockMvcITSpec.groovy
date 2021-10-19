@@ -61,7 +61,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         String incidentId = parseJson(post("/incidents", [
             name: "incident",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         def incident = parseJson(get("/incidents/$incidentId"))
@@ -73,7 +73,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         String newIncidentId = parseJson(post("/incidents", [
             name: "new incident",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         def newIncident = parseJson(get("/incidents/$newIncidentId"))
@@ -85,7 +85,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         String processId = parseJson(post("/processes", [
             name: "process",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         def process = parseJson(get("/processes/$processId"))
@@ -99,7 +99,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         String scenarioId = parseJson(post("/scenarios", [
             name: "scenario",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
 
@@ -110,12 +110,12 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
             ],
             name: "asset",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         post("/assets/$assetId/risks", [
             domains: [
-                [ targetUri: "/domains/${domain.id.uuidValue()}"]
+                [ targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
             ],
             scenario: [ targetUri: "/scenarios/$scenarioId"]
         ])
@@ -131,14 +131,14 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
             ],
             name: "process",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         post("/processes/$processId/risks", [
             domains: [
-                [ targetUri: "/domains/${domain.id.uuidValue()}"]
+                [ targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
             ],
-            scenario: [ targetUri: "/scenarios/$scenarioId"]
+            scenario: [ targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
         def processRisk = parseJson(get("/processes/$processId/risks/$scenarioId"))
 
@@ -151,7 +151,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         String incidentId = parseJson(post("/incidents", [
             name: "incident",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         def eTag = parseETag(get("/incidents/$incidentId"))
@@ -161,7 +161,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
             name: "updated incident",
             designator: "INC-666",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ], ["If-Match": eTag])
         def updatedIncident = parseJson(get("/incidents/$incidentId"))
@@ -176,7 +176,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         String documentId = parseJson(post("/documents", [
             name: "doc",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         def document = parseJson(get("/documents/$documentId"))
@@ -189,7 +189,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         String newDocumentId = parseJson(post("/documents", [
             name: "new doc",
             owner: [
-                targetUri: "/units/${unit.id.uuidValue()}"
+                targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
         def newDocument = parseJson(get("/documents/$newDocumentId"))

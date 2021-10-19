@@ -35,6 +35,15 @@ class SearchMvcITSpec extends VeoMvcSpec {
     String domainId
     String unitId
 
+    def subTypes = [assets: "AST_Application",
+        controls: "CTL_TOM",
+        documents: "DOC_Document",
+        incidents: "INC_Incident",
+        persons: "PER_Person",
+        processes: "PRO_DataProcessing",
+        scenarios: "SCN_Scenario",
+        scopes: "SCP_ResponsibleBody"]
+
     def setup() {
         def client = clientDataRepository.save(newClient {
             id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
@@ -43,34 +52,35 @@ class SearchMvcITSpec extends VeoMvcSpec {
             owner = client
             name = "search test domain"
         }).id.uuidValue()
-        unitId = unitDataRepository.save(newUnit(client))
+        unitId = unitDataRepository.save(newUnit(client)).id.uuidValue()
     }
 
     def 'find #type by status'() {
         given: "two #type with different status"
+        String subType = subTypes.get(type)
         post("/$type", [
             name: "one",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
-                    subType: "SUB_MARINE",
+                    subType: subType,
                     status: "NEW"
                 ]
             ]
         ])
         post("/$type", [
             name: "two",
-            owner: [targetUri: "/units/$unitId"],
+            owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
-                    subType: "SUB_MARINE",
-                    status: "OLD"
+                    subType: subType,
+                    status: "IN_PROGRESS"
                 ]
             ]
         ])
 
         when: "searching for the status of the second item one the collection endpoint"
-        def results = parseJson(get("/$type?status=OLD"))
+        def results = parseJson(get("/$type?status=IN_PROGRESS"))
 
         then: "the second item is returned"
         results.items*.name == ["two"]
@@ -78,7 +88,7 @@ class SearchMvcITSpec extends VeoMvcSpec {
         when: "running the same search on the search endpoint"
         def searchUrl = parseJson(post("/$type/searches", [
             status: [
-                values: ["OLD"]
+                values: ["IN_PROGRESS"]
             ]
         ])).searchUrl
         results = parseJson(get(searchUrl))

@@ -31,7 +31,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         given: "a composite process and a scenario"
         def subProcessId = post("/processes", [
             name: "sub process",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
         def processId = post("/processes", [
             domains: [
@@ -39,22 +39,22 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
             ],
             parts: [
                 // The part is not relevant for the risk, it just spices things up.
-                [targetUri: "/processes/$subProcessId"]
+                [targetUri: "http://localhost/processes/$subProcessId"]
             ],
             name: "risk test process",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
         def scenarioId = post("/scenarios", [
             name: "process risk test scenario",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
 
         when: "creating the risk"
         post("/processes/$processId/risks", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                [targetUri: "http://localhost/domains/$domainId"]
             ],
-            scenario: [targetUri: "/scenarios/$scenarioId"]
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
 
         then: "it can be retrieved"
@@ -65,9 +65,9 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         when: "assigning a risk owner"
         def ownerPersonId = post("/persons", [
             name: "process risk owner",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
-        risk.riskOwner = [targetUri: "/persons/$ownerPersonId"]
+        risk.riskOwner = [targetUri: "http://localhost/persons/$ownerPersonId"]
         put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.headers["ETag"].toString())
 
         then: "the risk has an owner"

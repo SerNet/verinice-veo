@@ -67,7 +67,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
             name: 'E-Mail-Server',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
         def postResult = post('/assets', request)
@@ -86,7 +86,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
             name: 'E-Mail-Server Berlin',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ], headers)
         then: "it was successful"
@@ -97,7 +97,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
             name: 'E-Mail-Server Hamburg',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ], headers, false)
         then: "a ETagMismatchException is thrown"

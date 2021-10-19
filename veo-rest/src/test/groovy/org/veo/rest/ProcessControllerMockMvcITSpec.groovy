@@ -127,7 +127,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -194,7 +194,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
@@ -233,7 +233,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
@@ -291,7 +291,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
@@ -304,8 +304,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 [
                     domains: [],
                     attributes: [
-                        process_privacyImpactAssessment_approved: true,
-                        process_privacyImpactAssessment_approvedComment: 'no comment'
+                        process_privacyImpactAssessment_blacklistComment: 'no comment',
+                        process_privacyImpactAssessment_otherExclusions: true
                     ]
                 ]
 
@@ -337,8 +337,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         entity.abbreviation == 'u-2'
         with(entity.customAspects.first()) {
             type == 'process_privacyImpactAssessment'
-            attributes["process_privacyImpactAssessment_approved"]
-            attributes["process_privacyImpactAssessment_approvedComment"] == 'no comment'
+            attributes["process_privacyImpactAssessment_blacklistComment"] == 'no comment'
+            attributes["process_privacyImpactAssessment_otherExclusions"]
         }
     }
 
@@ -348,7 +348,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         CustomAspect cp = newCustomAspect("process_privacyImpactAssessment") {
             attributes = [
-                'process_privacyImpactAssessment_approvedComment': 'old comment'
+                'process_privacyImpactAssessment_blacklistComment': 'old comment'
             ]
         }
 
@@ -366,7 +366,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
@@ -379,7 +379,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 [
                     domains: [],
                     attributes: [
-                        process_privacyImpactAssessment_approvedComment:'new comment'
+                        process_privacyImpactAssessment_blacklistComment:'new comment'
                     ]
                 ]
             ]
@@ -408,7 +408,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         entity.abbreviation == 'u-2'
         with(entity.customAspects.first()) {
             type == 'process_privacyImpactAssessment'
-            attributes["process_privacyImpactAssessment_approvedComment"] == 'new comment'
+            attributes["process_privacyImpactAssessment_blacklistComment"] == 'new comment'
         }
     }
 
@@ -420,7 +420,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New Asset',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -432,7 +432,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             name: 'New process',
             owner: [
                 displayName: 'test2',
-                targetUri: '/units/' + unit.id.uuidValue()
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ]
 
@@ -446,7 +446,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             description: 'desc',
             owner:
             [
-                targetUri: '/units/'+unit.id.uuidValue(),
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ]
             ,
@@ -464,7 +464,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                         ],
                         target:
                         [
-                            targetUri: '/assets/'+createAssetResult.resourceId,
+                            targetUri: 'http://localhost/assets/'+createAssetResult.resourceId,
                             displayName: 'test ddd'
                         ]
                     ]
@@ -497,21 +497,21 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(post('/assets', [
             name : 'My asset',
             owner: [
-                targetUri: '/units/'+unit.id.uuidValue()
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue()
             ]
         ]))
         def assetId = result.resourceId
         result = parseJson(post('/processes', [
             name : 'My process',
             owner: [
-                targetUri: '/units/'+unit.id.uuidValue()
+                targetUri: 'http://localhost/units/'+unit.id.uuidValue()
             ],
             links: [
                 'process_dataType': [
                     [
                         target:
                         [
-                            targetUri: "/assets/$assetId"
+                            targetUri: "http://localhost/assets/$assetId"
                         ]
                     ]
                 ]
@@ -638,7 +638,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         put("/processes/${process2.id.uuidValue()}", [
             id: process1.id.uuidValue(),
             name: "new name 1",
-            owner: [targetUri: '/units/' + unit.id.uuidValue()]
+            owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, false)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
@@ -650,7 +650,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a new process"
         def id = parseJson(post("/processes/", [
             name: "new name",
-            owner: [targetUri: "/units/"+unit.id.uuidValue()]
+            owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
         def getResult = get("/processes/$id")
 

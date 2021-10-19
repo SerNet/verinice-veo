@@ -69,7 +69,7 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             name : "person",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
         def retrievedPerson = parseJson(get("/persons/$personId"))
 
