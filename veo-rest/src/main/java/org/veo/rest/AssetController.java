@@ -69,6 +69,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
+
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -258,7 +260,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Asset created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
             @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody CreateAssetDto dto) {
+            @Valid @NotNull @RequestBody @JsonSchemaValidation(Asset.SINGULAR_TERM) CreateAssetDto dto) {
 
         return useCaseInteractor.execute(createAssetUseCase,
                                          (Supplier<CreateElementUseCase.InputData<Asset>>) () -> {
@@ -281,7 +283,8 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
     public CompletableFuture<FullAssetDto> updateAsset(
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @PathVariable String id, @Valid @NotNull @RequestBody FullAssetDto assetDto) {
+            @PathVariable String id,
+            @Valid @NotNull @RequestBody @JsonSchemaValidation(Asset.SINGULAR_TERM) FullAssetDto assetDto) {
         assetDto.applyResourceId(id);
         return useCaseInteractor.execute(updateAssetUseCase,
                                          (Supplier<ModifyElementUseCase.InputData<Asset>>) () -> {

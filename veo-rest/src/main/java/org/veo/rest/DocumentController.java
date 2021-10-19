@@ -68,6 +68,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
+
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -237,7 +239,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Document created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createDocument(
             @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody CreateDocumentDto dto) {
+            @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM) CreateDocumentDto dto) {
         return useCaseInteractor.execute(createDocumentUseCase,
                                          (Supplier<CreateElementUseCase.InputData<Document>>) () -> {
                                              Client client = getClient(user);
@@ -259,7 +261,8 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
     public CompletableFuture<FullDocumentDto> updateDocument(
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @PathVariable String id, @Valid @NotNull @RequestBody FullDocumentDto documentDto) {
+            @PathVariable String id,
+            @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM) FullDocumentDto documentDto) {
         documentDto.applyResourceId(id);
         return useCaseInteractor.execute(updateDocumentUseCase,
                                          (Supplier<InputData<Document>>) () -> {

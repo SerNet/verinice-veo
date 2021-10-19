@@ -70,6 +70,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
+
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -218,7 +220,8 @@ public class ProcessController extends AbstractEntityController implements Proce
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Process created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
             @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody CreateProcessDto dto) {
+            @Valid @NotNull @RequestBody @JsonSchemaValidation(Process.SINGULAR_TERM) CreateProcessDto dto) {
+
         return useCaseInteractor.execute(createProcessUseCase,
                                          (Supplier<CreateElementUseCase.InputData<Process>>) () -> {
                                              Client client = getClient(user);
@@ -242,7 +245,8 @@ public class ProcessController extends AbstractEntityController implements Proce
     public @Valid CompletableFuture<FullProcessDto> updateProcess(
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @PathVariable String id, @Valid @RequestBody FullProcessDto processDto) {
+            @PathVariable String id,
+            @Valid @RequestBody @JsonSchemaValidation(Process.SINGULAR_TERM) FullProcessDto processDto) {
         processDto.applyResourceId(id);
         return useCaseInteractor.execute(updateProcessUseCase,
                                          new Supplier<ModifyElementUseCase.InputData<Process>>() {

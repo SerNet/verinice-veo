@@ -20,7 +20,8 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.bind.MethodArgumentNotValidException
+
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
@@ -278,10 +279,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         ], false)
 
         then:
-        def ex = thrown(MethodArgumentNotValidException)
+        def ex = thrown(JsonSchemaValidationException)
         with(ex.message) {
-            contains("Field error in object 'createDocumentDto' on field 'description'")
-            contains("size must be between 0 and $Nameable.DESCRIPTION_MAX_LENGTH")
+            contains("description: may only be $Nameable.DESCRIPTION_MAX_LENGTH characters long")
         }
     }
 

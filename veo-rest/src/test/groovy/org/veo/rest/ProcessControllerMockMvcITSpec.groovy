@@ -25,6 +25,8 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.util.NestedServletException
 
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.CustomAspect
@@ -154,10 +156,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def results = post('/processes', request, false)
 
         then: "the process is not created"
-        MethodArgumentNotValidException ex = thrown()
+        JsonSchemaValidationException ex = thrown()
 
         and: "the reason is given"
-        ex.message ==~ /.*Validation failed for argument.*owner must be present.*/
+        ex.message ==~ /.*owner: is missing but it is required.*/
     }
 
     @WithUserDetails("user@domain.example")
@@ -210,10 +212,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def results = put("/processes/${process.id.uuidValue()}", request, headers, false)
 
         then: "the process is not updated"
-        MethodArgumentNotValidException ex = thrown()
+        JsonSchemaValidationException ex = thrown()
 
         and: "the reason is given"
-        ex.message ==~ /.*Validation failed for argument.*name must be present.*/
+        ex.message ==~ /.*.name: is missing but it is required.*/
 
     }
 

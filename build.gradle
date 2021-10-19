@@ -155,6 +155,7 @@ subprojects {
             dependency "org.testcontainers:spock:1.16.2"
             dependency "org.testcontainers:postgresql:1.16.2"
             dependency "org.keycloak:keycloak-authz-client:15.0.2"
+            dependency "com.github.JanLoebel:json-schema-validation-starter:2.3.0"
         }
     }
 
@@ -163,7 +164,10 @@ subprojects {
 
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
 
-    repositories { mavenCentral() }
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
 
     tasks.withType(Test) {
         useJUnitPlatform()
