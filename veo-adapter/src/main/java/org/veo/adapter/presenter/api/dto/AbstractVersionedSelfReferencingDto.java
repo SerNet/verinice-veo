@@ -47,7 +47,7 @@ public abstract class AbstractVersionedSelfReferencingDto implements VersionedDt
     private Ref selfRef;
 
     @JsonProperty(value = "_self", access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "A valid reference to this resource.", format = "uri", required = true)
+    @Schema(description = "A valid reference to this resource.", format = "uri")
     public String getSelf() {
         return Optional.ofNullable(selfRef)
                        .map(Ref::getTargetUri)

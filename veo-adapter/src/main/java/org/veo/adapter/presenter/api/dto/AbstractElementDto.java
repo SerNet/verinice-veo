@@ -55,7 +55,6 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
 
     @Schema(description = "Compact human-readable identifier that is unique within the client.",
             example = "A-155",
-            required = true,
             accessMode = Schema.AccessMode.READ_ONLY)
     @ToString.Include
     private String designator;

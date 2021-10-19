@@ -70,6 +70,10 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process> {
         return super.getCustomAspects();
     }
 
+    @Schema(description = "The status for the Process", example = "NEW", required = true)
+    @ToString.Include
+    private Process.Status status;
+
     @Override
     public Class<? extends Identifiable> getModelInterface() {
         return Process.class;
