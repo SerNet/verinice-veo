@@ -110,7 +110,7 @@ public final class EntityToDtoTransformer {
             return transformCatalog2Dto((Catalog) source);
         }
         if (source instanceof CatalogItem) {
-            return transformCatalogItem2Dto((CatalogItem) source);
+            return transformCatalogItem2Dto((CatalogItem) source, false);
         }
         if (source instanceof TailoringReference) {
             return transformTailoringReference2Dto((TailoringReference) source);
@@ -238,7 +238,8 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    public FullCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
+    public FullCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source,
+            boolean includeDescriptionFromElement) {
         FullCatalogItemDto target = new FullCatalogItemDto();
 
         target.setId(source.getId()
@@ -249,8 +250,12 @@ public final class EntityToDtoTransformer {
             target.setCatalog(IdRef.from(source.getCatalog(), referenceAssembler));
         }
 
-        if (source.getElement() != null) {
-            target.setElement(IdRef.from(source.getElement(), referenceAssembler));
+        Element element = source.getElement();
+        if (element != null) {
+            target.setElement(IdRef.from(element, referenceAssembler));
+            if (includeDescriptionFromElement) {
+                target.setDescription(element.getDescription());
+            }
         }
         target.setTailoringReferences(source.getTailoringReferences()
                                             .stream()

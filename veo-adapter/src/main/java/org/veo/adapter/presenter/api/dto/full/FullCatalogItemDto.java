@@ -24,6 +24,7 @@ import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -38,4 +39,8 @@ public class FullCatalogItemDto extends ReferenceCatalogItemDto implements Ident
             format = "uuid")
     @ToString.Include
     private String id;
+
+    @Schema(description = "The actual element's desciption", accessMode = AccessMode.READ_ONLY)
+    private String description;
+
 }

@@ -113,6 +113,10 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
 
         then: "the domains are returned"
         result.size == catalog.catalogItems.size()
+        when: "the catalog item 'item4' is retrieved from the list of items"
+        def item4FromResult = result.find { it.id == item4.id.uuidValue() }
+        then: "the catalog item contains the element's description"
+        item4FromResult.description == item4.element.description
     }
 
     @WithUserDetails("user@domain.example")

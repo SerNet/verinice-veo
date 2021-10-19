@@ -176,7 +176,7 @@ public class CatalogController extends AbstractEntityController {
         return useCaseInteractor.execute(getCatalogItemsUseCase, inputData, output -> {
             return output.getCatalogItems()
                          .stream()
-                         .map(u -> entityToDtoTransformer.transformCatalogItem2Dto(u))
+                         .map(u -> entityToDtoTransformer.transformCatalogItem2Dto(u, true))
                          .collect(Collectors.toList());
         });
     }
@@ -203,7 +203,8 @@ public class CatalogController extends AbstractEntityController {
                                                                                                     Optional.ofNullable(domainUuid)
                                                                                                             .map(Key::uuidFrom),
                                                                                                     client),
-                                                                                            output -> entityToDtoTransformer.transformCatalogItem2Dto(output.getCatalogItem()));
+                                                                                            output -> entityToDtoTransformer.transformCatalogItem2Dto(output.getCatalogItem(),
+                                                                                                                                                      false));
         return catalogitemFuture.thenApply(catalogitemDto -> ResponseEntity.ok()
                                                                            .eTag(ETag.from(catalogitemDto.getId(),
                                                                                            catalogitemDto.getVersion()))
