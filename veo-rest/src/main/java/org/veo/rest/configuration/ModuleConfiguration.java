@@ -551,11 +551,10 @@ public class ModuleConfiguration {
 
     @Bean
     public GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
-            org.veo.core.repository.UnitRepository unitRepository,
-            CatalogItemRepository catalogItemRepository,
-            org.veo.core.repository.RepositoryProvider entityRepository) {
+            UnitRepository unitRepository, DomainRepository domainRepository,
+            CatalogItemRepository catalogItemRepository, RepositoryProvider repositoryProvider) {
         return new GetIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
-                entityRepository);
+                domainRepository, repositoryProvider);
     }
 
     @Bean
@@ -579,12 +578,12 @@ public class ModuleConfiguration {
 
     @Bean
     public ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase(
-            org.veo.core.repository.UnitRepository unitRepository,
-            CatalogItemRepository catalogItemRepository,
-            org.veo.core.repository.RepositoryProvider repositoryProvider,
+            UnitRepository unitRepository, CatalogItemRepository catalogItemRepository,
+            DomainRepository domainRepository, RepositoryProvider repositoryProvider,
             DesignatorService designatorService, CatalogItemService catalogItemService,
             EntityFactory factory) {
         return new ApplyIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
-                repositoryProvider, designatorService, catalogItemService, factory);
+                domainRepository, repositoryProvider, designatorService, catalogItemService,
+                factory);
     }
 }

@@ -18,6 +18,7 @@
 package org.veo.core.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
@@ -36,4 +37,5 @@ public interface UnitRepository extends Repository<Unit, Key<UUID>> {
 
     public List<Unit> findByParent(Unit parent);
 
+    public Optional<Unit> findByIdFetchClient(Key<UUID> id);
 }

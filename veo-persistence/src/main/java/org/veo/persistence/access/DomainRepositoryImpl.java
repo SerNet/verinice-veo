@@ -18,9 +18,11 @@
 package org.veo.persistence.access;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.repository.DomainRepository;
@@ -32,13 +34,23 @@ import org.veo.persistence.entity.jpa.ValidationService;
 public class DomainRepositoryImpl extends
         AbstractIdentifiableVersionedRepository<Domain, DomainData> implements DomainRepository {
 
+    private final DomainDataRepository dataRepository;
+
     public DomainRepositoryImpl(DomainDataRepository dataRepository, ValidationService validator) {
         super(dataRepository, validator);
+        this.dataRepository = dataRepository;
     }
 
     public List<Domain> findByClient(Client client) {
         // TODO: VEO-498 Implement Domain Search
         throw new UnsupportedOperationException("not implemented");
+    }
+
+    @Override
+    public Optional<Domain> findByCatalogItem(CatalogItem catalogItem) {
+        return dataRepository.findByCatalogsCatalogItemsId(catalogItem.getId()
+                                                                      .uuidValue())
+                             .map(Domain.class::cast);
     }
 
 }

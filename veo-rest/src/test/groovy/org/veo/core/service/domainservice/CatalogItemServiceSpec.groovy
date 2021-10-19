@@ -52,8 +52,8 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
     private ControlRepositoryImpl repo
 
     private Client client
-    private Unit unit;
-    private Unit unit1;
+    private Unit unit
+    private Unit unit1
     private Domain domainFromTemplate
 
     def item
@@ -129,7 +129,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         repo.save(element)
         def result = repo.query(client).with {
             whereOwnerIs(unit)
-            whereAppliedItemsContains(item)
+            whereAppliedItemsContain([item])
             execute(PagingConfiguration.UNPAGED)
         }
 
@@ -141,7 +141,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
         result = repo.query(client).with {
             whereOwnerIs(unit1)
-            whereAppliedItemsContains(item)
+            whereAppliedItemsContain([item])
             execute(PagingConfiguration.UNPAGED)
         }
 

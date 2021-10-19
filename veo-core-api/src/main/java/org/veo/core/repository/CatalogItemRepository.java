@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.CatalogItem;
@@ -29,5 +30,7 @@ import org.veo.core.entity.Key;
  * with more specific methods - i.e. queries based on particular fields.
  */
 public interface CatalogItemRepository extends Repository<CatalogItem, Key<UUID>> {
+
+    Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids);
 
 }

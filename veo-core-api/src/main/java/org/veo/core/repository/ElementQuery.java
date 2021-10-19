@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.veo.core.entity.CatalogItem;
@@ -47,9 +48,10 @@ public interface ElementQuery<T extends Element> {
 
     ElementQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 
-    ElementQuery<T> whereAppliedItemsContains(CatalogItem item);
+    ElementQuery<T> whereAppliedItemsContain(Collection<CatalogItem> items);
 
     ElementQuery<T> whereOwnerIs(Unit unit);
 
     PagedResult<T> execute(PagingConfiguration pagingConfiguration);
+
 }

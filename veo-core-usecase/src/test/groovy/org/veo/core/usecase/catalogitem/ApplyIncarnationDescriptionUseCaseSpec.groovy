@@ -24,13 +24,11 @@ import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
-import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase.InputData
 import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription
 import org.veo.core.usecase.parameter.TailoringReferenceParameter
@@ -39,16 +37,18 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
     EntityFactory factory = Mock()
 
     ApplyIncarnationDescriptionUseCase usecase = new ApplyIncarnationDescriptionUseCase(
-    unitRepo, catalogItemRepository, entityRepo, designatorService, catalogItemservice, factory)
+    unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, catalogItemservice, factory)
 
     def setup() {
 
         catalogItemservice.createInstance(item1, existingDomain) >> newControl
         entityRepo.getElementRepositoryFor(_) >> repo
 
-        catalogItemRepository.findById(item1.id) >> Optional.of(item1)
-        catalogItemRepository.findById(item2.id) >> Optional.of(item2)
-        catalogItemRepository.findById(_) >> Optional.empty()
+        catalogItemRepository.getByIdsFetchElementData([item1.id] as Set) >> [item1]
+        catalogItemRepository.getByIdsFetchElementData([item2.id] as Set) >> [item2]
+
+        domainRepository
+                .findByCatalogItem(item1) >> Optional.of(existingDomain)
     }
 
     def "apply an element from item"() {
@@ -57,9 +57,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         item1.tailoringReferences >> []
         newControl.links >> []
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
+
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
@@ -103,9 +101,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         ref.referenceType >> TailoringReferenceType.LINK
         ref.referencedElement >> control3
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1, item2]
+
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
@@ -156,10 +152,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         ref.referencedElement >> control3
         ref.referenceType >> TailoringReferenceType.LINK_EXTERNAL
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1, item2]
-
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item1, [ref])
@@ -191,10 +183,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         item1.tailoringReferences >> [tr]
         item1.element >> control
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
-
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item1, [])
@@ -207,10 +195,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         given:
 
         item1.tailoringReferences >> []
-
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
 
         def unitId = Key.newUuid()
         Unit anotherUnit = Mock()
@@ -229,10 +213,8 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         item1.tailoringReferences >> []
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
-
+        domainRepository
+                .findByCatalogItem(item2) >> Optional.of(Mock(Domain))
         Catalog other = Mock()
         item2.catalog >> other
         other.domainTemplate >> Mock(Domain)
@@ -249,10 +231,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         given:
 
         item1.tailoringReferences >> []
-
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
 
         TailoringReferenceParameter ref = Mock()
         ref.referenceType >> TailoringReferenceType.LINK_EXTERNAL

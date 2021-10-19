@@ -17,10 +17,15 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.CatalogItemData;
 
 public interface CatalogItemDataRepository extends CrudRepository<CatalogItemData, String> {
+
+    @EntityGraph(attributePaths = { "element", "element.links", "element.customAspects",
+            "element.subTypeAspects", "tailoringReferences" })
+    Iterable<CatalogItemData> findAllWithElementDataByDbIdIn(Iterable<String> ids);
 
 }

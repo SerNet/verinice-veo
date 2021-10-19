@@ -22,30 +22,16 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
-import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
-import org.veo.core.entity.Unit
-import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.repository.ElementQuery
-import org.veo.core.repository.ElementRepository
-import org.veo.core.repository.PagedResult
-import org.veo.core.repository.RepositoryProvider
-import org.veo.core.repository.UnitRepository
-import org.veo.core.service.CatalogItemService
-import org.veo.core.service.DomainTemplateService
-import org.veo.core.usecase.DesignatorService
-import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputData
 
 class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
     EntityFactory factory = Mock()
-    GetIncarnationDescriptionUseCase usecaseGet = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
+    GetIncarnationDescriptionUseCase usecaseGet = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, domainRepository, entityRepo)
 
     ApplyIncarnationDescriptionUseCase usecasePut = new ApplyIncarnationDescriptionUseCase(
-    unitRepo, catalogItemRepository,entityRepo, designatorService, catalogItemservice, factory)
+    unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, catalogItemservice, factory)
 
 
     def setup() {
@@ -53,9 +39,10 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         entityRepo.getElementRepositoryFor(_) >> repo
         repo.query(existingClient) >> emptyQuery
 
-        catalogItemRepository.findById(item1.id) >> Optional.of(item1)
-        catalogItemRepository.findById(item2.id) >> Optional.of(item2)
-        catalogItemRepository.findById(_) >> Optional.empty()
+        catalogItemRepository.getByIdsFetchElementData([item1.id] as Set) >> [item1]
+
+        domainRepository
+                .findByCatalogItem(item1) >> Optional.of(existingDomain)
     }
 
     def "get the apply information for a catalog-item without tailor reference and apply it"() {
@@ -69,9 +56,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         control.getModelInterface() >> Control.class
         newControl.links >> []
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
         catalogItemRepository.findById(id) >> Optional.of(item1)
 
 
@@ -101,7 +85,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         item1.catalog >> catalog
 
         Control control2 = Mock()
-        control.getModelInterface() >> Control.class
+        control2.getModelInterface() >> Control.class
 
         def id2 = Key.newUuid()
         item2.id >> id2
@@ -118,10 +102,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         item1.element >> control
 
         CustomLink newLink = Mock()
-
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1, item2]
 
         when: "request to create an item with a link"
         def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id]))

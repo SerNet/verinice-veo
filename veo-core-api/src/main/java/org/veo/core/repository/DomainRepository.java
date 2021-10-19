@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 
@@ -29,5 +31,7 @@ import org.veo.core.entity.Key;
  * with more specific methods - i.e. queries based on particular fields.
  */
 public interface DomainRepository extends Repository<Domain, Key<UUID>> {
+
+    Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
 
 }

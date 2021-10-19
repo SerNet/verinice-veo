@@ -18,11 +18,14 @@
 package org.veo.persistence.access;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.UnitRepository;
 import org.veo.persistence.access.jpa.UnitDataRepository;
@@ -59,4 +62,9 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
                              .collect(Collectors.toList());
     }
 
+    @Override
+    public Optional<Unit> findByIdFetchClient(Key<UUID> id) {
+        return dataRepository.findWithClientByDbId(id.uuidValue())
+                             .map(Unit.class::cast);
+    }
 }

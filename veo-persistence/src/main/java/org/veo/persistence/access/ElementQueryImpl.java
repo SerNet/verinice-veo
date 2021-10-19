@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -63,11 +64,10 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     }
 
     @Override
-    public ElementQuery<TInterface> whereAppliedItemsContains(CatalogItem item) {
+    public ElementQuery<TInterface> whereAppliedItemsContain(Collection<CatalogItem> items) {
         mySpec = mySpec.and((root, query,
-                criteriaBuilder) -> criteriaBuilder.equal(root.join("appliedCatalogItems",
-                                                                    JoinType.LEFT),
-                                                          item));
+                criteriaBuilder) -> root.join("appliedCatalogItems", JoinType.LEFT)
+                                        .in(items));
         return this;
     }
 
@@ -158,7 +158,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
         };
     }
 
-    protected static Predicate in(Path<Object> column, Set<?> values,
+    protected static Predicate in(Path<Object> column, Collection<?> values,
             CriteriaBuilder criteriaBuilder) {
         if (values.stream()
                   .anyMatch(Objects::isNull)) {

@@ -22,6 +22,7 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Key
 import org.veo.core.repository.CatalogItemRepository
+import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.ElementRepository
 import org.veo.core.repository.PagedResult
@@ -35,6 +36,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     DesignatorService designatorService = Mock()
     CatalogItemService catalogItemservice = Mock()
     CatalogItemRepository catalogItemRepository = Mock()
+    DomainRepository domainRepository = Mock()
     RepositoryProvider entityRepo = Mock()
     ElementRepository repo = Mock()
     UnitRepository unitRepo = Mock()
@@ -48,8 +50,10 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
 
     def setup() {
         // state the obvious
-        unitRepo.findById(existingUnit.id) >> Optional.of(existingUnit)
+        unitRepo.findByIdFetchClient(existingUnit.id) >> Optional.of(existingUnit)
+        unitRepo.findByIdFetchClient(_) >> Optional.empty()
         unitRepo.findById(_) >> Optional.empty()
+
 
         control.getModelInterface() >> Control.class
         newControl.getModelInterface() >> Control.class

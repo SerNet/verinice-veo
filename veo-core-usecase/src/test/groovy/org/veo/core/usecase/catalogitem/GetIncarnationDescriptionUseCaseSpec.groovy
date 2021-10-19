@@ -19,8 +19,6 @@ package org.veo.core.usecase.catalogitem
 
 
 import org.veo.core.entity.Control
-import org.veo.core.entity.CustomLink
-import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
@@ -33,24 +31,23 @@ import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputDa
 
 class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
 
-    GetIncarnationDescriptionUseCase usecase = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
+    GetIncarnationDescriptionUseCase usecase = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, domainRepository, entityRepo)
 
     def setup() {
         entityRepo.getElementRepositoryFor(_) >> repo
         repo.query(existingClient) >> emptyQuery
 
-        catalogItemRepository.findById(item1.id) >> Optional.of(item1)
-        catalogItemRepository.findById(item2.id) >> Optional.of(item2)
-        catalogItemRepository.findById(_) >> Optional.empty()
+        catalogItemRepository.getByIdsFetchElementData([item1.id] as Set) >> [item1]
+        catalogItemRepository.getByIdsFetchElementData(_) >> []
+
+        domainRepository
+                .findByCatalogItem(item1) >> Optional.of(existingDomain)
     }
 
     def "get the apply information for a catalog-item without tailorref"() {
         given:
         item1.tailoringReferences >> []
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
@@ -64,6 +61,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
 
         Control control2 = Mock()
+        control2.modelInterface >> Control
 
         def id2 = Key.newUuid()
         item2.id >> id2
@@ -78,10 +76,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         item1.tailoringReferences >> [tr]
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
-
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
         then:
@@ -94,6 +88,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
 
         Control control2 = Mock()
+        control2.getModelInterface() >> Control.class
 
         def id2 = Key.newUuid()
         item2.id >> id2
@@ -108,10 +103,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
-
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1, item2]
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
@@ -129,6 +120,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
 
         Control control2 = Mock()
+        control2.getModelInterface() >> Control.class
 
         def id2 = Key.newUuid()
         item2.id >> id2
@@ -143,10 +135,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
-
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1, item2]
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
@@ -174,10 +162,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         Control control2 = Mock()
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1, item2]
-
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
         then:
@@ -188,10 +172,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
 
         item1.tailoringReferences >> []
-
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
 
         def unitId = Key.newUuid()
         Unit anotherUnit = Mock()
@@ -208,10 +188,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         item1.tailoringReferences >> []
 
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
-
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [Key.newUuid()]))
         then:
@@ -222,10 +198,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
 
         item1.tailoringReferences >> []
-
-        existingDomain.catalogs >> [catalog]
-        catalog.domainTemplate >> existingDomain
-        catalog.catalogItems >> [item1]
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id, item1.id]))

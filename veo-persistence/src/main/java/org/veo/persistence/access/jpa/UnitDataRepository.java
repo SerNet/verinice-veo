@@ -18,7 +18,9 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -31,5 +33,8 @@ public interface UnitDataRepository extends CrudRepository<UnitData, String> {
 
     @Query("select e from #{#entityName} as e where e.client.dbId = ?1")
     List<UnitData> findByClientId(String clientId);
+
+    @EntityGraph(attributePaths = { "client" })
+    Optional<UnitData> findWithClientByDbId(String uuidValue);
 
 }

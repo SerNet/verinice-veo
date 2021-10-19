@@ -17,10 +17,15 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends CrudRepository<DomainData, String> {
 
+    @Query("select e from #{#entityName} as e join e.catalogs as c join c.catalogItems as i where i.dbId = ?1")
+    Optional<DomainData> findByCatalogsCatalogItemsId(String catalogItemId);
 }

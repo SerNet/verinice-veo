@@ -17,9 +17,15 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.persistence.access.jpa.CatalogItemDataRepository;
 import org.veo.persistence.entity.jpa.CatalogItemData;
@@ -30,8 +36,23 @@ public class CatalogItemRepositoryImpl
         extends AbstractIdentifiableVersionedRepository<CatalogItem, CatalogItemData>
         implements CatalogItemRepository {
 
+    private final CatalogItemDataRepository catalogItemDataRepository;
+
     public CatalogItemRepositoryImpl(CatalogItemDataRepository dataRepository,
             ValidationService validator) {
         super(dataRepository, validator);
+        catalogItemDataRepository = dataRepository;
+    }
+
+    @Override
+    public Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids) {
+        var idStrings = ids.stream()
+                           .map(Key::uuidValue)
+                           .collect(Collectors.toList());
+        return StreamSupport.stream(catalogItemDataRepository.findAllWithElementDataByDbIdIn(idStrings)
+                                                             .spliterator(),
+                                    false)
+                            .map(e -> (CatalogItem) e)
+                            .collect(Collectors.toSet());
     }
 }

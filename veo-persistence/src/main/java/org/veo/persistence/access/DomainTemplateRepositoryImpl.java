@@ -34,9 +34,12 @@ public class DomainTemplateRepositoryImpl
         extends AbstractIdentifiableVersionedRepository<DomainTemplate, DomainTemplateData>
         implements DomainTemplateRepository {
 
+    private final DomainTemplateDataRepository dataRepository;
+
     public DomainTemplateRepositoryImpl(DomainTemplateDataRepository dataRepository,
             ValidationService validator) {
         super(dataRepository, validator);
+        this.dataRepository = dataRepository;
     }
 
     public List<DomainTemplate> getAll() {
@@ -46,5 +49,4 @@ public class DomainTemplateRepositoryImpl
                             .map(e -> (DomainTemplate) e)
                             .collect(Collectors.toList());
     }
-
 }

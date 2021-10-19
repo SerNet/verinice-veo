@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -48,6 +49,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.CatalogItemService;
@@ -74,6 +76,7 @@ public class ApplyIncarnationDescriptionUseCase implements
         TransactionalUseCase<ApplyIncarnationDescriptionUseCase.InputData, ApplyIncarnationDescriptionUseCase.OutputData> {
     private final UnitRepository unitRepository;
     private final CatalogItemRepository catalogItemRepository;
+    private final DomainRepository domainRepository;
     private final org.veo.core.repository.RepositoryProvider repositoryProvider;
     private final DesignatorService designatorService;
     private final CatalogItemService catalogItemservice;
@@ -82,11 +85,20 @@ public class ApplyIncarnationDescriptionUseCase implements
     @Override
     public OutputData execute(InputData input) {
         log.info("ApplyIncarnationDescriptionUseCase: {}", input);
-        Unit unit = unitRepository.findById(input.getContainerId())
+        Unit unit = unitRepository.findByIdFetchClient(input.getContainerId())
                                   .orElseThrow(() -> new NotFoundException("Unit %s not found.",
                                           input.getContainerId()));
         Client authenticatedClient = input.authenticatedClient;
         unit.checkSameClient(authenticatedClient);
+        List<IncarnateCatalogItemDescription> referencesToApply = input.getReferencesToApply();
+        Set<Key<UUID>> catalogItemIds = referencesToApply.stream()
+                                                         .map(IncarnateCatalogItemDescription::getItem)
+                                                         .map(CatalogItem::getId)
+                                                         .collect(Collectors.toSet());
+        Map<Key<UUID>, CatalogItem> catalogItemsbyId = catalogItemRepository.getByIdsFetchElementData(catalogItemIds)
+                                                                            .stream()
+                                                                            .collect(Collectors.toMap(CatalogItem::getId,
+                                                                                                      Function.identity()));
 
         Supplier<IncarnationResult> supplier = IncarnationResult::new;
         BiConsumer<IncarnationResult, ElementResult> consumer = (elementData, iElement) -> {
@@ -102,18 +114,24 @@ public class ApplyIncarnationDescriptionUseCase implements
             processInternalLinks(elementData.internalLinks, elementData.elements);
             return elementData.elements;
         };
+
+        Domain domain = domainRepository.findByCatalogItem(catalogItemsbyId.values()
+                                                                           .iterator()
+                                                                           .next())
+                                        .orElseThrow();
+
         List<Element> createdElements = input.getReferencesToApply()
                                              .stream()
                                              .map(ra -> {
-                                                 CatalogItem catalogItem = catalogItemRepository.findById(ra.getItem()
-                                                                                                            .getId())
-                                                                                                .orElseThrow(() -> new NotFoundException(
-                                                                                                        "CatalogItem not found %s",
-                                                                                                        ra.getItem()
-                                                                                                          .getId()));
+                                                 Key<UUID> catalogItemId = ra.getItem()
+                                                                             .getId();
+                                                 CatalogItem catalogItem = catalogItemsbyId.get(catalogItemId);
+                                                 if (catalogItem == null) {
+                                                     throw new NotFoundException(
+                                                             "CatalogItem not found %s",
+                                                             catalogItemId);
+                                                 }
 
-                                                 Domain domain = (Domain) catalogItem.getCatalog()
-                                                                                     .getDomainTemplate();
                                                  UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(),
                                                                                          domain);
                                                  return createElementFromCatalogItem(unit,
