@@ -103,8 +103,9 @@ public class EntitySchema {
             }
         }
         throw new IllegalArgumentException(
-                String.format("link target of type '%s' had to be one of %s", link.getTarget()
-                                                                                  .getModelType(),
+                String.format("Error validating custom link with type '%s'. The link target's type is '%s' but is required to be one of %s",
+                              link.getType(), link.getTarget()
+                                                  .getModelType(),
                               validTargetTypes));
     }
 
@@ -138,8 +139,8 @@ public class EntitySchema {
             return;
         }
         throw new IllegalArgumentException(
-                String.format("link target with sub types %s had to have one of %s", targetSubTypes,
-                              allowedSubTypes));
+                String.format("Error validating custom link with type '%s'. The link target's has the sub types %s is expected to have one of %s",
+                              link.getType(), targetSubTypes, allowedSubTypes));
     }
 
     private JsonNode getAspectAttrSchema(String aspectType) {
