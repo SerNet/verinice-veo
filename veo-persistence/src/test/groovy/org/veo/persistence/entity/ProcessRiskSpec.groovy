@@ -43,7 +43,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.addToDomains(domain1)
 
         when: "a risk is created for these entities"
-        def risk = process.newRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario, domain1)
         risk.mitigate(control)
 
         then: "the risk references all entities"
@@ -60,7 +60,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.addToDomains(domain1)
 
         when: "a risk is created"
-        def risk = process.newRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario, domain1)
 
         then: "the reference to a control may be left missing"
         risk.entity == process
@@ -76,7 +76,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.addToDomains(domain1)
 
         when: "risks are added"
-        def risks = process.newRisks([scenario1, scenario2] as Set, domain1)
+        def risks = process.obtainRisks([scenario1, scenario2] as Set, domain1)
 
         then: "the process has new risks"
         process.risks.size() == 2
@@ -97,7 +97,7 @@ class ProcessRiskSpec extends VeoSpec {
         def person = newPerson(unit)
 
         when: "a risk is created and linked to the person"
-        def risk = process.newRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario, domain1)
         risk.appoint(person)
 
         then: "the person is present"
@@ -117,7 +117,7 @@ class ProcessRiskSpec extends VeoSpec {
         personComposite.parts = [person]
 
         when: "a risk is created and linked to the personComposite"
-        def risk = process.newRisk(scenario, domain1)
+        def risk = process.obtainRisk(scenario, domain1)
         risk.appoint(personComposite)
 
         then: "the personComposite is present"
@@ -140,7 +140,7 @@ class ProcessRiskSpec extends VeoSpec {
         def scenario = newScenario(unit)
 
         when: "a risk is created"
-        def risk = processComposite.newRisk(scenario, domain1)
+        def risk = processComposite.obtainRisk(scenario, domain1)
 
         then: "the composite of processes is a valid reference"
         risk.entity == processComposite
@@ -160,7 +160,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.addToDomains(domain1)
 
         when: "a risk is created"
-        def risk = process.newRisk(scenarioComposite, domain1)
+        def risk = process.obtainRisk(scenarioComposite, domain1)
 
         then: "the composite of scenarios is a valid reference"
         risk.scenario == scenarioComposite
@@ -180,7 +180,7 @@ class ProcessRiskSpec extends VeoSpec {
         process1.addToDomains(domain1)
 
         when: "a risk is created"
-        def risk = process1.newRisk(scenario1, domain1)
+        def risk = process1.obtainRisk(scenario1, domain1)
         risk.mitigate(controlComposite)
 
         then: "the composite of controls is a valid reference"
@@ -195,13 +195,13 @@ class ProcessRiskSpec extends VeoSpec {
         def process1 = newProcess(unit)
         def domain1 = newDomain()
         process1.addToDomains(domain1)
-        def risk1 = process1.newRisk(scenario1, domain1)
+        def risk1 = process1.obtainRisk(scenario1, domain1)
         process1.addToDomains(domain1)
         def set = new HashSet<ProcessRisk>()
         set.add(risk1)
 
         when: "another risk is created"
-        def risk2 = process1.newRisk(scenario1, domain1)
+        def risk2 = process1.obtainRisk(scenario1, domain1)
         set.add(risk2)
 
         then: "it has the same identity"
@@ -221,7 +221,7 @@ class ProcessRiskSpec extends VeoSpec {
         process1.addToDomains(domain2)
 
         when: "a risk is created with two domains"
-        def risk = process1.newRisk(scenario1, domain1)
+        def risk = process1.obtainRisk(scenario1, domain1)
         risk.addToDomains(domain2)
 
         then: "the domains are referenced by the risk"
@@ -241,7 +241,7 @@ class ProcessRiskSpec extends VeoSpec {
         thrown(ModelConsistencyException)
 
         when: "A risk is created for a domain that the process does not know about"
-        process1.newRisk(scenario1, domainUnknown)
+        process1.obtainRisk(scenario1, domainUnknown)
 
         then: "The operation is prevented"
         thrown(ModelConsistencyException)

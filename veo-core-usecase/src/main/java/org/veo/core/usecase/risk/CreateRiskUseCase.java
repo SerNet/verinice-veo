@@ -55,7 +55,7 @@ public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         checkDomainOwnership(input.getAuthenticatedClient(), domains);
 
         // Apply requested operation:
-        var risk = riskAffected.newRisk(scenario, domains);
+        var risk = riskAffected.obtainRisk(scenario, domains);
 
         risk = applyOptionalInput(input, risk);
         designatorService.assignDesignator(risk, input.getAuthenticatedClient());

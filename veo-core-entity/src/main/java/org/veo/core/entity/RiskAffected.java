@@ -51,8 +51,8 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
         return getRisks().remove(abstractRisk);
     }
 
-    default void removeRisks(Set<R> newRisks) {
-        getRisks().removeAll(newRisks);
+    default void removeRisks(Set<R> risks) {
+        getRisks().removeAll(risks);
     }
 
     default void checkRisk(R risk) {
@@ -61,30 +61,44 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
             throw new IllegalArgumentException();
     }
 
-    R newRisk(Scenario scenario, Domain domain);
+    /**
+     * Obtain a risk object for the given scenario in the provided domain. If the
+     * risk for this scenario does not yet exist, it will be created, otherwise, the
+     * existing risk will be returned. This behavior makes this method idempotent.
+     * It can be called with the same parameters multiple times. Subsequent calls
+     * after the first one will have no effect.
+     *
+     * @param scenario
+     *            the scenario that causes the risk
+     * @param domain
+     *            the domain in which this risk is relevant
+     * @return the newly created risk object or the existing one if it was
+     *         previously created for the scenario in this domain
+     */
+    R obtainRisk(Scenario scenario, Domain domain);
 
-    default Set<R> newRisks(Set<Scenario> scenarios, Domain domain) {
-        return newRisks(scenarios, singleton(domain));
+    default Set<R> obtainRisks(Set<Scenario> scenarios, Domain domain) {
+        return getOrCreateRisks(scenarios, singleton(domain));
     }
 
-    default R newRisk(Scenario scenario, Set<Domain> domains) {
+    default R obtainRisk(Scenario scenario, Set<Domain> domains) {
         if (domains.isEmpty())
             throw new IllegalArgumentException("Need at least one domain to create a risk.");
 
-        var risk = newRisk(scenario, domains.stream()
-                                            .findFirst()
-                                            .orElseThrow());
+        var risk = obtainRisk(scenario, domains.stream()
+                                               .findFirst()
+                                               .orElseThrow());
         domains.forEach(risk::addToDomains);
 
         return risk;
     }
 
-    default Set<R> newRisks(Set<Scenario> scenarios, Set<Domain> domains) {
+    default Set<R> getOrCreateRisks(Set<Scenario> scenarios, Set<Domain> domains) {
         scenarios.forEach(s -> s.checkSameClient(this));
         domains.forEach(this::isDomainValid);
 
         return scenarios.stream()
-                        .map(s -> newRisk(s, domains))
+                        .map(s -> obtainRisk(s, domains))
                         .collect(Collectors.toSet());
     }
 

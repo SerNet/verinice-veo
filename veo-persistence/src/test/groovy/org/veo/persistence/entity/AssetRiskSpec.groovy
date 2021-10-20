@@ -43,7 +43,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.addToDomains(domain1)
 
         when: "a risk is created for these entities"
-        def risk = asset.newRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario, domain1)
         risk.mitigate(control)
 
         then: "the risk references all entities"
@@ -60,7 +60,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.addToDomains(domain1)
 
         when: "a risk is created"
-        def risk = asset.newRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario, domain1)
 
         then: "the reference to a control may be left missing"
         risk.entity == asset
@@ -76,7 +76,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.addToDomains(domain1)
 
         when: "risks are added"
-        def risks = asset.newRisks([scenario1, scenario2] as Set, domain1)
+        def risks = asset.obtainRisks([scenario1, scenario2] as Set, domain1)
 
         then: "the asset has new risks"
         asset.risks.size() == 2
@@ -97,7 +97,7 @@ class AssetRiskSpec extends VeoSpec {
         def person = newPerson(unit)
 
         when: "a risk is created and linked to the person"
-        def risk = asset.newRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario, domain1)
         risk.appoint(person)
 
         then: "the person is present"
@@ -117,7 +117,7 @@ class AssetRiskSpec extends VeoSpec {
         personComposite.parts = [person]
 
         when: "a risk is created and linked to the personComposite"
-        def risk = asset.newRisk(scenario, domain1)
+        def risk = asset.obtainRisk(scenario, domain1)
         risk.appoint(personComposite)
 
         then: "the personComposite is present"
@@ -140,7 +140,7 @@ class AssetRiskSpec extends VeoSpec {
         def scenario = newScenario(unit)
 
         when: "a risk is created"
-        def risk = assetComposite.newRisk(scenario, domain1)
+        def risk = assetComposite.obtainRisk(scenario, domain1)
 
         then: "the composite of assets is a valid reference"
         risk.entity == assetComposite
@@ -160,7 +160,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.addToDomains(domain1)
 
         when: "a risk is created"
-        def risk = asset.newRisk(scenarioComposite, domain1)
+        def risk = asset.obtainRisk(scenarioComposite, domain1)
 
         then: "the composite of scenarios is a valid reference"
         risk.scenario == scenarioComposite
@@ -180,7 +180,7 @@ class AssetRiskSpec extends VeoSpec {
         asset1.addToDomains(domain1)
 
         when: "a risk is created"
-        def risk = asset1.newRisk(scenario1, domain1)
+        def risk = asset1.obtainRisk(scenario1, domain1)
         risk.mitigate(controlComposite)
 
         then: "the composite of controls is a valid reference"
@@ -195,13 +195,13 @@ class AssetRiskSpec extends VeoSpec {
         def asset1 = newAsset(unit)
         def domain1 = newDomain()
         asset1.addToDomains(domain1)
-        def risk1 = asset1.newRisk(scenario1, domain1)
+        def risk1 = asset1.obtainRisk(scenario1, domain1)
         asset1.addToDomains(domain1)
         def set = new HashSet<AssetRisk>()
         set.add(risk1)
 
         when: "another risk is created"
-        def risk2 = asset1.newRisk(scenario1, domain1)
+        def risk2 = asset1.obtainRisk(scenario1, domain1)
         set.add(risk2)
 
         then: "it has the same identity"
@@ -221,7 +221,7 @@ class AssetRiskSpec extends VeoSpec {
         asset1.addToDomains(domain2)
 
         when: "a risk is created with two domains"
-        def risk = asset1.newRisk(scenario1, domain1)
+        def risk = asset1.obtainRisk(scenario1, domain1)
         risk.addToDomains(domain2)
 
         then: "the domains are referenced by the risk"
@@ -241,7 +241,7 @@ class AssetRiskSpec extends VeoSpec {
         thrown(ModelConsistencyException)
 
         when: "A risk is created for a domain that the asset does not know about"
-        asset1.newRisk(scenario1, domainUnknown)
+        asset1.obtainRisk(scenario1, domainUnknown)
 
         then: "The operation is prevented"
         thrown(ModelConsistencyException)

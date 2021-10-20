@@ -90,7 +90,7 @@ class ProcessRiskITSpec extends VeoSpringSpec {
             control1 = insertControl(control1)
 
             process1 = processRepository.findById(process1.getId()).get()
-            process1.newRisk(scenario1, domain1).tap {
+            process1.obtainRisk(scenario1, domain1).tap {
                 designator = "RSK-1"
             }
         }

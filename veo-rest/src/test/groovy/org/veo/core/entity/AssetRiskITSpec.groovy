@@ -86,7 +86,7 @@ class AssetRiskITSpec extends VeoSpringSpec {
             control1 = insertControl(control1)
 
             asset1 = assetRepository.findById(asset1.getId()).get()
-            asset1.newRisk(scenario1, domain1).tap {
+            asset1.obtainRisk(scenario1, domain1).tap {
                 designator = "RSK-1"
             }
         }
