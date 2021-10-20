@@ -19,17 +19,17 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.PagingConfiguration
-import org.veo.core.repository.ProcessQuery
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.QueryCondition
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.process.GetProcessesUseCase.InputData
+import org.veo.core.usecase.base.GetElementsUseCase
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
-    ProcessQuery query = Mock()
+    ElementQuery<Process> query = Mock()
     PagingConfiguration pagingConfiguration = Mock()
 
     GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider)
@@ -45,7 +45,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.getId() >> id
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null, null, null, null, null, null, null, pagingConfiguration))
+        def output = usecase.execute(new GetElementsUseCase.InputData(existingClient, null, null, null, null, null, null, null, pagingConfiguration))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
@@ -61,9 +61,9 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
-        def input = new InputData(existingClient, Mock(QueryCondition) {
+        def input = new GetElementsUseCase.InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        }, null, Mock(QueryCondition), null, null, null, null, Mock(QueryCondition), pagingConfiguration)
+        }, null, Mock(QueryCondition), null, null, null, Mock(QueryCondition), pagingConfiguration)
         when:
         def output = usecase.execute(input)
         then:
@@ -71,7 +71,6 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers
         1 * query.whereUnitIn(existingUnitHierarchyMembers)
         1 * query.whereSubTypeMatches(input.subType)
-        1 * query.whereStatusMatches(input.status)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
         output.elements.resultPage*.id == [id]
     }

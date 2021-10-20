@@ -229,7 +229,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map request = [
             name: 'New Process-2',
-            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
@@ -288,7 +287,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map request = [
             name: 'New Process-2',
-            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
@@ -364,7 +362,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         when: "a request is made to the server"
         Map request = [
             name: 'New Process-2',
-            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
@@ -445,7 +442,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         Map putProcessRequest = [
             name: 'New Process-2',
-            status: 'NEW',
             abbreviation: 'u-2',
             description: 'desc',
             owner:
@@ -621,65 +617,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "only the process without a sub type is returned"
         result.items*.name == ['Test process-2']
     }
-
-    @WithUserDetails("user@domain.example")
-    def "filter processes by status"() {
-        given: "one new and one released process"
-
-        txTemplate.execute {
-            processRepository.save(newProcess(unit) {
-                name = 'Test process-1'
-            })
-            processRepository.save(newProcess(unit) {
-                name = 'Test process-2'
-                status = Status.RELEASED
-            })
-        }
-
-        when: "the status param is omitted"
-        def result = parseJson(get("/processes"))
-        then: "both processes are returned"
-        result.items.size == 2
-
-        when: "new processes are queried"
-        result = parseJson(get("/processes?status=NEW"))
-        then: "only the new process is returned"
-        result.items*.name == ['Test process-1']
-
-        when: "released processes are queried"
-        result = parseJson(get("/processes?status=RELEASED"))
-        then: "only the released process is returned"
-        result.items*.name == ['Test process-2']
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "search processes by status"() {
-        given: "a search request body"
-        Map search = [
-            status: [
-                values: [
-                    'ARCHIVED'
-                ]
-            ],
-        ]
-
-        and: "a saved asset"
-        def process = txTemplate.execute {
-            processRepository.save(newProcess(unit) {
-                status = status.ARCHIVED
-            })
-        }
-
-        when: "a search request is made to the server"
-        def postSearchResponse = parseJson(post('http://localhost/processes/searches', search))
-
-        and: "the search is run"
-        def searchResult = parseJson(get(postSearchResponse.searchUrl))
-
-        then: "the response contains the expected data"
-        searchResult.items*.id == [process.id.uuidValue()]
-    }
-
 
     @WithUserDetails("user@domain.example")
     def "can't put a process with another process's ID"() {

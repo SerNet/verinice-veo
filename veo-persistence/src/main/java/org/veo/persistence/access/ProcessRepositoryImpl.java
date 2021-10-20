@@ -19,10 +19,8 @@ package org.veo.persistence.access;
 
 import org.springframework.stereotype.Repository;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
-import org.veo.core.repository.ProcessQuery;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
@@ -38,10 +36,5 @@ public class ProcessRepositoryImpl
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository, ValidationService validation,
             CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-    }
-
-    @Override
-    public ProcessQuery query(Client client) {
-        return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client);
     }
 }

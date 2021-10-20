@@ -27,10 +27,6 @@ public interface Process
     String PLURAL_TERM = "processes";
     String TYPE_DESIGNATOR = "PRO";
 
-    public enum Status {
-        NEW, IN_PROGRESS, FOR_REVIEW, RELEASED, ARCHIVED
-    }
-
     @Override
     default Class<? extends Identifiable> getModelInterface() {
         return Process.class;
@@ -45,8 +41,4 @@ public interface Process
     default String getTypeDesignator() {
         return TYPE_DESIGNATOR;
     }
-
-    Status getStatus();
-
-    void setStatus(Status status);
 }

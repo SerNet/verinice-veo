@@ -35,7 +35,6 @@ import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
-import static org.veo.rest.ControllerConstants.STATUS_PARAM;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
@@ -75,7 +74,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
-import org.veo.adapter.presenter.api.dto.ProcessSearchQueryDto;
+import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
@@ -85,7 +84,6 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.Process.Status;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -289,7 +287,6 @@ public class ProcessController extends AbstractEntityController implements Proce
             @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
             @RequestParam(value = NAME_PARAM, required = false) String name,
             @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
-            @RequestParam(value = STATUS_PARAM, required = false) Status status,
             @RequestParam(value = PAGE_SIZE_PARAM,
                           required = false,
                           defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
@@ -311,7 +308,6 @@ public class ProcessController extends AbstractEntityController implements Proce
 
         return getProcesses(GetElementsInputMapper.map(client, parentUuid, displayName, subType,
                                                        description, designator, name, updatedBy,
-                                                       status,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
                                                                              sortColumn,
                                                                              sortOrder)));
@@ -337,7 +333,7 @@ public class ProcessController extends AbstractEntityController implements Proce
     @Operation(summary = "Creates a new search with the given search criteria.")
     public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @Valid @RequestBody ProcessSearchQueryDto search) {
+            @Valid @RequestBody SearchQueryDto search) {
         return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
     }
 
@@ -360,7 +356,7 @@ public class ProcessController extends AbstractEntityController implements Proce
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
         try {
             return getProcesses(GetElementsInputMapper.map(getAuthenticatedClient(auth),
-                                                           ProcessSearchQueryDto.decodeFromSearchId(searchId),
+                                                           SearchQueryDto.decodeFromSearchId(searchId),
                                                            PagingMapper.toConfig(pageSize,
                                                                                  pageNumber,
                                                                                  sortColumn,

@@ -17,64 +17,19 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.UUID;
-
-import javax.validation.Valid;
-
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.Process.Status;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.PagingConfiguration;
-import org.veo.core.repository.ProcessQuery;
 import org.veo.core.repository.ProcessRepository;
-import org.veo.core.repository.QueryCondition;
-import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
-
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 
 /**
  * Reinstantiate persisted process objects.
  */
-public class GetProcessesUseCase
-        extends GetElementsUseCase<Process, GetProcessesUseCase.InputData> {
-
-    private final ProcessRepository repository;
+public class GetProcessesUseCase extends DefaultGetElementsUseCase<Process> {
 
     public GetProcessesUseCase(ClientRepository clientRepository, ProcessRepository repository,
             UnitHierarchyProvider unitHierarchyProvider) {
         super(clientRepository, repository, unitHierarchyProvider);
-        this.repository = repository;
     }
-
-    @Override
-    protected ProcessQuery createQuery(Client client, InputData input) {
-        var query = repository.query(client);
-        if (input.getStatus() != null) {
-            query.whereStatusMatches(input.getStatus());
-        }
-        return query;
-    }
-
-    @Valid
-    @Value
-    @EqualsAndHashCode(callSuper = true)
-    public static class InputData extends GetElementsUseCase.InputData {
-
-        public InputData(Client authenticatedClient, QueryCondition<Key<UUID>> unitUuid,
-                QueryCondition<String> displayName, QueryCondition<String> subType,
-                QueryCondition<String> description, QueryCondition<String> designator,
-                QueryCondition<String> name, QueryCondition<String> updatedBy,
-                QueryCondition<Status> status, PagingConfiguration pagingConfiguration) {
-            super(authenticatedClient, unitUuid, displayName, subType, description, designator,
-                    name, updatedBy, pagingConfiguration);
-            this.status = status;
-        }
-
-        QueryCondition<Status> status;
-    }
-
 }

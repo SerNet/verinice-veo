@@ -22,7 +22,6 @@ import javax.validation.constraints.Pattern;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.core.entity.Process.Status;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -39,9 +38,5 @@ public class FullProcessDto extends AbstractProcessDto implements IdentifiableDt
             format = "uuid")
     @ToString.Include
     private String id;
-
-    @Schema(description = "The status for the Process", example = "NEW", required = true)
-    @ToString.Include
-    private Status status;
 
 }

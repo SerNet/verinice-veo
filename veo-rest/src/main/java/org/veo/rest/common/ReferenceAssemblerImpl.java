@@ -22,9 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
-import static org.veo.rest.ControllerConstants.ANY_PROCESS_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
-import static org.veo.rest.ControllerConstants.ANY_STATUS;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.ANY_STRING_LIST;
 import static org.veo.rest.ControllerConstants.ANY_USER;
@@ -221,8 +219,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
         if (Process.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ProcessController.class).createSearch(ANY_AUTH,
-                                                                         ANY_PROCESS_SEARCH)).withRel(ProcessController.URL_BASE_PATH)
-                                                                                             .getHref();
+                                                                         ANY_SEARCH)).withRel(ProcessController.URL_BASE_PATH)
+                                                                                     .getHref();
         }
         if (Person.class.isAssignableFrom(type)) {
             return linkTo(methodOn(PersonController.class).createSearch(ANY_AUTH,
@@ -300,10 +298,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                          ANY_STRING, ANY_STRING,
                                                                          ANY_STRING, ANY_STRING,
                                                                          ANY_STRING, ANY_STRING,
-                                                                         ANY_STATUS, ANY_INT,
-                                                                         ANY_INT, ANY_STRING,
-                                                                         ANY_STRING)).withSelfRel()
-                                                                                     .getHref();
+                                                                         ANY_INT, ANY_INT,
+                                                                         ANY_STRING, ANY_STRING))
+                                                                                                 .withSelfRel()
+                                                                                                 .getHref();
         }
         if (Person.class.isAssignableFrom(type)) {
             return linkTo(methodOn(PersonController.class).getPersons(ANY_AUTH, ANY_STRING,

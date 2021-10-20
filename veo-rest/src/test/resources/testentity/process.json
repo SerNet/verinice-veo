@@ -1747,17 +1747,6 @@
         "description": "A reference to an entity's part"
       }
     },
-    "status": {
-      "type": "string",
-      "enum": [
-        "NEW",
-        "IN_PROGRESS",
-        "FOR_REVIEW",
-        "RELEASED",
-        "ARCHIVED"
-      ],
-      "description": "The status for the Process"
-    },
     "subType": {
       "type": "object",
       "title": "SubType",
@@ -1793,8 +1782,7 @@
     "_self",
     "designator",
     "name",
-    "owner",
-    "status"
+    "owner"
   ],
   "title": "process",
   "description": "Schema for process"

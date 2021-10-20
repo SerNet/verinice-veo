@@ -76,15 +76,13 @@ class ProcessRepositoryITSpec extends VeoMvcSpec {
 
         and: "the reason is given"
         ConstraintViolationException cvex = ex.mostSpecificCause
-        cvex.constraintViolations.size() == 4
+        cvex.constraintViolations.size() == 3
         assert cvex.constraintViolations*.propertyPath*.toString() as Set == [
-            "status",
             "designator",
             "",
             "name"
         ] as Set
         assert cvex.constraintViolations*.messageTemplate as Set == [
-            '{javax.validation.constraints.NotNull.message}',
             '{javax.validation.constraints.NotNull.message}',
             'Either owner or containingCatalogItem must be set',
             '{javax.validation.constraints.NotNull.message}'

@@ -21,15 +21,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -54,11 +50,6 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     @Valid
     @Getter
     private final Set<Process> parts = new HashSet<>();
-
-    @Column(name = "status")
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Status status;
 
     @Override
     ProcessRiskData createRisk(Scenario scenario) {

@@ -129,16 +129,6 @@ task checkTranslations {
         handleTranslationKey('abbreviation', 'Nameable base attributes')
         handleTranslationKey('description', 'Nameable base attributes')
 
-        [
-            'process_status_NEW',
-            'process_status_IN_PROGRESS',
-            'process_status_FOR_REVIEW',
-            'process_status_RELEASED',
-            'process_status_ARCHIVED'
-        ].each {
-            handleTranslationKey(it, 'Process status values')
-        }
-
         customSchemaFiles.each { file->
             logger.info "Loading $file"
             def data = new groovy.json.JsonSlurper().parse(file)

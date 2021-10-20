@@ -22,17 +22,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.presenter.api.dto.ProcessSearchQueryDto;
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Process.Status;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.process.GetProcessesUseCase;
 
 public class GetElementsInputMapper {
 
@@ -45,16 +42,6 @@ public class GetElementsInputMapper {
                 createStringFilter(name), createStringFilter(updatedBy), pagingConfiguration);
     }
 
-    public static GetProcessesUseCase.InputData map(Client client, String unitUuid,
-            String displayName, String subType, String description, String designator, String name,
-            String updatedBy, Status status, PagingConfiguration pagingConfiguration) {
-        return new GetProcessesUseCase.InputData(client, createUuidCondition(unitUuid),
-                createStringFilter(displayName), createNonEmptyCondition(subType),
-                createStringFilter(description), createStringFilter(designator),
-                createStringFilter(name), createStringFilter(updatedBy),
-                createNonEmptyCondition(status), pagingConfiguration);
-    }
-
     public static GetElementsUseCase.InputData map(Client client, SearchQueryDto searchQuery,
             PagingConfiguration pagingConfiguration) {
         return new GetElementsUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
@@ -64,19 +51,6 @@ public class GetElementsInputMapper {
                 transformCondition(searchQuery.getDesignator()),
                 transformCondition(searchQuery.getName()),
                 transformCondition(searchQuery.getUpdatedBy()), pagingConfiguration);
-    }
-
-    public static GetProcessesUseCase.InputData map(Client client,
-            ProcessSearchQueryDto searchQuery, PagingConfiguration pagingConfiguration) {
-        return new GetProcessesUseCase.InputData(client,
-                transformCondition(searchQuery.getUnitId()),
-                transformCondition(searchQuery.getDisplayName()),
-                transformCondition(searchQuery.getSubType()),
-                transformCondition(searchQuery.getDescription()),
-                transformCondition(searchQuery.getDesignator()),
-                transformCondition(searchQuery.getName()),
-                transformCondition(searchQuery.getUpdatedBy()),
-                transformCondition(searchQuery.getStatus()), pagingConfiguration);
     }
 
     private static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
