@@ -79,6 +79,7 @@ public class GenerateEntitySchema {
 
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(
                 SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON).with(jacksonModule)
+                                                               .with(new HonorJsonPropertyOnMethodsModule())
                                                                .with(swagger2Module)
                                                                .with(javaxValidationModule)
                                                                .with(Option.INLINE_ALL_SCHEMAS,
