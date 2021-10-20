@@ -57,14 +57,14 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         unitId = postResponse.resourceId
 
         when: "the catalog is retrieved"
-        def catalogId = extractLastId(getDomains().catalogs.first().targetUri)
+        def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
         def catalog = getCatalog(catalogId)
 
         then: "the expected catalog was instantiated"
         with(catalog) {
             catalogItems.size() == 6
-            name == "DSGVO-Controls"
-            domainTemplate.displayName == "DSGVO-test DSGVO-test"
+            name == "TEST-Controls"
+            domainTemplate.displayName == "td test-domain"
         }
 
         when: "a selection of catalog items is applied"
@@ -117,14 +117,14 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         unitId = postResponse.resourceId
 
         when: "the catalog is retrieved"
-        def catalogId = extractLastId(getDomains().catalogs.first().targetUri)
+        def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
         def catalog = getCatalog(catalogId)
 
         then: "the expected catalog was instantiated"
         with(catalog) {
             catalogItems.size() == 6
-            name == "DSGVO-Controls"
-            domainTemplate.displayName == "DSGVO-test DSGVO-test"
+            name == "TEST-Controls"
+            domainTemplate.displayName == "td test-domain"
         }
 
         when: "a control is created"
@@ -155,11 +155,93 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         sourceControl.links.Control_details_Control.target.targetUri ==~ /.*\/controls\/$c4Id.*/
     }
 
+    def "Create linked elements from the dsgvo catalog"() {
+        log.info("Create a unit and get ApplyCatalogItems info for Items")
+
+        given:
+        postResponse = postNewUnit(UNIT_NAME)
+        unitId = postResponse.resourceId
+
+        when: "the catalog is retrieved"
+        def catalogId = extractLastId(getDomains().find { it.name == "DSGVO" }.catalogs.first().targetUri)
+        def catalog = getCatalog(catalogId)
+
+        then: "the expected catalog was instantiated"
+        with(catalog) {
+            catalogItems.size() == 9
+            name == "DS-GVO-Controls"
+        }
+
+        when:"we create the controls"
+        def dsgvoId = getDomains().find { it.name == "DSGVO" }.id
+        def sourceProcessId = post("/processes", [
+            name: "process",
+            domains: [
+                [targetUri: "/domains/$dsgvoId"]
+            ],
+            owner: [targetUri: "/units/$unitId"],
+            subType: ["$dsgvoId": "PRO_DataProcessing"]
+        ]).body.resourceId
+
+        def elementResults = applyCatalogItems(catalog, [
+            "TOM zur Gewährleistung der Vertraulichkeit"
+        ], "/processes/$sourceProcessId")
+        String tom1Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==1
+
+        elementResults = applyCatalogItems(catalog, [
+            "TOM zur Gewährleistung der Verfügbarkeit"
+        ], "/processes/$sourceProcessId")
+        String tom2Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==2
+
+        elementResults = applyCatalogItems(catalog, [
+            "TOM zur Wiederherstellbarkeit"
+        ], "/processes/$sourceProcessId")
+        String tom3Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==3
+
+        elementResults = applyCatalogItems(catalog, [
+            "TOM zur Verschlüsselung"
+        ], "/processes/$sourceProcessId")
+        String tom4Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==4
+
+        elementResults = applyCatalogItems(catalog, [
+            "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM"
+        ], "/processes/$sourceProcessId")
+        String tom5Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==5
+
+        elementResults = applyCatalogItems(catalog, [
+            "TOM zur Gewährleistung der Integrität"
+        ], "/processes/$sourceProcessId")
+        String tom6Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==6
+
+        elementResults = applyCatalogItems(catalog, [
+            "TOM zur Pseudonymisierung"
+        ], "/processes/$sourceProcessId")
+        String tom7Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==7
+
+        elementResults = applyCatalogItems(catalog, [
+            "TOM zur Gewährleistung der Belastbarkeit"
+        ], "/processes/$sourceProcessId")
+        String tom8Id = elementResults.first().id
+        get("/processes/${sourceProcessId}").body.links.size()==8
+
+        elementResults = applyCatalogItems(catalog, ["VVT"], null)
+        def processVVT = elementResults.first()
+
+        then:"The process is linked with the controlls"
+        processVVT.links.size() == 1
+        processVVT.links.process_tom.size() == 8
+    }
+
     private applyCatalogItems(catalog) {
         return applyCatalogItems(catalog, null, null)
     }
-
-
 
     private applyCatalogItems(catalog, selectedItems, sourceElementUri) {
         def elementResults = []
@@ -204,7 +286,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                         assert Instant.parse(elementResult.createdAt) > beforeCreation
                         assert Instant.parse(elementResult.updatedAt) > beforeCreation
                         assert !elementResult.description.isBlank()
-                        assert elementResult.domains[0].displayName == 'DSGVO-test DSGVO-test'
                         assert !elementResult.id.isBlank()
                     }
                 }
@@ -220,8 +301,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     private postIncarnationDescriptions(unitId, applyInfo) {
+        log.info("postIncarnationDescriptions before: {}", applyInfo)
         def response = post("/units/${unitId}/incarnations", applyInfo)
-        log.info("postIncarnationDescriptions: {}", response.body)
+        log.info("postIncarnationDescriptions after: {}", response.body)
         response.body
     }
 

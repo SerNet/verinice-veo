@@ -73,7 +73,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
                 name = "Test unit"
             })
         }
-        domainFromTemplate = client.domains.first()
+        domainFromTemplate = client.domains.find { it.name == "test-domain" }
         item = domainFromTemplate.catalogs.first().catalogItems.sort({it.namespace}).first()
         element = catalogItemService.createInstance(item, domainFromTemplate)
     }

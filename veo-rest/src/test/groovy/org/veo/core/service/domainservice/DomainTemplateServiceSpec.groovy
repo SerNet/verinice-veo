@@ -42,7 +42,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
     @Autowired
     DomainTemplateServiceImpl domainTemplateService
 
-    def "create default domain from template"() {
+    def "create default domains from template"() {
         given: "a client"
         Client client = repository.save(newClient {
             name = "Demo Client"
@@ -54,25 +54,76 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             domainsFromTemplate.forEach({client.addToDomains(it)})
             client = repository.save(client)
         }
-        def domainFromTemplate = client.domains.first()
+        def domainFromTemplate = client.domains.find { it.name == "DSGVO" }
         expect: 'the domain matches with the linked domainTemplate'
-        domainFromTemplate.domainTemplate.dbId == DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID
-        domainFromTemplate.name == domainFromTemplate.domainTemplate.name
-        domainFromTemplate.abbreviation == domainFromTemplate.domainTemplate.abbreviation
-        domainFromTemplate.description == domainFromTemplate.domainTemplate.description
-        domainFromTemplate.authority == domainFromTemplate.domainTemplate.authority
-        domainFromTemplate.revision == domainFromTemplate.domainTemplate.revision
-        domainFromTemplate.templateVersion == domainFromTemplate.domainTemplate.templateVersion
+        with(domainFromTemplate) {
+            domainTemplate.dbId == DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID
+            name == domainTemplate.name
+            abbreviation == domainTemplate.abbreviation
+            description == domainTemplate.description
+            authority == domainTemplate.authority
+            revision == domainTemplate.revision
+            templateVersion == domainTemplate.templateVersion
+            catalogs.size() == 1
+            catalogs.first().catalogItems.size() == 9
+        }
+        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.abbreviation }) {
+            with(it[0]) {
+                tailoringReferences.size()==1
+                with(element) {
+                    links.size()==0
+                    abbreviation == 'TOM-A'
+                    name == 'TOM zur Gewährleistung der Verfügbarkeit'
+                    description.startsWith('Gewährleistung der Verfügbarkeit: Technische')
+                }
+            }
+            with(it[1]) {
+                tailoringReferences.size() == 1
+                tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+                element.abbreviation == 'TOM-C'
+            }
+            with(it[2]) {
+                tailoringReferences.size() == 1
+                tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+                element.abbreviation == 'TOM-E'
+            }
+            it[3].element.abbreviation == 'TOM-EFF'
+            it[4].element.abbreviation == 'TOM-I'
+            it[5].element.abbreviation == 'TOM-P'
+            it[6].element.abbreviation == 'TOM-R'
+            it[7].element.abbreviation == 'TOM-REC'
+            it[7].tailoringReferences.size()==1
+            it[7].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
 
-        domainFromTemplate.catalogs.size() == 1
-        domainFromTemplate.catalogs.first().catalogItems.size() == 6
+            it[8].element.abbreviation == 'VVT'
+            it[8].tailoringReferences.size() == 8
+            it[8].tailoringReferences[0].referenceType == TailoringReferenceType.LINK
+        }
+
+        when: 'check the test domain'
+        domainFromTemplate = client.domains.find { it.name == "test-domain" }
+        then: 'the domain matches with the linked domainTemplate'
+        with(domainFromTemplate) {
+            domainTemplate.dbId == "2b00d864-77ee-5378-aba6-e41f618c7bad"
+            name == domainTemplate.name
+            abbreviation == domainTemplate.abbreviation
+            description == domainTemplate.description
+            authority == domainTemplate.authority
+            revision == domainTemplate.revision
+            templateVersion == domainTemplate.templateVersion
+            catalogs.size() == 1
+            catalogs.first().catalogItems.size() == 6
+        }
         with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
-            it[0].tailoringReferences.size()==0
-            it[0].element.links.size()==0
-            it[0].element.abbreviation == 'c-1'
-            it[0].element.name == 'Control-1'
-            it[0].element.description.startsWith('Lore')
-
+            with(it[0]) {
+                tailoringReferences.size()==0
+                with(element) {
+                    links.size()==0
+                    abbreviation == 'c-1'
+                    name == 'Control-1'
+                    description.startsWith('Lore')
+                }
+            }
             it[1].element.abbreviation == 'c-2'
 
             it[2].element.abbreviation == 'c-3'

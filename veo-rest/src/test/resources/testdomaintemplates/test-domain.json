@@ -1,16 +1,16 @@
 {
-  "id": "f8ed22b1-b277-56ec-a2ce-0dbd94e24824",
-  "name": "DSGVO-test",
-  "abbreviation": "DSGVO-test",
+  "id": "2b00d864-77ee-5378-aba6-e41f618c7bad",
+  "name": "test-domain",
+  "abbreviation": "td",
   "authority": "SERNET",
-  "templateVersion": "1.0",
+  "templateVersion": "v1.0",
   "revision": "latest",
   "catalogs": [
     {
       "id": "31abf42d-9527-4570-a532-5e9935f4dffa",
-      "name": "DSGVO-Controls",
+      "name": "TEST-Controls",
       "domainTemplate": {
-        "targetUri": "/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824"
+        "targetUri": "/domaintemplates/2b00d864-77ee-5378-aba6-e41f618c7bad"
       },
       "catalogItems": [
         {

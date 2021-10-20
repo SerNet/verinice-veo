@@ -49,7 +49,7 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
         Client client = clientRepository.findById(Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)).get()
 
         then: "the default domain is created"
-        client.domains.size() == 1
+        client.domains.size() == 2
         client.domains.first().domainTemplate.dbId == DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID
     }
 }
