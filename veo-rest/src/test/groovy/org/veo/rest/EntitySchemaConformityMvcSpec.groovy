@@ -18,6 +18,7 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
 
@@ -38,7 +39,9 @@ import org.veo.rest.configuration.WebMvcSecurityConfiguration
  * Tests if resources returned by the API conform to the entity schema.
  */
 @WithUserDetails("user@domain.example")
+@SpringBootTest(properties=['veo.entity_schemas_location:/schemas/entity/'])
 class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
+
     @Autowired
     EntitySchemaService entitySchemaService
 
@@ -185,16 +188,16 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     def "created process with custom aspect & links conforms to schema"() {
         given: "the process schema and a newly created process"
         def processSchema = getSchema("process")
-        def personId = (String)parseJson(post("/persons", [
+        def scopeId = (String)parseJson(post("/scopes", [
             domains: [
                 [targetUri: "/domains/$domainId"]
             ],
-            name: "person",
+            name: "scope",
             owner: [
                 targetUri: "/units/"+unitId
             ],
             subType: [
-                (domainId): "PER_Controller"
+                (domainId): "SCP_Controller"
             ]
         ])).resourceId
         def processId = (String)parseJson(post("/processes", [
@@ -209,7 +212,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                             process_controller_document: "http://example.org/doc"
                         ],
                         target: [
-                            targetUri: "/persons/$personId"
+                            targetUri: "/scopes/$scopeId"
                         ]
                     ]
                 ]
@@ -240,9 +243,9 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 targetUri: "/units/"+unitId
             ],
             customAspects: [
-                scenario_probability: [
+                scenario_threat: [
                     attributes: [
-                        scenario_probability_ofOccurrence: 'scenario_probability_ofOccurrence_high'
+                        scenario_threat_type: 'scenario_threat_type_malware'
                     ]
                 ]
             ]
@@ -268,6 +271,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             name: "target",
             owner: [
                 targetUri: "/units/"+unitId,
+            ],
+            domains: [
+                [targetUri: "/domains/$domainId"]
+            ],
+            subType: [
+                (domainId): "PER_DataProtectionOfficer"
             ]])).resourceId
         def scopeId = parseJson(post("/scopes", [
             name: "scope",
