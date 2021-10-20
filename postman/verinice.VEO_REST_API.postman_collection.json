@@ -323,7 +323,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -483,7 +483,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets/:id",
@@ -544,7 +544,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"id\": \"{{assetId}}\",\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets/:id",
@@ -606,7 +606,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/persons",
@@ -766,7 +766,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/persons/:id",
@@ -827,7 +827,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"id\": \"{{personId}}\",\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/persons/:id",
@@ -889,7 +889,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -1049,7 +1049,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls/:id",
@@ -1110,7 +1110,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"id\": \"{{controlId}}\",\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls/:id",
@@ -1382,7 +1382,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -1436,7 +1436,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_generalInformation\": {\n            \"type\": \"person_generalInformation\",\n            \"domains\": [],\n            \"attributes\": {\n                \"person_generalInformation_salutation\": \"person_commons_salutation_ms\",\n                \"person_generalInformation_familyName\": \"Schmidt\"\n            }\n        }\n    }\n}",
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"person_generalInformation\": {\n            \"domains\": [],\n            \"attributes\": {\n                \"person_generalInformation_salutation\": \"Herr\",\n                \"person_generalInformation_familyName\": \"Schmidt\"\n            }\n        }\n    }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1543,7 +1543,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"control_dataProtection\": {\n            \"type\": \"control_dataProtection\",\n            \"domains\": [],\n            \"attributes\": {\n                \"control_dataProtection_objectives\": [\"control_dataProtection_objectives_pseudonymization\"]\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"control_dataProtection\": {\n            \"domains\": [],\n            \"attributes\": {\n                \"control_dataProtection_objectives\": [\"control_dataProtection_objectives_pseudonymization\"]\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -1645,7 +1645,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"type\": \"asset_details\",\n            \"applicableTo\": [\n                \"Control\"\n            ],\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_operatingStage\": \"asset_details_operatingStage_planning\"\n            }\n        }\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    },\n    \"customAspects\": {\n        \"asset_details\": {\n            \"domains\": [],\n            \"attributes\": {\n                \"asset_details_number\": 1,\n                \"asset_details_operatingStage\": \"asset_details_operatingStage_planning\"\n            }\n        }\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -1845,7 +1845,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"sub-unit\",\n    \"parent\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"sub-unit\",\n    \"parent\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/units",
@@ -1899,7 +1899,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{subUnitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
@@ -1953,7 +1953,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{processName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{subUnitId}}\"\n    },\n    \"status\": \"NEW\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/processes",
@@ -2007,7 +2007,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{personName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{subUnitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/persons",
@@ -2061,7 +2061,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"/units/{{subUnitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{controlName}}\",\n    \"owner\": {\n        \"displayName\": \"{{subUnitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{subUnitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/controls",
@@ -2708,7 +2708,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"/units/{{unitId}}\"\n    }\n}"
+              "raw": "{\n    \"name\": \"{{assetName}}\",\n    \"owner\": {\n        \"displayName\": \"{{unitName}}\",\n        \"targetUri\": \"{{baseUrl}}/units/{{unitId}}\"\n    }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/assets",
