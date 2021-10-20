@@ -274,7 +274,7 @@ pipeline {
     }
     post {
         failure {
-            emailext body: '${JELLY_SCRIPT,template="text"}', subject: '$DEFAULT_SUBJECT', attachLog: true, recipientProviders: [culprits()]
+            emailext body: '${JELLY_SCRIPT,template="text"}', subject: '$DEFAULT_SUBJECT', attachLog: false, recipientProviders: [culprits()]
         }
         always {
            node('') {
