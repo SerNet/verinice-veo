@@ -2,17 +2,26 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "_self": {
+      "type": "string",
+      "description": "A valid reference to this resource.",
+      "readOnly": true,
+      "format": "uri"
+    },
     "abbreviation": {
       "type": "string",
-      "description": "The abbreviation for the Element."
+      "description": "The abbreviation for the Element.",
+      "maxLength": 255
     },
     "createdAt": {
       "type": "string",
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true
     },
     "createdBy": {
       "type": "string",
-      "description": "The username of the user who created this object."
+      "description": "The username of the user who created this object.",
+      "readOnly": true
     },
     "customAspects": {
       "type": "object",
@@ -22,13 +31,8 @@
         "document_details": {
           "additionalProperties": false,
           "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "document_details_approvalDate": {
                   "format": "date",
@@ -124,13 +128,8 @@
         "document_revision": {
           "additionalProperties": false,
           "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "document_revision_comment": {
                   "type": "string"
@@ -198,13 +197,8 @@
         "document_generalInformation": {
           "additionalProperties": false,
           "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "document_generalInformation_externalLink": {
                   "format": "uri",
@@ -267,11 +261,13 @@
     },
     "description": {
       "type": "string",
-      "description": "The description for the Element."
+      "description": "The description for the Element.",
+      "maxLength": 65535
     },
     "designator": {
       "type": "string",
-      "description": "Compact human-readable identifier that is unique within the client."
+      "description": "Compact human-readable identifier that is unique within the client.",
+      "readOnly": true
     },
     "domains": {
       "type": "array",
@@ -280,17 +276,21 @@
         "properties": {
           "displayName": {
             "type": "string",
-            "description": "A friendly human readable title of the referenced domain."
+            "description": "A friendly human readable title of the referenced domain.",
+            "readOnly": true
           },
           "resourcesUri": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "searchesUri": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "targetUri": {
             "type": "string",
-            "description": "The resource URL of the referenced domains."
+            "description": "The resource URL of the referenced domains.",
+            "format": "uri"
           }
         },
         "required": [
@@ -301,7 +301,8 @@
     },
     "id": {
       "type": "string",
-      "description": "ID must be a valid UUID string following RFC 4122."
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "format": "uuid"
     },
     "links": {
       "type": "object",
@@ -313,24 +314,29 @@
     },
     "name": {
       "type": "string",
-      "description": "The name for the Element."
+      "description": "The name for the Element.",
+      "maxLength": 255
     },
     "owner": {
       "type": "object",
       "properties": {
         "displayName": {
           "type": "string",
-          "description": "A friendly human readable title of the referenced unit."
+          "description": "A friendly human readable title of the referenced unit.",
+          "readOnly": true
         },
         "resourcesUri": {
-          "type": "string"
+          "type": "string",
+          "readOnly": true
         },
         "searchesUri": {
-          "type": "string"
+          "type": "string",
+          "readOnly": true
         },
         "targetUri": {
           "type": "string",
-          "description": "The resource URL of the referenced unit."
+          "description": "The resource URL of the referenced unit.",
+          "format": "uri"
         }
       },
       "required": [
@@ -345,17 +351,21 @@
         "properties": {
           "displayName": {
             "type": "string",
-            "description": "A friendly human readable title of the referenced entity."
+            "description": "A friendly human readable title of the referenced entity.",
+            "readOnly": true
           },
           "resourcesUri": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "searchesUri": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "targetUri": {
             "type": "string",
-            "description": "The resource URL of the referenced entity."
+            "description": "The resource URL of the referenced entity.",
+            "format": "uri"
           }
         },
         "required": [
@@ -371,22 +381,26 @@
     },
     "type": {
       "type": "string",
-      "description": "Entity type identifier"
+      "description": "Entity type identifier",
+      "readOnly": true
     },
     "updatedAt": {
       "type": "string",
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true
     },
     "updatedBy": {
       "type": "string",
-      "description": "The username of the user who last updated this object."
+      "description": "The username of the user who last updated this object.",
+      "readOnly": true
     }
   },
   "required": [
+    "_self",
     "designator",
     "name",
     "owner"
   ],
   "title": "document",
-  "description": "Schema for Document"
+  "description": "Schema for document"
 }
