@@ -26,16 +26,8 @@ class SubtypeAspectDataSpec extends Specification{
     def "domain affects identity"() {
         given: "two aspects with different domains"
         def commonOwner = Mock(Element)
-        def aspect1 = new SubTypeAspectData().tap {
-            setDomain(Mock(Domain))
-            setOwner(commonOwner)
-            setSubType("a")
-        }
-        def aspect2 = new SubTypeAspectData().tap {
-            setDomain(Mock(Domain))
-            setOwner(commonOwner)
-            setSubType("a")
-        }
+        def aspect1 = new SubTypeAspectData(Mock(Domain), commonOwner, "a")
+        def aspect2 = new SubTypeAspectData(Mock(Domain), commonOwner, "a")
         expect: "different hashCodes"
         aspect1.hashCode() != aspect2.hashCode()
         aspect1 != aspect2
@@ -44,16 +36,8 @@ class SubtypeAspectDataSpec extends Specification{
     def "owner affects identity"() {
         given: "two aspects with different owners"
         def commonDomain = Mock(Domain)
-        def aspect1 = new SubTypeAspectData().tap {
-            setDomain(commonDomain)
-            setOwner(Mock(Element))
-            setSubType("a")
-        }
-        def aspect2 = new SubTypeAspectData().tap {
-            setDomain(commonDomain)
-            setOwner(Mock(Element))
-            setSubType("a")
-        }
+        def aspect1 = new SubTypeAspectData(commonDomain, Mock(Element), "a")
+        def aspect2 = new SubTypeAspectData(commonDomain, Mock(Element), "a")
         expect: "different hashCodes"
         aspect1.hashCode() != aspect2.hashCode()
         aspect1 != aspect2
@@ -63,16 +47,8 @@ class SubtypeAspectDataSpec extends Specification{
         given: "two aspects with different sub types"
         def commonDomain = Mock(Domain)
         def commonOwner = Mock(Element)
-        def aspect1 = new SubTypeAspectData().tap {
-            setDomain(commonDomain)
-            setOwner(commonOwner)
-            setSubType("a")
-        }
-        def aspect2 = new SubTypeAspectData().tap {
-            setDomain(commonDomain)
-            setOwner(commonOwner)
-            setSubType("b")
-        }
+        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a")
+        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "b")
         expect: "same hashCodes"
         aspect1.hashCode() == aspect2.hashCode()
         aspect1 == aspect2

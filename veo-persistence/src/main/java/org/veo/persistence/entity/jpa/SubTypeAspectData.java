@@ -18,14 +18,15 @@
 package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -33,12 +34,13 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Data
 public class SubTypeAspectData extends AspectData implements SubTypeAspect {
     public SubTypeAspectData(Domain domain, Element owner, String subType) {
         super(domain, owner);
         this.subType = subType;
     }
 
+    @NotNull
+    @Getter
     String subType;
 }

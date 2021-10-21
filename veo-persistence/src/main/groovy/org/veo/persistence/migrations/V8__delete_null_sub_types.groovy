@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.aspects;
+package org.veo.persistence.migrations
 
-import org.veo.core.entity.Constraints;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-/**
- * Marks an entity as being of a sub type. Sub types are specific to the domain
- * and the entity type.
- */
-public interface SubTypeAspect extends Aspect {
-    public final int SUB_TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+class V8__delete_null_sub_types extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        context.getConnection().createStatement().execute("""
 
-    String getSubType();
+            delete from aspect where sub_type is null;
+""")
+    }
 }

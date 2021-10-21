@@ -160,9 +160,11 @@ public abstract class ElementData extends IdentifiableVersionedData
 
     @Override
     public void setSubType(Domain domain, String subType) {
-        var aspect = new SubTypeAspectData(domain, this, subType);
-        subTypeAspects.remove(aspect);
-        subTypeAspects.add(aspect);
+        subTypeAspects.removeIf(a -> a.getDomain()
+                                      .equals(domain));
+        if (subType != null) {
+            subTypeAspects.add(new SubTypeAspectData(domain, this, subType));
+        }
     }
 
     public void setLinks(Set<CustomLink> newLinks) {
