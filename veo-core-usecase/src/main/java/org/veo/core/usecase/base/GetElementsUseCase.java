@@ -89,6 +89,10 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
             query.whereSubTypeMatches(input.getSubType());
         }
 
+        if (input.getStatus() != null) {
+            query.whereStatusMatches(input.getStatus());
+        }
+
         if (input.getDisplayName() != null) {
             query.whereDisplayNameMatchesIgnoringCase(input.getDisplayName());
         }
@@ -117,6 +121,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
         QueryCondition<Key<UUID>> unitUuid;
         QueryCondition<String> displayName;
         QueryCondition<String> subType;
+        QueryCondition<String> status;
         QueryCondition<String> description;
         QueryCondition<String> designator;
         QueryCondition<String> name;

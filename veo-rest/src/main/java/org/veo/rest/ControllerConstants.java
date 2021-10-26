@@ -49,6 +49,7 @@ public final class ControllerConstants {
     static final String DOMAIN_PARAM = "domain";
     static final String NAME_PARAM = "name";
     static final String SUB_TYPE_PARAM = "subType";
+    static final String STATUS_PARAM = "status";
     static final String UPDATED_BY_PARAM = "updatedBy";
     static final String DISPLAY_NAME_PARAM = "displayName";
     static final String PAGE_SIZE_PARAM = "size";

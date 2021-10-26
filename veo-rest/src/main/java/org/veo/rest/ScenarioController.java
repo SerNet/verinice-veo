@@ -35,6 +35,7 @@ import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
+import static org.veo.rest.ControllerConstants.STATUS_PARAM;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
@@ -144,6 +145,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
             @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
                                          required = false) String displayName,
             @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+            @RequestParam(value = STATUS_PARAM, required = false) String status,
             @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
             @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
             @RequestParam(value = NAME_PARAM, required = false) String name,
@@ -168,7 +170,8 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
         }
 
         return getScenarios(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
-                                                       description, designator, name, updatedBy,
+                                                       status, description, designator, name,
+                                                       updatedBy,
                                                        PagingMapper.toConfig(pageSize, pageNumber,
                                                                              sortColumn,
                                                                              sortOrder)));

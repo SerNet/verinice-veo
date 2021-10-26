@@ -34,12 +34,14 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 public class GetElementsInputMapper {
 
     public static GetElementsUseCase.InputData map(Client client, String unitUuid,
-            String displayName, String subType, String description, String designator, String name,
-            String updatedBy, PagingConfiguration pagingConfiguration) {
+            String displayName, String subType, String status, String description,
+            String designator, String name, String updatedBy,
+            PagingConfiguration pagingConfiguration) {
         return new GetElementsUseCase.InputData(client, createUuidCondition(unitUuid),
                 createStringFilter(displayName), createNonEmptyCondition(subType),
-                createStringFilter(description), createStringFilter(designator),
-                createStringFilter(name), createStringFilter(updatedBy), pagingConfiguration);
+                createNonEmptyCondition(status), createStringFilter(description),
+                createStringFilter(designator), createStringFilter(name),
+                createStringFilter(updatedBy), pagingConfiguration);
     }
 
     public static GetElementsUseCase.InputData map(Client client, SearchQueryDto searchQuery,
@@ -47,6 +49,7 @@ public class GetElementsInputMapper {
         return new GetElementsUseCase.InputData(client, transformCondition(searchQuery.getUnitId()),
                 transformCondition(searchQuery.getDisplayName()),
                 transformCondition(searchQuery.getSubType()),
+                transformCondition(searchQuery.getStatus()),
                 transformCondition(searchQuery.getDescription()),
                 transformCondition(searchQuery.getDesignator()),
                 transformCondition(searchQuery.getName()),

@@ -35,6 +35,8 @@ public interface ElementQuery<T extends Element> {
 
     ElementQuery<T> whereSubTypeMatches(QueryCondition<String> values);
 
+    ElementQuery<T> whereStatusMatches(QueryCondition<String> values);
+
     ElementQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
 
     ElementQuery<T> whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);

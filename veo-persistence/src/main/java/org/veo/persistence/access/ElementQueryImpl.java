@@ -95,6 +95,15 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     }
 
     @Override
+    public ElementQuery<TInterface> whereStatusMatches(QueryCondition<String> condition) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)
+                                           .get("status"),
+                                       condition.getValues(), criteriaBuilder));
+        return this;
+    }
+
+    @Override
     public ElementQuery<TInterface> whereDisplayNameMatchesIgnoringCase(
             QueryCondition<String> condition) {
         inIgnoringCase(condition, "displayName");

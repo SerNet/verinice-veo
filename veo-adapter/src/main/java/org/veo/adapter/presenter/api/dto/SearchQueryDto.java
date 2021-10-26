@@ -75,6 +75,9 @@ public class SearchQueryDto {
     @Schema(description = "An element's sub type.")
     QueryConditionDto<String> subType;
 
+    @Schema(description = "An element's status.")
+    QueryConditionDto<String> status;
+
     /**
      * Encodes this search query as a base64url-encoded, compressed string. This
      * representation only contains unreserved URI characters (see RFC 3986 section

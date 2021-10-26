@@ -264,29 +264,31 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
             return linkTo(methodOn(ScopeController.class).getScopes(ANY_AUTH, ANY_STRING,
                                                                     ANY_STRING, ANY_STRING,
                                                                     ANY_STRING, ANY_STRING,
-                                                                    ANY_STRING, ANY_STRING, ANY_INT,
-                                                                    ANY_INT, ANY_STRING,
-                                                                    ANY_STRING)).withSelfRel()
-                                                                                .getHref();
+                                                                    ANY_STRING, ANY_STRING,
+                                                                    ANY_STRING, ANY_INT, ANY_INT,
+                                                                    ANY_STRING, ANY_STRING))
+                                                                                            .withSelfRel()
+                                                                                            .getHref();
         }
         if (Asset.class.isAssignableFrom(type)) {
             return linkTo(methodOn(AssetController.class).getAssets(ANY_AUTH, ANY_STRING,
                                                                     ANY_STRING, ANY_STRING,
                                                                     ANY_STRING, ANY_STRING,
-                                                                    ANY_STRING, ANY_STRING, ANY_INT,
-                                                                    ANY_INT, ANY_STRING,
-                                                                    ANY_STRING)).withSelfRel()
-                                                                                .getHref();
+                                                                    ANY_STRING, ANY_STRING,
+                                                                    ANY_STRING, ANY_INT, ANY_INT,
+                                                                    ANY_STRING, ANY_STRING))
+                                                                                            .withSelfRel()
+                                                                                            .getHref();
         }
         if (Document.class.isAssignableFrom(type)) {
             return linkTo(methodOn(DocumentController.class).getDocuments(ANY_AUTH, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
-                                                                          ANY_INT, ANY_INT,
-                                                                          ANY_STRING, ANY_STRING))
-                                                                                                  .withSelfRel()
-                                                                                                  .getHref();
+                                                                          ANY_STRING, ANY_INT,
+                                                                          ANY_INT, ANY_STRING,
+                                                                          ANY_STRING)).withSelfRel()
+                                                                                      .getHref();
         }
         if (Unit.class.isAssignableFrom(type)) {
             return linkTo(methodOn(UnitController.class).getUnits(ANY_AUTH, ANY_STRING,
@@ -298,49 +300,50 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                          ANY_STRING, ANY_STRING,
                                                                          ANY_STRING, ANY_STRING,
                                                                          ANY_STRING, ANY_STRING,
-                                                                         ANY_INT, ANY_INT,
-                                                                         ANY_STRING, ANY_STRING))
-                                                                                                 .withSelfRel()
-                                                                                                 .getHref();
+                                                                         ANY_STRING, ANY_INT,
+                                                                         ANY_INT, ANY_STRING,
+                                                                         ANY_STRING)).withSelfRel()
+                                                                                     .getHref();
         }
         if (Person.class.isAssignableFrom(type)) {
             return linkTo(methodOn(PersonController.class).getPersons(ANY_AUTH, ANY_STRING,
                                                                       ANY_STRING, ANY_STRING,
                                                                       ANY_STRING, ANY_STRING,
                                                                       ANY_STRING, ANY_STRING,
-                                                                      ANY_INT, ANY_INT, ANY_STRING,
-                                                                      ANY_STRING)).withSelfRel()
-                                                                                  .getHref();
+                                                                      ANY_STRING, ANY_INT, ANY_INT,
+                                                                      ANY_STRING, ANY_STRING))
+                                                                                              .withSelfRel()
+                                                                                              .getHref();
         }
         if (Control.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ControlController.class).getControls(ANY_AUTH, ANY_STRING,
                                                                         ANY_STRING, ANY_STRING,
                                                                         ANY_STRING, ANY_STRING,
                                                                         ANY_STRING, ANY_STRING,
-                                                                        ANY_INT, ANY_INT,
-                                                                        ANY_STRING, ANY_STRING))
-                                                                                                .withSelfRel()
-                                                                                                .getHref();
+                                                                        ANY_STRING, ANY_INT,
+                                                                        ANY_INT, ANY_STRING,
+                                                                        ANY_STRING)).withSelfRel()
+                                                                                    .getHref();
         }
         if (Scenario.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ScenarioController.class).getScenarios(ANY_AUTH, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
-                                                                          ANY_INT, ANY_INT,
-                                                                          ANY_STRING, ANY_STRING))
-                                                                                                  .withSelfRel()
-                                                                                                  .getHref();
+                                                                          ANY_STRING, ANY_INT,
+                                                                          ANY_INT, ANY_STRING,
+                                                                          ANY_STRING)).withSelfRel()
+                                                                                      .getHref();
         }
         if (Incident.class.isAssignableFrom(type)) {
             return linkTo(methodOn(IncidentController.class).getIncidents(ANY_AUTH, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
                                                                           ANY_STRING, ANY_STRING,
-                                                                          ANY_INT, ANY_INT,
-                                                                          ANY_STRING, ANY_STRING))
-                                                                                                  .withSelfRel()
-                                                                                                  .getHref();
+                                                                          ANY_STRING, ANY_INT,
+                                                                          ANY_INT, ANY_STRING,
+                                                                          ANY_STRING)).withSelfRel()
+                                                                                      .getHref();
         }
         if (Domain.class.isAssignableFrom(type)) {
             return linkTo(methodOn(DomainController.class).getDomains(ANY_AUTH)).withSelfRel()

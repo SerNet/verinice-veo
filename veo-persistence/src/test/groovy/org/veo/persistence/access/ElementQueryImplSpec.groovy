@@ -147,6 +147,76 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         }
     }
 
+    def 'queries by status'() {
+        given:
+        def domain = domainRepository.save(newDomain {owner = this.client})
+
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "a"
+                setSubType(domain, "VT", "GOOD")
+            },
+            newProcess(unit) {
+                name = "b"
+                setSubType(domain, "VT", "OK")
+            },
+            newProcess(unit) {
+                name = "c"
+                setSubType(domain, "VT", "BAD")
+            },
+            newProcess(unit) {
+                name = "d"
+            }
+        ])
+
+        when:
+        query.whereStatusMatches(new QueryCondition<>(["GOOD", "OK"] as Set))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+        then:
+        result.totalResults == 2
+        with(result.resultPage) {
+            it.size() == 2
+            it[0].name == "a"
+            it[1].name == "b"
+        }
+    }
+
+
+    def 'queries by sub type & status combined'() {
+        given:
+        def domain = domainRepository.save(newDomain {owner = this.client})
+
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "a"
+                setSubType(domain, "VT", "GOOD")
+            },
+            newProcess(unit) {
+                name = "b"
+                setSubType(domain, "VT", "BAD")
+            },
+            newProcess(unit) {
+                name = "c"
+                setSubType(domain, "NT", "GOOD")
+            },
+            newProcess(unit) {
+                name = "d"
+                setSubType(domain, "NT", "BAD")
+            },
+        ])
+
+        when:
+        query.whereSubTypeMatches(new QueryCondition<>(["VT"] as Set))
+        query.whereStatusMatches(new QueryCondition<>(["GOOD"] as Set))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+        then:
+        result.totalResults == 1
+        with(result.resultPage) {
+            it.size() == 1
+            it[0].name == "a"
+        }
+    }
+
     def 'finds processes with no sub type'() {
         given:
         def domain = domainRepository.save(newDomain {owner = this.client})
