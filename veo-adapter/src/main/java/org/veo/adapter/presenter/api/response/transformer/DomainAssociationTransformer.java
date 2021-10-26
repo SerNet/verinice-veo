@@ -38,7 +38,8 @@ public class DomainAssociationTransformer {
                   var domain = idRefResolver.resolve(SyntheticIdRef.from(domainId, Domain.class));
                   target.addToDomains(domain);
                   domain.validateSubType(target.getModelInterface(), associationDto.getSubType());
-                  target.setSubType(domain, associationDto.getSubType());
+                  target.setSubType(domain, associationDto.getSubType(),
+                                    associationDto.getStatus());
               });
     }
 
@@ -51,6 +52,8 @@ public class DomainAssociationTransformer {
                                                               var association = new DomainAssociationDto();
                                                               association.setSubType(source.getSubType(domain)
                                                                                            .orElse(null));
+                                                              association.setStatus(source.getStatus(domain)
+                                                                                          .orElse(null));
                                                               return association;
                                                           })));
     }

@@ -124,11 +124,11 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
-                setSubType(domain, "VT")
+                setSubType(domain, "VT", "NEW")
             },
             newProcess(unit) {
                 name = "b"
-                setSubType(domain, "VT")
+                setSubType(domain, "VT", "NEW")
             },
             newProcess(unit) {
                 name = "c"
@@ -154,11 +154,11 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
-                setSubType(domain, "VT")
+                setSubType(domain, "VT", "NEW")
             },
             newProcess(unit) {
                 name = "b"
-                setSubType(domain, null)
+                setSubType(domain, null, null)
             },
             newProcess(unit) {
                 name = "c"

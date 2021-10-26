@@ -89,7 +89,7 @@ class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
                         it.target = asset
                     }
                 ] as Set
-                setSubType(domain, "VT")
+                setSubType(domain, "VT", "NEW")
             })
         }
         processRepository.saveAll(processes)

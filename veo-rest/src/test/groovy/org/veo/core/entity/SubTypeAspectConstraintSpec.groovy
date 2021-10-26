@@ -32,19 +32,21 @@ class SubTypeAspectConstraintSpec extends Specification {
 
     private Validator validator = Validation.buildDefaultValidatorFactory().getValidator()
 
-    def "subType must not be null"() {
+    def "subType and status must not be null"() {
         given: "a sub type aspect without a sub type"
-        def aspect = new SubTypeAspectData(Mock(Domain), Mock(Element), null)
+        def aspect = new SubTypeAspectData(Mock(Domain), Mock(Element), null, null)
 
         when: "it is validated"
         def errors = validator.validate(aspect)
 
         then: "a not-null error is present"
-        errors.size() == 1
+        errors.size() == 2
         assert errors*.propertyPath*.toString() as Set == [
             "subType",
+            "status",
         ] as Set
         assert errors*.messageTemplate as Set == [
+            '{javax.validation.constraints.NotNull.message}',
             '{javax.validation.constraints.NotNull.message}',
         ] as Set
     }

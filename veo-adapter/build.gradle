@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 def generatedSchemasDir = "$buildDir/generated_entity_schemas"
 def domainTemplatesDir = "$buildDir/domain_templates"
 
@@ -107,6 +109,8 @@ task checkTranslations {
     inputs.file langFile
     def customSchemaFiles = fileTree(dir: 'src/main/resources/schemas/custom/', include: '**/*.json')
     inputs.files customSchemaFiles
+    def domainPatternSchemaFiles = fileTree(dir: 'src/main/resources/schemas/domains/', include: '**/patternProperties.json')
+    inputs.files domainPatternSchemaFiles
 
     doLast {
         def langJson = new groovy.json.JsonSlurper().parse(langFile)
@@ -115,7 +119,7 @@ task checkTranslations {
             'English': langJson.lang.en
         ]
 
-        def handleTranslationKey = {translationKey, location = null ->
+        def handleTranslationKey = { String translationKey, location = null ->
             languagesToCheck.each {lang, json->
                 def translation = json.remove(translationKey)
                 if (translation == null) {
@@ -157,6 +161,18 @@ task checkTranslations {
                 }
             }
         }
+
+        domainPatternSchemaFiles.each { File file ->
+            def type = file.parentFile.name.toLowerCase()
+            def domainAssociationSchema = new JsonSlurper().parse(file).values().first()
+            domainAssociationSchema.allOf.each{ condition ->
+                def subType = condition.if.properties.subType.const
+                condition.then.properties.status.enum.each{ status ->
+                    handleTranslationKey("${type}_${subType}_status_${status}", file.absolutePath)
+                }
+            }
+        }
+
         languagesToCheck.each {lang, json->
             json.each {
                 logger.warn("Unused $lang translation $it")

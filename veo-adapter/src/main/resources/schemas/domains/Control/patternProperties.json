@@ -6,7 +6,42 @@
         "enum": [
           "CTL_TOM"
         ]
+      },
+      "status": {
+        "type": "string"
       }
-    }
+    },
+    "dependantRequired": {
+      "subType": [
+        "status"
+      ],
+      "status": [
+        "subType"
+      ]
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "CTL_TOM"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      }
+    ]
   }
 }

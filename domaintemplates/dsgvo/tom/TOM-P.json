@@ -4,7 +4,8 @@
   "description": "Pseudonymisierung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DSGVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
   "domains": {
     "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
-      "subType": "CTL_TOM"
+      "subType": "CTL_TOM",
+      "status": "NEW"
     }
   },
   "links": {

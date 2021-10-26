@@ -31,7 +31,6 @@ import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomAspect
-import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
@@ -52,7 +51,6 @@ import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.SubTypeAspectData
 import org.veo.persistence.entity.jpa.UnitData
-import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 
 @SpringBootTest(classes = IdentityConsistencyITSpec.class)
 @ActiveProfiles("test")
@@ -295,7 +293,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         entityManager.flush()
 
         when:
-        asset.setSubType(this.domain, "foo")
+        asset.setSubType(this.domain, "foo", "NEW")
         def aspect = asset.subTypeAspects[0]
         testIdentityConsistency(SubTypeAspectData.class, aspect)
 

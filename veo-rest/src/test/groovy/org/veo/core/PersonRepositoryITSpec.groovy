@@ -88,7 +88,7 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            setSubType(null, "fun sub type")
+            setSubType(null, "fun sub type", "NEW")
         })
         then:
         def ex = thrown(ConstraintViolationException)

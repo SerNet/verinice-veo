@@ -47,6 +47,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.InvalidSubTypeException;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
@@ -159,11 +160,20 @@ public abstract class ElementData extends IdentifiableVersionedData
     }
 
     @Override
-    public void setSubType(Domain domain, String subType) {
+    public Optional<String> getStatus(Domain domain) {
+        return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getStatus);
+    }
+
+    @Override
+    public void setSubType(Domain domain, String subType, String status) {
         subTypeAspects.removeIf(a -> a.getDomain()
                                       .equals(domain));
         if (subType != null) {
-            subTypeAspects.add(new SubTypeAspectData(domain, this, subType));
+            subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
+        } else if (status != null) {
+            throw new InvalidSubTypeException(
+                    String.format("Cannot assign status %s for domain %s without a sub type",
+                                  status, domain.getId()));
         }
     }
 
@@ -257,6 +267,5 @@ public abstract class ElementData extends IdentifiableVersionedData
     @Override
     public String getDisplayName() {
         return displayName;
-
     }
 }

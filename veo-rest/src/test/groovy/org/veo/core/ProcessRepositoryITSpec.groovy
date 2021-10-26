@@ -103,7 +103,7 @@ class ProcessRepositoryITSpec extends VeoMvcSpec {
                     designator = "super bad designator"
                 }
             ]
-            setSubType(null, "fun sub type")
+            setSubType(null, "fun sub type", "NEW")
         })
         then:
         def ex = thrown(ConstraintViolationException)

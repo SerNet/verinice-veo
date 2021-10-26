@@ -35,12 +35,17 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SubTypeAspectData extends AspectData implements SubTypeAspect {
-    public SubTypeAspectData(Domain domain, Element owner, String subType) {
+    public SubTypeAspectData(Domain domain, Element owner, String subType, String status) {
         super(domain, owner);
         this.subType = subType;
+        this.status = status;
     }
 
     @NotNull
     @Getter
-    String subType;
+    private String subType;
+
+    @NotNull
+    @Getter
+    private String status;
 }

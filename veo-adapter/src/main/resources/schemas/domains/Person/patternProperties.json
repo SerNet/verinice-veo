@@ -7,7 +7,64 @@
           "PER_DataProtectionOfficer",
           "PER_Person"
         ]
+      },
+      "status": {
+        "type": "string"
       }
-    }
+    },
+    "dependantRequired": {
+      "subType": [
+        "status"
+      ],
+      "status": [
+        "subType"
+      ]
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "PER_DataProtectionOfficer"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "PER_Person"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      }
+    ]
   }
 }

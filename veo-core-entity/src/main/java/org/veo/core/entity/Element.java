@@ -82,7 +82,9 @@ public interface Element
 
     Optional<String> getSubType(Domain domain);
 
-    void setSubType(Domain domain, String subType);
+    Optional<String> getStatus(Domain domain);
+
+    void setSubType(Domain domain, String subType, String status);
 
     /**
      * Add the given {@link CustomAspect} to the collection customAspects.

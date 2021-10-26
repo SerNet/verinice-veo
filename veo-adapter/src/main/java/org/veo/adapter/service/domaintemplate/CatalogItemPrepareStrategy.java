@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
@@ -80,16 +77,10 @@ public class CatalogItemPrepareStrategy {
     }
 
     private void processSubTypes(Domain domain, Element est) {
-        if (!est.getSubTypeAspects()
-                .isEmpty()) {
-            List<String> aspects = est.getSubTypeAspects()
-                                      .stream()
-                                      .map(sa -> sa.getSubType())
-                                      .collect(Collectors.toList());
-            est.getSubTypeAspects()
-               .clear();
-            aspects.forEach(a -> est.setSubType(domain, a));
-        }
+        est.getSubTypeAspects()
+           .forEach(oldAspect -> {
+               oldAspect.setDomain(domain);
+           });
     }
 
 }

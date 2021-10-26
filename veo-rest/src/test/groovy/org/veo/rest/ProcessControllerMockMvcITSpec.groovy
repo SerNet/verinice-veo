@@ -595,7 +595,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'Test process-1'
-                setSubType(domain, 'VT')
+                setSubType(domain, 'VT', "NEW")
             })
             processRepository.save(newProcess(unit) {
                 name = 'Test process-2'

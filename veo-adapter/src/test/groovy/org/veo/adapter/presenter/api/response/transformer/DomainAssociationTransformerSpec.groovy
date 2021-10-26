@@ -46,9 +46,11 @@ class DomainAssociationTransformerSpec extends Specification {
         dto.domains >> [
             (domain0.id.uuidValue()): Mock(DomainAssociationDto) {
                 subType >> "foo"
+                status >> "NEW_FOO"
             },
             (domain1.id.uuidValue()): Mock(DomainAssociationDto) {
                 subType >> "bar"
+                status >> "NEW_BAR"
             }
         ]
 
@@ -57,8 +59,8 @@ class DomainAssociationTransformerSpec extends Specification {
         then: "it is set"
         1 * entity.addToDomains(domain0)
         1 * entity.addToDomains(domain1)
-        1 * entity.setSubType(domain0, "foo")
-        1 * entity.setSubType(domain1, "bar")
+        1 * entity.setSubType(domain0, "foo", "NEW_FOO")
+        1 * entity.setSubType(domain1, "bar", "NEW_BAR")
         1 * domain0.validateSubType(Process, "foo")
         1 * domain1.validateSubType(Process, "bar")
     }
@@ -68,7 +70,9 @@ class DomainAssociationTransformerSpec extends Specification {
         Map<String, DomainAssociationDto> capturedDomainMap
         entity.domains >> [domain0, domain1]
         entity.getSubType(domain0) >> Optional.of("foo")
+        entity.getStatus(domain0) >> Optional.of("NEW_FOO")
         entity.getSubType(domain1) >> Optional.of("bar")
+        entity.getStatus(domain1) >> Optional.of("NEW_BAR")
 
         when: "the sub types are mapped"
         domainAssociationTransformer.mapDomainsToDto(entity, dto)
@@ -78,9 +82,11 @@ class DomainAssociationTransformerSpec extends Specification {
         capturedDomainMap.size() == 2
         with(capturedDomainMap[domain0.id.uuidValue()]) {
             subType == "foo"
+            status == "NEW_FOO"
         }
         with(capturedDomainMap[domain1.id.uuidValue()]) {
             subType == "bar"
+            status == "NEW_BAR"
         }
     }
 }

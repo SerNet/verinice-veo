@@ -142,7 +142,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newProcess(it) {
                     name = 'p2'
                     description = "a process with subtype"
-                    setSubType(domain, "MY_SUBTYPE")
+                    setSubType(domain, "MY_SUBTYPE", "NEW")
                 }
             })
 
@@ -151,7 +151,7 @@ class CatalogSpec extends VeoMvcSpec {
                     abbreviation = "caf"
                     name = 'p3-all-features'
                     description = "a process with subtype"
-                    setSubType(domain, "MY_SUBTYPE")
+                    setSubType(domain, "MY_SUBTYPE", "NEW")
                     customAspects = [
                         newCustomAspect("process_resilience") {
                             attributes = [
@@ -179,7 +179,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newControl(it) {
                     name = 'tom1'
                     description = "a control with external tailorref"
-                    setSubType(domain, "CTL_TOM")
+                    setSubType(domain, "CTL_TOM", "NEW")
                 }
             })
             newExternalTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {

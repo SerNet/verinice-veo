@@ -26,4 +26,6 @@ import lombok.Data;
 public class DomainAssociationDto {
     @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
     String subType;
+    @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
+    String status;
 }

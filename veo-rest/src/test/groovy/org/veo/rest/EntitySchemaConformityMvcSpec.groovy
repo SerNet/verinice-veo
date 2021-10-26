@@ -191,7 +191,8 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def scopeId = (String)parseJson(post("/scopes", [
             domains: [
                 (domainId): [
-                    subType: "SCP_Controller"
+                    subType: "SCP_Controller",
+                    status: "NEW"
                 ]
             ],
             name: "scope",
@@ -273,7 +274,8 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             domains: [
                 (domainId): [
-                    subType: "PER_DataProtectionOfficer"
+                    subType: "PER_DataProtectionOfficer",
+                    status: "NEW"
                 ]
             ]])).resourceId
         def scopeId = parseJson(post("/scopes", [

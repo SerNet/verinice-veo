@@ -8,7 +8,86 @@
           "AST_Datatype",
           "AST_IT-System"
         ]
+      },
+      "status": {
+        "type": "string"
       }
-    }
+    },
+    "dependantRequired": {
+      "subType": [
+        "status"
+      ],
+      "status": [
+        "subType"
+      ]
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "AST_Application"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "AST_Datatype"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "AST_IT-System"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      }
+    ]
   }
 }

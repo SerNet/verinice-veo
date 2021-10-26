@@ -25,6 +25,9 @@ import org.veo.core.entity.Constraints;
  */
 public interface SubTypeAspect extends Aspect {
     public final int SUB_TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+    public final int STATUS_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+
+    String getStatus();
 
     String getSubType();
 }

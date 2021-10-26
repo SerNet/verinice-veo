@@ -6,7 +6,42 @@
         "enum": [
           "SCN_Scenario"
         ]
+      },
+      "status": {
+        "type": "string"
       }
-    }
+    },
+    "dependantRequired": {
+      "subType": [
+        "status"
+      ],
+      "status": [
+        "subType"
+      ]
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "SCN_Scenario"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      }
+    ]
   }
 }

@@ -3,7 +3,8 @@
   "description": "Bewerbermanagement",
   "domains": {
     "2cef4503-dd41-48cf-9030-16820797a300": {
-      
+      "subType": "PRO_DataProcessing",
+      "status": "IN_PROGRESS"
     }
   },
   "owner": {

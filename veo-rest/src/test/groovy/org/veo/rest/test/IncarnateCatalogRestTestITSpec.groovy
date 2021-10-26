@@ -178,7 +178,8 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
             name: "process",
             domains: [
                 (dsgvoId): [
-                    subType: "PRO_DataProcessing"
+                    subType: "PRO_DataProcessing",
+                    status: "NEW"
                 ]
             ],
             owner: [targetUri: "/units/$unitId"]

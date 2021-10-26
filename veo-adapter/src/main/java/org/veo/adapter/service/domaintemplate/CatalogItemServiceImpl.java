@@ -62,7 +62,7 @@ public class CatalogItemServiceImpl implements CatalogItemService {
                                                                          placeholderResolver,
                                                                          orgLink)));
         catalogElement.getSubTypeAspects()
-                      .forEach(st -> newElement.setSubType(domain, st.getSubType()));
+                      .forEach(st -> newElement.setSubType(domain, st.getSubType(), "NEW"));
         // TODO: VEO-612 handle parts
         newElement.setAppliedCatalogItems(Collections.singleton(item));
         return newElement;

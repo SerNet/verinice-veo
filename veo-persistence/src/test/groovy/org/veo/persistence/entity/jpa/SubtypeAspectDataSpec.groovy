@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Element
+import org.veo.core.entity.InvalidSubTypeException
 
 import spock.lang.Specification
 
@@ -26,8 +27,8 @@ class SubtypeAspectDataSpec extends Specification{
     def "domain affects identity"() {
         given: "two aspects with different domains"
         def commonOwner = Mock(Element)
-        def aspect1 = new SubTypeAspectData(Mock(Domain), commonOwner, "a")
-        def aspect2 = new SubTypeAspectData(Mock(Domain), commonOwner, "a")
+        def aspect1 = new SubTypeAspectData(Mock(Domain), commonOwner, "a", "NEW")
+        def aspect2 = new SubTypeAspectData(Mock(Domain), commonOwner, "a", "NEW")
         expect: "different hashCodes"
         aspect1.hashCode() != aspect2.hashCode()
         aspect1 != aspect2
@@ -36,8 +37,8 @@ class SubtypeAspectDataSpec extends Specification{
     def "owner affects identity"() {
         given: "two aspects with different owners"
         def commonDomain = Mock(Domain)
-        def aspect1 = new SubTypeAspectData(commonDomain, Mock(Element), "a")
-        def aspect2 = new SubTypeAspectData(commonDomain, Mock(Element), "a")
+        def aspect1 = new SubTypeAspectData(commonDomain, Mock(Element), "a", "NEW")
+        def aspect2 = new SubTypeAspectData(commonDomain, Mock(Element), "a", "NEW")
         expect: "different hashCodes"
         aspect1.hashCode() != aspect2.hashCode()
         aspect1 != aspect2
@@ -47,8 +48,19 @@ class SubtypeAspectDataSpec extends Specification{
         given: "two aspects with different sub types"
         def commonDomain = Mock(Domain)
         def commonOwner = Mock(Element)
-        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a")
-        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "b")
+        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
+        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "b", "NEW")
+        expect: "same hashCodes"
+        aspect1.hashCode() == aspect2.hashCode()
+        aspect1 == aspect2
+    }
+
+    def "status does not affect identity"() {
+        given: "two aspects with different status"
+        def commonDomain = Mock(Domain)
+        def commonOwner = Mock(Element)
+        def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
+        def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "OLD")
         expect: "same hashCodes"
         aspect1.hashCode() == aspect2.hashCode()
         aspect1 == aspect2

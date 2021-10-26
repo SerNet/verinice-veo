@@ -7,7 +7,64 @@
           "PRO_DataProcessing",
           "PRO_DataTransfer"
         ]
+      },
+      "status": {
+        "type": "string"
       }
-    }
+    },
+    "dependantRequired": {
+      "subType": [
+        "status"
+      ],
+      "status": [
+        "subType"
+      ]
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "PRO_DataProcessing"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "PRO_DataTransfer"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      }
+    ]
   }
 }
