@@ -101,6 +101,9 @@ spring:
           ## Auth Server private key location, i.e.: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
           jwk-set-uri: http://<AUTHSERVER>/auth/realms/<REALM>/protocol/openid-connect/certs
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
 
 ## Change log level for different packages:
 #logging:

@@ -56,6 +56,16 @@ class SwaggerSpec extends VeoSpringSpec {
         apiDocsString.contains('verinice.VEO')
     }
 
+    def "Swagger index page does not load Petstore API"() {
+        when:
+        def response = mvc.perform(get('/swagger-ui/index.html')).andReturn().response
+        def pageContent = response.contentAsString
+        then:
+        pageContent.contains('Swagger UI')
+        !pageContent.contains('petstore')
+    }
+
+
     def "response DTO contains links property"() {
         when:
         def assetDtoSchema = parsedApiDocs.components.schemas.FullAssetDto
