@@ -7836,7 +7836,7 @@ POM License: The 3-Clause BSD License - https://opensource.org/licenses/BSD-3-Cl
 
 --------------------------------------------------------------------------------
 
-88. Group: org.postgresql  Name: postgresql  Version: 42.2.24
+88. Group: org.postgresql  Name: postgresql  Version: 42.3.0
 
 Manifest Project URL: https://jdbc.postgresql.org/
 
@@ -18705,5 +18705,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Wed Oct 27 16:34:10 UTC 2021.
+This report was generated at Wed Oct 27 17:35:35 UTC 2021.
 
