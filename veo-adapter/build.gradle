@@ -37,7 +37,7 @@ dependencies {
     generateSchemas 'com.github.victools:jsonschema-module-jackson'
     generateSchemas 'com.github.victools:jsonschema-module-javax-validation'
     generateSchemas 'com.github.victools:jsonschema-module-swagger-2'
-    generateSchemas 'io.swagger.core.v3:swagger-annotations:2.1.5'
+    generateSchemas 'io.swagger.core.v3:swagger-annotations:2.1.11'
 }
 
 task generateEntitySchemas(type: JavaExec) {
