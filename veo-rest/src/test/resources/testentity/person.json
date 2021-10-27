@@ -350,7 +350,78 @@
     },
     "domains": {
       "type": "object",
-      "description": "Details about this element's association with domains. Domain ID is key, association object is value."
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "patternProperties": {
+        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
+          "properties": {
+            "subType": {
+              "type": "string",
+              "enum": [
+                "PER_DataProtectionOfficer",
+                "PER_Person"
+              ]
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "dependantRequired": {
+            "subType": [
+              "status"
+            ],
+            "status": [
+              "subType"
+            ]
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "PER_DataProtectionOfficer"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "PER_Person"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "id": {
       "type": "string",
@@ -426,21 +497,6 @@
         ],
         "description": "A reference to an entity's part"
       }
-    },
-    "subType": {
-      "type": "object",
-      "title": "SubType",
-      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
-      "patternProperties": {
-        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
-          "type": "string",
-          "enum": [
-            "PER_DataProtectionOfficer",
-            "PER_Person"
-          ]
-        }
-      },
-      "additionalProperties": false
     },
     "type": {
       "type": "string",

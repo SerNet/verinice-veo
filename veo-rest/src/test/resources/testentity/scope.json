@@ -1476,7 +1476,124 @@
     },
     "domains": {
       "type": "object",
-      "description": "Details about this element's association with domains. Domain ID is key, association object is value."
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "patternProperties": {
+        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
+          "properties": {
+            "subType": {
+              "type": "string",
+              "enum": [
+                "SCP_Controller",
+                "SCP_JointController",
+                "SCP_Processor",
+                "SCP_ResponsibleBody"
+              ]
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "dependantRequired": {
+            "subType": [
+              "status"
+            ],
+            "status": [
+              "subType"
+            ]
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_Controller"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_JointController"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_Processor"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_ResponsibleBody"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "id": {
       "type": "string",
@@ -2111,13 +2228,16 @@
             "readOnly": true
           },
           "resourcesUri": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "searchesUri": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           },
           "targetUri": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           }
         }
       }
@@ -2153,23 +2273,6 @@
         "targetUri"
       ],
       "description": "A reference to the unit containing this entity."
-    },
-    "subType": {
-      "type": "object",
-      "title": "SubType",
-      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
-      "patternProperties": {
-        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
-          "type": "string",
-          "enum": [
-            "SCP_Controller",
-            "SCP_JointController",
-            "SCP_Processor",
-            "SCP_ResponsibleBody"
-          ]
-        }
-      },
-      "additionalProperties": false
     },
     "type": {
       "type": "string",
