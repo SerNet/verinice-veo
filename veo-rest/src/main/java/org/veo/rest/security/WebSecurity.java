@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -135,6 +136,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         Arrays.stream(origins)
               .peek(s -> log.debug("Added CORS origin pattern: {}", s))
               .forEach(corsConfig::addAllowedOriginPattern);
+        corsConfig.setMaxAge(Duration.ofMinutes(30));
         source.registerCorsConfiguration("/**", corsConfig);
         return source;
     }

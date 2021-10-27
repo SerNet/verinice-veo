@@ -89,6 +89,7 @@ class CORSRestTest extends VeoRestTest{
                 contains(HttpHeaders.AUTHORIZATION)
                 contains(HttpHeaders.CONTENT_TYPE)
             }
+            getAccessControlMaxAge() == 1800L
         }
     }
 
