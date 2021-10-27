@@ -22,7 +22,7 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '50', artifactNumToKeepStr: '5'))
-        timeout(time: 30, unit: 'MINUTES')
+        timeout(time: 2, unit: 'HOURS')
     }
 
     environment {
@@ -69,6 +69,9 @@ pipeline {
             }
         }
         stage('Test') {
+            options {
+                timeout(time: 20, unit: 'MINUTES')
+            }
             environment {
                 def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
                 RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
@@ -106,6 +109,9 @@ pipeline {
             }
         }
           stage('HTTP REST Test') {
+                    options {
+                        timeout(time: 20, unit: 'MINUTES')
+                    }
                     environment {
                         def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
                         KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
@@ -166,6 +172,9 @@ pipeline {
             }
         }
         stage('Analyze') {
+            options {
+                timeout(time: 5, unit: 'MINUTES')
+            }
             agent {
                 docker {
                     image imageForGradleStages
@@ -217,6 +226,9 @@ pipeline {
         }
 
         stage('Postman Tests') {
+            options {
+                timeout(time: 5, unit: 'MINUTES')
+            }
             environment {
                 KEYCLOAK_CREDS = credentials('veo_authentication_credentials')
                 RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
