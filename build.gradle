@@ -120,10 +120,6 @@ subprojects {
         }
     }
 
-    def versions = [
-        testcontainers: '1.16.0',
-    ]
-
     dependencyManagement {
         dependencies {
             dependency 'org.postgresql:postgresql:42.3.0'
@@ -156,9 +152,9 @@ subprojects {
             ].each { dependency "com.github.victools:$it:4.20.0" }
             dependency 'net.ttddyy:datasource-proxy:1.7'
             dependency 'com.networknt:json-schema-validator:1.0.63'
-            dependency "org.testcontainers:testcontainers:$versions.testcontainers"
-            dependency "org.testcontainers:spock:$versions.testcontainers"
-            dependency "org.testcontainers:postgresql:$versions.testcontainers"
+            dependency "org.testcontainers:testcontainers:1.16.0"
+            dependency "org.testcontainers:spock:1.16.0"
+            dependency "org.testcontainers:postgresql:1.16.0"
             dependency "org.keycloak:keycloak-authz-client:11.0.3"
         }
     }
