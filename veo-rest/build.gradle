@@ -34,7 +34,6 @@ dependencies {
     runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-    testImplementation "org.testcontainers:testcontainers"
     testImplementation "org.testcontainers:spock"
     testImplementation 'com.h2database:h2'
     testImplementation 'org.keycloak:keycloak-authz-client'

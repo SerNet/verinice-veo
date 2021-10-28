@@ -21,7 +21,6 @@ dependencies {
     testImplementation project(":veo-test")
     testImplementation 'javax.validation:validation-api'
 
-    testRuntimeOnly "org.testcontainers:testcontainers"
     testRuntimeOnly "org.testcontainers:postgresql"
     testRuntimeOnly 'org.postgresql:postgresql'
 }
