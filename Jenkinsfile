@@ -69,9 +69,6 @@ pipeline {
             }
         }
         stage('Test') {
-            options {
-                timeout(time: 20, unit: 'MINUTES')
-            }
             environment {
                 def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
                 RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
@@ -81,37 +78,36 @@ pipeline {
             }
             agent any
             steps {
-                 script {
-                     withDockerNetwork{ n ->
-                         docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                             docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
-                                 sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
-                                       export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                       ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
-                                 jacoco classPattern: '**/build/classes/java/main'
-                                 junit allowEmptyResults: true,
-                                         testResults: '**/build/test-results/test/*.xml',
-                                         testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-                                 [ 'veo-adapter', 'veo-core-entity', 'veo-core-usecase', 'veo-persistence', 'veo-rest', 'veo-test' ].each {
-                                   publishHTML([
-                                            allowMissing: false,
-                                            alwaysLinkToLastBuild: false,
-                                            keepAll: true,
-                                            reportDir: "${it}/build/reports/tests/test/",
-                                            reportFiles: 'index.html',
-                                            reportName: "Test report: ${it}"
-                                   ])
-                                 }
-                             }
-                         }
-                     }
-                 }
+                timeout(time: 20, unit: 'MINUTES'){
+                    script {
+                        withDockerNetwork{ n ->
+                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
+                                    sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
+                                          export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
+                                          ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
+                                    jacoco classPattern: '**/build/classes/java/main'
+                                    junit allowEmptyResults: true,
+                                            testResults: '**/build/test-results/test/*.xml',
+                                            testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+                                    [ 'veo-adapter', 'veo-core-entity', 'veo-core-usecase', 'veo-persistence', 'veo-rest', 'veo-test' ].each {
+                                      publishHTML([
+                                               allowMissing: false,
+                                               alwaysLinkToLastBuild: false,
+                                               keepAll: true,
+                                               reportDir: "${it}/build/reports/tests/test/",
+                                               reportFiles: 'index.html',
+                                               reportName: "Test report: ${it}"
+                                      ])
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
           stage('HTTP REST Test') {
-                    options {
-                        timeout(time: 20, unit: 'MINUTES')
-                    }
                     environment {
                         def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
                         KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
@@ -128,30 +124,32 @@ pipeline {
                     }
                     agent any
                     steps {
-                         script {
-                             withDockerNetwork{ n ->
-                                 docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                                     docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
-                                         sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
-                                               export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                               export VEO_RESTTEST_USERS_DEFAULT_NAME=$KEYCLOAK_DEFAULT_CREDS_USR && \
-                                               export VEO_RESTTEST_USERS_DEFAULT_PASS=$KEYCLOAK_DEFAULT_CREDS_PSW && \
-                                               export VEO_RESTTEST_USERS_ADMIN_NAME=$KEYCLOAK_ADMIN_CREDS_USR && \
-                                               export VEO_RESTTEST_USERS_ADMIN_PASS=$KEYCLOAK_ADMIN_CREDS_PSW && \
-                                               ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128'''
-                                         junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
-                                         publishHTML([
-                                                    allowMissing: false,
-                                                    alwaysLinkToLastBuild: false,
-                                                    keepAll: true,
-                                                    reportDir: 'veo-rest/build/reports/tests/restTest/',
-                                                    reportFiles: 'index.html',
-                                                    reportName: 'Test report: veo-rest-integration-test'
-                                         ])
-                                         perfReport failBuildIfNoResultFile: false,
-                                                    modePerformancePerTestCase: true,
-                                                    showTrendGraphs: true,
-                                                    sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
+                         timeout(time: 20, unit: 'MINUTES'){
+                             script {
+                                 withDockerNetwork{ n ->
+                                     docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                         docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
+                                             sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
+                                                   export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
+                                                   export VEO_RESTTEST_USERS_DEFAULT_NAME=$KEYCLOAK_DEFAULT_CREDS_USR && \
+                                                   export VEO_RESTTEST_USERS_DEFAULT_PASS=$KEYCLOAK_DEFAULT_CREDS_PSW && \
+                                                   export VEO_RESTTEST_USERS_ADMIN_NAME=$KEYCLOAK_ADMIN_CREDS_USR && \
+                                                   export VEO_RESTTEST_USERS_ADMIN_PASS=$KEYCLOAK_ADMIN_CREDS_PSW && \
+                                                   ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128'''
+                                             junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
+                                             publishHTML([
+                                                        allowMissing: false,
+                                                        alwaysLinkToLastBuild: false,
+                                                        keepAll: true,
+                                                        reportDir: 'veo-rest/build/reports/tests/restTest/',
+                                                        reportFiles: 'index.html',
+                                                        reportName: 'Test report: veo-rest-integration-test'
+                                             ])
+                                             perfReport failBuildIfNoResultFile: false,
+                                                        modePerformancePerTestCase: true,
+                                                        showTrendGraphs: true,
+                                                        sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
+                                         }
                                      }
                                  }
                              }
@@ -172,9 +170,6 @@ pipeline {
             }
         }
         stage('Analyze') {
-            options {
-                timeout(time: 5, unit: 'MINUTES')
-            }
             agent {
                 docker {
                     image imageForGradleStages
@@ -183,18 +178,20 @@ pipeline {
                 }
             }
             steps {
-                unarchive mapping: ['build/reports/dependency-license/LICENSE-3RD-PARTY.txt': 'build/reports/dependency-license/LICENSE-3RD-PARTY.txt']
-                script {
-                    def repositoryFileContent = readFile('LICENSE-3RD-PARTY.txt')
-                    def generatedFileContent = readFile('build/reports/dependency-license/LICENSE-3RD-PARTY.txt')
-                    def repositoryFileContentWithoutDate = repositoryFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
-                    def generatedFileContentWithoutDate = generatedFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
-                    if (repositoryFileContentWithoutDate != generatedFileContentWithoutDate){
-                        error 'LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport'
+                timeout(time: 5, unit: 'MINUTES'){
+                    unarchive mapping: ['build/reports/dependency-license/LICENSE-3RD-PARTY.txt': 'build/reports/dependency-license/LICENSE-3RD-PARTY.txt']
+                    script {
+                        def repositoryFileContent = readFile('LICENSE-3RD-PARTY.txt')
+                        def generatedFileContent = readFile('build/reports/dependency-license/LICENSE-3RD-PARTY.txt')
+                        def repositoryFileContentWithoutDate = repositoryFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
+                        def generatedFileContentWithoutDate = generatedFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
+                        if (repositoryFileContentWithoutDate != generatedFileContentWithoutDate){
+                            error 'LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport'
+                        }
                     }
+                    // work around https://github.com/spotbugs/spotbugs-gradle-plugin/issues/391
+                    sh './gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME check -x test -x spotbugsTest'
                 }
-                 // work around https://github.com/spotbugs/spotbugs-gradle-plugin/issues/391
-                sh './gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME check -x test -x spotbugsTest'
             }
             post {
                 failure {
@@ -226,42 +223,41 @@ pipeline {
         }
 
         stage('Postman Tests') {
-            options {
-                timeout(time: 5, unit: 'MINUTES')
-            }
             environment {
                 KEYCLOAK_CREDS = credentials('veo_authentication_credentials')
                 RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
             }
             agent any
             steps {
-            unarchive mapping: ["veo-rest/build/libs/veo-rest-${projectVersion}.jar": "veo-rest/build/libs/veo-rest-${projectVersion}.jar"]
-                script {
-                    def veo = docker.build("veo", "-f postman/Dockerfile .")
-                    withDockerNetwork{ n ->
-                        docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_PASSWORD=postgres") { db ->
-                            sh 'until pg_isready; do sleep 1; done'
-                            veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
-                                sh "java -Dlogging.file.name=${WORKSPACE}/veo-rest.log -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dveo.etag.salt=pleasemrpostman -Dspring.rabbitmq.username=\$RABBITMQ_CREDS_USR -Dspring.rabbitmq.password=\$RABBITMQ_CREDS_PSW -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
-                                echo 'Waiting for application startup'
-                                timeout(1) {
-                                    waitUntil {
-                                        script {
-                                            def r = sh returnStatus:true, script: 'wget -q http://localhost:8070/veo -O /dev/null'
-                                            return (r == 0);
+                timeout(time: 5, unit: 'MINUTES'){
+                    unarchive mapping: ["veo-rest/build/libs/veo-rest-${projectVersion}.jar": "veo-rest/build/libs/veo-rest-${projectVersion}.jar"]
+                    script {
+                        def veo = docker.build("veo", "-f postman/Dockerfile .")
+                        withDockerNetwork{ n ->
+                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_PASSWORD=postgres") { db ->
+                                sh 'until pg_isready; do sleep 1; done'
+                                veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
+                                    sh "java -Dlogging.file.name=${WORKSPACE}/veo-rest.log -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dveo.etag.salt=pleasemrpostman -Dspring.rabbitmq.username=\$RABBITMQ_CREDS_USR -Dspring.rabbitmq.password=\$RABBITMQ_CREDS_PSW -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
+                                    echo 'Waiting for application startup'
+                                    timeout(1) {
+                                        waitUntil {
+                                            script {
+                                                def r = sh returnStatus:true, script: 'wget -q http://localhost:8070/veo -O /dev/null'
+                                                return (r == 0);
+                                            }
                                         }
                                     }
+                                    def accessToken = sh(
+                                      returnStdout:true,
+                                      script: 'VEO_USER=$KEYCLOAK_CREDS_USR VEO_USER_PASSWORD=$KEYCLOAK_CREDS_PSW /veo/authenticate -r verinice-veo -c veo-development-client'
+                                    ).trim()
+                                    sh "newman run 'postman/verinice.VEO_REST_API.postman_collection.json' --env-var 'accessToken=${accessToken}' --reporters 'cli,junit' --reporter-junit-export='newman-report.xml' --suppress-exit-code"
+                                    junit allowEmptyResults: true, testResults: 'newman-report.xml'
+                                    perfReport failBuildIfNoResultFile: false,
+                                                        modePerformancePerTestCase: true,
+                                                        showTrendGraphs: true,
+                                                        sourceDataFiles: 'newman-report.xml'
                                 }
-                                def accessToken = sh(
-                                  returnStdout:true,
-                                  script: 'VEO_USER=$KEYCLOAK_CREDS_USR VEO_USER_PASSWORD=$KEYCLOAK_CREDS_PSW /veo/authenticate -r verinice-veo -c veo-development-client'
-                                ).trim()
-                                sh "newman run 'postman/verinice.VEO_REST_API.postman_collection.json' --env-var 'accessToken=${accessToken}' --reporters 'cli,junit' --reporter-junit-export='newman-report.xml' --suppress-exit-code"
-                                junit allowEmptyResults: true, testResults: 'newman-report.xml'
-                                perfReport failBuildIfNoResultFile: false,
-                                                    modePerformancePerTestCase: true,
-                                                    showTrendGraphs: true,
-                                                    sourceDataFiles: 'newman-report.xml'
                             }
                         }
                     }
