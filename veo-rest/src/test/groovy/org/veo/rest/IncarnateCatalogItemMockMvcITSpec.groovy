@@ -172,7 +172,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         validateNewElementAgainstCatalogItem(processResult, item5, domain)
         processResult.owner.displayName == 'Test unit'
-        processResult.subType[domain.id.uuidValue()] == "MY_SUBTYPE"
+        processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
     }
 
     @WithUserDetails("user@domain.example")
@@ -199,7 +199,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         validateNewElementAgainstCatalogItem(processResult, item6, domain)
         processResult.owner.displayName == 'Test unit'
-        processResult.subType[domain.id.uuidValue()] == "MY_SUBTYPE"
+        processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
     }
 
     @WithUserDetails("user@domain.example")
@@ -230,7 +230,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the tom is created and all the features are set"
         validateNewElementAgainstCatalogItem(tomResult, item7, domain)
         tomResult.owner.displayName == 'Test unit'
-        tomResult.subType[domain.id.uuidValue()] == "CTL_TOM"
+        tomResult.domains[domain.id.uuidValue()].subType == "CTL_TOM"
 
         when: "we get the linked process"
         def processResult = parseJson(get(processUri))
@@ -261,7 +261,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the tom is created and all the features are set"
         validateNewElementAgainstCatalogItem(tomResult, item7, domain)
         tomResult.owner.displayName == 'Test unit'
-        tomResult.subType[domain.id.uuidValue()] == "CTL_TOM"
+        tomResult.domains[domain.id.uuidValue()].subType == "CTL_TOM"
 
         when: "we get the linked process"
         processResult = parseJson(get(processUri))
@@ -305,7 +305,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         }
         verifyAll(element) {
             it.domains.size() == 1
-            it.domains[0].targetUri.endsWith(domain.id.uuidValue())
+            it.domains[domain.id.uuidValue()] != null
         }
         element.links.each {
             assert it.value.domains.size() == 1

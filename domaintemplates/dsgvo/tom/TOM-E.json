@@ -2,7 +2,11 @@
   "abbreviation": "TOM-E",
   "name": "TOM zur Verschlüsselung",
   "description": "Verschlüsselung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DSGVO hinsichtlich der Verschlüsselung personenbezogener Daten.",
-  "domains": [],
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "CTL_TOM"
+    }
+  },
   "links": {
     
   },
@@ -12,9 +16,6 @@
         "control_dataProtection_objectives": "control_dataProtection_objectives_encryption"
       }
     }
-  },
-  "subType": {
-    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": "CTL_TOM"
   },
   "type": "control",
   "parts": [],

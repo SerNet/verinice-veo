@@ -199,10 +199,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ]
         ]
 
@@ -242,10 +239,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ]
         ]
 
@@ -258,7 +252,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -304,10 +298,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             customAspects:
             [
@@ -332,7 +323,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
@@ -383,10 +374,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             customAspects:
             [
@@ -407,7 +395,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
@@ -467,10 +455,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             links:
             [
@@ -500,7 +485,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
         and: 'there is one type of links'
         def links = result.links

@@ -3,14 +3,11 @@
     "targetUri": "/units/76d22240-5736-4a4d-ac93-a9adc9574bad"
   },
   "designator": "",
-  "subType": {
-    
-  },
-  "domains": [
-    {
-      "targetUri": "/domains/774e14f3-a8a8-4f22-aa1d-4344ac39517b"
+  "domains": {
+    "774e14f3-a8a8-4f22-aa1d-4344ac39517b": {
+      
     }
-  ],
+  },
   "name": "Verantwortliche Stelle",
   "customAspects": {
     "scope_address": {

@@ -35,6 +35,7 @@ class ClassPathSchemaSpec extends Specification {
 
     def customAspectMetaSchema = getMetaSchema("custom-aspect-meta-schema.json")
     def customLinkMetaSchema = getMetaSchema("custom-link-meta-schema.json")
+    def domainsMetaSchema = getMetaSchema("domains-meta-schema.json")
 
 
     def "Custom aspect #aspect.id of #aspect.schema schema conform to meta schema"() {
@@ -60,6 +61,13 @@ class ClassPathSchemaSpec extends Specification {
         }.flatten()
     }
 
+    def "domains node in #schema.title conforms to meta schema"() {
+        expect:
+        def domainsNode = schema.get("properties").get("domains")
+        domainsMetaSchema.validate(domainsNode).empty
+        where:
+        schema << entitySchemas
+    }
 
     def "entity schema #schema.title is a valid schema"() {
         given:

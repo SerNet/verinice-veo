@@ -46,6 +46,7 @@ import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.CustomTypedLinkDto;
+import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
@@ -55,7 +56,6 @@ import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformExternalTailoringReference;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Key;
@@ -223,11 +223,18 @@ public class DomainTemplateAssembler {
             elementDto.setOwner(SyntheticIdRef.from(itemDto.getId(), ElementOwner.class,
                                                     CatalogItem.class));
             elementDto.setType(SyntheticIdRef.toSingularTerm(elementDto.getModelInterface()));
-            elementDto.getDomains()
-                      .add(SyntheticIdRef.from(id, Domain.class, Domain.class));
+            associateWithTargetDomain(elementDto);
             cache.put(e.getKey(), itemDto);
         }
         return cache;
+    }
+
+    private void associateWithTargetDomain(AbstractElementDto dto) {
+        dto.setDomains(Map.of(id, dto.getDomains()
+                                     .values()
+                                     .stream()
+                                     .findFirst()
+                                     .orElse(new DomainAssociationDto())));
     }
 
     /**

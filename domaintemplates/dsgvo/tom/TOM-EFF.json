@@ -2,7 +2,11 @@
   "abbreviation": "TOM-EFF",
   "name": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
   "description": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DSGVO hinsichtlich Verfahren zur regelmäßigen Überprüfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Maßnahmen zur Gewährleistung der Sicherheit der Verarbeitung.",
-  "domains": [],
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "CTL_TOM"
+    }
+  },
   "links": {
     
   },
@@ -12,9 +16,6 @@
         "control_dataProtection_objectives": "control_dataProtection_objectives_effectiveness"
       }
     }
-  },
-  "subType": {
-    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": "CTL_TOM"
   },
   "type": "control",
   "parts": [],

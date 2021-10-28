@@ -18,23 +18,20 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
@@ -73,9 +70,9 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
     @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
-    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
     @Valid
-    private Set<IdRef<Domain>> domains = Collections.emptySet();
+    @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
+    private Map<String, DomainAssociationDto> domains = new HashMap<>();
 
     @NotNull(message = "An owner must be present.")
     @Schema(required = true, implementation = IdRefOwner.class)
@@ -90,11 +87,6 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
     @Schema(description = "Groups of customizable attributes - see '/schemas'",
             title = "CustomAspect")
     private Map<String, CustomAspectDto> customAspects = Collections.emptyMap();
-
-    @Valid
-    @Schema(description = "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
-            title = "SubType")
-    private Map<String, String> subType = Collections.emptyMap();
 
     @Schema(description = "Entity type identifier", accessMode = Schema.AccessMode.READ_ONLY)
     private String type;

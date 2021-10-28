@@ -382,10 +382,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             links:
             [

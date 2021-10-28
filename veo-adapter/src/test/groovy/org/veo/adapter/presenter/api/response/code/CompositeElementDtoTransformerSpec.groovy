@@ -23,10 +23,10 @@ import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
+import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
-import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
@@ -43,11 +43,11 @@ class CompositeElementDtoTransformerSpec extends Specification {
 
     def refAssembler = Mock(ReferenceAssembler)
     def factory = Mock(EntityFactory)
-    def subTypeTransformer = Mock(SubTypeTransformer)
     def idRefResolver = Mock(IdRefResolver)
+    def domainAssociationTransformer = Mock(DomainAssociationTransformer)
     def entitySchemaLoader = Mock(EntitySchemaLoader)
-    def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler, subTypeTransformer)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, entitySchemaLoader, subTypeTransformer)
+    def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler, domainAssociationTransformer)
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, entitySchemaLoader,domainAssociationTransformer)
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -173,7 +173,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         1 * idRefResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
         result == newCompositeAssetEntity
         1 * newCompositeAssetEntity.setParts([asset1, asset2].toSet())
-        1 * subTypeTransformer.mapSubTypesToEntity(compositeAssetDto, newCompositeAssetEntity)
+        1 * domainAssociationTransformer.mapDomainsToEntity(compositeAssetDto, newCompositeAssetEntity, idRefResolver)
     }
 
     def "Transform composite element that contains itself"() {

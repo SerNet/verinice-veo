@@ -209,7 +209,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                     domains:[]]
             ],
             designator: asset.designator,
-            domains:[],
+            domains:[:],
             id: asset.id.uuidValue(),
             links:[:],
             name:'Test asset-1',
@@ -220,7 +220,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 resourcesUri: "http://localhost/units{?parent,displayName}"
             ],
             type: 'asset',
-            subType: [:],
             parts: [],
             createdBy: "user@domain.example",
             createdAt: asset.createdAt.toString(),
@@ -438,11 +437,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
-            ],  domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+            ],
+            domains: [
+                (domain.id.uuidValue()): [:]
             ]
         ]
 
@@ -455,7 +452,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the asset is found"
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -481,11 +478,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
-            ], domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+            ],
+            domains: [
+                (domain.id.uuidValue()): [:]
             ],
             customAspects:
             [
@@ -509,7 +504,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the asset is found"
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
@@ -664,7 +659,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "A risk can be created for an asset"() {
+    def     "A risk can be created for an asset"() {
         given: "saved elements"
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {

@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "patternProperties": {
+      "properties": {
+        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
+          "type": "object",
+          "properties": {
+            "properties": {
+              "type": "object",
+              "properties": {
+                "subType": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "string"
+                    },
+                    "enum": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "enum"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "subType"
+              ]
+            }
+          },
+          "required": [
+            "properties"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  },
+  "required": [
+    "patternProperties"
+  ]
+}

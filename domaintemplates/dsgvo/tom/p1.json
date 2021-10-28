@@ -2,7 +2,11 @@
   "abbreviation": "VVT",
   "name": "VVT",
   "description": "VVT-Prozess",
-  "domains": [],
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "PRO_DataProcessing"
+    }
+  },
   "status": "NEW",
   "links": {
     "process_tom": [
@@ -82,9 +86,6 @@
   },
   "customAspects": {
     
-  },
-  "subType": {
-    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": "PRO_DataProcessing"
   },
   "type": "process",
   "parts": [],

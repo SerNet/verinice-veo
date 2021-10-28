@@ -119,24 +119,17 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "Jane",
             owner: [targetUri: "/units/$unitId"],
             domains: [
-                [
-                    targetUri: "/domains/$domainId"
-                ]
-            ],
-            subType: [
-                (domainId): "PER_Controller"
+                (domainId): [
+                    subType: "PER_Controller"]
             ]
         ])).resourceId
         def randomPerson = parseJson(post("/persons", [
             name: "John",
             owner: [targetUri: "/units/$unitId"],
             domains: [
-                [
-                    targetUri: "/domains/$domainId"
+                (domainId): [
+                    subType: "PER_Plex"
                 ]
-            ],
-            subType: [
-                (domainId): "PER_Plex"
             ]
         ])).resourceId
 

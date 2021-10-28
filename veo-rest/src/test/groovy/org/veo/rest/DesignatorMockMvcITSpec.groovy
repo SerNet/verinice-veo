@@ -106,7 +106,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         when: "creating an asset risk"
         String assetId = parseJson(post("/assets", [
             domains: [
-                [ targetUri: "/domains/${domain.id.uuidValue()}"]
+                (domain.id.uuidValue()): [:]
             ],
             name: "asset",
             owner: [
@@ -127,7 +127,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         when: "creating an process risk"
         String processId = parseJson(post("/processes", [
             domains: [
-                [ targetUri: "/domains/${domain.id.uuidValue()}"]
+                (domain.id.uuidValue()): [:]
             ],
             name: "process",
             owner: [

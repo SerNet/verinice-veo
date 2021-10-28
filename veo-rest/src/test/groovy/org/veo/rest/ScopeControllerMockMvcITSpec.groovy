@@ -340,10 +340,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: "/units/${unit.id.uuidValue()}",
                 displayName: 'test unit'
             ], domains: [
-                [
-                    targetUri: "/domains/${domain.id.uuidValue()}",
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ], customAspects:
             [
                 'scope_address' :
@@ -366,7 +363,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the scope is found"
         result.name == 'New scope 2'
         result.abbreviation == 's-2'
-        result.domains.first().displayName == "${domain.abbreviation} ${domain.name}"
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 
         when:

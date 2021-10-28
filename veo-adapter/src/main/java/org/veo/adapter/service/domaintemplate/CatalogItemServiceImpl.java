@@ -21,9 +21,9 @@ import java.util.Collections;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
@@ -38,12 +38,13 @@ public class CatalogItemServiceImpl implements CatalogItemService {
     private final CatalogItemPrepareStrategy preparations;
 
     public CatalogItemServiceImpl(EntityToDtoTransformer dtoTransformer, EntityFactory factory,
-            SubTypeTransformer subTypeTransformer, CatalogItemPrepareStrategy preparations) {
+            DomainAssociationTransformer domainAssociationTransformer,
+            CatalogItemPrepareStrategy preparations) {
         this.dtoTransformer = dtoTransformer;
         this.preparations = preparations;
 
         this.entityTransformer = new DtoToEntityTransformer(factory,
-                NoValidationSchemaLoader.NO_VALIDATION_LOADER, subTypeTransformer);
+                NoValidationSchemaLoader.NO_VALIDATION_LOADER, domainAssociationTransformer);
     }
 
     @Override
@@ -91,8 +92,6 @@ public class CatalogItemServiceImpl implements CatalogItemService {
         dto.getDomains()
            .clear();
         dto.getLinks()
-           .clear();
-        dto.getSubType()
            .clear();
     }
 

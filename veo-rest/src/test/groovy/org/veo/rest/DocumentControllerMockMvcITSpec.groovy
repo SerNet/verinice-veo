@@ -196,10 +196,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ]
         ]
 
@@ -212,7 +209,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the document is found"
         result.name == 'New document-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 

@@ -25,7 +25,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     public static final String UNIT_NAME = 'Testunit'
 
     def postResponse
-    def getDomains
+    def testDomain
     def getCatalog
     String unitId
     String catalogId
@@ -33,8 +33,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     def setup() {
         postResponse = postNewUnit(UNIT_NAME)
         unitId = postResponse.resourceId
-        getDomains = getDomains()
-        catalogId = extractLastId(getDomains.find { it.name == "test-domain" }.catalogs.first().targetUri)
+        testDomain = getDomains().find { it.name == "test-domain" }
+        catalogId = extractLastId(testDomain.catalogs.first().targetUri)
         getCatalog = getCatalog(catalogId)
     }
 
@@ -64,11 +64,12 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
         then: "the controll cc-1 ist created and linked to c-1"
         postApply != null
+        def domainId = testDomain.id
         with(controlCC1tResult) {
             name == "Control-cc-1"
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
-            domains[0].displayName == "td test-domain"
+            domains[domainId] == [:]
             links.size() ==1
             links["Control_details_Control"].domains.size() == 1
             links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
@@ -138,11 +139,12 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
         then: "the controll cc-2 ist created and linked to cc-1"
         postApply != null
+        def domainId = testDomain.id
         with(controlCC2tResult) {
             name == "Control-cc-2"
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
-            domains[0].displayName == "td test-domain"
+            domains[domainId] == [:]
             links.size() ==1
             links["Control_details_Control"].domains.size() == 1
             links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
@@ -206,13 +208,14 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         then: "10 items are returned"
         log.info("===========> list controls")
         controls != null
+        def domainId = testDomain.id
         with(controls) {
             totalItemCount == 10
             items[0].name == "Control-2"
             items[0].abbreviation == "c-2"
             items[0].description.startsWith("Lorem ipsum")
             items[0].owner.displayName == "Testunit"
-            items[0].domains[0].displayName == "td test-domain"
+            items[0].domains[domainId] == [:]
         }
     }
 

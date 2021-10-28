@@ -23,7 +23,9 @@
               
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-            "domains": [],
+            "domains": {
+              
+            },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e061",
             "links": {
               "Control_details_Control": [
@@ -44,9 +46,6 @@
               "targetUri": "/catalogitems/f6ed0e04-9cb3-4730-a8ad-5e7413b3f155"
             },
             "parts": [],
-            "subType": {
-              
-            },
             "type": "control"
           },
           "id": "f6ed0e04-9cb3-4730-a8ad-5e7413b3f155",
@@ -70,7 +69,9 @@
               
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-            "domains": [],
+            "domains": {
+              
+            },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e001",
             "links": {
               "Control_details_Control": [
@@ -91,9 +92,6 @@
               "targetUri": "/catalogitems/0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
             },
             "parts": [],
-            "subType": {
-              
-            },
             "type": "control"
           },
           "id": "0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6",
@@ -117,7 +115,9 @@
               
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-            "domains": [],
+            "domains": {
+              
+            },
             "id": "4b7e4df3-2bfc-4f87-9b9c-764eaf07e063",
             "links": {
               
@@ -127,9 +127,6 @@
               "targetUri": "/catalogitems/6796b233-03de-4acd-812e-de4d27c6e0cb"
             },
             "parts": [],
-            "subType": {
-              
-            },
             "type": "control"
           },
           "id": "6796b233-03de-4acd-812e-de4d27c6e0cb",
@@ -146,7 +143,9 @@
               
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-            "domains": [],
+            "domains": {
+              
+            },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e002",
             "links": {
               "Control_details_Control": [
@@ -167,9 +166,6 @@
               "targetUri": "/catalogitems/02b6bc1c-ef85-44e1-b701-2539893a5fb3"
             },
             "parts": [],
-            "subType": {
-              
-            },
             "type": "control"
           },
           "id": "02b6bc1c-ef85-44e1-b701-2539893a5fb3",
@@ -193,7 +189,9 @@
               
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-            "domains": [],
+            "domains": {
+              
+            },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e063",
             "links": {
               
@@ -203,9 +201,6 @@
               "targetUri": "/catalogitems/a82b9bce-2732-48a1-abda-e5a157abfcb5"
             },
             "parts": [],
-            "subType": {
-              
-            },
             "type": "control"
           },
           "id": "a82b9bce-2732-48a1-abda-e5a157abfcb5",
@@ -222,7 +217,9 @@
               
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-            "domains": [],
+            "domains": {
+              
+            },
             "id": "a498f9f2-2af6-4bae-b047-2a05eb5920d1",
             "links": {
               
@@ -232,9 +229,6 @@
               "targetUri": "/catalogitems/e25fef68-43a4-4589-a8f6-d90605b5f198"
             },
             "parts": [],
-            "subType": {
-              
-            },
             "type": "control"
           },
           "id": "e25fef68-43a4-4589-a8f6-d90605b5f198",

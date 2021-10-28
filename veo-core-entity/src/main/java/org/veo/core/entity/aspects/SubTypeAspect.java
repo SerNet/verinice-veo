@@ -17,11 +17,15 @@
  ******************************************************************************/
 package org.veo.core.entity.aspects;
 
+import org.veo.core.entity.Constraints;
+
 /**
  * Marks an entity as being of a sub type. Sub types are specific to the domain
  * and the entity type.
  */
 public interface SubTypeAspect extends Aspect {
+    public final int SUB_TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+
     String getSubType();
 
     void setSubType(String subType);

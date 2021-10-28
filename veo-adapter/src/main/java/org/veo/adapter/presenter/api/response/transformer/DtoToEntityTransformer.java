@@ -88,15 +88,16 @@ import org.veo.core.entity.transform.EntityFactory;
 public final class DtoToEntityTransformer {
 
     public DtoToEntityTransformer(EntityFactory entityFactory,
-            EntitySchemaLoader entitySchemaLoader, SubTypeTransformer subTypeTransformer) {
+            EntitySchemaLoader entitySchemaLoader,
+            DomainAssociationTransformer domainAssociationTransformer) {
         this.factory = entityFactory;
         this.entitySchemaLoader = entitySchemaLoader;
-        this.subTypeTransformer = subTypeTransformer;
+        this.domainAssociationTransformer = domainAssociationTransformer;
     }
 
     private final EntityFactory factory;
     private final EntitySchemaLoader entitySchemaLoader;
-    private final SubTypeTransformer subTypeTransformer;
+    private final DomainAssociationTransformer domainAssociationTransformer;
 
     public Person transformDto2Person(AbstractPersonDto source, IdRefResolver idRefResolver) {
         var target = factory.createPerson(source.getName(), null);
@@ -326,8 +327,7 @@ public final class DtoToEntityTransformer {
             TEntity target, IdRefResolver idRefResolver) {
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
-        target.setDomains(idRefResolver.resolve(source.getDomains()));
-        subTypeTransformer.mapSubTypesToEntity(source, target);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         var entitySchema = loadEntitySchema(target.getModelType());
         target.setLinks(mapLinks(target, source, entitySchema, idRefResolver));
         target.setCustomAspects(mapCustomAspects(source, factory, entitySchema));

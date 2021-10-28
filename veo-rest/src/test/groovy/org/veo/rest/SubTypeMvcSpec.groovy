@@ -68,10 +68,9 @@ class SubTypeMvcSpec extends VeoMvcSpec {
                 targetUri: "/units/$unitId"
             ],
             domains: [
-                [targetUri: "/domains/$domainId"]
-            ],
-            subType: [
-                (domainId): "VT"
+                (domainId): [
+                    "subType": "VT"
+                ]
             ]
         ])).resourceId
         then: "it is saved"
@@ -80,6 +79,6 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         when: "retrieving the sub type"
         def retrievedProcess = parseJson(get("/processes/$processId"))
         then: "the sub type is present"
-        retrievedProcess.subType[domainId] == "VT"
+        retrievedProcess.domains[domainId].subType == "VT"
     }
 }

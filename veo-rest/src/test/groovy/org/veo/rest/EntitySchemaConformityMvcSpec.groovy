@@ -190,14 +190,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def processSchema = getSchema("process")
         def scopeId = (String)parseJson(post("/scopes", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                (domainId): [
+                    subType: "SCP_Controller"
+                ]
             ],
             name: "scope",
             owner: [
                 targetUri: "/units/"+unitId
-            ],
-            subType: [
-                (domainId): "SCP_Controller"
             ]
         ])).resourceId
         def processId = (String)parseJson(post("/processes", [
@@ -273,10 +272,9 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 targetUri: "/units/"+unitId,
             ],
             domains: [
-                [targetUri: "/domains/$domainId"]
-            ],
-            subType: [
-                (domainId): "PER_DataProtectionOfficer"
+                (domainId): [
+                    subType: "PER_DataProtectionOfficer"
+                ]
             ]])).resourceId
         def scopeId = parseJson(post("/scopes", [
             name: "scope",

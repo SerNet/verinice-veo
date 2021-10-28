@@ -40,15 +40,15 @@ public class SchemaMerger {
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, Map<String, JsonNode>> customAspects;
     private Map<String, Map<String, JsonNode>> customlinks;
-    private Map<String, Map<String, JsonNode>> subTypes;
+    private Map<String, Map<String, JsonNode>> domains;
 
     public SchemaMerger(Path basePathCustom) throws IOException {
         Path customEntitesPath = basePathCustom.resolve("custom/aspects/");
         Path linkPath = basePathCustom.resolve("custom/link/");
-        Path subTypePath = basePathCustom.resolve("subTypes/");
+        Path domainsPath = basePathCustom.resolve("domains/");
         customAspects = readSchemas(customEntitesPath);
         customlinks = readSchemas(linkPath);
-        subTypes = readSchemas(subTypePath);
+        domains = readSchemas(domainsPath);
     }
 
     public void extendSchema(JsonNode schema, String type) {
@@ -60,9 +60,9 @@ public class SchemaMerger {
                                      .orElseGet(Collections::emptyMap);
         processLinkSchemas(linkExtensions, schema);
 
-        var subTypeExtensions = Optional.ofNullable(subTypes.get(type))
-                                        .orElseGet(Collections::emptyMap);
-        processSubTypes(subTypeExtensions, schema);
+        var domainExtensions = Optional.ofNullable(domains.get(type))
+                                       .orElseGet(Collections::emptyMap);
+        processDomains(domainExtensions, schema);
     }
 
     /**
@@ -93,11 +93,11 @@ public class SchemaMerger {
     /**
      * Add the given sub type schema to the given entity schema.
      */
-    private void processSubTypes(Map<String, JsonNode> subTypeSchemas, JsonNode entitySchema) {
-        ObjectNode subTypeNode = (ObjectNode) entitySchema.at("/properties/subType");
-        subTypeSchemas.forEach(subTypeNode::set);
-        if (!subTypeSchemas.isEmpty()) {
-            subTypeNode.set("additionalProperties", BooleanNode.FALSE);
+    private void processDomains(Map<String, JsonNode> domainSchemas, JsonNode entitySchema) {
+        ObjectNode domainsNode = (ObjectNode) entitySchema.at("/properties/domains");
+        domainSchemas.forEach(domainsNode::set);
+        if (!domainSchemas.isEmpty()) {
+            domainsNode.set("additionalProperties", BooleanNode.FALSE);
         }
     }
 

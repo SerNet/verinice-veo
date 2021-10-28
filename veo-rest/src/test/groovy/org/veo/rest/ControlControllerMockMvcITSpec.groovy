@@ -274,10 +274,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ]
         ]
 
@@ -291,7 +288,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -316,10 +313,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ], customAspects:
             [
                 'control_dataProtection' :
@@ -343,7 +337,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 

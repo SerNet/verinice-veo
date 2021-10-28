@@ -21,10 +21,10 @@ import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
+import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntitySchema
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
-import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
@@ -36,10 +36,10 @@ class CustomLinkTransformerSpec extends Specification {
 
     def referenceAssembler = Mock(ReferenceAssembler)
     def factory = Mock(EntityFactory)
-    def subTypeTransformer = Mock(SubTypeTransformer)
+    def domainAssociationTransformer = Mock(DomainAssociationTransformer)
     def idRefResolver = Mock(IdRefResolver)
-    def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler, subTypeTransformer)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, subTypeTransformer)
+    def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer)
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, domainAssociationTransformer)
 
 
     def "transform custom link entity to DTO"() {

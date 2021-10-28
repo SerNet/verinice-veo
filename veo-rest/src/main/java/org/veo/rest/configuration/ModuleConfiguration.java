@@ -40,10 +40,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
 import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
@@ -415,8 +415,8 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    SubTypeTransformer aspectTransformer() {
-        return new SubTypeTransformer();
+    public DomainAssociationTransformer domainAssociationTransformer() {
+        return new DomainAssociationTransformer();
     }
 
     @Bean
@@ -472,15 +472,16 @@ public class ModuleConfiguration {
 
     @Bean
     public EntityToDtoTransformer entityToDtoTransformer(ReferenceAssembler referenceAssembler,
-            SubTypeTransformer subTypeTransformer) {
-        return new EntityToDtoTransformer(referenceAssembler, subTypeTransformer);
+            DomainAssociationTransformer domainAssociationTransformer) {
+        return new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer);
     }
 
     @Bean
     public DtoToEntityTransformer dtoToEntityTransformer(EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService, SubTypeTransformer subTypeTransformer) {
+            EntitySchemaService entitySchemaService,
+            DomainAssociationTransformer domainAssociationTransformer) {
         return new DtoToEntityTransformer(entityFactory,
-                new EntitySchemaLoader(entitySchemaService), subTypeTransformer);
+                new EntitySchemaLoader(entitySchemaService), domainAssociationTransformer);
     }
 
     @Primary
@@ -521,21 +522,22 @@ public class ModuleConfiguration {
     @Bean
     public DomainTemplateServiceImpl domainTemplateService(
             DomainTemplateRepository domainTemplateRepository, EntityFactory factory,
-            DomainTemplateResource domainTemplateResource, EntityToDtoTransformer dtoTransformer,
-            SubTypeTransformer subTypeTransformer, CatalogItemPrepareStrategy prepareStrategy,
+            DomainTemplateResource domainTemplateResource,
+            DomainAssociationTransformer domainAssociationTransformer,
+            CatalogItemPrepareStrategy prepareStrategy,
             @Value("${veo.default.domaintemplate.ids:f8ed22b1-b277-56ec-a2ce-0dbd94e24824}") String[] defaultDomainTemlateIds) {
         Set<String> domainTemplates = Arrays.stream(defaultDomainTemlateIds)
                                             .collect(Collectors.toSet());
         return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
-                domainTemplateResource.getResources(), dtoTransformer, subTypeTransformer,
+                domainTemplateResource.getResources(), domainAssociationTransformer,
                 prepareStrategy, domainTemplates);
     }
 
     @Bean
-    public CatalogItemService catalogItemService(DtoToEntityTransformer entityTransformer,
-            EntityToDtoTransformer dtoTransformer, EntityFactory factory,
-            SubTypeTransformer subTypeTransformer, CatalogItemPrepareStrategy prepareStrategy) {
-        return new CatalogItemServiceImpl(dtoTransformer, factory, subTypeTransformer,
+    public CatalogItemService catalogItemService(EntityToDtoTransformer dtoTransformer,
+            EntityFactory factory, DomainAssociationTransformer domainAssociationTransformer,
+            CatalogItemPrepareStrategy prepareStrategy) {
+        return new CatalogItemServiceImpl(dtoTransformer, factory, domainAssociationTransformer,
                 prepareStrategy);
     }
 

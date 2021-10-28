@@ -86,12 +86,12 @@ import org.veo.core.entity.Versioned;
 public final class EntityToDtoTransformer {
 
     private final ReferenceAssembler referenceAssembler;
-    private final SubTypeTransformer subTypeTransformer;
+    private final DomainAssociationTransformer domainAssociationTransformer;
 
     public EntityToDtoTransformer(ReferenceAssembler referenceAssembler,
-            SubTypeTransformer subTypeTransformer) {
+            DomainAssociationTransformer domainAssociationTransformer) {
         this.referenceAssembler = referenceAssembler;
-        this.subTypeTransformer = subTypeTransformer;
+        this.domainAssociationTransformer = domainAssociationTransformer;
     }
 
     public VersionedDto transform2Dto(Versioned source) {
@@ -324,11 +324,10 @@ public final class EntityToDtoTransformer {
         mapVersionedSelfReferencingProperties(source, target);
         mapNameableProperties(source, target);
 
-        target.setDomains(convertReferenceSet(source.getDomains()));
         target.setLinks(mapLinks(source.getLinks()));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects()));
         target.setType(source.getModelType());
-        subTypeTransformer.mapSubTypesToDto(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
 
         if (source.getOwner() != null) {
             target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));

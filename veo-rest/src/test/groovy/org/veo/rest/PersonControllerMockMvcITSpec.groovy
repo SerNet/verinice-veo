@@ -175,10 +175,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ]
         ]
 
@@ -192,7 +189,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -219,10 +216,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ], customAspects:
             [
                 'person_generalInformation' :
@@ -245,7 +239,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:

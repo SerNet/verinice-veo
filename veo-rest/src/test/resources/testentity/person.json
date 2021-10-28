@@ -349,34 +349,8 @@
       "readOnly": true
     },
     "domains": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced domain.",
-            "readOnly": true
-          },
-          "resourcesUri": {
-            "type": "string",
-            "readOnly": true
-          },
-          "searchesUri": {
-            "type": "string",
-            "readOnly": true
-          },
-          "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced domains.",
-            "format": "uri"
-          }
-        },
-        "required": [
-          "targetUri"
-        ],
-        "description": "A reference to a domain"
-      }
+      "type": "object",
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value."
     },
     "id": {
       "type": "string",

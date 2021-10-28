@@ -204,10 +204,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: '/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                [
-                    targetUri: '/domains/'+domain.id.uuidValue(),
-                    displayName: 'test ddd'
-                ]
+                (domain.id.uuidValue()): [:]
             ]
         ]
 
@@ -221,7 +218,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the scenario is found"
         result.name == 'New scenario-2'
         result.abbreviation == 'u-2'
-        result.domains.first().displayName == domain.abbreviation+" "+domain.name
+        result.domains[domain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 

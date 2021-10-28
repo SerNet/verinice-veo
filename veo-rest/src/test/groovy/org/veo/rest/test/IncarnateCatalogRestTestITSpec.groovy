@@ -177,10 +177,11 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def sourceProcessId = post("/processes", [
             name: "process",
             domains: [
-                [targetUri: "/domains/$dsgvoId"]
+                (dsgvoId): [
+                    subType: "PRO_DataProcessing"
+                ]
             ],
-            owner: [targetUri: "/units/$unitId"],
-            subType: ["$dsgvoId": "PRO_DataProcessing"]
+            owner: [targetUri: "/units/$unitId"]
         ]).body.resourceId
 
         def elementResults = applyCatalogItems(catalog, [

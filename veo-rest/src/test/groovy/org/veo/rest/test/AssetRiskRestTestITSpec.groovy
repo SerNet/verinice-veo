@@ -35,7 +35,7 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
         def assetId = post("/assets", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                (domainId): [:]
             ],
             parts: [
                 // The part is not relevant for the risk, it just spices things up.

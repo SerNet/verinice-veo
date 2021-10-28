@@ -35,7 +35,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
         def processId = post("/processes", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                (domainId): [:]
             ],
             parts: [
                 // The part is not relevant for the risk, it just spices things up.

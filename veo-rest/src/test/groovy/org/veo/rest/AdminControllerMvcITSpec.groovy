@@ -60,7 +60,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
 
         def assetId = parseJson(post("/assets", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                (domainId): [:]
             ],
             name: "asset",
             owner: owner
@@ -83,7 +83,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         ])
         def processId = parseJson(post("/processes", [
             domains: [
-                [targetUri: "/domains/$domainId"]
+                (domainId): [:]
             ],
             name: "process",
             owner: owner

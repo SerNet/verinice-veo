@@ -1,11 +1,11 @@
 {
   "name": "Bewerbermanagement",
   "description": "Bewerbermanagement",
-  "domains": [
-    {
-      "targetUri": "https://veo.develop.verinice.com/domains/2cef4503-dd41-48cf-9030-16820797a300"
+  "domains": {
+    "2cef4503-dd41-48cf-9030-16820797a300": {
+      
     }
-  ],
+  },
   "owner": {
     "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
   },
@@ -69,9 +69,6 @@
     ]
   },
   "customAspects": {
-    
-  },
-  "subType": {
     
   },
   "type": "process",

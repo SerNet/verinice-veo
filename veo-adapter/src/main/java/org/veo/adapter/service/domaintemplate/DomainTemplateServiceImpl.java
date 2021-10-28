@@ -43,9 +43,8 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.adapter.presenter.api.response.transformer.SubTypeTransformer;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
@@ -83,7 +82,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
             EntityFactory factory, List<VeoInputStreamResource> domainResources,
-            EntityToDtoTransformer dtoTransformer, SubTypeTransformer subTypeTransformer,
+            DomainAssociationTransformer domainAssociationTransformer,
             CatalogItemPrepareStrategy preparations, Set<String> defaultDomainTemplateIds) {
         this.domainTemplateRepository = domainTemplateRepository;
         this.factory = factory;
@@ -92,7 +91,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         this.defaultDomainTemplateIds = defaultDomainTemplateIds;
 
         entityTransformer = new DtoToEntityTransformer(factory,
-                NoValidationSchemaLoader.NO_VALIDATION_LOADER, subTypeTransformer);
+                NoValidationSchemaLoader.NO_VALIDATION_LOADER, domainAssociationTransformer);
         assembler = new LocalReferenceAssembler();
         deserializer = new ReferenceDeserializer(assembler);
         objectMapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(IdRef.class,

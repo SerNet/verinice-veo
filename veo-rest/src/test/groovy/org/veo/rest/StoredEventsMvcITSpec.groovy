@@ -177,9 +177,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String assetId = parseJson(post("/assets", [
             name: "acid",
             domains: [
-                [
-                    targetUri: "/domains/${domain.id.uuidValue()}"
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             owner: [
                 targetUri: "/units/${unit.id.uuidValue()}"
@@ -188,9 +186,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String scenarioId = parseJson(post("/scenarios", [
             name: "scenario",
             domains: [
-                [
-                    targetUri: "/domains/${domain.id.uuidValue()}"
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             owner: [
                 targetUri: "/units/${unit.id.uuidValue()}"
@@ -241,9 +237,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String processId = parseJson(post("/processes", [
             name: "pro",
             domains: [
-                [
-                    targetUri: "/domains/${domain.id.uuidValue()}"
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             owner: [
                 targetUri: "/units/${unit.id.uuidValue()}"
@@ -252,9 +246,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String scenarioId = parseJson(post("/scenarios", [
             name: "scenario",
             domains: [
-                [
-                    targetUri: "/domains/${domain.id.uuidValue()}"
-                ]
+                (domain.id.uuidValue()): [:]
             ],
             owner: [
                 targetUri: "/units/${unit.id.uuidValue()}"
