@@ -137,6 +137,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
               .peek(s -> log.debug("Added CORS origin pattern: {}", s))
               .forEach(corsConfig::addAllowedOriginPattern);
         corsConfig.setMaxAge(Duration.ofMinutes(30));
+        corsConfig.addExposedHeader(HttpHeaders.ETAG);
         source.registerCorsConfiguration("/**", corsConfig);
         return source;
     }

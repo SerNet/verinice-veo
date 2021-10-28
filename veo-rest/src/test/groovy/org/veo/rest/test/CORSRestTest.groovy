@@ -54,6 +54,9 @@ class CORSRestTest extends VeoRestTest{
         status == 200
         headers.getAccessControlAllowOrigin() == origin
 
+        and: 'reading the ETAG header is allowed'
+        headers.getAccessControlExposeHeaders().contains(HttpHeaders.ETAG)
+
         and: 'the body contains a JSON array.'
         body.startsWith("[")
     }
