@@ -155,7 +155,7 @@ subprojects {
             dependency "org.testcontainers:testcontainers:1.16.0"
             dependency "org.testcontainers:spock:1.16.0"
             dependency "org.testcontainers:postgresql:1.16.2"
-            dependency "org.keycloak:keycloak-authz-client:11.0.3"
+            dependency "org.keycloak:keycloak-authz-client:15.0.2"
         }
     }
 
