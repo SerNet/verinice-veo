@@ -6121,7 +6121,7 @@ THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-74. Group: org.codehaus.groovy  Name: groovy  Version: 3.0.8
+74. Group: org.codehaus.groovy  Name: groovy  Version: 3.0.9
 
 POM Project URL: https://groovy-lang.org
 
@@ -18705,5 +18705,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Thu Oct 28 05:54:48 UTC 2021.
+This report was generated at Thu Oct 28 08:51:39 CEST 2021.
 
