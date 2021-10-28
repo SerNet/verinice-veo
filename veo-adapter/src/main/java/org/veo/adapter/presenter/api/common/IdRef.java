@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
 
 @Data
@@ -41,24 +42,25 @@ public class IdRef<T extends Identifiable> implements IIdRef {
     @JsonIgnore
     @ToString.Include
     @EqualsAndHashCode.Include
-    private String id;
+    private final String id;
 
     @ToString.Include
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private String displayName;
+    private final String displayName;
 
     @JsonIgnore
     @EqualsAndHashCode.Include
-    private Class<T> type;
+    private final Class<T> type;
 
     @JsonIgnore
-    private ReferenceAssembler urlAssembler;
+    private final ReferenceAssembler urlAssembler;
 
     @JsonIgnore
+    @Setter(AccessLevel.NONE)
     private String uri;
 
     @JsonIgnore
-    private Identifiable entity;
+    private final Identifiable entity;
 
     private IdRef(Identifiable entity, String id, String displayName, Class<T> type,
             ReferenceAssembler referenceAssembler) {
