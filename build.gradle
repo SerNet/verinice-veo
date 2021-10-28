@@ -29,6 +29,8 @@ allprojects  {
 
     spotless {
         groovyGradle {
+            // https://github.com/diffplug/spotless/issues/304#issuecomment-426067801
+            target 'Jenkinsfile', '*.gradle'
             greclipse()
             indentWithSpaces(4)
             trimTrailingWhitespace()

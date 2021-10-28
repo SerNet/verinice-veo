@@ -7,13 +7,13 @@ def dockerArgsForGradleStages = '-e GRADLE_USER_HOME=$WORKSPACE/gradle-home'
 def projectVersion
 
 def withDockerNetwork(Closure inner) {
-  try {
-    networkId = UUID.randomUUID().toString()
-    sh "docker network create ${networkId}"
-    inner.call(networkId)
-  } finally {
-    sh "docker network rm ${networkId}"
-  }
+    try {
+        networkId = UUID.randomUUID().toString()
+        sh "docker network create ${networkId}"
+        inner.call(networkId)
+    } finally {
+        sh "docker network rm ${networkId}"
+    }
 }
 
 
@@ -88,17 +88,26 @@ pipeline {
                                           ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
                                     jacoco classPattern: '**/build/classes/java/main'
                                     junit allowEmptyResults: true,
-                                            testResults: '**/build/test-results/test/*.xml',
-                                            testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-                                    [ 'veo-adapter', 'veo-core-entity', 'veo-core-usecase', 'veo-persistence', 'veo-rest', 'veo-test' ].each {
-                                      publishHTML([
-                                               allowMissing: false,
-                                               alwaysLinkToLastBuild: false,
-                                               keepAll: true,
-                                               reportDir: "${it}/build/reports/tests/test/",
-                                               reportFiles: 'index.html',
-                                               reportName: "Test report: ${it}"
-                                      ])
+                                    testResults: '**/build/test-results/test/*.xml',
+                                    testDataPublishers: [
+                                        [$class: 'StabilityTestDataPublisher']
+                                    ]
+                                    [
+                                        'veo-adapter',
+                                        'veo-core-entity',
+                                        'veo-core-usecase',
+                                        'veo-persistence',
+                                        'veo-rest',
+                                        'veo-test'
+                                    ].each {
+                                        publishHTML([
+                                            allowMissing: false,
+                                            alwaysLinkToLastBuild: false,
+                                            keepAll: true,
+                                            reportDir: "${it}/build/reports/tests/test/",
+                                            reportFiles: 'index.html',
+                                            reportName: "Test report: ${it}"
+                                        ])
                                     }
                                 }
                             }
@@ -107,55 +116,55 @@ pipeline {
                 }
             }
         }
-          stage('HTTP REST Test') {
-                    environment {
-                        def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
-                        KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
-                        KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
-                        RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
-                        VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.RESTTESTMESSAGE.${tag}."
-                        VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_RESTTEST_QUEUE_${tag}"
-                        VEO_TEST_MESSAGE_CONSUME_ROUTING_KEY = "VEO.RESTTESTMESSAGE.${tag}.#"
-                        VEO_RESTTEST_OIDCURL = "https://keycloak.staging.verinice.com"
-                        VEO_RESTTEST_REALM = "verinice-veo"
-                        VEO_RESTTEST_CLIENTID = "veo-development-client"
-                        VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
-                        VEO_RESTTEST_PROXYPORT = 3128
-                    }
-                    agent any
-                    steps {
-                         timeout(time: 20, unit: 'MINUTES'){
-                             script {
-                                 withDockerNetwork{ n ->
-                                     docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                                         docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
-                                             sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
+        stage('HTTP REST Test') {
+            environment {
+                def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
+                KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
+                KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
+                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
+                VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.RESTTESTMESSAGE.${tag}."
+                VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_RESTTEST_QUEUE_${tag}"
+                VEO_TEST_MESSAGE_CONSUME_ROUTING_KEY = "VEO.RESTTESTMESSAGE.${tag}.#"
+                VEO_RESTTEST_OIDCURL = "https://keycloak.staging.verinice.com"
+                VEO_RESTTEST_REALM = "verinice-veo"
+                VEO_RESTTEST_CLIENTID = "veo-development-client"
+                VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
+                VEO_RESTTEST_PROXYPORT = 3128
+            }
+            agent any
+            steps {
+                timeout(time: 20, unit: 'MINUTES'){
+                    script {
+                        withDockerNetwork{ n ->
+                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
+                                    sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                                    export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
                                                    export VEO_RESTTEST_USERS_DEFAULT_NAME=$KEYCLOAK_DEFAULT_CREDS_USR && \
                                                    export VEO_RESTTEST_USERS_DEFAULT_PASS=$KEYCLOAK_DEFAULT_CREDS_PSW && \
                                                    export VEO_RESTTEST_USERS_ADMIN_NAME=$KEYCLOAK_ADMIN_CREDS_USR && \
                                                    export VEO_RESTTEST_USERS_ADMIN_PASS=$KEYCLOAK_ADMIN_CREDS_PSW && \
                                                    ./gradlew --no-daemon -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:restTest -Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 -Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128'''
-                                             junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
-                                             publishHTML([
-                                                        allowMissing: false,
-                                                        alwaysLinkToLastBuild: false,
-                                                        keepAll: true,
-                                                        reportDir: 'veo-rest/build/reports/tests/restTest/',
-                                                        reportFiles: 'index.html',
-                                                        reportName: 'Test report: veo-rest-integration-test'
-                                             ])
-                                             perfReport failBuildIfNoResultFile: false,
-                                                        modePerformancePerTestCase: true,
-                                                        showTrendGraphs: true,
-                                                        sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
-                                         }
-                                     }
-                                 }
-                             }
-                         }
+                                    junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
+                                    publishHTML([
+                                        allowMissing: false,
+                                        alwaysLinkToLastBuild: false,
+                                        keepAll: true,
+                                        reportDir: 'veo-rest/build/reports/tests/restTest/',
+                                        reportFiles: 'index.html',
+                                        reportName: 'Test report: veo-rest-integration-test'
+                                    ])
+                                    perfReport failBuildIfNoResultFile: false,
+                                    modePerformancePerTestCase: true,
+                                    showTrendGraphs: true,
+                                    sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
+                                }
+                            }
+                        }
                     }
                 }
+            }
+        }
         stage('Artifacts') {
             agent {
                 docker {
@@ -195,8 +204,12 @@ pipeline {
             }
             post {
                 failure {
-                    recordIssues(enabledForFailure: true, tools: [spotBugs(pattern: '**/build/reports/spotbugs/main.xml', useRankAsPriority: true, trendChartType: 'NONE')])
-                    recordIssues(enabledForFailure: true, tools: [pmdParser(pattern: '**/build/reports/pmd/main.xml', trendChartType: 'NONE')])
+                    recordIssues(enabledForFailure: true, tools: [
+                        spotBugs(pattern: '**/build/reports/spotbugs/main.xml', useRankAsPriority: true, trendChartType: 'NONE')
+                    ])
+                    recordIssues(enabledForFailure: true, tools: [
+                        pmdParser(pattern: '**/build/reports/pmd/main.xml', trendChartType: 'NONE')
+                    ])
                 }
             }
         }
@@ -248,15 +261,15 @@ pipeline {
                                         }
                                     }
                                     def accessToken = sh(
-                                      returnStdout:true,
-                                      script: 'VEO_USER=$KEYCLOAK_CREDS_USR VEO_USER_PASSWORD=$KEYCLOAK_CREDS_PSW /veo/authenticate -r verinice-veo -c veo-development-client'
-                                    ).trim()
+                                            returnStdout:true,
+                                            script: 'VEO_USER=$KEYCLOAK_CREDS_USR VEO_USER_PASSWORD=$KEYCLOAK_CREDS_PSW /veo/authenticate -r verinice-veo -c veo-development-client'
+                                            ).trim()
                                     sh "newman run 'postman/verinice.VEO_REST_API.postman_collection.json' --env-var 'accessToken=${accessToken}' --reporters 'cli,junit' --reporter-junit-export='newman-report.xml' --suppress-exit-code"
                                     junit allowEmptyResults: true, testResults: 'newman-report.xml'
                                     perfReport failBuildIfNoResultFile: false,
-                                                        modePerformancePerTestCase: true,
-                                                        showTrendGraphs: true,
-                                                        sourceDataFiles: 'newman-report.xml'
+                                    modePerformancePerTestCase: true,
+                                    showTrendGraphs: true,
+                                    sourceDataFiles: 'newman-report.xml'
                                 }
                             }
                         }
@@ -285,21 +298,21 @@ pipeline {
             emailext body: '${JELLY_SCRIPT,template="text"}', subject: '$DEFAULT_SUBJECT', attachLog: false, recipientProviders: [culprits()]
         }
         always {
-           node('') {
+            node('') {
                 sh 'rm veo-rest/build/libs/*.jar'
                 recordIssues(enabledForFailure: true, tools: [java()])
                 recordIssues(enabledForFailure: true, tools: [javaDoc()])
                 recordIssues(
-                  enabledForFailure: true,
-                  tools: [
-                    taskScanner(
-                      highTags: 'FIXME',
-                      ignoreCase: true,
-                      normalTags: 'TODO',
-                      excludePattern: 'Jenkinsfile, gradle/wrapper/**, gradle-home/**, .gradle/**, buildSrc/.gradle/**, build/**, */build/**, **/*.pdf, **/*.png, **/*.jpg'
-                    )
-                  ]
-                )
+                        enabledForFailure: true,
+                        tools: [
+                            taskScanner(
+                            highTags: 'FIXME',
+                            ignoreCase: true,
+                            normalTags: 'TODO',
+                            excludePattern: 'Jenkinsfile, gradle/wrapper/**, gradle-home/**, .gradle/**, buildSrc/.gradle/**, build/**, */build/**, **/*.pdf, **/*.png, **/*.jpg'
+                            )
+                        ]
+                        )
             }
         }
     }
