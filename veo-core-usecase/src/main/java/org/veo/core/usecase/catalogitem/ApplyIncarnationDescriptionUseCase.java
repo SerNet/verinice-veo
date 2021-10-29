@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -36,15 +38,14 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.entity.util.CustomLinkComparators;
 import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ElementRepository;
@@ -140,16 +141,19 @@ public class ApplyIncarnationDescriptionUseCase implements
             List<TailoringReferenceParameter> referencesToApply) {
         validateItem(catalogItem, referencesToApply);
         Element entity = catalogItemservice.createInstance(catalogItem, domain);
-        List<InternalResolveInfo> internalLinks = applyLinkTailoringReferences(entity,
-                                                                               referencesToApply.stream()
-                                                                                                .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
-                                                                                                .collect(Collectors.toList()),
-                                                                               catalogItem, domain);
+        List<InternalResolveInfo> internalLinks = applyLinkTailoringReferences(entity, domain,
+                                                                               linkTailorReferencesParameters(referencesToApply,
+                                                                                                              TailoringReferenceTyped.IS_LINK_PREDICATE),
+                                                                               linkTailorReferences(catalogItem,
+                                                                                                    TailoringReferenceTyped.IS_LINK_PREDICATE));
         entity.setOwner(unit);
         designatorService.assignDesignator(entity, authenticatedClient);
         entity = saveElement(entity);
-        applyExternalTailoringReferences(entity, domain, externalTailorReferences(catalogItem),
-                                         externalTailorReferencesParameters(referencesToApply));
+        applyExternalTailoringReferences(entity, domain,
+                                         linkTailorReferences(catalogItem,
+                                                              TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE),
+                                         linkTailorReferencesParameters(referencesToApply,
+                                                                        TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE));
         return new ElementResult(entity, internalLinks);
     }
 
@@ -163,32 +167,31 @@ public class ApplyIncarnationDescriptionUseCase implements
      * will be removed from the element and linked later in
      * {@link #processInternalLinks(List, List)}.
      */
-    private List<InternalResolveInfo> applyLinkTailoringReferences(Element copyItem,
-            List<TailoringReferenceParameter> referencesToApply, CatalogItem catalogItem,
-            Domain domain) {
-        List<CustomLink> orderByExecution = copyItem.getLinks()
-                                                    .stream()
-                                                    .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
-                                                    .collect(Collectors.toList());
-
-        if (orderByExecution.size() > referencesToApply.size()) {
+    private List<InternalResolveInfo> applyLinkTailoringReferences(Element copyItem, Domain domain,
+            List<TailoringReferenceParameter> referencesToApply,
+            List<LinkTailoringReference> linkTailoringReferences) {
+        if (linkTailoringReferences.size() > referencesToApply.size()) {
             throw new IllegalArgumentException(
                     "Number of defined links cannot be smaller than number of references to apply.");
         }
-        List<InternalResolveInfo> internalLinks = new ArrayList<>();
-        List<TailoringReference> trefList = linkTailorReferences(catalogItem);
-        for (int i = 0; i < orderByExecution.size(); i++) {
-            CustomLink customLink = orderByExecution.get(i);
-            TailoringReferenceParameter parameter = referencesToApply.get(i);
-            if (parameter.getReferencedElement() == null) {
-                TailoringReference tailoringReference = trefList.get(i);
+
+        List<InternalResolveInfo> internalLinks = new ArrayList<>(linkTailoringReferences.size());
+        Iterator<LinkTailoringReference> linkRefs = linkTailoringReferences.iterator();
+        Iterator<TailoringReferenceParameter> refsToApply = referencesToApply.iterator();
+
+        while (linkRefs.hasNext()) {
+            LinkTailoringReference linkTailoringReference = linkRefs.next();
+            TailoringReferenceParameter referenceParameter = refsToApply.next();
+            if (referenceParameter.getReferencedElement() == null) {
                 internalLinks.add(new InternalResolveInfo(
-                        copyLink(copyItem, customLink.getTarget(), domain, customLink), copyItem,
-                        tailoringReference.getCatalogItem()));
-                copyItem.getLinks()
-                        .remove(customLink);
+
+                        copyItem, linkTailoringReference.getCatalogItem(),
+                        linkTailoringReference.getLinkType(),
+                        linkTailoringReference.getAttributes(), domain));
             } else {
-                customLink.setTarget(parameter.getReferencedElement());
+                createLink(copyItem, referenceParameter.getReferencedElement(), domain,
+                           linkTailoringReference.getLinkType(),
+                           linkTailoringReference.getAttributes());
             }
         }
         // TODO: VEO-612 handle parts
@@ -213,14 +216,17 @@ public class ApplyIncarnationDescriptionUseCase implements
      * element.
      */
     private void applyExternalTailoringReferences(Element linkTargetEntity, Domain domain,
-            List<ExternalTailoringReference> externalTailoringRefs,
+            List<LinkTailoringReference> externalTailoringRefs,
             List<TailoringReferenceParameter> referencesToApply) {
         Iterator<TailoringReferenceParameter> parameter = referencesToApply.iterator();
-        for (ExternalTailoringReference catalogReference : externalTailoringRefs) {
+        Iterator<LinkTailoringReference> references = externalTailoringRefs.iterator();
+        while (references.hasNext()) {
             TailoringReferenceParameter tailoringReferenceParameter = parameter.next();
+            LinkTailoringReference catalogReference = references.next();
             Element element = tailoringReferenceParameter.getReferencedElement();
             if (element != null) {
-                copyLink(element, linkTargetEntity, domain, catalogReference.getExternalLink());
+                createLink(element, linkTargetEntity, domain, catalogReference.getLinkType(),
+                           catalogReference.getAttributes());
                 saveElement(element);
             }
         }
@@ -230,13 +236,12 @@ public class ApplyIncarnationDescriptionUseCase implements
      * Creates a new link between source and target, as a value copy of the
      * linkToCopy. Adds the domain to this link.
      */
-    private CustomLink copyLink(Element source, Element target, Domain domain,
-            CustomLink linkToCopy) {
-        CustomLink link = factory.createCustomLink(target, source, linkToCopy.getType());
-        link.setAttributes(linkToCopy.getAttributes() == null ? null
-                : new HashMap<>(linkToCopy.getAttributes()));
+    private CustomLink createLink(Element source, Element target, Domain domain, String type,
+            Map<String, Object> attributes) {
+        CustomLink link = factory.createCustomLink(target, source, type);
+        link.setAttributes(attributes == null ? null : new HashMap<>(attributes));
         link.addToDomains(domain);
-        link.setType(linkToCopy.getType());
+        link.setType(type);
         source.addToLinks(link);
         return link;
     }
@@ -258,8 +263,9 @@ public class ApplyIncarnationDescriptionUseCase implements
                                                                 ri.sourceItem.getDisplayName(),
                                                                 ri.source.getDesignator(),
                                                                 ri.source.getName()));
-            ri.link.setTarget(internalTarget);
-            ri.source.addToLinks(ri.link);
+            CustomLink link = createLink(ri.source, internalTarget, ri.domain, ri.linkType,
+                                         ri.attributes);
+            ri.source.addToLinks(link);
         }
     }
 
@@ -269,10 +275,12 @@ public class ApplyIncarnationDescriptionUseCase implements
      */
     private void validateItem(CatalogItem catalogItem,
             List<TailoringReferenceParameter> referencesToApply) {
-        if (linkTailorReferences(catalogItem).size() != linkTailorReferencesParameters(referencesToApply).size()) {
+        if (linkTailorReferences(catalogItem,
+                                 TailoringReferenceTyped.IS_LINK_PREDICATE).size() != linkTailorReferencesParameters(referencesToApply, TailoringReferenceTyped.IS_LINK_PREDICATE).size()) {
             throw new IllegalArgumentException("Tailoring references (LINK) don't match.");
         }
-        if (externalTailorReferences(catalogItem).size() != externalTailorReferencesParameters(referencesToApply).size()) {
+        if (linkTailorReferences(catalogItem,
+                                 TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE).size() != linkTailorReferencesParameters(referencesToApply, TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE).size()) {
             throw new IllegalArgumentException("Tailoring references (EXTERNAL_LINK) don't match.");
         }
     }
@@ -284,49 +292,28 @@ public class ApplyIncarnationDescriptionUseCase implements
     }
 
     /**
-     * Return the list of TailoringReference filtered by IS_LINK_PREDICATE and
+     * Return the list of TailoringReference filtered by {@code typePredicate} and
      * ordered BY_EXECUTION for the given catalogItem.
      */
-    private static List<TailoringReference> linkTailorReferences(CatalogItem catalogItem) {
+    private List<LinkTailoringReference> linkTailorReferences(CatalogItem catalogItem,
+            Predicate<? super TailoringReference> typePredicate) {
         return catalogItem.getTailoringReferences()
                           .stream()
-                          .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
+                          .filter(typePredicate)
                           .sorted(TailoringReferenceComparators.BY_EXECUTION)
+                          .map(LinkTailoringReference.class::cast)
                           .collect(Collectors.toList());
-    }
-
-    /**
-     * Return the list of ExternalTailoringReference filtered by IS_LINK_PREDICATE
-     * and ordered BY_EXECUTION for the given catalogItem.
-     */
-    private static List<ExternalTailoringReference> externalTailorReferences(
-            CatalogItem catalogItem) {
-        return catalogItem.getTailoringReferences()
-                          .stream()
-                          .filter(TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
-                          .sorted(TailoringReferenceComparators.BY_EXECUTION)
-                          .map(ExternalTailoringReference.class::cast)
-                          .collect(Collectors.toList());
-    }
-
-    /**
-     * Return a list of TailoringReferenceParameter filtered by IS_LINK_PREDICATE.
-     */
-    private static List<TailoringReferenceParameter> linkTailorReferencesParameters(
-            List<TailoringReferenceParameter> referencesToApply) {
-        return referencesToApply.stream()
-                                .filter(TailoringReferenceTyped.IS_LINK_PREDICATE)
-                                .collect(Collectors.toList());
     }
 
     /**
      * Return a list of TailoringReferenceParameter filtered by
-     * IS_EXTERNALLINK_PREDICATE.
+     * {@code typePredicate}.
      */
-    private static List<TailoringReferenceParameter> externalTailorReferencesParameters(
-            List<TailoringReferenceParameter> referencesToApply) {
+    private List<TailoringReferenceParameter> linkTailorReferencesParameters(
+            List<TailoringReferenceParameter> referencesToApply,
+            Predicate<? super TailoringReferenceParameter> typePredicate) {
         return referencesToApply.stream()
-                                .filter(TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
+                                .filter(typePredicate)
                                 .collect(Collectors.toList());
     }
 
@@ -367,8 +354,10 @@ public class ApplyIncarnationDescriptionUseCase implements
 
     @AllArgsConstructor
     private static class InternalResolveInfo {
-        CustomLink link;
         Element source;
         CatalogItem sourceItem;
+        String linkType;
+        Map<String, Object> attributes;
+        Domain domain;
     }
 }

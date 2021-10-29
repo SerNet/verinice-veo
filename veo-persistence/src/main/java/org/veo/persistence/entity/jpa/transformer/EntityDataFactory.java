@@ -33,10 +33,10 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
-import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
@@ -53,12 +53,11 @@ import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.CustomAspectData;
 import org.veo.persistence.entity.jpa.CustomLinkData;
-import org.veo.persistence.entity.jpa.CustomLinkDescriptorData;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.DomainTemplateData;
-import org.veo.persistence.entity.jpa.ExternalTailoringReferenceData;
 import org.veo.persistence.entity.jpa.IncidentData;
+import org.veo.persistence.entity.jpa.LinkTailoringReferenceData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ScenarioData;
@@ -169,14 +168,6 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public CustomLink createCustomLinkDescriptor(Element linkTarget, Element linkSource) {
-        CustomLink link = new CustomLinkDescriptorData();
-        link.setTarget(linkTarget);
-        link.setSource(linkSource);
-        return link;
-    }
-
-    @Override
     public Scope createScope(String name, ElementOwner owner) {
         var group = new ScopeData();
         group.setName(name);
@@ -235,9 +226,9 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public ExternalTailoringReference createExternalTailoringReference(CatalogItem catalogItem,
+    public LinkTailoringReference createLinkTailoringReference(CatalogItem catalogItem,
             TailoringReferenceType referenceType) {
-        ExternalTailoringReference tailoringReference = new ExternalTailoringReferenceData();
+        LinkTailoringReference tailoringReference = new LinkTailoringReferenceData();
         tailoringReference.setOwner(catalogItem);
         tailoringReference.setReferenceType(referenceType);
         catalogItem.getTailoringReferences()

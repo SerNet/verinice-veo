@@ -298,8 +298,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
         newTailoringReference(item5, TailoringReferenceType.COPY) {
             catalogItem = item2
         }
-        newTailoringReference(item5, TailoringReferenceType.LINK) {
+        newLinkTailoringReference(item5, TailoringReferenceType.LINK) {
             catalogItem = item3
+            linkType = 'linktest'
         }
 
         CatalogItem item6 = newCatalogItem(catalog,{
@@ -307,12 +308,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
                 name = 'c-p'
             }
         })
-        newExternalTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
+        newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
             catalogItem = item2
-            externalLink = newCustomLinkDescriptor(item6.element) {
-                type= 'externallinktest'
-                source = item2.element
-            }
+            linkType = 'externallinktest'
         }
 
         catalog.catalogItems = [
@@ -349,9 +347,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             it[0].element.name == 'c-p'
             it[0].tailoringReferences.size() == 1
             it[0].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
-            it[0].tailoringReferences[0].externalLink != null
-            it[0].tailoringReferences[0].externalLink.source.id == it[2].element.id
-            it[0].tailoringReferences[0].externalLink.target.id == it[0].element.id
+            it[0].tailoringReferences[0].linkType == 'externallinktest'
             it[1].element.name == 'c1'
             it[1].element.abbreviation == item1.element.abbreviation
             it[1].element.description == item1.element.description

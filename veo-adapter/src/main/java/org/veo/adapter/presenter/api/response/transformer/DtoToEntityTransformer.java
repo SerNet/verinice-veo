@@ -46,7 +46,6 @@ import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.CustomTypedLinkDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
@@ -54,7 +53,7 @@ import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformExternalTailoringReference;
+import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
@@ -66,17 +65,16 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.transform.EntityFactory;
 
@@ -203,8 +201,8 @@ public final class DtoToEntityTransformer {
     public TailoringReference transformDto2TailoringReference(AbstractTailoringReferenceDto source,
             CatalogItem owner, IdRefResolver idRefResolver) {
 
-        var target = source.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL
-                ? factory.createExternalTailoringReference(owner, source.getReferenceType())
+        var target = source.isLinkTailoringReferences()
+                ? factory.createLinkTailoringReference(owner, source.getReferenceType())
                 : factory.createTailoringReference(owner, source.getReferenceType());
 
         mapIdentifiableProperties(source, target);
@@ -214,26 +212,13 @@ public final class DtoToEntityTransformer {
             target.setCatalogItem(resolve);
         }
 
-        if (source.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL) {
-            CustomTypedLinkDto externalLink = ((TransformExternalTailoringReference) source).getExternalLink();
-            ((ExternalTailoringReference) target).setExternalLink(transformDto2CustomLinkDescriptor(externalLink,
-                                                                                                    idRefResolver));
+        if (source.isLinkTailoringReferences()) {
+            TransformLinkTailoringReference tailoringReferenceDto = (TransformLinkTailoringReference) source;
+            LinkTailoringReference tailoringReference = (LinkTailoringReference) target;
+            tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
+            tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
         }
 
-        return target;
-    }
-
-    private CustomLink transformDto2CustomLinkDescriptor(CustomTypedLinkDto source,
-            IdRefResolver idRefResolver) {
-        Element linkTarget = null;
-        if (source.getTarget() != null) {
-            linkTarget = idRefResolver.resolve(source.getTarget());
-        }
-
-        var target = factory.createCustomLinkDescriptor(linkTarget, null);
-
-        target.setAttributes(source.getAttributes());
-        target.setType(source.getType());
         return target;
     }
 

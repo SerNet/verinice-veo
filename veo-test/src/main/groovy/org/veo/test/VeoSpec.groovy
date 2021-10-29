@@ -33,11 +33,11 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementOwner
-import org.veo.core.entity.ExternalTailoringReference
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.ItemUpdateType
 import org.veo.core.entity.Key
+import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
@@ -55,12 +55,11 @@ import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
-import org.veo.persistence.entity.jpa.CustomLinkDescriptorData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.DomainData
 import org.veo.persistence.entity.jpa.DomainTemplateData
-import org.veo.persistence.entity.jpa.ExternalTailoringReferenceData
 import org.veo.persistence.entity.jpa.IncidentData
+import org.veo.persistence.entity.jpa.LinkTailoringReferenceData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
@@ -196,11 +195,11 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ExternalTailoringReferenceData newExternalTailoringReference(CatalogItem catalogItem,
+    static LinkTailoringReferenceData newLinkTailoringReference(CatalogItem catalogItem,
             TailoringReferenceType referenceType,
-            @DelegatesTo(value = ExternalTailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+            @DelegatesTo(value = LinkTailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ExternalTailoringReference") Closure init = null) {
-        return factory.createExternalTailoringReference(catalogItem, referenceType).tap {
+        return factory.createLinkTailoringReference(catalogItem, referenceType).tap {
             VeoSpec.execute(it, init)
             VeoSpec.version(it)
         }
@@ -250,13 +249,6 @@ abstract class VeoSpec extends Specification {
     static CustomLinkData newCustomLink(Element linkTarget, String type, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
         return factory.createCustomLink(linkTarget, null, type).tap{
-            VeoSpec.execute(it, init)
-        }
-    }
-
-    static CustomLinkDescriptorData newCustomLinkDescriptor(Element linkTarget, @DelegatesTo(value = CustomLink.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
-        return factory.createCustomLinkDescriptor(linkTarget, null).tap{
             VeoSpec.execute(it, init)
         }
     }

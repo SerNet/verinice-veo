@@ -44,7 +44,6 @@ import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomAspectData
 import org.veo.persistence.entity.jpa.CustomLinkData
-import org.veo.persistence.entity.jpa.CustomLinkDescriptorData
 import org.veo.persistence.entity.jpa.DocumentData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
@@ -323,41 +322,5 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         and: "two different entities are not equal"
         link != new CustomLinkData()
-    }
-
-    @Transactional
-    def "The identity of the custom link descriptor is consistent over entity state changes"() {
-        given:
-        def domain = newDomain(client)
-        Catalog catalog = newCatalog(domain) {
-            name = 'c'
-        }
-        CatalogItem itemSource = newCatalogItem(catalog, {
-            newControl(it) {
-                name = 'ci1'
-            }
-        })
-        CatalogItem itemTarget = newCatalogItem(catalog,{
-            newControl(it) {
-                name = 'ci2'
-            }
-        })
-        entityManager.flush()
-
-        when:
-        def link = newExternalTailoringReference(itemTarget, TailoringReferenceType.LINK_EXTERNAL) {
-            catalogItem = itemSource
-            externalLink = newCustomLinkDescriptor(itemTarget.element) {
-                type= 'externallinktest'
-                source = itemSource.element
-            }
-        }
-        testIdentityConsistency(CustomLinkDescriptorData.class, link.externalLink)
-
-        then:
-        notThrown(Exception)
-
-        and: "two different entities are not equal"
-        link.externalLink != new CustomLinkDescriptorData()
     }
 }

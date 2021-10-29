@@ -19,7 +19,9 @@ package org.veo.adapter.service.domaintemplate;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -29,14 +31,13 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.CustomTypedLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformExternalTailoringReference;
+import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
@@ -101,6 +102,13 @@ class DomainTemplateAssembler {
             createTailoringReferences(e.getValue(), catalogItemsById);
             createExternalTailoringReferences(e.getKey(), catalogItemsById);
         }
+        catalogItemsById.values()
+                        .stream()
+                        .forEach(i -> {
+                            i.getElement()
+                             .getLinks()
+                             .clear();
+                        });
         TransformCatalogDto catalogDto = new TransformCatalogDto();
         catalogDto.setName(catalogName);
         catalogDto.setId(catalogId);
@@ -153,33 +161,27 @@ class DomainTemplateAssembler {
                     .stream()
                     .filter(entries -> !entries.getKey()
                                                .equals(targetId))// exclude self
-                    .flatMap(entries -> entries.getValue()
-                                               .getElement()
-                                               .getLinks()
-                                               .entrySet()
-                                               .stream())
-                    .forEach(typedLinks -> {
-                        Stream<CustomLinkDto> allLinksToTarget = typedLinks.getValue()
-                                                                           .stream()
-                                                                           .filter(link -> link.getTarget()
-                                                                                               .getId()
-                                                                                               .equals(targetId));
-                        allLinksToTarget.forEach(link -> {
-                            CustomTypedLinkDto linkData = new CustomTypedLinkDto();
-                            linkData.setTarget(new SyntheticIdRef<>(targetId, link.getTarget()
-                                                                                  .getType(),
-                                    assembler));
-                            linkData.setAttributes(new HashMap<>(link.getAttributes()));
-                            linkData.setType(typedLinks.getKey());
-
-                            TransformExternalTailoringReference referenceDto = new TransformExternalTailoringReference();
-                            referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(
-                                    targetItem.getId(), CatalogItem.class, assembler));
-                            referenceDto.setReferenceType(TailoringReferenceType.LINK_EXTERNAL);
-                            referenceDto.setExternalLink(linkData);
-                            targetItem.getTailoringReferences()
-                                      .add(referenceDto);
-                        });
+                    .map(entries -> entries.getValue())
+                    .forEach(catalogItemDto -> {
+                        AbstractElementDto element = catalogItemDto.getElement();
+                        for (Entry<String, List<CustomLinkDto>> typedLinks : element.getLinks()
+                                                                                    .entrySet()) {
+                            Stream<CustomLinkDto> allLinksToTarget = typedLinks.getValue()
+                                                                               .stream()
+                                                                               .filter(link -> link.getTarget()
+                                                                                                   .getId()
+                                                                                                   .equals(targetId));
+                            allLinksToTarget.forEach(link -> {
+                                TransformLinkTailoringReference referenceDto = new TransformLinkTailoringReference();
+                                referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(
+                                        targetItem.getId(), CatalogItem.class, assembler));
+                                referenceDto.setReferenceType(TailoringReferenceType.LINK_EXTERNAL);
+                                referenceDto.setLinkType(typedLinks.getKey());
+                                referenceDto.setAttributes(new HashMap<>(link.getAttributes()));
+                                targetItem.getTailoringReferences()
+                                          .add(referenceDto);
+                            });
+                        }
                     });
     }
 
@@ -190,17 +192,21 @@ class DomainTemplateAssembler {
         value.getLinks()
              .entrySet()
              .stream()
-             .flatMap(e -> e.getValue()
-                            .stream())
-             .forEach(l -> {
-                 TransformCatalogItemDto itemDto = catalogItems.get(l.getTarget()
-                                                                     .getId());
-                 CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
-                 referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
-                         CatalogItem.class, assembler));
-                 referenceDto.setReferenceType(TailoringReferenceType.LINK);
-                 currentItem.getTailoringReferences()
-                            .add(referenceDto);
+             .forEach(e -> {
+                 e.getValue()
+                  .forEach(l -> {
+                      TransformCatalogItemDto itemDto = catalogItems.get(l.getTarget()
+                                                                          .getId());
+                      TransformLinkTailoringReference referenceDto = new TransformLinkTailoringReference();
+                      referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
+                              CatalogItem.class, assembler));
+                      referenceDto.setReferenceType(TailoringReferenceType.LINK);
+                      referenceDto.setLinkType(e.getKey());
+                      referenceDto.setAttributes(new HashMap<>(l.getAttributes()));
+
+                      currentItem.getTailoringReferences()
+                                 .add(referenceDto);
+                  });
              });
         CompositeEntityDto<?> e = (CompositeEntityDto<?>) value;
         e.getParts()

@@ -65,16 +65,8 @@
               "catalogItem": {
                 "targetUri": "/catalogitems/005ed626-1de1-4ff1-bb1a-eb741a64a87c"
               },
-              "externalLink": {
-                "attributes": {
-                  
-                },
-                "target": {
-                  "targetUri": "/processes/f05ed626-1de1-4ff1-bb1a-eb741a64a87a"
-                },
-                "type": "process_tom"
-              },
-              "referenceType": "LINK_EXTERNAL"
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom"
             }
           ]
         },
@@ -93,18 +85,7 @@
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e001",
             "links": {
-              "Control_details_Control": [
-                {
-                  "attributes": {
-                    
-                  },
-                  "domains": [],
-                  "name": "control",
-                  "target": {
-                    "targetUri": "/controls/6f7e4df3-2bfc-4f87-9b9c-764eaf07e002"
-                  }
-                }
-              ]
+              
             },
             "name": "Control-cc-1",
             "owner": {
@@ -120,7 +101,8 @@
               "catalogItem": {
                 "targetUri": "/catalogitems/fdc7b58d-700c-48f2-a1ba-87816334a00d"
               },
-              "referenceType": "LINK"
+              "referenceType": "LINK",
+              "linkType": "Control_details_Control"
             }
           ]
         },
@@ -139,18 +121,7 @@
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e061",
             "links": {
-              "Control_details_Control": [
-                {
-                  "attributes": {
-                    
-                  },
-                  "domains": [],
-                  "name": "control",
-                  "target": {
-                    "targetUri": "/controls/3a7e4df3-2bfc-4f87-9b9c-764eaf07e063"
-                  }
-                }
-              ]
+              
             },
             "name": "Control-3",
             "owner": {
@@ -166,7 +137,8 @@
               "catalogItem": {
                 "targetUri": "/catalogitems/387b0990-10f7-4ef2-8ee5-13579f2cfe84"
               },
-              "referenceType": "LINK"
+              "referenceType": "LINK",
+              "linkType": "Control_details_Control"
             }
           ]
         },
@@ -185,18 +157,7 @@
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e002",
             "links": {
-              "Control_details_Control": [
-                {
-                  "attributes": {
-                    
-                  },
-                  "domains": [],
-                  "name": "control",
-                  "target": {
-                    "targetUri": "/controls/6f7e4df3-2bfc-4f87-9b9c-764eaf07e001"
-                  }
-                }
-              ]
+              
             },
             "name": "Control-cc-2",
             "owner": {
@@ -212,7 +173,8 @@
               "catalogItem": {
                 "targetUri": "/catalogitems/af1b9aaf-faf3-4539-9193-22a94b211bfa"
               },
-              "referenceType": "LINK"
+              "referenceType": "LINK",
+              "linkType": "Control_details_Control"
             }
           ]
         },

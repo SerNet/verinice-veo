@@ -57,8 +57,10 @@ public class TransformCatalogItemDto extends CompositeCatalogItemDto implements 
                   defaultImpl = CreateTailoringReferenceDto.class,
                   include = As.EXISTING_PROPERTY,
                   property = "referenceType")
-    @JsonSubTypes({ @JsonSubTypes.Type(value = TransformExternalTailoringReference.class,
-                                       name = "LINK_EXTERNAL") })
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value = TransformLinkTailoringReference.class,
+                               name = "LINK_EXTERNAL"),
+            @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK") })
     @Override
     public void setTailoringReferences(Set<AbstractTailoringReferenceDto> tailoringReferences) {
         super.setTailoringReferences(tailoringReferences);

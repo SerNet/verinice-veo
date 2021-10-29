@@ -104,8 +104,6 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element.appliedCatalogItems.contains(item)
         element.domains.size() == 1
         element.domains.contains(domainFromTemplate)
-        element.links.size() == 1
-        element.links.first().domains.contains(domainFromTemplate)
     }
 
     def "find an applied item"() {

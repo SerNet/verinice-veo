@@ -201,6 +201,17 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         validateNewElementAgainstCatalogItem(processResult, item6, domain)
         processResult.owner.displayName == 'Test unit'
         processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
+        processResult.domains[domain.id.uuidValue()].status == "START"
+        with(processResult) {
+            customAspects.size() == 2
+            with(customAspects) {
+                process_resilience.attributes.size() == 1
+                process_resilience.attributes.process_resilience_impact == "process_resilience_impact_low"
+                process_processingDetails.attributes.size() == 2
+                process_processingDetails.attributes.process_processingDetails_comment  == "my comment"
+                process_processingDetails.attributes.process_processingDetails_operatingStage == "process_processingDetails_operatingStage_operation"
+            }
+        }
     }
 
     @WithUserDetails("user@domain.example")
@@ -232,6 +243,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         validateNewElementAgainstCatalogItem(tomResult, item7, domain)
         tomResult.owner.displayName == 'Test unit'
         tomResult.domains[domain.id.uuidValue()].subType == "CTL_TOM"
+        tomResult.domains[domain.id.uuidValue()].status == "NEW1"
 
         when: "we get the linked process"
         def processResult = parseJson(get(processUri))
@@ -292,7 +304,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = getIncarnationDescriptions(unit,cc1,cc2)
+        def result = getIncarnationDescriptions(unit,zz1,zz2)
 
         then: "the parameter object is returned"
         result.parameters.size() == 2
@@ -302,11 +314,26 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the 2 elements are created"
         postResult.size() == 2
 
-        def cc1Result = parseJson(get(postResult[0].targetUri))
-        def cc2Result = parseJson(get(postResult[1].targetUri))
+        def zz1Result = parseJson(get(postResult[0].targetUri))
+        def zz2Result = parseJson(get(postResult[1].targetUri))
 
-        validateNewElementAgainstCatalogItem(cc1Result, cc1, domain)
-        validateNewElementAgainstCatalogItem(cc2Result, cc2, domain)
+        validateNewElementAgainstCatalogItem(zz1Result, zz1, domain)
+        validateNewElementAgainstCatalogItem(zz2Result, zz2, domain)
+
+        with(zz1Result.links.link_to_zz2) {
+            target.displayName[0].endsWith("zz2")
+            with(attributes) {
+                control_comment[0] == "another comment"
+                control_operatingStage[0] == "Updated"
+            }
+        }
+        with(zz2Result.links.link_to_zz1) {
+            target.displayName[0].endsWith("zz1")
+            with(attributes) {
+                control_comment[0] == "comment of the link to zz1"
+                control_another_attribute[0] == "test"
+            }
+        }
     }
 
     @WithUserDetails("user@domain.example")
@@ -314,7 +341,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = getIncarnationDescriptions(unit,cc1,item1)
+        def result = getIncarnationDescriptions(unit,zz1,item1)
 
         then: "the parameter object is returned"
         result.parameters.size() == 2
@@ -339,7 +366,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
             it.name == element.name
             it.abbreviation == element.abbreviation
             it.description == element.description
-            it.links.size() == element.links.size()
             it.customAspects.size() == element.customAspects.size()
         }
         verifyAll(element) {

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler
+ * Copyright (C) 2021  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,27 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.adapter.service.domaintemplate.dto;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import java.util.Collections;
+import java.util.Map;
 
-import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.ExternalTailoringReference;
+import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Entity(name = "externaltailoringreference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+/**
+ * This DTO is used to represent an ExternalTailoringRefrence it is primarily
+ * used in the construction and serialization of a domain template.
+ */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ExternalTailoringReferenceData extends TailoringReferenceData
-        implements ExternalTailoringReference {
+public class TransformLinkTailoringReference extends AbstractTailoringReferenceDto {
 
-    @OneToOne(targetEntity = CustomLinkDescriptorData.class,
-              orphanRemoval = true,
-              cascade = CascadeType.ALL)
-    private CustomLink externalLink;
+    private String linkType;
+
+    @Schema(description = "The properties of the element described by the schema of the type attribute.",
+            example = " name: 'value'",
+            required = false)
+    private Map<String, Object> attributes = Collections.emptyMap();
 
 }

@@ -37,5 +37,12 @@ public interface TailoringReferenceTyped {
      */
     Predicate<? super TailoringReferenceTyped> IS_LINK_PREDICATE = r -> r.getReferenceType() == TailoringReferenceType.LINK;
 
+    /**
+     * Is any kind of link References.
+     */
+    default boolean isLinkTailoringReferences() {
+        return IS_ALL_LINK_PREDICATE.test(this);
+    }
+
     TailoringReferenceType getReferenceType();
 }

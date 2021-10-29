@@ -15,18 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.persistence.entity.jpa;
 
-/**
- * This reference type is used to describe the {@link CustomLink} of an existing
- * {@link EntityLayerSupertype} which will be added to it when this
- * {@link CatalogItem} is applied and points to the created {@link Element}. It
- * defines the opposite site of a link.
- */
-public interface ExternalTailoringReference extends TailoringReference {
+import java.util.HashMap;
+import java.util.Map;
 
-    CustomLink getExternalLink();
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
-    void setExternalLink(CustomLink link);
+import org.hibernate.annotations.Type;
+
+import org.veo.core.entity.LinkTailoringReference;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Entity(name = "linktailoringreference")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
+public class LinkTailoringReferenceData extends TailoringReferenceData
+        implements LinkTailoringReference {
+
+    @ToString.Include
+    private String linkType;
+
+    @Type(type = "json")
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> attributes = new HashMap<>();
 
 }

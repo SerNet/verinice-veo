@@ -20,16 +20,13 @@ package org.veo.adapter.service.domaintemplate;
 import java.util.Collections;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.entity.util.CustomLinkComparators;
 import org.veo.core.service.CatalogItemService;
 
 public class CatalogItemServiceImpl implements CatalogItemService {
@@ -54,31 +51,12 @@ public class CatalogItemServiceImpl implements CatalogItemService {
         PlaceholderResolver placeholderResolver = new PlaceholderResolver(entityTransformer);
         Element newElement = entityTransformer.transformDto2Element(dto, placeholderResolver);
         preparations.prepareElement(domain, newElement, false);
-        catalogElement.getLinks()
-                      .stream()
-                      .sorted(CustomLinkComparators.BY_LINK_EXECUTION)
-                      .forEach(orgLink -> newElement.addToLinks(copyLink(domain,
-                                                                         placeholderResolver,
-                                                                         orgLink)));
         catalogElement.getSubTypeAspects()
-                      .forEach(st -> newElement.setSubType(domain, st.getSubType(), "NEW"));
+                      .forEach(st -> newElement.setSubType(domain, st.getSubType(),
+                                                           st.getStatus()));
         // TODO: VEO-612 handle parts
         newElement.setAppliedCatalogItems(Collections.singleton(item));
         return newElement;
-    }
-
-    /**
-     * Creates a copy of the link, with the domain set.
-     */
-    private CustomLink copyLink(Domain domain, PlaceholderResolver placeholderResolver,
-            CustomLink catalogLink) {
-        CustomLinkDto linkDto = dtoTransformer.transformCustomLink2Dto(catalogLink);
-        linkDto.setTarget(null);
-        CustomLink link = entityTransformer.transformDto2CustomLink(linkDto, catalogLink.getType(),
-                                                                    placeholderResolver);
-        link.setTarget(catalogLink.getTarget());
-        link.addToDomains(domain);
-        return link;
     }
 
     /**

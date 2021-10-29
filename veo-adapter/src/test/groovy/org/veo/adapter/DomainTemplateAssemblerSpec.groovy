@@ -123,9 +123,18 @@ class DomainTemplateAssemblerSpec extends Specification{
             catalogItems[0].tailoringReferences.size() == 3
             with(catalogItems[0].tailoringReferences) {
                 it.size() == 3
-                it.find { it.catalogItem.id == catalogItems[1].id }.referenceType == TailoringReferenceType.LINK
-                it.find { it.catalogItem.id == catalogItems[2].id }.referenceType == TailoringReferenceType.LINK
-                it.find { it.catalogItem.id == catalogItems[3].id }.referenceType == TailoringReferenceType.LINK
+                with (it.find { it.catalogItem.id == catalogItems[1].id }) {
+                    referenceType == TailoringReferenceType.LINK
+                    linkType == "linkTypeA"
+                }
+                with (it.find { it.catalogItem.id == catalogItems[2].id }) {
+                    referenceType == TailoringReferenceType.LINK
+                    linkType == "linkTypeA"
+                }
+                with (it.find { it.catalogItem.id == catalogItems[3].id }) {
+                    referenceType == TailoringReferenceType.LINK
+                    linkType == "linkTypeB"
+                }
             }
 
             catalogItems[1].element.id == linkTarget1.id
@@ -134,9 +143,7 @@ class DomainTemplateAssemblerSpec extends Specification{
                 it.size() == 1
                 it.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
                 it.first().catalogItem.id == catalogItems[1].id
-                it.first().externalLink.target.type == Asset
-                it.first().externalLink.target.id == catalogItems[1].element.id
-                it.first().externalLink.type == "linkTypeA"
+                it.first().linkType == "linkTypeA"
             }
 
             catalogItems[2].element.id == linkTarget2.id
@@ -145,9 +152,7 @@ class DomainTemplateAssemblerSpec extends Specification{
                 it.size() == 1
                 it.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
                 it.first().catalogItem.id == catalogItems[2].id
-                it.first().externalLink.target.type == Asset
-                it.first().externalLink.target.id == catalogItems[2].element.id
-                it.first().externalLink.type == "linkTypeA"
+                it.first().linkType == "linkTypeA"
             }
 
             catalogItems[3].element.id == linkTarget3.id
@@ -156,9 +161,7 @@ class DomainTemplateAssemblerSpec extends Specification{
                 it.size() == 1
                 it.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
                 it.first().catalogItem.id == catalogItems[3].id
-                it.first().externalLink.target.type == Asset
-                it.first().externalLink.target.id == catalogItems[3].element.id
-                it.first().externalLink.type == "linkTypeB"
+                it.first().linkType == "linkTypeB"
             }
         }
     }

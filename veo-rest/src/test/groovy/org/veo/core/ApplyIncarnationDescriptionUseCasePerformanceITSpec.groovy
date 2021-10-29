@@ -107,7 +107,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
         def queryCounts = QueryCountHolder.grandTotal
         then:
         description.references.size() == 8
-        queryCounts.select == 24
+        queryCounts.select == 23
         when:
         def inputData = new  ApplyIncarnationDescriptionUseCase.InputData(client, unit.id, description.references)
         QueryCountHolder.clear()
@@ -116,7 +116,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
         }
         queryCounts = QueryCountHolder.grandTotal
         then:
-        queryCounts.select == 60
+        queryCounts.select == 59
         queryCounts.insert == 23
     }
 
@@ -171,14 +171,14 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
                 newProcess(it) {
                     name = 'p1'
                     setSubType(domain, "Test", "NEW")
-                    addToLinks(newCustomLink(item3.element, "aLink"))
                 }
             })
             newTailoringReference(item5, TailoringReferenceType.COPY) {
                 catalogItem = item2
             }
-            newTailoringReference(item5, TailoringReferenceType.LINK) {
+            newLinkTailoringReference(item5, TailoringReferenceType.LINK) {
                 catalogItem = item3
+                linkType = "aLink"
             }
 
             CatalogItem item6 = newCatalogItem(catalog,{
@@ -186,12 +186,9 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
                     name = 'c-p'
                 }
             })
-            newExternalTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
+            newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
                 catalogItem = item2
-                externalLink = newCustomLinkDescriptor(item6.element) {
-                    type= 'externallinktest'
-                    source = item2.element
-                }
+                linkType = 'externallinktest'
             }
             catalog.catalogItems = [
                 item1,

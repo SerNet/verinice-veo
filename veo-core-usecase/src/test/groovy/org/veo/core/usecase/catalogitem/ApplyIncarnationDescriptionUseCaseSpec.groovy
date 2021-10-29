@@ -22,8 +22,8 @@ import org.veo.core.entity.Catalog
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
-import org.veo.core.entity.ExternalTailoringReference
 import org.veo.core.entity.Key
+import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
@@ -85,23 +85,19 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         item2.catalog >> catalog
         item2.element>>control2
 
-        TailoringReference tr = Mock()
+        LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
+        tr.linkType >> "link.type"
+        tr.attributes >> null
         tr.referencedElement >> item2
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
 
-        CustomLink link = Mock()
-        link.type >> "link.type"
-        link.target >> control2
-
-        control.links >> [link]
-
         CustomLink newLink = Mock()
-        newLink.target >> control2
-        newControl.links >> [newLink]
+        newLink.target >> control
+        newLink.type >> "link.type"
 
         TailoringReferenceParameter ref = Mock()
         ref.referenceType >> TailoringReferenceType.LINK
@@ -119,7 +115,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
         1* designatorService.assignDesignator(newControl, existingClient)
-        1* newLink.setTarget(control3)
+        1* factory.createCustomLink(control3, _, "link.type") >> newLink
 
         output.newElements.size() == 1
         output.newElements.first() == newControl
@@ -145,7 +141,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         link.target>>control2
         link.attributes >> [:]
 
-        ExternalTailoringReference etr = Mock()
+        LinkTailoringReference etr = Mock()
         etr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
         etr.owner >> item1
         etr.catalogItem >> item2
@@ -180,7 +176,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
     def "apply an element from item with  less tailor refs"() {
         given:
 
-        item1.tailoringReferences >> []
         Control control2 = Mock()
 
         def id2 = Key.newUuid()
@@ -188,23 +183,13 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         item2.catalog >> catalog
         item2.element>>control2
 
-        TailoringReference tr = Mock()
+        LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
-        tr.getCatalogItem() >> item2
+        tr.catalogItem >> item2
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
-
-        CustomLink link = Mock()
-        link.type >> "link.type"
-        link.target>>control2
-
-        control.links >> [link]
-
-        CustomLink newLink = Mock()
-        newLink.target >> control2
-        newControl.links >> [newLink]
 
         existingDomain.catalogs >> [catalog]
         catalog.domainTemplate >> existingDomain

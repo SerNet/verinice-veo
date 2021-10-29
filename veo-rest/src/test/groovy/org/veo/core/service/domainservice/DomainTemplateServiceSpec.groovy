@@ -127,31 +127,25 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[1].element.abbreviation == 'c-2'
 
             it[2].element.abbreviation == 'c-3'
-            it[2].element.links.size()==1
-            it[2].element.links.first().target == it[0].element
             it[2].tailoringReferences.size()==1
-            it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
-            it[2].tailoringReferences.first().catalogItem == it[0]
+            it[2].tailoringReferences[0].referenceType == TailoringReferenceType.LINK
+            it[2].tailoringReferences[0].catalogItem == it[0]
 
             it[3].element.abbreviation == 'c-4'
             it[3].element.links.size()==0
             it[3].tailoringReferences.size()==1
-            it[3].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
-            it[3].tailoringReferences.first().catalogItem == it[1]
+            it[3].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+            it[3].tailoringReferences[0].catalogItem == it[1]
 
             it[4].element.abbreviation == 'cc-1'
-            it[4].element.links.size()==1
-            it[4].element.links.first().target == it[5].element
             it[4].tailoringReferences.size()==1
             it[4].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
             it[4].tailoringReferences.first().catalogItem == it[5]
 
             it[5].element.abbreviation == 'cc-2'
-            it[5].element.links.size()==1
-            it[5].element.links.first().target == it[4].element
             it[5].tailoringReferences.size()==1
-            it[5].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
-            it[5].tailoringReferences.first().catalogItem == it[4]
+            it[5].tailoringReferences[0].referenceType == TailoringReferenceType.LINK
+            it[5].tailoringReferences[0].catalogItem == it[4]
         }
     }
 
@@ -218,8 +212,6 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
             it[2].element.name == 'Control-3'
             it[2].element.abbreviation == 'c-3'
-            it[2].element.links.size()==1
-            it[2].element.links.first().target == it[0].element
             it[2].tailoringReferences.size()==1
             it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
             it[2].tailoringReferences.first().catalogItem == it[0]

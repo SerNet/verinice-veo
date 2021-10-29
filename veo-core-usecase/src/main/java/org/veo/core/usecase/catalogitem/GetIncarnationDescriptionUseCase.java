@@ -26,15 +26,14 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ExternalTailoringReference;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.RuntimeModelException;
 import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ElementQuery;
@@ -112,54 +111,29 @@ public class GetIncarnationDescriptionUseCase implements
                           .stream()
                           .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
                           .sorted(TailoringReferenceComparators.BY_EXECUTION)
-                          .map(r -> toParameter(unit, r, getReferenceName(r)))
+                          .map(LinkTailoringReference.class::cast)
+                          .map(lr -> toParameter(unit, lr))
                           .collect(Collectors.toList());
     }
 
-    private TailoringReferenceParameter toParameter(Unit unit, TailoringReference ref,
-            String name) {
+    /**
+     * Create the parameter object for this {@link LinkTailoringReference} it also
+     * adds the suggestion found by
+     * {@link #findReferencedAppliedItem(Unit, CatalogItem)} in the reference.
+     */
+    private TailoringReferenceParameter toParameter(Unit unit,
+            LinkTailoringReference linkReference) {
+        if (linkReference.getLinkType() == null) {
+            throw new RuntimeModelException(
+                    "LinkType should not be null affected TailoringReferences: "
+                            + linkReference.getId());
+        }
         TailoringReferenceParameter tailoringReferenceParameter = new TailoringReferenceParameter(
-                ref.getReferenceType(), name);
+                linkReference.getReferenceType(), linkReference.getLinkType());
         findReferencedAppliedItem(unit,
-                                  ref.getCatalogItem()).ifPresent(tailoringReferenceParameter::setReferencedElement);
+                                  linkReference.getCatalogItem()).ifPresent(tailoringReferenceParameter::setReferencedElement);
 
         return tailoringReferenceParameter;
-    }
-
-    private String getReferenceName(TailoringReference ref) {
-        Optional<CustomLink> linkForReference = getLinkForReference(ref);
-        if (linkForReference.isPresent()) {
-            return linkForReference.get()
-                                   .getType();
-        }
-        // TODO: VEO-612 provide name for part
-        return "unknown";
-    }
-
-    /**
-     * Returns the optional link corresponding to a TailoringReference.
-     */
-    private Optional<CustomLink> getLinkForReference(TailoringReference ref) {
-        CatalogItem catalogItem = ref.getOwner();
-        Element element = catalogItem.getElement();
-        Element linkTarget = ref.getCatalogItem()
-                                .getElement();
-        switch (ref.getReferenceType()) {
-        case LINK_EXTERNAL:
-            if (ref instanceof ExternalTailoringReference) {
-                ExternalTailoringReference etr = (ExternalTailoringReference) ref;
-                return Optional.of(etr.getExternalLink());
-            } else
-                throw new IllegalArgumentException();
-        case LINK:
-            return element.getLinks()
-                          .stream()
-                          .filter(l -> l.getTarget()
-                                        .equals(linkTarget))
-                          .findFirst();
-        default:
-            return Optional.empty();
-        }
     }
 
     private Optional<Element> findReferencedAppliedItem(Unit unit, CatalogItem catalogItem) {

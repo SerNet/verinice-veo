@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import org.veo.core.entity.TailoringReferenceType;
+import org.veo.core.entity.TailoringReferenceTyped;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +33,9 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractTailoringReferenceDto extends AbstractCatalogReferenceDto {
+@JsonIgnoreProperties(value = "linkTailoringReferences")
+public abstract class AbstractTailoringReferenceDto extends AbstractCatalogReferenceDto
+        implements TailoringReferenceTyped {
 
     private TailoringReferenceType referenceType;
 

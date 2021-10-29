@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Alexander Koderman
+ * Copyright (C) 2021  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import java.util.Map;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class CustomTypedLinkDto extends CustomLinkDto {
+/**
+ * This reference type is used to describe the {@link CustomLink} of an
+ * {@link EntityLayerSupertype} which will be added to it when this
+ * {@link CatalogItem} is applied. There are currently two kinds
+ * {@link TailoringReferenceType#LINK} and
+ * {@link TailoringReferenceType#LINK_EXTERNAL}.
+ */
+public interface LinkTailoringReference extends TailoringReference {
 
-    private String type;
+    String getLinkType();
+
+    void setLinkType(String aType);
+
+    Map<String, Object> getAttributes();
+
+    void setAttributes(Map<String, Object> attributes);
 
 }

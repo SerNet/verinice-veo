@@ -21,6 +21,7 @@ package org.veo.core.usecase.catalogitem
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
+import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
@@ -107,23 +108,16 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         item2.catalog >> catalog
         item2.element>>control2
 
-        TailoringReference tr = Mock()
+        LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
+        tr.linkType >> "link.type"
         tr.catalogItem >> item2
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
 
-        CustomLink link = Mock()
-        link.type >> "link.type"
-        link.target >>control2
-
-        control.links >> [link]
-
         CustomLink newLink = Mock()
-        newLink.target >> control2
-        newControl.links >> [newLink]
 
         existingDomain.catalogs >> [catalog]
         catalog.domainTemplate >> existingDomain
@@ -146,7 +140,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
         1* designatorService.assignDesignator(newControl, existingClient)
-        1* newLink.setTarget(control2)
+        1* factory.createCustomLink(control2, newControl, "link.type") >> newLink
 
         o1.newElements.size() == 1
         o1.newElements.first() == newControl

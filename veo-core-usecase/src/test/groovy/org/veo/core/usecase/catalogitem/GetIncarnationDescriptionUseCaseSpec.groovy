@@ -22,12 +22,13 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
-import org.veo.core.entity.ExternalTailoringReference
 import org.veo.core.entity.Key
+import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.exception.RuntimeModelException
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputData
 
 class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
@@ -99,18 +100,14 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item2.catalog >> catalog
         item2.element>>control2
 
-        TailoringReference tr = Mock()
+        LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
+        tr.linkType >> "link.type"
         tr.catalogItem >> item2
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
-
-        CustomLink link = Mock()
-        link.type >> "link.type"
-        link.target>>control2
-        control.links >> [link]
 
         existingDomain.catalogs >> [catalog]
         catalog.domainTemplate >> existingDomain
@@ -138,15 +135,11 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item2.catalog >> catalog
         item2.element>>control2
 
-        CustomLink link = Mock()
-        link.type >> "external.link.type"
-        link.target>>control2
-
-        ExternalTailoringReference tr = Mock()
+        LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
+        tr.linkType >> "external.link.type"
         tr.owner >> item1
         tr.catalogItem >> item2
-        tr.externalLink >> link
 
         item1.tailoringReferences >> [tr]
         item1.element >> control
@@ -173,18 +166,13 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         Element someThing = Mock()
         item1.element >> someThing
 
-        TailoringReference tr = Mock()
+        LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
         tr.catalogItem >> item1
         item1.tailoringReferences >> [tr]
 
         Control control2 = Mock()
-
-        CustomLink link = Mock()
-        link.type >> "link.type"
-        link.target>> control2
-        control.links >> [link]
 
         existingDomain.catalogs >> [catalog]
         catalog.domainTemplate >> existingDomain
@@ -193,10 +181,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
         then:
-        output.references.size()== 1
-        output.references.first().item == item1
-        output.references.first().references.size() == 1
-        output.references.first().references.first().referenceKey == "unknown"
+        thrown(RuntimeModelException)
     }
 
     def "wrong unit"() {

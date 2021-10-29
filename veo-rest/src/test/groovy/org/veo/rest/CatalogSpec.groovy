@@ -66,8 +66,8 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem item5
     CatalogItem item6
     CatalogItem item7
-    CatalogItem cc1
-    CatalogItem cc2
+    CatalogItem zz1
+    CatalogItem zz2
     CatalogItem otherItem
     Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
     Client client
@@ -127,18 +127,14 @@ class CatalogSpec extends VeoMvcSpec {
                 }
             })
 
-            newTailoringReference(item4, TailoringReferenceType.LINK) {
+            newLinkTailoringReference(item4, TailoringReferenceType.LINK) {
                 catalogItem = item1
+                linkType = "link_to_item_1"
             }
-            newTailoringReference(item4, TailoringReferenceType.LINK) {
+            newLinkTailoringReference(item4, TailoringReferenceType.LINK) {
                 catalogItem = item2
+                linkType = "link_to_item_2"
             }
-
-            item4.element.links = [
-                newCustomLink(item1.element, "link_to_item_1"),
-                newCustomLink(item2.element, "link_to_item_2")
-            ] as Set
-
 
             item5 = newCatalogItem(catalog, {
                 newProcess(it) {
@@ -153,7 +149,7 @@ class CatalogSpec extends VeoMvcSpec {
                     abbreviation = "caf"
                     name = 'p3-all-features'
                     description = "a process with subtype"
-                    setSubType(domain, "MY_SUBTYPE", "NEW")
+                    setSubType(domain, "MY_SUBTYPE", "START")
                     customAspects = [
                         newCustomAspect("process_resilience") {
                             attributes = [
@@ -167,39 +163,47 @@ class CatalogSpec extends VeoMvcSpec {
                             ]
                         }
                     ]
-                    links = [
-                        newCustomLink(item1.element, "link_to_item_1")
-                    ]
                 }
             })
 
-            newTailoringReference(item6, TailoringReferenceType.LINK) {
+            newLinkTailoringReference(item6, TailoringReferenceType.LINK) {
                 catalogItem = item1
+                linkType = 'link_to_item_1'
             }
 
             item7 = newCatalogItem(catalog, {
                 newControl(it) {
                     name = 'tom1'
                     description = "a control with external tailorref"
-                    setSubType(domain, "CTL_TOM", "NEW")
+                    setSubType(domain, "CTL_TOM", "NEW1")
+                    customAspects = [
+                        newCustomAspect("process_resilience") {
+                            attributes = [
+                                "process_resilience_impact":"process_resilience_impact_low"
+                            ]
+                        },
+                        newCustomAspect("process_processingDetails") {
+                            attributes = [
+                                "process_processingDetails_comment":"another comment",
+                                "process_processingDetails_operatingStage":"process_processingDetails_operatingStage_operation"
+                            ]
+                        }
+                    ]
                 }
             })
-            newExternalTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {
+            newLinkTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {
                 catalogItem = item4
-                externalLink = newCustomLinkDescriptor(item7.element) {
-                    type= 'externallinktest'
-                    source = item4.element
-                }
+                linkType = 'externallinktest'
             }
 
-            cc1 = newCatalogItem(catalog, {
+            zz1 = newCatalogItem(catalog, {
                 newControl(it) {
                     name = 'zz1'
                     description = "a control linked in a circle"
                     setSubType(domain, "CTL_TOM", "NEW")
                 }
             })
-            cc2 = newCatalogItem(catalog, {
+            zz2 = newCatalogItem(catalog, {
                 newControl(it) {
                     name = 'zz2'
                     description = "a control linked in a circle"
@@ -207,19 +211,22 @@ class CatalogSpec extends VeoMvcSpec {
                 }
             })
 
-            cc1.element.links = [
-                newCustomLink(cc2.element, "link_to_zz2")
-            ] as Set
-            cc2.element.links = [
-                newCustomLink(cc1.element, "link_to_zz1")
-            ] as Set
-            newTailoringReference(cc1, TailoringReferenceType.LINK) {
-                catalogItem = cc2
+            newLinkTailoringReference(zz1, TailoringReferenceType.LINK) {
+                catalogItem = zz2
+                linkType = "link_to_zz2"
+                attributes = [
+                    "control_comment":"another comment",
+                    "control_operatingStage":"Updated"
+                ]
             }
-            newTailoringReference(cc2, TailoringReferenceType.LINK) {
-                catalogItem = cc1
+            newLinkTailoringReference(zz2, TailoringReferenceType.LINK) {
+                catalogItem = zz1
+                linkType = "link_to_zz1"
+                attributes = [
+                    "control_comment":"comment of the link to zz1",
+                    "control_another_attribute":"test"
+                ]
             }
-
 
             domain1 = newDomain {
                 description = "ISO/IEC2"
@@ -242,7 +249,7 @@ class CatalogSpec extends VeoMvcSpec {
             domain1 = client.domains.toList().get(1)
             catalog = domain.catalogs.first()
 
-            (item1, item2, item3, item4, item5, item6, item7, cc1, cc2) = catalog.catalogItems.sort{it.element.name}
+            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2) = catalog.catalogItems.sort{it.element.name}
 
             domain3 = newDomain {
                 abbreviation = "D1"
