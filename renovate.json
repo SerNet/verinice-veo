@@ -16,5 +16,43 @@
       "LICENSE-3RD-PARTY.txt"
     ],
     "executionMode": "update"
-  }
+  },
+  "packageRules": [
+    {
+      "matchPackagePatterns": [
+        "^com.diffplug.spotless"
+      ],
+      "groupName": "Spotless"
+    },
+    {
+      "matchPackagePatterns": [
+        "^org.spockframework:"
+      ],
+      "groupName": "Spock"
+    },
+    {
+      "matchPackagePatterns": [
+        "^org.testcontainers:"
+      ],
+      "groupName": "Testcontainers"
+    },
+    {
+      "matchPackagePatterns": [
+        "^com.github.victools:jsonschema"
+      ],
+      "groupName": "JSON Schema Generator"
+    },
+    {
+      "matchPackagePatterns": [
+        "^com.diffplug.spotless",
+        "^org.spockframework:",
+        "^com.github.jk1.dependency-license-report$",
+        "^com.github.spotbugs$",
+        "org.testcontainers:"
+      ],
+      "postUpgradeTasks": {
+        
+      }
+    }
+  ]
 }
