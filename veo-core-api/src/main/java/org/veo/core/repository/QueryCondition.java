@@ -29,5 +29,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class QueryCondition<TValue> {
-    private Set<TValue> values;
+    private final Set<TValue> values;
 }
