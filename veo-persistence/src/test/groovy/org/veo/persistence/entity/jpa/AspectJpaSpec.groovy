@@ -103,4 +103,16 @@ class AspectJpaSpec extends AbstractJpaSpec {
         then:
         thrown(InvalidSubTypeException)
     }
+
+    def 'can set an empty subtype and status'() {
+        given: "an element with existing subtype"
+        def asset = newAsset(unit)
+        asset.setSubType(domain0, "foo", "NEW")
+
+        when: "assigning an empty subtype"
+        asset.setSubType(domain0, null, null)
+
+        then: "the existing subtype is removed and the element has no subtype"
+        asset.subTypeAspects.size() == 0
+    }
 }
