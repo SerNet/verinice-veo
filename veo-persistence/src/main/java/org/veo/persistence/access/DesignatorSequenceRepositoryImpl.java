@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 
 import java.math.BigInteger;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 
@@ -30,6 +31,7 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.DesignatorSequenceRepository;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 
 @Repository
@@ -42,10 +44,15 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
      * called before fetching any sequence vales for that client.
      */
     public void createSequences(Key<UUID> clientId) {
-        EntityType.TYPE_DESIGNATORS.forEach(typeDesignator -> {
-            em.createNativeQuery("CREATE SEQUENCE IF NOT EXISTS "
-                    + getSequenceName(clientId, typeDesignator))
-              .executeUpdate();
+        EntityType.TYPE_DESIGNATORS.forEach(new Consumer<String>() {
+            @Override
+            @SuppressFBWarnings("SQL_INJECTION_JPA")
+            public void accept(String typeDesignator) {
+                em.createNativeQuery("CREATE SEQUENCE IF NOT EXISTS "
+                        + DesignatorSequenceRepositoryImpl.this.getSequenceName(clientId,
+                                                                                typeDesignator))
+                  .executeUpdate();
+            }
         });
     }
 
@@ -54,6 +61,7 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
      *         starting with 1.
      */
     @Override
+    @SuppressFBWarnings("SQL_INJECTION_JPA")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Long getNext(Key<UUID> clientId, String typeDesignator) {
         var next = (BigInteger) em.createNativeQuery("SELECT nextval('"
@@ -67,10 +75,15 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
      * performed as a cleanup when the client is removed.
      */
     public void deleteSequences(Key<UUID> clientId) {
-        EntityType.TYPE_DESIGNATORS.forEach(typeDesignator -> {
-            em.createNativeQuery("DROP SEQUENCE IF EXISTS "
-                    + getSequenceName(clientId, typeDesignator))
-              .executeUpdate();
+        EntityType.TYPE_DESIGNATORS.forEach(new Consumer<String>() {
+            @Override
+            @SuppressFBWarnings("SQL_INJECTION_JPA")
+            public void accept(String typeDesignator) {
+                em.createNativeQuery("DROP SEQUENCE IF EXISTS "
+                        + DesignatorSequenceRepositoryImpl.this.getSequenceName(clientId,
+                                                                                typeDesignator))
+                  .executeUpdate();
+            }
         });
     }
 
