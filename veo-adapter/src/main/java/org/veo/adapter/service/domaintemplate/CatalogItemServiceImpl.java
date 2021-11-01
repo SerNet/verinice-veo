@@ -43,8 +43,7 @@ public class CatalogItemServiceImpl implements CatalogItemService {
         this.dtoTransformer = dtoTransformer;
         this.preparations = preparations;
 
-        this.entityTransformer = new DtoToEntityTransformer(factory,
-                NoValidationSchemaLoader.NO_VALIDATION_LOADER, domainAssociationTransformer);
+        this.entityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer);
     }
 
     @Override
@@ -76,7 +75,6 @@ public class CatalogItemServiceImpl implements CatalogItemService {
         CustomLinkDto linkDto = dtoTransformer.transformCustomLink2Dto(catalogLink);
         linkDto.setTarget(null);
         CustomLink link = entityTransformer.transformDto2CustomLink(linkDto, catalogLink.getType(),
-                                                                    NoValidationSchemaLoader.NO_VALIDATION,
                                                                     placeholderResolver);
         link.setTarget(catalogLink.getTarget());
         link.addToDomains(domain);

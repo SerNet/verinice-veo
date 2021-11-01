@@ -87,15 +87,12 @@ import org.veo.core.entity.transform.EntityFactory;
 public final class DtoToEntityTransformer {
 
     public DtoToEntityTransformer(EntityFactory entityFactory,
-            EntitySchemaLoader entitySchemaLoader,
             DomainAssociationTransformer domainAssociationTransformer) {
         this.factory = entityFactory;
-        this.entitySchemaLoader = entitySchemaLoader;
         this.domainAssociationTransformer = domainAssociationTransformer;
     }
 
     private final EntityFactory factory;
-    private final EntitySchemaLoader entitySchemaLoader;
     private final DomainAssociationTransformer domainAssociationTransformer;
 
     public Person transformDto2Person(AbstractPersonDto source, IdRefResolver idRefResolver) {
@@ -257,7 +254,7 @@ public final class DtoToEntityTransformer {
     }
 
     public CustomLink transformDto2CustomLink(CustomLinkDto source, String type,
-            EntitySchema entitySchema, IdRefResolver idRefResolver) {
+            IdRefResolver idRefResolver) {
         Element linkTarget = null;
         if (source.getTarget() != null) {
             linkTarget = idRefResolver.resolve(source.getTarget());
@@ -266,16 +263,14 @@ public final class DtoToEntityTransformer {
         var target = factory.createCustomLink(linkTarget, null, type);
 
         target.setAttributes(source.getAttributes());
-        entitySchema.validateCustomLink(target);
         return target;
 
     }
 
     public CustomAspect transformDto2CustomAspect(EntityFactory factory, CustomAspectDto source,
-            String type, EntitySchema entitySchema) {
+            String type) {
         var target = factory.createCustomAspect(type);
         target.setAttributes(source.getAttributes());
-        entitySchema.validateCustomAspect(target);
         return target;
     }
 
@@ -324,9 +319,8 @@ public final class DtoToEntityTransformer {
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
-        var entitySchema = loadEntitySchema(target.getModelType());
-        target.setLinks(mapLinks(target, source, entitySchema, idRefResolver));
-        target.setCustomAspects(mapCustomAspects(source, factory, entitySchema));
+        target.setLinks(mapLinks(target, source, idRefResolver));
+        target.setCustomAspects(mapCustomAspects(source, factory));
         if (source.getOwner() != null) {
             target.setOwnerOrContainingCatalogItem(idRefResolver.resolve(source.getOwner()));
         }
@@ -339,7 +333,7 @@ public final class DtoToEntityTransformer {
     }
 
     private Set<CustomLink> mapLinks(Element entity, AbstractElementDto dto,
-            EntitySchema entitySchema, IdRefResolver idRefResolver) {
+            IdRefResolver idRefResolver) {
         return dto.getLinks()
                   .entrySet()
                   .stream()
@@ -348,7 +342,6 @@ public final class DtoToEntityTransformer {
                                          .map(linktDto -> {
                                              var customLink = transformDto2CustomLink(linktDto,
                                                                                       entry.getKey(),
-                                                                                      entitySchema,
                                                                                       idRefResolver);
                                              customLink.setSource(entity);
                                              return customLink;
@@ -372,18 +365,13 @@ public final class DtoToEntityTransformer {
         return new HashSet<>();
     }
 
-    private Set<CustomAspect> mapCustomAspects(AbstractElementDto dto, EntityFactory factory,
-            EntitySchema entitySchema) {
+    private Set<CustomAspect> mapCustomAspects(AbstractElementDto dto, EntityFactory factory) {
         return dto.getCustomAspects()
                   .entrySet()
                   .stream()
-                  .map(entry -> transformDto2CustomAspect(factory, entry.getValue(), entry.getKey(),
-                                                          entitySchema))
+                  .map(entry -> transformDto2CustomAspect(factory, entry.getValue(),
+                                                          entry.getKey()))
                   .collect(Collectors.toSet());
-    }
-
-    private EntitySchema loadEntitySchema(String entityType) {
-        return entitySchemaLoader.load(entityType);
     }
 
     public CatalogItem transformDto2CatalogItem(AbstractCatalogItemDto source,

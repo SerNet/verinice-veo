@@ -25,7 +25,6 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
-import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
@@ -45,9 +44,8 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def factory = Mock(EntityFactory)
     def idRefResolver = Mock(IdRefResolver)
     def domainAssociationTransformer = Mock(DomainAssociationTransformer)
-    def entitySchemaLoader = Mock(EntitySchemaLoader)
     def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler, domainAssociationTransformer)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, entitySchemaLoader,domainAssociationTransformer)
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer)
 
     def createUnit() {
         Unit subUnit = Mock()

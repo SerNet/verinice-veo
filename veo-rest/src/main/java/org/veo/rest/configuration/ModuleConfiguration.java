@@ -42,7 +42,6 @@ import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.presenter.api.response.transformer.EntitySchemaLoader;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
@@ -480,8 +479,7 @@ public class ModuleConfiguration {
     public DtoToEntityTransformer dtoToEntityTransformer(EntityFactory entityFactory,
             EntitySchemaService entitySchemaService,
             DomainAssociationTransformer domainAssociationTransformer) {
-        return new DtoToEntityTransformer(entityFactory,
-                new EntitySchemaLoader(entitySchemaService), domainAssociationTransformer);
+        return new DtoToEntityTransformer(entityFactory, domainAssociationTransformer);
     }
 
     @Primary

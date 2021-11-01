@@ -23,7 +23,6 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
-import org.veo.adapter.presenter.api.response.transformer.EntitySchema
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
@@ -39,7 +38,7 @@ class CustomLinkTransformerSpec extends Specification {
     def domainAssociationTransformer = Mock(DomainAssociationTransformer)
     def idRefResolver = Mock(IdRefResolver)
     def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null, domainAssociationTransformer)
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer)
 
 
     def "transform custom link entity to DTO"() {
@@ -72,20 +71,18 @@ class CustomLinkTransformerSpec extends Specification {
             it.modelInterface >> Asset
         }
         def newLink = Mock(CustomLink)
-        def schema = Mock(EntitySchema)
         def linkDto = new CustomLinkDto().tap {
             target = IdRef.from(targetAsset, Mock(ReferenceAssembler))
             attributes = [:]
         }
 
         when: "transforming it to an entity"
-        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "goodType", schema, idRefResolver)
+        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "goodType", idRefResolver)
 
         then: "all properties are transformed"
         1 * idRefResolver.resolve(linkDto.target) >> targetAsset
         1 * factory.createCustomLink(targetAsset, null, "goodType") >> newLink
         entity == newLink
         1 * newLink.setAttributes(linkDto.attributes)
-        1 * schema.validateCustomLink(newLink)
     }
 }

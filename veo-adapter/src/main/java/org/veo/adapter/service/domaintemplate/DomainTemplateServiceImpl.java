@@ -90,8 +90,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         this.preparations = preparations;
         this.defaultDomainTemplateIds = defaultDomainTemplateIds;
 
-        entityTransformer = new DtoToEntityTransformer(factory,
-                NoValidationSchemaLoader.NO_VALIDATION_LOADER, domainAssociationTransformer);
+        entityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer);
         assembler = new LocalReferenceAssembler();
         deserializer = new ReferenceDeserializer(assembler);
         objectMapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(IdRef.class,
