@@ -20,7 +20,6 @@ package org.veo.core
 import javax.persistence.SequenceGenerator
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -44,7 +43,6 @@ import org.veo.persistence.entity.jpa.StoredEventData
 import net.ttddyy.dsproxy.QueryCount
 import net.ttddyy.dsproxy.QueryCountHolder
 
-@SpringBootTest(classes = DataSourcePerformanceITSpec.class)
 class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     public static final String PROP_KEY = "propKey"

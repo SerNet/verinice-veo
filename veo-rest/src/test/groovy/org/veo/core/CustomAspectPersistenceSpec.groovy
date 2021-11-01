@@ -23,8 +23,6 @@ import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -34,11 +32,8 @@ import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
-@SpringBootTest(classes = CustomAspectPersistenceSpec.class
-)
 @Transactional()
 @AutoConfigureTestDatabase(replace = NONE)
-@ActiveProfiles("test")
 class CustomAspectPersistenceSpec extends VeoSpringSpec {
 
     @Autowired

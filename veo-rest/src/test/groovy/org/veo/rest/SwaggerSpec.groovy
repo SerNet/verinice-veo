@@ -21,20 +21,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.EntityType
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
 
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = [WebMvcSecurityConfiguration]
-)
 @AutoConfigureMockMvc
 class SwaggerSpec extends VeoSpringSpec {
 

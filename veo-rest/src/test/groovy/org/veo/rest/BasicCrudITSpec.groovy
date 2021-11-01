@@ -18,7 +18,6 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -27,9 +26,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WebMvcSecurityConfiguration])
 class BasicCrudITSpec extends VeoMvcSpec {
 
     @Autowired

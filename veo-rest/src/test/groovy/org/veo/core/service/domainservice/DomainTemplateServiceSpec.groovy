@@ -19,10 +19,8 @@ package org.veo.core.service.domainservice
 
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.context.ActiveProfiles
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
@@ -31,9 +29,7 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.service.DomainTemplateService
 import org.veo.persistence.access.ClientRepositoryImpl
 
-@SpringBootTest(classes = DomainTemplateServiceSpec.class)
 @ComponentScan("org.veo")
-@ActiveProfiles(["test"])
 @WithUserDetails("user@domain.example")
 class DomainTemplateServiceSpec extends VeoSpringSpec {
     @Autowired

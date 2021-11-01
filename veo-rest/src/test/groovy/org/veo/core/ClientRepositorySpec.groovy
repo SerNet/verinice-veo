@@ -21,7 +21,6 @@ import javax.transaction.Transactional
 import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Catalog
@@ -37,7 +36,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
-@SpringBootTest(classes = ClientRepositorySpec.class)
 @Transactional
 class ClientRepositorySpec extends VeoSpringSpec {
 

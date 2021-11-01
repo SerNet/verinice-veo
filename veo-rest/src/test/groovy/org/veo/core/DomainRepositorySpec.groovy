@@ -20,14 +20,12 @@ package org.veo.core
 import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 import org.veo.core.entity.Domain
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.entity.jpa.DomainData
 
-@SpringBootTest(classes = DomainRepositorySpec.class)
 class DomainRepositorySpec extends VeoSpringSpec {
 
     @Autowired

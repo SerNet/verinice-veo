@@ -18,7 +18,6 @@
 package org.veo.core.service.domainservice
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
@@ -33,7 +32,6 @@ import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 
-@SpringBootTest(classes = CatalogItemServiceSpec.class)
 @WithUserDetails("user@domain.example")
 class CatalogItemServiceSpec extends VeoSpringSpec {
     @Autowired

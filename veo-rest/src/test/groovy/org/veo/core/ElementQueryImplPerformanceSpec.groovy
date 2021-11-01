@@ -18,7 +18,6 @@
 package org.veo.core
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -35,7 +34,6 @@ import org.veo.persistence.entity.jpa.ProcessData
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
-@SpringBootTest(classes = ElementQueryImplPerformanceSpec.class)
 class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
 
     @Autowired

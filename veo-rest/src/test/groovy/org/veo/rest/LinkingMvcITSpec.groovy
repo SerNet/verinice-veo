@@ -18,7 +18,6 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -26,9 +25,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [WebMvcSecurityConfiguration])
 @WithUserDetails("user@domain.example")
 class LinkingMvcITSpec extends VeoMvcSpec {
 

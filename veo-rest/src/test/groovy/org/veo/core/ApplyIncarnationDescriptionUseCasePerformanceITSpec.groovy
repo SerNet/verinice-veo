@@ -23,7 +23,6 @@ import java.util.function.Function
 import javax.persistence.SequenceGenerator
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.entity.Catalog
@@ -42,7 +41,6 @@ import org.veo.persistence.entity.jpa.StoredEventData
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
-@SpringBootTest(classes = ApplyIncarnationDescriptionUseCasePerformanceITSpec.class)
 @WithUserDetails("user@domain.example")
 class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec {
 

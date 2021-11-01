@@ -18,7 +18,6 @@
 package org.veo.rest.common
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto
@@ -29,9 +28,7 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.VeoSpringSpec
 import org.veo.rest.configuration.TypeExtractor
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = WebMvcSecurityConfiguration)
 class TypeExtractorITSpec extends VeoSpringSpec {
 
     @Autowired

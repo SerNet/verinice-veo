@@ -22,12 +22,10 @@ import java.time.Instant
 import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.entity.jpa.StoredEventData
 
-@SpringBootTest(classes = StoredEventRepositorySpec.class)
 @Transactional()
 class StoredEventRepositorySpec extends VeoSpringSpec {
 
@@ -56,7 +54,7 @@ class StoredEventRepositorySpec extends VeoSpringSpec {
         })
 
         when:
-        def pending = storedEventRepository.findPendingEvents(Instant.parse("2021-02-19T13:00:00.000Z"));
+        def pending = storedEventRepository.findPendingEvents(Instant.parse("2021-02-19T13:00:00.000Z"))
 
         then:
         pending.size() == 3

@@ -20,7 +20,6 @@ package org.veo.core
 import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.TransactionSystemException
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -39,10 +38,7 @@ import org.veo.persistence.entity.jpa.ProcessData
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-@SpringBootTest(
-webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-classes = ProcessRepositoryITSpec.class)
-class ProcessRepositoryITSpec extends VeoMvcSpec {
+class ProcessRepositoryITSpec extends VeoSpringSpec {
 
     @Autowired
     private ProcessRepositoryImpl processRepository

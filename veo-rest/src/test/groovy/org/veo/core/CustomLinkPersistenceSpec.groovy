@@ -20,8 +20,6 @@ package org.veo.core
 import javax.transaction.Transactional
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
@@ -35,10 +33,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
-@SpringBootTest(classes = CustomLinkPersistenceSpec.class
-)
 @Transactional()
-@ActiveProfiles("test")
 class CustomLinkPersistenceSpec extends VeoSpringSpec {
 
 

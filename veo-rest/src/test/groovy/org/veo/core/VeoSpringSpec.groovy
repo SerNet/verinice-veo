@@ -42,13 +42,14 @@ import org.veo.persistence.access.jpa.ScenarioDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
+import org.veo.rest.RestApplication
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 import org.veo.test.VeoSpec
 
 /**
  * Base class for veo specifications that use Spring
  */
-@SpringBootTest
+@SpringBootTest(classes = RestApplication)
 @ActiveProfiles("test")
 @Import(NopEntityValidationConfiguration)
 @ImportAutoConfiguration

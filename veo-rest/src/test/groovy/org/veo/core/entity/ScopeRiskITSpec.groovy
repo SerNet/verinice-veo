@@ -19,9 +19,7 @@ package org.veo.core.entity
 
 import org.hibernate.Hibernate
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.VeoSpringSpec
@@ -35,8 +33,6 @@ import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ScopeRiskData
 
-@SpringBootTest(classes = ScopeRiskITSpec.class)
-@ActiveProfiles(["test"])
 @WithUserDetails("user@domain.example")
 class ScopeRiskITSpec extends VeoSpringSpec {
 

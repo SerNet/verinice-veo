@@ -22,9 +22,7 @@ import javax.persistence.PersistenceContext
 
 import org.hibernate.Session
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.entity.Client
@@ -48,8 +46,6 @@ import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.SubTypeAspectData
 import org.veo.persistence.entity.jpa.UnitData
 
-@SpringBootTest(classes = IdentityConsistencyITSpec.class)
-@ActiveProfiles("test")
 @WithUserDetails("user@domain.example")
 class IdentityConsistencyITSpec extends VeoSpringSpec {
 
