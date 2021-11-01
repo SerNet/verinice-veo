@@ -20,6 +20,7 @@ package org.veo.rest;
 import java.util.List;
 import java.util.Random;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,6 +49,7 @@ public class BannerProvider {
                 + "<=====================================================================>";
     }
 
+    @SuppressFBWarnings("SECPR")
     private static String getCenteredRandomTitle(int artWidth) {
         var descriptions = List.of("Very Effective Organizer", "Valuable Entity Office",
                                    "Vinegar & Eggplant Omelet", "Verified Elephant Orphanage",
