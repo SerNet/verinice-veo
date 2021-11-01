@@ -38,6 +38,7 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -87,6 +88,7 @@ public class DomainTemplateAssemblerMain {
         }
     }
 
+    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
     private static Map<String, AbstractElementDto> readCatalogItems(String dir)
             throws DomainTemplateSnippetException {
         return readElements(new File(dir).listFiles(f -> f.getName()
