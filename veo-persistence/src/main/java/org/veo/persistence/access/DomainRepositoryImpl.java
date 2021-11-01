@@ -38,7 +38,7 @@ public class DomainRepositoryImpl extends
 
     public List<Domain> findByClient(Client client) {
         // TODO: VEO-498 Implement Domain Search
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
 }

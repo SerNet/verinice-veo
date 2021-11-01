@@ -66,7 +66,7 @@ public class LocalReferenceAssembler implements ReferenceAssembler {
 
     @Override
     public Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references) {
-        return null;
+        throw new UnsupportedOperationException("not implemented");
     }
 
     @Override
