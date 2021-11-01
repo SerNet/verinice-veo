@@ -44,6 +44,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.LenientCurrentUserProviderImpl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -59,6 +60,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Value("${veo.cors.headers}")
     private String[] allowedHeaders;
 
+    @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
