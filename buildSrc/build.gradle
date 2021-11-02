@@ -12,5 +12,6 @@ dependencies {
         'jsonschema-module-javax-validation',
         'jsonschema-module-swagger-2'
     ].each { compileOnly "com.github.victools:$it:4.20.0" }
+    implementation 'com.networknt:json-schema-validator:1.0.63'
     compileOnly 'io.swagger.core.v3:swagger-annotations:2.1.11'
 }

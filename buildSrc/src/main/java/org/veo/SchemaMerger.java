@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.networknt.schema.JsonSchemaException;
 
 /**
  * This class adds elements for custom aspects, links and domains when
@@ -39,7 +40,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class SchemaMerger {
 
-    private static final String additionalProperties = "additionalProperties";
+    private static final String ADDITIONAL_PROPERTIES = "additionalProperties";
 
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, Map<String, JsonNode>> customAspects;
@@ -76,8 +77,13 @@ public class SchemaMerger {
     private void processCustomAspects(Map<String, JsonNode> customAspectSchemas,
             JsonNode entitySchema) {
         List<JsonNode> aspectNodes = entitySchema.findValues("customAspects");
-        assert (aspectNodes.size() == 1);
-        ObjectNode propertiesNode = Objects.requireNonNull(addPropertiesNode((ObjectNode) aspectNodes.get(0)),
+        if (aspectNodes.size() != 1) {
+            throw new JsonSchemaException(
+                    "There is not exactly one customAspects element in the schema.");
+        }
+        ObjectNode aspectNode = (ObjectNode) aspectNodes.get(0);
+        aspectNode.set(ADDITIONAL_PROPERTIES, BooleanNode.FALSE);
+        ObjectNode propertiesNode = Objects.requireNonNull(addPropertiesNode(aspectNode),
                                                            "Unable to find target node in "
                                                                    + aspectNodes);
         customAspectSchemas.forEach(propertiesNode::set);
@@ -89,8 +95,12 @@ public class SchemaMerger {
      */
     private void processLinkSchemas(Map<String, JsonNode> linkSchemas, JsonNode entitySchema) {
         List<JsonNode> linkNodes = entitySchema.findValues("links");
-        assert (linkNodes.size() == 1);
-        ObjectNode jsonNode = addPropertiesNode((ObjectNode) linkNodes.get(0));
+        if (linkNodes.size() != 1) {
+            throw new RuntimeException("There is not exactly one links element in the schema.");
+        }
+        ObjectNode linkNode = (ObjectNode) linkNodes.get(0);
+        linkNode.set(ADDITIONAL_PROPERTIES, BooleanNode.FALSE);
+        ObjectNode jsonNode = addPropertiesNode(linkNode);
         linkSchemas.forEach(jsonNode::set);
     }
 
@@ -101,7 +111,7 @@ public class SchemaMerger {
         ObjectNode domainsNode = (ObjectNode) entitySchema.at("/properties/domains");
         domainSchemas.forEach(domainsNode::set);
         if (!domainSchemas.isEmpty()) {
-            domainsNode.set(additionalProperties, BooleanNode.FALSE);
+            domainsNode.set(ADDITIONAL_PROPERTIES, BooleanNode.FALSE);
         }
     }
 
