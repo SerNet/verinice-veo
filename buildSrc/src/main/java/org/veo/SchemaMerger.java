@@ -34,9 +34,13 @@ import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author urszeidler
+ * This class adds elements for custom aspects, links and domains when
+ * generating JSON object schemas.
  */
 public class SchemaMerger {
+
+    private static final String additionalProperties = "additionalProperties";
+
     private ObjectMapper mapper = new ObjectMapper();
     private Map<String, Map<String, JsonNode>> customAspects;
     private Map<String, Map<String, JsonNode>> customlinks;
@@ -97,7 +101,7 @@ public class SchemaMerger {
         ObjectNode domainsNode = (ObjectNode) entitySchema.at("/properties/domains");
         domainSchemas.forEach(domainsNode::set);
         if (!domainSchemas.isEmpty()) {
-            domainsNode.set("additionalProperties", BooleanNode.FALSE);
+            domainsNode.set(additionalProperties, BooleanNode.FALSE);
         }
     }
 
