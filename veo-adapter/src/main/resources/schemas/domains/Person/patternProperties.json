@@ -12,7 +12,7 @@
         "type": "string"
       }
     },
-    "dependantRequired": {
+    "dependentRequired": {
       "subType": [
         "status"
       ],

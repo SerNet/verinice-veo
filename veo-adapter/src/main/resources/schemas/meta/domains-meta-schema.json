@@ -39,7 +39,7 @@
                 "status"
               ]
             },
-            "dependantRequired": {
+            "dependentRequired": {
               "const": {
                 "subType": [
                   "status"
@@ -124,7 +124,7 @@
           },
           "required": [
             "properties",
-            "dependantRequired",
+            "dependentRequired",
             "allOf"
           ],
           "additionalProperties": false
