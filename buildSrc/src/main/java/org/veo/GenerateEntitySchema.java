@@ -78,13 +78,13 @@ public class GenerateEntitySchema {
         Module swagger2Module = new Swagger2Module();
 
         SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(
-                SchemaVersion.DRAFT_7, OptionPreset.PLAIN_JSON).with(jacksonModule)
-                                                               .with(new HonorJsonPropertyOnMethodsModule())
-                                                               .with(swagger2Module)
-                                                               .with(javaxValidationModule)
-                                                               .with(Option.INLINE_ALL_SCHEMAS,
-                                                                     Option.NONSTATIC_NONVOID_NONGETTER_METHODS,
-                                                                     Option.FIELDS_DERIVED_FROM_ARGUMENTFREE_METHODS);
+                SchemaVersion.DRAFT_2019_09, OptionPreset.PLAIN_JSON).with(jacksonModule)
+                                                                     .with(new HonorJsonPropertyOnMethodsModule())
+                                                                     .with(swagger2Module)
+                                                                     .with(javaxValidationModule)
+                                                                     .with(Option.INLINE_ALL_SCHEMAS,
+                                                                           Option.NONSTATIC_NONVOID_NONGETTER_METHODS,
+                                                                           Option.FIELDS_DERIVED_FROM_ARGUMENTFREE_METHODS);
         configBuilder.forMethods()
                      .withIgnoreCheck(method -> method.getAnnotation(JsonProperty.class) == null
                              && method.getAnnotation(Schema.class) == null);

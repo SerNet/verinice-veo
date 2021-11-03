@@ -18,24 +18,26 @@
 package org.veo.adapter.persistence.schema
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.networknt.schema.JsonMetaSchema
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
-import com.networknt.schema.SpecVersion
+import com.networknt.schema.SpecVersion.VersionFlag
 
 import org.veo.core.entity.EntityType
 import org.veo.core.service.EntitySchemaService
 
 import io.swagger.v3.core.util.Json
+import spock.lang.Shared
 import spock.lang.Specification
 
 class ClassPathSchemaSpec extends Specification {
-    private static final String SCHEMA_FILES_PATH = "/schemas/entity/";
+    private static final String SCHEMA_FILES_PATH = "/schemas/entity/"
 
     static EntitySchemaService entitySchemaService = new EntitySchemaServiceClassPathImpl(SCHEMA_FILES_PATH)
 
-    def customAspectMetaSchema = getMetaSchema("custom-aspect-meta-schema.json")
-    def customLinkMetaSchema = getMetaSchema("custom-link-meta-schema.json")
-    def domainsMetaSchema = getMetaSchema("domains-meta-schema.json")
+    @Shared def customAspectMetaSchema = getMetaSchemaV7("custom-aspect-meta-schema.json")
+    @Shared def customLinkMetaSchema = getMetaSchemaV7("custom-link-meta-schema.json")
+    @Shared def domainsMetaSchema = getMetaSchemaV7("domains-meta-schema.json")
 
 
     def "Custom aspect #aspect.id of #aspect.schema schema conform to meta schema"() {
@@ -69,11 +71,12 @@ class ClassPathSchemaSpec extends Specification {
         schema << entitySchemas
     }
 
+
     def "entity schema #schema.title is a valid schema"() {
         given:
-        def schema07 = getMetaSchema("draft-07.json")
+        def schema201909 = getMetaSchemaV2019_09()
         expect:
-        schema07.validate(schema).empty
+        schema201909.validate(schema).empty
         where:
         schema << entitySchemas
     }
@@ -85,9 +88,23 @@ class ClassPathSchemaSpec extends Specification {
         schema << entitySchemas
     }
 
-    private JsonSchema getMetaSchema(String file) throws IOException {
-        return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+    private JsonSchema getMetaSchemaV7(String file) throws IOException {
+        return JsonSchemaFactory.getInstance(VersionFlag.V7)
                 .getSchema(getClass().getClassLoader().getResource("schemas/meta/"+file).openStream())
+    }
+
+    private JsonSchema getMetaSchemaV2019_09() throws IOException {
+        def cl = getClass().getClassLoader()
+        JsonMetaSchema metaSchema = JsonMetaSchema.v201909
+        return JsonSchemaFactory.builder()
+                .defaultMetaSchemaURI(metaSchema.getUri())
+                .uriFetcher({ uri->
+                    String name = uri.toString().split('/').last()
+                    cl.getResourceAsStream("schemas/meta/v2019_09/"+name)
+                }, "https")
+                .addMetaSchema(metaSchema)
+                .build()
+                .getSchema(cl.getResourceAsStream("schemas/meta/draft-2019-09.json"))
     }
 
     private static List<JsonNode> getEntitySchemas() {

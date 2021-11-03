@@ -41,7 +41,7 @@ public class EntityTypeSchemaProvider implements JsonSchemaProvider {
     @Autowired
     private EntitySchemaService schemaService;
 
-    private JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+    private JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
 
     @Override
     public JsonSchema loadSchema(String type) {

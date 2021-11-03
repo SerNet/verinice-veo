@@ -322,7 +322,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     private JsonSchema getSchema(String type) {
         def schemaString = entitySchemaService.findSchema(type, Collections.emptyList())
-        return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7).getSchema(schemaString)
+        return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(schemaString)
     }
 
     JsonNode parseNode(ResultActions resultActions) {
