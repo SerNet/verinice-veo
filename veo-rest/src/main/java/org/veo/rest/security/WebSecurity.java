@@ -132,6 +132,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         // configurable:
         corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
         corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE);
+        corsConfig.addAllowedHeader(HttpHeaders.IF_MATCH);
         Arrays.stream(allowedHeaders)
               .peek(s -> log.debug("Added CORS allowed header: {}", s))
               .forEach(corsConfig::addAllowedHeader);

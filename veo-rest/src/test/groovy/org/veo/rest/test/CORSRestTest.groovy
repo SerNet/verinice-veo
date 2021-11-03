@@ -91,6 +91,7 @@ class CORSRestTest extends VeoRestTest{
             with(getAccessControlAllowHeaders()) {
                 contains(HttpHeaders.AUTHORIZATION)
                 contains(HttpHeaders.CONTENT_TYPE)
+                contains(HttpHeaders.IF_MATCH)
             }
             getAccessControlMaxAge() == 1800L
         }
@@ -114,7 +115,8 @@ class CORSRestTest extends VeoRestTest{
             setAccessControlRequestMethod(method)
             setAccessControlRequestHeaders([
                 HttpHeaders.AUTHORIZATION,
-                HttpHeaders.CONTENT_TYPE
+                HttpHeaders.CONTENT_TYPE,
+                HttpHeaders.IF_MATCH
             ])
         }
         def resp = exchange(relativeUri, HttpMethod.OPTIONS, headers, null)
