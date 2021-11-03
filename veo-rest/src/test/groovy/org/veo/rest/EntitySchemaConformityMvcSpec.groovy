@@ -24,10 +24,12 @@ import org.springframework.test.web.servlet.ResultActions
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
+import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DomainRepository
@@ -90,6 +92,83 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
         then:
         validationMessages.empty
+    }
+
+    def "can't create an asset when custom aspect not conforms to schema"() {
+        given: "asset with custom aspect that does not conform to schema"
+        def asset = [
+            customAspects: [
+                asset_foo: [
+                    attributes: [
+                        asset_details_operatingStage: "asset_details_operatingStage_operation"
+                    ]
+                ]
+            ],
+            name: "asset",
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ]]
+        when: "posting the asset"
+        (post("/assets", asset))
+        then: "an exception is thrown"
+        JsonSchemaValidationException ex = thrown()
+        and: "the reason is given"
+        ex.message ==~ /.*customAspects.asset_foo: is not defined.*/
+    }
+
+    def "can't create a scope when link not conforms to schema"() {
+        given: "scope with link that does not conform to schema"
+        def scope = [
+            name: "scope",
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ],
+            domains: [
+                (domainId): [
+                    subType: "SCP_Controller",
+                    status: "NEW"
+                ]
+            ],
+            links: [
+                scope_bar: [
+                    [
+                        target: [
+                            targetUri: "http://localhost/persons/906cf5e9-91c9-4035-b25d-ea1b3ba4ca05"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        when: "posting the scope"
+        (post("/scopes", scope))
+        then: "an exception is thrown"
+        JsonSchemaValidationException ex = thrown()
+        and: "the reason is given"
+        ex.message ==~ /.*links.scope_bar: is not defined.*/
+    }
+
+    def "can't create a control when subType not conforms to schema"() {
+        given: "control with subType that does not conform to schema"
+        def control = [
+            name: "control",
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ],
+            domains: [
+                (domainId): [
+                    subType: "CTL_Foo",
+                    status: "NEW"
+                ]
+            ]
+        ]
+
+        when: "posting the scope"
+        (post("/controls", control))
+        then: "an exception is thrown"
+        JsonSchemaValidationException ex = thrown()
+        and: "the reason is given"
+        ex.message ==~ /.*subType: does not have a value in the enumeration.*/
     }
 
     def "created control with custom aspect conforms to schema"() {
