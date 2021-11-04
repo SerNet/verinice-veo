@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -83,13 +82,10 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
-import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
@@ -115,15 +111,13 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ScenarioController.URL_BASE_PATH)
 @Slf4j
-public class ScenarioController extends AbstractEntityControllerWithDefaultSearch {
+public class ScenarioController extends AbstractElementController<Scenario> {
 
-    public ScenarioController(UseCaseInteractor useCaseInteractor,
-            GetScenarioUseCase getScenarioUseCase, GetScenariosUseCase getScenariosUseCase,
-            CreateScenarioUseCase createScenarioUseCase,
+    public ScenarioController(GetScenarioUseCase getScenarioUseCase,
+            GetScenariosUseCase getScenariosUseCase, CreateScenarioUseCase createScenarioUseCase,
             UpdateScenarioUseCase updateScenarioUseCase,
             DeleteElementUseCase deleteElementUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
-        this.getScenarioUseCase = getScenarioUseCase;
+        super(getScenarioUseCase);
         this.getScenariosUseCase = getScenariosUseCase;
         this.createScenarioUseCase = createScenarioUseCase;
         this.updateScenarioUseCase = updateScenarioUseCase;
@@ -132,10 +126,8 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
 
     public static final String URL_BASE_PATH = "/" + Scenario.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
     private final CreateScenarioUseCase createScenarioUseCase;
     private final UpdateScenarioUseCase updateScenarioUseCase;
-    private final GetScenarioUseCase getScenarioUseCase;
     private final GetScenariosUseCase getScenariosUseCase;
     private final DeleteElementUseCase deleteElementUseCase;
 
@@ -186,7 +178,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                                                                        entityToDtoTransformer::transformScenario2Dto));
     }
 
-    @GetMapping(value = "/{id}")
+    @Override
     @Operation(summary = "Loads an scenario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -194,25 +186,14 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullScenarioDto.class))),
             @ApiResponse(responseCode = "404", description = "Scenario not found") })
-    public @Valid CompletableFuture<ResponseEntity<FullScenarioDto>> getScenario(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-
-        CompletableFuture<FullScenarioDto> scenarioFuture = useCaseInteractor.execute(getScenarioUseCase,
-                                                                                      new UseCase.IdAndClient(
-                                                                                              Key.uuidFrom(id),
-                                                                                              client),
-                                                                                      output -> entityToDtoTransformer.transformScenario2Dto(output.getElement()));
-
-        return scenarioFuture.thenApply(scenarioDto -> ResponseEntity.ok()
-                                                                     .eTag(ETag.from(scenarioDto.getId(),
-                                                                                     scenarioDto.getVersion()))
-                                                                     .body(scenarioDto));
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+        return super.getElement(auth, uuid);
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    @Override
     @Operation(summary = "Loads the parts of a scenario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -220,19 +201,11 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
             @ApiResponse(responseCode = "404", description = "Scenario not found") })
-    public @Valid CompletableFuture<List<AbstractElementDto>> getParts(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getScenarioUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             Scenario scope = output.getElement();
-                                             return scope.getParts()
-                                                         .stream()
-                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                                         .collect(Collectors.toList());
-                                         });
+        return super.getElementParts(auth, uuid);
     }
 
     @PostMapping()

@@ -20,17 +20,11 @@ package org.veo.rest.common
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
+import org.veo.adapter.presenter.api.dto.AbstractElementDto
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto
-import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto
 import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto
-import org.veo.adapter.presenter.api.dto.full.FullControlDto
-import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto
-import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
-import org.veo.adapter.presenter.api.dto.full.FullPersonDto
-import org.veo.adapter.presenter.api.dto.full.FullProcessDto
-import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.VeoSpringSpec
@@ -49,17 +43,17 @@ class TypeExtractorITSpec extends VeoSpringSpec {
 
         where:
         uri                                                                                         | dtoType
-        '/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | FullAssetDto
+        '/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | AbstractElementDto
         '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | AssetRiskDto
-        '/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | FullControlDto
+        '/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | AbstractElementDto
         '/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                              | FullScopeDto
-        '/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | FullScenarioDto
-        '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | FullIncidentDto
+        '/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | AbstractElementDto
+        '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | AbstractElementDto
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullDomainDto
-        '/controls/28df429d-da5e-431a-a2d8-488c0741fb9f'                                            | FullControlDto
-        '/documents/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | FullDocumentDto
-        '/processes/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | FullProcessDto
-        '/persons/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullPersonDto
+        '/controls/28df429d-da5e-431a-a2d8-488c0741fb9f'                                            | AbstractElementDto
+        '/documents/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | AbstractElementDto
+        '/processes/28df429d-da5e-431a-a2d8-488c0741fb9f'                                           | AbstractElementDto
+        '/persons/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | AbstractElementDto
         '/units/28df429d-da5e-431a-a2d8-488c0741fb9f'                                               | FullUnitDto
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullDomainDto
         '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f'                                            | FullCatalogDto

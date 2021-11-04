@@ -85,8 +85,6 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -125,14 +123,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ProcessController.URL_BASE_PATH)
 @Slf4j
-public class ProcessController extends AbstractEntityControllerWithDefaultSearch
+public class ProcessController extends AbstractElementController<Process>
         implements ProcessRiskResource {
 
     public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
     private final CreateProcessUseCase createProcessUseCase;
-    private final GetProcessUseCase getProcessUseCase;
     private final UpdateProcessUseCase updateProcessUseCase;
     private final DeleteElementUseCase deleteElementUseCase;
     private final GetProcessesUseCase getProcessesUseCase;
@@ -142,17 +138,15 @@ public class ProcessController extends AbstractEntityControllerWithDefaultSearch
     private final DeleteRiskUseCase deleteRiskUseCase;
     private final UpdateProcessRiskUseCase updateProcessRiskUseCase;
 
-    public ProcessController(UseCaseInteractor useCaseInteractor,
-            CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
-            UpdateProcessUseCase putProcessUseCase, DeleteElementUseCase deleteElementUseCase,
-            GetProcessesUseCase getProcessesUseCase,
+    public ProcessController(CreateProcessUseCase createProcessUseCase,
+            GetProcessUseCase getProcessUseCase, UpdateProcessUseCase putProcessUseCase,
+            DeleteElementUseCase deleteElementUseCase, GetProcessesUseCase getProcessesUseCase,
             CreateProcessRiskUseCase createProcessRiskUseCase,
             GetProcessRiskUseCase getProcessRiskUseCase,
             GetProcessRisksUseCase getProcessRisksUseCase, DeleteRiskUseCase deleteRiskUseCase,
             UpdateProcessRiskUseCase updateProcessRiskUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
+        super(getProcessUseCase);
         this.createProcessUseCase = createProcessUseCase;
-        this.getProcessUseCase = getProcessUseCase;
         this.updateProcessUseCase = putProcessUseCase;
         this.deleteElementUseCase = deleteElementUseCase;
         this.getProcessesUseCase = getProcessesUseCase;
@@ -163,33 +157,22 @@ public class ProcessController extends AbstractEntityControllerWithDefaultSearch
         this.updateProcessRiskUseCase = updateProcessRiskUseCase;
     }
 
-    /**
-     * Load the process for the given id. The result is provided asynchronously by
-     * the executed use case.
-     *
-     * @param id
-     *            an ID in the UUID format as specified in RFC 4122
-     * @return the process for the given ID if one was found. Null otherwise.
-     */
-    @GetMapping("/{id}")
-    public CompletableFuture<ResponseEntity<FullProcessDto>> getProcessById(
+    @Override
+    @Operation(summary = "Loads a process")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                         description = "Process loaded",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = FullProcessDto.class))),
+            @ApiResponse(responseCode = "404", description = "Process not found") })
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id) {
-        CompletableFuture<FullProcessDto> processFuture = useCaseInteractor.execute(getProcessUseCase,
-                                                                                    (Supplier<UseCase.IdAndClient>) () -> new UseCase.IdAndClient(
-                                                                                            Key.uuidFrom(id),
-                                                                                            getAuthenticatedClient(auth))
-
-                                                                                    ,
-                                                                                    output -> entityToDtoTransformer.transformProcess2Dto(output.getElement()));
-
-        return processFuture.thenApply(processDto -> ResponseEntity.ok()
-                                                                   .eTag(ETag.from(processDto.getId(),
-                                                                                   processDto.getVersion()))
-                                                                   .body(processDto));
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+        return super.getElement(auth, uuid);
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    @Override
     @Operation(summary = "Loads the parts of a process")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -197,19 +180,11 @@ public class ProcessController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class)))),
             @ApiResponse(responseCode = "404", description = "Process not found") })
-    public @Valid CompletableFuture<List<AbstractElementDto>> getParts(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getProcessUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             Process scope = output.getElement();
-                                             return scope.getParts()
-                                                         .stream()
-                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                                         .collect(Collectors.toList());
-                                         });
+        return super.getElementParts(auth, uuid);
     }
 
     @PostMapping()

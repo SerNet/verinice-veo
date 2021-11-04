@@ -42,6 +42,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.rest.common.ReferenceAssemblerImpl;
 import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -70,6 +71,9 @@ public abstract class AbstractEntityController {
 
     @Autowired
     ReferenceAssembler urlAssembler;
+
+    @Autowired
+    protected UseCaseInteractor useCaseInteractor;
 
     protected AbstractEntityController() {
         super();

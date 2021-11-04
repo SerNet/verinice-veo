@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -83,14 +82,11 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
-import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
@@ -116,24 +112,20 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(PersonController.URL_BASE_PATH)
 @Slf4j
-public class PersonController extends AbstractEntityControllerWithDefaultSearch {
+public class PersonController extends AbstractElementController<Person> {
 
     public static final String URL_BASE_PATH = "/" + Person.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
     private final CreatePersonUseCase createPersonUseCase;
-    private final GetPersonUseCase getPersonUseCase;
     private final GetPersonsUseCase getPersonsUseCase;
     private final UpdatePersonUseCase updatePersonUseCase;
     private final DeleteElementUseCase deleteElementUseCase;
 
-    public PersonController(UseCaseInteractor useCaseInteractor,
-            CreatePersonUseCase createPersonUseCase, GetPersonUseCase getPersonUseCase,
-            GetPersonsUseCase getPersonsUseCase, UpdatePersonUseCase updatePersonUseCase,
-            DeleteElementUseCase deleteElementUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
+    public PersonController(CreatePersonUseCase createPersonUseCase,
+            GetPersonUseCase getPersonUseCase, GetPersonsUseCase getPersonsUseCase,
+            UpdatePersonUseCase updatePersonUseCase, DeleteElementUseCase deleteElementUseCase) {
+        super(getPersonUseCase);
         this.createPersonUseCase = createPersonUseCase;
-        this.getPersonUseCase = getPersonUseCase;
         this.getPersonsUseCase = getPersonsUseCase;
         this.updatePersonUseCase = updatePersonUseCase;
         this.deleteElementUseCase = deleteElementUseCase;
@@ -184,7 +176,7 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
                                                                        entityToDtoTransformer::transformPerson2Dto));
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @Override
     @Operation(summary = "Loads a person")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -192,24 +184,14 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullPersonDto.class))),
             @ApiResponse(responseCode = "404", description = "Person not found") })
-    public @Valid CompletableFuture<ResponseEntity<FullPersonDto>> getPerson(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-
-        CompletableFuture<FullPersonDto> personFuture = useCaseInteractor.execute(getPersonUseCase,
-                                                                                  new UseCase.IdAndClient(
-                                                                                          Key.uuidFrom(uuid),
-                                                                                          client),
-                                                                                  output -> entityToDtoTransformer.transformPerson2Dto(output.getElement()));
-
-        return personFuture.thenApply(personDto -> ResponseEntity.ok()
-                                                                 .eTag(ETag.from(personDto.getId(),
-                                                                                 personDto.getVersion()))
-                                                                 .body(personDto));
+        return super.getElement(auth, uuid);
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    @Override
     @Operation(summary = "Loads the parts of a person")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -217,19 +199,11 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullPersonDto.class)))),
             @ApiResponse(responseCode = "404", description = "Person not found") })
-    public @Valid CompletableFuture<List<AbstractElementDto>> getParts(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getPersonUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             Person scope = output.getElement();
-                                             return scope.getParts()
-                                                         .stream()
-                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                                         .collect(Collectors.toList());
-                                         });
+        return super.getElementParts(auth, uuid);
     }
 
     @PostMapping()

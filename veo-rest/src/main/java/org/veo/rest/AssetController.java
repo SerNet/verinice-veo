@@ -85,8 +85,6 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
@@ -122,21 +120,19 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(AssetController.URL_BASE_PATH)
 @Slf4j
-public class AssetController extends AbstractEntityControllerWithDefaultSearch
-        implements AssetRiskResource {
+public class AssetController extends AbstractElementController<Asset> implements AssetRiskResource {
 
     private final DeleteRiskUseCase deleteRiskUseCase;
     private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
     private final GetAssetRisksUseCase getAssetRisksUseCase;
 
-    public AssetController(UseCaseInteractor useCaseInteractor, GetAssetUseCase getAssetUseCase,
-            GetAssetsUseCase getAssetsUseCase, CreateAssetUseCase createAssetUseCase,
-            UpdateAssetUseCase updateAssetUseCase, DeleteElementUseCase deleteElementUseCase,
+    public AssetController(GetAssetUseCase getAssetUseCase, GetAssetsUseCase getAssetsUseCase,
+            CreateAssetUseCase createAssetUseCase, UpdateAssetUseCase updateAssetUseCase,
+            DeleteElementUseCase deleteElementUseCase,
             CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
             DeleteRiskUseCase deleteRiskUseCase, UpdateAssetRiskUseCase updateAssetRiskUseCase,
             GetAssetRisksUseCase getAssetRisksUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
-        this.getAssetUseCase = getAssetUseCase;
+        super(getAssetUseCase);
         this.getAssetsUseCase = getAssetsUseCase;
         this.createAssetUseCase = createAssetUseCase;
         this.updateAssetUseCase = updateAssetUseCase;
@@ -150,10 +146,8 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
 
     public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
     private final CreateAssetUseCase createAssetUseCase;
     private final UpdateAssetUseCase updateAssetUseCase;
-    private final GetAssetUseCase getAssetUseCase;
     private final GetAssetsUseCase getAssetsUseCase;
     private final DeleteElementUseCase deleteElementUseCase;
     private final CreateAssetRiskUseCase createAssetRiskUseCase;
@@ -204,7 +198,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
                                                                        entityToDtoTransformer::transformAsset2Dto));
     }
 
-    @GetMapping(value = "/{id}")
+    @Override
     @Operation(summary = "Loads an asset")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -212,25 +206,14 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullAssetDto.class))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public @Valid CompletableFuture<ResponseEntity<FullAssetDto>> getAsset(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-
-        CompletableFuture<FullAssetDto> assetFuture = useCaseInteractor.execute(getAssetUseCase,
-                                                                                new UseCase.IdAndClient(
-                                                                                        Key.uuidFrom(id),
-                                                                                        client),
-                                                                                output -> entityToDtoTransformer.transformAsset2Dto(output.getElement()));
-
-        return assetFuture.thenApply(assetDto -> ResponseEntity.ok()
-                                                               .eTag(ETag.from(assetDto.getId(),
-                                                                               assetDto.getVersion()))
-                                                               .body(assetDto));
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+        return super.getElement(auth, uuid);
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    @Override
     @Operation(summary = "Loads the parts of an asset")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -238,19 +221,11 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public @Valid CompletableFuture<List<AbstractElementDto>> getParts(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getAssetUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             Asset scope = output.getElement();
-                                             return scope.getParts()
-                                                         .stream()
-                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                                         .collect(Collectors.toList());
-                                         });
+        return super.getElementParts(auth, uuid);
     }
 
     @PostMapping()

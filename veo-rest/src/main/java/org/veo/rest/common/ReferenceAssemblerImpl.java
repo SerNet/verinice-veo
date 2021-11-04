@@ -104,14 +104,14 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                        .getHref();
         }
         if (Asset.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(AssetController.class).getAsset(ANY_AUTH,
-                                                                   id)).withRel(AssetController.URL_BASE_PATH)
-                                                                       .getHref();
+            return linkTo(methodOn(AssetController.class).getElement(ANY_AUTH,
+                                                                     id)).withRel(AssetController.URL_BASE_PATH)
+                                                                         .getHref();
         }
         if (Document.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(DocumentController.class).getDocument(ANY_AUTH,
-                                                                         id)).withRel(DocumentController.URL_BASE_PATH)
-                                                                             .getHref();
+            return linkTo(methodOn(DocumentController.class).getElement(ANY_AUTH,
+                                                                        id)).withRel(DocumentController.URL_BASE_PATH)
+                                                                            .getHref();
         }
         if (Unit.class.isAssignableFrom(type)) {
             return linkTo(methodOn(UnitController.class).getUnit(ANY_AUTH,
@@ -119,29 +119,29 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                      .getHref();
         }
         if (Person.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(PersonController.class).getPerson(ANY_AUTH,
-                                                                     id)).withRel(PersonController.URL_BASE_PATH)
-                                                                         .getHref();
+            return linkTo(methodOn(PersonController.class).getElement(ANY_AUTH,
+                                                                      id)).withRel(PersonController.URL_BASE_PATH)
+                                                                          .getHref();
         }
         if (Process.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ProcessController.class).getProcessById(ANY_AUTH,
-                                                                           id)).withRel(ProcessController.URL_BASE_PATH)
-                                                                               .getHref();
+            return linkTo(methodOn(ProcessController.class).getElement(ANY_AUTH,
+                                                                       id)).withRel(ProcessController.URL_BASE_PATH)
+                                                                           .getHref();
         }
         if (Control.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ControlController.class).getControl(ANY_AUTH,
+            return linkTo(methodOn(ControlController.class).getElement(ANY_AUTH,
                                                                        id)).withRel(ControlController.URL_BASE_PATH)
                                                                            .getHref();
         }
         if (Scenario.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ScenarioController.class).getScenario(ANY_AUTH,
-                                                                         id)).withRel(ScenarioController.URL_BASE_PATH)
-                                                                             .getHref();
+            return linkTo(methodOn(ScenarioController.class).getElement(ANY_AUTH,
+                                                                        id)).withRel(ScenarioController.URL_BASE_PATH)
+                                                                            .getHref();
         }
         if (Incident.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(IncidentController.class).getIncident(ANY_AUTH,
-                                                                         id)).withRel(IncidentController.URL_BASE_PATH)
-                                                                             .getHref();
+            return linkTo(methodOn(IncidentController.class).getElement(ANY_AUTH,
+                                                                        id)).withRel(IncidentController.URL_BASE_PATH)
+                                                                            .getHref();
         }
         if (Domain.class.isAssignableFrom(type)) {
             return linkTo(methodOn(DomainController.class).getDomain(ANY_AUTH,

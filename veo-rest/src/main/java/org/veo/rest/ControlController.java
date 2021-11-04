@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -84,14 +83,11 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
-import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
@@ -117,24 +113,20 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ControlController.URL_BASE_PATH)
 @Slf4j
-public class ControlController extends AbstractEntityControllerWithDefaultSearch {
+public class ControlController extends AbstractElementController<Control> {
 
     public static final String URL_BASE_PATH = "/" + Control.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
     private final CreateControlUseCase createControlUseCase;
-    private final GetControlUseCase getControlUseCase;
     private final GetControlsUseCase getControlsUseCase;
     private final UpdateControlUseCase updateControlUseCase;
     private final DeleteElementUseCase deleteElementUseCase;
 
-    public ControlController(UseCaseInteractor useCaseInteractor,
-            CreateControlUseCase createControlUseCase, GetControlUseCase getControlUseCase,
-            GetControlsUseCase getControlsUseCase, UpdateControlUseCase updateControlUseCase,
-            DeleteElementUseCase deleteElementUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
+    public ControlController(CreateControlUseCase createControlUseCase,
+            GetControlUseCase getControlUseCase, GetControlsUseCase getControlsUseCase,
+            UpdateControlUseCase updateControlUseCase, DeleteElementUseCase deleteElementUseCase) {
+        super(getControlUseCase);
         this.createControlUseCase = createControlUseCase;
-        this.getControlUseCase = getControlUseCase;
         this.getControlsUseCase = getControlsUseCase;
         this.updateControlUseCase = updateControlUseCase;
         this.deleteElementUseCase = deleteElementUseCase;
@@ -187,7 +179,7 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                                                                        entityToDtoTransformer::transformControl2Dto));
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @Override
     @Operation(summary = "Loads a control")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -195,24 +187,14 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = AbstractControlDto.class))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
-    public @Valid CompletableFuture<ResponseEntity<FullControlDto>> getControl(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-
-        CompletableFuture<FullControlDto> controlFuture = useCaseInteractor.execute(getControlUseCase,
-                                                                                    new UseCase.IdAndClient(
-                                                                                            Key.uuidFrom(uuid),
-                                                                                            client),
-                                                                                    output -> entityToDtoTransformer.transformControl2Dto(output.getElement()));
-
-        return controlFuture.thenApply(controlDto -> ResponseEntity.ok()
-                                                                   .eTag(ETag.from(controlDto.getId(),
-                                                                                   controlDto.getVersion()))
-                                                                   .body(controlDto));
+        return super.getElement(auth, uuid);
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    @Override
     @Operation(summary = "Loads the parts of a control")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -220,19 +202,11 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
-    public @Valid CompletableFuture<List<AbstractElementDto>> getParts(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getControlUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             Control scope = output.getElement();
-                                             return scope.getParts()
-                                                         .stream()
-                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                                         .collect(Collectors.toList());
-                                         });
+        return super.getElementParts(auth, uuid);
     }
 
     @PostMapping()

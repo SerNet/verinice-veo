@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -83,13 +82,10 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Key;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
-import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
@@ -115,15 +111,13 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(DocumentController.URL_BASE_PATH)
 @Slf4j
-public class DocumentController extends AbstractEntityControllerWithDefaultSearch {
+public class DocumentController extends AbstractElementController<Document> {
 
-    public DocumentController(UseCaseInteractor useCaseInteractor,
-            GetDocumentUseCase getDocumentUseCase, GetDocumentsUseCase getDocumentsUseCase,
-            CreateDocumentUseCase createDocumentUseCase,
+    public DocumentController(GetDocumentUseCase getDocumentUseCase,
+            GetDocumentsUseCase getDocumentsUseCase, CreateDocumentUseCase createDocumentUseCase,
             UpdateDocumentUseCase updateDocumentUseCase,
             DeleteElementUseCase deleteElementUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
-        this.getDocumentUseCase = getDocumentUseCase;
+        super(getDocumentUseCase);
         this.getDocumentsUseCase = getDocumentsUseCase;
         this.createDocumentUseCase = createDocumentUseCase;
         this.updateDocumentUseCase = updateDocumentUseCase;
@@ -132,10 +126,8 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
 
     public static final String URL_BASE_PATH = "/" + Document.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
     private final CreateDocumentUseCase createDocumentUseCase;
     private final UpdateDocumentUseCase updateDocumentUseCase;
-    private final GetDocumentUseCase getDocumentUseCase;
     private final GetDocumentsUseCase getDocumentsUseCase;
     private final DeleteElementUseCase deleteElementUseCase;
 
@@ -186,7 +178,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
                                                                        entityToDtoTransformer::transformDocument2Dto));
     }
 
-    @GetMapping(value = "/{id}")
+    @Override
     @Operation(summary = "Loads a document")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -194,24 +186,14 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullDocumentDto.class))),
             @ApiResponse(responseCode = "404", description = "Document not found") })
-    public @Valid CompletableFuture<ResponseEntity<FullDocumentDto>> getDocument(
-            @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-
-        CompletableFuture<FullDocumentDto> documentFuture = useCaseInteractor.execute(getDocumentUseCase,
-                                                                                      new UseCase.IdAndClient(
-                                                                                              Key.uuidFrom(id),
-                                                                                              client),
-                                                                                      output -> entityToDtoTransformer.transformDocument2Dto(output.getElement()));
-
-        return documentFuture.thenApply(documentDto -> ResponseEntity.ok()
-                                                                     .eTag(ETag.from(documentDto.getId(),
-                                                                                     documentDto.getVersion()))
-                                                                     .body(documentDto));
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+        return super.getElement(auth, uuid);
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    @Override
     @Operation(summary = "Loads the parts of a document")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -219,19 +201,11 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
             @ApiResponse(responseCode = "404", description = "Document not found") })
-    public @Valid CompletableFuture<List<AbstractElementDto>> getParts(
+    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(getDocumentUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             Document scope = output.getElement();
-                                             return scope.getParts()
-                                                         .stream()
-                                                         .map(part -> entityToDtoTransformer.transform2Dto(part))
-                                                         .collect(Collectors.toList());
-                                         });
+        return super.getElementParts(auth, uuid);
     }
 
     @PostMapping()
