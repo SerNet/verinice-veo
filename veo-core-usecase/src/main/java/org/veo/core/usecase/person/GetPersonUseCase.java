@@ -17,42 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.person;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Person;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.PersonRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
-
-import lombok.Value;
+import org.veo.core.usecase.base.GetElementUseCase;
 
 /**
  * Reinstantiate a persisted person object.
  */
-public class GetPersonUseCase
-        implements TransactionalUseCase<IdAndClient, GetPersonUseCase.OutputData> {
-
-    private final PersonRepository repository;
+public class GetPersonUseCase extends GetElementUseCase<Person> {
 
     public GetPersonUseCase(PersonRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Person person = repository.findById(input.getId())
-                                  .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                .uuidValue()));
-        person.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(person);
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Person person;
-    }
 }

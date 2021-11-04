@@ -17,42 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Control;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ControlRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
-
-import lombok.Value;
+import org.veo.core.usecase.base.GetElementUseCase;
 
 /**
  * Reinstantiate a persisted control object.
  */
-public class GetControlUseCase
-        implements TransactionalUseCase<IdAndClient, GetControlUseCase.OutputData> {
-
-    private final ControlRepository repository;
+public class GetControlUseCase extends GetElementUseCase<Control> {
 
     public GetControlUseCase(ControlRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Control control = repository.findById(input.getId())
-                                    .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                  .uuidValue()));
-        control.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(control);
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Control control;
-    }
 }

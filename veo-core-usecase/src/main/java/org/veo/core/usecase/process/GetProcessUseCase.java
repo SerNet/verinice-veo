@@ -17,42 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Process;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ProcessRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
-
-import lombok.Value;
+import org.veo.core.usecase.base.GetElementUseCase;
 
 /**
  * Reinstantiate a persisted process object.
  */
-public class GetProcessUseCase
-        implements TransactionalUseCase<IdAndClient, GetProcessUseCase.OutputData> {
-
-    private final ProcessRepository repository;
+public class GetProcessUseCase extends GetElementUseCase<Process> {
 
     public GetProcessUseCase(ProcessRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Process process = repository.findById(input.getId())
-                                    .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                  .uuidValue()));
-        process.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(process);
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Process process;
-    }
 }

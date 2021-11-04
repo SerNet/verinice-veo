@@ -40,7 +40,7 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new UseCase.IdAndClient(id,  existingClient))
         then:
         1 * personRepository.findById(id) >> Optional.of(person)
-        output.person != null
-        output.person.id == id
+        output.element != null
+        output.element.id == id
     }
 }

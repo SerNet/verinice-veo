@@ -181,7 +181,7 @@ public class ProcessController extends AbstractEntityControllerWithDefaultSearch
                                                                                             getAuthenticatedClient(auth))
 
                                                                                     ,
-                                                                                    output -> entityToDtoTransformer.transformProcess2Dto(output.getProcess()));
+                                                                                    output -> entityToDtoTransformer.transformProcess2Dto(output.getElement()));
 
         return processFuture.thenApply(processDto -> ResponseEntity.ok()
                                                                    .eTag(ETag.from(processDto.getId(),
@@ -204,7 +204,7 @@ public class ProcessController extends AbstractEntityControllerWithDefaultSearch
         return useCaseInteractor.execute(getProcessUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             Process scope = output.getProcess();
+                                             Process scope = output.getElement();
                                              return scope.getParts()
                                                          .stream()
                                                          .map(part -> entityToDtoTransformer.transform2Dto(part))

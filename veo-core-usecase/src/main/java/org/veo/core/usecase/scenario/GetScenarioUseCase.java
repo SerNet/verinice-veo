@@ -17,41 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.scenario;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ScenarioRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
-
-import lombok.Value;
+import org.veo.core.usecase.base.GetElementUseCase;
 
 /**
  * Reinstantiate a persisted scenario object.
  */
-public class GetScenarioUseCase
-        implements TransactionalUseCase<IdAndClient, GetScenarioUseCase.OutputData> {
-
-    private final ScenarioRepository repository;
+public class GetScenarioUseCase extends GetElementUseCase<Scenario> {
 
     public GetScenarioUseCase(ScenarioRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
-    public OutputData execute(IdAndClient input) {
-        Scenario scenario = repository.findById(input.getId())
-                                      .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                    .uuidValue()));
-        scenario.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(scenario);
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Scenario scenario;
-    }
 }

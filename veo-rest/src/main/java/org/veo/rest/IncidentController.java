@@ -204,7 +204,7 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
                                                                                       new UseCase.IdAndClient(
                                                                                               Key.uuidFrom(id),
                                                                                               client),
-                                                                                      output -> entityToDtoTransformer.transformIncident2Dto(output.getIncident()));
+                                                                                      output -> entityToDtoTransformer.transformIncident2Dto(output.getElement()));
 
         return incidentFuture.thenApply(incidentDto -> ResponseEntity.ok()
                                                                      .eTag(ETag.from(incidentDto.getId(),
@@ -227,7 +227,7 @@ public class IncidentController extends AbstractEntityControllerWithDefaultSearc
         return useCaseInteractor.execute(getIncidentUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             Incident scope = output.getIncident();
+                                             Incident scope = output.getElement();
                                              return scope.getParts()
                                                          .stream()
                                                          .map(part -> entityToDtoTransformer.transform2Dto(part))

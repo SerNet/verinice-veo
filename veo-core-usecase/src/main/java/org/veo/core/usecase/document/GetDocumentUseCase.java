@@ -17,41 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.document;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Document;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DocumentRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
-
-import lombok.Value;
+import org.veo.core.usecase.base.GetElementUseCase;
 
 /**
  * Reinstantiate a persisted document object.
  */
-public class GetDocumentUseCase
-        implements TransactionalUseCase<IdAndClient, GetDocumentUseCase.OutputData> {
-
-    private final DocumentRepository repository;
+public class GetDocumentUseCase extends GetElementUseCase<Document> {
 
     public GetDocumentUseCase(DocumentRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
-    public OutputData execute(IdAndClient input) {
-        Document document = repository.findById(input.getId())
-                                      .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                    .uuidValue()));
-        document.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(document);
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Document document;
-    }
 }

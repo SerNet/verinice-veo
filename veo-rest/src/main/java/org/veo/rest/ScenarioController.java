@@ -204,7 +204,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                                                                                       new UseCase.IdAndClient(
                                                                                               Key.uuidFrom(id),
                                                                                               client),
-                                                                                      output -> entityToDtoTransformer.transformScenario2Dto(output.getScenario()));
+                                                                                      output -> entityToDtoTransformer.transformScenario2Dto(output.getElement()));
 
         return scenarioFuture.thenApply(scenarioDto -> ResponseEntity.ok()
                                                                      .eTag(ETag.from(scenarioDto.getId(),
@@ -227,7 +227,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
         return useCaseInteractor.execute(getScenarioUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             Scenario scope = output.getScenario();
+                                             Scenario scope = output.getElement();
                                              return scope.getParts()
                                                          .stream()
                                                          .map(part -> entityToDtoTransformer.transform2Dto(part))

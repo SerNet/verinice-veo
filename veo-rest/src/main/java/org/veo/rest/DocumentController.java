@@ -203,7 +203,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
                                                                                       new UseCase.IdAndClient(
                                                                                               Key.uuidFrom(id),
                                                                                               client),
-                                                                                      output -> entityToDtoTransformer.transformDocument2Dto(output.getDocument()));
+                                                                                      output -> entityToDtoTransformer.transformDocument2Dto(output.getElement()));
 
         return documentFuture.thenApply(documentDto -> ResponseEntity.ok()
                                                                      .eTag(ETag.from(documentDto.getId(),
@@ -226,7 +226,7 @@ public class DocumentController extends AbstractEntityControllerWithDefaultSearc
         return useCaseInteractor.execute(getDocumentUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             Document scope = output.getDocument();
+                                             Document scope = output.getElement();
                                              return scope.getParts()
                                                          .stream()
                                                          .map(part -> entityToDtoTransformer.transform2Dto(part))

@@ -222,7 +222,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
                                                                                 new UseCase.IdAndClient(
                                                                                         Key.uuidFrom(id),
                                                                                         client),
-                                                                                output -> entityToDtoTransformer.transformAsset2Dto(output.getAsset()));
+                                                                                output -> entityToDtoTransformer.transformAsset2Dto(output.getElement()));
 
         return assetFuture.thenApply(assetDto -> ResponseEntity.ok()
                                                                .eTag(ETag.from(assetDto.getId(),
@@ -245,7 +245,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
         return useCaseInteractor.execute(getAssetUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             Asset scope = output.getAsset();
+                                             Asset scope = output.getElement();
                                              return scope.getParts()
                                                          .stream()
                                                          .map(part -> entityToDtoTransformer.transform2Dto(part))

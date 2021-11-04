@@ -204,7 +204,7 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
                                                                                     new UseCase.IdAndClient(
                                                                                             Key.uuidFrom(uuid),
                                                                                             client),
-                                                                                    output -> entityToDtoTransformer.transformControl2Dto(output.getControl()));
+                                                                                    output -> entityToDtoTransformer.transformControl2Dto(output.getElement()));
 
         return controlFuture.thenApply(controlDto -> ResponseEntity.ok()
                                                                    .eTag(ETag.from(controlDto.getId(),
@@ -227,7 +227,7 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
         return useCaseInteractor.execute(getControlUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             Control scope = output.getControl();
+                                             Control scope = output.getElement();
                                              return scope.getParts()
                                                          .stream()
                                                          .map(part -> entityToDtoTransformer.transform2Dto(part))

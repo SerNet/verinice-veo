@@ -201,7 +201,7 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
                                                                                   new UseCase.IdAndClient(
                                                                                           Key.uuidFrom(uuid),
                                                                                           client),
-                                                                                  output -> entityToDtoTransformer.transformPerson2Dto(output.getPerson()));
+                                                                                  output -> entityToDtoTransformer.transformPerson2Dto(output.getElement()));
 
         return personFuture.thenApply(personDto -> ResponseEntity.ok()
                                                                  .eTag(ETag.from(personDto.getId(),
@@ -224,7 +224,7 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
         return useCaseInteractor.execute(getPersonUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
-                                             Person scope = output.getPerson();
+                                             Person scope = output.getElement();
                                              return scope.getParts()
                                                          .stream()
                                                          .map(part -> entityToDtoTransformer.transform2Dto(part))

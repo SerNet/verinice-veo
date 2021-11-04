@@ -17,41 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.incident;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Incident;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.IncidentRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
-
-import lombok.Value;
+import org.veo.core.usecase.base.GetElementUseCase;
 
 /**
  * Reinstantiate a persisted incident object.
  */
-public class GetIncidentUseCase
-        implements TransactionalUseCase<IdAndClient, GetIncidentUseCase.OutputData> {
-
-    private final IncidentRepository repository;
+public class GetIncidentUseCase extends GetElementUseCase<Incident> {
 
     public GetIncidentUseCase(IncidentRepository repository) {
-        this.repository = repository;
+        super(repository);
     }
 
-    public OutputData execute(IdAndClient input) {
-        Incident incident = repository.findById(input.getId())
-                                      .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                    .uuidValue()));
-        incident.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(incident);
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Incident incident;
-    }
 }
