@@ -55,7 +55,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -74,7 +73,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -91,7 +89,9 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.CreateProcessUseCase;
@@ -105,7 +105,6 @@ import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
-import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -126,7 +125,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ProcessController.URL_BASE_PATH)
 @Slf4j
-public class ProcessController extends AbstractEntityController implements ProcessRiskResource {
+public class ProcessController extends AbstractEntityControllerWithDefaultSearch
+        implements ProcessRiskResource {
 
     public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
 
@@ -141,9 +141,6 @@ public class ProcessController extends AbstractEntityController implements Proce
     private final GetProcessRisksUseCase getProcessRisksUseCase;
     private final DeleteRiskUseCase deleteRiskUseCase;
     private final UpdateProcessRiskUseCase updateProcessRiskUseCase;
-
-    @Autowired
-    ReferenceAssembler urlAssembler;
 
     public ProcessController(UseCaseInteractor useCaseInteractor,
             CreateProcessUseCase createProcessUseCase, GetProcessUseCase getProcessUseCase,
@@ -248,19 +245,16 @@ public class ProcessController extends AbstractEntityController implements Proce
             @PathVariable String id,
             @Valid @RequestBody @JsonSchemaValidation(Process.SINGULAR_TERM) FullProcessDto processDto) {
         processDto.applyResourceId(id);
-        return useCaseInteractor.execute(updateProcessUseCase,
-                                         new Supplier<ModifyElementUseCase.InputData<Process>>() {
-
-                                             @Override
-                                             public ModifyElementUseCase.InputData<Process> get() {
-                                                 Client client = getClient(user);
-                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new ModifyElementUseCase.InputData<Process>(
-                                                         dtoToEntityTransformer.transformDto2Process(processDto,
-                                                                                                     idRefResolver),
-                                                         client, eTag, user.getUsername());
-                                             }
-                                         }
+        return useCaseInteractor.execute(updateProcessUseCase, new Supplier<InputData<Process>>() {
+            @Override
+            public InputData<Process> get() {
+                Client client = getClient(user);
+                IdRefResolver idRefResolver = createIdRefResolver(client);
+                return new ModifyElementUseCase.InputData<>(
+                        dtoToEntityTransformer.transformDto2Process(processDto, idRefResolver),
+                        client, eTag, user.getUsername());
+            }
+        }
 
                                          ,
                                          output -> entityToDtoTransformer.transformProcess2Dto(output.getEntity()));
@@ -321,7 +315,7 @@ public class ProcessController extends AbstractEntityController implements Proce
     }
 
     private CompletableFuture<PageDto<FullProcessDto>> getProcesses(
-            GetProcessesUseCase.InputData inputData) {
+            GetElementsUseCase.InputData inputData) {
         return useCaseInteractor.execute(getProcessesUseCase, inputData,
                                          output -> PagingMapper.toPage(output.getElements(),
                                                                        entityToDtoTransformer::transformProcess2Dto));
@@ -334,14 +328,6 @@ public class ProcessController extends AbstractEntityController implements Proce
                                                                   ANY_STRING, ANY_STRING))
                                                                                           .withSelfRel()
                                                                                           .getHref();
-    }
-
-    @PostMapping(value = "/searches")
-    @Operation(summary = "Creates a new search with the given search criteria.")
-    public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Valid @RequestBody SearchQueryDto search) {
-        return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
     }
 
     @GetMapping(value = "/searches/{searchId}")
@@ -381,12 +367,11 @@ public class ProcessController extends AbstractEntityController implements Proce
         Client client = getClient(user.getClientId());
         var input = new GetProcessRisksUseCase.InputData(client, Key.uuidFrom(processId));
 
-        return useCaseInteractor.execute(getProcessRisksUseCase, input, output -> {
-            return output.getRisks()
-                         .stream()
-                         .map(risk -> ProcessRiskDto.from(risk, referenceAssembler))
-                         .collect(Collectors.toList());
-        });
+        return useCaseInteractor.execute(getProcessRisksUseCase, input, output -> output.getRisks()
+                                                                                        .stream()
+                                                                                        .map(risk -> ProcessRiskDto.from(risk,
+                                                                                                                         referenceAssembler))
+                                                                                        .collect(Collectors.toList()));
     }
 
     @Override

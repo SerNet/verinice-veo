@@ -204,9 +204,7 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
                                                                                       new UseCase.IdAndClient(
                                                                                               Key.uuidFrom(id),
                                                                                               client),
-                                                                                      output -> {
-                                                                                          return entityToDtoTransformer.transformScenario2Dto(output.getScenario());
-                                                                                      });
+                                                                                      output -> entityToDtoTransformer.transformScenario2Dto(output.getScenario()));
 
         return scenarioFuture.thenApply(scenarioDto -> ResponseEntity.ok()
                                                                      .eTag(ETag.from(scenarioDto.getId(),
@@ -269,12 +267,11 @@ public class ScenarioController extends AbstractEntityControllerWithDefaultSearc
         scenarioDto.applyResourceId(id);
         return useCaseInteractor.execute(updateScenarioUseCase,
                                          new Supplier<InputData<Scenario>>() {
-
                                              @Override
                                              public InputData<Scenario> get() {
                                                  Client client = getClient(user);
                                                  IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new InputData<Scenario>(
+                                                 return new InputData<>(
                                                          dtoToEntityTransformer.transformDto2Scenario(scenarioDto,
                                                                                                       idRefResolver),
                                                          client, eTag, user.getUsername());

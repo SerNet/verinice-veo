@@ -89,6 +89,7 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
@@ -261,19 +262,16 @@ public class PersonController extends AbstractEntityControllerWithDefaultSearch 
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody @JsonSchemaValidation(Person.SINGULAR_TERM) FullPersonDto personDto) {
         personDto.applyResourceId(uuid);
-        return useCaseInteractor.execute(updatePersonUseCase,
-                                         new Supplier<ModifyElementUseCase.InputData<Person>>() {
-
-                                             @Override
-                                             public ModifyElementUseCase.InputData<Person> get() {
-                                                 Client client = getClient(user);
-                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new ModifyElementUseCase.InputData<Person>(
-                                                         dtoToEntityTransformer.transformDto2Person(personDto,
-                                                                                                    idRefResolver),
-                                                         client, eTag, user.getUsername());
-                                             }
-                                         },
+        return useCaseInteractor.execute(updatePersonUseCase, new Supplier<InputData<Person>>() {
+            @Override
+            public InputData<Person> get() {
+                Client client = getClient(user);
+                IdRefResolver idRefResolver = createIdRefResolver(client);
+                return new ModifyElementUseCase.InputData<>(
+                        dtoToEntityTransformer.transformDto2Person(personDto, idRefResolver),
+                        client, eTag, user.getUsername());
+            }
+        },
 
                                          output -> entityToDtoTransformer.transformPerson2Dto(output.getEntity()));
     }

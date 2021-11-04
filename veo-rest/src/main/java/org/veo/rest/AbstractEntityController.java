@@ -40,7 +40,6 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.rest.common.ReferenceAssemblerImpl;
@@ -50,7 +49,6 @@ import org.veo.rest.security.ApplicationUser;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 
-// TODO: see VEO-115
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 @Slf4j
 public abstract class AbstractEntityController {
@@ -60,9 +58,6 @@ public abstract class AbstractEntityController {
 
     @Autowired
     private RepositoryProvider repositoryProvider;
-
-    @Autowired
-    private EntityFactory entityFactory;
 
     @Autowired
     ReferenceAssemblerImpl referenceAssembler;
@@ -76,7 +71,7 @@ public abstract class AbstractEntityController {
     @Autowired
     ReferenceAssembler urlAssembler;
 
-    public AbstractEntityController() {
+    protected AbstractEntityController() {
         super();
     }
 
@@ -87,7 +82,7 @@ public abstract class AbstractEntityController {
         return ex.getBindingResult()
                  .getAllErrors()
                  .stream()
-                 .map(err -> (FieldError) err)
+                 .map(FieldError.class::cast)
                  .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 

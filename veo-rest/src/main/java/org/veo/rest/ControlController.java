@@ -266,20 +266,16 @@ public class ControlController extends AbstractEntityControllerWithDefaultSearch
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
             @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM) FullControlDto controlDto) {
         controlDto.applyResourceId(uuid);
-        return useCaseInteractor.execute(updateControlUseCase,
-                                         new Supplier<ModifyElementUseCase.InputData<Control>>() {
-
-                                             @Override
-                                             public InputData<Control> get() {
-                                                 Client client = getClient(user);
-                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new ModifyElementUseCase.InputData<Control>(
-                                                         dtoToEntityTransformer.transformDto2Control(controlDto,
-                                                                                                     idRefResolver),
-                                                         client, eTag, user.getUsername());
-                                             }
-
-                                         },
+        return useCaseInteractor.execute(updateControlUseCase, new Supplier<InputData<Control>>() {
+            @Override
+            public InputData<Control> get() {
+                Client client = getClient(user);
+                IdRefResolver idRefResolver = createIdRefResolver(client);
+                return new ModifyElementUseCase.InputData<>(
+                        dtoToEntityTransformer.transformDto2Control(controlDto, idRefResolver),
+                        client, eTag, user.getUsername());
+            }
+        },
 
                                          output -> entityToDtoTransformer.transformControl2Dto(output.getEntity()));
     }

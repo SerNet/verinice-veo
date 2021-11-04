@@ -222,9 +222,7 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
                                                                                 new UseCase.IdAndClient(
                                                                                         Key.uuidFrom(id),
                                                                                         client),
-                                                                                output -> {
-                                                                                    return entityToDtoTransformer.transformAsset2Dto(output.getAsset());
-                                                                                });
+                                                                                output -> entityToDtoTransformer.transformAsset2Dto(output.getAsset()));
 
         return assetFuture.thenApply(assetDto -> ResponseEntity.ok()
                                                                .eTag(ETag.from(assetDto.getId(),
@@ -359,12 +357,11 @@ public class AssetController extends AbstractEntityControllerWithDefaultSearch
         Client client = getClient(user.getClientId());
         var input = new GetAssetRisksUseCase.InputData(client, Key.uuidFrom(assetId));
 
-        return useCaseInteractor.execute(getAssetRisksUseCase, input, output -> {
-            return output.getRisks()
-                         .stream()
-                         .map(risk -> AssetRiskDto.from(risk, referenceAssembler))
-                         .collect(Collectors.toList());
-        });
+        return useCaseInteractor.execute(getAssetRisksUseCase, input, output -> output.getRisks()
+                                                                                      .stream()
+                                                                                      .map(risk -> AssetRiskDto.from(risk,
+                                                                                                                     referenceAssembler))
+                                                                                      .collect(Collectors.toList()));
     }
 
     @Override
