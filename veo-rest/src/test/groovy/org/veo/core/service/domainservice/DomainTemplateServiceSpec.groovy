@@ -54,7 +54,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             domainsFromTemplate.forEach({client.addToDomains(it)})
             client = repository.save(client)
         }
-        def domainFromTemplate = client.domains.find { it.name == "DSGVO" }
+        def domainFromTemplate = client.domains.find { it.name == "DS-GVO" }
         expect: 'the domain matches with the linked domainTemplate'
         with(domainFromTemplate) {
             domainTemplate.dbId == DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID
