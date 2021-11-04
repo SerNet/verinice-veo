@@ -1,7 +1,7 @@
 {
   "abbreviation": "TOM-REC",
   "name": "TOM zur Wiederherstellbarkeit",
-  "description": "Wiederherstellbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DSGVO hinsichtlich der Fähigkeit, die Verfügbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
+  "description": "Wiederherstellbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
   "domains": {
     "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
       "subType": "CTL_TOM",
