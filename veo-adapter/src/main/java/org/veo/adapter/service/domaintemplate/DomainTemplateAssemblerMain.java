@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +66,7 @@ public class DomainTemplateAssemblerMain {
 
     public static void main(String[] args) {
         try {
+            var snippetPath = Path.of(System.getenv("domaintemplate.dir"));
             DomainTemplateAssembler assembler = new DomainTemplateAssembler(urlAssembler,
                     System.getenv("domaintemplate.id"), System.getenv("domaintemplate.name"),
                     System.getenv("domaintemplate.abbreviation"),
@@ -77,7 +79,7 @@ public class DomainTemplateAssemblerMain {
                                     .split(",")) {
                 assembler.addCatalog(System.getenv(prefix + ".catalog.name"),
                                      System.getenv(prefix + ".prefix"),
-                                     readCatalogItems(System.getenv(prefix + ".dir")));
+                                     readCatalogItems(snippetPath.resolve(prefix)));
             }
 
             TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
@@ -98,10 +100,11 @@ public class DomainTemplateAssemblerMain {
     }
 
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    private static Map<String, AbstractElementDto> readCatalogItems(String dir)
+    private static Map<String, AbstractElementDto> readCatalogItems(Path dir)
             throws DomainTemplateSnippetException {
-        return readElements(new File(dir).listFiles(f -> f.getName()
-                                                          .endsWith(".json")));
+        return readElements(dir.toFile()
+                               .listFiles(f -> f.getName()
+                                                .endsWith(".json")));
     }
 
     private static Map<String, AbstractElementDto> readElements(File[] resources)

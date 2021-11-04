@@ -80,6 +80,7 @@ task assembleDomainTemplates(type: JavaExec) {
     classpath compileJava.classpath
     mainClass = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssemblerMain'
     environment = [
+        'domaintemplate.dir': "${templateSnippetDir}/dsgvo",
         'domaintemplate.abbreviation': "DS-GVO",
         'domaintemplate.authority': "SERNET",
         'domaintemplate.description': "The DS-GVO DomainTemplate.",
@@ -90,7 +91,6 @@ task assembleDomainTemplates(type: JavaExec) {
         'domaintemplate.templateVersion': "1.0",
         'domaintemplate.catalogPrefixes': "tom",
         'tom.catalog.name': "DS-GVO-Controls",
-        'tom.dir': "${templateSnippetDir}/dsgvo/tom",
         'tom.prefix': "TOM.",
         'domaintemplate.unit-dump-file': "${templateSnippetDir}/dsgvo/demo-unit/unit-dump.json"
     ]
