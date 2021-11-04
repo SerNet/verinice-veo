@@ -49,6 +49,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -87,6 +88,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
 
+    private static final Pattern SIMPLE_GET_PATH_PATTERN = Pattern.compile("/(\\w+)/" + UUID_REGEX
+            + "$");
     private final TypeExtractor typeExtractor;
 
     @Override
@@ -359,9 +362,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
 
     /**
-     * Compares the given URI with all mapped request methods of type "GET".
-     * Extracts the DTO type used in the methods return value. Then returns the
-     * corresponding entity type.
+     * Tries to find the model type for a given URI string. First, a set of
+     * heuristics is applied. As a last resort, the given URI is compared with all
+     * mapped request methods of type "GET" and the DTO type used in the method's
+     * return value is extracted.
      *
      * @param uriString
      *            the URI string received as a reference, i.e. via JSON
@@ -370,6 +374,14 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
      */
     @Override
     public Class<? extends Identifiable> parseType(String uriString) {
+        Matcher m = SIMPLE_GET_PATH_PATTERN.matcher(uriString);
+        if (m.find()) {
+            String typeComponent = m.group(1);
+            if (EntityType.PLURAL_TERMS.contains(typeComponent)) {
+                return EntityType.getTypeForPluralTerm(typeComponent);
+            }
+        }
+
         try {
             return typeExtractor.parseDtoType(uriString)
                                 .orElseThrow()
