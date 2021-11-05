@@ -184,7 +184,7 @@ public class PersonController extends AbstractElementController<Person> {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullPersonDto.class))),
             @ApiResponse(responseCode = "404", description = "Person not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
@@ -226,7 +226,7 @@ public class PersonController extends AbstractElementController<Person> {
                                          });
     }
 
-    @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Updates a person")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Person updated"),
             @ApiResponse(responseCode = "404", description = "Person not found") })
@@ -250,7 +250,7 @@ public class PersonController extends AbstractElementController<Person> {
                                          output -> entityToDtoTransformer.transformPerson2Dto(output.getEntity()));
     }
 
-    @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Deletes a person")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Person deleted"),
             @ApiResponse(responseCode = "404", description = "Person not found") })

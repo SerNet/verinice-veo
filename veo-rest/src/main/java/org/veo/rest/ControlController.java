@@ -187,7 +187,7 @@ public class ControlController extends AbstractElementController<Control> {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = AbstractControlDto.class))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
@@ -230,7 +230,7 @@ public class ControlController extends AbstractElementController<Control> {
                                          });
     }
 
-    @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Updates a control")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Control updated"),
             @ApiResponse(responseCode = "404", description = "Control not found") })
@@ -254,7 +254,7 @@ public class ControlController extends AbstractElementController<Control> {
                                          output -> entityToDtoTransformer.transformControl2Dto(output.getEntity()));
     }
 
-    @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Deletes a control")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Control deleted"),
             @ApiResponse(responseCode = "404", description = "Control not found") })

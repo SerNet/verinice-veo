@@ -186,7 +186,7 @@ public class IncidentController extends AbstractElementController<Incident> {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullIncidentDto.class))),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
@@ -255,7 +255,7 @@ public class IncidentController extends AbstractElementController<Incident> {
                                          output -> entityToDtoTransformer.transformIncident2Dto(output.getEntity()));
     }
 
-    @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Deletes an incident")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Incident deleted"),
             @ApiResponse(responseCode = "404", description = "Incident not found") })

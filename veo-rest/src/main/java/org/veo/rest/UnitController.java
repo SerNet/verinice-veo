@@ -23,7 +23,6 @@ import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PARENT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
-import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -280,7 +279,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                                          output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
     }
 
-    @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Deletes a unit")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Unit deleted"),
             @ApiResponse(responseCode = "404", description = "Unit not found") })

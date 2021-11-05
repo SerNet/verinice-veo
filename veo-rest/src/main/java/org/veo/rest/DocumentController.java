@@ -186,7 +186,7 @@ public class DocumentController extends AbstractElementController<Document> {
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullDocumentDto.class))),
             @ApiResponse(responseCode = "404", description = "Document not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
@@ -250,7 +250,7 @@ public class DocumentController extends AbstractElementController<Document> {
                                          output -> entityToDtoTransformer.transformDocument2Dto(output.getEntity()));
     }
 
-    @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Deletes a document")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Document deleted"),
             @ApiResponse(responseCode = "404", description = "Document not found") })

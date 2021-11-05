@@ -198,7 +198,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
                                                                        entityToDtoTransformer::transformScope2Dto));
     }
 
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Loads a scope")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -272,7 +272,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
                                          });
     }
 
-    @PutMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Updates a scope")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Scope updated"),
             @ApiResponse(responseCode = "404", description = "Scope not found") })
@@ -294,7 +294,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
                                          output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));
     }
 
-    @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
     @Operation(summary = "Deletes a scope")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Scope deleted"),
             @ApiResponse(responseCode = "404", description = "Scope not found") })

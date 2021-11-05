@@ -165,7 +165,7 @@ public class ProcessController extends AbstractElementController<Process>
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = FullProcessDto.class))),
             @ApiResponse(responseCode = "404", description = "Process not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
+    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
