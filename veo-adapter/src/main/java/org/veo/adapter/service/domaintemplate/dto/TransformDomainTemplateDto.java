@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.Pattern;
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,6 +46,8 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
             example = "f8ed22b1-b277-56ec-a2ce-0dbd94e24824")
     @ToString.Include
     private String id;
+
+    private Set<AbstractElementDto> demoUnitElements = new HashSet<AbstractElementDto>();
 
     @JsonDeserialize(contentAs = TransformCatalogDto.class)
     @Override

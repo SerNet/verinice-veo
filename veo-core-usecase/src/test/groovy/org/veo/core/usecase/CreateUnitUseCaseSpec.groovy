@@ -20,15 +20,19 @@ package org.veo.core.usecase
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.repository.RepositoryProvider
 import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.common.NameableInputData
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
 
 public class CreateUnitUseCaseSpec extends UseCaseSpec {
     DomainTemplateService domainTemplateService = Mock()
-
-    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService)
+    RepositoryProvider repositoryProvider = Mock()
+    CreateDemoUnitUseCase createDemoUnitUseCase = Mock()
+    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,
+    createDemoUnitUseCase)
 
     def "Create new unit in a new client" () {
         Domain domainFromTemplate = Mock()
@@ -51,15 +55,18 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         then: "a client was first searched but not found"
         1 * clientRepository.findById(_) >> Optional.empty()
         1 * entityFactory.createClient(_,_) >> existingClient
-        1 * entityFactory.createUnit(_,_) >> newUnit1
+        1 * entityFactory.createUnit("New unit",_) >> newUnit1
 
         and: "the domainTemplate service is called and the domain is added"
         1* domainTemplateService.createDefaultDomains(existingClient) >> Collections.singleton(domainFromTemplate)
         1* existingClient.addToDomains(domainFromTemplate) >> true
 
         and: "a new client was then correctly created and stored"
-        1 * unitRepository.save(_) >> newUnit1
+        1 * unitRepository.save(newUnit1) >> newUnit1
         1 * clientRepository.save(_) >> existingClient
+
+        and: 'a demo unit was created for the new client'
+        1 * createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(existingClient.id))
 
         and: "a new unit was created and stored"
         newUnit != null

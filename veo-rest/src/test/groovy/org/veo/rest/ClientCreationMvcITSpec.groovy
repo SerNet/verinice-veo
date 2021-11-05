@@ -25,6 +25,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.repository.ClientRepository
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -34,8 +35,6 @@ import org.veo.rest.configuration.WebMvcSecurityConfiguration
 class ClientCreationMvcITSpec extends VeoMvcSpec {
     @Autowired
     ClientRepository clientRepository
-
-
 
     @WithUserDetails("user@domain.example")
     def "create a new client"() {
@@ -48,8 +47,17 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
         when: "we examine the client and the domain"
         Client client = clientRepository.findById(Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)).get()
 
-        then: "the default domain is created"
+        then: "the default domains are created"
         client.domains.size() == 2
         client.domains.first().domainTemplate.dbId == DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID
+
+        when: "we get the units"
+        def units = parseJson(get("/units"))
+        def unitId = units[0].id
+
+        then:"the demo unit is also created"
+        units.size() == 2
+        unitId != null
+        units*.name.contains(CreateDemoUnitUseCase.DEMO_UNIT_NAME)
     }
 }

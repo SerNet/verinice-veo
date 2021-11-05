@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -37,6 +38,7 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformUnitDumpDto;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
@@ -79,6 +81,8 @@ public class DomainTemplateAssemblerMain {
             }
 
             TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
+            templateDto.setDemoUnitElements(assembler.processDemoUnit(readDemoUnitElements(new File(
+                    System.getenv("domaintemplate.unit-dump-file")))));
             objectMapper.writerFor(TransformDomainTemplateDto.class)
                         .writeValue(new File(System.getenv("domaintemplate.out.file")),
                                     templateDto);
@@ -86,6 +90,11 @@ public class DomainTemplateAssemblerMain {
             log.error("Error writing domain", e);
             System.exit(1);
         }
+    }
+
+    private static Set<AbstractElementDto> readDemoUnitElements(File demoUnit) {
+        TransformUnitDumpDto exportDto = readInstanceFile(demoUnit, TransformUnitDumpDto.class);
+        return exportDto.getElements();
     }
 
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")
@@ -98,17 +107,18 @@ public class DomainTemplateAssemblerMain {
     private static Map<String, AbstractElementDto> readElements(File[] resources)
             throws DomainTemplateSnippetException {
         return Arrays.stream(resources)
-                     .map(DomainTemplateAssemblerMain::readInstanceFile)
+                     .map(r -> DomainTemplateAssemblerMain.readInstanceFile(r,
+                                                                            AbstractElementDto.class))
                      .filter(IdentifiableDto.class::isInstance)
                      .collect(Collectors.toMap(e -> ((IdentifiableDto) e).getId(), e -> e));
     }
 
-    private static AbstractElementDto readInstanceFile(File resource)
+    private static <T> T readInstanceFile(File resource, Class<T> dtoType)
             throws DomainTemplateSnippetException {
         log.info("process file: {}", resource);
         try (BufferedReader br = Files.newBufferedReader(resource.toPath(),
                                                          StandardCharsets.UTF_8)) {
-            return objectMapper.readValue(br, AbstractElementDto.class);
+            return objectMapper.readValue(br, dtoType);
         } catch (IOException ex) {
             throw new DomainTemplateSnippetException(resource, ex);
         }

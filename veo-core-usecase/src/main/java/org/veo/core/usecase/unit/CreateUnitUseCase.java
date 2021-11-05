@@ -37,6 +37,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
 
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Create a new unit for a client. If a parentId is given, the unit will be
@@ -51,7 +52,7 @@ import lombok.Value;
  *
  * @author akoderman
  */
-// @Log
+@Slf4j
 public class CreateUnitUseCase
         implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
 
@@ -59,13 +60,16 @@ public class CreateUnitUseCase
     private final UnitRepository unitRepository;
     private final EntityFactory entityFactory;
     private final DomainTemplateService domainTemplateService;
+    private final CreateDemoUnitUseCase createDemoUnitUseCase;
 
     public CreateUnitUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
-            EntityFactory entityFactory, DomainTemplateService domainTemplateService) {
+            EntityFactory entityFactory, DomainTemplateService domainTemplateService,
+            CreateDemoUnitUseCase createDemoUnitUseCase) {
         this.clientRepository = clientRepository;
         this.unitRepository = unitRepository;
         this.entityFactory = entityFactory;
         this.domainTemplateService = domainTemplateService;
+        this.createDemoUnitUseCase = createDemoUnitUseCase;
     }
 
     @Override
@@ -75,8 +79,10 @@ public class CreateUnitUseCase
         Client client = optional.isPresent() ? optional.get() : createNewClient(input);
 
         // Note: the new client will get the name of the new unit by default.
-        // If we want to get a client name we would have to do a REST call to get it
-        // from the auth server. Alternatively, the auth server could publish a name
+        // If we want to get a client name we would have to do a REST call to
+        // get it
+        // from the auth server. Alternatively, the auth server could publish a
+        // name
         // change event
         // which we listen to. This would require messaging middleware.
 
@@ -113,8 +119,15 @@ public class CreateUnitUseCase
         Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
                                                                              .getName());
         Set<Domain> domainsFromTemplate = domainTemplateService.createDefaultDomains(client);
+        log.info("{} default domains created.", domainsFromTemplate.size());
         domainsFromTemplate.forEach(client::addToDomains);
-        return clientRepository.save(client);
+        Client savedClient = clientRepository.save(client);
+        createDemoUnitForClient(savedClient);
+        return savedClient;
+    }
+
+    private void createDemoUnitForClient(Client savedClient) {
+        createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(savedClient.getId()));
     }
 
     @Valid

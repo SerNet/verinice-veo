@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,7 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.core.VeoInputStreamResource;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
@@ -98,7 +101,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         entityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer);
         assembler = new LocalReferenceAssembler();
         deserializer = new ReferenceDeserializer(assembler);
-        objectMapper = new ObjectMapper().registerModule(new SimpleModule().addDeserializer(IdRef.class,
+        objectMapper = new ObjectMapper().addMixIn(AbstractElementDto.class,
+                                                   TransformElementDto.class)
+                                         .registerModule(new SimpleModule().addDeserializer(IdRef.class,
                                                                                             deserializer))
                                          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                                                     false);
@@ -175,6 +180,47 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 client);
     }
 
+    @Override
+    public Collection<Element> getElementsForDemoUnit(Client client) {
+        log.info("Create demo unit elements for {}", client);
+        Set<Element> elements = new HashSet<>();
+        PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
+        client.getDomains()
+              .forEach(domain -> {
+                  log.info("Processing {}", domain);
+                  VeoInputStreamResource templateFile = domainTemplateFiles.get(domain.getDomainTemplate()
+                                                                                      .getId()
+                                                                                      .uuidValue());
+                  try {
+                      TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
+                      ref.cache.put(domainTemplateDto.getId(), domain);
+                      Map<String, Element> elementCache = createElementCache(ref,
+                                                                             domainTemplateDto.getDemoUnitElements()
+                                                                                              .stream()
+                                                                                              .map(this::removeOwner)
+                                                                                              .map(IdentifiableDto.class::cast)
+                                                                                              .collect(Collectors.toMap(IdentifiableDto::getId,
+                                                                                                                        Function.identity())));
+
+                      elementCache.entrySet()
+                                  .forEach(e -> {
+                                      Element value = e.getValue();
+                                      value.setDomains(Collections.singleton(domain));
+                                      value.setId(null);
+                                      value.getSubTypeAspects()
+                                           .stream()
+                                           .forEach(st -> st.setDomain(domain));
+                                  });
+                      elements.addAll(elementCache.values());
+                  } catch (JsonMappingException e) {
+                      log.error("Error parsing file", e);
+                  } catch (IOException e) {
+                      log.error("Error loading file", e);
+                  }
+              });
+        return elements;
+    }
+
     /**
      * Returns the default template id for a client.
      */
@@ -239,7 +285,18 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                      DomainTemplate.class, assembler));
                          });
 
-        Map<String, Element> elementCache = createElementCache(domainTemplateDto, ref);
+        Map<String, Element> elementCache = createElementCache(ref, domainTemplateDto.getCatalogs()
+                                                                                     .stream()
+                                                                                     .map(TransformCatalogDto.class::cast)
+                                                                                     .flatMap(c -> c.getCatalogItems()
+                                                                                                    .stream())
+                                                                                     .map(TransformCatalogItemDto.class::cast)
+                                                                                     .map(TransformCatalogItemDto::getElement)
+                                                                                     .map(this::removeOwner)
+                                                                                     .map(IdentifiableDto.class::cast)
+                                                                                     .collect(Collectors.toMap(IdentifiableDto::getId,
+                                                                                                               Function.identity())));
+
         Map<String, CatalogItem> itemCache = createCatalogItemCache(domainTemplateDto, ref,
                                                                     elementCache);
         Domain domain = entityTransformer.transformDomainTemplateDto2Domain(domainTemplateDto, ref);
@@ -293,22 +350,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     /**
      * Fills the ref.cache and dtoCache with the elements and fix links.
      */
-    private Map<String, Element> createElementCache(TransformDomainTemplateDto domainTemplateDto,
-            PlaceholderResolver ref) {
-        Map<String, IdentifiableDto> elementDtos = domainTemplateDto.getCatalogs()
-                                                                    .stream()
-                                                                    .map(TransformCatalogDto.class::cast)
-                                                                    .flatMap(c -> c.getCatalogItems()
-                                                                                   .stream())
-                                                                    .map(TransformCatalogItemDto.class::cast)
-                                                                    .map(ci -> {
-                                                                        ci.getElement()
-                                                                          .setOwner(null);
-                                                                        return ci.getElement();
-                                                                    })
-                                                                    .collect(Collectors.toMap(i -> ((IdentifiableDto) i).getId(),
-                                                                                              IdentifiableDto.class::cast));
-
+    private Map<String, Element> createElementCache(PlaceholderResolver ref,
+            Map<String, IdentifiableDto> elementDtos) {
         ref.dtoCache = elementDtos;
 
         Map<AbstractElementDto, Map<String, List<CustomLinkDto>>> linkCache = new HashMap<>();
@@ -428,5 +471,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
             return objectMapper.readValue(br, TransformDomainTemplateDto.class);
         }
+    }
+
+    private <T extends AbstractElementDto> T removeOwner(T element) {
+        element.setOwner(null);
+        return element;
     }
 }

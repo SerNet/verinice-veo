@@ -91,7 +91,8 @@ task assembleDomainTemplates(type: JavaExec) {
         'domaintemplate.catalogPrefixes': "tom",
         'tom.catalog.name': "DS-GVO-Controls",
         'tom.dir': "${templateSnippetDir}/dsgvo/tom",
-        'tom.prefix': "TOM."
+        'tom.prefix': "TOM.",
+        'domaintemplate.unit-dump-file': "${templateSnippetDir}/dsgvo/demo-unit/unit-dump.json"
     ]
 }
 

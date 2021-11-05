@@ -129,12 +129,12 @@
                   "    pm.response.to.have.status(200);",
                   "});",
                   "var jsonData = pm.response.json();",
-                  "pm.test(\"One unit is available\", function () {",
-                  "    pm.expect(jsonData).to.have.lengthOf(1);",
+                  "pm.test(\"Two units are available\", function () {",
+                  "    pm.expect(jsonData).to.have.lengthOf(2);",
                   "});",
                   "pm.test(\"The created unit is returned\", function () {",
-                  "    pm.expect(jsonData[0].id).to.equal(pm.collectionVariables.get('unitId'));",
-                  "    pm.expect(jsonData[0].name).to.equal(pm.collectionVariables.get('unitName'));",
+                  "    pm.expect(jsonData[1].id).to.equal(pm.collectionVariables.get('unitId'));",
+                  "    pm.expect(jsonData[1].name).to.equal(pm.collectionVariables.get('unitName'));",
                   "});"
                 ],
                 "type": "text/javascript"

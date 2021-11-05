@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import groovy.json.JsonOutput
+import groovy.util.logging.Slf4j
+
+@Slf4j
 class AdminRestTest extends VeoRestTest{
     def "get unit dump"() {
         given:
@@ -27,5 +31,53 @@ class AdminRestTest extends VeoRestTest{
         def dump = get("/admin/unit-dump/$unitId", 200, UserType.ADMIN).body
         then:
         dump.unit.name == "my little unit"
+    }
+
+    def "get a unit dump from created elements"() {
+        given:
+        def unitId = post("/units", [
+            name: "my catalog unit"
+        ]).body.resourceId
+
+        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
+        def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
+        log.info("==> catalogId: {}", catalogId)
+        def catalog = getCatalog(catalogId)
+        log.info("==> catalog: {}", JsonOutput.toJson(catalog))
+
+        def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
+        log.info("==> allItems: {}", allItems)
+
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${allItems}").body
+        log.info("==> incarnationDescription: {}", JsonOutput.toJson(incarnationDescription))
+        def response = post("/units/${unitId}/incarnations", incarnationDescription)
+
+        when:
+        def dump = get("/admin/unit-dump/$unitId", 200, UserType.ADMIN).body
+        log.info("===> {}",JsonOutput.toJson(dump))
+        then:
+        dump.unit.name == "my catalog unit"
+
+        dump.domains.size() == 2
+        dump.elements.size() == catalog.catalogItems.size()
+        with (dump.elements.find { it.abbreviation == "VVT" }) {
+            description == "VVT-Prozess"
+            links.size() == 1
+            links.process_tom.size() == catalog.catalogItems.size()-1
+            domains[dsgvoId].subType == "PRO_DataProcessing"
+            domains[dsgvoId].status == "NEW"
+        }
+        with (dump.elements.find { it.abbreviation == "TOM-I" }) {
+            customAspects.size() == 1
+            customAspects.control_dataProtection.domains.size() == 1
+            customAspects.control_dataProtection.attributes.size() == 1
+            customAspects.control_dataProtection.attributes.control_dataProtection_objectives == "control_dataProtection_objectives_integrity"
+            domains[dsgvoId].subType == "CTL_TOM"
+            domains[dsgvoId].status == "NEW"
+        }
+    }
+
+    private extractLastId(String targetUri) {
+        targetUri.split('/').last()
     }
 }
