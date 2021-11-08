@@ -26,13 +26,13 @@ import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.entity.jpa.ClientData
 
-@SpringBootTest(classes = UnitResopitoryITSpec.class)
-class UnitResopitoryITSpec extends VeoSpringSpec {
+@SpringBootTest(classes = UnitRepositoryITSpec.class)
+class UnitRepositoryITSpec extends VeoSpringSpec {
 
     @Autowired
     private ClientRepository clientRepository
     @Autowired
-    private UnitRepository unitRepository
+    private UnitRepository unitResopitory
     private ClientData client
 
     def setup() {
@@ -41,7 +41,7 @@ class UnitResopitoryITSpec extends VeoSpringSpec {
 
     def "sub units are validated"() {
         when:
-        unitRepository.save(newUnit(client) {
+        unitResopitory.save(newUnit(client) {
             units = [
                 newUnit(null)
             ]
