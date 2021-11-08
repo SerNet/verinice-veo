@@ -68,6 +68,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
@@ -132,7 +133,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
             CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
             DeleteRiskUseCase deleteRiskUseCase, UpdateAssetRiskUseCase updateAssetRiskUseCase,
             GetAssetRisksUseCase getAssetRisksUseCase) {
-        super(getAssetUseCase);
+        super(Asset.class, getAssetUseCase);
         this.getAssetsUseCase = getAssetsUseCase;
         this.createAssetUseCase = createAssetUseCase;
         this.updateAssetUseCase = updateAssetUseCase;
@@ -209,8 +210,8 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<FullAssetDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElement(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElement(auth, uuid, request);
     }
 
     @Override
@@ -222,10 +223,10 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
                                             array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<FullAssetDto>> getElementParts(
+    public @Valid CompletableFuture<ResponseEntity<List<FullAssetDto>>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElementParts(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElementParts(auth, uuid, request);
     }
 
     @PostMapping()

@@ -71,6 +71,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
                 .cors()
 
+                .and().headers().cacheControl().disable()
+
                 // Anonymous access (a user with role "ROLE_ANONYMOUS" must be
                 // enabled for
                 // swagger-ui. We cannot disable it.
@@ -128,11 +130,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfig = new CorsConfiguration();
         corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Authorization & Content-Type are always needed, additional headers are
+        // Some basic headers are always needed, additional headers are
         // configurable:
         corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
         corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE);
         corsConfig.addAllowedHeader(HttpHeaders.IF_MATCH);
+        corsConfig.addAllowedHeader(HttpHeaders.IF_NONE_MATCH);
         Arrays.stream(allowedHeaders)
               .peek(s -> log.debug("Added CORS allowed header: {}", s))
               .forEach(corsConfig::addAllowedHeader);

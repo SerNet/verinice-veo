@@ -66,6 +66,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
@@ -116,7 +117,7 @@ public class DocumentController extends AbstractElementController<Document, Full
             GetDocumentsUseCase getDocumentsUseCase, CreateDocumentUseCase createDocumentUseCase,
             UpdateDocumentUseCase updateDocumentUseCase,
             DeleteElementUseCase deleteElementUseCase) {
-        super(getDocumentUseCase);
+        super(Document.class, getDocumentUseCase);
         this.getDocumentsUseCase = getDocumentsUseCase;
         this.createDocumentUseCase = createDocumentUseCase;
         this.updateDocumentUseCase = updateDocumentUseCase;
@@ -188,8 +189,8 @@ public class DocumentController extends AbstractElementController<Document, Full
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<FullDocumentDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElement(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElement(auth, uuid, request);
     }
 
     @Override
@@ -201,10 +202,10 @@ public class DocumentController extends AbstractElementController<Document, Full
                                             array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
             @ApiResponse(responseCode = "404", description = "Document not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<FullDocumentDto>> getElementParts(
+    public @Valid CompletableFuture<ResponseEntity<List<FullDocumentDto>>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElementParts(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElementParts(auth, uuid, request);
     }
 
     @PostMapping()

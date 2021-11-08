@@ -22,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
+import static org.veo.rest.ControllerConstants.ANY_REQUEST;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.ANY_STRING_LIST;
@@ -99,59 +100,59 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         String id = identifiable.getId()
                                 .uuidValue();
         if (Scope.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH,
-                                                                   id)).withRel(ScopeController.URL_BASE_PATH)
-                                                                       .getHref();
+            return linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH, id,
+                                                                   ANY_REQUEST)).withRel(ScopeController.URL_BASE_PATH)
+                                                                                .getHref();
         }
         if (Asset.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(AssetController.class).getElement(ANY_AUTH,
-                                                                     id)).withRel(AssetController.URL_BASE_PATH)
-                                                                         .getHref();
+            return linkTo(methodOn(AssetController.class).getElement(ANY_AUTH, id,
+                                                                     ANY_REQUEST)).withRel(AssetController.URL_BASE_PATH)
+                                                                                  .getHref();
         }
         if (Document.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(DocumentController.class).getElement(ANY_AUTH,
-                                                                        id)).withRel(DocumentController.URL_BASE_PATH)
-                                                                            .getHref();
+            return linkTo(methodOn(DocumentController.class).getElement(ANY_AUTH, id,
+                                                                        ANY_REQUEST)).withRel(DocumentController.URL_BASE_PATH)
+                                                                                     .getHref();
         }
         if (Unit.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(UnitController.class).getUnit(ANY_AUTH,
-                                                                 id)).withRel(UnitController.URL_BASE_PATH)
-                                                                     .getHref();
+            return linkTo(methodOn(UnitController.class).getUnit(ANY_AUTH, id,
+                                                                 ANY_REQUEST)).withRel(UnitController.URL_BASE_PATH)
+                                                                              .getHref();
         }
         if (Person.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(PersonController.class).getElement(ANY_AUTH,
-                                                                      id)).withRel(PersonController.URL_BASE_PATH)
-                                                                          .getHref();
+            return linkTo(methodOn(PersonController.class).getElement(ANY_AUTH, id,
+                                                                      ANY_REQUEST)).withRel(PersonController.URL_BASE_PATH)
+                                                                                   .getHref();
         }
         if (Process.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ProcessController.class).getElement(ANY_AUTH,
-                                                                       id)).withRel(ProcessController.URL_BASE_PATH)
-                                                                           .getHref();
+            return linkTo(methodOn(ProcessController.class).getElement(ANY_AUTH, id,
+                                                                       ANY_REQUEST)).withRel(ProcessController.URL_BASE_PATH)
+                                                                                    .getHref();
         }
         if (Control.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ControlController.class).getElement(ANY_AUTH,
-                                                                       id)).withRel(ControlController.URL_BASE_PATH)
-                                                                           .getHref();
+            return linkTo(methodOn(ControlController.class).getElement(ANY_AUTH, id,
+                                                                       ANY_REQUEST)).withRel(ControlController.URL_BASE_PATH)
+                                                                                    .getHref();
         }
         if (Scenario.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ScenarioController.class).getElement(ANY_AUTH,
-                                                                        id)).withRel(ScenarioController.URL_BASE_PATH)
-                                                                            .getHref();
+            return linkTo(methodOn(ScenarioController.class).getElement(ANY_AUTH, id,
+                                                                        ANY_REQUEST)).withRel(ScenarioController.URL_BASE_PATH)
+                                                                                     .getHref();
         }
         if (Incident.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(IncidentController.class).getElement(ANY_AUTH,
-                                                                        id)).withRel(IncidentController.URL_BASE_PATH)
-                                                                            .getHref();
+            return linkTo(methodOn(IncidentController.class).getElement(ANY_AUTH, id,
+                                                                        ANY_REQUEST)).withRel(IncidentController.URL_BASE_PATH)
+                                                                                     .getHref();
         }
         if (Domain.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(DomainController.class).getDomain(ANY_AUTH,
-                                                                     id)).withRel(DomainController.URL_BASE_PATH)
-                                                                         .getHref();
+            return linkTo(methodOn(DomainController.class).getDomain(ANY_AUTH, id,
+                                                                     ANY_REQUEST)).withRel(DomainController.URL_BASE_PATH)
+                                                                                  .getHref();
         }
         if (Catalog.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(CatalogController.class).getCatalog(ANY_AUTH,
-                                                                       id)).withRel(CatalogController.URL_BASE_PATH)
-                                                                           .getHref();
+            return linkTo(methodOn(CatalogController.class).getCatalog(ANY_AUTH, id,
+                                                                       ANY_REQUEST)).withRel(CatalogController.URL_BASE_PATH)
+                                                                                    .getHref();
         }
         if (CatalogItem.class.isAssignableFrom(type)) {
             CatalogItem catalogItem = (CatalogItem) identifiable;
@@ -159,10 +160,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                            catalogItem.getCatalog()
                                                                                       .getId()
                                                                                       .uuidValue(),
-                                                                           id, null))
-                                                                                     .withRel(CatalogController.URL_BASE_PATH)
-                                                                                     .expand()
-                                                                                     .getHref();
+                                                                           id, null, ANY_REQUEST))
+                                                                                                  .withRel(CatalogController.URL_BASE_PATH)
+                                                                                                  .expand()
+                                                                                                  .getHref();
         }
         // Some types have no endpoint.
         if (Client.class.isAssignableFrom(type) || DomainTemplate.class.isAssignableFrom(type)

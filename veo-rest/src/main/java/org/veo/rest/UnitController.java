@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
@@ -69,7 +70,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
-import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
@@ -224,16 +224,18 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             @ApiResponse(responseCode = "404", description = "Unit not found") })
     public @Valid CompletableFuture<ResponseEntity<FullUnitDto>> getUnit(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id) {
-
+            @PathVariable String id, WebRequest request) {
+        if (getEtag(Unit.class, id).map(request::checkNotModified)
+                                   .orElse(false)) {
+            return null;
+        }
         CompletableFuture<FullUnitDto> unitFuture = useCaseInteractor.execute(getUnitUseCase,
                                                                               new UseCase.IdAndClient(
                                                                                       Key.uuidFrom(id),
                                                                                       getAuthenticatedClient(auth)),
                                                                               output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
         return unitFuture.thenApply(unitDto -> ResponseEntity.ok()
-                                                             .eTag(ETag.from(unitDto.getId(),
-                                                                             unitDto.getVersion()))
+                                                             .cacheControl(defaultCacheControl)
                                                              .body(unitDto));
     }
 

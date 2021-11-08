@@ -144,6 +144,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
+import org.veo.service.EtagService;
 
 /**
  * This configuration takes care of wiring classes from core modules
@@ -631,5 +632,10 @@ public class ModuleConfiguration {
     @Bean
     public UpdateScopeRiskUseCase updateScopeRiskUseCase(RepositoryProvider repositoryProvider) {
         return new UpdateScopeRiskUseCase(repositoryProvider);
+    }
+
+    @Bean
+    public EtagService etagService(RepositoryProvider repositoryProvider) {
+        return new EtagService(repositoryProvider);
     }
 }

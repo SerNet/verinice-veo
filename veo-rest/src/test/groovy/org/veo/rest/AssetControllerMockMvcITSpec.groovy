@@ -19,8 +19,12 @@ package org.veo.rest
 
 import java.time.Instant
 
+import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.util.NestedServletException
 
@@ -177,6 +181,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the eTag is set"
         String eTag = getETag(results)
         eTag != null
+        and: "the caching headers are set"
+        def cacheControl = results.andReturn().response.getHeader(HttpHeaders.CACHE_CONTROL)
+        cacheControl == 'max-age=60, must-revalidate, no-transform'
         and: "the response contains the expected data"
         def result = parseJson(results)
         result == [
@@ -206,6 +213,13 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             updatedBy: "user@domain.example",
             updatedAt: asset.updatedAt.toString()
         ]
+        when: "the asset is requested from the server again"
+        results =
+                mvc.perform(MockMvcRequestBuilders.get("/assets/${asset.id.uuidValue()}").accept(MediaType.APPLICATION_JSON).header(
+                HttpHeaders.IF_NONE_MATCH, '"'+eTag+'"'
+                ))
+        then: "the server returns not-nodified"
+        results.andReturn().response.status == HttpStatus.SC_NOT_MODIFIED
     }
 
 

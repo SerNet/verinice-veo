@@ -21,10 +21,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -39,13 +42,16 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Versioned;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.rest.common.ReferenceAssemblerImpl;
 import org.veo.rest.common.SearchResponse;
 import org.veo.rest.security.ApplicationUser;
+import org.veo.service.EtagService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
@@ -75,9 +81,16 @@ public abstract class AbstractEntityController {
     @Autowired
     protected UseCaseInteractor useCaseInteractor;
 
+    @Autowired
+    protected EtagService etagService;
+
     protected AbstractEntityController() {
-        super();
+
     }
+
+    protected CacheControl defaultCacheControl = CacheControl.maxAge(1, TimeUnit.MINUTES)
+                                                             .noTransform()
+                                                             .mustRevalidate();
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -122,4 +135,10 @@ public abstract class AbstractEntityController {
             throw new IllegalArgumentException(String.format("Could not create search %s", search));
         }
     }
+
+    protected <T extends Identifiable & Versioned> Optional<String> getEtag(Class<T> entityClass,
+            String id) {
+        return etagService.getEtag(entityClass, id);
+    }
+
 }

@@ -19,7 +19,6 @@ package org.veo.rest.test
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
 
 /**
  * VEO must honor the CORS settings when handling requests.
@@ -92,6 +91,7 @@ class CORSRestTest extends VeoRestTest{
                 contains(HttpHeaders.AUTHORIZATION)
                 contains(HttpHeaders.CONTENT_TYPE)
                 contains(HttpHeaders.IF_MATCH)
+                contains(HttpHeaders.IF_NONE_MATCH)
             }
             getAccessControlMaxAge() == 1800L
         }
@@ -116,7 +116,8 @@ class CORSRestTest extends VeoRestTest{
             setAccessControlRequestHeaders([
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
-                HttpHeaders.IF_MATCH
+                HttpHeaders.IF_MATCH,
+                HttpHeaders.IF_NONE_MATCH
             ])
         }
         def resp = exchange(relativeUri, HttpMethod.OPTIONS, headers, null)

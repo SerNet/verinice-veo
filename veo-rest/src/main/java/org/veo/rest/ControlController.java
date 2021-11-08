@@ -66,6 +66,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
@@ -124,7 +125,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
     public ControlController(CreateControlUseCase createControlUseCase,
             GetControlUseCase getControlUseCase, GetControlsUseCase getControlsUseCase,
             UpdateControlUseCase updateControlUseCase, DeleteElementUseCase deleteElementUseCase) {
-        super(getControlUseCase);
+        super(Control.class, getControlUseCase);
         this.createControlUseCase = createControlUseCase;
         this.getControlsUseCase = getControlsUseCase;
         this.updateControlUseCase = updateControlUseCase;
@@ -189,8 +190,8 @@ public class ControlController extends AbstractElementController<Control, FullCo
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<FullControlDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElement(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElement(auth, uuid, request);
     }
 
     @Override
@@ -202,10 +203,10 @@ public class ControlController extends AbstractElementController<Control, FullCo
                                             array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<FullControlDto>> getElementParts(
+    public @Valid CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElementParts(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElementParts(auth, uuid, request);
     }
 
     @PostMapping()

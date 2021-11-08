@@ -68,6 +68,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
@@ -228,17 +229,19 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             @ApiResponse(responseCode = "404", description = "Scope not found") })
     public @Valid CompletableFuture<ResponseEntity<FullScopeDto>> getScope(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
         Client client = getAuthenticatedClient(auth);
-
+        if (getEtag(Scope.class, uuid).map(request::checkNotModified)
+                                      .orElse(false)) {
+            return null;
+        }
         CompletableFuture<FullScopeDto> scopeFuture = useCaseInteractor.execute(getScopeUseCase,
                                                                                 new UseCase.IdAndClient(
                                                                                         Key.uuidFrom(uuid),
                                                                                         client),
                                                                                 output -> entityToDtoTransformer.transformScope2Dto(output.getScope()));
         return scopeFuture.thenApply(scopeDto -> ResponseEntity.ok()
-                                                               .eTag(ETag.from(scopeDto.getId(),
-                                                                               scopeDto.getVersion()))
+                                                               .cacheControl(defaultCacheControl)
                                                                .body(scopeDto));
     }
 
@@ -250,18 +253,24 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
             @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public @Valid CompletableFuture<List<AbstractElementDto>> getMembers(
+    public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
         Client client = getAuthenticatedClient(auth);
+        if (getEtag(Scope.class, uuid).map(request::checkNotModified)
+                                      .orElse(false)) {
+            return null;
+        }
         return useCaseInteractor.execute(getScopeUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
                                          output -> {
                                              Scope scope = output.getScope();
-                                             return scope.getMembers()
-                                                         .stream()
-                                                         .map(member -> entityToDtoTransformer.transform2Dto(member))
-                                                         .collect(Collectors.toList());
+                                             return ResponseEntity.ok()
+                                                                  .cacheControl(defaultCacheControl)
+                                                                  .body(scope.getMembers()
+                                                                             .stream()
+                                                                             .map(member -> entityToDtoTransformer.transform2Dto(member))
+                                                                             .collect(Collectors.toList()));
                                          });
     }
 

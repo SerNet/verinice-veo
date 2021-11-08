@@ -38,10 +38,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
 import org.veo.core.entity.Catalog;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCase;
@@ -50,7 +52,6 @@ import org.veo.core.usecase.catalog.GetCatalogUseCase;
 import org.veo.core.usecase.catalog.GetCatalogsUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
-import org.veo.core.usecase.common.ETag;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.security.ApplicationUser;
 
@@ -104,16 +105,19 @@ public class CatalogController extends AbstractEntityController {
             @ApiResponse(responseCode = "404", description = "Catalog not found") })
     public @Valid CompletableFuture<ResponseEntity<FullCatalogDto>> getCatalog(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id) {
+            @PathVariable String id, WebRequest request) {
         Client client = getClientWithCatalogsAndItems(auth, false);
+        if (getEtag(Catalog.class, id).map(request::checkNotModified)
+                                      .orElse(false)) {
+            return null;
+        }
         CompletableFuture<FullCatalogDto> catalogFuture = useCaseInteractor.execute(getCatalogUseCase,
                                                                                     new UseCase.IdAndClient(
                                                                                             Key.uuidFrom(id),
                                                                                             client),
                                                                                     output -> entityToDtoTransformer.transformCatalog2Dto(output.getCatalog()));
         return catalogFuture.thenApply(catalogDto -> ResponseEntity.ok()
-                                                                   .eTag(ETag.from(catalogDto.getId(),
-                                                                                   catalogDto.getVersion()))
+                                                                   .cacheControl(defaultCacheControl)
                                                                    .body(catalogDto));
     }
 
@@ -156,16 +160,20 @@ public class CatalogController extends AbstractEntityController {
                          description = "CatalogItems loaded",
                          content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             array = @ArraySchema(schema = @Schema(implementation = FullCatalogItemDto.class)))) })
-    public @Valid CompletableFuture<List<FullCatalogItemDto>> getCatalogItems(
+    public @Valid CompletableFuture<ResponseEntity<List<FullCatalogItemDto>>> getCatalogItems(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id,
-            @UnitUuidParam @RequestParam(value = DOMAIN_PARAM,
-                                         required = false) String domainUuid) {
+            @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
+            WebRequest request) {
         Client client = null;
         try {
             client = getClientWithCatalogsAndItems(auth, true);
         } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(Collections::emptyList);
+            return CompletableFuture.supplyAsync(() -> ResponseEntity.ok(Collections.emptyList()));
+        }
+        if (getEtag(Catalog.class, id).map(request::checkNotModified)
+                                      .orElse(false)) {
+            return null;
         }
 
         final GetCatalogItemsUseCase.InputData inputData = new GetCatalogItemsUseCase.InputData(
@@ -174,10 +182,13 @@ public class CatalogController extends AbstractEntityController {
                 client);
 
         return useCaseInteractor.execute(getCatalogItemsUseCase, inputData, output -> {
-            return output.getCatalogItems()
-                         .stream()
-                         .map(u -> entityToDtoTransformer.transformCatalogItem2Dto(u, true))
-                         .collect(Collectors.toList());
+            return ResponseEntity.ok()
+                                 .cacheControl(defaultCacheControl)
+                                 .body(output.getCatalogItems()
+                                             .stream()
+                                             .map(u -> entityToDtoTransformer.transformCatalogItem2Dto(u,
+                                                                                                       true))
+                                             .collect(Collectors.toList()));
         });
     }
 
@@ -192,9 +203,13 @@ public class CatalogController extends AbstractEntityController {
     public @Valid CompletableFuture<ResponseEntity<FullCatalogItemDto>> getCatalogItem(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String id, @PathVariable String itemId,
-            @UnitUuidParam @RequestParam(value = DOMAIN_PARAM,
-                                         required = false) String domainUuid) {
+            @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
+            WebRequest request) {
         Client client = getClientWithCatalogsAndItems(auth, true);
+        if (getEtag(CatalogItem.class, itemId).map(request::checkNotModified)
+                                              .orElse(false)) {
+            return null;
+        }
 
         CompletableFuture<FullCatalogItemDto> catalogitemFuture = useCaseInteractor.execute(getCatalogItemUseCase,
                                                                                             new GetCatalogItemUseCase.InputData(
@@ -206,8 +221,7 @@ public class CatalogController extends AbstractEntityController {
                                                                                             output -> entityToDtoTransformer.transformCatalogItem2Dto(output.getCatalogItem(),
                                                                                                                                                       false));
         return catalogitemFuture.thenApply(catalogitemDto -> ResponseEntity.ok()
-                                                                           .eTag(ETag.from(catalogitemDto.getId(),
-                                                                                           catalogitemDto.getVersion()))
+                                                                           .cacheControl(defaultCacheControl)
                                                                            .body(catalogitemDto));
     }
 

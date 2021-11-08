@@ -66,6 +66,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
@@ -116,7 +117,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
             GetScenariosUseCase getScenariosUseCase, CreateScenarioUseCase createScenarioUseCase,
             UpdateScenarioUseCase updateScenarioUseCase,
             DeleteElementUseCase deleteElementUseCase) {
-        super(getScenarioUseCase);
+        super(Scenario.class, getScenarioUseCase);
         this.getScenariosUseCase = getScenariosUseCase;
         this.createScenarioUseCase = createScenarioUseCase;
         this.updateScenarioUseCase = updateScenarioUseCase;
@@ -188,8 +189,8 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<FullScenarioDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElement(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElement(auth, uuid, request);
     }
 
     @Override
@@ -201,10 +202,10 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
                                             array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
             @ApiResponse(responseCode = "404", description = "Scenario not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<FullScenarioDto>> getElementParts(
+    public @Valid CompletableFuture<ResponseEntity<List<FullScenarioDto>>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
-        return super.getElementParts(auth, uuid);
+            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+        return super.getElementParts(auth, uuid, request);
     }
 
     @PostMapping()

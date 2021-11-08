@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
@@ -45,7 +46,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 
@@ -124,16 +124,19 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             @ApiResponse(responseCode = "404", description = "Domain not found") })
     public @Valid CompletableFuture<ResponseEntity<FullDomainDto>> getDomain(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id) {
+            @PathVariable String id, WebRequest request) {
         Client client = getAuthenticatedClient(auth);
+        if (getEtag(Domain.class, id).map(request::checkNotModified)
+                                     .orElse(false)) {
+            return null;
+        }
         CompletableFuture<FullDomainDto> domainFuture = useCaseInteractor.execute(getDomainUseCase,
                                                                                   new UseCase.IdAndClient(
                                                                                           Key.uuidFrom(id),
                                                                                           client),
                                                                                   output -> entityToDtoTransformer.transformDomain2Dto(output.getDomain()));
         return domainFuture.thenApply(domainDto -> ResponseEntity.ok()
-                                                                 .eTag(ETag.from(domainDto.getId(),
-                                                                                 domainDto.getVersion()))
+                                                                 .cacheControl(defaultCacheControl)
                                                                  .body(domainDto));
     }
 
