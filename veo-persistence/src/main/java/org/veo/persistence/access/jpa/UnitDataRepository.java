@@ -22,11 +22,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.UnitData;
 
-public interface UnitDataRepository extends CrudRepository<UnitData, String> {
+public interface UnitDataRepository extends IdentifiableVersionedDataRepository<UnitData> {
 
     @Query("select e from #{#entityName} as e where e.parent.dbId = ?1")
     List<UnitData> findByParentId(String parentId);

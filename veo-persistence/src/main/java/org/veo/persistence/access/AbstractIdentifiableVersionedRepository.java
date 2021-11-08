@@ -24,23 +24,24 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.repository.Repository;
+import org.veo.core.entity.Versioned;
+import org.veo.core.repository.IdentifiableVersionedRepository;
+import org.veo.persistence.access.jpa.IdentifiableVersionedDataRepository;
 import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Transactional(readOnly = true)
-abstract class AbstractIdentifiableVersionedRepository<T extends Identifiable, S extends IdentifiableVersionedData>
-        implements Repository<T, Key<UUID>> {
-    protected final CrudRepository<S, String> dataRepository;
+abstract class AbstractIdentifiableVersionedRepository<T extends Identifiable & Versioned, S extends IdentifiableVersionedData>
+        implements IdentifiableVersionedRepository<T> {
+    protected final IdentifiableVersionedDataRepository<S> dataRepository;
     protected final ValidationService validation;
 
-    protected AbstractIdentifiableVersionedRepository(CrudRepository<S, String> dataRepository,
-            ValidationService validation) {
+    protected AbstractIdentifiableVersionedRepository(
+            IdentifiableVersionedDataRepository<S> dataRepository, ValidationService validation) {
         this.dataRepository = dataRepository;
         this.validation = validation;
     }
@@ -91,5 +92,10 @@ abstract class AbstractIdentifiableVersionedRepository<T extends Identifiable, S
                                     false)
                             .map(e -> (T) e)
                             .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Optional<Long> getVersion(Key<UUID> id) {
+        return dataRepository.getVersion(id.uuidValue());
     }
 }

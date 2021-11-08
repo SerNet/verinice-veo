@@ -31,7 +31,7 @@ import org.veo.core.entity.Unit;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface UnitRepository extends Repository<Unit, Key<UUID>> {
+public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
 
     public List<Unit> findByClient(Client client);
 

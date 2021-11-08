@@ -22,6 +22,7 @@ import java.util.UUID;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Versioned;
 
 /**
  * A service that helps to retrieve the correct {@link Repository} for a given
@@ -30,6 +31,9 @@ import org.veo.core.entity.Key;
 public interface RepositoryProvider {
 
     public <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType);
+
+    public <T extends Identifiable & Versioned> IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(
+            Class<T> entityType);
 
     public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
 }

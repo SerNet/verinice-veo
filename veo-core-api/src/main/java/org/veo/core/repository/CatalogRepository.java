@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.UUID;
-
 import org.veo.core.entity.Catalog;
-import org.veo.core.entity.Key;
 
 /**
  * A repository for <code>Catalog</code> entities.
@@ -28,6 +25,6 @@ import org.veo.core.entity.Key;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface CatalogRepository extends Repository<Catalog, Key<UUID>> {
+public interface CatalogRepository extends IdentifiableVersionedRepository<Catalog> {
 
 }

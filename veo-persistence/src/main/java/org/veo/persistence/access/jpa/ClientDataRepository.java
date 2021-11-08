@@ -21,11 +21,10 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.ClientData;
 
-public interface ClientDataRepository extends CrudRepository<ClientData, String> {
+public interface ClientDataRepository extends IdentifiableVersionedDataRepository<ClientData> {
 
     @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
     Optional<ClientData> findById(String id);

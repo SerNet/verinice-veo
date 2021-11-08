@@ -17,10 +17,9 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import org.springframework.data.repository.CrudRepository;
-
 import org.veo.persistence.entity.jpa.DomainTemplateData;
 
-public interface DomainTemplateDataRepository extends CrudRepository<DomainTemplateData, String> {
+public interface DomainTemplateDataRepository
+        extends IdentifiableVersionedDataRepository<DomainTemplateData> {
 
 }

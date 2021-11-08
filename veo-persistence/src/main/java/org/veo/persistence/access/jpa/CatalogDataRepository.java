@@ -17,10 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import org.springframework.data.repository.CrudRepository;
-
 import org.veo.persistence.entity.jpa.CatalogData;
 
-public interface CatalogDataRepository extends CrudRepository<CatalogData, String> {
+public interface CatalogDataRepository extends IdentifiableVersionedDataRepository<CatalogData> {
 
 }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler
+ * Copyright (C) 2021  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,20 +17,16 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Set;
+import java.util.Optional;
 import java.util.UUID;
 
-import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Versioned;
 
-/**
- * A repository for <code>CatalogItem</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface CatalogItemRepository extends IdentifiableVersionedRepository<CatalogItem> {
+public interface IdentifiableVersionedRepository<T extends Versioned & Identifiable>
+        extends Repository<T, Key<UUID>> {
 
-    Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids);
+    public Optional<Long> getVersion(Key<UUID> uuidFrom);
 
 }

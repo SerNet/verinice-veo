@@ -21,11 +21,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import org.veo.persistence.entity.jpa.DomainData;
 
-public interface DomainDataRepository extends CrudRepository<DomainData, String> {
+public interface DomainDataRepository extends IdentifiableVersionedDataRepository<DomainData> {
 
     @Query("select e from #{#entityName} as e join e.catalogs as c join c.catalogItems as i where i.dbId = ?1")
     Optional<DomainData> findByCatalogsCatalogItemsId(String catalogItemId);

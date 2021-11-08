@@ -29,7 +29,7 @@ import org.veo.core.entity.Key;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface ClientRepository extends Repository<Client, Key<UUID>> {
+public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
 
     Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
 

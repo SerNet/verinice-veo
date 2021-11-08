@@ -34,8 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.persistence.entity.jpa.ElementData;
 
-public interface ElementDataRepository<T extends ElementData>
-        extends JpaRepository<T, String>, JpaSpecificationExecutor<T> {
+public interface ElementDataRepository<T extends ElementData> extends JpaRepository<T, String>,
+        JpaSpecificationExecutor<T>, IdentifiableVersionedDataRepository<T> {
 
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.domains " + "left join fetch e.subTypeAspects "
@@ -65,14 +65,11 @@ public interface ElementDataRepository<T extends ElementData>
      * @param unitIds
      *            a list of units' UUIDs
      */
-    //@formatter:off
-    @Query("select e from #{#entityName} as e "
-            + "left join fetch e.customAspects "
-            + "left join fetch e.links "
-            + "left join fetch e.appliedCatalogItems "
-            + "left join fetch e.subTypeAspects "
-            + "where e.owner.dbId IN ?1")
-    //@formatter:on
+    // @formatter:off
+    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
+            + "left join fetch e.links " + "left join fetch e.appliedCatalogItems "
+            + "left join fetch e.subTypeAspects " + "where e.owner.dbId IN ?1")
+    // @formatter:on
     @Transactional(readOnly = true)
     Set<T> findByUnits(Set<String> unitIds);
 

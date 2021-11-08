@@ -38,6 +38,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.Versioned;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
@@ -46,6 +47,7 @@ import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementRepository;
+import org.veo.core.repository.IdentifiableVersionedRepository;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
@@ -116,6 +118,31 @@ public class RepositoryProviderImpl implements RepositoryProvider {
         }
         if (CatalogItem.class.isAssignableFrom(entityType)) {
             return (Repository<T, Key<UUID>>) catalogItemRepository;
+        }
+        throw new IllegalArgumentException("Unsupported entity type " + entityType);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends Identifiable & Versioned> IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(
+            Class<T> entityType) {
+        if (Element.class.isAssignableFrom(entityType)) {
+            return (IdentifiableVersionedRepository<T>) getElementRepositoryFor((Class<Element>) entityType);
+        }
+        if (Client.class.isAssignableFrom(entityType)) {
+            return (IdentifiableVersionedRepository<T>) clientRepository;
+        }
+        if (Domain.class.isAssignableFrom(entityType)) {
+            return (IdentifiableVersionedRepository<T>) domainRepository;
+        }
+        if (Unit.class.isAssignableFrom(entityType)) {
+            return (IdentifiableVersionedRepository<T>) unitRepository;
+        }
+        if (Catalog.class.isAssignableFrom(entityType)) {
+            return (IdentifiableVersionedRepository<T>) catalogRepository;
+        }
+        if (CatalogItem.class.isAssignableFrom(entityType)) {
+            return (IdentifiableVersionedRepository<T>) catalogItemRepository;
         }
         throw new IllegalArgumentException("Unsupported entity type " + entityType);
     }

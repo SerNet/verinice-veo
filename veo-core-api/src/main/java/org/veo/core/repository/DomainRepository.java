@@ -31,7 +31,8 @@ import org.veo.core.entity.Key;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface DomainRepository extends Repository<Domain, Key<UUID>> {
+public interface DomainRepository extends IdentifiableVersionedRepository<Domain> {
+
     Set<Domain> findAllByClient(Key<UUID> clientId);
 
     Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
