@@ -33,6 +33,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementOwner
+import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.ItemUpdateType
@@ -139,6 +140,11 @@ abstract class VeoSpec extends Specification {
             VeoSpec.name(it)
             VeoSpec.version(it)
             owner.addToDomains(it)
+            EntityType
+                    .ELEMENT_TYPES
+                    .collect { it.singularTerm }
+                    .findAll { type -> it.getElementTypeDefinition(type).empty}
+                    .each { type -> it.elementTypeDefinitions.add(factory.createElementTypeDefinition(type, it)) }
         }
     }
 

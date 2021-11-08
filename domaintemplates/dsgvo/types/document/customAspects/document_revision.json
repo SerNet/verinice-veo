@@ -1,0 +1,15 @@
+{
+  "attributeSchemas": {
+    "document_revision_comment": {
+      "type": "string"
+    },
+    "document_revision_last": {
+      "format": "date",
+      "type": "string"
+    },
+    "document_revision_next": {
+      "format": "date",
+      "type": "string"
+    }
+  }
+}

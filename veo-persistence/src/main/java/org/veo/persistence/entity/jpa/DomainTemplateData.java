@@ -34,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -90,5 +91,15 @@ public class DomainTemplateData extends IdentifiableVersionedData
     public void removeFromCatalog(Catalog aCatalog) {
         catalogs.remove(aCatalog);
         aCatalog.setDomainTemplate(null);
+    }
+
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = ElementTypeDefinitionData.class)
+    private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
+
+    public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {
+        elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));
+        this.elementTypeDefinitions = elementTypeDefinitions;
     }
 }

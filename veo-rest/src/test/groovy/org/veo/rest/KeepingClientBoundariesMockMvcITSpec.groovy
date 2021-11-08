@@ -322,7 +322,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue()
             ],
             links: [
-                'Process_depends_on_Asset': [
+                'process_dataType': [
                     [
                         target:
                         [

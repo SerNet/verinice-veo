@@ -1,0 +1,9 @@
+{
+  "attributeSchemas": {
+    "process_generalInformation_document": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    }
+  }
+}

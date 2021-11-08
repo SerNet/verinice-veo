@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.Set;
+
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 
 /**
  * DomainTemplate The domaintemplare are managed by the system itself. The uuid
@@ -73,5 +76,16 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
     @Override
     default String getModelType() {
         return SINGULAR_TERM;
+    }
+
+    Set<ElementTypeDefinition> getElementTypeDefinitions();
+
+    void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions);
+
+    default Optional<ElementTypeDefinition> getElementTypeDefinition(String type) {
+        return getElementTypeDefinitions().stream()
+                                          .filter(d -> d.getElementType()
+                                                        .equals(type))
+                                          .findFirst();
     }
 }

@@ -215,5 +215,31 @@
         }
       ]
     }
-  ]
+  ],
+  "elementTypeDefinitions": {
+    "asset": {
+      
+    },
+    "control": {
+      
+    },
+    "document": {
+      
+    },
+    "incident": {
+      
+    },
+    "person": {
+      
+    },
+    "process": {
+      
+    },
+    "scenario": {
+      
+    },
+    "scope": {
+      
+    }
+  }
 }

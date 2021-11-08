@@ -1,0 +1,24 @@
+{
+  "attributeSchemas": {
+    "process_opinionDPO_comment": {
+      "type": "string"
+    },
+    "process_opinionDPO_document": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    },
+    "process_opinionDPO_findings": {
+      "type": "string"
+    },
+    "process_opinionDPO_opinionDPO": {
+      "type": "string"
+    },
+    "process_opinionDPO_privacyImpactAssessment": {
+      "type": "boolean"
+    },
+    "process_opinionDPO_recommendations": {
+      "type": "string"
+    }
+  }
+}

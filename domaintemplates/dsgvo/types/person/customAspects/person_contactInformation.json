@@ -1,0 +1,24 @@
+{
+  "attributeSchemas": {
+    "person_contactInformation_email": {
+      "type": "string"
+    },
+    "person_contactInformation_fax": {
+      "type": "string"
+    },
+    "person_contactInformation_mobile": {
+      "type": "string"
+    },
+    "person_contactInformation_office": {
+      "type": "string"
+    },
+    "person_contactInformation_private": {
+      "type": "string"
+    },
+    "person_contactInformation_website": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    }
+  }
+}

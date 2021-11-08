@@ -1,0 +1,19 @@
+{
+  "attributeSchemas": {
+    "control_implementation_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "control_implementation_explanation": {
+      "type": "string"
+    },
+    "control_implementation_status": {
+      "enum": [
+        "control_implementation_status_yes",
+        "control_implementation_status_no",
+        "control_implementation_status_partially",
+        "control_implementation_status_notApplicable"
+      ]
+    }
+  }
+}

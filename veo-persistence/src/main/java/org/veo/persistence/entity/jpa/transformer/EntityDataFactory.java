@@ -45,6 +45,7 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.CatalogData;
@@ -56,6 +57,7 @@ import org.veo.persistence.entity.jpa.CustomLinkData;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.DomainTemplateData;
+import org.veo.persistence.entity.jpa.ElementTypeDefinitionData;
 import org.veo.persistence.entity.jpa.IncidentData;
 import org.veo.persistence.entity.jpa.LinkTailoringReferenceData;
 import org.veo.persistence.entity.jpa.PersonData;
@@ -234,6 +236,14 @@ public class EntityDataFactory implements EntityFactory {
         catalogItem.getTailoringReferences()
                    .add(tailoringReference);
         return tailoringReference;
+    }
+
+    @Override
+    public ElementTypeDefinition createElementTypeDefinition(String elementType, Domain owner) {
+        var definition = new ElementTypeDefinitionData();
+        definition.setElementType(elementType);
+        definition.setOwner(owner);
+        return definition;
     }
 
     @Override

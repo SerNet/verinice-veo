@@ -1,0 +1,11 @@
+{
+  "attributeSchemas": {
+    "process_recipient_type": {
+      "enum": [
+        "process_recipient_type_internal",
+        "process_recipient_type_external",
+        "process_recipient_type_processor"
+      ]
+    }
+  }
+}

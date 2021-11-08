@@ -1,0 +1,11 @@
+{
+  "attributeSchemas": {
+    "process_jointControllership_document": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    }
+  },
+  "targetType": "scope",
+  "targetSubType": "SCP_JoinController"
+}

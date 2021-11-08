@@ -1,0 +1,10 @@
+{
+  "attributeSchemas": {
+    "person_dataProtectionOfficer_expertise": {
+      "type": "boolean"
+    },
+    "person_dataProtectionOfficer_profession": {
+      "type": "string"
+    }
+  }
+}

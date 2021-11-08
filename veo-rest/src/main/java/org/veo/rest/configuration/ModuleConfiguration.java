@@ -37,7 +37,9 @@ import org.springframework.data.domain.AuditorAware;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import org.veo.adapter.persistence.schema.EntitySchemaServiceClassPathImpl;
+import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
+import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
+import org.veo.adapter.persistence.schema.SchemaExtender;
 import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
@@ -412,9 +414,18 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public EntitySchemaService getSchemaService(
-            @Value("${veo.entity_schemas_location:/schemas/entity/}") String schemaFilePath) {
-        return new EntitySchemaServiceClassPathImpl(schemaFilePath);
+    public SchemaExtender schemaExtender() {
+        return new SchemaExtender();
+    }
+
+    @Bean
+    public EntitySchemaGenerator entitySchemaGenerator(SchemaExtender schemaExtender) {
+        return new EntitySchemaGenerator(schemaExtender);
+    }
+
+    @Bean
+    public EntitySchemaService getSchemaService(EntitySchemaGenerator generateEntitytSchema) {
+        return new EntitySchemaServiceImpl(generateEntitytSchema);
     }
 
     @Bean

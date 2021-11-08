@@ -16,16 +16,17 @@ sourceSets {
 apply plugin: 'groovy'
 apply plugin: 'java-library'
 
-configurations {
-    generateSchemas
-}
-
 dependencies {
 
     api project(":veo-core-usecase")
 
     implementation 'javax.validation:validation-api'
     implementation 'com.networknt:json-schema-validator'
+    implementation 'com.github.victools:jsonschema-generator'
+    implementation 'com.github.victools:jsonschema-module-jackson'
+    implementation 'com.github.victools:jsonschema-module-javax-validation'
+    implementation 'com.github.victools:jsonschema-module-swagger-2'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.1.11'
 
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core'
@@ -34,39 +35,6 @@ dependencies {
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.codehaus.groovy:groovy-json'
-
-    generateSchemas 'com.github.victools:jsonschema-generator'
-    generateSchemas 'com.github.victools:jsonschema-module-jackson'
-    generateSchemas 'com.github.victools:jsonschema-module-javax-validation'
-    generateSchemas 'com.github.victools:jsonschema-module-swagger-2'
-    generateSchemas 'io.swagger.core.v3:swagger-annotations:2.1.11'
-}
-
-task generateEntitySchemas(type: JavaExec) {
-    def targetDirectory = file("$generatedSchemasDir/schemas")
-    def schemaSnippetDir = file("src/main/resources/schemas")
-    outputs.dir targetDirectory
-    outputs.cacheIf { true }
-    inputs.files compileJava.outputs
-    inputs.files schemaSnippetDir
-    classpath compileJava.outputs.files
-    classpath compileJava.classpath
-    classpath configurations.generateSchemas
-    classpath file("${rootDir}/buildSrc/build/classes/java/main")
-    mainClass = 'org.veo.GenerateEntitySchema'
-    args = [
-        targetDirectory.absolutePath,
-        schemaSnippetDir.absolutePath,
-        'org.veo.adapter.presenter.api.dto.full',
-        'Asset',
-        'Control',
-        'Document',
-        'Incident',
-        'Scenario',
-        'Person',
-        'Process',
-        'Scope'
-    ]
 }
 
 task assembleDomainTemplates(type: JavaExec) {
@@ -98,21 +66,23 @@ task assembleDomainTemplates(type: JavaExec) {
 
 plugins.withId('eclipse'){
     eclipse {
-        synchronizationTasks generateEntitySchemas, assembleDomainTemplates
-        autoBuildTasks generateEntitySchemas, assembleDomainTemplates
+        synchronizationTasks assembleDomainTemplates
+        autoBuildTasks assembleDomainTemplates
     }
 }
 
-processResources.dependsOn(generateEntitySchemas)
 processResources.dependsOn(assembleDomainTemplates)
 
 task checkTranslations {
     def langFile = file('src/main/resources/lang/lang.json')
     inputs.file langFile
-    def customSchemaFiles = fileTree(dir: 'src/main/resources/schemas/custom/', include: '**/*.json')
-    inputs.files customSchemaFiles
-    def domainPatternSchemaFiles = fileTree(dir: 'src/main/resources/schemas/domains/', include: '**/patternProperties.json')
-    inputs.files domainPatternSchemaFiles
+    def customAspectAndLinkFiles = rootProject.fileTree('domaintemplates/'){
+        include '*/types/*/links/*.json'
+        include '*/types/*/customAspects/*.json'
+    }
+    inputs.files customAspectAndLinkFiles
+    def subTypeFiles = rootProject.fileTree(dir: 'domaintemplates/', include: '*/types/*/subTypes/*.json')
+    inputs.files subTypeFiles
 
     doLast {
         def missingTranslations = false
@@ -137,18 +107,16 @@ task checkTranslations {
         handleTranslationKey('abbreviation', 'Nameable base attributes')
         handleTranslationKey('description', 'Nameable base attributes')
 
-        customSchemaFiles.each { file->
+        customAspectAndLinkFiles.each { file->
             logger.info "Loading $file"
             def data = new groovy.json.JsonSlurper().parse(file)
-            def isLinkSchema = data.items != null
+            def isLinkSchema = file.parentFile.name == 'links'
             if (isLinkSchema) {
-                // relevant data is nested in link schemas
-                data = data.items
                 // link IDs should be translated, custom aspect IDs should not
                 handleTranslationKey(file.name.replace(".json", ""), "$file.name (custom link id)")
             }
 
-            def properties = data.properties.attributes.properties
+            def properties = data.attributeSchemas
             def propertyNames = properties.keySet()
             logger.info "property names: $propertyNames"
 
@@ -166,14 +134,11 @@ task checkTranslations {
             }
         }
 
-        domainPatternSchemaFiles.each { File file ->
-            def type = file.parentFile.name.toLowerCase()
-            def domainAssociationSchema = new JsonSlurper().parse(file).values().first()
-            domainAssociationSchema.allOf.each{ condition ->
-                def subType = condition.if.properties.subType.const
-                condition.then.properties.status.enum.each{ status ->
-                    handleTranslationKey("${type}_${subType}_status_${status}", file.absolutePath)
-                }
+        subTypeFiles.each { File file ->
+            def type = file.parentFile.parentFile.name.toLowerCase()
+            def subType = file.name[0..-6]
+            new JsonSlurper().parse(file).statuses.each{ status ->
+                handleTranslationKey("${type}_${subType}_status_${status}", file.absolutePath)
             }
         }
 

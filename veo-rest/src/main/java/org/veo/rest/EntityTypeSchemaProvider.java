@@ -18,10 +18,11 @@
 package org.veo.rest;
 
 import java.util.Collection;
-import java.util.Collections;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.transaction.Transactional;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException;
@@ -32,20 +33,31 @@ import com.networknt.schema.SchemaValidatorsConfig;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
+import org.veo.core.entity.Key;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
+import org.veo.rest.security.ApplicationUser;
+
+import lombok.RequiredArgsConstructor;
 
 @ConditionalOnProperty(prefix = "json", name = "schemaProvider", havingValue = "entityType")
 @Component
+@RequiredArgsConstructor
 public class EntityTypeSchemaProvider implements JsonSchemaProvider {
 
-    @Autowired
-    private EntitySchemaService schemaService;
+    private final DomainRepository domainRepository;
+    private final EntitySchemaService schemaService;
 
     private JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
 
     @Override
+    @Transactional
     public JsonSchema loadSchema(String type) {
-        final String schema = schemaService.findSchema(type, Collections.emptyList());
+        var user = ApplicationUser.authenticatedUser(SecurityContextHolder.getContext()
+                                                                          .getAuthentication()
+                                                                          .getPrincipal());
+        var domains = domainRepository.findAllByClient(Key.uuidFrom(user.getClientId()));
+        final String schema = schemaService.findSchema(type, domains);
         return jsonSchemaFactory.getSchema(schema, getSchemaValidatorsConfig());
     }
 

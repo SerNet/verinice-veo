@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.ClientOwned;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.code.EntityValidationException;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,9 @@ public class EntityValidator {
     public void validate(Object entity) throws EntityValidationException {
         List.of(new TypedValidator<>(ClientOwned.class,
                 new SameClientSpecification(accountProvider.getCurrentUserAccount()
-                                                           .getClient())))
+                                                           .getClient())),
+                new TypedValidator<>(Domain.class,
+                        new CompleteEntityTypeDefinitionsSpecification()))
             .forEach(v -> v.validateIfApplicable(entity));
     }
 

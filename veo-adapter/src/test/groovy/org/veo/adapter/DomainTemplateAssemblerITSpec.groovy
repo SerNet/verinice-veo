@@ -17,8 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter
 
-
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+
+import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto
 
 import groovy.json.JsonSlurper
 import spock.lang.Specification
@@ -46,6 +47,9 @@ class DomainTemplateAssemblerITSpec extends Specification {
                 it.element.name != null
             }
         }
+        with(template.elementTypeDefinitions.asset) {
+            it.customAspects.asset_details.attributeSchemas.asset_details_number.type == "integer"
+        }
         where:
         template << templates
     }
@@ -54,7 +58,7 @@ class DomainTemplateAssemblerITSpec extends Specification {
         new PathMatchingResourcePatternResolver(getClass().classLoader)
                 .getResources("classpath*:/domaintemplates/*.json")
                 .collect {
-                    new JsonSlurper().parse(it.inputStream)
+                    new JsonSlurper().parse(it.inputStream) as TransformDomainTemplateDto
                 }
     }
 }

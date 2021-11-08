@@ -1,0 +1,15 @@
+{
+  "attributeSchemas": {
+    "asset_details_number": {
+      "type": "integer"
+    },
+    "asset_details_operatingStage": {
+      "enum": [
+        "asset_details_operatingStage_operation",
+        "asset_details_operatingStage_planning",
+        "asset_details_operatingStage_test",
+        "asset_details_operatingStage_rollout"
+      ]
+    }
+  }
+}

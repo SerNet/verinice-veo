@@ -1,0 +1,55 @@
+{
+  "attributeSchemas": {
+    "process_dataType_comment": {
+      "type": "string"
+    },
+    "process_dataType_dataOrigin": {
+      "enum": [
+        "process_dataType_dataOrigin_direct",
+        "process_dataType_dataOrigin_transmission"
+      ]
+    },
+    "process_dataType_deletionPeriod": {
+      "enum": [
+        "process_dataType_deletionPeriod_immediately",
+        "process_dataType_deletionPeriod_7d",
+        "process_dataType_deletionPeriod_10d",
+        "process_dataType_deletionPeriod_14d",
+        "process_dataType_deletionPeriod_21d",
+        "process_dataType_deletionPeriod_1m",
+        "process_dataType_deletionPeriod_3m",
+        "process_dataType_deletionPeriod_6m",
+        "process_dataType_deletionPeriod_9m",
+        "process_dataType_deletionPeriod_1y",
+        "process_dataType_deletionPeriod_4y",
+        "process_dataType_deletionPeriod_7y",
+        "process_dataType_deletionPeriod_30y"
+      ]
+    },
+    "process_dataType_deletionPeriodStart": {
+      "enum": [
+        "process_dataType_deletionPeriodStart_completion",
+        "process_dataType_deletionPeriodStart_appplicationClosure",
+        "process_dataType_deletionPeriodStart_deletionRequest",
+        "process_dataType_deletionPeriodStart_endOfRelationship",
+        "process_dataType_deletionPeriodStart_purposeDiscontinuation",
+        "process_dataType_deletionPeriodStart_dataCollection",
+        "process_dataType_deletionPeriodStart_consentWithdrawal"
+      ]
+    },
+    "process_dataType_descriptionDeletionProcedure": {
+      "type": "string"
+    },
+    "process_dataType_otherDataOrigin": {
+      "type": "string"
+    },
+    "process_dataType_otherDeletionPeriod": {
+      "type": "string"
+    },
+    "process_dataType_otherDeletionPeriodStart": {
+      "type": "string"
+    }
+  },
+  "targetType": "asset",
+  "targetSubType": "AST_Datatype"
+}

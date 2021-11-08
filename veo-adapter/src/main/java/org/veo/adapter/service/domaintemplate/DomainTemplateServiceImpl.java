@@ -168,7 +168,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 Domain domain = processDomainTemplate(domainTemplateDto);
                 domain.setDomainTemplate(bootstrappedDomaintemplates.get(templateId));
                 client.addToDomains(domain);
-                log.info("Domain {} created for client {}", domain, client);
+                log.info("Domain {} created for client {}", domain.getName(), client);
                 return domain;
             } catch (JsonMappingException e) {
                 log.error("Error parsing file", e);
@@ -299,7 +299,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         Map<String, CatalogItem> itemCache = createCatalogItemCache(domainTemplateDto, ref,
                                                                     elementCache);
-        Domain domain = entityTransformer.transformDomainTemplateDto2Domain(domainTemplateDto, ref);
+        Domain domain = entityTransformer.transformTransformDomainTemplateDto2Domain(domainTemplateDto,
+                                                                                     ref);
 
         domain.getCatalogs()
               .forEach(catalog -> {

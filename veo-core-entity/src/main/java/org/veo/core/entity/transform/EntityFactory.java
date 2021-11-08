@@ -44,6 +44,7 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 
 /**
  * @author urszeidler
@@ -97,5 +98,7 @@ public interface EntityFactory {
 
     LinkTailoringReference createLinkTailoringReference(CatalogItem catalogItem,
             TailoringReferenceType referenceType);
+
+    ElementTypeDefinition createElementTypeDefinition(String elementType, Domain owner);
 
 }

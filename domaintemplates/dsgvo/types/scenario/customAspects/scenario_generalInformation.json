@@ -1,0 +1,9 @@
+{
+  "attributeSchemas": {
+    "scenario_generalInformation_document": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    }
+  }
+}

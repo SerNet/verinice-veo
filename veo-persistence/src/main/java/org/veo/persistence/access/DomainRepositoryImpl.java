@@ -17,14 +17,16 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
@@ -41,9 +43,12 @@ public class DomainRepositoryImpl extends
         this.dataRepository = dataRepository;
     }
 
-    public List<Domain> findByClient(Client client) {
-        // TODO: VEO-498 Implement Domain Search
-        throw new UnsupportedOperationException("not implemented");
+    @Override
+    public Set<Domain> findAllByClient(Key<UUID> clientId) {
+        return dataRepository.findAllByClient(clientId.uuidValue())
+                             .stream()
+                             .map(Domain.class::cast)
+                             .collect(Collectors.toSet());
     }
 
     @Override

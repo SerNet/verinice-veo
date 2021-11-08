@@ -1,0 +1,45 @@
+{
+  "attributeSchemas": {
+    "scope_thirdCountry_address1": {
+      "type": "string"
+    },
+    "scope_thirdCountry_address2": {
+      "type": "string"
+    },
+    "scope_thirdCountry_city": {
+      "type": "string"
+    },
+    "scope_thirdCountry_country": {
+      "type": "string"
+    },
+    "scope_thirdCountry_description": {
+      "type": "string"
+    },
+    "scope_thirdCountry_email": {
+      "type": "string"
+    },
+    "scope_thirdCountry_fax": {
+      "type": "string"
+    },
+    "scope_thirdCountry_name": {
+      "type": "string"
+    },
+    "scope_thirdCountry_phone": {
+      "type": "string"
+    },
+    "scope_thirdCountry_postcode": {
+      "type": "string"
+    },
+    "scope_thirdCountry_state": {
+      "type": "string"
+    },
+    "scope_thirdCountry_status": {
+      "type": "boolean"
+    },
+    "scope_thirdCountry_website": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    }
+  }
+}

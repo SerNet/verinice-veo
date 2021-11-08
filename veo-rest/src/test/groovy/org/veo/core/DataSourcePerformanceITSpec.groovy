@@ -96,8 +96,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 5
-        queryCounts.update == 0
+        queryCounts.insert == 8
+        queryCounts.update == 1
         queryCounts.select == 3
     }
 
@@ -391,7 +391,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             templateVersion = '1.0'
         }
 
-        client.addToDomains(domain2)
         client = clientRepository.save(client)
 
         when:

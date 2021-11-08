@@ -46,6 +46,7 @@ import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
@@ -53,6 +54,7 @@ import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
@@ -76,6 +78,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 
 /**
@@ -158,6 +161,28 @@ public final class DtoToEntityTransformer {
         mapNameableProperties(source, target);
         target.setActive(true);
 
+        return target;
+    }
+
+    public Domain transformTransformDomainTemplateDto2Domain(TransformDomainTemplateDto source,
+            IdRefResolver idRefResolver) {
+        var target = transformDomainTemplateDto2Domain(source, idRefResolver);
+        target.setElementTypeDefinitions(source.getElementTypeDefinitions()
+                                               .entrySet()
+                                               .stream()
+                                               .map(entry -> mapElementTypeDefinition(entry.getKey(),
+                                                                                      entry.getValue(),
+                                                                                      target))
+                                               .collect(Collectors.toSet()));
+        return target;
+    }
+
+    private ElementTypeDefinition mapElementTypeDefinition(String type,
+            ElementTypeDefinitionDto source, Domain owner) {
+        var target = factory.createElementTypeDefinition(type, owner);
+        target.setSubTypes(source.getSubTypes());
+        target.setCustomAspects(source.getCustomAspects());
+        target.setLinks(source.getLinks());
         return target;
     }
 

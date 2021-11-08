@@ -1,0 +1,9 @@
+{
+  "statuses": [
+    "NEW",
+    "IN_PROGRESS",
+    "FOR_REVIEW",
+    "RELEASED",
+    "ARCHIVED"
+  ]
+}

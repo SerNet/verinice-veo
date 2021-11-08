@@ -20,6 +20,8 @@ package org.veo.core.service;
 import java.util.List;
 import java.util.Set;
 
+import org.veo.core.entity.Domain;
+
 /**
  * Builds and returns an entity JSON-schema that matches the requestes entity
  * type and domain(s).
@@ -35,7 +37,7 @@ public interface EntitySchemaService {
      *            the domains to use, i.e. 'GDPR', 'ISO_27001'
      * @return a JSON schema document dynamically generated for the above parameters
      */
-    public String findSchema(String type, List<String> domains);
+    public String findSchema(String type, Set<Domain> domains);
 
     /**
      * Returns a JSON with translation for the given language identifiers. If not

@@ -33,6 +33,7 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
@@ -67,6 +68,7 @@ class DomainTemplateAssembler {
     private final String templateVersion;
     private final String revision;
     private final Set<AbstractCatalogDto> catalogs = new HashSet<>();
+    private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 
     /**
      * Creates a domain template with all catalogs previously added by
@@ -81,8 +83,14 @@ class DomainTemplateAssembler {
         domainTemplateDto.setAuthority(authority);
         domainTemplateDto.setRevision(revision);
         domainTemplateDto.setTemplateVersion(templateVersion);
+        domainTemplateDto.setElementTypeDefinitions(elementTypeDefinitions);
         domainTemplateDto.setCatalogs(catalogs);
         return domainTemplateDto;
+    }
+
+    public void setElementTypeDefinitions(
+            Map<String, ElementTypeDefinitionDto> elementTypeDefinitions) {
+        this.elementTypeDefinitions = elementTypeDefinitions;
     }
 
     /**

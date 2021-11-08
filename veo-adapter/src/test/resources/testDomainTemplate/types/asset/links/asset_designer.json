@@ -1,0 +1,9 @@
+{
+  "attributeSchemas": {
+    "redesign": {
+      "type": "boolean"
+    }
+  },
+  "targetType": "person",
+  "targetSubType": "PER_designer"
+}

@@ -18,7 +18,6 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
 
@@ -30,7 +29,7 @@ import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.repository.ClientRepository
+import org.veo.core.entity.Client
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.EntitySchemaService
@@ -39,7 +38,6 @@ import org.veo.core.service.EntitySchemaService
  * Tests if resources returned by the API conform to the entity schema.
  */
 @WithUserDetails("user@domain.example")
-@SpringBootTest(properties=['veo.entity_schemas_location:/schemas/entity/'])
 class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     @Autowired
@@ -49,17 +47,15 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     UnitRepository unitRepository
 
     @Autowired
-    ClientRepository clientRepository
-
-    @Autowired
     DomainRepository domainRepository
 
+    Client client
     ObjectMapper om = new ObjectMapper()
     String domainId
     String unitId
 
     def setup() {
-        def client = createTestClient()
+        client = createTestClient()
         domainId = createDsgvoTestDomain(client).id.uuidValue()
         unitId = unitRepository.save(newUnit(client)).dbId
     }
@@ -394,7 +390,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     }
 
     private JsonSchema getSchema(String type) {
-        def schemaString = entitySchemaService.findSchema(type, Collections.emptyList())
+        def schemaString = entitySchemaService.findSchema(type, client.domains)
         return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(schemaString)
     }
 

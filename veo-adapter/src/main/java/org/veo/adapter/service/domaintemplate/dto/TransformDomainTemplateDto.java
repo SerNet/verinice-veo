@@ -18,6 +18,7 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.Pattern;
@@ -28,6 +29,7 @@ import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,5 +56,7 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
     public void setCatalogs(Set<AbstractCatalogDto> catalogs) {
         super.setCatalogs(catalogs);
     }
+
+    private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions;
 
 }

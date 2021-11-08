@@ -1,0 +1,27 @@
+{
+  "attributeSchemas": {
+    "scope_dataProtectionOfficer_affiliation": {
+      "enum": [
+        "scope_dataProtectionOfficer_affiliation_internal",
+        "scope_dataProtectionOfficer_affiliation_external"
+      ]
+    },
+    "scope_dataProtectionOfficer_comment": {
+      "type": "string"
+    },
+    "scope_dataProtectionOfficer_nomination": {
+      "type": "boolean"
+    },
+    "scope_dataProtectionOfficer_nominationDate": {
+      "format": "date",
+      "type": "string"
+    },
+    "scope_dataProtectionOfficer_nominationEvidence": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    }
+  },
+  "targetType": "person",
+  "targetSubType": "PER_DataProtectionOfficer"
+}

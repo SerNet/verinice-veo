@@ -28,6 +28,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.veo.core.entity.Key;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.schemas.resource.EntitySchemaResource;
 import org.veo.rest.security.ApplicationUser;
@@ -46,6 +48,7 @@ import lombok.RequiredArgsConstructor;
 public class EntitySchemaController implements EntitySchemaResource {
 
     private final EntitySchemaService schemaService;
+    private final DomainRepository domainRepository;
 
     @Override
     public CompletableFuture<ResponseEntity<String>> getSchema(Authentication auth,
@@ -62,8 +65,11 @@ public class EntitySchemaController implements EntitySchemaResource {
             // TODO define schema-roles for users
             // TODO use valid 'domain' class
 
+            var clientDomains = domainRepository.findAllByClient(Key.uuidFrom(ApplicationUser.authenticatedUser(auth.getPrincipal())
+                                                                                             .getClientId()));
+
             String schema = schemaService.roleFilter(userRoles,
-                                                     schemaService.findSchema(type, domains));
+                                                     schemaService.findSchema(type, clientDomains));
             return ResponseEntity.ok()
                                  .body(schema);
         });

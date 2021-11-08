@@ -75,6 +75,10 @@ public class DomainTemplateAssemblerMain {
                     System.getenv("domaintemplate.templateVersion"),
                     System.getenv("domaintemplate.revision"));
 
+            var typeAssembler = new ElementTypeDefinitionAssembler();
+            assembler.setElementTypeDefinitions(typeAssembler.loadDefinitions(snippetPath.resolve("types")
+                                                                                         .toFile()));
+
             for (var prefix : System.getenv("domaintemplate.catalogPrefixes")
                                     .split(",")) {
                 assembler.addCatalog(System.getenv(prefix + ".catalog.name"),

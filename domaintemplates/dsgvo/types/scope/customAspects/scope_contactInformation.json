@@ -1,0 +1,16 @@
+{
+  "attributeSchemas": {
+    "scope_contactInformation_email": {
+      "type": "string"
+    },
+    "scope_contactInformation_fax": {
+      "type": "string"
+    },
+    "scope_contactInformation_phone": {
+      "type": "string"
+    },
+    "scope_contactInformation_website": {
+      "type": "string"
+    }
+  }
+}

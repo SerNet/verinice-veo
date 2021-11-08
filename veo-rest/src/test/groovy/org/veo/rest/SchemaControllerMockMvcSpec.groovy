@@ -20,12 +20,19 @@ package org.veo.rest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+
 /**
  * Integration test for the schema controller. Uses mocked spring MVC environment.
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
 class SchemaControllerMockMvcSpec extends VeoMvcSpec {
+
+    String domainId
+
+    def setup() {
+        domainId = createDsgvoTestDomain(createTestClient()).id.uuidValue()
+    }
 
     @WithUserDetails("user@domain.example")
     def "get the schema for a process"() {
@@ -35,11 +42,16 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
         then: "a correct response is returned"
         schema.title == "process"
 
-        and: "the custom links are present"
+        and: "the links are present"
         schema.properties.links.properties.process_dataType != null
 
         and: "the custom aspects are present"
         schema.properties.customAspects.properties.process_processingDetails != null
+
+        and: "the domain association is present"
+        with(schema.properties.domains.properties[domainId]) {
+            it.properties.subType.enum.contains("PRO_DataTransfer")
+        }
     }
 
     @WithUserDetails("user@domain.example")
