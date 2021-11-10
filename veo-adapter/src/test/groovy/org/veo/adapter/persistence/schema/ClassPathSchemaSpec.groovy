@@ -88,6 +88,13 @@ class ClassPathSchemaSpec extends Specification {
         schema << entitySchemas
     }
 
+    def "_self is marked read-only in entity schema #schema.title"() {
+        expect:
+        schema.get("properties").get("_self").get("readOnly").booleanValue()
+        where:
+        schema << entitySchemas
+    }
+
     private JsonSchema getMetaSchemaV7(String file) throws IOException {
         return JsonSchemaFactory.getInstance(VersionFlag.V7)
                 .getSchema(getClass().getClassLoader().getResource("schemas/meta/"+file).openStream())
