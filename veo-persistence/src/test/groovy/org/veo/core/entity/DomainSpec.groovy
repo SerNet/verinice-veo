@@ -23,17 +23,13 @@ import org.veo.test.VeoSpec
 class DomainSpec extends VeoSpec {
 
     def "Create a new Domain"() {
-        given: "a domain name"
+        given: "a client & a domain name"
+        def client = newClient()
         String name = 'Test domain'
 
-        when : "Domain is created"
-        Domain domain = newDomain() {
+        when : "Domain is created and added to the client"
+        Domain domain = newDomain(client) {
             it.name = name
-        }
-
-        and: "the domain is added to a client"
-        def client = newClient() {
-            domains = [domain] as Set
         }
 
         then: "domain is correct initatlized"
@@ -44,17 +40,13 @@ class DomainSpec extends VeoSpec {
     }
 
     def "Create a new Domain linked with domain template"() {
-        given: "a domain name"
+        given: "a client & a domain name"
+        def client = newClient()
         String name = 'Test domain'
 
-        when : "Domain is created"
-        Domain domain = newDomain() {
+        when : "Domain is created and added to the client"
+        Domain domain = newDomain(client) {
             it.name = name
-        }
-
-        and: "the domain is added to a client"
-        def client = newClient() {
-            domains = [domain] as Set
         }
 
         and: "the domain template is linked"

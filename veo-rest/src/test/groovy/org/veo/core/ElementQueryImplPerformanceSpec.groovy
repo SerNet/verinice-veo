@@ -60,9 +60,7 @@ class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
     def setup() {
         client = clientRepository.save(newClient {})
         unit = unitRepository.save(newUnit(client))
-        domain = domainRepository.save(newDomain {
-            owner = this.client
-        })
+        domain = domainRepository.save(newDomain(client))
     }
 
     def "query efficiently fetches results"() {

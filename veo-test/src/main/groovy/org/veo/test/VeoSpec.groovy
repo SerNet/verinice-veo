@@ -132,23 +132,13 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static DomainData newDomain(@DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure init = null) {
-        return factory.createDomain(null,"","","").tap {
-            VeoSpec.execute(it, init)
-            VeoSpec.name(it)
-            VeoSpec.version(it)
-        }
-    }
-
     static DomainData newDomain(Client owner, @DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure init = null) {
         return factory.createDomain(null,"","","").tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)
-            owner.domains.add(it)
-            it.owner = owner
+            owner.addToDomains(it)
         }
     }
 

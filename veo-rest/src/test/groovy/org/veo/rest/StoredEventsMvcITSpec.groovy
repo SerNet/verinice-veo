@@ -62,9 +62,8 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             client = createTestClient()
             def template = domainTemplateRepository.save(newDomainTemplate())
-            domain = domainRepository.save(newDomain {
+            domain = domainRepository.save(newDomain(client) {
                 domainTemplate = template
-                owner = client
                 name = "ISO"
             })
 

@@ -39,7 +39,7 @@ class AssetRiskSpec extends VeoSpec {
         def asset = newAsset(unit)
         def scenario = newScenario(unit)
         def control = newControl(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset.addToDomains(domain1)
 
         when: "a risk is created for these entities"
@@ -56,7 +56,7 @@ class AssetRiskSpec extends VeoSpec {
         given: "an asset and a scenario"
         def asset = newAsset(unit)
         def scenario = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset.addToDomains(domain1)
 
         when: "a risk is created"
@@ -72,7 +72,7 @@ class AssetRiskSpec extends VeoSpec {
         def asset = newAsset(unit)
         def scenario1 = newScenario(unit)
         def scenario2 = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset.addToDomains(domain1)
 
         when: "risks are added"
@@ -92,7 +92,7 @@ class AssetRiskSpec extends VeoSpec {
         given: "defined entities"
         def asset = newAsset(unit)
         def scenario = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset.addToDomains(domain1)
         def person = newPerson(unit)
 
@@ -110,7 +110,7 @@ class AssetRiskSpec extends VeoSpec {
         given: "defined entities"
         def asset = newAsset(unit)
         def scenario = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset.addToDomains(domain1)
         def person = newPerson(unit)
         def personComposite = newPerson(unit)
@@ -131,7 +131,7 @@ class AssetRiskSpec extends VeoSpec {
         given: "a composite of assets"
         def asset1 = newAsset(unit)
         def asset2 = newAsset(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         def assetComposite = newAsset(unit) {
             name = "assetcomposite"
         }
@@ -156,7 +156,7 @@ class AssetRiskSpec extends VeoSpec {
         def scenario2 = newScenario(unit)
         scenarioComposite.setParts([scenario1, scenario2] as Set)
         def asset = newAsset(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset.addToDomains(domain1)
 
         when: "a risk is created"
@@ -176,7 +176,7 @@ class AssetRiskSpec extends VeoSpec {
         controlComposite.setParts([control1, control2] as Set)
         def asset1 = newAsset(unit)
         def scenario1 = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset1.addToDomains(domain1)
 
         when: "a risk is created"
@@ -193,7 +193,7 @@ class AssetRiskSpec extends VeoSpec {
         given: ""
         def scenario1 = newScenario(unit)
         def asset1 = newAsset(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         asset1.addToDomains(domain1)
         def risk1 = asset1.obtainRisk(scenario1, domain1)
         asset1.addToDomains(domain1)
@@ -214,9 +214,9 @@ class AssetRiskSpec extends VeoSpec {
         given: "predefined entities"
         def scenario1 = newScenario(unit)
         def asset1 = newAsset(unit)
-        def domain1 = newDomain()
-        def domain2 = newDomain()
-        def domainUnknown = newDomain()
+        def domain1 = newDomain(client)
+        def domain2 = newDomain(client)
+        def domainUnknown = newDomain(client)
         asset1.addToDomains(domain1)
         asset1.addToDomains(domain2)
 

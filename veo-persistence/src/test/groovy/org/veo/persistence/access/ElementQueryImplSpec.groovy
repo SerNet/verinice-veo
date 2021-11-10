@@ -22,13 +22,14 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 import org.veo.core.entity.Asset
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
@@ -48,17 +49,19 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
     ClientDataRepository clientDataRepository
 
     @Autowired
-    DomainDataRepository domainRepository
-
-    @Autowired
     UnitDataRepository unitDataRepository
 
     ClientData client
+    Domain domain
     UnitData unit
     ElementQuery<Asset> query
 
     def setup() {
-        client = clientDataRepository.save(newClient {})
+        client = clientDataRepository.save(newClient{
+            id = Key.newUuid()
+            newDomain(it)
+        })
+        domain = client.domains.first()
         unit = unitDataRepository.save(newUnit(client))
 
         query = new ElementQueryImpl<>(processDataRepository, client)
@@ -119,8 +122,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by sub type'() {
         given:
-        def domain = domainRepository.save(newDomain {owner = this.client})
-
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -149,8 +150,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by status'() {
         given:
-        def domain = domainRepository.save(newDomain {owner = this.client})
-
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -184,8 +183,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by sub type & status combined'() {
         given:
-        def domain = domainRepository.save(newDomain {owner = this.client})
-
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -219,8 +216,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'finds processes with no sub type'() {
         given:
-        def domain = domainRepository.save(newDomain {owner = this.client})
-
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"

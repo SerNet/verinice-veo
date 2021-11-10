@@ -57,8 +57,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
             name = "Demo Client"
         })
 
-        Domain domain = newDomain {
-            owner = client
+        Domain domain = newDomain(client) {
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
@@ -104,8 +103,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         Client client = repository.save(newClient {
             id = clientId
         })
-        Domain domain = newDomain {
-            owner = client
+        Domain domain = newDomain(client) {
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
@@ -142,8 +140,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         Client client = repository.save(newClient{
             id = clientId
         })
-        Domain domain = domainRepository.save(newDomain {
-            owner = client
+        Domain domain = domainRepository.save(newDomain(client) {
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
@@ -199,7 +196,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
     def "create a simple client and a domain together with catalog"() {
 
         given: "a domain and a client"
-        Domain domain = newDomain {
+        Domain domain = newDomain(newClient()) {
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"

@@ -27,12 +27,9 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
-import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
-import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -78,12 +75,10 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
     @Transactional
     def setup() {
-        client = clientRepository.save(newClient())
-        domain = newDomain() {
-            owner = this.client
-        }
+        client = clientRepository.save(newClient() {
+            domain = newDomain(it)
+        })
         unit = newUnit(this.client)
-        domainRepository.save(this.domain)
         unitRepository.save(this.unit)
 
         entityManager.flush()
@@ -263,9 +258,8 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         given:
         def asset = newAsset(unit)
         def scenario = newScenario(unit)
-        def domain = newDomain {
+        def domain = newDomain(client) {
             name = "domain1"
-            owner = this.client
         }
         domainRepository.save(domain)
         client.addToDomains(domain)

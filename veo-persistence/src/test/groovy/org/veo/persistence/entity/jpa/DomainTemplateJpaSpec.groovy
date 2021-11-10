@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
-import org.veo.core.entity.Key
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -41,7 +40,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def setup() {
         factory = new EntityDataFactory()
-        domain1 = newDomain {}
+        domain1 = newDomain(newClient ())
     }
 
     def 'domainTemplate is inserted'() {

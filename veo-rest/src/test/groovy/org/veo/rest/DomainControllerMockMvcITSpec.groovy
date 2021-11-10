@@ -23,12 +23,10 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
-import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
 
 /**
  * Integration test for the domain controller. Uses mocked spring MVC environment.
@@ -40,45 +38,38 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
-    @Autowired
-    private DomainRepositoryImpl domainRepository
 
     @Autowired
     TransactionTemplate txTemplate
 
     private Unit unit
     private Domain testDomain
-    private Client client
     private Catalog catalog
-    private Client secondClient
     private Domain domainSecondClient
 
     def setup() {
         txTemplate.execute {
-            Domain domain1 = newDomain{
+            def client = createTestClient()
+            newDomain(client) {
                 name = "Domain 1"
+                newCatalog(it) {
+                    name = 'a'
+                }
             }
-            Domain domain2 = newDomain{
+            newDomain(client) {
                 name = "Domain 2"
             }
-            client = createTestClient()
-            catalog = newCatalog(domain1) {
-                name= 'a'
-            }
-            client.addToDomains(domain1)
-            client.addToDomains(domain2)
 
             client = clientRepository.save(client)
-            domain1 = client.domains.first()
-            catalog = domain1.catalogs.first()
-            domainSecondClient = newDomain()
-            secondClient = newClient()
-            secondClient.addToDomains(domainSecondClient)
-            secondClient = clientRepository.save(secondClient)
-            domainSecondClient = secondClient.domains.iterator().next()
-        }
 
-        testDomain = client.getDomains().iterator().next()
+            testDomain = client.domains.find{it.name == "Domain 1"}
+            catalog = testDomain.catalogs.first()
+
+            def secondClient = clientRepository.save(newClient() {
+                newDomain(it)
+            })
+            domainSecondClient = secondClient.domains.first()
+        }
     }
 
 

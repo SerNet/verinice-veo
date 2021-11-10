@@ -61,14 +61,12 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
 
-            domain = domainRepository.save(newDomain {
-                owner = client
+            domain = domainRepository.save(newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
             })
 
-            domain1 = domainRepository.save(newDomain {
-                owner = client
+            domain1 = domainRepository.save(newDomain(client) {
                 abbreviation = "D1"
                 name = "Domain 1"
             })

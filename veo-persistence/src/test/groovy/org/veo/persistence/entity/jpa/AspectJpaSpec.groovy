@@ -49,12 +49,8 @@ class AspectJpaSpec extends AbstractJpaSpec {
         unit = newUnit(client)
         unit = unitRepository.save(unit)
 
-        domain0 = domainRepository.save(newDomain{
-            owner = client
-        })
-        domain1 = domainRepository.save(newDomain{
-            owner = client
-        })
+        domain0 = domainRepository.save(newDomain(client))
+        domain1 = domainRepository.save(newDomain(client))
         client.domains = [domain0, domain1]
         client = clientDataRepository.save(client)
     }

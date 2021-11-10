@@ -158,9 +158,7 @@ class ProcessRiskITSpec extends VeoSpringSpec {
     @Transactional
     void createClient() {
         client = clientRepository.save(newClient())
-        def domain = domainRepository.save(newDomain{
-            owner = this.client
-        })
+        def domain = domainRepository.save(newDomain(client))
 
         unit = unitRepository.save(newUnit(client) {
             addToDomains(domain)

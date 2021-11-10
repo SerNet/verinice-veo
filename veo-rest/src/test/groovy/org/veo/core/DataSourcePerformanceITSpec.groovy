@@ -34,7 +34,6 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
@@ -66,9 +65,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     @Autowired
     private ScopeRepositoryImpl scopeRepository
-
-    @Autowired
-    private DomainRepositoryImpl domainRepository
 
     @Autowired
     private StoredEventDataRepository storedEventRepository
@@ -396,7 +392,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             revision = '1'
             templateVersion = '1.0'
         }
-        domainRepository.save(domain2)
 
         client.addToDomains(domain2)
         client = clientRepository.save(client)
@@ -417,21 +412,17 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     void createClient() {
         executeInTransaction {
-            client = clientRepository.save(newClient())
-            def domain = domainRepository.save(newDomain{
-                owner = this.client
-                name = "domain1"
+            client = clientRepository.save(newClient() {
+                newDomain(it)
             })
 
-            client.addToDomains(domain)
-            client = clientRepository.save(client)
+            def domain = client.domains.first()
 
             unit = newUnit(client)
             unit.setClient(client)
             unit.addToDomains(domain)
 
             unit = unitRepository.save(unit)
-            unit.client = this.client
         }
     }
 

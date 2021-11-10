@@ -39,7 +39,7 @@ class ProcessRiskSpec extends VeoSpec {
         def process = newProcess(unit)
         def scenario = newScenario(unit)
         def control = newControl(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process.addToDomains(domain1)
 
         when: "a risk is created for these entities"
@@ -56,7 +56,7 @@ class ProcessRiskSpec extends VeoSpec {
         given: "an process and a scenario"
         def process = newProcess(unit)
         def scenario = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process.addToDomains(domain1)
 
         when: "a risk is created"
@@ -72,7 +72,7 @@ class ProcessRiskSpec extends VeoSpec {
         def process = newProcess(unit)
         def scenario1 = newScenario(unit)
         def scenario2 = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process.addToDomains(domain1)
 
         when: "risks are added"
@@ -92,7 +92,7 @@ class ProcessRiskSpec extends VeoSpec {
         given: "defined entities"
         def process = newProcess(unit)
         def scenario = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process.addToDomains(domain1)
         def person = newPerson(unit)
 
@@ -110,7 +110,7 @@ class ProcessRiskSpec extends VeoSpec {
         given: "defined entities"
         def process = newProcess(unit)
         def scenario = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process.addToDomains(domain1)
         def person = newPerson(unit)
         def personComposite = newPerson(unit)
@@ -131,7 +131,7 @@ class ProcessRiskSpec extends VeoSpec {
         given: "a composite of processes"
         def process1 = newProcess(unit)
         def process2 = newProcess(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         def processComposite = newProcess(unit) {
             name = "processcomposite"
         }
@@ -156,7 +156,7 @@ class ProcessRiskSpec extends VeoSpec {
         def scenario2 = newScenario(unit)
         scenarioComposite.setParts([scenario1, scenario2] as Set)
         def process = newProcess(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process.addToDomains(domain1)
 
         when: "a risk is created"
@@ -176,7 +176,7 @@ class ProcessRiskSpec extends VeoSpec {
         controlComposite.setParts([control1, control2] as Set)
         def process1 = newProcess(unit)
         def scenario1 = newScenario(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process1.addToDomains(domain1)
 
         when: "a risk is created"
@@ -193,7 +193,7 @@ class ProcessRiskSpec extends VeoSpec {
         given: ""
         def scenario1 = newScenario(unit)
         def process1 = newProcess(unit)
-        def domain1 = newDomain()
+        def domain1 = newDomain(client)
         process1.addToDomains(domain1)
         def risk1 = process1.obtainRisk(scenario1, domain1)
         process1.addToDomains(domain1)
@@ -214,9 +214,9 @@ class ProcessRiskSpec extends VeoSpec {
         given: "predefined entities"
         def scenario1 = newScenario(unit)
         def process1 = newProcess(unit)
-        def domain1 = newDomain()
-        def domain2 = newDomain()
-        def domainUnknown = newDomain()
+        def domain1 = newDomain(client)
+        def domain2 = newDomain(client)
+        def domainUnknown = newDomain(client)
         process1.addToDomains(domain1)
         process1.addToDomains(domain2)
 

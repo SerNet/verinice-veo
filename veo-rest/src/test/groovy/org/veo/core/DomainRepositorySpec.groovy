@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.veo.core.entity.Domain
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.DomainDataRepository
+import org.veo.persistence.entity.jpa.DomainData
 
 @SpringBootTest(classes = DomainRepositorySpec.class)
 class DomainRepositorySpec extends VeoSpringSpec {
@@ -38,7 +39,7 @@ class DomainRepositorySpec extends VeoSpringSpec {
 
     def "cannot violate the composition association between Client and Domain"() {
         given: "a domain"
-        Domain domain = newDomain {
+        Domain domain = new DomainData().tap{
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"

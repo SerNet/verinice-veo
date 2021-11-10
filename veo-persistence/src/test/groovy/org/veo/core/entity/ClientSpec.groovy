@@ -27,14 +27,12 @@ class ClientSpec extends VeoSpec{
         String clientName = 'Test Client'
 
         when : "Client is created"
-        Domain domain = newDomain() {
-            name = domainName
-        }
         Client client = newClient() {
             name = clientName
         }
-        // domain.client is set by calling client.setDomains():
-        client.setDomains([domain] as Set)
+        Domain domain = newDomain(client) {
+            name = domainName
+        }
 
         then: "domain is correctly initialized"
         client.getName().equals(clientName)

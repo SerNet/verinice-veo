@@ -26,7 +26,6 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.CatalogRepositoryImpl
@@ -35,7 +34,6 @@ import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * This provides a complete client domain catalog example.
@@ -69,7 +67,6 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem zz1
     CatalogItem zz2
     CatalogItem otherItem
-    Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
     Client client
     Client secondClient
     Domain domain3
@@ -82,7 +79,7 @@ class CatalogSpec extends VeoMvcSpec {
         txTemplate.execute {
             client = createTestClient()
 
-            domain = newDomain {
+            domain = newDomain (client) {
                 description = "ISO/IEC"
                 abbreviation = "ISO"
                 name = "ISO"
@@ -226,7 +223,7 @@ class CatalogSpec extends VeoMvcSpec {
                 ]
             }
 
-            domain1 = newDomain {
+            domain1 = newDomain (client) {
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
                 name = "ISO"
@@ -235,7 +232,6 @@ class CatalogSpec extends VeoMvcSpec {
                 templateVersion = '1.0'
             }
 
-            client.domains = [domain, domain1] as Set
             client = clientRepository.save(client)
 
             unit = newUnit(client) {
@@ -249,13 +245,17 @@ class CatalogSpec extends VeoMvcSpec {
 
             (item1, item2, item3, item4, item5, item6, item7, zz1, zz2) = catalog.catalogItems.sort{it.element.name}
 
-            domain3 = newDomain {
+            secondClient = newClient() {
+                it.name = "the other"
+            }
+            domain3 = newDomain(secondClient) {
                 abbreviation = "D1"
                 name = "Domain 1"
                 authority = 'ta'
                 revision = '1'
                 templateVersion = '1.0'
             }
+
             catalog1 = newCatalog(domain3) {
                 name = 'b'
                 newCatalogItem(it, {
@@ -264,11 +264,6 @@ class CatalogSpec extends VeoMvcSpec {
                     }
                 })
             }
-
-            secondClient = newClient() {
-                it.name = "the other"
-            }
-            secondClient.addToDomains(domain3)
             secondClient = clientRepository.save(secondClient)
             domain3 = secondClient.domains[0]
 
