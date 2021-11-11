@@ -1,8 +1,15 @@
 <FindBugsFilter>
     <!-- disable serialVersionUID checks for groovy classes -->
-	<!-- https://github.com/gradle/gradle/issues/8317 -->
+    <!-- https://github.com/gradle/gradle/issues/8317 -->
     <Match>
         <Source name="~.*\.groovy" />
         <Bug pattern="SE_NO_SERIALVERSIONID" />
+    </Match>
+    <!-- disable the new EI_EXPOSE_REP and EI_EXPOSE_REP2 patterns introduced in Spotbugs 4.3.0 -->
+    <!-- they produce a lot of false positives because the heuristics that detect immutable classes are 
+        not very good yet. -->
+    <!-- https://github.com/spotbugs/spotbugs/issues?q=is%3Aissue+EI_EXPOSE_REP+is%3Aopen -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
     </Match>
 </FindBugsFilter>

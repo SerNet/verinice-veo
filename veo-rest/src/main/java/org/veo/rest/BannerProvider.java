@@ -49,7 +49,7 @@ public class BannerProvider {
                 + "<=====================================================================>";
     }
 
-    @SuppressFBWarnings("SECPR")
+    @SuppressFBWarnings({ "SECPR", "DMI_RANDOM_USED_ONLY_ONCE" })
     private static String getCenteredRandomTitle(int artWidth) {
         var descriptions = List.of("Very Effective Organizer", "Valuable Entity Office",
                                    "Vinegar & Eggplant Omelet", "Verified Elephant Orphanage",
