@@ -155,7 +155,7 @@ subprojects {
                 'jsonschema-module-swagger-2'
             ].each { dependency "com.github.victools:$it:4.20.0" }
             dependency 'net.ttddyy:datasource-proxy:1.7'
-            dependency 'com.networknt:json-schema-validator:1.0.63'
+            dependency 'com.networknt:json-schema-validator:1.0.64'
             dependency "org.testcontainers:spock:1.16.2"
             dependency "org.testcontainers:postgresql:1.16.2"
             dependency "org.keycloak:keycloak-authz-client:15.0.2"
