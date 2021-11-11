@@ -20,8 +20,8 @@ Test script for the load test tool k6: https://k6.io/.
 
 To run the script behind a proxy set environment variables before executing:
 
- export HTTPS_PROXY=http://cache.sernet.private:3128
- export HTTP_PROXY=http://cache.sernet.private:3128
+ export HTTPS_PROXY=http://<HOST>:<PORT>
+ export HTTP_PROXY=http://<HOST>:<PORT>
 
 Parameters to run the script:
 
@@ -46,19 +46,15 @@ import { IFrameElement } from "k6/html";
 import { URL } from 'https://jslib.k6.io/url/1.0.0/index.js';
 import http from "k6/http";
 
-let HOSTNAME = "staging.verinice.com";
-if(!( __ENV.host===undefined)) {
-  HOSTNAME = __ENV.host;
-}
-
+const HOSTNAME = __ENV.host;
 const USER_NAME = __ENV.name;
 const PASSWORD = __ENV.password;
 
 // Base URLs of the APIs
-const VEO_BASE_URL = "https://veo." + HOSTNAME;
-const VEO_FORMS_BASE_URL = "https://veo-forms." + HOSTNAME;
-const VEO_HISTORY_BASE_URL = "https://veo-history." + HOSTNAME;
-const VEO_REPORTS_BASE_URL = "https://veo-reporting." + HOSTNAME;
+const VEO_BASE_URL = "https://api." + HOSTNAME + "/veo";
+const VEO_FORMS_BASE_URL = "https://api." + HOSTNAME + "/forms";
+const VEO_HISTORY_BASE_URL = "https://api." + HOSTNAME + "/history";
+const VEO_REPORTS_BASE_URL = "https://api." + HOSTNAME + "/reporting";
 const KEYCLOAK_BASE_URL = "https://keycloak.staging.verinice.com";
 
 // Keycloak authentication parameter
@@ -95,9 +91,9 @@ export let options = {
     http_req_duration: ["p(80)<200"] // 80% of requests must complete below 200ms
   },
   stages: [
-    { duration: "3m", target: 100, gracefulRampDown: '600s', gracefulStop: '600s' }, // Scale up, 6m to reach 100 VUS
+    { duration: "3m", target: 100, gracefulRampDown: '600s', gracefulStop: '600s' }, // Scale up, 3m to reach 100 VUS
     { duration: "4m", target: 100, gracefulRampDown: '600s', gracefulStop: '600s' }, // 4m with 100 VUS
-    { duration: "3m", target: 0, gracefulRampDown: '600s', gracefulStop: '600s' } // Scale down, 10m from 100 to 0 VUS
+    { duration: "3m", target: 0, gracefulRampDown: '600s', gracefulStop: '600s' } // Scale down, 3m from 100 to 0 VUS
   ],
 };
 
@@ -113,23 +109,25 @@ export default function () {
   let personId = createPerson();
   let tomId = createTOM();
   let dataTypeId = createDataType();
-  DATA_TRANSFER.links.process_dataType[0].target.targetUri = "/assets/" + dataTypeId;
-  DATA_TRANSFER.links.process_internalRecipient[0].target.targetUri = "/persons/" + personId;
+  DATA_TRANSFER.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
+  DATA_TRANSFER.links.process_internalRecipient[0].target.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + personId;
   let dataTransferId = createDataTransfer();
   loadDashboard();
   let itSystemId = createItSystem();
   let applicationId = createApplication();
   loadDashboard();
-  DATA_PROCESSING.links.process_responsiblePerson[0].target.targetUri = "/persons/" + personId;
-  DATA_PROCESSING.links.process_responsibleBody[0].target.targetUri = "/scopes/" + responsibleBodyId;
-  DATA_PROCESSING.links.process_jointControllership[0].target.targetUri = "/scopes/" + jointControllerId;
-  DATA_PROCESSING.links.process_dataType[0].target.targetUri = "/assets/" + dataTypeId;
-  DATA_PROCESSING.links.process_requiredApplications[0].target.targetUri = "/assets/" + applicationId;
-  DATA_PROCESSING.links.process_tom[0].target.targetUri = "/controls/" + tomId;
-  DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "/assets/" + itSystemId;
-  DATA_PROCESSING.links.process_dataTransmission[0].target.targetUri = "/processes/" + dataTransferId;
+  DATA_PROCESSING.links.process_responsiblePerson[0].target.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + personId;
+  DATA_PROCESSING.links.process_responsibleBody[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + responsibleBodyId;
+  DATA_PROCESSING.links.process_jointControllership[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + jointControllerId;
+  DATA_PROCESSING.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
+  DATA_PROCESSING.links.process_requiredApplications[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + applicationId;
+  DATA_PROCESSING.links.process_tom[0].target.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + tomId;
+  DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + itSystemId;
+  DATA_PROCESSING.links.process_dataTransmission[0].target.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataTransferId;
   let dataProcessingId = createDataProcessing();
   
+
+  deleteElement("/processes/", dataProcessingId);
   deleteElement("/processes/", dataTransferId);
   deleteElement("/scopes/", responsibleBodyId);
   deleteElement("/scopes/", jointControllerId);
@@ -138,7 +136,6 @@ export default function () {
   deleteElement("/assets/", dataTypeId);
   deleteElement("/assets/", itSystemId);
   deleteElement("/assets/", applicationId);
-  deleteElement("/processes/", dataProcessingId);
 }
 
 export function loadUnitSelection() {
@@ -150,6 +147,8 @@ export function loadUnitSelection() {
   loadElementsAndSleep("/types", 0);
 
   var unitName = "Demo";
+
+
   var unit = searchUnit(unitName);
 
   check(unit, {
@@ -308,9 +307,8 @@ export function createJointController() {
 }
 
 export function createElement(path, body, subType, domainId, unitId) {
-  body.owner.targetUri = "/units/" + unitId;
-  body.domains[0].targetUri = "/domains/" + domainId;
-  body.subType[domainId] = subType;
+  body.owner.targetUri = VEO_BASE_URL + "/units/" + unitId;
+  body.domains[domainId] = {"subType":subType,"status":"NEW"};
   var url = VEO_BASE_URL + path;
   var params = {
     headers: {
@@ -329,11 +327,11 @@ export function createElement(path, body, subType, domainId, unitId) {
     console.error("Create element body:");
     console.error(JSON.stringify(body));
   }
-  var scopeId = result.json().resourceId;
-  check(scopeId, {
-    "Element ID is returned": (r) => scopeId.length == 36,
+  var elementId = result.json().resourceId;
+  check(elementId, {
+    "Element ID is returned": (r) => elementId.length == 36,
   });
-  return scopeId;
+  return elementId;
 }
 
 
@@ -650,8 +648,9 @@ function deleteElement(path, uuid) {
   };
   var result = http.del(url, "", params);
 
+  console.info("DEL element " + path + " / " + uuid + ", status: " + result.status);
   check(result, {
-    "Delete element result is status 204": (r) => r.status === 204,
+    "Delete element result is status 204": (result) => result.status === 204,
   });
   if (result.status != 204) {
     console.error("DEL element status: " + result.status);
@@ -662,11 +661,6 @@ function deleteElement(path, uuid) {
 export function getToken() {
   console.log("Getting token...");
   var url = KEYCLOAK_BASE_URL + "/auth/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
-  var params = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-  };
   let body = { 
     username:USER_NAME, 
     password:PASSWORD,

@@ -2,11 +2,8 @@
   "owner": {
     "targetUri": "/units/76d22240-5736-4a4d-ac93-a9adc9574bad"
   },
-  "designator": "",
   "domains": {
-    "774e14f3-a8a8-4f22-aa1d-4344ac39517b": {
-      
-    }
+    
   },
   "description": "Maßnahmen, damit Unbefugten der Zutritt zu den Datenverarbeitungsanlagen verwehrt wird, mit denen personenbezogene Daten verarbeitet werden:\n\n(Beschreibung des Zutrittskontrollsystems, z.B. Ausweisleser, kontrollierte Schlüsselvergabe, etc. Siehe Checkliste TOM Zutrittskontrolle)",
   "name": "Zutrittskontrolle",
@@ -17,8 +14,7 @@
         "control_implementation_status": "control_implementation_status_partially",
         "control_implementation_date": "2021-09-29"
       },
-      "id": "00000000-0000-0000-0000-000000000000",
-      "type": "control_implementation"
+      "id": "00000000-0000-0000-0000-000000000000"
     },
     "control_dataProtection": {
       "attributes": {
@@ -27,8 +23,7 @@
           "control_dataProtection_objectives_confidentiality"
         ]
       },
-      "id": "00000000-0000-0000-0000-000000000000",
-      "type": "control_dataProtection"
+      "id": "00000000-0000-0000-0000-000000000000"
     }
   }
 }

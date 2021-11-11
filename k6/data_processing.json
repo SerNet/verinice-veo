@@ -2,9 +2,7 @@
   "name": "Bewerbermanagement",
   "description": "Bewerbungen können postalisch und auf elektronischem Wege erfolgen. Dies ist insbesondere dann der Fall, wenn ein Bewerber entsprechende Bewerbungsunterlagen auf dem elektronischen Wege, beispielsweise per E-Mail, an den für die Verarbeitung Verantwortlichen übermittelt",
   "domains": {
-    "2cef4503-dd41-48cf-9030-16820797a300": {
-      
-    }
+    
   },
   "owner": {
     "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
@@ -48,7 +46,7 @@
         "domains": [],
         "attributes": {
           "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
-          "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_6m",
+          "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_month",
           "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure"
         },
         "target": {
@@ -137,13 +135,6 @@
         "process_opinionDPO_comment": "Erfordernis ergibt sich bereits aus der Blacklist. \nEntwurf DSFA-Bericht bereits vorhanden, siehe =>DSFA-Bericht Personaleinstellungen ",
         "process_opinionDPO_findings": "Löschung der Daten 6 Monate nach Vergabe der Stelle, außer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt",
         "process_opinionDPO_privacyImpactAssessment": true
-      }
-    },
-    "process_tomAssessment": {
-      "domains": [],
-      "attributes": {
-        "process_tomAssessment_certification": false,
-        "process_tomAssessment_securityConcept": false
       }
     },
     "process_dataSubjects": {

@@ -2,11 +2,8 @@
   "owner": {
     "targetUri": "/units/76d22240-5736-4a4d-ac93-a9adc9574bad"
   },
-  "designator": "",
   "domains": {
-    "774e14f3-a8a8-4f22-aa1d-4344ac39517b": {
-      
-    }
+    
   },
   "name": "Verantwortliche Stelle",
   "customAspects": {
@@ -17,16 +14,14 @@
         "scope_address_city": "Berlin",
         "scope_address_country": "Deutschland"
       },
-      "id": "00000000-0000-0000-0000-000000000000",
-      "type": "scope_address"
+      "id": "00000000-0000-0000-0000-000000000000"
     },
     "scope_contactInformation": {
       "attributes": {
         "scope_contactInformation_phone": "0151123456789",
         "scope_contactInformation_email": "no-real-email@email.invalid"
       },
-      "id": "00000000-0000-0000-0000-000000000000",
-      "type": "scope_contactInformation"
+      "id": "00000000-0000-0000-0000-000000000000"
     }
   }
 }
