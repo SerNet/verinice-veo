@@ -35,6 +35,7 @@ import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
@@ -46,6 +47,7 @@ import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -65,6 +67,7 @@ import lombok.ToString;
         @JsonSubTypes.Type(value = FullIncidentDto.class, name = Incident.SINGULAR_TERM),
         @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
         @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
+        @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM),
         @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM) })
 public class TransformElementDto implements IdentifiableDto {
 

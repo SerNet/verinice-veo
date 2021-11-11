@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -41,7 +42,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
@@ -52,9 +55,11 @@ import org.veo.core.VeoInputStreamResource;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
@@ -305,10 +310,41 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         ref.dtoCache = elementDtos;
 
+        Map<AbstractElementDto, Map<String, List<CustomLinkDto>>> linkCache = new HashMap<>();
+
+        Predicate<IdentifiableDto> isScope = AbstractScopeDto.class::isInstance;
+
+        // all not scopes
         elementDtos.values()
                    .stream()
-                   .map(e -> entityTransformer.transformDto2Element(((AbstractElementDto) e), ref))
+                   .filter(Predicate.not(isScope))
+                   .map(AbstractElementDto.class::cast)
+                   .map(e -> {
+                       linkCache.put(e, e.getLinks());
+                       e.getLinks()
+                        .clear();
+                       return e;
+                   })
+                   .map(e -> entityTransformer.transformDto2Element(e, ref))
                    .forEach(c -> ref.cache.put(c.getIdAsString(), c));
+
+        // all scopes
+        elementDtos.values()
+                   .stream()
+                   .filter(isScope)
+                   .map(AbstractScopeDto.class::cast)
+                   .map(e -> {
+                       linkCache.put(e, e.getLinks());
+                       e.getLinks()
+                        .clear();
+                       return e;
+                   })
+                   .map(e -> entityTransformer.transformDto2Scope(e, ref))
+                   .forEach(c -> ref.cache.put(c.getIdAsString(), c));
+
+        linkCache.entrySet()
+                 .forEach(e -> e.getKey()
+                                .setLinks(e.getValue()));
 
         Map<String, Element> elementCache = ref.cache.entrySet()
                                                      .stream()
@@ -320,16 +356,31 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                  .stream()
                  .filter(e -> (e.getValue() instanceof Element))
                  .map(e -> (Element) e.getValue())
-                 .forEach(es -> es.getLinks()
-                                  .forEach(link -> {
-                                      if (link.getTarget()
-                                              .getId() != null) {
-                                          Element element = elementCache.get(link.getTarget()
-                                                                                 .getIdAsString());
-                                          link.setTarget(element);
-                                      }
+                 .forEach(es -> {
+                     es.getLinks()
+                       .forEach(link -> {
+                           if (link.getTarget()
+                                   .getId() != null) {
+                               Element element = elementCache.get(link.getTarget()
+                                                                      .getIdAsString());
+                               link.setTarget(element);
+                           }
 
-                                  }));
+                       });
+                     if (es instanceof CompositeElement) {
+                         CompositeElement<Element> ce = (CompositeElement<Element>) es;
+                         Set<String> partIds = ce.getParts()
+                                                 .stream()
+                                                 .map(Identifiable::getIdAsString)
+                                                 .collect(Collectors.toSet());
+                         Set<Element> resolvedParts = elementCache.entrySet()
+                                                                  .stream()
+                                                                  .filter(e -> partIds.contains(e.getKey()))
+                                                                  .map(Entry::getValue)
+                                                                  .collect(Collectors.toSet());
+                         ce.setParts(resolvedParts);
+                     }
+                 });
 
         return elementCache;
     }

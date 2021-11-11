@@ -223,4 +223,80 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[5].element.name == 'Test process-1'
         }
     }
+
+    def "create a domain whose catalog contains a composite"() {
+        given: "a client"
+        Client client = repository.save(newClient {
+            name = "Demo Client"
+        })
+
+        def domainFromTemplate = null
+        txTemplate.execute {
+            domainFromTemplate = domainTemplateService.createDomain(client, "ae567e90-14c4-4ceb-bd16-32eda13d1e0b")
+            client.addToDomains(domainFromTemplate)
+            client = repository.save(client)
+        }
+        domainFromTemplate = client.domains.first()
+
+        expect: 'the domain matches'
+        domainFromTemplate != null
+        with (domainFromTemplate) {
+            domainTemplate.dbId == "ae567e90-14c4-4ceb-bd16-32eda13d1e0b"
+            name == domainTemplate.name
+            abbreviation == domainTemplate.abbreviation
+            description == domainTemplate.description
+            authority == domainTemplate.authority
+            revision == domainTemplate.revision
+            templateVersion == domainTemplate.templateVersion
+        }
+        with (domainFromTemplate.catalogs) {
+            size() == 1
+            first().name == 'TEST-Controls'
+            first().catalogItems.size() == 3
+        }
+        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
+            it[0].element.name == 'All controls'
+            it[1].element.name == 'Control-1'
+            it[2].element.name == 'Control-2'
+            it[0].element.parts.collect {it.name}.toSorted() == ['Control-1', 'Control-2']
+        }
+    }
+
+    def "create a domain whose catalog contains a scope"() {
+        given: "a client"
+        Client client = repository.save(newClient {
+            name = "Demo Client"
+        })
+
+        def domainFromTemplate = null
+        txTemplate.execute {
+            domainFromTemplate = domainTemplateService.createDomain(client, "56596c4c-436a-40f1-9aaf-32c962f9553b")
+            client.addToDomains(domainFromTemplate)
+            client = repository.save(client)
+        }
+        domainFromTemplate = client.domains.first()
+
+        expect: 'the domain matches'
+        domainFromTemplate != null
+        with (domainFromTemplate) {
+            domainTemplate.dbId == "56596c4c-436a-40f1-9aaf-32c962f9553b"
+            name == domainTemplate.name
+            abbreviation == domainTemplate.abbreviation
+            description == domainTemplate.description
+            authority == domainTemplate.authority
+            revision == domainTemplate.revision
+            templateVersion == domainTemplate.templateVersion
+        }
+        with (domainFromTemplate.catalogs) {
+            size() == 1
+            first().name == 'TEST-Elements'
+            first().catalogItems.size() == 3
+        }
+        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
+            it[0].element.name == 'Asset 1'
+            it[1].element.name == 'Asset 2'
+            it[2].element.name == 'Scope 1'
+            it[2].element.members.collect {it.name}.toSorted() == ['Asset 1', 'Asset 2']
+        }
+    }
 }

@@ -275,6 +275,8 @@ public final class DtoToEntityTransformer {
             return transformDto2Process((AbstractProcessDto) elementDto, idRefResolver);
         } else if (elementDto instanceof AbstractScenarioDto) {
             return transformDto2Scenario((AbstractScenarioDto) elementDto, idRefResolver);
+        } else if (elementDto instanceof AbstractScopeDto) {
+            return transformDto2Scope((AbstractScopeDto) elementDto, idRefResolver);
         }
         throw new IllegalArgumentException("unkown type: " + elementDto.getClass()
                                                                        .getName());
@@ -379,6 +381,8 @@ public final class DtoToEntityTransformer {
                     return transformDto2Process((AbstractProcessDto) elementDto, idRefResolver);
                 } else if (elementDto instanceof AbstractScenarioDto) {
                     return transformDto2Scenario((AbstractScenarioDto) elementDto, idRefResolver);
+                } else if (elementDto instanceof AbstractScopeDto) {
+                    return transformDto2Scope((AbstractScopeDto) elementDto, idRefResolver);
                 }
             } else if (source instanceof ReferenceCatalogItemDto) {
                 ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;
