@@ -37,12 +37,16 @@ public interface CompositeElement<T extends Element> extends Element {
     }
 
     default boolean addPart(T part) {
-        checkSameClient(part);
+        if (getOwningClient().isPresent()) {
+            checkSameClient(part);
+        }
         return getParts().add(part);
     }
 
     default boolean addParts(Set<T> parts) {
-        parts.forEach(CompositeElement.this::checkSameClient);
+        if (getOwningClient().isPresent()) {
+            parts.forEach(CompositeElement.this::checkSameClient);
+        }
         return getParts().addAll(parts);
     }
 
@@ -55,8 +59,10 @@ public interface CompositeElement<T extends Element> extends Element {
     }
 
     default void setParts(Set<T> parts) {
-        parts.stream()
-             .forEach(CompositeElement.this::checkSameClient);
+        if (getOwningClient().isPresent()) {
+            parts.stream()
+                 .forEach(CompositeElement.this::checkSameClient);
+        }
         getParts().clear();
         getParts().addAll(parts);
     }
