@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -24,6 +25,12 @@ import java.util.UUID;
  */
 public interface Identifiable {
     Key<UUID> getId();
+
+    default String getIdAsString() {
+        return Optional.ofNullable(getId())
+                       .map(Key::uuidValue)
+                       .orElse(null);
+    }
 
     /**
      * @return Lowercase singular name for the specific type of {@link Identifiable}
