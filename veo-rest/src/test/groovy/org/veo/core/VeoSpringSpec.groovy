@@ -26,6 +26,9 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
+import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -39,6 +42,7 @@ import org.veo.persistence.access.jpa.ScenarioDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
+import org.veo.rest.configuration.WebMvcSecurityConfiguration
 import org.veo.test.VeoSpec
 
 /**
@@ -50,6 +54,11 @@ import org.veo.test.VeoSpec
 @ImportAutoConfiguration
 @ComponentScan("org.veo")
 abstract class VeoSpringSpec extends VeoSpec {
+    // dsgvo-test-1.json
+    public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "00000000-0000-0000-0000-000000000001"
+
+    // test-domain.json
+    public static final String TEST_DOMAIN_TEMPLATE_ID = "2b00d864-77ee-5378-aba6-e41f618c7bad"
 
     @Autowired
     ClientDataRepository clientDataRepository
@@ -126,5 +135,25 @@ abstract class VeoSpringSpec extends VeoSpec {
                 eventStoreDataRepository
             ])*.deleteAll()
         }
+    }
+
+    Client createTestClient() {
+        return clientDataRepository.save(newClient {
+            id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+        })
+    }
+
+    Domain createDsgvoTestDomain(Client client) {
+        def domain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        client.addToDomains(domain)
+        clientDataRepository.save(client)
+        return domain
+    }
+
+    Domain createTestDomain(Client client) {
+        def domain = domainTemplateService.createDomain(client, TEST_DOMAIN_TEMPLATE_ID)
+        client.addToDomains(domain)
+        clientDataRepository.save(client)
+        return domain
     }
 }

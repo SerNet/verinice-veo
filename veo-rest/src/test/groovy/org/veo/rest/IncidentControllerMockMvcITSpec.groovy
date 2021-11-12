@@ -24,14 +24,12 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.IncidentRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the incident controller. Uses mocked spring MVC environment.
@@ -58,13 +56,10 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     private Unit unit
     private Domain domain
     private Domain domain1
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-            })
+            def client = createTestClient()
 
             domain = domainRepository.save(newDomain {
                 owner = client

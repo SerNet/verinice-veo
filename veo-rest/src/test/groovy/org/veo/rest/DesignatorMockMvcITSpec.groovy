@@ -22,11 +22,9 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @WithUserDetails("user@domain.example")
 class DesignatorMockMvcITSpec extends VeoMvcSpec {
@@ -39,14 +37,11 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
 
     private Domain domain
     private Unit unit
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-                domains = [newDomain {}]
-            })
+            def client = createTestClient()
+            newDomain(client)
             unit = newUnit(client) {
                 name = "Test unit"
             }

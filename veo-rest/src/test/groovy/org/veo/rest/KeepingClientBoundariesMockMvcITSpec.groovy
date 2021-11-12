@@ -25,7 +25,6 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
@@ -37,7 +36,6 @@ import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -72,15 +70,11 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     private Client otherClient
     private Unit unit
     private Unit otherClientsUnit
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
         txTemplate.execute {
-
-            client = clientRepository.save(newClient {
-                id = clientId
-                name = "Test Client"
-            })
+            client = createTestClient()
+            createDsgvoTestDomain(client)
 
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"

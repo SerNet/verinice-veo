@@ -30,13 +30,11 @@ import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
 
@@ -64,19 +62,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     private Domain domain
 
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-
     def setup() {
-        client = repository.save(newClient {
-            id = clientId
-        })
-        domain = domainRepository.save(newDomain {
-            owner = this.client
-            description = "ISO/IEC"
-            abbreviation = "ISO"
-            name = "27001"
-        })
-        client.addToDomains(domain)
+        client = createTestClient()
+        domain = createDsgvoTestDomain(client)
     }
 
     @WithUserDetails("user@domain.example")
@@ -111,7 +99,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the unit is returned"
         result.name == "Test unit"
         result.abbreviation == "u-1"
-        result.domains.first().displayName == "ISO 27001"
+        result.domains.first().displayName == "DSGVO DSGVO-test"
     }
 
     @WithUserDetails("user@domain.example")

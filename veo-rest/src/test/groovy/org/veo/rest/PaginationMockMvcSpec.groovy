@@ -23,11 +23,9 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Element
 import org.veo.core.entity.EntityType
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @WithUserDetails("user@domain.example")
 class PaginationMockMvcSpec extends VeoMvcSpec {
@@ -36,13 +34,10 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
 
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
     private Unit unit
 
     def setup() {
-        def client= clientRepository.save(newClient {
-            id = clientId
-        })
+        def client= createTestClient()
 
         unit = unitRepository.save(newUnit(client) {
             name = "Test unit"

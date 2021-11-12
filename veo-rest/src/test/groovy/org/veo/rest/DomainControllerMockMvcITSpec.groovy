@@ -25,12 +25,10 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the domain controller. Uses mocked spring MVC environment.
@@ -54,7 +52,6 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
     private Catalog catalog
     private Client secondClient
     private Domain domainSecondClient
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
         txTemplate.execute {
@@ -64,9 +61,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             Domain domain2 = newDomain{
                 name = "Domain 2"
             }
-            client = newClient {
-                id = clientId
-            }
+            client = createTestClient()
             catalog = newCatalog(domain1) {
                 name= 'a'
             }

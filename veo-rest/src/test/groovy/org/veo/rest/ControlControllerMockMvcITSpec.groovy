@@ -32,7 +32,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -57,30 +56,12 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     TransactionTemplate txTemplate
 
     private Unit unit
-    private Domain domain
-    private Domain domain1
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    private Domain dsgvoDomain
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-            })
-
-            domain = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
-
-            domain1 = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
-
+            def client = createTestClient()
+            dsgvoDomain = createDsgvoTestDomain(client)
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
             })
@@ -261,7 +242,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved control"
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
 
@@ -274,7 +255,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ]
         ]
 
@@ -288,7 +269,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -301,7 +282,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
                 customAspects = [customAspect] as Set
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
         Map request = [
@@ -314,7 +295,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ], customAspects:
             [
                 'control_dataProtection' :
@@ -338,7 +319,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 

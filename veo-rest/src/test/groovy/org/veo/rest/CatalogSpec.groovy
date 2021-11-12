@@ -80,9 +80,7 @@ class CatalogSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            client = newClient {
-                id = clientId
-            }
+            client = createTestClient()
 
             domain = newDomain {
                 description = "ISO/IEC"

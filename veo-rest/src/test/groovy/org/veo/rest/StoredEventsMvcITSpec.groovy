@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.DomainRepository
@@ -30,7 +30,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 import org.veo.test.VeoSpec
 
 import spock.lang.Issue
@@ -55,15 +54,13 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     @Autowired
     private StoredEventRepository storedEventRepository
 
+    private Client client
     private Domain domain
     private Unit unit
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-            })
+            client = createTestClient()
             def template = domainTemplateRepository.save(newDomainTemplate())
             domain = domainRepository.save(newDomain {
                 domainTemplate = template
@@ -86,7 +83,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         def event = getLatestStoredEventContent("domain_creation_event")
 
         then:
-        event.clientId == clientId.uuidValue()
+        event.clientId == client.id.uuidValue()
         event.domainId == domain.id.uuidValue()
         event.domainTemplateId == domain.domainTemplate.id.uuidValue()
     }

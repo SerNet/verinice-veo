@@ -41,18 +41,11 @@ class BasicCrudITSpec extends VeoMvcSpec {
     @Autowired
     TransactionTemplate txTemplate
 
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-
     Client client
 
     def setup() {
-        def domain1 = newDomain {name = 'Domain 1'}
-        client = txTemplate.execute {
-            clientRepository.save(newClient {
-                id = clientId
-                domains = [domain1]
-            })
-        }
+        client = createTestClient()
+        createDsgvoTestDomain(client)
     }
 
     @WithUserDetails("user@domain.example")

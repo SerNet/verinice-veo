@@ -23,7 +23,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Key
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -50,12 +49,8 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-            })
-            domainId = domainRepository.save(newDomain {
-                owner = client
-            }).id.uuidValue()
+            def client = createTestClient()
+            domainId = createDsgvoTestDomain(client).id.uuidValue()
             unitId = unitRepository.save(newUnit(client)).id.uuidValue()
         }
     }

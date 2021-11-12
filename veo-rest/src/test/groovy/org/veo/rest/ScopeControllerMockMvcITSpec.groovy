@@ -25,7 +25,6 @@ import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.repository.ScenarioRepository
@@ -35,7 +34,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the unit controller. Uses mocked spring MVC environment.
@@ -68,29 +66,13 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
     private Unit unit
     private Unit unit2
-    private Domain domain
-    private Domain domain1
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    private Domain dsgvoDomain
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-            })
+            def client = createTestClient()
 
-            domain = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
-
-            domain1 = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
+            dsgvoDomain = createDsgvoTestDomain(client)
 
             unit = newUnit(client) {
                 name = "Test unit"
@@ -327,7 +309,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def scope = txTemplate.execute {
             scopeRepository.save(newScope(unit) {
                 customAspects = [customAspect]
-                domains = [domain1]
+                domains = [dsgvoDomain]
             })
         }
 
@@ -340,7 +322,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}",
                 displayName: 'test unit'
             ], domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ], customAspects:
             [
                 'scope_address' :
@@ -363,7 +345,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the scope is found"
         result.name == 'New scope 2'
         result.abbreviation == 's-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 
         when:

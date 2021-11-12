@@ -29,13 +29,11 @@ import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
-import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.EntitySchemaService
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Tests if resources returned by the API conform to the entity schema.
@@ -61,12 +59,8 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     String unitId
 
     def setup() {
-        def client = clientRepository.save(newClient {
-            dbId = WebMvcSecurityConfiguration.TESTCLIENT_UUID
-        })
-        domainId = domainRepository.save(newDomain {
-            owner = client
-        }).id.uuidValue()
+        def client = createTestClient()
+        domainId = createDsgvoTestDomain(client).id.uuidValue()
         unitId = unitRepository.save(newUnit(client)).dbId
     }
 

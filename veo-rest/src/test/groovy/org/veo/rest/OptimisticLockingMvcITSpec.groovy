@@ -21,12 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETagMismatchException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
 
@@ -45,13 +43,10 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
     private UnitRepositoryImpl unitRepository
 
     private Unit unit
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-            })
+            def client = createTestClient()
 
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"

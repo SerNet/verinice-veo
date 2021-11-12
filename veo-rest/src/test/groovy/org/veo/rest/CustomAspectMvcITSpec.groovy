@@ -22,10 +22,8 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Key
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @WithUserDetails("user@domain.example")
 class CustomAspectMvcITSpec extends VeoMvcSpec {
@@ -43,9 +41,8 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-            })
+            def client = createTestClient()
+            createDsgvoTestDomain(client)
             unitId = unitRepository.save(newUnit(client)).id.uuidValue()
         }
     }

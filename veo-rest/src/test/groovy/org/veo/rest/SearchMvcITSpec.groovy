@@ -17,20 +17,13 @@
  ******************************************************************************/
 package org.veo.rest
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.EntityType
-import org.veo.core.entity.Key
-import org.veo.core.repository.DomainRepository
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 @WithUserDetails("user@domain.example")
 class SearchMvcITSpec extends VeoMvcSpec {
-
-    @Autowired
-    DomainRepository domainRepository
 
     String domainId
     String unitId
@@ -45,13 +38,8 @@ class SearchMvcITSpec extends VeoMvcSpec {
         scopes: "SCP_ResponsibleBody"]
 
     def setup() {
-        def client = clientDataRepository.save(newClient {
-            id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-        })
-        domainId = domainRepository.save(newDomain {
-            owner = client
-            name = "search test domain"
-        }).id.uuidValue()
+        def client = createTestClient()
+        domainId = createDsgvoTestDomain(client).id.uuidValue()
         unitId = unitDataRepository.save(newUnit(client)).id.uuidValue()
     }
 

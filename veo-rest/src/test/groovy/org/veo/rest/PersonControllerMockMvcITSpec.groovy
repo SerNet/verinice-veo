@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -26,14 +25,12 @@ import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the unit personler. Uses mocked spring MVC environment.
@@ -58,29 +55,12 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     TransactionTemplate txTemplate
 
     private Unit unit
-    private Domain domain
-    private Domain domain1
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    private Domain dsgvoDomain
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-            })
-
-            domain = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
-
-            domain1 = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
+            def client = createTestClient()
+            dsgvoDomain = createDsgvoTestDomain(client)
 
             unit = newUnit(client) {
                 name = "Test unit"
@@ -175,7 +155,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ]
         ]
 
@@ -189,7 +169,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -202,7 +182,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
                 name = 'Test person-1'
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
                 customAspects = [customAspect] as Set
             })
         }
@@ -216,7 +196,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ], customAspects:
             [
                 'person_generalInformation' :
@@ -239,7 +219,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:

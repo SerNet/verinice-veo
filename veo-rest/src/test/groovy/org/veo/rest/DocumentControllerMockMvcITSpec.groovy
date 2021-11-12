@@ -26,7 +26,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.Nameable
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
@@ -34,7 +33,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DocumentRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
  * Integration test for the document controller. Uses mocked spring MVC environment.
@@ -61,13 +59,10 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     private Unit unit
     private Domain domain
     private Domain domain1
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
 
     def setup() {
         txTemplate.execute {
-            def client= clientRepository.save(newClient {
-                id = clientId
-            })
+            def client= createTestClient()
             domain = domainRepository.save(newDomain {
                 owner = client
                 abbreviation = "D"

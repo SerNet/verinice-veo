@@ -22,7 +22,6 @@ import java.time.Instant
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.util.NestedServletException
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
@@ -43,7 +42,6 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ScenarioData
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 import groovy.json.JsonSlurper
 
@@ -81,29 +79,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     private Unit unit
     private Unit unit2
-    private Domain domain
-    private Domain domain1
-    private Key clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    private Domain dsgvoDomain
 
     def setup() {
         txTemplate.execute {
-            def client = clientRepository.save(newClient {
-                id = clientId
-            })
-
-            domain = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
-
-            domain1 = domainRepository.save(newDomain {
-                owner = client
-                description = "ISO/IEC2"
-                abbreviation = "ISO"
-                name = "ISO"
-            })
+            def client = createTestClient()
+            dsgvoDomain = createDsgvoTestDomain(client)
 
             unit = newUnit(client) {
                 name = "Test unit"
@@ -186,7 +167,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
 
@@ -201,7 +182,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ]
         ]
 
@@ -225,7 +206,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
 
@@ -240,7 +221,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ]
         ]
 
@@ -253,7 +234,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -263,7 +244,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "an existing process"
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
 
@@ -282,7 +263,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
                 customAspects = [cp] as Set
             })
         }
@@ -298,7 +279,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ],
             customAspects:
             [
@@ -323,7 +304,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
@@ -356,7 +337,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
                 customAspects = [cp] as Set
             })
         }
@@ -373,7 +354,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ],
             customAspects:
             [
@@ -394,7 +375,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
@@ -453,7 +434,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (domain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [:]
             ],
             links:
             [
@@ -483,7 +464,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [:]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
         and: 'there is one type of links'
         def links = result.links
@@ -597,7 +578,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'Test process-1'
-                setSubType(domain, 'VT', "NEW")
+                setSubType(dsgvoDomain, 'VT', "NEW")
             })
             processRepository.save(newProcess(unit) {
                 name = 'Test process-2'
@@ -668,12 +649,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'New process-2'
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
 
@@ -681,7 +662,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def json = parseJson(post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+                [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
             ]
         ] as Map))
 
@@ -712,7 +693,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${postResult.resourceId}.*/
-            it.domains.first().displayName == this.domain1.displayName
+            it.domains.first().displayName == this.dsgvoDomain.displayName
             it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.updatedAt) > beforeCreation
@@ -727,24 +708,24 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def (Process process, ScenarioData scenario, Object postResult) = createRisk()
         def scenario2 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
         def scenario3 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
         post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario2.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+                [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
             ]
         ] as Map)
         post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario3.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ domain1.id.uuidValue() ]
+                [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
             ]
         ] as Map)
 
@@ -781,14 +762,14 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
                 name = 'New person-1'
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
                 name = 'New control-1'
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
 
@@ -827,7 +808,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             it.riskOwner.targetUri ==~ /.*${person.id.uuidValue()}.*/
             it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
-            it.domains.first().displayName == this.domain1.displayName
+            it.domains.first().displayName == this.dsgvoDomain.displayName
             it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.createdAt) < beforeUpdate
@@ -873,19 +854,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     private List createRisk() {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [domain1] as Set
+                domains = [dsgvoDomain] as Set
             })
         }
         def postResult = parseJson(
                 post("/processes/" + process.id.uuidValue() + "/risks", [
                     scenario: [targetUri: '/scenarios/' + scenario.id.uuidValue()],
                     domains : [
-                        [targetUri: '/domains/' + domain1.id.uuidValue()]
+                        [targetUri: '/domains/' + dsgvoDomain.id.uuidValue()]
                     ]
                 ]))
         return [
