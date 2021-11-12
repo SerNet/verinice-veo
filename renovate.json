@@ -48,7 +48,9 @@
         "^org.spockframework:",
         "^com.github.jk1.dependency-license-report$",
         "^com.github.spotbugs$",
-        "org.testcontainers:"
+        "org.testcontainers:",
+        "^io.freefair.lombok",
+        "^gradle$"
       ],
       "postUpgradeTasks": {
         
