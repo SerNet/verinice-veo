@@ -7,7 +7,8 @@
           "SCP_Controller",
           "SCP_JointController",
           "SCP_Processor",
-          "SCP_ResponsibleBody"
+          "SCP_ResponsibleBody",
+          "SCP_Scope"
         ]
       },
       "status": {
@@ -94,6 +95,28 @@
           "properties": {
             "subType": {
               "const": "SCP_ResponsibleBody"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "status": {
+              "enum": [
+                "NEW",
+                "IN_PROGRESS",
+                "FOR_REVIEW",
+                "RELEASED",
+                "ARCHIVED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "subType": {
+              "const": "SCP_Scope"
             }
           }
         },
