@@ -27,12 +27,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,7 +115,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         bootstrappedDomaintemplates = domainTemplateFiles.entrySet()
                                                          .stream()
-                                                         .collect(Collectors.toMap(e -> e.getKey(),
+                                                         .collect(Collectors.toMap(Entry::getKey,
                                                                                    e -> createDomainTemplate(e.getKey(),
                                                                                                              e.getValue())));
 
@@ -229,8 +229,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                          .forEach(c -> {
                              Catalog createCatalog = factory.createCatalog(domainPlaceholder);
                              ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
-                             c.setDomainTemplate(new SyntheticIdRef<DomainTemplate>(
-                                     domainTemplateDto.getId(), DomainTemplate.class, assembler));
+                             c.setDomainTemplate(new SyntheticIdRef<>(domainTemplateDto.getId(),
+                                     DomainTemplate.class, assembler));
                          });
 
         Map<String, Element> elementCache = createElementCache(domainTemplateDto, ref);
@@ -244,17 +244,14 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                   catalog.setDomainTemplate(domain);
                   Set<CatalogItem> catalogItems = catalog.getCatalogItems()
                                                          .stream()
-                                                         .map(ci -> itemCache.get(ci.getId()
-                                                                                    .uuidValue()))
+                                                         .map(ci -> itemCache.get(ci.getIdAsString()))
                                                          .collect(Collectors.toSet());
                   catalog.getCatalogItems()
                          .clear();
                   catalog.getCatalogItems()
                          .addAll(catalogItems);
                   catalog.getCatalogItems()
-                         .forEach(item -> {
-                             preparations.prepareCatalogItem(domain, catalog, item);
-                         });
+                         .forEach(item -> preparations.prepareCatalogItem(domain, catalog, item));
               });
         return domain;
     }
@@ -264,27 +261,25 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             Map<String, Element> elementCache) {
         domainTemplateDto.getCatalogs()
                          .stream()
-                         .map(c -> (TransformCatalogDto) c)
+                         .map(TransformCatalogDto.class::cast)
                          .flatMap(c -> c.getCatalogItems()
                                         .stream())
-                         .map(ci -> (TransformCatalogItemDto) ci)
+                         .map(TransformCatalogItemDto.class::cast)
                          .map(ci -> transformCatalogItem(ci, elementCache, ref))
-                         .forEach(c -> ref.cache.put(c.getId()
-                                                      .uuidValue(),
-                                                     c));
+                         .forEach(c -> ref.cache.put(c.getIdAsString(), c));
 
         Map<String, CatalogItem> itemCache = ref.cache.entrySet()
                                                       .stream()
                                                       .filter(e -> (e.getValue() instanceof CatalogItem))
-                                                      .collect(Collectors.toMap(e -> e.getKey(),
+                                                      .collect(Collectors.toMap(Entry::getKey,
                                                                                 e -> (CatalogItem) e.getValue()));
 
         domainTemplateDto.getCatalogs()
                          .stream()
-                         .map(c -> (TransformCatalogDto) c)
+                         .map(TransformCatalogDto.class::cast)
                          .flatMap(c -> c.getCatalogItems()
                                         .stream())
-                         .map(ci -> (TransformCatalogItemDto) ci)
+                         .map(TransformCatalogItemDto.class::cast)
                          .forEach(ci -> transformTailorRef(ci, itemCache, ref));
         return itemCache;
     }
@@ -306,40 +301,35 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                                                         return ci.getElement();
                                                                     })
                                                                     .collect(Collectors.toMap(i -> ((IdentifiableDto) i).getId(),
-                                                                                              i -> (IdentifiableDto) i));
+                                                                                              IdentifiableDto.class::cast));
 
         ref.dtoCache = elementDtos;
 
         elementDtos.values()
                    .stream()
                    .map(e -> entityTransformer.transformDto2Element(((AbstractElementDto) e), ref))
-                   .forEach(c -> ref.cache.put(c.getId()
-                                                .uuidValue(),
-                                               c));
+                   .forEach(c -> ref.cache.put(c.getIdAsString(), c));
 
         Map<String, Element> elementCache = ref.cache.entrySet()
                                                      .stream()
                                                      .filter(e -> (e.getValue() instanceof Element))
-                                                     .collect(Collectors.toMap(e -> e.getKey(),
+                                                     .collect(Collectors.toMap(Entry::getKey,
                                                                                e -> (Element) e.getValue()));
 
         ref.cache.entrySet()
                  .stream()
                  .filter(e -> (e.getValue() instanceof Element))
                  .map(e -> (Element) e.getValue())
-                 .forEach(es -> {
-                     es.getLinks()
-                       .forEach(link -> {
-                           if (link.getTarget()
-                                   .getId() != null) {
-                               Element element = elementCache.get(link.getTarget()
-                                                                      .getId()
-                                                                      .uuidValue());
-                               link.setTarget(element);
-                           }
+                 .forEach(es -> es.getLinks()
+                                  .forEach(link -> {
+                                      if (link.getTarget()
+                                              .getId() != null) {
+                                          Element element = elementCache.get(link.getTarget()
+                                                                                 .getIdAsString());
+                                          link.setTarget(element);
+                                      }
 
-                       });
-                 });
+                                  }));
 
         return elementCache;
     }
@@ -381,13 +371,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     }
 
     private TransformDomainTemplateDto readInstanceFile(VeoInputStreamResource resource)
-            throws JsonParseException, JsonMappingException, IOException {
-
+            throws IOException {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-            TransformDomainTemplateDto domainTemplateDto = objectMapper.readValue(br,
-                                                                                  TransformDomainTemplateDto.class);
-            return domainTemplateDto;
+            return objectMapper.readValue(br, TransformDomainTemplateDto.class);
         }
     }
 }
