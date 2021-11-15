@@ -114,6 +114,7 @@ task checkTranslations {
     inputs.files domainPatternSchemaFiles
 
     doLast {
+        def missingTranslations = false
         def langJson = new groovy.json.JsonSlurper().parse(langFile)
         def languagesToCheck = [
             'German': langJson.lang.de,
@@ -125,6 +126,7 @@ task checkTranslations {
                 def translation = json.remove(translationKey)
                 if (translation == null) {
                     logger.warn("Missing $lang translation for $translationKey in $location")
+                    missingTranslations = true
                 }
             }
         }
@@ -178,6 +180,9 @@ task checkTranslations {
             json.each {
                 logger.warn("Unused $lang translation $it")
             }
+        }
+        if (missingTranslations) {
+            throw new GradleException("There are translations missing, see log output above.")
         }
     }
 }
