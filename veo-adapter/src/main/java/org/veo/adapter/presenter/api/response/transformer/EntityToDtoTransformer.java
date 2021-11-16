@@ -54,6 +54,7 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
@@ -75,6 +76,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
@@ -156,6 +158,9 @@ public final class EntityToDtoTransformer {
         }
         if (source instanceof ProcessRisk) {
             return ProcessRiskDto.from((ProcessRisk) source, referenceAssembler);
+        }
+        if (source instanceof ScopeRisk) {
+            return ScopeRiskDto.from((ScopeRisk) source, referenceAssembler);
         }
         throw new IllegalArgumentException(
                 "No transform method defined for risk type " + source.getClass()

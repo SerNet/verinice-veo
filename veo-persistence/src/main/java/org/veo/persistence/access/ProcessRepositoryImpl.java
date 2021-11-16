@@ -30,7 +30,7 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class ProcessRepositoryImpl
-        extends AbstractRiskAffectedRepository<Process, ProcessRisk, ProcessData>
+        extends AbstractCompositeRiskAffectedRepository<Process, ProcessRisk, ProcessData>
         implements ProcessRepository {
 
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository, ValidationService validation,

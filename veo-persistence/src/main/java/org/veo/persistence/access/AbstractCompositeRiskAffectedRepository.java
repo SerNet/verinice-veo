@@ -29,8 +29,8 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.RiskAffectedRepository;
+import org.veo.persistence.access.jpa.CompositeRiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
-import org.veo.persistence.access.jpa.RiskAffectedDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.PersonData;
@@ -38,13 +38,13 @@ import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
-abstract class AbstractRiskAffectedRepository<S extends CompositeElement<S> & RiskAffected<S, R>, R extends AbstractRisk<S, R>, T extends RiskAffectedData<S, R> & CompositeElement<S>>
+abstract class AbstractCompositeRiskAffectedRepository<S extends CompositeElement<S> & RiskAffected<S, R>, R extends AbstractRisk<S, R>, T extends RiskAffectedData<S, R> & CompositeElement<S>>
         extends AbstractCompositeEntityRepositoryImpl<S, T>
         implements RiskAffectedRepository<S, R> {
 
-    private final RiskAffectedDataRepository<T> riskAffectedRepo;
+    private final CompositeRiskAffectedDataRepository<T> riskAffectedRepo;
 
-    AbstractRiskAffectedRepository(RiskAffectedDataRepository<T> riskAffectedRepo,
+    AbstractCompositeRiskAffectedRepository(CompositeRiskAffectedDataRepository<T> riskAffectedRepo,
             ValidationService validation, CustomLinkDataRepository linkDataRepository,
             ScopeDataRepository scopeDataRepository) {
         super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);

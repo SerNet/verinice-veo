@@ -29,7 +29,8 @@ import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class AssetRepositoryImpl extends AbstractRiskAffectedRepository<Asset, AssetRisk, AssetData>
+public class AssetRepositoryImpl
+        extends AbstractCompositeRiskAffectedRepository<Asset, AssetRisk, AssetData>
         implements AssetRepository {
 
     public AssetRepositoryImpl(AssetDataRepository dataRepository, ValidationService validation,

@@ -31,7 +31,9 @@ import javax.validation.Valid;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.ScopeRisk;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -40,7 +42,7 @@ import lombok.ToString;
 @Entity(name = "scope")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ScopeData extends ElementData implements Scope {
+public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Scope {
 
     @ManyToMany(targetEntity = ElementData.class,
                 cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -59,5 +61,10 @@ public class ScopeData extends ElementData implements Scope {
     public boolean removeMemberById(Key<UUID> id) {
         return members.removeIf(compositeEntity -> compositeEntity.getId()
                                                                   .equals(id));
+    }
+
+    @Override
+    AbstractRiskData<Scope, ScopeRisk> createRisk(Scenario scenario) {
+        return new ScopeRiskData(this, scenario);
     }
 }

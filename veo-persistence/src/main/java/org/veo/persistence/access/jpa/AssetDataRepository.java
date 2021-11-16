@@ -19,5 +19,5 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.AssetData;
 
-public interface AssetDataRepository extends RiskAffectedDataRepository<AssetData> {
+public interface AssetDataRepository extends CompositeRiskAffectedDataRepository<AssetData> {
 }

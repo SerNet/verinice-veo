@@ -19,20 +19,17 @@ package org.veo.persistence.access;
 
 import org.springframework.stereotype.Repository;
 
-import org.veo.core.entity.Scope;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeData>
+public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
         implements ScopeRepository {
 
     public ScopeRepositoryImpl(ScopeDataRepository dataRepository, ValidationService validation,
             CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     }
-
 }

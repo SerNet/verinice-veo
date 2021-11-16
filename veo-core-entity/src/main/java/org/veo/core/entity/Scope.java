@@ -23,7 +23,7 @@ import java.util.Set;
  * A group of {@link Element} objects that form a logical unit. An object may
  * belong to zero, one or multiple scopes. Scopes can contain scopes.
  */
-public interface Scope extends Element {
+public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
 
     String SINGULAR_TERM = "scope";
     String PLURAL_TERM = "scopes";

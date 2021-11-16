@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jochen Kemnade.
+ * Copyright (C) 2021  Finn Westendorf
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
-
-import org.veo.core.entity.Scope;
-import org.veo.core.entity.ScopeRisk;
+package org.veo.core.entity;
 
 /**
- * A repository for <code>Scope</code> entities.
+ * Based on the definition of the term 'risk' from NIST 800-37:
+ * <p>
+ * "Risk: A measure of the extent to which an entity is threatened by a
+ * potential circumstance or event, [...]",
+ * <p>
+ * this class links a scope ('entity' in the above definition) to a scenario
+ * ('circumstance or event').
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * The process may be representing a single scope or a group of scopes to
+ * facilitate modelling subscope affected by the observed risk.
  */
-public interface ScopeRepository extends RiskAffectedRepository<Scope, ScopeRisk> {
+public interface ScopeRisk extends AbstractRisk<Scope, ScopeRisk> {
 
 }

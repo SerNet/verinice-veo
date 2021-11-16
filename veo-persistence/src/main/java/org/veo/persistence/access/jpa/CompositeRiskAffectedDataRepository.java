@@ -30,7 +30,7 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 
 @Transactional(readOnly = true)
 @NoRepositoryBean
-public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
+public interface CompositeRiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
         extends CompositeEntityDataRepository<T> {
 
     Set<T> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);

@@ -19,5 +19,5 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.ProcessData;
 
-public interface ProcessDataRepository extends RiskAffectedDataRepository<ProcessData> {
+public interface ProcessDataRepository extends CompositeRiskAffectedDataRepository<ProcessData> {
 }

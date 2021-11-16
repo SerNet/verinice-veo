@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jochen Kemnade.
+ * Copyright (C) 2020  Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.usecase.scope;
 
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.usecase.DesignatorService;
+import org.veo.core.usecase.risk.CreateRiskUseCase;
 
-/**
- * A repository for <code>Scope</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface ScopeRepository extends RiskAffectedRepository<Scope, ScopeRisk> {
+public class CreateScopeRiskUseCase extends CreateRiskUseCase<Scope, ScopeRisk> {
 
+    public CreateScopeRiskUseCase(RepositoryProvider repositoryProvider,
+            DesignatorService designatorService) {
+        super(Scope.class, repositoryProvider, designatorService);
+    }
 }

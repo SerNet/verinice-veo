@@ -290,7 +290,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 1
         queryCounts.insert == 35
         queryCounts.update == 5
-        queryCounts.select == 15
+        queryCounts.select == 16
     }
 
     def "SQL performance for selecting units of a client"() {

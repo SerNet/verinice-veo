@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2020  Finn Westendorf.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,28 +17,24 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
 import java.util.Set;
 
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.core.entity.Scope;
-import org.veo.persistence.entity.jpa.ElementData;
+import org.veo.persistence.entity.jpa.ControlData;
+import org.veo.persistence.entity.jpa.PersonData;
+import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
-public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
+@Transactional(readOnly = true)
+@NoRepositoryBean
+public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<ScopeData> {
 
-    <T extends ElementData> Set<Scope> findDistinctByMembersIn(Set<T> elements);
+    Set<ScopeData> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
 
-    @Query("select distinct e from #{#entityName} as e " + "inner join e.members m "
-            + "where m.dbId IN ?1")
-    Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
+    Set<ScopeData> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
 
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "left join fetch e.subTypeAspects "
-            + "left join fetch e.members " + "left join fetch e.domains "
-            + "where e.owner.dbId IN ?1")
-    @Transactional(readOnly = true)
-    @Override
-    Set<ScopeData> findByUnits(Set<String> unitIds);
+    Set<ScopeData> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
 }

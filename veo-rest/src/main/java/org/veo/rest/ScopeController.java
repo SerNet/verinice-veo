@@ -78,6 +78,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
+import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
@@ -90,9 +91,14 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.risk.DeleteRiskUseCase;
+import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
 import org.veo.core.usecase.scope.CreateScopeUseCase;
+import org.veo.core.usecase.scope.GetScopeRiskUseCase;
+import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
+import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -115,7 +121,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ScopeController.URL_BASE_PATH)
 @Slf4j
-public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
+public class ScopeController extends AbstractEntityControllerWithDefaultSearch
+        implements ScopeRiskResource {
 
     public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
@@ -128,17 +135,30 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
     private final GetScopesUseCase getScopesUseCase;
     private final UpdateScopeUseCase updateScopeUseCase;
     private final DeleteElementUseCase deleteElementUseCase;
+    private final GetScopeRiskUseCase getScopeRiskUseCase;
+    private final CreateScopeRiskUseCase createScopeRiskUseCase;
+    private final GetScopeRisksUseCase getScopeRisksUseCase;
+    private final DeleteRiskUseCase deleteRiskUseCase;
+    private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
 
     public ScopeController(UseCaseInteractor useCaseInteractor,
             CreateScopeUseCase createScopeUseCase, GetScopeUseCase getScopeUseCase,
             GetScopesUseCase getScopesUseCase, UpdateScopeUseCase updateScopeUseCase,
-            DeleteElementUseCase deleteElementUseCase) {
+            DeleteElementUseCase deleteElementUseCase, GetScopeRiskUseCase getScopeRiskUseCase,
+            CreateScopeRiskUseCase createScopeRiskUseCase,
+            GetScopeRisksUseCase getScopeRisksUseCase, DeleteRiskUseCase deleteRiskUseCase,
+            UpdateScopeRiskUseCase updateScopeRiskUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.createScopeUseCase = createScopeUseCase;
         this.getScopeUseCase = getScopeUseCase;
         this.getScopesUseCase = getScopesUseCase;
         this.updateScopeUseCase = updateScopeUseCase;
         this.deleteElementUseCase = deleteElementUseCase;
+        this.getScopeRiskUseCase = getScopeRiskUseCase;
+        this.createScopeRiskUseCase = createScopeRiskUseCase;
+        this.getScopeRisksUseCase = getScopeRisksUseCase;
+        this.deleteRiskUseCase = deleteRiskUseCase;
+        this.updateScopeRiskUseCase = updateScopeRiskUseCase;
     }
 
     @GetMapping
@@ -346,5 +366,91 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
         }
+    }
+
+    @Override
+    public @Valid CompletableFuture<List<ScopeRiskDto>> getRisks(
+            @Parameter(hidden = true) ApplicationUser user, String scopeId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new GetScopeRisksUseCase.InputData(client, Key.uuidFrom(scopeId));
+
+        return useCaseInteractor.execute(getScopeRisksUseCase, input, output -> output.getRisks()
+                                                                                      .stream()
+                                                                                      .map(risk -> ScopeRiskDto.from(risk,
+                                                                                                                     referenceAssembler))
+                                                                                      .collect(Collectors.toList()));
+    }
+
+    @Override
+    public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
+            @Parameter(hidden = true) ApplicationUser user, String scopeId, String scenarioId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new GetScopeRiskUseCase.InputData(client, Key.uuidFrom(scopeId),
+                Key.uuidFrom(scenarioId));
+
+        var riskFuture = useCaseInteractor.execute(getScopeRiskUseCase, input,
+                                                   output -> ScopeRiskDto.from(output.getRisk(),
+                                                                               referenceAssembler));
+
+        return riskFuture.thenApply(riskDto -> ResponseEntity.ok()
+                                                             .eTag(ETag.from(riskDto.getScope()
+                                                                                    .getId(),
+                                                                             riskDto.getScenario()
+                                                                                    .getId(),
+                                                                             riskDto.getVersion()))
+                                                             .body(riskDto));
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(ApplicationUser user,
+            @Valid @NotNull ScopeRiskDto dto, String scopeId) {
+
+        var input = new CreateScopeRiskUseCase.InputData(getClient(user.getClientId()),
+                Key.uuidFrom(scopeId), urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()));
+
+        return useCaseInteractor.execute(createScopeRiskUseCase, input, output -> {
+            var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
+                                                                     .getEntity()
+                                                                     .getId()
+                                                                     .uuidValue(),
+                                    ScopeRiskResource.RESOURCE_NAME);
+            var body = new ApiResponseBody(true, Optional.of(output.getRisk()
+                                                                   .getScenario()
+                                                                   .getId()
+                                                                   .uuidValue()),
+                    "Scope risk created successfully.", "");
+            return RestApiResponse.created(url, body);
+        });
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(ApplicationUser user,
+            String scopeId, String scenarioId) {
+
+        Client client = getClient(user.getClientId());
+        var input = new DeleteRiskUseCase.InputData(Scope.class, client, Key.uuidFrom(scopeId),
+                Key.uuidFrom(scenarioId));
+
+        return useCaseInteractor.execute(deleteRiskUseCase, input,
+                                         output -> ResponseEntity.noContent()
+                                                                 .build());
+    }
+
+    @Override
+    public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(ApplicationUser user,
+            String scopeId, String scenarioId, @Valid @NotNull ScopeRiskDto dto, String eTag) {
+
+        var input = new UpdateScopeRiskUseCase.InputData(getClient(user.getClientId()),
+                Key.uuidFrom(scopeId), urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()), eTag);
+
+        // update risk and return saved risk with updated ETag, timestamps etc.:
+        return useCaseInteractor.execute(updateScopeRiskUseCase, input, output -> null)
+                                .thenCompose(o -> this.getRisk(user, scopeId, scenarioId));
     }
 }

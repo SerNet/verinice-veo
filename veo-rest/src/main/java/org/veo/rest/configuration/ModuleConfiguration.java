@@ -110,9 +110,13 @@ import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
 import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
+import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
 import org.veo.core.usecase.scope.CreateScopeUseCase;
+import org.veo.core.usecase.scope.GetScopeRiskUseCase;
+import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
+import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
@@ -585,5 +589,26 @@ public class ModuleConfiguration {
         return new ApplyIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
                 domainRepository, repositoryProvider, designatorService, catalogItemService,
                 factory);
+    }
+
+    @Bean
+    public GetScopeRiskUseCase getScopeRiskUseCase(RepositoryProvider repositoryProvider) {
+        return new GetScopeRiskUseCase(repositoryProvider);
+    }
+
+    @Bean
+    public GetScopeRisksUseCase getScopeRisksUseCase(RepositoryProvider repositoryProvider) {
+        return new GetScopeRisksUseCase(repositoryProvider);
+    }
+
+    @Bean
+    public CreateScopeRiskUseCase createScopeRiskUseCase(RepositoryProvider repositoryProvider,
+            DesignatorService designatorService) {
+        return new CreateScopeRiskUseCase(repositoryProvider, designatorService);
+    }
+
+    @Bean
+    public UpdateScopeRiskUseCase updateScopeRiskUseCase(RepositoryProvider repositoryProvider) {
+        return new UpdateScopeRiskUseCase(repositoryProvider);
     }
 }

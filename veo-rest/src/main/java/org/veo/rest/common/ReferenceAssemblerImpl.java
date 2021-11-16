@@ -58,6 +58,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetRiskResource;
@@ -71,6 +72,7 @@ import org.veo.rest.ProcessController;
 import org.veo.rest.ProcessRiskResource;
 import org.veo.rest.ScenarioController;
 import org.veo.rest.ScopeController;
+import org.veo.rest.ScopeRiskResource;
 import org.veo.rest.UnitController;
 import org.veo.rest.configuration.TypeExtractor;
 import org.veo.rest.schemas.controller.EntitySchemaController;
@@ -193,6 +195,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                     scenarioId)).withRel(ProcessController.URL_BASE_PATH
                                                                             + ProcessRiskResource.RELPATH)
                                                                                 .getHref();
+        }
+        if (risk instanceof ScopeRisk) {
+            return linkTo(methodOn(ScopeController.class).getRisk(ANY_USER, entityId,
+                                                                  scenarioId)).withRel(ScopeController.URL_BASE_PATH
+                                                                          + ScopeRiskResource.RELPATH)
+                                                                              .getHref();
         }
         throw new NotImplementedException(
                 format("Cannot create risk reference to entity " + "%s.", risk.getClass()));
