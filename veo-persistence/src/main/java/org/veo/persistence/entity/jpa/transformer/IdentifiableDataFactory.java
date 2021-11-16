@@ -66,7 +66,6 @@ public class IdentifiableDataFactory implements IdentifiableFactory {
   }
 
   private <T extends Identifiable> T create(Class<T> type) {
-    // TODO VEO-963 use superior java 17 switch
     if (type == Person.class) {
       return (T) new PersonData();
     }

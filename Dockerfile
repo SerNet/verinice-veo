@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/java11-debian11:nonroot
+FROM gcr.io/distroless/java17-debian11:nonroot
 
 ARG VEO_VERSION
 
