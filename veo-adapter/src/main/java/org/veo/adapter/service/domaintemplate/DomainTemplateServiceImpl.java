@@ -162,6 +162,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
                 Domain domain = processDomainTemplate(domainTemplateDto);
                 domain.setDomainTemplate(bootstrappedDomaintemplates.get(templateId));
+                client.addToDomains(domain);
                 log.info("Domain {} created for client {}", domain, client);
                 return domain;
             } catch (JsonMappingException e) {
