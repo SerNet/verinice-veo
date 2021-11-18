@@ -71,7 +71,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
@@ -112,7 +111,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(PersonController.URL_BASE_PATH)
 @Slf4j
-public class PersonController extends AbstractElementController<Person> {
+public class PersonController extends AbstractElementController<Person, FullPersonDto> {
 
     public static final String URL_BASE_PATH = "/" + Person.PLURAL_TERM;
 
@@ -185,7 +184,7 @@ public class PersonController extends AbstractElementController<Person> {
                                             schema = @Schema(implementation = FullPersonDto.class))),
             @ApiResponse(responseCode = "404", description = "Person not found") })
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
+    public @Valid CompletableFuture<ResponseEntity<FullPersonDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElement(auth, uuid);
@@ -200,7 +199,7 @@ public class PersonController extends AbstractElementController<Person> {
                                             array = @ArraySchema(schema = @Schema(implementation = FullPersonDto.class)))),
             @ApiResponse(responseCode = "404", description = "Person not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
+    public @Valid CompletableFuture<List<FullPersonDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElementParts(auth, uuid);
@@ -301,5 +300,10 @@ public class PersonController extends AbstractElementController<Person> {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
         }
+    }
+
+    @Override
+    protected FullPersonDto entity2Dto(Person entity) {
+        return entityToDtoTransformer.transformPerson2Dto(entity);
     }
 }

@@ -71,7 +71,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDocumentDto;
@@ -111,7 +110,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(DocumentController.URL_BASE_PATH)
 @Slf4j
-public class DocumentController extends AbstractElementController<Document> {
+public class DocumentController extends AbstractElementController<Document, FullDocumentDto> {
 
     public DocumentController(GetDocumentUseCase getDocumentUseCase,
             GetDocumentsUseCase getDocumentsUseCase, CreateDocumentUseCase createDocumentUseCase,
@@ -187,7 +186,7 @@ public class DocumentController extends AbstractElementController<Document> {
                                             schema = @Schema(implementation = FullDocumentDto.class))),
             @ApiResponse(responseCode = "404", description = "Document not found") })
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
+    public @Valid CompletableFuture<ResponseEntity<FullDocumentDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElement(auth, uuid);
@@ -202,7 +201,7 @@ public class DocumentController extends AbstractElementController<Document> {
                                             array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
             @ApiResponse(responseCode = "404", description = "Document not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
+    public @Valid CompletableFuture<List<FullDocumentDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElementParts(auth, uuid);
@@ -303,4 +302,10 @@ public class DocumentController extends AbstractElementController<Document> {
             return null;
         }
     }
+
+    @Override
+    protected FullDocumentDto entity2Dto(Document entity) {
+        return entityToDtoTransformer.transformDocument2Dto(entity);
+    }
+
 }

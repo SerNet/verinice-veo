@@ -72,7 +72,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
@@ -113,7 +112,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ControlController.URL_BASE_PATH)
 @Slf4j
-public class ControlController extends AbstractElementController<Control> {
+public class ControlController extends AbstractElementController<Control, FullControlDto> {
 
     public static final String URL_BASE_PATH = "/" + Control.PLURAL_TERM;
 
@@ -188,7 +187,7 @@ public class ControlController extends AbstractElementController<Control> {
                                             schema = @Schema(implementation = AbstractControlDto.class))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
+    public @Valid CompletableFuture<ResponseEntity<FullControlDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElement(auth, uuid);
@@ -203,7 +202,7 @@ public class ControlController extends AbstractElementController<Control> {
                                             array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
             @ApiResponse(responseCode = "404", description = "Control not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
+    public @Valid CompletableFuture<List<FullControlDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElementParts(auth, uuid);
@@ -306,5 +305,10 @@ public class ControlController extends AbstractElementController<Control> {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
         }
+    }
+
+    @Override
+    protected FullControlDto entity2Dto(Control entity) {
+        return entityToDtoTransformer.transformControl2Dto(entity);
     }
 }

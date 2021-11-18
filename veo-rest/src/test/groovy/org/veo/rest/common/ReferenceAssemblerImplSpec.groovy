@@ -56,6 +56,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         where:
         url                                                                                                              | parsedId
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | '40331ed5-be07-4c69-bf99-553811ce5454'
+        'http://localhost:9000/assets/e24e5c51-eb30-4150-8009-06ead941b321?foo=bar'                                      | 'e24e5c51-eb30-4150-8009-06ead941b321'
         // TODO: VEO-585: probably expect an exception instead
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/59d3c21d-2f21-4085-950d-1273056d664a'   | '59d3c21d-2f21-4085-950d-1273056d664a'
         'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | 'c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'
@@ -66,8 +67,8 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | '47799d6d-7887-48d5-9cd2-1af23e0b467a'
     }
 
-    def "parsed type for #url is #type without typeExtractor"() {
-        0 *  typeExtractor._
+    def "parsed type for #url is #type"() {
+        1 *  typeExtractor.parseDtoType(url) >> Optional.of(dtoType)
 
         expect:
         referenceAssembler.parseType(url) == type
@@ -75,11 +76,30 @@ class ReferenceAssemblerImplSpec extends Specification {
         where:
         url                                                                                                              | type        | dtoType
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454'                                              | Asset       | FullAssetDto
+        'http://localhost:9000/assets/8cdff5d7-3e17-4b80-80f6-e20a2cd4e673?foo=bar'                                      | Asset       | FullAssetDto
+        // TODO: VEO-585: probably expect an exception instead
+        'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | Asset       | FullAssetDto
         'http://localhost:9000/controls/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                            | Control     | FullControlDto
         'http://localhost:9000/scopes/59d3c21d-2f21-4085-950d-1273056d664a'                                              | Scope       | FullScopeDto
         'http://localhost:9000/scenarios/f05ab334-c605-456e-8a78-9e1bc85b8509'                                           | Scenario    | FullScenarioDto
         'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | Incident    | FullIncidentDto
         'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | Domain      | FullDomainDto
+    }
+
+    def "path traversal attack is tried for #url"() {
+        1 *  typeExtractor.parseDtoType(url) >> Optional.empty()
+
+        when: 'the url is parsed with the reference assembler'
+        referenceAssembler.parseType(url)
+
+        then: 'exception is thrown'
+        IllegalArgumentException e = thrown()
+        e.message =~ /Could not extract entity type from URI/
+
+        where:
+        url << [
+            'http://localhost:9000/assets/00000000-0000-0000-0000-000000000000/%252e%252e/%252e%252e/processes/28df429d-da5e-431a-a2d8-488c0741fb9f'
+        ]
     }
 
     def "parsed type for #url is #type with typeExtractor"() {
@@ -94,7 +114,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | Asset       | FullAssetDto
         'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | CatalogItem | FullCatalogItemDto
     }
-
 
     def "target reference for #type and #id is #reference"() {
         given:

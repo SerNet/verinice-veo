@@ -73,7 +73,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
@@ -120,7 +119,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(AssetController.URL_BASE_PATH)
 @Slf4j
-public class AssetController extends AbstractElementController<Asset> implements AssetRiskResource {
+public class AssetController extends AbstractElementController<Asset, FullAssetDto>
+        implements AssetRiskResource {
 
     private final DeleteRiskUseCase deleteRiskUseCase;
     private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
@@ -207,7 +207,7 @@ public class AssetController extends AbstractElementController<Asset> implements
                                             schema = @Schema(implementation = FullAssetDto.class))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
+    public @Valid CompletableFuture<ResponseEntity<FullAssetDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElement(auth, uuid);
@@ -222,7 +222,7 @@ public class AssetController extends AbstractElementController<Asset> implements
                                             array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
             @ApiResponse(responseCode = "404", description = "Asset not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
+    public @Valid CompletableFuture<List<FullAssetDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElementParts(auth, uuid);
@@ -409,5 +409,10 @@ public class AssetController extends AbstractElementController<Asset> implements
         // update risk and return saved risk with updated ETag, timestamps etc.:
         return useCaseInteractor.execute(updateAssetRiskUseCase, input, output -> null)
                                 .thenCompose(o -> this.getRisk(user, assetId, scenarioId));
+    }
+
+    @Override
+    protected FullAssetDto entity2Dto(Asset entity) {
+        return entityToDtoTransformer.transformAsset2Dto(entity);
     }
 }

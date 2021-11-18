@@ -73,7 +73,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
@@ -123,7 +122,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ProcessController.URL_BASE_PATH)
 @Slf4j
-public class ProcessController extends AbstractElementController<Process>
+public class ProcessController extends AbstractElementController<Process, FullProcessDto>
         implements ProcessRiskResource {
 
     public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
@@ -166,7 +165,7 @@ public class ProcessController extends AbstractElementController<Process>
                                             schema = @Schema(implementation = FullProcessDto.class))),
             @ApiResponse(responseCode = "404", description = "Process not found") })
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
+    public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElement(auth, uuid);
@@ -181,7 +180,7 @@ public class ProcessController extends AbstractElementController<Process>
                                             array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class)))),
             @ApiResponse(responseCode = "404", description = "Process not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
+    public @Valid CompletableFuture<List<FullProcessDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElementParts(auth, uuid);
@@ -419,5 +418,10 @@ public class ProcessController extends AbstractElementController<Process>
         // update risk and return saved risk with updated ETag, timestamps etc.:
         return useCaseInteractor.execute(updateProcessRiskUseCase, input, output -> null)
                                 .thenCompose(o -> this.getRisk(user, processId, scenarioId));
+    }
+
+    @Override
+    protected FullProcessDto entity2Dto(Process entity) {
+        return entityToDtoTransformer.transformProcess2Dto(entity);
     }
 }

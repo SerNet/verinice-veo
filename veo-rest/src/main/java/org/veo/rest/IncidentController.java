@@ -71,7 +71,6 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateIncidentDto;
@@ -111,7 +110,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(IncidentController.URL_BASE_PATH)
 @Slf4j
-public class IncidentController extends AbstractElementController<Incident> {
+public class IncidentController extends AbstractElementController<Incident, FullIncidentDto> {
 
     public IncidentController(GetIncidentUseCase getIncidentUseCase,
             GetIncidentsUseCase getIncidentsUseCase, CreateIncidentUseCase createIncidentUseCase,
@@ -187,7 +186,7 @@ public class IncidentController extends AbstractElementController<Incident> {
                                             schema = @Schema(implementation = FullIncidentDto.class))),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
+    public @Valid CompletableFuture<ResponseEntity<FullIncidentDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElement(auth, uuid);
@@ -202,7 +201,7 @@ public class IncidentController extends AbstractElementController<Incident> {
                                             array = @ArraySchema(schema = @Schema(implementation = FullIncidentDto.class)))),
             @ApiResponse(responseCode = "404", description = "Incident not found") })
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(
+    public @Valid CompletableFuture<List<FullIncidentDto>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
             @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
         return super.getElementParts(auth, uuid);
@@ -308,5 +307,10 @@ public class IncidentController extends AbstractElementController<Incident> {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
         }
+    }
+
+    @Override
+    protected FullIncidentDto entity2Dto(Incident entity) {
+        return entityToDtoTransformer.transformIncident2Dto(entity);
     }
 }

@@ -26,7 +26,7 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Key;
@@ -38,7 +38,7 @@ import org.veo.rest.security.ApplicationUser;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class AbstractElementController<T extends CompositeElement<T>>
+public abstract class AbstractElementController<T extends CompositeElement<T>, E extends CompositeEntityDto<T>>
         extends AbstractEntityControllerWithDefaultSearch {
 
     private final GetElementUseCase<T> getElementUseCase;
@@ -53,22 +53,21 @@ public abstract class AbstractElementController<T extends CompositeElement<T>>
      *            an ID in the UUID format as specified in RFC 4122
      * @return the element for the given ID if one was found. Null otherwise.
      */
-    public @Valid CompletableFuture<ResponseEntity<AbstractElementDto>> getElement(
-            Authentication auth, String uuid) {
+    public @Valid CompletableFuture<ResponseEntity<E>> getElement(Authentication auth,
+            String uuid) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
-        CompletableFuture<AbstractElementDto> assetFuture = useCaseInteractor.execute(getElementUseCase,
-                                                                                      new UseCase.IdAndClient(
-                                                                                              Key.uuidFrom(uuid),
-                                                                                              client),
-                                                                                      output -> entityToDtoTransformer.transform2Dto(output.getElement()));
-        return assetFuture.thenApply(dto -> ResponseEntity.ok()
-                                                          .eTag(ETag.from(uuid, dto.getVersion()))
-                                                          .body(dto));
+        CompletableFuture<E> entityFuture = useCaseInteractor.execute(getElementUseCase,
+                                                                      new UseCase.IdAndClient(
+                                                                              Key.uuidFrom(uuid),
+                                                                              client),
+                                                                      output -> entity2Dto(output.getElement()));
+        return entityFuture.thenApply(dto -> ResponseEntity.ok()
+                                                           .eTag(ETag.from(uuid, dto.getVersion()))
+                                                           .body(dto));
     }
 
-    public @Valid CompletableFuture<List<AbstractElementDto>> getElementParts(Authentication auth,
-            String uuid) {
+    public @Valid CompletableFuture<List<E>> getElementParts(Authentication auth, String uuid) {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(getElementUseCase,
                                          new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
@@ -76,9 +75,11 @@ public abstract class AbstractElementController<T extends CompositeElement<T>>
                                              T element = output.getElement();
                                              return element.getParts()
                                                            .stream()
-                                                           .map(entityToDtoTransformer::transform2Dto)
+                                                           .map(this::entity2Dto)
                                                            .collect(Collectors.toList());
                                          });
     }
+
+    protected abstract E entity2Dto(T entity);
 
 }
