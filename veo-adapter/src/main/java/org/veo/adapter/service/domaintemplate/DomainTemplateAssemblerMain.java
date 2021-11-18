@@ -50,10 +50,10 @@ import lombok.extern.slf4j.Slf4j;
 @Deprecated
 // TODO VEO-399 remove this class
 public class DomainTemplateAssemblerMain {
-    private final static ReferenceAssembler urlAssembler = new LocalReferenceAssembler();
-    private final static ReferenceDeserializer deserializer = new ReferenceDeserializer(
+    private static final ReferenceAssembler urlAssembler = new LocalReferenceAssembler();
+    private static final ReferenceDeserializer deserializer = new ReferenceDeserializer(
             urlAssembler);
-    private final static ObjectMapper objectMapper = new ObjectMapper().addMixIn(AbstractElementDto.class,
+    private static final ObjectMapper objectMapper = new ObjectMapper().addMixIn(AbstractElementDto.class,
                                                                                  TransformElementDto.class)
                                                                        .registerModule(new SimpleModule().addDeserializer(IdRef.class,
                                                                                                                           deserializer))
@@ -99,7 +99,7 @@ public class DomainTemplateAssemblerMain {
             throws DomainTemplateSnippetException {
         return Arrays.stream(resources)
                      .map(DomainTemplateAssemblerMain::readInstanceFile)
-                     .filter(t -> t instanceof IdentifiableDto)
+                     .filter(IdentifiableDto.class::isInstance)
                      .collect(Collectors.toMap(e -> ((IdentifiableDto) e).getId(), e -> e));
     }
 

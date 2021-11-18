@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
@@ -46,14 +45,12 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReferenceType;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Takes domain template information and creates a
  * {@link TransformDomainTemplateDto} from it. Catalogs can be added by passing
  * element DTOs from which catalog items will be created.
  */
-@Slf4j
 @RequiredArgsConstructor
 class DomainTemplateAssembler {
 
@@ -104,18 +101,15 @@ class DomainTemplateAssembler {
         }
         catalogItemsById.values()
                         .stream()
-                        .forEach(i -> {
-                            i.getElement()
-                             .getLinks()
-                             .clear();
-                        });
+                        .forEach(i -> i.getElement()
+                                       .getLinks()
+                                       .clear());
         TransformCatalogDto catalogDto = new TransformCatalogDto();
         catalogDto.setName(catalogName);
         catalogDto.setId(catalogId);
         catalogDto.getCatalogItems()
                   .addAll(catalogItemsById.values());
-        catalogDto.setDomainTemplate(new SyntheticIdRef<DomainTemplate>(id, DomainTemplate.class,
-                assembler));
+        catalogDto.setDomainTemplate(new SyntheticIdRef<>(id, DomainTemplate.class, assembler));
 
         catalogs.add(catalogDto);
     }
@@ -125,7 +119,7 @@ class DomainTemplateAssembler {
         Map<String, TransformCatalogItemDto> cache = new HashMap<>();
         for (Map.Entry<String, AbstractElementDto> e : readElements.entrySet()) {
             TransformCatalogItemDto itemDto = new TransformCatalogItemDto();
-            itemDto.setTailoringReferences(new HashSet<AbstractTailoringReferenceDto>());
+            itemDto.setTailoringReferences(new HashSet<>());
             itemDto.setElement(e.getValue());
             itemDto.setCatalog(SyntheticIdRef.from(catalogId, Catalog.class));
             AbstractElementDto elementDto = e.getValue();
@@ -160,8 +154,9 @@ class DomainTemplateAssembler {
         catalogItems.entrySet()
                     .stream()
                     .filter(entries -> !entries.getKey()
-                                               .equals(targetId))// exclude self
-                    .map(entries -> entries.getValue())
+                                               .equals(targetId))// exclude
+                                                                 // self
+                    .map(Entry::getValue)
                     .forEach(catalogItemDto -> {
                         AbstractElementDto element = catalogItemDto.getElement();
                         for (Entry<String, List<CustomLinkDto>> typedLinks : element.getLinks()
@@ -173,8 +168,8 @@ class DomainTemplateAssembler {
                                                                                                    .equals(targetId));
                             allLinksToTarget.forEach(link -> {
                                 TransformLinkTailoringReference referenceDto = new TransformLinkTailoringReference();
-                                referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(
-                                        targetItem.getId(), CatalogItem.class, assembler));
+                                referenceDto.setCatalogItem(new SyntheticIdRef<>(targetItem.getId(),
+                                        CatalogItem.class, assembler));
                                 referenceDto.setReferenceType(TailoringReferenceType.LINK_EXTERNAL);
                                 referenceDto.setLinkType(typedLinks.getKey());
                                 referenceDto.setAttributes(new HashMap<>(link.getAttributes()));
@@ -188,33 +183,31 @@ class DomainTemplateAssembler {
     private void createTailoringReferences(AbstractElementDto value,
             Map<String, TransformCatalogItemDto> catalogItems) {
         TransformCatalogItemDto currentItem = catalogItems.get(((IdentifiableDto) value).getId());
-        currentItem.setTailoringReferences(new HashSet<AbstractTailoringReferenceDto>());
+        currentItem.setTailoringReferences(new HashSet<>());
         value.getLinks()
              .entrySet()
              .stream()
-             .forEach(e -> {
-                 e.getValue()
-                  .forEach(l -> {
-                      TransformCatalogItemDto itemDto = catalogItems.get(l.getTarget()
-                                                                          .getId());
-                      TransformLinkTailoringReference referenceDto = new TransformLinkTailoringReference();
-                      referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
-                              CatalogItem.class, assembler));
-                      referenceDto.setReferenceType(TailoringReferenceType.LINK);
-                      referenceDto.setLinkType(e.getKey());
-                      referenceDto.setAttributes(new HashMap<>(l.getAttributes()));
+             .forEach(e -> e.getValue()
+                            .forEach(l -> {
+                                TransformCatalogItemDto itemDto = catalogItems.get(l.getTarget()
+                                                                                    .getId());
+                                TransformLinkTailoringReference referenceDto = new TransformLinkTailoringReference();
+                                referenceDto.setCatalogItem(new SyntheticIdRef<>(itemDto.getId(),
+                                        CatalogItem.class, assembler));
+                                referenceDto.setReferenceType(TailoringReferenceType.LINK);
+                                referenceDto.setLinkType(e.getKey());
+                                referenceDto.setAttributes(new HashMap<>(l.getAttributes()));
 
-                      currentItem.getTailoringReferences()
-                                 .add(referenceDto);
-                  });
-             });
+                                currentItem.getTailoringReferences()
+                                           .add(referenceDto);
+                            }));
         CompositeEntityDto<?> e = (CompositeEntityDto<?>) value;
         e.getParts()
          .forEach(p -> {
              TransformCatalogItemDto itemDto = catalogItems.get(p.getId());
              CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
-             referenceDto.setCatalogItem(new SyntheticIdRef<CatalogItem>(itemDto.getId(),
-                     CatalogItem.class, assembler));
+             referenceDto.setCatalogItem(new SyntheticIdRef<>(itemDto.getId(), CatalogItem.class,
+                     assembler));
              currentItem.getTailoringReferences()
                         .add(referenceDto);
              referenceDto.setReferenceType(TailoringReferenceType.COPY);

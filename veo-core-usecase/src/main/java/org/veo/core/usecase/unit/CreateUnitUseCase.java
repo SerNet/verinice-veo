@@ -112,8 +112,8 @@ public class CreateUnitUseCase
         // and abbreviation:
         Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
                                                                              .getName());
-        Set<Domain> domainFromTemplate = domainTemplateService.createDefaultDomains(client);
-        domainFromTemplate.forEach(dt -> client.addToDomains(dt));
+        Set<Domain> domainsFromTemplate = domainTemplateService.createDefaultDomains(client);
+        domainsFromTemplate.forEach(client::addToDomains);
         return clientRepository.save(client);
     }
 
