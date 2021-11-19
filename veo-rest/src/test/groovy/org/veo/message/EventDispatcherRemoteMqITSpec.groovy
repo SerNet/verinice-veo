@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.message
 
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS
+
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.CountDownLatch
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 
 import org.veo.MessagingJob
@@ -58,6 +61,7 @@ classes = [EventDispatcherRemoteMqITSpec.class,
     Boolean.valueOf(env['CI'])
 })
 @Slf4j
+@DirtiesContext(classMode = AFTER_CLASS)
 class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
 
     public static final int NUM_EVENTS = 10

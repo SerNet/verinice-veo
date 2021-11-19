@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.message
 
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS
 import static org.veo.message.EventDispatcher.NOP_CALLBACK
 
 import java.time.Instant
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
@@ -41,7 +43,6 @@ import org.veo.persistence.entity.jpa.StoredEventData
 import groovy.util.logging.Slf4j
 import spock.lang.IgnoreIf
 import spock.lang.Shared
-import spock.lang.Specification
 
 /**
  * Tests messaging using a RabbitMQ container bootstrapped by the test itself.
@@ -65,6 +66,7 @@ classes = [EventDispatcherITSpec.class,
     Boolean.valueOf(env['CI'])
 })
 @Slf4j
+@DirtiesContext(classMode = AFTER_CLASS)
 class EventDispatcherITSpec extends VeoSpringSpec {
 
     public static final int NUM_EVENTS = 100
