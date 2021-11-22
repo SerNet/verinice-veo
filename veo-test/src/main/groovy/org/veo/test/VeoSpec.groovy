@@ -18,6 +18,7 @@
 package org.veo.test
 
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -457,5 +458,9 @@ abstract class VeoSpec extends Specification {
         } else {
             return text
         }
+    }
+
+    static Instant roundToMicros(Instant instant) {
+        instant.plusNanos(500).truncatedTo(ChronoUnit.MICROS)
     }
 }

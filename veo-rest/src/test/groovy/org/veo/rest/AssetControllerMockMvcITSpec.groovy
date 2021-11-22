@@ -209,9 +209,9 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             type: 'asset',
             parts: [],
             createdBy: "user@domain.example",
-            createdAt: asset.createdAt.toString(),
+            createdAt: roundToMicros(asset.createdAt).toString(),
             updatedBy: "user@domain.example",
-            updatedAt: asset.updatedAt.toString()
+            updatedAt: roundToMicros(asset.updatedAt).toString()
         ]
         when: "the asset is requested from the server again"
         results =
