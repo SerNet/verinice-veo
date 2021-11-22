@@ -805,11 +805,10 @@
     {
       "createdAt": "2021-08-11T13:46:03.198102Z",
       "createdBy": "st",
-      "updatedAt": "2021-08-11T13:46:03.198102Z",
-      "updatedBy": "st",
+      "updatedAt": "2021-11-22T10:55:36.578632Z",
+      "updatedBy": "mfmu",
       "name": "Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
       "designator": "CTL-11",
-      "abbreviation": "18.1.1 ",
       "domains": {
         "2cef4503-dd41-48cf-9030-16820797a300": {
           "subType": "CTL_TOM",
@@ -2007,7 +2006,7 @@
               
             },
             "target": {
-              "displayName": "CTL-11 18.1.1  Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
+              "displayName": "CTL-11 Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
               "searchesUri": "https://veo.staging.verinice.com/controls/searches",
               "targetUri": "https://veo.staging.verinice.com/controls/a283dd52-4b30-439a-92f0-6dddce5eccb3",
               "resourcesUri": "https://veo.staging.verinice.com/controls{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
@@ -2316,7 +2315,7 @@
               
             },
             "target": {
-              "displayName": "CTL-11 18.1.1  Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
+              "displayName": "CTL-11 Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
               "searchesUri": "https://veo.staging.verinice.com/controls/searches",
               "targetUri": "https://veo.staging.verinice.com/controls/a283dd52-4b30-439a-92f0-6dddce5eccb3",
               "resourcesUri": "https://veo.staging.verinice.com/controls{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
@@ -2564,7 +2563,7 @@
               
             },
             "target": {
-              "displayName": "CTL-11 18.1.1  Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
+              "displayName": "CTL-11 Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
               "searchesUri": "https://veo.staging.verinice.com/controls/searches",
               "targetUri": "https://veo.staging.verinice.com/controls/a283dd52-4b30-439a-92f0-6dddce5eccb3",
               "resourcesUri": "https://veo.staging.verinice.com/controls{?unit,displayName,subType,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
@@ -3086,8 +3085,8 @@
     {
       "createdAt": "2021-08-10T12:45:53.868355Z",
       "createdBy": "st",
-      "updatedAt": "2021-11-16T10:16:20.220Z",
-      "updatedBy": "stmu",
+      "updatedAt": "2021-11-22T10:53:02.117474Z",
+      "updatedBy": "mfmu",
       "name": "Data GmbH",
       "designator": "SCP-4",
       "description": "IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit",
@@ -3177,8 +3176,8 @@
             "scope_address_city": "G\u00f6ttingen",
             "scope_address_state": "Niedersachsen",
             "scope_address_country": "Deutschland",
-            "scope_address_address1": "Bahnhofsallee 1b",
-            "scope_address_postcode": "37081"
+            "scope_address_address1": "Bahnhofsplatz 1",
+            "scope_address_postcode": "56081"
           }
         },
         "scope_regulatoryAuthority": {
@@ -3198,9 +3197,8 @@
         "scope_contactInformation": {
           "domains": [],
           "attributes": {
-            "scope_contactInformation_fax": "0551 370000-9",
             "scope_contactInformation_email": "kontakt@data.de",
-            "scope_contactInformation_phone": "0551 370000-0",
+            "scope_contactInformation_phone": "0523 7006000",
             "scope_contactInformation_website": "www.data.de"
           }
         }
