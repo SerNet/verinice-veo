@@ -131,6 +131,26 @@ class SwaggerSpec extends VeoSpringSpec {
         allowedTypes.sort() == schemaTypes
     }
 
+    def "endpoint documentation is correct for GetIncarnationDescriptionUseCase"() {
+        when: "retrieving the information about the endpoint"
+        def endPointInfo = parsedApiDocs.paths["/units/{unitId}/incarnations"]
+        then: "the information is found"
+        endPointInfo != null
+        and: 'it handles get requests'
+        endPointInfo.get != null
+        and: 'it contains information about the query parameters'
+        with(endPointInfo.get.parameters[1]) {
+            name == 'itemIds'
+            it.in == 'query'
+            required == true
+            with(schema) {
+                type == 'array'
+                items == ['type': 'string']
+            }
+        }
+    }
+
+
     @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString

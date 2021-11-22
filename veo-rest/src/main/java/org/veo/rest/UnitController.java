@@ -117,7 +117,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     private final ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase;
     private final GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
 
-    @GetMapping(value = "/{unitId}/incarnations{?itemIds}")
+    @GetMapping(value = "/{unitId}/incarnations")
     @Operation(summary = "Get the information to incarnate a set of catalogItems in a unit.",
                tags = "modeling")
     @ApiResponses(value = {
