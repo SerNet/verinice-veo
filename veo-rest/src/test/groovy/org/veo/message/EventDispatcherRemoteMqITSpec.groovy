@@ -28,7 +28,6 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Bean
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 
@@ -52,7 +51,7 @@ import spock.lang.Requires
  * {@see EventDispatcherITSpec}
  */
 @SpringBootTest(
-classes = [EventDispatcherRemoteMqITSpec.class,
+classes = [TestEventSubscriber.class,
     RabbitMQSenderConfiguration.class,
 ]
 )
@@ -94,11 +93,6 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
     String binding
 
     Set<EventMessage> sentEvents = new HashSet<>(NUM_EVENTS)
-
-    @Bean
-    public TestEventSubscriber getSubscriber() {
-        return new TestEventSubscriber()
-    }
 
     def setup() {
         def purgeCount = rabbitAdmin.purgeQueue(testQueue)

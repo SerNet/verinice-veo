@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Bean
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
@@ -56,7 +55,7 @@ import spock.lang.Shared
  * {@see EventDispatcherRemoteMqITSpec}
  */
 @SpringBootTest(
-classes = [EventDispatcherITSpec.class,
+classes = [TestEventSubscriber.class,
     RabbitMQSenderConfiguration.class,
 ]
 )
@@ -97,11 +96,6 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     MessagingJob messagingJob
 
     static final Instant FOREVER_AND_EVER = Instant.now().plus(365000, ChronoUnit.DAYS)
-
-    @Bean
-    public TestEventSubscriber getSubscriber() {
-        return new TestEventSubscriber()
-    }
 
     def setupSpec() {
         println("Test will start RabbitMQ container...")
