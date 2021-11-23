@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.configuration;
 
-import static java.util.function.Predicate.not;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Optional;
@@ -27,6 +25,7 @@ import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.server.PathContainer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -70,6 +69,8 @@ public class TypeExtractor {
 
         var strippedPathComponent = removeServletContextPath(pathComponent);
 
+        var pathContainer = PathContainer.parsePath(strippedPathComponent);
+
         var returnValue = getRequestHandlerMapping().getHandlerMethods()
                                                     .entrySet()
                                                     .stream()
@@ -79,15 +80,16 @@ public class TypeExtractor {
                                                                           .stream()
                                                                           .anyMatch(m -> m == RequestMethod.GET))
                                                     .filter(e -> e.getKey()
-                                                                  .getPatternsCondition() != null)
-                                                    .filter(not(e -> e.getKey()
-                                                                      .getPatternsCondition()
-                                                                      .getMatchingPatterns(strippedPathComponent)
-                                                                      .isEmpty()))
+                                                                  .getPathPatternsCondition() != null)
+                                                    .filter(e -> e.getKey()
+                                                                  .getPathPatternsCondition()
+                                                                  .getPatterns()
+                                                                  .stream()
+                                                                  .anyMatch(pattern -> pattern.matches(pathContainer)))
                                                     .peek(a -> log.debug("Found match for {} in {}",
                                                                          strippedPathComponent,
                                                                          a.getKey()
-                                                                          .getPatternsCondition()
+                                                                          .getPathPatternsCondition()
                                                                           .getPatterns()))
                                                     .map(e -> e.getValue()
                                                                .getReturnType())
