@@ -59,7 +59,7 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
 
     @Override
     public String roleFilter(List<String> roles, String inputSchema) {
-        return inputSchema; // TODO filter schema elements by user role
+        return inputSchema; // TODO VEO-966 filter schema elements by user role
     }
 
     @Override
