@@ -17,6 +17,5 @@ dependencies {
 
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.github.javafaker:javafaker'
     testImplementation 'commons-codec:commons-codec'
 }
