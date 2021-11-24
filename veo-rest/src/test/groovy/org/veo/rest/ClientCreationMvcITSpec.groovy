@@ -49,7 +49,7 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
 
         then: "the default domains are created"
         client.domains.size() == 2
-        client.domains.first().domainTemplate.dbId == DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID
+        client.domains*.domainTemplate*.dbId.contains(DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
 
         when: "we get the units"
         def units = parseJson(get("/units"))
