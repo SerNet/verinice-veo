@@ -2,6 +2,6 @@
   "attributeSchemas": {
     
   },
-  "targetType": "scope",
-  "targetSubType": "SCP_Controller"
+  "targetType": "person",
+  "targetSubType": "PER_Person"
 }
