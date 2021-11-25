@@ -1,0 +1,26 @@
+{
+  "attributeSchemas": {
+    "document_contract_description": {
+      "type": "string"
+    },
+    "document_contract_location": {
+      "enum": [
+        "document_contract_location_germany",
+        "document_contract_location_eu",
+        "document_contract_location_thirdCountry"
+      ]
+    },
+    "document_contract_subcontractor": {
+      "type": "boolean"
+    },
+    "document_contract_thirdCountry": {
+      "type": "string"
+    },
+    "document_contract_type": {
+      "enum": [
+        "document_contract_type_processorContract",
+        "document_contract_type_EUstandard"
+      ]
+    }
+  }
+}

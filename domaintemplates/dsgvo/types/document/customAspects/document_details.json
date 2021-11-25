@@ -15,16 +15,6 @@
     "document_details_otherTypeOfDocument": {
       "type": "string"
     },
-    "document_details_status": {
-      "enum": [
-        "document_details_status_draft",
-        "document_details_status_inProgress",
-        "document_details_status_approvalRequested",
-        "document_details_status_approved",
-        "document_details_status_outOfDate",
-        "document_details_status_notApplicable"
-      ]
-    },
     "document_details_typeOfDocument": {
       "enum": [
         "document_details_typeOfDocument_policy",
