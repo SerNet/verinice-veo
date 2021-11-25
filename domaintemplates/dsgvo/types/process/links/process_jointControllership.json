@@ -7,5 +7,5 @@
     }
   },
   "targetType": "scope",
-  "targetSubType": "SCP_JoinController"
+  "targetSubType": "SCP_JointController"
 }

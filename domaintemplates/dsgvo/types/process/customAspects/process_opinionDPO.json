@@ -11,9 +11,6 @@
     "process_opinionDPO_findings": {
       "type": "string"
     },
-    "process_opinionDPO_opinionDPO": {
-      "type": "string"
-    },
     "process_opinionDPO_privacyImpactAssessment": {
       "type": "boolean"
     },
