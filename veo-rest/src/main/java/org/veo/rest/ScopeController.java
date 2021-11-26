@@ -431,7 +431,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
                                                                    .getScenario()
                                                                    .getId()
                                                                    .uuidValue()),
-                    "Scope risk created successfully.", "");
+                    "Scope risk created successfully.");
             return RestApiResponse.created(url, body);
         });
     }

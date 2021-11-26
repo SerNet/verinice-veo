@@ -389,7 +389,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
                                                                    .getScenario()
                                                                    .getId()
                                                                    .uuidValue()),
-                    "Process risk created successfully.", "");
+                    "Process risk created successfully.");
             return RestApiResponse.created(url, body);
         });
     }

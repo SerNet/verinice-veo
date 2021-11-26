@@ -380,7 +380,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
                                                                    .getScenario()
                                                                    .getId()
                                                                    .uuidValue()),
-                    "Asset risk created successfully.", "");
+                    "Asset risk created successfully.");
             return RestApiResponse.created(url, body);
         });
     }
