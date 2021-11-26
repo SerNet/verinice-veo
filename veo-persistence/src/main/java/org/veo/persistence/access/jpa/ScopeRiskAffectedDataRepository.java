@@ -32,9 +32,12 @@ import org.veo.persistence.entity.jpa.ScopeData;
 @NoRepositoryBean
 public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<ScopeData> {
 
+    @SuppressWarnings("PMD.MethodNamingConventions")
     Set<ScopeData> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
 
+    @SuppressWarnings("PMD.MethodNamingConventions")
     Set<ScopeData> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
 
+    @SuppressWarnings("PMD.MethodNamingConventions")
     Set<ScopeData> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
 }

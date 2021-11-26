@@ -53,21 +53,21 @@ import lombok.extern.slf4j.Slf4j;
 @Deprecated
 // TODO VEO-399 remove this class
 public class DomainTemplateAssemblerMain {
-    private static final ReferenceAssembler urlAssembler = new LocalReferenceAssembler();
-    private static final ReferenceDeserializer deserializer = new ReferenceDeserializer(
-            urlAssembler);
-    private static final ObjectMapper objectMapper = new ObjectMapper().addMixIn(AbstractElementDto.class,
-                                                                                 TransformElementDto.class)
-                                                                       .registerModule(new SimpleModule().addDeserializer(IdRef.class,
-                                                                                                                          deserializer))
-                                                                       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                                                                                  false)
-                                                                       .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    private static final ReferenceAssembler REFERENCE_ASSEMBLER = new LocalReferenceAssembler();
+    private static final ReferenceDeserializer DESERIALIZER = new ReferenceDeserializer(
+            REFERENCE_ASSEMBLER);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().addMixIn(AbstractElementDto.class,
+                                                                                  TransformElementDto.class)
+                                                                        .registerModule(new SimpleModule().addDeserializer(IdRef.class,
+                                                                                                                           DESERIALIZER))
+                                                                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                                                                                   false)
+                                                                        .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public static void main(String[] args) {
         try {
             var snippetPath = Path.of(System.getenv("domaintemplate.dir"));
-            DomainTemplateAssembler assembler = new DomainTemplateAssembler(urlAssembler,
+            DomainTemplateAssembler assembler = new DomainTemplateAssembler(REFERENCE_ASSEMBLER,
                     System.getenv("domaintemplate.id"), System.getenv("domaintemplate.name"),
                     System.getenv("domaintemplate.abbreviation"),
                     System.getenv("domaintemplate.description"),
@@ -89,9 +89,9 @@ public class DomainTemplateAssemblerMain {
             TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
             templateDto.setDemoUnitElements(assembler.processDemoUnit(readDemoUnitElements(new File(
                     System.getenv("domaintemplate.unit-dump-file")))));
-            objectMapper.writerFor(TransformDomainTemplateDto.class)
-                        .writeValue(new File(System.getenv("domaintemplate.out.file")),
-                                    templateDto);
+            OBJECT_MAPPER.writerFor(TransformDomainTemplateDto.class)
+                         .writeValue(new File(System.getenv("domaintemplate.out.file")),
+                                     templateDto);
         } catch (Exception e) {
             log.error("Error writing domain", e);
             System.exit(1);
@@ -125,7 +125,7 @@ public class DomainTemplateAssemblerMain {
         log.info("process file: {}", resource);
         try (BufferedReader br = Files.newBufferedReader(resource.toPath(),
                                                          StandardCharsets.UTF_8)) {
-            return objectMapper.readValue(br, dtoType);
+            return OBJECT_MAPPER.readValue(br, dtoType);
         } catch (IOException ex) {
             throw new DomainTemplateSnippetException(resource, ex);
         }

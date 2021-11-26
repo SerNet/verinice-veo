@@ -35,9 +35,10 @@ public class SpringPropertyLoggerSpec extends Specification {
         1 * env.getProperty("prop2") >> ""
 
         when: "spring properties get logged"
-        new SpringPropertyLogger().logProperties(logger, env);
+        new SpringPropertyLogger().logProperties(logger, env)
 
         then: "all specified properties get logged"
+        1 * logger.isDebugEnabled() >> true
         1 * logger.debug('spring property {}: {}', 'prop1', 'val1')
         1 * logger.debug('spring property {}: {}', 'prop2', '')
         1 * logger.debug('spring property {}: {}', 'prop3', '')

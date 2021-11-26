@@ -26,14 +26,16 @@ import org.springframework.core.env.Environment;
 final public class SpringPropertyLogger {
 
     public static void logProperties(final Logger logger, Environment env) {
-        Optional.ofNullable(env.getProperty("veo.logging.properties"))
-                .map(it -> it.split(","))
-                .map(Arrays::stream)
-                .ifPresent(it -> it.forEach(propertyToLog -> {
-                    logger.debug("spring property {}: {}", propertyToLog,
-                                 Optional.ofNullable(env.getProperty(propertyToLog))
-                                         .orElse(""));
-                }));
+        if (logger.isDebugEnabled()) {
+            Optional.ofNullable(env.getProperty("veo.logging.properties"))
+                    .map(it -> it.split(","))
+                    .map(Arrays::stream)
+                    .ifPresent(it -> it.forEach(propertyToLog -> {
+                        logger.debug("spring property {}: {}", propertyToLog,
+                                     Optional.ofNullable(env.getProperty(propertyToLog))
+                                             .orElse(""));
+                    }));
+        }
     }
 
     private SpringPropertyLogger() {

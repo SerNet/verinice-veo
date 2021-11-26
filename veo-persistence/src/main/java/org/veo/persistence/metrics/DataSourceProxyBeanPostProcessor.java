@@ -51,10 +51,10 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
     @Value("${veo.logging.datasource.slow_threshold_ms:1000}")
-    private long SLOW_THRESHOLD_MS;
+    private long slowThresholdMs;
 
     @Value("${veo.logging.datasource.all_queries:false}")
-    private boolean LOG_ALL;
+    private boolean logAll;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
@@ -65,11 +65,11 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
                 jdbcUrl = hikariData.getJdbcUrl();
             }
             log.info("DataSource has been found: {}. Logging queries and slow queries (> {}ms)",
-                     jdbcUrl, SLOW_THRESHOLD_MS);
+                     jdbcUrl, slowThresholdMs);
             final ProxyFactory proxyFactory = new ProxyFactory(bean);
             proxyFactory.setProxyTargetClass(true);
             proxyFactory.addAdvice(new ProxyDataSourceInterceptor((DataSource) bean,
-                    SLOW_THRESHOLD_MS, LOG_ALL));
+                    slowThresholdMs, logAll));
             return proxyFactory.getProxy();
         }
         return bean;

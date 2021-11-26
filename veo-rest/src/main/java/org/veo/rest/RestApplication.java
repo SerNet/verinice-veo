@@ -90,7 +90,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 public class RestApplication {
 
     public static final String SECURITY_SCHEME_OAUTH = "OAuth2";
-    private static final Logger logger = LoggerFactory.getLogger("veo-rest application properties");
+    private static final Logger LOGGER = LoggerFactory.getLogger("veo-rest application properties");
     public static final String THREAD_NAME_PREFIX = "Verinice.VEO-Worker-";
 
     @Autowired
@@ -124,6 +124,6 @@ public class RestApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void logSpringProperties() {
-        SpringPropertyLogger.logProperties(logger, appContext.getEnvironment());
+        SpringPropertyLogger.logProperties(LOGGER, appContext.getEnvironment());
     }
 }

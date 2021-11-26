@@ -35,6 +35,7 @@ public interface CompositeEntityDataRepository<T extends ElementData>
             + "inner join e.parts p "
             + "where p.dbId IN ?1")
     //@formatter:on
+    @SuppressWarnings("PMD.MethodNamingConventions")
     List<T> findDistinctByParts_DbId_In(Set<String> dbIds);
 
     // TODO VEO-448 override findAll(Specification<> spec) using an entity graph

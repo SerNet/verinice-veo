@@ -16,22 +16,17 @@
     <rule ref="category/java/bestpractices.xml">
         <exclude name="GuardLogStatement"/>
     </rule>
+    
+    <rule ref="category/java/codestyle.xml" />
 
     <rule ref="category/java/design.xml">
-        <exclude name="LawOfDemeter"/>
     </rule>
 
-    <rule ref="category/java/design.xml/LoosePackageCoupling">
-        <properties>
-            <property name="packages" value="org.veo.rest"/>
-        </properties>
-    </rule>
-    
     <rule ref="category/java/multithreading.xml">
     </rule>
-    
 
     <rule ref="category/java/performance.xml">
-        <exclude name="AvoidInstantiatingObjectsInLoops"/>
     </rule>
+    
+    <rule ref="category/java/security.xml" />
 </ruleset>

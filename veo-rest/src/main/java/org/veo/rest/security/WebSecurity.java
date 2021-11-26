@@ -150,14 +150,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        final String NIL_UUID = "00000000-0000-0000-0000-000000000000";
+        final String nilUUID = "00000000-0000-0000-0000-000000000000";
 
-        ApplicationUser basicUser = ApplicationUser.authenticatedUser("user", NIL_UUID, "veo-user",
+        ApplicationUser basicUser = ApplicationUser.authenticatedUser("user", nilUUID, "veo-user",
                                                                       Collections.emptyList());
         basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
 
-        ApplicationUser adminUser = ApplicationUser.authenticatedUser("admin", NIL_UUID,
-                                                                      "veo-admin",
+        ApplicationUser adminUser = ApplicationUser.authenticatedUser("admin", nilUUID, "veo-admin",
                                                                       Collections.emptyList());
         adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
 

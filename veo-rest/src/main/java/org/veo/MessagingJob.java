@@ -50,7 +50,7 @@ public class MessagingJob {
      * again during the next publication after teir established lock time.
      */
     @Value("${veo.messages.publishing.confirmationWaitMs:2000}")
-    public int CONFIRMATION_WAIT;
+    public int confirmationWaitMs;
 
     private final StoredEventRepository storedEventRepository;
 
@@ -103,7 +103,7 @@ public class MessagingJob {
             // keep this transaction open until all messages are confirmed - but no longer
             // than CONFIRMATION_WAIT:
             try {
-                if (!latch.await(CONFIRMATION_WAIT, TimeUnit.MILLISECONDS)) {
+                if (!latch.await(confirmationWaitMs, TimeUnit.MILLISECONDS)) {
                     log.warn("Timeout reached before receiving ACK for all dispatched messages. "
                             + "{} remaining messages will not be marked as processed and "
                             + "re-sent during the next scheduled publication after the "

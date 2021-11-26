@@ -36,10 +36,10 @@ public class StoredEventService {
     private final StoredEventRepository storedEventRepository;
 
     @Value("${veo.message.dispatch.routing-key-prefix}")
-    private String ROUTING_KEY_PREFIX;
+    private String routingKeyPrefix;
 
     public void storeEvent(String routingKey, JsonNode content) {
         storedEventRepository.save(StoredEventData.newInstance(content.toString(),
-                                                               ROUTING_KEY_PREFIX + routingKey));
+                                                               routingKeyPrefix + routingKey));
     }
 }
