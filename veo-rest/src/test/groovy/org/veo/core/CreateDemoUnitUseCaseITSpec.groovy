@@ -62,7 +62,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         then: 'the demo unit is created'
         unit != null
         with(unit) {
-            it.name == 'Demo Unit'
+            it.name == 'Demo'
         }
         unitRepository.findByClient(client).size() == 1
 
@@ -106,13 +106,13 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         unit2 != null
         unit3 != null
         with(unit1) {
-            it.name == 'Demo Unit'
+            it.name == 'Demo'
         }
         with(unit2) {
-            it.name == 'Demo Unit'
+            it.name == 'Demo'
         }
         with(unit3) {
-            it.name == 'Demo Unit'
+            it.name == 'Demo'
         }
         unitRepository.findByClient(client).size() == 3
     }
@@ -131,13 +131,13 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         unit2 != null
         unit3 != null
         with(unit1) {
-            it.name == 'Demo Unit'
+            it.name == 'Demo'
         }
         with(unit2) {
-            it.name == 'Demo Unit'
+            it.name == 'Demo'
         }
         with(unit3) {
-            it.name == 'Demo Unit'
+            it.name == 'Demo'
         }
         unitRepository.findByClient(client1).size() == 1
         unitRepository.findByClient(client2).size() == 1

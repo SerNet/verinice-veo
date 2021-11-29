@@ -63,7 +63,7 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(existingClient)
 
         and: "a new unit is created in the client"
-        1 * entityFactory.createUnit("Demo Unit", null) >> demoUnit
+        1 * entityFactory.createUnit("Demo", null) >> demoUnit
         1 * demoUnit.setClient(existingClient)
 
         and: "the demo unit elements are created for the unit"

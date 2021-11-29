@@ -54,7 +54,7 @@ public class CreateDemoUnitUseCase implements
         TransactionalUseCase<CreateDemoUnitUseCase.InputData, CreateDemoUnitUseCase.OutputData> {
 
     private static final String DEMO_UNIT_DESIGNATOR_PREFIX = "DMO-";
-    public static final String DEMO_UNIT_NAME = "Demo Unit";
+    public static final String DEMO_UNIT_NAME = "Demo";
     private final ClientRepository clientRepository;
     private final UnitRepository unitRepository;
     private final EntityFactory entityFactory;
