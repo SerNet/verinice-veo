@@ -56,7 +56,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def setup() {
         client = createTestClient()
-        domainId = createDsgvoTestDomain(client).id.uuidValue()
+        domainId = createDsgvoDomain(client).id.uuidValue()
         unitId = unitRepository.save(newUnit(client)).dbId
     }
 

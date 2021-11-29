@@ -146,6 +146,13 @@ abstract class VeoSpringSpec extends VeoSpec {
         })
     }
 
+    Domain createDsgvoDomain(Client client) {
+        def domain = domainTemplateService.createDomain(client, DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
+        client.addToDomains(domain)
+        clientDataRepository.save(client)
+        return domain
+    }
+
     Domain createDsgvoTestDomain(Client client) {
         def domain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         client.addToDomains(domain)
