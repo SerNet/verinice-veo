@@ -2132,15 +2132,6 @@
             "process_opinionDPO_privacyImpactAssessment": false
           }
         },
-        "process_tomAssessment": {
-          "domains": [],
-          "attributes": {
-            "process_tomAssessment_comment": "Einsicht beim SiBe",
-            "process_tomAssessment_certification": false,
-            "process_tomAssessment_securityConcept": true,
-            "process_tomAssessment_overallAssessment": "Alles super"
-          }
-        },
         "process_dataSubjects": {
           "domains": [],
           "attributes": {
@@ -2416,15 +2407,6 @@
             "process_opinionDPO_findings": "Alles gut gemacht",
             "process_opinionDPO_recommendations": "Nichts zu verbessern",
             "process_opinionDPO_privacyImpactAssessment": false
-          }
-        },
-        "process_tomAssessment": {
-          "domains": [],
-          "attributes": {
-            "process_tomAssessment_certification": true,
-            "process_tomAssessment_securityConcept": true,
-            "process_tomAssessment_overallAssessment": "Rechte und Rollenkonzept unzureichend",
-            "process_tomAssessment_certificationStandard": "ISO 27001 Zertifizierung"
           }
         },
         "process_dataSubjects": {
@@ -2737,16 +2719,6 @@
             "process_opinionDPO_findings": "Keine L\u00f6schvorgaben festgesetzt",
             "process_opinionDPO_recommendations": "L\u00f6schung der Daten 6 Monate nach Vergabe der Stelle, au\u00dfer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt",
             "process_opinionDPO_privacyImpactAssessment": true
-          }
-        },
-        "process_tomAssessment": {
-          "domains": [],
-          "attributes": {
-            "process_tomAssessment_comment": "Siehe IT.Sicherheitskonzept Data GmbH",
-            "process_tomAssessment_certification": true,
-            "process_tomAssessment_securityConcept": true,
-            "process_tomAssessment_overallAssessment": "Alles super!",
-            "process_tomAssessment_certificationStandard": "ISO 27001 Zertifizierung"
           }
         },
         "process_dataSubjects": {

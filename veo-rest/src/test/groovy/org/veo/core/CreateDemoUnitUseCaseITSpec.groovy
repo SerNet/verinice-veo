@@ -20,8 +20,16 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.networknt.schema.JsonSchema
+import com.networknt.schema.JsonSchemaFactory
+import com.networknt.schema.SpecVersion
+
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
+import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -39,17 +47,51 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
     @Autowired
     private CreateDemoUnitUseCase useCase
 
+    @Autowired
+    EntityToDtoTransformer entityToDtoTransformer
+
+    @Autowired
+    EntitySchemaService entitySchemaService
+
+
     def "create a demo unit for a client"() {
-        given:
+        given: 'a client'
         def client = createClient()
-        when:
+        when: 'executing the CreateDemoUnitUseCase'
         def unit = runUseCase(client)
-        then:
+        then: 'the demo unit is created'
         unit != null
         with(unit) {
             it.name == 'Demo Unit'
         }
         unitRepository.findByClient(client).size() == 1
+
+        when: 'loading the demo unit elements and converting them to JSON'
+        def demoElementsForUnitAsDtos = executeInTransaction{
+            def demoElementsForUnit = [
+                assetDataRepository,
+                controlDataRepository,
+                documentDataRepository,
+                incidentDataRepository,
+                personDataRepository,
+                processDataRepository,
+                scenarioDataRepository,
+                scopeDataRepository
+            ].collectMany {
+                it.findByUnits([unit.idAsString] as Set).collect {
+                    entityToDtoTransformer.transform2Dto(it)
+                }
+            }
+        }
+        then: 'the demo unit elements conform to the object schemas'
+        ObjectMapper om = new ObjectMapper().tap{
+            setSerializationInclusion(Include.NON_NULL)
+        }
+        demoElementsForUnitAsDtos.each { dto->
+            def schema = getSchema(client, dto.type)
+            def validationMessages = schema.validate(om.valueToTree(dto))
+            assert validationMessages.empty
+        }
     }
 
     def "create multiple demo units for a client"() {
@@ -113,6 +155,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             def client = newClient()
             domainTemplateService.createDefaultDomains(client)
             clientRepository.save(client)
+            client
         }
     }
 
@@ -122,5 +165,10 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         txTemplate.execute {
             cl.call()
         }
+    }
+
+    private JsonSchema getSchema(Client client, String type) {
+        def schemaString = entitySchemaService.findSchema(type, client.domains)
+        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(schemaString)
     }
 }
