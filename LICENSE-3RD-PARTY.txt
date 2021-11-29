@@ -13416,7 +13416,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-121. Group: org.springframework.boot  Name: spring-boot  Version: 2.6.0
+121. Group: org.springframework.boot  Name: spring-boot  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -13630,7 +13630,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -13638,7 +13638,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-122. Group: org.springframework.boot  Name: spring-boot-actuator  Version: 2.6.0
+122. Group: org.springframework.boot  Name: spring-boot-actuator  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -13852,7 +13852,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -13860,7 +13860,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-123. Group: org.springframework.boot  Name: spring-boot-actuator-autoconfigure  Version: 2.6.0
+123. Group: org.springframework.boot  Name: spring-boot-actuator-autoconfigure  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14074,7 +14074,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14082,7 +14082,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-124. Group: org.springframework.boot  Name: spring-boot-autoconfigure  Version: 2.6.0
+124. Group: org.springframework.boot  Name: spring-boot-autoconfigure  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14296,7 +14296,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14304,7 +14304,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-125. Group: org.springframework.boot  Name: spring-boot-starter  Version: 2.6.0
+125. Group: org.springframework.boot  Name: spring-boot-starter  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14518,7 +14518,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14526,7 +14526,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-126. Group: org.springframework.boot  Name: spring-boot-starter-actuator  Version: 2.6.0
+126. Group: org.springframework.boot  Name: spring-boot-starter-actuator  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14740,7 +14740,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14748,7 +14748,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-127. Group: org.springframework.boot  Name: spring-boot-starter-amqp  Version: 2.6.0
+127. Group: org.springframework.boot  Name: spring-boot-starter-amqp  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14962,7 +14962,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14970,7 +14970,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-128. Group: org.springframework.boot  Name: spring-boot-starter-aop  Version: 2.6.0
+128. Group: org.springframework.boot  Name: spring-boot-starter-aop  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15184,7 +15184,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15192,7 +15192,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-129. Group: org.springframework.boot  Name: spring-boot-starter-data-jpa  Version: 2.6.0
+129. Group: org.springframework.boot  Name: spring-boot-starter-data-jpa  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15406,7 +15406,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15414,7 +15414,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-130. Group: org.springframework.boot  Name: spring-boot-starter-data-rest  Version: 2.6.0
+130. Group: org.springframework.boot  Name: spring-boot-starter-data-rest  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15628,7 +15628,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15636,7 +15636,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-131. Group: org.springframework.boot  Name: spring-boot-starter-hateoas  Version: 2.6.0
+131. Group: org.springframework.boot  Name: spring-boot-starter-hateoas  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15850,7 +15850,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15858,7 +15858,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-132. Group: org.springframework.boot  Name: spring-boot-starter-jdbc  Version: 2.6.0
+132. Group: org.springframework.boot  Name: spring-boot-starter-jdbc  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16072,7 +16072,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16080,7 +16080,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-133. Group: org.springframework.boot  Name: spring-boot-starter-json  Version: 2.6.0
+133. Group: org.springframework.boot  Name: spring-boot-starter-json  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16294,7 +16294,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16302,7 +16302,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-134. Group: org.springframework.boot  Name: spring-boot-starter-logging  Version: 2.6.0
+134. Group: org.springframework.boot  Name: spring-boot-starter-logging  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16516,7 +16516,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16524,7 +16524,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-135. Group: org.springframework.boot  Name: spring-boot-starter-oauth2-resource-server  Version: 2.6.0
+135. Group: org.springframework.boot  Name: spring-boot-starter-oauth2-resource-server  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16738,7 +16738,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16746,7 +16746,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-136. Group: org.springframework.boot  Name: spring-boot-starter-reactor-netty  Version: 2.6.0
+136. Group: org.springframework.boot  Name: spring-boot-starter-reactor-netty  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16960,7 +16960,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16968,7 +16968,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-137. Group: org.springframework.boot  Name: spring-boot-starter-security  Version: 2.6.0
+137. Group: org.springframework.boot  Name: spring-boot-starter-security  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17182,7 +17182,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17190,7 +17190,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-138. Group: org.springframework.boot  Name: spring-boot-starter-tomcat  Version: 2.6.0
+138. Group: org.springframework.boot  Name: spring-boot-starter-tomcat  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17404,7 +17404,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17412,7 +17412,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-139. Group: org.springframework.boot  Name: spring-boot-starter-validation  Version: 2.6.0
+139. Group: org.springframework.boot  Name: spring-boot-starter-validation  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17626,7 +17626,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17634,7 +17634,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-140. Group: org.springframework.boot  Name: spring-boot-starter-web  Version: 2.6.0
+140. Group: org.springframework.boot  Name: spring-boot-starter-web  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17848,7 +17848,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17856,7 +17856,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-141. Group: org.springframework.boot  Name: spring-boot-starter-webflux  Version: 2.6.0
+141. Group: org.springframework.boot  Name: spring-boot-starter-webflux  Version: 2.6.1
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -18070,7 +18070,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.0
+Spring Boot 2.6.1
 Copyright (c) 2012-2021 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -19209,5 +19209,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Thu Nov 25 11:45:26 CET 2021.
+This report was generated at Mon Nov 29 14:01:47 UTC 2021.
 
