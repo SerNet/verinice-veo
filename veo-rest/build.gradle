@@ -126,6 +126,13 @@ tasks.register('restTest', Test) {
     filter {
         includeTestsMatching "org.veo.rest.test.*"
     }
+
+    systemProperties System.properties.subMap([
+        "http.proxyHost",
+        "http.proxyPort",
+        "https.proxyHost",
+        "https.proxyPort"
+    ])
 }
 
 // specific "continuous integration" settings needed by Jenkins
