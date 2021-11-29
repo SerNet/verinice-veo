@@ -218,7 +218,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 mvc.perform(MockMvcRequestBuilders.get("/assets/${asset.id.uuidValue()}").accept(MediaType.APPLICATION_JSON).header(
                 HttpHeaders.IF_NONE_MATCH, '"'+eTag+'"'
                 ))
-        then: "the server returns not-nodified"
+        then: "the server returns not-modified"
         results.andReturn().response.status == HttpStatus.SC_NOT_MODIFIED
     }
 
