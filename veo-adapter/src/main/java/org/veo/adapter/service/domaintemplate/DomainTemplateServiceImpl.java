@@ -393,7 +393,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         Map<String, Element> elementCache = ref.cache.entrySet()
                                                      .stream()
-                                                     .filter(e -> (e.getValue() instanceof Element))
+                                                     .filter(e -> e.getValue() instanceof Element
+                                                             && elementDtos.containsKey(e.getKey()))
                                                      .collect(Collectors.toMap(Entry::getKey,
                                                                                e -> (Element) e.getValue()));
 
