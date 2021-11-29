@@ -183,7 +183,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         eTag != null
         and: "the caching headers are set"
         def cacheControl = results.andReturn().response.getHeader(HttpHeaders.CACHE_CONTROL)
-        cacheControl == 'max-age=60, must-revalidate, no-transform'
+        cacheControl == 'no-cache'
         and: "the response contains the expected data"
         def result = parseJson(results)
         result == [

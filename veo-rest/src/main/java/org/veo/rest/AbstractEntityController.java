@@ -23,7 +23,6 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +87,7 @@ public abstract class AbstractEntityController {
 
     }
 
-    protected CacheControl defaultCacheControl = CacheControl.maxAge(1, TimeUnit.MINUTES)
-                                                             .noTransform()
-                                                             .mustRevalidate();
+    protected CacheControl defaultCacheControl = CacheControl.noCache();
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
