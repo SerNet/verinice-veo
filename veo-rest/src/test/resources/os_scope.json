@@ -1,0 +1,1425 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "properties": {
+    "_self": {
+      "type": "string",
+      "description": "A valid reference to this resource.",
+      "readOnly": true,
+      "format": "uri"
+    },
+    "abbreviation": {
+      "type": "string",
+      "description": "The abbreviation for the Element.",
+      "maxLength": 255
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "string",
+      "description": "The username of the user who created this object.",
+      "readOnly": true
+    },
+    "customAspects": {
+      "type": "object",
+      "title": "CustomAspect",
+      "description": "Groups of customizable attributes - see '/schemas'",
+      "additionalProperties": false,
+      "properties": {
+        "scope_generalInformation": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "scope_generalInformation_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "scope_thirdCountry": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "scope_thirdCountry_address1": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_address2": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_city": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_country": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_description": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_email": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_fax": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_name": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_phone": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_postcode": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_state": {
+                  "type": "string"
+                },
+                "scope_thirdCountry_status": {
+                  "type": "boolean"
+                },
+                "scope_thirdCountry_website": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "scope_address": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "scope_address_address1": {
+                  "type": "string"
+                },
+                "scope_address_address2": {
+                  "type": "string"
+                },
+                "scope_address_city": {
+                  "type": "string"
+                },
+                "scope_address_country": {
+                  "type": "string"
+                },
+                "scope_address_postcode": {
+                  "type": "string"
+                },
+                "scope_address_state": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "scope_regulatoryAuthority": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "scope_regulatoryAuthority_address1": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_address2": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_city": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_country": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_description": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_email": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_fax": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_name": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_phone": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_postcode": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_state": {
+                  "type": "string"
+                },
+                "scope_regulatoryAuthority_website": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "scope_contactInformation": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "scope_contactInformation_email": {
+                  "type": "string"
+                },
+                "scope_contactInformation_fax": {
+                  "type": "string"
+                },
+                "scope_contactInformation_phone": {
+                  "type": "string"
+                },
+                "scope_contactInformation_website": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "scope_tomAssessment": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "scope_tomAssessment_certification": {
+                  "type": "boolean"
+                },
+                "scope_tomAssessment_certificationStandard": {
+                  "type": "string"
+                },
+                "scope_tomAssessment_securityConcept": {
+                  "type": "boolean"
+                },
+                "scope_tomAssessment_comment": {
+                  "type": "string"
+                },
+                "scope_tomAssessment_overallAssessment": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "The description for the Element.",
+      "maxLength": 65535
+    },
+    "designator": {
+      "type": "string",
+      "description": "Compact human-readable identifier that is unique within the client.",
+      "readOnly": true
+    },
+    "domains": {
+      "type": "object",
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "patternProperties": {
+        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
+          "properties": {
+            "subType": {
+              "type": "string",
+              "enum": [
+                "SCP_Controller",
+                "SCP_JointController",
+                "SCP_Processor",
+                "SCP_ResponsibleBody",
+                "SCP_Scope"
+              ]
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "dependentRequired": {
+            "subType": [
+              "status"
+            ],
+            "status": [
+              "subType"
+            ]
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_Controller"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_JointController"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_Processor"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_ResponsibleBody"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCP_Scope"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "id": {
+      "type": "string",
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "format": "uuid"
+    },
+    "links": {
+      "type": "object",
+      "title": "CustomLink",
+      "description": "Custom relations which do not affect the behavior.",
+      "additionalProperties": false,
+      "properties": {
+        "scope_informationSecurityOfficer": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Person"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "scope_headOfDataProcessing": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Person"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "scope_dataProtectionOfficer": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "scope_dataProtectionOfficer_affiliation": {
+                    "enum": [
+                      "scope_dataProtectionOfficer_affiliation_internal",
+                      "scope_dataProtectionOfficer_affiliation_external"
+                    ]
+                  },
+                  "scope_dataProtectionOfficer_comment": {
+                    "type": "string"
+                  },
+                  "scope_dataProtectionOfficer_nomination": {
+                    "type": "boolean"
+                  },
+                  "scope_dataProtectionOfficer_nominationDate": {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  "scope_dataProtectionOfficer_nominationEvidence": {
+                    "format": "uri",
+                    "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_DataProtectionOfficer"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "scope_management": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Person"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "scope_tom": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "CTL_TOM"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "control"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "scope_contract": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "DOC_Contract"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "document"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "members": {
+      "description": "The scope's members",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "readOnly": true
+          },
+          "resourcesUri": {
+            "type": "string",
+            "readOnly": true
+          },
+          "searchesUri": {
+            "type": "string",
+            "readOnly": true
+          },
+          "targetUri": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "The name for the Element.",
+      "maxLength": 255
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "A friendly human readable title of the referenced unit.",
+          "readOnly": true
+        },
+        "resourcesUri": {
+          "type": "string",
+          "readOnly": true
+        },
+        "searchesUri": {
+          "type": "string",
+          "readOnly": true
+        },
+        "targetUri": {
+          "type": "string",
+          "description": "The resource URL of the referenced unit.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "description": "A reference to the unit containing this entity."
+    },
+    "type": {
+      "type": "string",
+      "description": "Entity type identifier",
+      "readOnly": true
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true
+    },
+    "updatedBy": {
+      "type": "string",
+      "description": "The username of the user who last updated this object.",
+      "readOnly": true
+    },
+    "translations": {
+      "de": {
+        "scope_management": "Leitung der Verantwortlichen Stelle",
+        "scope_headOfDataProcessing": "Leitung der Datenverarbeitung / IT",
+        "scope_informationSecurityOfficer": "Informationssicherheitsbeauftragte",
+        "scope_dataProtectionOfficer": "Datenschutzbeauftragte",
+        "scope_dataProtectionOfficer_affiliation_internal": "Intern",
+        "scope_dataProtectionOfficer_affiliation_external": "Extern",
+        "scope_generalInformation_document": "Dokument",
+        "scope_address_address1": "Straße und Hausnummer oder Postfach",
+        "scope_address_address2": "Adresszusatz",
+        "scope_address_postcode": "Postleitzahl",
+        "scope_address_city": "Stadt",
+        "scope_address_country": "Land",
+        "scope_address_state": "Bundesland",
+        "scope_contactInformation_phone": "Telefon",
+        "scope_contactInformation_fax": "Fax",
+        "scope_contactInformation_email": "E-Mail",
+        "scope_contactInformation_website": "Webseite",
+        "scope_thirdCountry_status": "Sitz der Verantwortlichen Stelle außerhalb der EU?",
+        "scope_thirdCountry_name": "Name",
+        "scope_thirdCountry_description": "Beschreibung",
+        "scope_thirdCountry_address1": "Straße und Hausnummer oder Postfach",
+        "scope_thirdCountry_address2": "Adresszusatz",
+        "scope_thirdCountry_postcode": "Postleitzahl",
+        "scope_thirdCountry_city": "Stadt",
+        "scope_thirdCountry_country": "Land",
+        "scope_thirdCountry_state": "Bundesland",
+        "scope_thirdCountry_phone": "Telefon",
+        "scope_thirdCountry_fax": "Fax",
+        "scope_thirdCountry_email": "E-Mail",
+        "scope_thirdCountry_website": "Webseite",
+        "scope_regulatoryAuthority_name": "Name",
+        "scope_regulatoryAuthority_description": "Beschreibung",
+        "scope_regulatoryAuthority_address1": "Straße und Hausnummer oder Postfach",
+        "scope_regulatoryAuthority_address2": "Adresszusatz",
+        "scope_regulatoryAuthority_postcode": "Postleitzahl",
+        "scope_regulatoryAuthority_city": "Stadt",
+        "scope_regulatoryAuthority_country": "Land",
+        "scope_regulatoryAuthority_state": "Bundesland",
+        "scope_regulatoryAuthority_phone": "Telefon",
+        "scope_regulatoryAuthority_fax": "Fax",
+        "scope_regulatoryAuthority_email": "E-Mail",
+        "scope_regulatoryAuthority_website": "Webseite",
+        "scope_dataProtectionOfficer_comment": "Bemerkung",
+        "scope_dataProtectionOfficer_affiliation": "Interner/Externer Datenschutz",
+        "scope_dataProtectionOfficer_nomination": "Schriftliche Bestellung?",
+        "scope_dataProtectionOfficer_nominationDate": "Datum der Bestellung",
+        "scope_dataProtectionOfficer_nominationEvidence": "Nachweis der Bestellung",
+        "scope_tomAssessment_certification": "Zertifizierung nach anerkanntem Standard?",
+        "scope_tomAssessment_certificationStandard": "Bezeichnung des Standards",
+        "scope_tomAssessment_securityConcept": "IT-Sicherheitskonzept liegt vor?",
+        "scope_tomAssessment_comment": "Bemerkung",
+        "scope_tomAssessment_overallAssessment": "Gesamtbeurteilung der Maßnahmen nach Bewertung der TOM",
+        "scope_tom": "TOM",
+        "scope_contract": "Vertrag zur Auftragsverarbeitung"
+      },
+      "en": {
+        "scope_management": "Head of the responsible body",
+        "scope_headOfDataProcessing": "Head of data processing / IT",
+        "scope_informationSecurityOfficer": "Information security officer",
+        "scope_dataProtectionOfficer": "Data protection officer",
+        "scope_dataProtectionOfficer_affiliation_internal": "Internal",
+        "scope_dataProtectionOfficer_affiliation_external": "External",
+        "scope_generalInformation_document": "Document",
+        "scope_address_address1": "Street and number / P.O. Box",
+        "scope_address_address2": "Address suffix",
+        "scope_address_postcode": "Postcode",
+        "scope_address_city": "City",
+        "scope_address_country": "Country",
+        "scope_address_state": "State",
+        "scope_contactInformation_phone": "Phone",
+        "scope_contactInformation_fax": "Fax",
+        "scope_contactInformation_email": "Email",
+        "scope_contactInformation_website": "Website",
+        "scope_thirdCountry_status": "Location of the responsible party outside the EU??",
+        "scope_thirdCountry_name": "Name",
+        "scope_thirdCountry_description": "Description",
+        "scope_thirdCountry_address1": "Street and number / P.O. Box",
+        "scope_thirdCountry_address2": "Address suffix",
+        "scope_thirdCountry_postcode": "Postcode",
+        "scope_thirdCountry_city": "City",
+        "scope_thirdCountry_country": "Country",
+        "scope_thirdCountry_state": "State",
+        "scope_thirdCountry_phone": "Phone",
+        "scope_thirdCountry_fax": "Fax",
+        "scope_thirdCountry_email": "Email",
+        "scope_thirdCountry_website": "Website",
+        "scope_regulatoryAuthority_name": "Name",
+        "scope_regulatoryAuthority_description": "Description",
+        "scope_regulatoryAuthority_address1": "Street and number / P.O. Box",
+        "scope_regulatoryAuthority_address2": "Address suffix",
+        "scope_regulatoryAuthority_postcode": "Postcode",
+        "scope_regulatoryAuthority_city": "City",
+        "scope_regulatoryAuthority_country": "Country",
+        "scope_regulatoryAuthority_state": "State",
+        "scope_regulatoryAuthority_phone": "Phone",
+        "scope_regulatoryAuthority_fax": "Fax",
+        "scope_regulatoryAuthority_email": "Email",
+        "scope_regulatoryAuthority_website": "Website",
+        "scope_dataProtectionOfficer_comment": "Comment",
+        "scope_dataProtectionOfficer_affiliation": "Internal/external data protection officer",
+        "scope_dataProtectionOfficer_nomination": "Written nomination?",
+        "scope_dataProtectionOfficer_nominationDate": "Nomination date",
+        "scope_dataProtectionOfficer_nominationEvidence": "Nomination evidence",
+        "scope_tomAssessment_certification": "Certification according to recognised standard?",
+        "scope_tomAssessment_certificationStandard": "Designation of the standard",
+        "scope_tomAssessment_securityConcept": "IT security concept in place?",
+        "scope_tomAssessment_comment": "Comment",
+        "scope_tomAssessment_overallAssessment": "Overall assessment of the measures after evaluation of the TOM",
+        "scope_tom": "TOM",
+        "scope_contract": "Contract for order processing"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "owner"
+  ],
+  "title": "scope",
+  "description": "scope_os_mf_2021124"
+}

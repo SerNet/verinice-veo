@@ -1,0 +1,2671 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "type": "object",
+  "properties": {
+    "_self": {
+      "type": "string",
+      "description": "A valid reference to this resource.",
+      "readOnly": true,
+      "format": "uri"
+    },
+    "abbreviation": {
+      "type": "string",
+      "description": "The abbreviation for the Element.",
+      "maxLength": 255
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true
+    },
+    "createdBy": {
+      "type": "string",
+      "description": "The username of the user who created this object.",
+      "readOnly": true
+    },
+    "customAspects": {
+      "type": "object",
+      "title": "CustomAspect",
+      "description": "Groups of customizable attributes - see '/schemas'",
+      "additionalProperties": false,
+      "properties": {
+        "process_accessAuthorization": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_accessAuthorization_concept": {
+                  "type": "boolean"
+                },
+                "process_accessAuthorization_description": {
+                  "type": "string"
+                },
+                "process_accessAuthorization_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_processing": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_processing_asProcessor": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_processingDetails": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_processingDetails_comment": {
+                  "type": "string"
+                },
+                "process_processingDetails_operatingStage": {
+                  "enum": [
+                    "process_processingDetails_operatingStage_operation",
+                    "process_processingDetails_operatingStage_planning",
+                    "process_processingDetails_operatingStage_test",
+                    "process_processingDetails_operatingStage_rollout"
+                  ]
+                },
+                "process_processingDetails_responsibleDepartment": {
+                  "type": "string"
+                },
+                "process_processingDetails_surveyConductedOn": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "process_processingDetails_typeOfSurvey": {
+                  "enum": [
+                    "process_processingDetails_typeOfSurvey_new",
+                    "process_processingDetails_typeOfSurvey_change"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_recipient": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_recipient_type": {
+                  "enum": [
+                    "process_recipient_type_internal",
+                    "process_recipient_type_external",
+                    "process_recipient_type_processor"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_dataProcessing": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_dataProcessing_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                },
+                "process_dataProcessing_explanation": {
+                  "type": "string"
+                },
+                "process_dataProcessing_legalBasis": {
+                  "items": {
+                    "enum": [
+                      "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
+                      "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO",
+                      "process_dataProcessing_legalBasis_Art6Abs1litcDSGVO",
+                      "process_dataProcessing_legalBasis_Art6Abs1litdDSGVO",
+                      "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+                      "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO",
+                      "process_dataProcessing_legalBasis_Art6Abs2DSGVO",
+                      "process_dataProcessing_legalBasis_Art6Abs3DSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2litaDSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2litbDSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2litcDSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2litfDSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2litgDSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2lithDSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2litiDSGVO",
+                      "process_dataProcessing_legalBasis_Art9Abs2litjDSGVO",
+                      "process_dataProcessing_legalBasis_Art88DSGVO",
+                      "process_dataProcessing_legalBasis_P26Abs1BDSG",
+                      "process_dataProcessing_legalBasis_P26Abs2BDSG",
+                      "process_dataProcessing_legalBasis_P26Abs4Satz1BDSG",
+                      "process_dataProcessing_legalBasis_P4BDSG"
+                    ]
+                  },
+                  "type": "array"
+                },
+                "process_dataProcessing_otherLegalBasis": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_opinionDPO": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_opinionDPO_comment": {
+                  "type": "string"
+                },
+                "process_opinionDPO_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                },
+                "process_opinionDPO_findings": {
+                  "type": "string"
+                },
+                "process_opinionDPO_privacyImpactAssessment": {
+                  "type": "boolean"
+                },
+                "process_opinionDPO_recommendations": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_dataTransfer": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_dataTransfer_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                },
+                "process_dataTransfer_explanation": {
+                  "type": "string"
+                },
+                "process_dataTransfer_legalBasis": {
+                  "items": {
+                    "enum": [
+                      "process_dataTransfer_legalBasis_Art6Abs2DSGVO",
+                      "process_dataTransfer_legalBasis_Art6Abs3DSGVO",
+                      "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO",
+                      "process_dataTransfer_legalBasis_P31aBPolG",
+                      "process_dataTransfer_legalBasis_P67bAbs1S1SGBX",
+                      "process_dataTransfer_legalBasis_P25BDSG",
+                      "process_dataTransfer_legalBasis_P24BDSG",
+                      "process_dataTransfer_legalBasis_P8IfSG",
+                      "process_dataTransfer_legalBasis_17aAbs4RoeVP28Abs8RooeV",
+                      "process_dataTransfer_legalBasis_P61StrlSchV",
+                      "process_dataTransfer_legalBasis_P18PStG",
+                      "process_dataTransfer_legalBasis_P294SGBV",
+                      "process_dataTransfer_legalBasis_P298SGBV",
+                      "process_dataTransfer_legalBasis_P138_139StGB",
+                      "process_dataTransfer_legalBasis_P64SGBVIII"
+                    ]
+                  },
+                  "type": "array"
+                },
+                "process_dataTransfer_otherLegalBasis": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_dataSubjects": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_dataSubjects_dataSubjects": {
+                  "items": {
+                    "enum": [
+                      "process_dataSubjects_dataSubjects_shareholders",
+                      "process_dataSubjects_dataSubjects_employers",
+                      "process_dataSubjects_dataSubjects_employees",
+                      "process_dataSubjects_dataSubjects_controllers",
+                      "process_dataSubjects_dataSubjects_applicants",
+                      "process_dataSubjects_dataSubjects_parents",
+                      "process_dataSubjects_dataSubjects_externalConsultants",
+                      "process_dataSubjects_dataSubjects_externalServiceProvider",
+                      "process_dataSubjects_dataSubjects_interestedParties",
+                      "process_dataSubjects_dataSubjects_customers",
+                      "process_dataSubjects_dataSubjects_supplier",
+                      "process_dataSubjects_dataSubjects_clients",
+                      "process_dataSubjects_dataSubjects_tenants",
+                      "process_dataSubjects_dataSubjects_members",
+                      "process_dataSubjects_dataSubjects_newsletterSubscribers",
+                      "process_dataSubjects_dataSubjects_partners",
+                      "process_dataSubjects_dataSubjects_patients",
+                      "process_dataSubjects_dataSubjects_pupils",
+                      "process_dataSubjects_dataSubjects_students",
+                      "process_dataSubjects_dataSubjects_websiteVisitors"
+                    ]
+                  },
+                  "type": "array"
+                },
+                "process_dataSubjects_otherDataSubjects": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_intendedPurpose": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_intendedPurpose_intendedPurpose": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_generalInformation": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_generalInformation_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_privacyImpactAssessment": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_privacyImpactAssessment_blacklistComment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_blacklistDocument": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_comment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_document": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_otherExclusions": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_otherExclusionsComment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_otherReasons": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_processingCriteria": {
+                  "items": {
+                    "enum": [
+                      "process_privacyImpactAssessment_processingCriteria_profiling",
+                      "process_privacyImpactAssessment_processingCriteria_automated",
+                      "process_privacyImpactAssessment_processingCriteria_monitoring",
+                      "process_privacyImpactAssessment_processingCriteria_specialCategories",
+                      "process_privacyImpactAssessment_processingCriteria_Art9",
+                      "process_privacyImpactAssessment_processingCriteria_Art10",
+                      "process_privacyImpactAssessment_processingCriteria_matching",
+                      "process_privacyImpactAssessment_processingCriteria_vulnerability",
+                      "process_privacyImpactAssessment_processingCriteria_newTechnology",
+                      "process_privacyImpactAssessment_processingCriteria_execution"
+                    ]
+                  },
+                  "type": "array"
+                },
+                "process_privacyImpactAssessment_processingOnBlacklistArt35": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_processingOnWhitelist": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_processingOperationAccordingArt35": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_supervisoryAuthorityComment": {
+                  "type": "string"
+                },
+                "process_privacyImpactAssessment_supervisoryAuthorityConsulted": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_twoProcessingCriteria": {
+                  "type": "boolean"
+                },
+                "process_privacyImpactAssessment_twoProcessingCriteriaComment": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_informationsObligations": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_informationsObligations_document": {
+                  "type": "string"
+                },
+                "process_informationsObligations_explanation": {
+                  "type": "string"
+                },
+                "process_informationsObligations_status": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "The description for the Element.",
+      "maxLength": 65535
+    },
+    "designator": {
+      "type": "string",
+      "description": "Compact human-readable identifier that is unique within the client.",
+      "readOnly": true
+    },
+    "domains": {
+      "type": "object",
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "patternProperties": {
+        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
+          "properties": {
+            "subType": {
+              "type": "string",
+              "enum": [
+                "PRO_DataProcessing",
+                "PRO_DataTransfer"
+              ]
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "dependentRequired": {
+            "subType": [
+              "status"
+            ],
+            "status": [
+              "subType"
+            ]
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "PRO_DataProcessing"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "PRO_DataTransfer"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "id": {
+      "type": "string",
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "format": "uuid"
+    },
+    "links": {
+      "type": "object",
+      "title": "CustomLink",
+      "description": "Custom relations which do not affect the behavior.",
+      "additionalProperties": false,
+      "properties": {
+        "process_requiredApplications": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "AST_Application"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "asset"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_dataType": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_dataType_comment": {
+                    "type": "string"
+                  },
+                  "process_dataType_dataOrigin": {
+                    "enum": [
+                      "process_dataType_dataOrigin_direct",
+                      "process_dataType_dataOrigin_transmission",
+                      "process_dataType_dataOrigin_other"
+                    ]
+                  },
+                  "process_dataType_deletionPeriod": {
+                    "enum": [
+                      "process_dataType_deletionPeriod_immediately",
+                      "process_dataType_deletionPeriod_day",
+                      "process_dataType_deletionPeriod_month",
+                      "process_dataType_deletionPeriod_year"
+                    ]
+                  },
+                  "process_dataType_deletionPeriodStart": {
+                    "enum": [
+                      "process_dataType_deletionPeriodStart_completion",
+                      "process_dataType_deletionPeriodStart_appplicationClosure",
+                      "process_dataType_deletionPeriodStart_deletionRequest",
+                      "process_dataType_deletionPeriodStart_endOfRelationship",
+                      "process_dataType_deletionPeriodStart_purposeDiscontinuation",
+                      "process_dataType_deletionPeriodStart_dataCollection",
+                      "process_dataType_deletionPeriodStart_consentWithdrawal"
+                    ]
+                  },
+                  "process_dataType_descriptionDeletionProcedure": {
+                    "type": "string"
+                  },
+                  "process_dataType_otherDeletionPeriodStart": {
+                    "type": "string"
+                  },
+                  "process_dataType_deletionPeriodCount": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "AST_Datatype"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "asset"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_internalRecipient": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_internalRecipient_thirdCountryDocument": {
+                    "format": "uri",
+                    "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  },
+                  "process_internalRecipient_thirdCountryExplanation": {
+                    "type": "string"
+                  },
+                  "process_internalRecipient_thirdCountryGuarantees": {
+                    "type": "string"
+                  },
+                  "process_internalRecipient_thirdCountryName": {
+                    "type": "string"
+                  },
+                  "process_internalRecipient_thirdCountryProcessing": {
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Person"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_responsiblePerson": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Person"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_externalRecipient": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_externalRecipient_thirdCountryDocument": {
+                    "format": "uri",
+                    "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  },
+                  "process_externalRecipient_thirdCountryExplanation": {
+                    "type": "string"
+                  },
+                  "process_externalRecipient_thirdCountryGuarantees": {
+                    "type": "string"
+                  },
+                  "process_externalRecipient_thirdCountryName": {
+                    "type": "string"
+                  },
+                  "process_externalRecipient_thirdCountryProcessing": {
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PER_Person"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_tom": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "CTL_TOM"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "control"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_requiredITSystems": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "AST_IT-System"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "asset"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_responsibleBody": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "SCP_ResponsibleBody"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "scope"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_controller": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_controller_document": {
+                    "format": "uri",
+                    "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "SCP_Controller"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "scope"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_processor": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_processor_thirdCountryDocument": {
+                    "format": "uri",
+                    "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  },
+                  "process_processor_thirdCountryExplanation": {
+                    "type": "string"
+                  },
+                  "process_processor_thirdCountryGuarantees": {
+                    "type": "string"
+                  },
+                  "process_processor_thirdCountryName": {
+                    "type": "string"
+                  },
+                  "process_processor_thirdCountryProcessing": {
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "SCP_Processor"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "scope"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_dataTransmission": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "PRO_DataTransfer"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "process"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_jointControllership": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_jointControllership_document": {
+                    "format": "uri",
+                    "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object",
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      "SCP_JointController"
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "scope"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "name": {
+      "type": "string",
+      "description": "The name for the Element.",
+      "maxLength": 255
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "A friendly human readable title of the referenced unit.",
+          "readOnly": true
+        },
+        "resourcesUri": {
+          "type": "string",
+          "readOnly": true
+        },
+        "searchesUri": {
+          "type": "string",
+          "readOnly": true
+        },
+        "targetUri": {
+          "type": "string",
+          "description": "The resource URL of the referenced unit.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "description": "A reference to the unit containing this entity."
+    },
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "description": "A friendly human readable title of the referenced entity.",
+            "readOnly": true
+          },
+          "resourcesUri": {
+            "type": "string",
+            "readOnly": true
+          },
+          "searchesUri": {
+            "type": "string",
+            "readOnly": true
+          },
+          "targetUri": {
+            "type": "string",
+            "description": "The resource URL of the referenced entity.",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "description": "A reference to an entity's part"
+      }
+    },
+    "type": {
+      "type": "string",
+      "description": "Entity type identifier",
+      "readOnly": true
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true
+    },
+    "updatedBy": {
+      "type": "string",
+      "description": "The username of the user who last updated this object.",
+      "readOnly": true
+    },
+    "translations": {
+      "de": {
+        "process_generalInformation_document": "Dokument",
+        "process_processingDetails_responsibleDepartment": "Verantwortliche Fachabteilung",
+        "process_processingDetails_typeOfSurvey": "Art der Erhebung",
+        "process_processingDetails_typeOfSurvey_new": "Neue Verarbeitung",
+        "process_processingDetails_typeOfSurvey_change": "Änderung einer Verarbeitung",
+        "process_processingDetails_operatingStage": "Betriebsstadium",
+        "process_processingDetails_operatingStage_operation": "Betrieb",
+        "process_processingDetails_operatingStage_planning": "Planung",
+        "process_processingDetails_operatingStage_test": "Test",
+        "process_processingDetails_operatingStage_rollout": "Roll out",
+        "process_processingDetails_comment": "Bemerkung",
+        "process_processingDetails_surveyConductedOn": "Erhebung durchgeführt am",
+        "process_controller": "Auftraggeber nach Art. 30 II DS-GVO",
+        "process_controller_document": "Dokument",
+        "process_jointControllership": "Gemeinsame Verantwortliche nach Art.26 DS-GVO",
+        "process_dataSubjects_dataSubjects": "Betroffene",
+        "process_dataSubjects_dataSubjects_shareholders": "Aktionäre",
+        "process_dataSubjects_dataSubjects_employers": "Arbeitgeber",
+        "process_dataSubjects_dataSubjects_employees": "Arbeitnehmer",
+        "process_dataSubjects_dataSubjects_controllers": "Auftraggeber",
+        "process_dataSubjects_dataSubjects_applicants": "Bewerber",
+        "process_dataSubjects_dataSubjects_parents": "Eltern",
+        "process_dataSubjects_dataSubjects_externalConsultants": "Externe Berater",
+        "process_dataSubjects_dataSubjects_externalServiceProvider": "Externe Dienstleister",
+        "process_dataSubjects_dataSubjects_interestedParties": "Interessenten",
+        "process_dataSubjects_dataSubjects_customers": "Kunden",
+        "process_dataSubjects_dataSubjects_supplier": "Lieferanten",
+        "process_dataSubjects_dataSubjects_clients": "Mandanten",
+        "process_dataSubjects_dataSubjects_tenants": "Mieter",
+        "process_dataSubjects_dataSubjects_members": "Mitglieder",
+        "process_dataSubjects_dataSubjects_newsletterSubscribers": "Newsletter-Abonnenten",
+        "process_dataSubjects_dataSubjects_partners": "Partner",
+        "process_dataSubjects_dataSubjects_patients": "Patienten",
+        "process_dataSubjects_dataSubjects_pupils": "Schüler",
+        "process_dataSubjects_dataSubjects_students": "Studierende",
+        "process_dataSubjects_dataSubjects_websiteVisitors": "Webseitenbesucher",
+        "process_dataSubjects_dataSubjects_other": "Sonstige",
+        "process_dataType_dataOrigin_direct": "Direkterhebung",
+        "process_dataType_dataOrigin_transmission": "Übermittlung",
+        "process_dataType_dataOrigin_other": "Sonstige",
+        "process_accessAuthorization_concept": "Berechtigungskonzept vorhanden?",
+        "process_accessAuthorization_description": "Beschreibung des Berechtigungskonzepts",
+        "process_accessAuthorization_document": "Dokument",
+        "process_informationsObligations_status": "Informationspflichten Art. 13, 14 DS-GVO erfüllt?",
+        "process_informationsObligations_explanation": "Erläuterung",
+        "process_informationsObligations_document": "Dokument",
+        "process_privacyImpactAssessment_processingOnWhitelist": "Verarbeitung auf Negativliste, Art. 35 V DS-GVO?",
+        "process_privacyImpactAssessment_processingOperationAccordingArt35": "Teil gemeinsamer Verarbeitung gemäß Art. 35 I S.2 DS-GVO?",
+        "process_privacyImpactAssessment_comment": "Bemerkung",
+        "process_privacyImpactAssessment_otherExclusions": "Sonstiger Ausschlusstatbestand?",
+        "process_privacyImpactAssessment_otherExclusionsComment": "Bemerkung",
+        "process_privacyImpactAssessment_processingOnBlacklistArt35": "Verarbeitung auf Positivliste, Art. 35 IV DS-GVO?",
+        "process_privacyImpactAssessment_blacklistComment": "Bemerkung",
+        "process_privacyImpactAssessment_processingCriteria": "Verarbeitung entspricht den folgenden Kriterien",
+        "process_privacyImpactAssessment_processingCriteria_profiling": "Bewertung oder Einstufung (Scoring), Profilbildung und Prognosen Betroffener",
+        "process_privacyImpactAssessment_processingCriteria_automated": "Automatisierte Entscheidungen mit rechtlicher oder ähnlich beeinträchtigender Wirkung",
+        "process_privacyImpactAssessment_processingCriteria_monitoring": "Systematische Überwachung",
+        "process_privacyImpactAssessment_processingCriteria_specialCategories": "Verarbeitung besonderer Kategorien personenbezogener Daten gemäß Art. 9 DS-GVO",
+        "process_privacyImpactAssessment_processingCriteria_Art9": "Verarbeitung personenbezogener Daten über strafrechtliche Verurteilungen oder Straftaten gemäß Art. 10 DS-GVO",
+        "process_privacyImpactAssessment_processingCriteria_Art10": "Datenverarbeitung in großem Umfang",
+        "process_privacyImpactAssessment_processingCriteria_matching": "Abgleich oder Zusammenführen von Datensätzen",
+        "process_privacyImpactAssessment_processingCriteria_vulnerability": "Daten zu schutzbedürftigen Betroffenen",
+        "process_privacyImpactAssessment_processingCriteria_newTechnology": "Innovative Nutzung oder Verwendung von technologischen und organisatorischen Lösungen",
+        "process_privacyImpactAssessment_processingCriteria_execution": "Betroffene werden in der Ausübung eines Rechts oder der Nutzung einer Dienstleistung bzw. Vertrages gehindert",
+        "process_privacyImpactAssessment_twoProcessingCriteria": "Zwei oder mehr Kriterien treffen zu?",
+        "process_privacyImpactAssessment_twoProcessingCriteriaComment": "Bemerkung",
+        "process_privacyImpactAssessment_otherReasons": "Erfordernis aus sonstigen Gründen",
+        "process_privacyImpactAssessment_supervisoryAuthorityConsulted": "Konsultation der Aufsichtsbehörde erforderlich?",
+        "process_privacyImpactAssessment_supervisoryAuthorityComment": "Bemerkung",
+        "process_opinionDPO_privacyImpactAssessment": "Datenschutz-Folgenabschätzung erforderlich?",
+        "process_opinionDPO_comment": "Bemerkung",
+        "process_opinionDPO_findings": "Feststellungen",
+        "process_opinionDPO_recommendations": "Empfehlungen",
+        "process_opinionDPO_document": "Ergebnis der DSFA",
+        "process_dataProcessing_legalBasis_Art6Abs2DSGVO": "Art. 6 Abs. 2 DS-GVO",
+        "process_dataProcessing_legalBasis_Art6Abs3DSGVO": "Art. 6 Abs. 3 DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2litaDSGVO": "Art. 9 Abs. 2 lit. a DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2litbDSGVO": "Art. 9 Abs. 2 lit. b DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2litcDSGVO": "Art. 9 Abs. 2 lit. c DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2litfDSGVO": "Art. 9 Abs. 2 lit. f DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2litgDSGVO": "Art. 9 Abs. 2 lit. g DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2lithDSGVO": "Art. 9 Abs. 2 lit. h DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2litiDSGVO": "Art. 9 Abs. 2 lit. i DS-GVO",
+        "process_dataProcessing_legalBasis_Art9Abs2litjDSGVO": "Art. 9 Abs. 2 lit. j DS-GVO",
+        "process_dataProcessing_legalBasis_Art88DSGVO": "Art. 88 DS-GVO",
+        "process_dataProcessing_legalBasis_P26Abs1BDSG": "§ 26 Abs.1 BDSG",
+        "process_dataProcessing_legalBasis_P26Abs2BDSG": "§ 26 Abs.2 BDSG",
+        "process_dataProcessing_legalBasis_P26Abs4Satz1BDSG": "§ 26 Abs. 4 Satz 1 BDSG",
+        "process_dataProcessing_legalBasis_P4BDSG": "§ 4 BDSG",
+        "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO": "Art. 6 Abs. 1 lit. a DS-GVO",
+        "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO": "Art. 6 Abs. 1 lit. b DS-GVO",
+        "process_dataProcessing_legalBasis_Art6Abs1litcDSGVO": "Art. 6 Abs. 1 lit. c DS-GVO",
+        "process_dataProcessing_legalBasis_Art6Abs1litdDSGVO": "Art. 6 Abs. 1 lit. d DS-GVO",
+        "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO": "Art. 6 Abs. 1 lit. e DS-GVO",
+        "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO": "Art. 6 Abs. 1 lit. f DS-GVO",
+        "process_dataProcessing_legalBasis_others": "Sonstige",
+        "process_dataSubjects_otherDataSubjects": "Sonstige Betroffene",
+        "process_processor": "Auftragsverarbeiter",
+        "process_processor_thirdCountryProcessing": "Verarbeitung in Drittland?",
+        "process_processor_thirdCountryGuarantees": "Angabe geeigneter Garantien",
+        "process_processor_thirdCountryExplanation": "Erläuterung",
+        "process_processor_thirdCountryDocument": "Dokument",
+        "process_jointControllership_document": "Dokument",
+        "process_dataType": "Datenart/Datenkategorie",
+        "process_dataType_dataOrigin": "Datenherkunft",
+        "process_intendedPurpose_intendedPurpose": "Zweckbestimmung",
+        "process_dataProcessing_legalBasis": "Rechtsgrundlage",
+        "process_dataProcessing_otherLegalBasis": "Sonstige Rechtgrundlage",
+        "process_dataProcessing_explanation": "Erläuterung",
+        "process_dataProcessing_document": "Dokument",
+        "process_recipient_type": "Empfänger",
+        "process_recipient_type_internal": "Intern",
+        "process_recipient_type_external": "Extern",
+        "process_recipient_type_processor": "Auftragsverarbeiter",
+        "process_internalRecipient": "Interner Empfänger",
+        "process_externalRecipient": "Externer Empfänger",
+        "process_dataTransfer_legalBasis_Art6Abs2DSGVO": "Art. 6 Abs. 2 DS-GVO",
+        "process_dataTransfer_legalBasis_Art6Abs3DSGVO": "Art. 6 Abs. 3 DS-GVO",
+        "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO": "Art. 9 Abs. 2 lit. f DS-GVO",
+        "process_dataTransfer_legalBasis_P31aBPolG": "§ 31a BPolG",
+        "process_dataTransfer_legalBasis_P67bAbs1S1SGBX": "§ 67b Abs. 1 S.1 SGB X",
+        "process_dataTransfer_legalBasis_P25BDSG": "§ 25 BDSG",
+        "process_dataTransfer_legalBasis_P24BDSG": "§ 24 BDSG",
+        "process_dataTransfer_legalBasis_P8IfSG": "§ 8 IfSG",
+        "process_dataTransfer_legalBasis_17aAbs4RoeVP28Abs8RooeV": "17a Abs. 4 RöV, § 28 Abs. 8 RöV",
+        "process_dataTransfer_legalBasis_P61StrlSchV": "§ 61 StrlSchV",
+        "process_dataTransfer_legalBasis_P18PStG": "§ 18 PStG",
+        "process_dataTransfer_legalBasis_P294SGBV": "§ 294 SGB V",
+        "process_dataTransfer_legalBasis_P298SGBV": "§ 298 SGB V",
+        "process_dataTransfer_legalBasis_P138_139StGB": "§§ 138, 139 StGB",
+        "process_dataTransfer_legalBasis_P64SGBVIII": "§ 64 SGB VIII",
+        "process_dataTransfer_legalBasis_others": "Sonstige",
+        "process_processor_thirdCountryName": "Name des Drittlandes",
+        "process_dataType_comment": "Bemerkung",
+        "process_processing_asProcessor": "Verarbeitung als Auftragsverarbeiter nach Art. 30 II DS-GVO?",
+        "process_dataTransmission": "Datenübertragung",
+        "process_dataTransfer_legalBasis": "Rechtsgrundlage für die Datenübertragung",
+        "process_dataTransfer_otherLegalBasis": "Sonstige Rechtsgrundlage",
+        "process_dataTransfer_explanation": "Erläuterung",
+        "process_dataTransfer_document": "Dokument",
+        "process_privacyImpactAssessment_document": "Dokument",
+        "process_privacyImpactAssessment_blacklistDocument": "Dokument",
+        "process_requiredApplications": "Erforderliche Anwendungen",
+        "process_requiredITSystems": "Erforderliche IT-Systeme",
+        "process_tom": "Spezifische Maßnahmen",
+        "process_responsiblePerson": "Fachverantwortliche",
+        "process_dataType_deletionPeriod": "Löschfrist (Tage, Monate, Jahre)",
+        "process_dataType_deletionPeriod_immediately": "Unmittelbar",
+        "process_dataType_deletionPeriodStart": "Beginn der Löschfrist",
+        "process_dataType_deletionPeriodStart_completion": "Abschluss der Verarbeitungstätigkeit",
+        "process_dataType_deletionPeriodStart_appplicationClosure": "Abschluss des Bewerbungsverfahrens",
+        "process_dataType_deletionPeriodStart_deletionRequest": "Anfrage auf Löschung",
+        "process_dataType_deletionPeriodStart_endOfRelationship": "Ende der Beziehung zur betroffenen Person",
+        "process_dataType_deletionPeriodStart_purposeDiscontinuation": "Entfall des Verarbeitungszwecks",
+        "process_dataType_deletionPeriodStart_dataCollection": "Erhebung der Daten",
+        "process_dataType_deletionPeriodStart_consentWithdrawal": "Widerruf der Einwilligung",
+        "process_dataType_deletionPeriodStart_other": "Sonstiger",
+        "process_dataType_otherDeletionPeriodStart": "Sonstiger Beginn der Löschfrist",
+        "process_internalRecipient_thirdCountryProcessing": "Verarbeitung in Drittland?",
+        "process_internalRecipient_thirdCountryName": "Name des Drittlandes",
+        "process_internalRecipient_thirdCountryGuarantees": "Angabe geeigneter Garantien",
+        "process_internalRecipient_thirdCountryExplanation": "Erläuterung",
+        "process_internalRecipient_thirdCountryDocument": "Dokument",
+        "process_externalRecipient_thirdCountryProcessing": "Verarbeitung in Drittland?",
+        "process_externalRecipient_thirdCountryName": "Name des Drittlandes",
+        "process_externalRecipient_thirdCountryGuarantees": "Angabe geeigneter Garantien",
+        "process_externalRecipient_thirdCountryExplanation": "Erläuterung",
+        "process_externalRecipient_thirdCountryDocument": "Dokument",
+        "process_dataType_descriptionDeletionProcedure": "Beschreibung des Löschverfahrens",
+        "process_responsibleBody": "Verantwortliche Stelle",
+        "process_dataType_deletionPeriod_day": "Tag(e)",
+        "process_dataType_deletionPeriod_month": "Monat(e)",
+        "process_dataType_deletionPeriod_year": "Jahr(e)",
+        "process_dataType_deletionPeriodCount": "Löschfrist (Dauer)"
+      },
+      "en": {
+        "process_generalInformation_document": "Document",
+        "process_processingDetails_responsibleDepartment": "Responsible department",
+        "process_processingDetails_typeOfSurvey": "Type of survey",
+        "process_processingDetails_typeOfSurvey_new": "New processing",
+        "process_processingDetails_typeOfSurvey_change": "Change of processing",
+        "process_processingDetails_operatingStage": "Operating stage",
+        "process_processingDetails_operatingStage_operation": "Operation",
+        "process_processingDetails_operatingStage_planning": "Planning",
+        "process_processingDetails_operatingStage_test": "Test",
+        "process_processingDetails_operatingStage_rollout": "Roll out",
+        "process_processingDetails_comment": "Comment",
+        "process_processingDetails_surveyConductedOn": "Survey conducted on",
+        "process_controller": "Controller according Art. 30 II GDPR",
+        "process_controller_document": "Document",
+        "process_jointControllership": "Joint controllership according to Art.26 GDPR",
+        "process_dataSubjects_dataSubjects": "Data subjects",
+        "process_dataSubjects_dataSubjects_shareholders": "Shareholders",
+        "process_dataSubjects_dataSubjects_employers": "Employers",
+        "process_dataSubjects_dataSubjects_employees": "Employees",
+        "process_dataSubjects_dataSubjects_controllers": "Controllers",
+        "process_dataSubjects_dataSubjects_applicants": "Applicants",
+        "process_dataSubjects_dataSubjects_parents": "Parents",
+        "process_dataSubjects_dataSubjects_externalConsultants": "External consultants",
+        "process_dataSubjects_dataSubjects_externalServiceProvider": "External service provider",
+        "process_dataSubjects_dataSubjects_interestedParties": "Interested parties",
+        "process_dataSubjects_dataSubjects_customers": "Customers",
+        "process_dataSubjects_dataSubjects_supplier": "Supplier",
+        "process_dataSubjects_dataSubjects_clients": "Clients",
+        "process_dataSubjects_dataSubjects_tenants": "Tenants",
+        "process_dataSubjects_dataSubjects_members": "Members",
+        "process_dataSubjects_dataSubjects_newsletterSubscribers": "Newsletter subscribers",
+        "process_dataSubjects_dataSubjects_partners": "Partners",
+        "process_dataSubjects_dataSubjects_patients": "Patients",
+        "process_dataSubjects_dataSubjects_pupils": "Pupils",
+        "process_dataSubjects_dataSubjects_students": "Students",
+        "process_dataSubjects_dataSubjects_websiteVisitors": "Website visitors",
+        "process_dataSubjects_dataSubjects_other": "Other",
+        "process_dataType_dataOrigin_direct": "Direct survey",
+        "process_dataType_dataOrigin_transmission": "Transmission",
+        "process_dataType_dataOrigin_other": "Other",
+        "process_accessAuthorization_concept": "Authorisation concept in place?",
+        "process_accessAuthorization_description": "Description of the authorization concept",
+        "process_accessAuthorization_document": "Document",
+        "process_informationsObligations_status": "Information obligations Art. 13, 14 GDPR fullfilled?",
+        "process_informationsObligations_explanation": "Explanation",
+        "process_informationsObligations_document": "Document",
+        "process_privacyImpactAssessment_processingOnWhitelist": "Processing on Whitelist, Art.35 V GDPR?",
+        "process_privacyImpactAssessment_processingOperationAccordingArt35": "Processing operation according to Art.35 I S.2 GDPR?",
+        "process_privacyImpactAssessment_comment": "Comment",
+        "process_privacyImpactAssessment_otherExclusions": "Other exclusions?",
+        "process_privacyImpactAssessment_otherExclusionsComment": "Comment",
+        "process_privacyImpactAssessment_processingOnBlacklistArt35": "Processing on Blacklist, Art.35 IV GDPR?",
+        "process_privacyImpactAssessment_blacklistComment": "Comment",
+        "process_privacyImpactAssessment_processingCriteria": "Processing meets the following criteria",
+        "process_privacyImpactAssessment_processingCriteria_profiling": "Evaluation or scoring, creation of personal profiles",
+        "process_privacyImpactAssessment_processingCriteria_automated": "Automated decision making with legal or similar significant effect",
+        "process_privacyImpactAssessment_processingCriteria_monitoring": "Systematic monitoring",
+        "process_privacyImpactAssessment_processingCriteria_specialCategories": "Processing of special categories of personal data, Art. 9 GDPR",
+        "process_privacyImpactAssessment_processingCriteria_Art9": "Processing of personal data related to criminal convictions and offences, Art. 10 GDPR",
+        "process_privacyImpactAssessment_processingCriteria_Art10": "Data processing on a large scale",
+        "process_privacyImpactAssessment_processingCriteria_matching": "Matching or combining datasets",
+        "process_privacyImpactAssessment_processingCriteria_vulnerability": "Data concerning vulnerable data subjects",
+        "process_privacyImpactAssessment_processingCriteria_newTechnology": "Innovative use or application of new technological or organisational solutions",
+        "process_privacyImpactAssessment_processingCriteria_execution": "Data subjects are prevented from exercising a right or using a service or a contract",
+        "process_privacyImpactAssessment_twoProcessingCriteria": "Two or more criteria apply?",
+        "process_privacyImpactAssessment_twoProcessingCriteriaComment": "Comment",
+        "process_privacyImpactAssessment_otherReasons": "Required for other reasons",
+        "process_privacyImpactAssessment_supervisoryAuthorityConsulted": "Consultation of the supervisory authority required?",
+        "process_privacyImpactAssessment_supervisoryAuthorityComment": "Comment",
+        "process_opinionDPO_privacyImpactAssessment": "Privacy Impact Assessment (PIA) mandatory?",
+        "process_opinionDPO_comment": "Comment",
+        "process_opinionDPO_findings": "Findings",
+        "process_opinionDPO_recommendations": "Recommendations",
+        "process_opinionDPO_document": "Result of the PIA",
+        "process_dataProcessing_legalBasis_Art6Abs2DSGVO": "Art. 6 Abs. 2 GDPR",
+        "process_dataProcessing_legalBasis_Art6Abs3DSGVO": "Art. 6 Abs. 3 GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2litaDSGVO": "Art. 9 Abs. 2 lit. a GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2litbDSGVO": "Art. 9 Abs. 2 lit. b GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2litcDSGVO": "Art. 9 Abs. 2 lit. c GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2litfDSGVO": "Art. 9 Abs. 2 lit. f GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2litgDSGVO": "Art. 9 Abs. 2 lit. g GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2lithDSGVO": "Art. 9 Abs. 2 lit. h GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2litiDSGVO": "Art. 9 Abs. 2 lit. i GDPR",
+        "process_dataProcessing_legalBasis_Art9Abs2litjDSGVO": "Art. 9 Abs. 2 lit. j GDPR",
+        "process_dataProcessing_legalBasis_Art88DSGVO": "Art. 88 GDPR",
+        "process_dataProcessing_legalBasis_P26Abs1BDSG": "§ 26 Abs.1 BDSG",
+        "process_dataProcessing_legalBasis_P26Abs2BDSG": "§ 26 Abs.2 BDSG",
+        "process_dataProcessing_legalBasis_P26Abs4Satz1BDSG": "§ 26 Abs. 4 Satz 1 BDSG",
+        "process_dataProcessing_legalBasis_P4BDSG": "§ 4 BDSG",
+        "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO": "Art. 6 Abs. 1 lit. a GDPR",
+        "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO": "Art. 6 Abs. 1 lit. b GDPR",
+        "process_dataProcessing_legalBasis_Art6Abs1litcDSGVO": "Art. 6 Abs. 1 lit. c GDPR",
+        "process_dataProcessing_legalBasis_Art6Abs1litdDSGVO": "Art. 6 Abs. 1 lit. d GDPR",
+        "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO": "Art. 6 Abs. 1 lit. e GDPR",
+        "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO": "Art. 6 Abs. 1 lit. f GDPR",
+        "process_dataProcessing_legalBasis_others": "Others",
+        "process_dataSubjects_otherDataSubjects": "Other data subjects",
+        "process_processor": "Processor",
+        "process_processor_thirdCountryProcessing": "Processing in third country?",
+        "process_processor_thirdCountryGuarantees": "Indication of appropriate guarantees",
+        "process_processor_thirdCountryExplanation": "Explanation",
+        "process_processor_thirdCountryDocument": "Document",
+        "process_dataType": "Data type/data category",
+        "process_dataType_dataOrigin": "Data origin",
+        "process_jointControllership_document": "Document",
+        "process_intendedPurpose_intendedPurpose": "Intended purpose",
+        "process_dataProcessing_legalBasis": "Legal basis",
+        "process_dataProcessing_otherLegalBasis": "Other legal basis",
+        "process_dataProcessing_explanation": "Explanation",
+        "process_dataProcessing_document": "Document",
+        "process_processor_thirdCountryName": "Name of third country",
+        "process_dataType_comment": "Other legal basis",
+        "process_dataTransfer_legalBasis_Art6Abs2DSGVO": "Art. 6 Abs. 2 GDPR",
+        "process_dataTransfer_legalBasis_Art6Abs3DSGVO": "Art. 6 Abs. 3 GDPR",
+        "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO": "Art. 9 Abs. 2 lit. f GDPR",
+        "process_dataTransfer_legalBasis_P31aBPolG": "§ 31a BPolG",
+        "process_dataTransfer_legalBasis_P67bAbs1S1SGBX": "§ 67b Abs. 1 S.1 SGB X",
+        "process_dataTransfer_legalBasis_P25BDSG": "§ 25 BDSG",
+        "process_dataTransfer_legalBasis_P24BDSG": "§ 24 BDSG",
+        "process_dataTransfer_legalBasis_P8IfSG": "§ 8 IfSG",
+        "process_dataTransfer_legalBasis_17aAbs4RoeVP28Abs8RooeV": "17a Abs. 4 RöV, § 28 Abs. 8 RöV",
+        "process_dataTransfer_legalBasis_P61StrlSchV": "§ 61 StrlSchV",
+        "process_dataTransfer_legalBasis_P18PStG": "§ 18 PStG",
+        "process_dataTransfer_legalBasis_P294SGBV": "§ 294 SGB V",
+        "process_dataTransfer_legalBasis_P298SGBV": "§ 298 SGB V",
+        "process_dataTransfer_legalBasis_P138_139StGB": "§§ 138, 139 StGB",
+        "process_dataTransfer_legalBasis_P64SGBVIII": "§ 64 SGB VIII",
+        "process_recipient_type": "Recipient",
+        "process_recipient_type_internal": "Internal",
+        "process_recipient_type_external": "External",
+        "process_recipient_type_processor": "Processor",
+        "process_externalRecipient": "External recipient",
+        "process_internalRecipient": "Internal recipient",
+        "process_dataTransfer_legalBasis_others": "process_dataTransfer_legalBasis_others",
+        "process_processing_asProcessor": "Processing as a processor according to Art. 30 II GDPR?",
+        "process_dataTransmission": "Data transfer",
+        "process_dataTransfer_legalBasis": "Legal basis data transfer",
+        "process_dataTransfer_otherLegalBasis": "Other legal basis",
+        "process_dataTransfer_explanation": "Explanation",
+        "process_dataTransfer_document": "Document",
+        "process_privacyImpactAssessment_document": "Document",
+        "process_privacyImpactAssessment_blacklistDocument": "Document",
+        "process_requiredApplications": "Required applications",
+        "process_requiredITSystems": "Required IT systems",
+        "process_tom": "Specific measures",
+        "process_responsiblePerson": "Responsible person",
+        "process_dataType_deletionPeriod": "Deletion period (days, months, years)",
+        "process_dataType_deletionPeriod_immediately": "Immediately",
+        "process_dataType_deletionPeriodStart": "Start of deletion period",
+        "process_dataType_deletionPeriodStart_completion": "Completion of the processing activity",
+        "process_dataType_deletionPeriodStart_appplicationClosure": "Closure of the application procedure",
+        "process_dataType_deletionPeriodStart_deletionRequest": "Request for deletion",
+        "process_dataType_deletionPeriodStart_endOfRelationship": "End of the relationship with the data subject",
+        "process_dataType_deletionPeriodStart_purposeDiscontinuation": "Discontinuation of the processing purpose",
+        "process_dataType_deletionPeriodStart_dataCollection": "Collection of data",
+        "process_dataType_deletionPeriodStart_consentWithdrawal": "Withdrawal of consent",
+        "process_dataType_deletionPeriodStart_other": "Other",
+        "process_dataType_otherDeletionPeriodStart": "Other Start of the deletion period",
+        "process_internalRecipient_thirdCountryProcessing": "Processing in third country?",
+        "process_internalRecipient_thirdCountryName": "Third country name",
+        "process_internalRecipient_thirdCountryGuarantees": "Indication of appropriate guarantees",
+        "process_internalRecipient_thirdCountryExplanation": "Explanation",
+        "process_internalRecipient_thirdCountryDocument": "Document",
+        "process_externalRecipient_thirdCountryProcessing": "Processing in third country?",
+        "process_externalRecipient_thirdCountryName": "Third country name",
+        "process_externalRecipient_thirdCountryGuarantees": "Indication of appropriate guarantees",
+        "process_externalRecipient_thirdCountryExplanation": "Explanation",
+        "process_externalRecipient_thirdCountryDocument": "Document",
+        "process_dataType_descriptionDeletionProcedure": "Description of the deletion procedure",
+        "process_responsibleBody": "Responsible body",
+        "process_dataType_deletionPeriod_day": "Day(s)",
+        "process_dataType_deletionPeriod_month": "Month",
+        "process_dataType_deletionPeriod_year": "Year(s)",
+        "process_dataType_deletionPeriodCount": "Deletion period (duration)"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "owner"
+  ],
+  "title": "process",
+  "description": "os_process_mf_20211125"
+}

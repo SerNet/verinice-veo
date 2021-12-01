@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest
 
+import java.nio.charset.StandardCharsets
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -27,6 +29,8 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
+
+import groovy.json.JsonSlurper
 
 /**
  * Integration test for the domain controller. Uses mocked spring MVC environment.
@@ -113,5 +117,44 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the domains are returned"
         result.size == 2
         result*.name.sort().first() == 'Domain 1'
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "update the element type schema in a domain with an object schema"() {
+        given:
+        def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
+            new JsonSlurper().parse(it)
+        }
+        when: "a request is made to the server"
+        def result = post("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson, 204)
+
+        then: "the domains are returned"
+        result.andReturn().response.getContentAsString(StandardCharsets.UTF_8) == ''
+        when: 'reloading the updated domain from the database'
+        def updatedDomain = txTemplate.execute {
+            def client = clientRepository.findById(testDomain.owningClient.get().id).get()
+            def d = client.domains.find{it.id == testDomain.id}
+            //initialize lazy associations
+            d.elementTypeDefinitions.each {
+                it.subTypes.each {
+                    it.value.statuses
+                }
+            }
+            d
+        }
+        then: 'the entity schemas are updated'
+
+        with(updatedDomain.getElementTypeDefinition('scope').get()) {
+            with(it.subTypes) {
+                it.keySet() == [
+                    'SCP_Scope',
+                    'SCP_Processor',
+                    'SCP_Controller',
+                    'SCP_JointController',
+                    'SCP_ResponsibleBody'
+                ] as Set
+            }
+        }
+
     }
 }

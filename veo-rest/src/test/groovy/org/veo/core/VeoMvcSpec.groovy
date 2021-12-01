@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpStatus
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
@@ -62,6 +63,14 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .accept(APPLICATION_JSON),
                 201,
                 expectSuccessfulRequest)
+    }
+
+    ResultActions post(String url, Map content, int expectedStatusCode) {
+        doRequest(MockMvcRequestBuilders.post(url)
+                .contentType(APPLICATION_JSON)
+                .content(toJson(content))
+                .accept(APPLICATION_JSON),
+                expectedStatusCode)
     }
 
 
@@ -108,6 +117,24 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             asyncActions.andExpect(status().is(successfulStatusCode))
         } else {
             asyncActions.andExpect({result -> result.response.status != successfulStatusCode})
+            assert asyncResult.resolvedException != null
+            throw asyncResult.resolvedException
+        }
+        return asyncActions
+    }
+
+    ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int expectedStatusCode) throws Exception {
+        ResultActions asyncActions = mvc
+                .perform(MockMvcRequestBuilders.asyncDispatch(prepareAsyncRequest(requestBuilder)))
+        MvcResult asyncResult = asyncActions.andReturn()
+
+        boolean expectSuccessfulRequest = HttpStatus.resolve(expectedStatusCode).is2xxSuccessful()
+
+        if (expectSuccessfulRequest) {
+            assert asyncResult.resolvedException == null
+            asyncActions.andExpect(status().is(expectedStatusCode))
+        } else {
+            asyncActions.andExpect({result -> result.response.status == expectedStatusCode})
             assert asyncResult.resolvedException != null
             throw asyncResult.resolvedException
         }

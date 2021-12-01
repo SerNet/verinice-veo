@@ -33,4 +33,5 @@ public interface ElementTypeDefinition {
     Map<String, LinkDefinition> getLinks();
 
     void setLinks(Map<String, LinkDefinition> definitions);
+
 }

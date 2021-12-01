@@ -27,6 +27,8 @@ import javax.validation.constraints.NotNull;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.EntityType;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,4 +56,12 @@ public class DomainData extends DomainTemplateData implements NameableData, Doma
         return active;
     }
 
+    @Override
+    public void setElementTypeDefinition(EntityType entityType,
+            ElementTypeDefinition elementTypeDefinition) {
+        ((ElementTypeDefinitionData) elementTypeDefinition).setOwner(this);
+        getElementTypeDefinitions().removeIf(def -> def.getElementType()
+                                                       .equals(entityType.getSingularTerm()));
+        getElementTypeDefinitions().add(elementTypeDefinition);
+    }
 }

@@ -45,6 +45,7 @@ import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
@@ -92,6 +93,7 @@ import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
+import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
@@ -650,5 +652,16 @@ public class ModuleConfiguration {
     @Bean
     public EtagService etagService(RepositoryProvider repositoryProvider) {
         return new EtagService(repositoryProvider);
+    }
+
+    @Bean
+    public ObjectSchemaParser objectSchemaParser(EntityFactory entityFactory) {
+        return new ObjectSchemaParser(entityFactory);
+    }
+
+    @Bean
+    public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
+            DomainRepository domainRepository) {
+        return new UpdateElementTypeDefinitionUseCase(domainRepository);
     }
 }

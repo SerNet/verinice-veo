@@ -19,6 +19,8 @@ package org.veo.core.entity;
 
 import java.util.Optional;
 
+import org.veo.core.entity.definitions.ElementTypeDefinition;
+
 /**
  * The domain should be referenced by the domain objects if applicable. It
  * defines a standard, a best practice or a company-specific context. It can be
@@ -62,4 +64,7 @@ public interface Domain extends DomainTemplate, ClientOwned {
             throws InvalidSubTypeException {
         // TODO VEO-516: validate subtype
     }
+
+    void setElementTypeDefinition(EntityType entityType,
+            ElementTypeDefinition elementTypeDefinition);
 }

@@ -33,21 +33,33 @@ import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
+import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
+import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,14 +88,20 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     public static final String URL_BASE_PATH = "/" + Domain.PLURAL_TERM;
 
     private final UseCaseInteractor useCaseInteractor;
+    private final ObjectSchemaParser objectSchemaParser;
     private final GetDomainUseCase getDomainUseCase;
     private final GetDomainsUseCase getDomainsUseCase;
+    private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
 
-    public DomainController(UseCaseInteractor useCaseInteractor, GetDomainUseCase getDomainUseCase,
-            GetDomainsUseCase getDomainsUseCase) {
+    public DomainController(UseCaseInteractor useCaseInteractor,
+            ObjectSchemaParser objectSchemaParser, GetDomainUseCase getDomainUseCase,
+            GetDomainsUseCase getDomainsUseCase,
+            UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase) {
         this.useCaseInteractor = useCaseInteractor;
+        this.objectSchemaParser = objectSchemaParser;
         this.getDomainUseCase = getDomainUseCase;
         this.getDomainsUseCase = getDomainsUseCase;
+        this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
     }
 
     @GetMapping
@@ -161,4 +179,37 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             throw new IllegalArgumentException("Could not decode search URL.");
         }
     }
+
+    @PostMapping(value = "/{id}/elementtypedefinitions/{type:[\\w]+}/updatefromobjectschema")
+    @Operation(summary = "Updates a domain with an entity schema.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Schema updated") })
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
+            Authentication auth, @PathVariable String id, @PathVariable EntityType type,
+            @RequestBody JsonNode schemaNode) {
+        Client client = getAuthenticatedClient(auth);
+        // FIXME VEO-494: also update the translations once they are in the
+        // database
+        try {
+            ElementTypeDefinition typeDefinition = objectSchemaParser.parseTypeDefinitionFromObjectSchema(type,
+                                                                                                          schemaNode);
+            return useCaseInteractor.execute(updateElementTypeDefinitionUseCase,
+                                             new UpdateElementTypeDefinitionUseCase.InputData(
+                                                     client, Key.uuidFrom(id), type,
+                                                     typeDefinition),
+                                             out -> ResponseEntity.noContent()
+                                                                  .build());
+        } catch (
+
+        JsonProcessingException e) {
+            log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
+            throw new IllegalArgumentException("Cannot parse object schema.");
+        }
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        dataBinder.registerCustomEditor(EntityType.class,
+                                        new IgnoreCaseEnumConverter<>(EntityType.class));
+    }
+
 }
