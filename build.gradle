@@ -142,7 +142,7 @@ subprojects {
             ].each {
                 dependency "org.spockframework:$it:2.0-groovy-3.0"
             }
-            dependency 'org.springdoc:springdoc-openapi-ui:1.5.12'
+            dependency 'org.springdoc:springdoc-openapi-ui:1.5.13'
             dependency 'io.swagger.core.v3:swagger-core:2.1.11'
             [
                 'jsonschema-generator',
