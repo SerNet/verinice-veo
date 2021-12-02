@@ -48,6 +48,7 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
+import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.CatalogData
@@ -245,6 +246,13 @@ abstract class VeoSpec extends Specification {
     static CustomLinkData newCustomLink(Element linkTarget, String type, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
         return factory.createCustomLink(linkTarget, null, type).tap{
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static ElementTypeDefinition newElementTypeDefinition(DomainTemplate domain, String type, @DelegatesTo(value = CustomLink.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ElementTypeDefinition") Closure init = null) {
+        return factory.createElementTypeDefinition(type, domain).tap{
             VeoSpec.execute(it, init)
         }
     }

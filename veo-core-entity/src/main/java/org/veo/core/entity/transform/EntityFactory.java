@@ -99,6 +99,6 @@ public interface EntityFactory {
     LinkTailoringReference createLinkTailoringReference(CatalogItem catalogItem,
             TailoringReferenceType referenceType);
 
-    ElementTypeDefinition createElementTypeDefinition(String elementType, Domain owner);
+    ElementTypeDefinition createElementTypeDefinition(String elementType, DomainTemplate owner);
 
 }

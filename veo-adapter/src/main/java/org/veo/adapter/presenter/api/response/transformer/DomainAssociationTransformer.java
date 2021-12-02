@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.IdRefResolver;
@@ -24,7 +25,10 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.exception.ModelConsistencyException;
 
 /**
  * Maps {@link Domain} associations of {@link Element}s between entities and
@@ -35,11 +39,23 @@ public class DomainAssociationTransformer {
             IdRefResolver idRefResolver) {
         source.getDomains()
               .forEach((domainId, associationDto) -> {
-                  var domain = idRefResolver.resolve(SyntheticIdRef.from(domainId, Domain.class));
-                  target.addToDomains(domain);
-                  domain.validateSubType(target.getModelInterface(), associationDto.getSubType());
-                  target.setSubType(domain, associationDto.getSubType(),
-                                    associationDto.getStatus());
+                  Object resolvedObject = idRefResolver.resolve(SyntheticIdRef.from(domainId,
+                                                                                    Domain.class));
+                  if (hasInterface(resolvedObject, Domain.class)) {
+                      var domain = (Domain) resolvedObject;
+                      target.addToDomains(domain);
+                      domain.validateSubType(target.getModelInterface(),
+                                             associationDto.getSubType());
+                      target.setSubType(domain, associationDto.getSubType(),
+                                        associationDto.getStatus());
+                  } else if (hasInterface(resolvedObject, DomainTemplate.class)) {
+                      target.setSubType((DomainTemplate) resolvedObject,
+                                        associationDto.getSubType(), associationDto.getStatus());
+                  } else {
+                      throw new ModelConsistencyException(
+                              "Resolved object is not of any reconized type %s",
+                              resolvedObject.toString());
+                  }
               });
     }
 
@@ -56,5 +72,20 @@ public class DomainAssociationTransformer {
                                                                                           .orElse(null));
                                                               return association;
                                                           })));
+    }
+
+    /**
+     * Test if this actual is a domain object.(even if it's a Test Mock)
+     */
+    private boolean hasInterface(Object resolve, Class<? extends Identifiable> targetInterface) {
+        Class<?>[] interfaces = resolve.getClass()
+                                       .getInterfaces();
+        return Arrays.stream(interfaces)
+                     .filter(c -> {
+                         return c.getCanonicalName()
+                                 .equals(targetInterface.getCanonicalName());
+                     })
+                     .findAny()
+                     .isPresent();
     }
 }

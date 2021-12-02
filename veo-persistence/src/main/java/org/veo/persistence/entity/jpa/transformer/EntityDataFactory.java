@@ -239,7 +239,8 @@ public class EntityDataFactory implements EntityFactory {
     }
 
     @Override
-    public ElementTypeDefinition createElementTypeDefinition(String elementType, Domain owner) {
+    public ElementTypeDefinition createElementTypeDefinition(String elementType,
+            DomainTemplate owner) {
         var definition = new ElementTypeDefinitionData();
         definition.setElementType(elementType);
         definition.setOwner(owner);

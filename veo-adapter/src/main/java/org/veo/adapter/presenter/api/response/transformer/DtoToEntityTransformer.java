@@ -177,8 +177,8 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    private ElementTypeDefinition mapElementTypeDefinition(String type,
-            ElementTypeDefinitionDto source, Domain owner) {
+    public ElementTypeDefinition mapElementTypeDefinition(String type,
+            ElementTypeDefinitionDto source, DomainTemplate owner) {
         var target = factory.createElementTypeDefinition(type, owner);
         target.setSubTypes(source.getSubTypes());
         target.setCustomAspects(source.getCustomAspects());

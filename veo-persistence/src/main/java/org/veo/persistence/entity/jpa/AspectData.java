@@ -27,7 +27,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.Aspect;
 
@@ -40,7 +40,7 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AspectData implements Aspect {
 
-    public AspectData(Domain domain, Element owner) {
+    public AspectData(DomainTemplate domain, Element owner) {
         this.domain = domain;
         this.owner = owner;
     }
@@ -55,9 +55,9 @@ public abstract class AspectData implements Aspect {
     private String dbId;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainTemplateData.class, optional = false)
     @JoinColumn(name = "domain_id")
-    private Domain domain;
+    private DomainTemplate domain;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
     private Element owner;

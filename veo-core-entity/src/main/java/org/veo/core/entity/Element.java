@@ -80,11 +80,11 @@ public interface Element
 
     void setLinks(Set<CustomLink> aLinks);
 
-    Optional<String> getSubType(Domain domain);
+    Optional<String> getSubType(DomainTemplate domain);
 
-    Optional<String> getStatus(Domain domain);
+    Optional<String> getStatus(DomainTemplate domain);
 
-    void setSubType(Domain domain, String subType, String status);
+    void setSubType(DomainTemplate domain, String subType, String status);
 
     /**
      * Add the given {@link CustomAspect} to the collection customAspects.

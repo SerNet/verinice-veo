@@ -18,8 +18,10 @@
 package org.veo.persistence.entity.jpa
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Catalog
+import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.transform.EntityFactory
@@ -33,6 +35,9 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     DomainTemplateDataRepository repository
     @Autowired
     CatalogDataRepository catalogRepository
+    @Autowired
+    TransactionTemplate txTemplate
+
     EntityFactory factory
 
     DomainTemplate domain0
@@ -50,8 +55,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
         when: "saving"
 
-        domain0 = repository.save(domain0)
-        DomainTemplate d = repository.findById(domain0.dbId).get()
+        domain0 = txTemplate.execute {
+            return repository.save(domain0)
+        }
+        DomainTemplate d = txTemplate.execute {
+            return repository.findById(domain0.dbId).get()
+        }
 
         then: "saved and loaded"
 
@@ -73,8 +82,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             name = "a"
         }
 
-        domain0 = repository.save(domain0)
-        DomainTemplate d = repository.findById(domain0.dbId).get()
+        domain0 = txTemplate.execute {
+            return repository.save(domain0)
+        }
+        DomainTemplate d = txTemplate.execute {
+            return repository.findById(domain0.dbId).get()
+        }
 
         then: "saved and loaded"
 
@@ -98,9 +111,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
         when: "saving"
 
-        domain0 = repository.save(domain0)
-
-        DomainTemplate d = repository.findById(domain0.dbId).get()
+        domain0 = txTemplate.execute {
+            return repository.save(domain0)
+        }
+        DomainTemplate d = txTemplate.execute {
+            return repository.findById(domain0.dbId).get()
+        }
 
         then: "saved and loaded"
 
@@ -110,5 +126,104 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.revision == domain0.revision
         d.catalogs.first().id != null
         d.catalogs.first().catalogItems.size() == 3
+    }
+
+    def 'domainTemplate with catalog and catalog items with subtype'() {
+        given: "the domain template and a catalog"
+
+        domain0 = newDomainTemplate()
+        Catalog catalog = newCatalog(domain0) {
+            name = "a"
+            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, VeoSpec.&newControl)
+        }
+        newCatalogItem(catalog, {
+            newProcess(it) {
+                name = 'p1'
+                setSubType(domain0, "Test", "NEW")
+            }
+        })
+        domain0.elementTypeDefinitions.add(newElementTypeDefinition(domain0, "process"))
+
+        when: "saving"
+
+        domain0 = txTemplate.execute {
+            return repository.save(domain0)
+        }
+        DomainTemplate d = txTemplate.execute {
+            return repository.findById(domain0.dbId).get()
+        }
+
+        then: "saved and loaded"
+
+        d.name == domain0.name
+        d.authority == domain0.authority
+        d.templateVersion == domain0.templateVersion
+        d.revision == domain0.revision
+        d.catalogs.first().id != null
+        d.catalogs.first().name == 'a'
+        d.catalogs.first().catalogItems.size() == 4
+        d.catalogs.first().catalogItems.find { it.element.name == 'p1' }.element.getSubType(d).get() == 'Test'
+        d.elementTypeDefinitions.size() == 1
+    }
+
+    def 'domainTemplate with catalog and catalog items with subtype and link'() {
+        given: "the domain template and a catalog"
+
+        domain0 = newDomainTemplate()
+        Catalog catalog = newCatalog(domain0) {
+            name = "a"
+            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, VeoSpec.&newControl)
+        }
+        def itemP1 = newCatalogItem(catalog, {
+            newProcess(it) {
+                name = 'p1'
+                setSubType(domain0, "Test", "NEW")
+            }
+        })
+
+        newCatalogItem(catalog, { c->
+            newProcess(c) {
+                name = 'p2'
+                setSubType(domain0, "Test1", "NOT-NEW")
+                addToLinks(newCustomLink(itemP1.element, "p2->p1"))
+            }
+        })
+
+        domain0.elementTypeDefinitions.add(newElementTypeDefinition(domain0, "process"))
+
+        when: "saving"
+
+        domain0 = txTemplate.execute {
+            return repository.save(domain0)
+        }
+        DomainTemplate d = txTemplate.execute {
+            return repository.findById(domain0.dbId).get()
+        }
+
+        then: "saved and loaded"
+
+        d.name == domain0.name
+        d.authority == domain0.authority
+        d.templateVersion == domain0.templateVersion
+        d.revision == domain0.revision
+        d.catalogs.first().id != null
+        d.catalogs.first().name == 'a'
+        d.catalogs.first().catalogItems.size() == 5
+        with (d.catalogs.first().catalogItems.find { it.element.name == 'p1' }) {
+            element.getSubType(d).get() == 'Test'
+            element.getStatus(d).get() == 'NEW'
+        }
+        with (d.catalogs.first().catalogItems.find { it.element.name == 'p2' }) {
+            element.getSubType(d).get() == 'Test1'
+            element.getStatus(d).get() == 'NOT-NEW'
+            element.links.size() == 1
+            element.links[0].type == 'p2->p1'
+            element.links[0].target.name == 'p1'
+        }
+        d.elementTypeDefinitions.size() == 1
     }
 }

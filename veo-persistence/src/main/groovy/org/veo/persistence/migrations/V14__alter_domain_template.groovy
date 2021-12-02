@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.aspects;
+package org.veo.persistence.migrations
 
-import org.veo.core.entity.DomainTemplate;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-/**
- * An aspect is a set of properties or functions defining a specialized function
- * of the software.
- */
-public interface Aspect {
+import groovy.sql.Sql
 
-    DomainTemplate getDomain();
+class V14__alter_domain_template extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
 
-    void setDomain(DomainTemplate domain);
+    alter table aspect
+       drop constraint FK_domain_id;
+""")
+    }
 }

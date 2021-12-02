@@ -17,10 +17,14 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
+import java.time.Instant;
+
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Versioned;
 
 /**
  * Defines the behavior to prepare {@link CatalogItem} or {@link Element} for
@@ -29,6 +33,7 @@ import org.veo.core.entity.Element;
  */
 public class CatalogItemPrepareStrategy {
     private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
+    public static final String SYSTEM_USER = "system";
 
     /**
      * Clean up and relink a catalogItem. Add the domain to each sub element.
@@ -40,6 +45,34 @@ public class CatalogItemPrepareStrategy {
         if (element != null) {
             prepareElement(domain, element, true);
         }
+    }
+
+    public void prepareCatalogItem(DomainTemplate domain, Catalog catalog, CatalogItem item) {
+        item.setId(null);
+        item.setCatalog(catalog);
+        updateVersion(item);
+        item.getTailoringReferences()
+            .forEach(t -> updateVersion(t));
+        Element element = item.getElement();
+        if (element != null) {
+            prepareElement(domain, element, true);
+        }
+    }
+
+    /**
+     * Clean up and relink a {@link Element}. Add the domain to each sub element.
+     * Prepare the {@link Element} for usage in a catalog or as an incarnation.
+     */
+    public void prepareElement(DomainTemplate domain, Element element, boolean isCatalogElement) {
+        element.setId(null);
+        element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
+        element.getDomains()
+               .clear();
+        processSubTypes(domain, element);
+        processLinks(null, element);
+        processCustomAspects(null, element);
+        updateVersion(element);
+        // TODO: VEO-612 add parts from CompositeEntity
     }
 
     /**
@@ -56,6 +89,12 @@ public class CatalogItemPrepareStrategy {
         processLinks(domain, element);
         processCustomAspects(domain, element);
         // TODO: VEO-612 add parts from CompositeEntity
+    }
+
+    public void updateVersion(Versioned v) {
+        v.setCreatedBy(SYSTEM_USER);
+        v.setUpdatedBy(SYSTEM_USER);
+        v.setCreatedAt(Instant.now());
     }
 
     private void processCustomAspects(Domain domain, Element est) {
@@ -76,7 +115,7 @@ public class CatalogItemPrepareStrategy {
            });
     }
 
-    private void processSubTypes(Domain domain, Element est) {
+    private void processSubTypes(DomainTemplate domain, Element est) {
         est.getSubTypeAspects()
            .forEach(oldAspect -> {
                oldAspect.setDomain(domain);

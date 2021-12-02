@@ -43,6 +43,7 @@ import lombok.ToString;
 @Entity(name = "domaintemplate")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@ToString(onlyExplicitlyIncluded = true)
 @Data
 public class DomainTemplateData extends IdentifiableVersionedData
         implements DomainTemplate, Nameable {
@@ -52,6 +53,7 @@ public class DomainTemplateData extends IdentifiableVersionedData
 
     @NotNull
     @Column(name = "name")
+    @ToString.Include
     private String name;
 
     @Column(name = "abbreviation")
@@ -62,13 +64,14 @@ public class DomainTemplateData extends IdentifiableVersionedData
 
     @NotNull
     @Column(name = "authority")
+    @ToString.Include
     private String authority;
 
     @NotNull
     @Column(name = "templateversion")
+    @ToString.Include
     private String templateVersion;
 
-    @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
                targetEntity = CatalogData.class,
@@ -79,6 +82,7 @@ public class DomainTemplateData extends IdentifiableVersionedData
 
     @NotNull
     @Column(name = "revision")
+    @ToString.Include
     private String revision;
 
     @Override

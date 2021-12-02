@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,7 +73,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DomainTemplateServiceImpl implements DomainTemplateService {
-    private static final String SYSTEM_USER = "system";
 
     private final DomainTemplateRepository domainTemplateRepository;
     private final DtoToEntityTransformer entityTransformer;
@@ -166,7 +164,11 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             // please purchase the domaintemplate in the shop
             try {
                 TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
-                Domain domain = processDomainTemplate(domainTemplateDto);
+                Domain domainPlaceholder = factory.createDomain(domainTemplateDto.getName(),
+                                                                domainTemplateDto.getAuthority(),
+                                                                domainTemplateDto.getTemplateVersion(),
+                                                                domainTemplateDto.getRevision());
+                Domain domain = processDomainTemplate(domainTemplateDto, domainPlaceholder);
                 domain.setDomainTemplate(bootstrappedDomaintemplates.get(templateId));
                 client.addToDomains(domain);
                 log.info("Domain {} created for client {}", domain.getName(), client);
@@ -240,20 +242,16 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         }
         try {
             TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
-            DomainTemplate domainTemplate = factory.createDomainTemplate(domainTemplateDto.getName(),
-                                                                         domainTemplateDto.getAuthority(),
-                                                                         domainTemplateDto.getTemplateVersion(),
-                                                                         domainTemplateDto.getRevision(),
-                                                                         Key.uuidFrom(id));
+            DomainTemplate newDomainTemplate = factory.createDomainTemplate(domainTemplateDto.getName(),
+                                                                            domainTemplateDto.getAuthority(),
+                                                                            domainTemplateDto.getTemplateVersion(),
+                                                                            domainTemplateDto.getRevision(),
+                                                                            Key.uuidFrom(id));
 
-            domainTemplate.setDescription(domainTemplateDto.getDescription());
-            domainTemplate.setAbbreviation(domainTemplateDto.getAbbreviation());
-            domainTemplate.setCreatedBy(SYSTEM_USER);
-            domainTemplate.setUpdatedBy(SYSTEM_USER);
-            domainTemplate.setCreatedAt(Instant.now());
-            log.info("Create and save domain template {}", domainTemplate);
-            domainTemplate = domainTemplateRepository.save(domainTemplate);
-            return domainTemplate;
+            processDomainTemplate(domainTemplateDto, newDomainTemplate);
+            preparations.updateVersion(newDomainTemplate);
+            log.info("Create and save domain template {}", newDomainTemplate);
+            return domainTemplateRepository.save(newDomainTemplate);
         } catch (JsonMappingException e) {
             log.error("Error parsing file", e);
         } catch (IOException e) {
@@ -265,60 +263,95 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     /**
      * Transform the given domainTemplateDto to a new domain.
      */
-    private Domain processDomainTemplate(TransformDomainTemplateDto domainTemplateDto) {
+    private DomainTemplate processDomainTemplate(TransformDomainTemplateDto domainTemplateDto,
+            DomainTemplate newDomain) {
+        newDomain.setDescription(domainTemplateDto.getDescription());
+        newDomain.setAbbreviation(domainTemplateDto.getAbbreviation());
         PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
-        Domain domainPlaceholder = factory.createDomain(domainTemplateDto.getName(),
-                                                        domainTemplateDto.getAuthority(),
-                                                        domainTemplateDto.getTemplateVersion(),
-                                                        domainTemplateDto.getRevision());
-        domainPlaceholder.setDescription(domainTemplateDto.getDescription());
-        domainPlaceholder.setAbbreviation(domainTemplateDto.getAbbreviation());
 
-        domainPlaceholder.setId(Key.uuidFrom(domainTemplateDto.getId()));
-        ref.cache.put(domainTemplateDto.getId(), domainPlaceholder);
+        newDomain.setId(Key.uuidFrom(domainTemplateDto.getId()));
+        ref.cache.put(domainTemplateDto.getId(), newDomain);
 
         domainTemplateDto.getCatalogs()
                          .stream()
                          .forEach(c -> {
-                             Catalog createCatalog = factory.createCatalog(domainPlaceholder);
+                             Catalog createCatalog = factory.createCatalog(newDomain);
+                             createCatalog.setName(c.getName());
+                             createCatalog.setAbbreviation(c.getAbbreviation());
+                             createCatalog.setDescription(c.getDescription());
+                             preparations.updateVersion(createCatalog);
                              ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
                              c.setDomainTemplate(new SyntheticIdRef<>(domainTemplateDto.getId(),
                                      DomainTemplate.class, assembler));
                          });
 
-        Map<String, Element> elementCache = createElementCache(ref, domainTemplateDto.getCatalogs()
-                                                                                     .stream()
-                                                                                     .map(TransformCatalogDto.class::cast)
-                                                                                     .flatMap(c -> c.getCatalogItems()
-                                                                                                    .stream())
-                                                                                     .map(TransformCatalogItemDto.class::cast)
-                                                                                     .map(TransformCatalogItemDto::getElement)
-                                                                                     .map(this::removeOwner)
-                                                                                     .map(IdentifiableDto.class::cast)
-                                                                                     .collect(Collectors.toMap(IdentifiableDto::getId,
-                                                                                                               Function.identity())));
+        Map<String, Element> elementCache = createElementCacheFromDomainTemplateDto(domainTemplateDto,
+                                                                                    ref);
+        Map<String, CatalogItem> itemCache = createCatalogItemCache(domainTemplateDto, ref,
+                                                                    elementCache);
 
+        domainTemplateDto.getCatalogs()
+                         .stream()
+                         .map(TransformCatalogDto.class::cast)
+                         .forEach(c -> c.getCatalogItems()
+                                        .forEach(i -> entityTransformer.transformDto2CatalogItem(i,
+                                                                                                 ref,
+                                                                                                 (Catalog) ref.cache.get(c.getId()))));
+        domainTemplateDto.getElementTypeDefinitions()
+                         .entrySet()
+                         .stream()
+                         .map(entry -> entityTransformer.mapElementTypeDefinition(entry.getKey(),
+                                                                                  entry.getValue(),
+                                                                                  newDomain));
+
+        initCatalog(newDomain, itemCache);
+        return newDomain;
+    }
+
+    private Domain processDomainTemplate(TransformDomainTemplateDto domainTemplateDto,
+            Domain newDomain) {
+        newDomain.setDescription(domainTemplateDto.getDescription());
+        newDomain.setAbbreviation(domainTemplateDto.getAbbreviation());
+        PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
+
+        ref.cache.put(domainTemplateDto.getId(), newDomain);
+
+        domainTemplateDto.getCatalogs()
+                         .stream()
+                         .forEach(c -> {
+                             Catalog createCatalog = factory.createCatalog(newDomain);
+                             ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
+                             c.setDomainTemplate(new SyntheticIdRef<>(domainTemplateDto.getId(),
+                                     DomainTemplate.class, assembler));
+                         });
+
+        Map<String, Element> elementCache = createElementCacheFromDomainTemplateDto(domainTemplateDto,
+                                                                                    ref);
         Map<String, CatalogItem> itemCache = createCatalogItemCache(domainTemplateDto, ref,
                                                                     elementCache);
         Domain domain = entityTransformer.transformTransformDomainTemplateDto2Domain(domainTemplateDto,
                                                                                      ref);
-
-        domain.getCatalogs()
-              .forEach(catalog -> {
-                  catalog.setId(null);
-                  catalog.setDomainTemplate(domain);
-                  Set<CatalogItem> catalogItems = catalog.getCatalogItems()
-                                                         .stream()
-                                                         .map(ci -> itemCache.get(ci.getIdAsString()))
-                                                         .collect(Collectors.toSet());
-                  catalog.getCatalogItems()
-                         .clear();
-                  catalog.getCatalogItems()
-                         .addAll(catalogItems);
-                  catalog.getCatalogItems()
-                         .forEach(item -> preparations.prepareCatalogItem(domain, catalog, item));
-              });
+        initCatalog(domain, itemCache);
         return domain;
+    }
+
+    private void initCatalog(DomainTemplate newDomain, Map<String, CatalogItem> itemCache) {
+        newDomain.getCatalogs()
+                 .forEach(catalog -> {
+                     catalog.setId(null);
+                     catalog.setDomainTemplate(newDomain);
+                     Set<CatalogItem> catalogItems = catalog.getCatalogItems()
+                                                            .stream()
+                                                            .map(ci -> itemCache.get(ci.getIdAsString()))
+                                                            .collect(Collectors.toSet());
+                     catalog.getCatalogItems()
+                            .clear();
+                     catalog.getCatalogItems()
+                            .addAll(catalogItems);
+                     catalog.getCatalogItems()
+                            .forEach(item -> preparations.prepareCatalogItem(newDomain, catalog,
+                                                                             item));
+                 });
     }
 
     private Map<String, CatalogItem> createCatalogItemCache(
@@ -347,6 +380,22 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                          .map(TransformCatalogItemDto.class::cast)
                          .forEach(ci -> transformTailorRef(ci, itemCache, ref));
         return itemCache;
+    }
+
+    private Map<String, Element> createElementCacheFromDomainTemplateDto(
+            TransformDomainTemplateDto domainTemplateDto, PlaceholderResolver ref) {
+        Map<String, Element> elementCache = createElementCache(ref, domainTemplateDto.getCatalogs()
+                                                                                     .stream()
+                                                                                     .map(TransformCatalogDto.class::cast)
+                                                                                     .flatMap(c -> c.getCatalogItems()
+                                                                                                    .stream())
+                                                                                     .map(TransformCatalogItemDto.class::cast)
+                                                                                     .map(TransformCatalogItemDto::getElement)
+                                                                                     .map(this::removeOwner)
+                                                                                     .map(IdentifiableDto.class::cast)
+                                                                                     .collect(Collectors.toMap(IdentifiableDto::getId,
+                                                                                                               Function.identity())));
+        return elementCache;
     }
 
     /**

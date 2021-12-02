@@ -46,6 +46,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.InvalidSubTypeException;
 import org.veo.core.entity.Nameable;
@@ -148,24 +149,25 @@ public abstract class ElementData extends IdentifiableVersionedData
     @Setter(AccessLevel.NONE)
     private String designatorLength;
 
-    protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
+    protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source,
+            DomainTemplate domain) {
         return source.stream()
                      .filter(aspect -> aspect.getDomain() == domain)
                      .findFirst();
     }
 
     @Override
-    public Optional<String> getSubType(Domain domain) {
+    public Optional<String> getSubType(DomainTemplate domain) {
         return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getSubType);
     }
 
     @Override
-    public Optional<String> getStatus(Domain domain) {
+    public Optional<String> getStatus(DomainTemplate domain) {
         return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getStatus);
     }
 
     @Override
-    public void setSubType(Domain domain, String subType, String status) {
+    public void setSubType(DomainTemplate domain, String subType, String status) {
         subTypeAspects.removeIf(a -> a.getDomain()
                                       .equals(domain));
         if (subType != null) {
