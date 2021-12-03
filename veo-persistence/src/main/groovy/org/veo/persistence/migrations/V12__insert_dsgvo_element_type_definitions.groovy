@@ -31,7 +31,7 @@ import groovy.sql.Sql
 class V12__insert_dsgvo_element_type_definitions extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        var sql = new Sql(context.connection)
+        def sql = new Sql(context.connection)
         sql.execute("DELETE FROM domaintemplate_element_type_definitions;")
         sql.execute("DELETE FROM element_type_definition;")
 
