@@ -20,11 +20,13 @@ package org.veo.persistence.migrations
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
+import groovy.sql.Sql
+
 class V11__add_element_type_definitions extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
 
-        context.getConnection().createStatement().execute("""
+        new Sql(context.connection).execute("""
 
             create table domaintemplate_element_type_definitions (
                domaintemplate_db_id varchar(255) not null,

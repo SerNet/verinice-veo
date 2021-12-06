@@ -20,10 +20,12 @@ package org.veo.persistence.migrations
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
+import groovy.sql.Sql
+
 class V2__rename_foreign_keys extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        context.getConnection().createStatement().execute("""
+        new Sql(context.connection).execute("""
 
     alter table abstractriskdata
        rename constraint FKt0x95j2pjbs5xshwto5w39mpw to FK_entity_db_id;

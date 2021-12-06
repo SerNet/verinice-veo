@@ -20,11 +20,13 @@ package org.veo.persistence.migrations
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
+import groovy.sql.Sql
+
 class V9__add_generic_status extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
 
-        context.getConnection().createStatement().execute("""
+        new Sql(context.connection).execute("""
 
             alter table aspect
                 add column status varchar(255);

@@ -20,10 +20,12 @@ package org.veo.persistence.migrations
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
+import groovy.sql.Sql
+
 class V7__introduce_tailoringreference extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        context.getConnection().createStatement().execute("""
+        new Sql(context.connection).execute("""
 
     create table customlinkdescriptor (
        db_id varchar(255) not null,

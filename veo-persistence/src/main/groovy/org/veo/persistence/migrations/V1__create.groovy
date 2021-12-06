@@ -20,10 +20,12 @@ package org.veo.persistence.migrations
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
+import groovy.sql.Sql
+
 class V1__create extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        context.getConnection().createStatement().execute("""
+        new Sql(context.connection).execute("""
 
     create table abstractriskdata (
        dtype varchar(31) not null,

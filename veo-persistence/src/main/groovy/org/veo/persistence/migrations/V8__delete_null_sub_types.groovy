@@ -20,10 +20,12 @@ package org.veo.persistence.migrations
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
+import groovy.sql.Sql
+
 class V8__delete_null_sub_types extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        context.getConnection().createStatement().execute("""
+        new Sql(context.connection).execute("""
 
             delete from aspect where sub_type is null;
 """)

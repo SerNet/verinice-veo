@@ -20,10 +20,12 @@ package org.veo.persistence.migrations
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
+import groovy.sql.Sql
+
 class V3__rename_custom_properties_to_custom_aspect extends BaseJavaMigration {
     @Override
     void migrate(Context context) throws Exception {
-        context.getConnection().createStatement().execute("""
+        new Sql(context.connection).execute("""
 
     alter table customproperties rename to custom_aspect;
 
