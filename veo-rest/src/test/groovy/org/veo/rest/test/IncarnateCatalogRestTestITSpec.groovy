@@ -243,6 +243,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         unitId = postResponse.resourceId
 
         when: "the catalog is retrieved"
+        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
         def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
         def catalog = getCatalog(catalogId)
 
@@ -263,6 +264,18 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         log.debug("==> elementResults: {}", elementResults)
         then: "all elements are created"
         elementResults.size() == 9
+
+        when: "we get each element"
+        elementResults.each { element ->
+            String targetUri = element.targetUri
+            def elementResult = get(targetUri).body
+            log.debug("==> elementResult: {}", elementResult)
+
+            then: "check the domain and subtype"
+            elementResult.domains[dsgvoId].subType != null
+            elementResult.domains[dsgvoId].status != null
+        }
+        then: "nothing"
     }
 
     private applyCatalogItems(catalog) {

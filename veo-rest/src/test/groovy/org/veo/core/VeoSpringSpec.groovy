@@ -36,6 +36,7 @@ import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
+import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.access.jpa.IncidentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
@@ -71,6 +72,8 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired
     DomainTemplateDataRepository domainTemplateDataRepository
+    @Autowired
+    DomainDataRepository domainDataRepository
 
     @Autowired
     UnitDataRepository unitDataRepository
@@ -111,6 +114,8 @@ abstract class VeoSpringSpec extends VeoSpec {
     def setup() {
         txTemplate.execute {
             def catalogs = catalogDataRepository.findAll()
+            def domains = domainDataRepository.findAll()
+
             def entityDataRepositories = [
                 scopeDataRepository,
                 processDataRepository,
@@ -121,22 +126,39 @@ abstract class VeoSpringSpec extends VeoSpec {
                 scenarioDataRepository,
                 personDataRepository
             ]
-            entityDataRepositories.each {
-                def elements = it.findAll()
+            entityDataRepositories.each { dr->
+                def elements = dr.findAll()
                 elements.each {
-                    it.links.clear()
-                    it.domains.clear()
-                    it.appliedCatalogItems.clear()
+                    if(it.getOwner()!=null) {
+                        it.links.clear()
+                        it.domains.clear()
+                        it.appliedCatalogItems.clear()
+                    }
                 }
             }
             catalogs.each {
-                it.catalogItems.clear()
+                if(it.domainTemplate instanceof Domain) {
+                    it.catalogItems.clear()
+                }
             }
-            (entityDataRepositories + [
+            domains.each {
+                it.getElementTypeDefinitions().clear()
+            }
+            entityDataRepositories.each { dr->
+                def elements = dr.findAll()
+                elements.each {
+                    if(it.getOwner()!=null) {
+                        dr.delete(it)
+                    }
+                }
+            }
+            ( [
                 unitDataRepository,
+                domainDataRepository,
                 clientDataRepository,
                 eventStoreDataRepository
-            ])*.deleteAll()
+            ]
+            )*.deleteAll()
         }
     }
 
@@ -147,23 +169,29 @@ abstract class VeoSpringSpec extends VeoSpec {
     }
 
     Domain createDsgvoDomain(Client client) {
-        def domain = domainTemplateService.createDomain(client, DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
-        client.addToDomains(domain)
-        clientDataRepository.save(client)
-        return domain
+        return txTemplate.execute {
+            def domain = domainTemplateService.createDomain(client, DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
+            client.addToDomains(domain)
+            clientDataRepository.save(client)
+            return domain
+        }
     }
 
     Domain createDsgvoTestDomain(Client client) {
-        def domain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        client.addToDomains(domain)
-        clientDataRepository.save(client)
-        return domain
+        return txTemplate.execute {
+            def domain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            client.addToDomains(domain)
+            clientDataRepository.save(client)
+            return domain
+        }
     }
 
     Domain createTestDomain(Client client) {
-        def domain = domainTemplateService.createDomain(client, TEST_DOMAIN_TEMPLATE_ID)
-        client.addToDomains(domain)
-        clientDataRepository.save(client)
-        return domain
+        return txTemplate.execute {
+            def domain = domainTemplateService.createDomain(client, TEST_DOMAIN_TEMPLATE_ID)
+            client.addToDomains(domain)
+            clientDataRepository.save(client)
+            return domain
+        }
     }
 }

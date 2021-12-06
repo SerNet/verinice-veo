@@ -18,6 +18,7 @@
 package org.veo.adapter.presenter.api.response.transformer;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.IdRefResolver;
@@ -28,6 +29,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.exception.ModelConsistencyException;
 
 /**
@@ -87,5 +89,27 @@ public class DomainAssociationTransformer {
                      })
                      .findAny()
                      .isPresent();
+    }
+
+    /**
+     * Maps the aspects to a domaintemplate. We have some preconditions, the domains
+     * must be empty as the element belongs to a domain template and therefore only
+     * one aspect can be present.
+     */
+    public void mapDomainsToDto(Element source, AbstractElementDto target,
+            DomainTemplate domainTemplate) {
+        if (source.getDomains()
+                  .isEmpty()
+                && source.getSubTypeAspects()
+                         .size() == 1) {
+            SubTypeAspect subTypeAspect = source.getSubTypeAspects()
+                                                .iterator()
+                                                .next();
+            DomainAssociationDto association = new DomainAssociationDto();
+            association.setStatus(subTypeAspect.getStatus());
+            association.setSubType(subTypeAspect.getSubType());
+
+            target.setDomains(Map.of(domainTemplate.getIdAsString(), association));
+        }
     }
 }

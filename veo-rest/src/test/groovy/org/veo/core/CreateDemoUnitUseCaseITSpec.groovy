@@ -56,7 +56,9 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
 
     def "create a demo unit for a client"() {
         given: 'a client'
-        def client = createClient()
+        def client = txTemplate.execute {
+            return createClient()
+        }
         when: 'executing the CreateDemoUnitUseCase'
         def unit = runUseCase(client)
         then: 'the demo unit is created'
@@ -124,7 +126,9 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
 
     def "create multiple demo units for a client"() {
         given:
-        def client = createClient()
+        def client = txTemplate.execute {
+            return createClient()
+        }
         when:
         def unit1 = runUseCase(client)
         def unit2 = runUseCase(client)
@@ -182,8 +186,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         executeInTransaction {
             def client = newClient()
             domainTemplateService.createDefaultDomains(client)
-            clientRepository.save(client)
-            client
+            return clientRepository.save(client)
         }
     }
 

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +50,7 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
     @ToString.Include
     private String id;
 
-    private Set<AbstractElementDto> demoUnitElements = new HashSet<AbstractElementDto>();
+    private Set<AbstractElementDto> demoUnitElements = new HashSet<>();
 
     @JsonDeserialize(contentAs = TransformCatalogDto.class)
     @Override
@@ -57,6 +58,6 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
         super.setCatalogs(catalogs);
     }
 
-    private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions;
+    private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 
 }

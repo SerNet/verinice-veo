@@ -31,12 +31,15 @@ import javax.validation.Valid;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
+import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
@@ -56,6 +59,10 @@ import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
@@ -67,9 +74,11 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
@@ -80,6 +89,7 @@ import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 
 /**
  * A collection of transform functions to transform entities to Dto back and
@@ -221,10 +231,112 @@ public final class EntityToDtoTransformer {
         target.setId(source.getId()
                            .uuidValue());
         target.setVersion(source.getVersion());
+        target.setAuthority(source.getAuthority());
+        target.setRevision(source.getRevision());
+        target.setTemplateVersion(source.getTemplateVersion());
+
         mapVersionedSelfReferencingProperties(source, target);
         mapNameableProperties(source, target);
         target.setCatalogs(convertReferenceSet(source.getCatalogs()));
         return target;
+    }
+
+    public TransformDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainTemplate source) {
+        var target = new TransformDomainTemplateDto();
+        target.setId(source.getId()
+                           .uuidValue());
+        target.setVersion(source.getVersion());
+        target.setAuthority(source.getAuthority());
+        target.setRevision(source.getRevision());
+        target.setTemplateVersion(source.getTemplateVersion());
+
+        mapVersionedSelfReferencingProperties(source, target);
+        mapNameableProperties(source, target);
+        target.setCatalogs(convertSet(source.getCatalogs(), this::transformCatalog2CompositeDto));
+
+        Map<String, ElementTypeDefinitionDto> elementTypeDefinitionsByType = source.getElementTypeDefinitions()
+                                                                                   .stream()
+                                                                                   .collect(Collectors.toMap(ElementTypeDefinition::getElementType,
+                                                                                                             this::mapElementTypeDefinition));
+
+        target.setElementTypeDefinitions(elementTypeDefinitionsByType);
+        return target;
+    }
+
+    private ElementTypeDefinitionDto mapElementTypeDefinition(
+            ElementTypeDefinition elementTypeDefinition) {
+        ElementTypeDefinitionDto elementTypeDefinitionDto = new ElementTypeDefinitionDto();
+        elementTypeDefinitionDto.setSubTypes(elementTypeDefinition.getSubTypes());
+        elementTypeDefinitionDto.setCustomAspects(elementTypeDefinition.getCustomAspects());
+        elementTypeDefinitionDto.setLinks(elementTypeDefinition.getLinks());
+        elementTypeDefinitionDto.setTranslations(elementTypeDefinition.getTranslations());
+        return elementTypeDefinitionDto;
+    }
+
+    public TransformCatalogDto transformCatalog2CompositeDto(@Valid Catalog source) {
+        var target = new TransformCatalogDto();
+        target.setId(source.getId()
+                           .uuidValue());
+        mapNameableProperties(source, target);
+        mapVersionedSelfReferencingProperties(source, target);
+
+        if (source.getDomainTemplate() != null) {
+            target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
+        }
+        target.setCatalogItems(convertSet(source.getCatalogItems(),
+                                          ci -> transformCatalogItem2Dto(ci)));
+
+        return target;
+    }
+
+    public TransformCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
+        var target = new TransformCatalogItemDto();
+        target.setId(source.getId()
+                           .uuidValue());
+        mapCatalogItem(source, target);
+        Element element = source.getElement();
+        if (element != null) {
+            target.setElement(transform2Dto(element));
+            DomainTemplate domainTemplate = source.getCatalog()
+                                                  .getDomainTemplate();
+            domainAssociationTransformer.mapDomainsToDto(element, target.getElement(),
+                                                         domainTemplate);
+        }
+        target.setTailoringReferences(source.getTailoringReferences()
+                                            .stream()
+                                            .map(this::transformTailoringReference2Dto)
+                                            .collect(Collectors.toSet())
+
+        );
+        return target;
+    }
+
+    public FullCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source,
+            boolean includeDescriptionFromElement) {
+        FullCatalogItemDto target = new FullCatalogItemDto();
+        target.setId(source.getId()
+                           .uuidValue());
+        mapCatalogItem(source, target);
+        Element element = source.getElement();
+        if (element != null) {
+            target.setElement(IdRef.from(element, referenceAssembler));
+            if (includeDescriptionFromElement) {
+                target.setDescription(element.getDescription());
+            }
+        }
+        target.setTailoringReferences(source.getTailoringReferences()
+                                            .stream()
+                                            .map(this::transformTailoringReference2Dto)
+                                            .collect(Collectors.toSet()));
+        return target;
+    }
+
+    private void mapCatalogItem(CatalogItem source, AbstractCatalogItemDto target) {
+        mapVersionedSelfReferencingProperties(source, target);
+        target.setNamespace(source.getNamespace());
+        if (source.getCatalog() != null) {
+            target.setCatalog(IdRef.from(source.getCatalog(), referenceAssembler));
+        }
     }
 
     public FullCatalogDto transformCatalog2Dto(@Valid Catalog source) {
@@ -243,40 +355,18 @@ public final class EntityToDtoTransformer {
         return target;
     }
 
-    public FullCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source,
-            boolean includeDescriptionFromElement) {
-        FullCatalogItemDto target = new FullCatalogItemDto();
-
-        target.setId(source.getId()
-                           .uuidValue());
-        mapVersionedSelfReferencingProperties(source, target);
-        target.setNamespace(source.getNamespace());
-        if (source.getCatalog() != null) {
-            target.setCatalog(IdRef.from(source.getCatalog(), referenceAssembler));
-        }
-
-        Element element = source.getElement();
-        if (element != null) {
-            target.setElement(IdRef.from(element, referenceAssembler));
-            if (includeDescriptionFromElement) {
-                target.setDescription(element.getDescription());
-            }
-        }
-        target.setTailoringReferences(source.getTailoringReferences()
-                                            .stream()
-                                            .map(this::transformTailoringReference2Dto)
-                                            .collect(Collectors.toSet())
-
-        );
-        return target;
-    }
-
-    public FullTailoringReferenceDto transformTailoringReference2Dto(
+    public AbstractTailoringReferenceDto transformTailoringReference2Dto(
             @Valid TailoringReference source) {
-        FullTailoringReferenceDto target = new FullTailoringReferenceDto();
+        AbstractTailoringReferenceDto target = null;
+        if (source.isLinkTailoringReferences()) {
+            LinkTailoringReference linkRef = (LinkTailoringReference) source;
+            target = new TransformLinkTailoringReference(linkRef.getLinkType(),
+                    Map.copyOf(linkRef.getAttributes()));
+        } else {
+            target = new FullTailoringReferenceDto(source.getId()
+                                                         .uuidValue());
+        }
         mapVersionedProperties(source, target);
-        target.setId(source.getId()
-                           .uuidValue());
 
         target.setReferenceType(source.getReferenceType());
 

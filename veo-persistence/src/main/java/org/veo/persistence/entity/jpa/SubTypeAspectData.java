@@ -43,9 +43,11 @@ public class SubTypeAspectData extends AspectData implements SubTypeAspect {
 
     @NotNull
     @Getter
+    @ToString.Include
     private String subType;
 
     @NotNull
     @Getter
+    @ToString.Include
     private String status;
 }

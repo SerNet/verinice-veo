@@ -286,10 +286,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             saveWithAddedCompositePersons(100, "person", scope )
         }
         then:
-        queryCounts.delete == 1
+        queryCounts.delete == 0
         queryCounts.insert == 35
         queryCounts.update == 5
-        queryCounts.select == 16
+        queryCounts.select == 17
     }
 
     def "SQL performance for selecting units of a client"() {

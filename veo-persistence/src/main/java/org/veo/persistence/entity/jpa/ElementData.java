@@ -131,7 +131,7 @@ public abstract class ElementData extends IdentifiableVersionedData
     private Set<SubTypeAspect> subTypeAspects = new HashSet<>();
 
     @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
-    private Set<CatalogItem> appliedCatalogItems;
+    private Set<CatalogItem> appliedCatalogItems = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
     @JoinColumn(name = "owner_id")

@@ -38,9 +38,6 @@ class SubTypeMvcSpec extends VeoMvcSpec {
     @Autowired
     UnitRepository unitRepository
 
-    @Autowired
-    TransactionTemplate txTemplate
-
     String domainId
     String unitId
 

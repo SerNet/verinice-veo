@@ -49,6 +49,7 @@ import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
@@ -76,6 +77,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     private final DomainTemplateRepository domainTemplateRepository;
     private final DtoToEntityTransformer entityTransformer;
+    private final EntityToDtoTransformer dtoTransformer;
     private final EntityFactory factory;
     private final List<VeoInputStreamResource> domainResources;
     private final CatalogItemPrepareStrategy preparations;
@@ -84,7 +86,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     private ReferenceAssembler assembler;
     private ObjectMapper objectMapper;
     private ReferenceDeserializer deserializer;
-    private Map<String, DomainTemplate> bootstrappedDomaintemplates;
     private Map<String, VeoInputStreamResource> domainTemplateFiles = new HashMap<>();
 
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
@@ -99,6 +100,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         entityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer);
         assembler = new LocalReferenceAssembler();
+        dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
         deserializer = new ReferenceDeserializer(assembler);
         objectMapper = new ObjectMapper().addMixIn(AbstractElementDto.class,
                                                    TransformElementDto.class)
@@ -121,13 +123,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 log.error("Error reading file", e);
             }
         });
-
-        bootstrappedDomaintemplates = domainTemplateFiles.entrySet()
-                                                         .stream()
-                                                         .collect(Collectors.toMap(Entry::getKey,
-                                                                                   e -> createDomainTemplate(e.getKey(),
-                                                                                                             e.getValue())));
-
+        domainTemplateFiles.forEach(this::createDomainTemplate);
     }
 
     @Override
@@ -156,31 +152,21 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     @Override
     public Domain createDomain(Client client, String templateId) {
-        VeoInputStreamResource templateFile = domainTemplateFiles.get(templateId);
-        if (templateFile != null) {
-            // TODO: check the rights and throw another exception, or another
-            // error text
-            // like :
-            // please purchase the domaintemplate in the shop
-            try {
-                TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
-                Domain domainPlaceholder = factory.createDomain(domainTemplateDto.getName(),
-                                                                domainTemplateDto.getAuthority(),
-                                                                domainTemplateDto.getTemplateVersion(),
-                                                                domainTemplateDto.getRevision());
-                Domain domain = processDomainTemplate(domainTemplateDto, domainPlaceholder);
-                domain.setDomainTemplate(bootstrappedDomaintemplates.get(templateId));
-                client.addToDomains(domain);
-                log.info("Domain {} created for client {}", domain.getName(), client);
-                return domain;
-            } catch (JsonMappingException e) {
-                log.error("Error parsing file", e);
-            } catch (IOException e) {
-                log.error("Error loading file", e);
-            }
-        }
-        throw new NotFoundException("Domain template %s does not exist for client %s.", templateId,
-                client);
+        DomainTemplate domainTemplate = domainTemplateRepository.findById(Key.uuidFrom(templateId))
+                                                                .orElseThrow(() -> new NotFoundException(
+                                                                        "Domain template %s does not exist for client %s.",
+                                                                        templateId, client));
+
+        TransformDomainTemplateDto domainTemplateDto = dtoTransformer.transformDomainTemplate2Dto(domainTemplate);
+        Domain domainPlaceholder = factory.createDomain(domainTemplateDto.getName(),
+                                                        domainTemplateDto.getAuthority(),
+                                                        domainTemplateDto.getTemplateVersion(),
+                                                        domainTemplateDto.getRevision());
+        Domain domain = processDomainTemplate(domainTemplateDto, domainPlaceholder);
+        domain.setDomainTemplate(domainTemplate);
+        client.addToDomains(domain);
+        log.info("Domain {} created for client {}", domain.getName(), client);
+        return domain;
     }
 
     @Override
@@ -302,7 +288,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                          .stream()
                          .map(entry -> entityTransformer.mapElementTypeDefinition(entry.getKey(),
                                                                                   entry.getValue(),
-                                                                                  newDomain));
+                                                                                  newDomain))
+                         .forEach(etd -> newDomain.getElementTypeDefinitions()
+                                                  .add(etd));
 
         initCatalog(newDomain, itemCache);
         return newDomain;
