@@ -33,9 +33,9 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.spock.Testcontainers
 
-import org.veo.MessagingJob
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.event.StoredEvent
+import org.veo.jobs.MessagingJob
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
 

@@ -31,9 +31,9 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 
-import org.veo.MessagingJob
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.event.StoredEvent
+import org.veo.jobs.MessagingJob
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
 
