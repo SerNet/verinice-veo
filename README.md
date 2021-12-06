@@ -105,9 +105,13 @@ they are not required.
 This profile enables a data source proxy that logs all generated SQL. It can be used for debugging. It is
 also used for tests that analyze the generated SQL queries for possible performance issues.
 
-#### Profile 'publishing-enabled'
-This profile will enable an event-dispatcher that forwards the generated application events to an external AMQP message broker.
-The dispatcher needs to be configured using the corresponding settings found in `application.yaml`.
+#### Profile 'background-tasks'
+This profile should not be enabled for clustered (autoscaled) instances.
+It activates background tasks that only need to be run once in each environment.
+It will enable the following background tasks:
+
+* an event-dispatcher that forwards the generated application events to an external AMQP 
+message broker.  The dispatcher needs to be configured using the corresponding settings found in `application.yaml`.
 
 #### Profile 'local'
 (Or any other self-defined profile name). Loads additional configuration files that can be used to set up

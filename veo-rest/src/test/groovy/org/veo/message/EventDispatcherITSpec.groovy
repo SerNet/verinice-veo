@@ -59,7 +59,7 @@ classes = [TestEventSubscriber.class,
     RabbitMQSenderConfiguration.class,
 ]
 )
-@ActiveProfiles(["test", "publishing-enabled"])
+@ActiveProfiles(["test", "background-tasks"])
 @Testcontainers
 @IgnoreIf({
     Boolean.valueOf(env['CI'])
