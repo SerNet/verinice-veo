@@ -129,28 +129,18 @@ subprojects {
     dependencyManagement {
         dependencies {
             dependency 'com.vladmihalcea:hibernate-types-52:2.14.0'
-            [
-                'jjwt-api',
-                'jjwt-impl',
-                'jjwt-jackson'
-            ].each {
-                dependency "io.jsonwebtoken:$it:0.11.2"
-            }
-            [
-                'spock-core',
-                'spock-spring'
-            ].each {
-                dependency "org.spockframework:$it:2.0-groovy-3.0"
-            }
+            dependency 'io.jsonwebtoken:jjwt-api:0.11.2'
+            dependency 'io.jsonwebtoken:jjwt-impl:0.11.2'
+            dependency 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+            dependency "org.spockframework:spock-core:2.0-groovy-3.0"
+            dependency "org.spockframework:spock-spring:2.0-groovy-3.0"
             dependency 'org.springdoc:springdoc-openapi-ui:1.5.13'
             dependency 'io.swagger.core.v3:swagger-core:2.1.11'
-            [
-                'jsonschema-generator',
-                'jsonschema-module-jackson',
-                'jsonschema-module-javax-validation',
-                'jsonschema-module-swagger-2'
-            ].each { dependency "com.github.victools:$it:4.20.0" }
             dependency 'net.ttddyy:datasource-proxy:1.7'
+            dependency 'com.github.victools:jsonschema-generator:4.20.0'
+            dependency 'com.github.victools:jsonschema-module-jackson:4.20.0'
+            dependency 'com.github.victools:jsonschema-module-javax-validation:4.20.0'
+            dependency 'com.github.victools:jsonschema-module-swagger-2:4.20.0'
             dependency 'com.networknt:json-schema-validator:1.0.64'
             dependency "org.testcontainers:spock:1.16.2"
             dependency "org.testcontainers:postgresql:1.16.2"
