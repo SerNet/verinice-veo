@@ -26,6 +26,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
@@ -72,6 +73,7 @@ public class CreateDemoUnitUseCase implements
     }
 
     @Override
+    @Transactional
     public OutputData execute(InputData input) {
 
         Client client = clientRepository.findById(input.getClientId())
