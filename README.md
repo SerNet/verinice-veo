@@ -110,8 +110,11 @@ This profile should not be enabled for clustered (autoscaled) instances.
 It activates background tasks that only need to be run once in each environment.
 It will enable the following background tasks:
 
-* an event-dispatcher that forwards the generated application events to an external AMQP 
+* an event-dispatcher that forwards the generated application events to an external AMQP
 message broker.  The dispatcher needs to be configured using the corresponding settings found in `application.yaml`.
+* a scheduled task that resets a "demo unit" with example content in the database at the specified
+time interval. The point in time needs to be specified with the corresponding settings found in `application.yaml`.
+The default is to reset the example content at 03:00 am (UTC) every day.
 
 #### Profile 'local'
 (Or any other self-defined profile name). Loads additional configuration files that can be used to set up
@@ -317,7 +320,7 @@ call `./misc/scripts/authenticate -h` for more details.
 
 ## Events
 
-VEO records changes to entities and publishes them to an external message broker (see Profile 'publishing-enabled').
+VEO records changes to entities and publishes them to an external message broker (see Profile 'background-tasks').
 
 ### Rules for event consumers
 

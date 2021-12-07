@@ -30,6 +30,9 @@ veo:
       lockExpirationMs: 20000
       rateMs: 2000
       confirmationWaitMs: 2000
+  scheduler:
+    resetAllDemoUnits:
+      cron: '0 0 3 * * *'
   #test:
     #message:
       #dispatch:

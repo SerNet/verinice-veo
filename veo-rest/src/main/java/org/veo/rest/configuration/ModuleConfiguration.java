@@ -81,6 +81,7 @@ import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.client.DeleteClientUseCase;
+import org.veo.core.usecase.client.GetClientUseCase;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
@@ -122,6 +123,7 @@ import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
+import org.veo.core.usecase.unit.DeleteDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -355,6 +357,12 @@ public class ModuleConfiguration {
     }
 
     @Bean
+    public DeleteDemoUnitUseCase getDeleteDemoUnitUseCase(DeleteUnitUseCase deleteUnitUseCase,
+            GetClientUseCase getClientUseCase, GetUnitsUseCase getUnitsUseCase) {
+        return new DeleteDemoUnitUseCase(deleteUnitUseCase, getClientUseCase, getUnitsUseCase);
+    }
+
+    @Bean
     public DeleteUnitUseCase getDeleteUnitUseCase(ClientRepositoryImpl clientRepository,
             UnitRepositoryImpl unitRepository, RepositoryProvider repositoryProvider) {
         return new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider);
@@ -581,6 +589,11 @@ public class ModuleConfiguration {
             CatalogItemRepository catalogItemRepository, RepositoryProvider repositoryProvider) {
         return new GetIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
                 domainRepository, repositoryProvider);
+    }
+
+    @Bean
+    GetClientUseCase getClientUseCase(ClientRepository clientRepository) {
+        return new GetClientUseCase(clientRepository);
     }
 
     @Bean
