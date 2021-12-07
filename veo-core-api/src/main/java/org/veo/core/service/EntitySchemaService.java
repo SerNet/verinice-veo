@@ -20,6 +20,8 @@ package org.veo.core.service;
 import java.util.List;
 import java.util.Set;
 
+import org.veo.core.Translations;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 
 /**
@@ -40,10 +42,10 @@ public interface EntitySchemaService {
     public String findSchema(String type, Set<Domain> domains);
 
     /**
-     * Returns a JSON with translation for the given language identifiers. If not
-     * translation is present for any identifier, it will be ignored.
+     * Returns a translations for the given language identifiers. If no translation
+     * is present for any identifier, it will be ignored.
      */
-    public String findTranslations(Set<String> languages);
+    public Translations findTranslations(Client client, Set<String> languages);
 
     /**
      * Filter the inputSchema to remove attributes that do not match the given user

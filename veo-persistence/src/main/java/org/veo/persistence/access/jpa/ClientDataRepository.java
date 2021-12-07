@@ -36,4 +36,7 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
     @EntityGraph(attributePaths = { "domains.catalogs.catalogItems.element",
             "domains.catalogs.catalogItems.tailoringReferences" })
     Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesByDbId(String id);
+
+    @EntityGraph(attributePaths = { "domains.elementTypeDefinitions.translations" })
+    Optional<ClientData> findWithTranslationsByDbId(String id);
 }

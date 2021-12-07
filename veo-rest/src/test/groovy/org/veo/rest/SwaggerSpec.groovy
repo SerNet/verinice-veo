@@ -151,6 +151,37 @@ class SwaggerSpec extends VeoSpringSpec {
     }
 
 
+    def "endpoint documentation is correct for translation controller"() {
+        when: "retrieving the information about the endpoint"
+        def endPointInfo = parsedApiDocs.paths["/translations"]
+        then: "the information is found"
+        endPointInfo != null
+        and: 'it handles get requests'
+        endPointInfo.get != null
+        and: 'it contains information about the query parameters'
+        with(endPointInfo.get) {
+            summary == 'Retrieves a map of UI translation key-value pairs.'
+        }
+        when:
+        def translationsSchema = parsedApiDocs.components.schemas.TranslationsDto
+        then:
+        with(translationsSchema) {
+            it.description == 'Translations for an entity type'
+            it.properties.containsKey('lang')
+            with (it.properties.lang) {
+                it.description == 'The keys are language codes, the values are the translations'
+                it.additionalProperties.'$ref' == '#/components/schemas/TranslationDto'
+            }
+        }
+        when:
+        def translationSchema = parsedApiDocs.components.schemas.TranslationDto
+        then:
+        with(translationSchema) {
+            it.description == 'Translations for an entity type in a specific language'
+        }
+    }
+
+
     @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString

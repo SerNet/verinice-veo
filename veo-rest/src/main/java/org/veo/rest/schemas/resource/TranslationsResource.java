@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.rest.RestApplication;
 
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -52,33 +53,18 @@ public interface TranslationsResource {
 
     // @formatter:off
     @GetMapping()
-    @Operation(summary = "Retrieves a map of UI translation key-value pairs.",
-        externalDocs = @ExternalDocumentation(
-              description = "Languages are specified as IANA language subtags",
-              url = "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry"
-        )
-    )
+    @Operation(summary = "Retrieves a map of UI translation key-value pairs.", externalDocs = @ExternalDocumentation(description = "Languages are specified as IANA language subtags", url = "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry"))
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Translations for requested languages", // TODO add meta-schema
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
-            @ApiResponse(responseCode = "404", description = "Translation not found")
-    })
-    public CompletableFuture<ResponseEntity<String>> getSchema(
+            @ApiResponse(responseCode = "200", description = "Translations for requested languages", // TODO
+                                                                                                     // add
+                                                                                                     // meta-schema
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+            @ApiResponse(responseCode = "404", description = "Translation not found") })
+    public CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
 
             @Parameter(required = false, hidden = true) Authentication auth,
 
-            @Parameter(required = true,
-                allowEmptyValue = false,
-                description = "The language(s) for which the translation key-value pairs are returned.",
-                example = "de,en,pr",
-                allowReserved = false,
-                schema = @Schema(
-                    type = "string",
-                    description = "IANA language subtag"
-                )
-            )
-            @RequestParam(value = "languages", required = true) Set<String> languages);
+            @Parameter(required = true, allowEmptyValue = false, description = "The language(s) for which the translation key-value pairs are returned.", example = "de,en,pr", allowReserved = false, schema = @Schema(type = "string", description = "IANA language subtag")) @RequestParam(value = "languages", required = true) Set<String> languages);
 
     // @formatter:on
 }

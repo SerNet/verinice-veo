@@ -57,6 +57,12 @@ public class ClientRepositoryImpl extends
     }
 
     @Override
+    public Optional<Client> findByIdFetchTranslations(Key<UUID> id) {
+        return clientDataRepository.findWithTranslationsByDbId(id.uuidValue())
+                                   .map(Client.class::cast);
+    }
+
+    @Override
     public List<Client> findAll() {
         return stream(clientDataRepository.findAll()
                                           .spliterator(),

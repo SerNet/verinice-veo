@@ -45,6 +45,7 @@ public class ElementTypeDefinitionAssembler {
         definition.setCustomAspects(readMap(dir, "customAspects", CustomAspectDefinition.class));
         definition.setLinks(readMap(dir, "links", LinkDefinition.class));
         definition.setSubTypes(readMap(dir, "subTypes", SubTypeDefinition.class));
+        definition.setTranslations(parse(new File(dir, "lang.json"), Map.class));
         return definition;
     }
 

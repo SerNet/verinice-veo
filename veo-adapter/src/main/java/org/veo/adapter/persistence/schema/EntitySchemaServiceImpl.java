@@ -17,17 +17,17 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.veo.adapter.presenter.api.dto.TranslationsDto;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.service.EntitySchemaService;
 
 import lombok.RequiredArgsConstructor;
@@ -63,21 +63,20 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
     }
 
     @Override
-    public String findTranslations(Set<String> languages) {
-        log.debug("Getting full static translation file, ignoring requested language filter: {}",
+    public TranslationsDto findTranslations(Client client, Set<String> languages) {
+        log.debug("Getting full static translation content, ignoring requested language filter: {}",
                   languages);
-        return extract("/lang/lang.json");
-    }
-
-    private String extract(final String file) {
-        log.debug("Loading file form classpath: {}", file);
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass()
-                                                                              .getResourceAsStream(file),
-                StandardCharsets.UTF_8))) {
-            return br.lines()
-                     .collect(Collectors.joining("\n"));
-        } catch (IOException e) {
-            throw new NotFoundException("Stored JSON file has wrong encoding.");
+        TranslationsDto translations = new TranslationsDto();
+        for (Domain domain : client.getDomains()) {
+            for (ElementTypeDefinition definition : domain.getElementTypeDefinitions()) {
+                Map<String, Map<String, String>> translationsForDefinition = definition.getTranslations();
+                for (Entry<String, Map<String, String>> entry : translationsForDefinition.entrySet()) {
+                    String lang = entry.getKey();
+                    // TODO VEO-526 evaluate languages parameter
+                    translations.add(lang, entry.getValue());
+                }
+            }
         }
+        return translations;
     }
 }

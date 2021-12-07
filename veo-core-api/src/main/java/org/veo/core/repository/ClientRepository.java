@@ -36,5 +36,8 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
 
     Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);
 
+    Optional<Client> findByIdFetchTranslations(Key<UUID> id);
+
     List<Client> findAll();
+
 }

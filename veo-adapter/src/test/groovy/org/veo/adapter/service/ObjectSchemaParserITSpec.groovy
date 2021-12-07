@@ -100,5 +100,12 @@ class ObjectSchemaParserITSpec extends Specification {
                 }
             }
         })
+
+        1 * elementDefinition.setTranslations({
+            it.size() == 2
+            with( it.de) {
+                it.process_controller == 'Auftraggeber nach Art. 30 II DS-GVO'
+            }
+        })
     }
 }

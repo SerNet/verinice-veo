@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2021  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.definitions;
+package org.veo.core;
 
-import java.util.Map;
+public interface Translations {
 
-public interface ElementTypeDefinition {
-    String getElementType();
-
-    Map<String, SubTypeDefinition> getSubTypes();
-
-    void setSubTypes(Map<String, SubTypeDefinition> definitions);
-
-    Map<String, CustomAspectDefinition> getCustomAspects();
-
-    void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
-
-    Map<String, LinkDefinition> getLinks();
-
-    void setLinks(Map<String, LinkDefinition> definitions);
-
-    Map<String, Map<String, String>> getTranslations();
-
-    void setTranslations(Map<String, Map<String, String>> translations);
 }

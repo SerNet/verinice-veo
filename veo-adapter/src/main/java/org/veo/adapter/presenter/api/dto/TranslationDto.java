@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2021  Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.definitions;
+package org.veo.adapter.presenter.api.dto;
 
 import java.util.Map;
 
-public interface ElementTypeDefinition {
-    String getElementType();
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 
-    Map<String, SubTypeDefinition> getSubTypes();
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Value;
 
-    void setSubTypes(Map<String, SubTypeDefinition> definitions);
+@Value
+@Schema(description = "Translations for an entity type in a specific language")
+public class TranslationDto {
 
-    Map<String, CustomAspectDefinition> getCustomAspects();
+    private Map<String, String> translations;
 
-    void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
+    public static TranslationDto of(Map<String, String> value) {
+        return new TranslationDto(value);
+    }
 
-    Map<String, LinkDefinition> getLinks();
+    @JsonAnyGetter
+    Map<String, String> getTranslations() {
+        return translations;
+    }
 
-    void setLinks(Map<String, LinkDefinition> definitions);
-
-    Map<String, Map<String, String>> getTranslations();
-
-    void setTranslations(Map<String, Map<String, String>> translations);
 }

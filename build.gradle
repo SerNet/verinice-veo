@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id 'org.springframework.boot' version '2.6.1' apply false
     id "com.github.spotbugs" version '5.0.2'
@@ -242,4 +244,98 @@ subprojects {
             ])
         }
     }
+}
+
+task checkTranslations {
+    def domainTemplates = rootProject.file('domaintemplates')
+    inputs.files domainTemplates
+
+    doLast {
+        def missingTranslations = false
+
+        domainTemplates.eachFile { templateDir ->
+            logger.info "Checking translations for $templateDir"
+            def typeDirs = new File(templateDir, 'types').listFiles()
+
+            typeDirs.each {typeDir->
+                def customAspectAndLinkFiles = fileTree(typeDir){
+                    include 'links/*.json'
+                    include 'customAspects/*.json'
+                }
+                def subTypeFiles = fileTree(dir: typeDir, include: 'subTypes/*.json')
+                def langFile = new File(typeDir, 'lang.json')
+                def langJson = new JsonSlurper().parse(langFile)
+
+                def languagesToCheck = [
+                    'German': langJson.de,
+                    'English': langJson.en
+                ]
+
+                def handleTranslationKey = { String translationKey, location = null ->
+                    languagesToCheck.each {lang, json->
+                        def translation = json.remove(translationKey)
+                        if (translation == null) {
+                            logger.warn("$langFile: Missing $lang translation for $translationKey in $location")
+                            missingTranslations = true
+                        }
+                    }
+                }
+
+                // Nameable base attributes
+                handleTranslationKey('name', 'Nameable base attributes')
+                handleTranslationKey('abbreviation', 'Nameable base attributes')
+                handleTranslationKey('description', 'Nameable base attributes')
+
+                customAspectAndLinkFiles.each { file->
+
+                    logger.info "Loading $file"
+                    def data = new JsonSlurper().parse(file)
+                    def isLinkSchema = file.parentFile.name == 'links'
+                    if (isLinkSchema) {
+                        // link IDs should be translated, custom aspect IDs should not
+                        handleTranslationKey(file.name.replace(".json", ""), "$file.name (custom link id)")
+                    }
+
+                    def properties = data.attributeSchemas
+                    def propertyNames = properties.keySet()
+                    logger.info "property names: $propertyNames"
+
+                    // custom aspect attribute ID / field in the editor
+                    properties.each {key, value->
+                        handleTranslationKey(key, "$file.name (custom aspect/link attribute id)")
+                        // custom aspect enum entry / value in drop-down
+                        value.enum?.each {
+                            handleTranslationKey(it, "$file.name (custom aspect/link select value id)")
+                        }
+                        // custom aspect enum entry / value in multi-value drop-down
+                        value.items?.enum?.each {
+                            handleTranslationKey(it, "$file.name (custom aspect/link select value id)")
+                        }
+                    }
+                }
+
+                subTypeFiles.each { File subTypeFile ->
+                    def type = subTypeFile.parentFile.parentFile.name.toLowerCase()
+                    def subType = subTypeFile.name[0..-6]
+                    new JsonSlurper().parse(subTypeFile).statuses.each{ status ->
+                        handleTranslationKey("${type}_${subType}_status_${status}", subTypeFile.absolutePath)
+                    }
+                }
+
+                languagesToCheck.each {lang, json->
+                    json.each {
+                        logger.warn("$langFile: Unused $lang translation $it")
+                    }
+                }
+            }
+        }
+
+        if (missingTranslations) {
+            throw new GradleException("There are translations missing, see log output above.")
+        }
+    }
+}
+
+task check {
+    dependsOn checkTranslations
 }

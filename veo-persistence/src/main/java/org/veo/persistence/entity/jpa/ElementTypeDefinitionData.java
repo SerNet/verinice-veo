@@ -77,4 +77,8 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
     @Column(columnDefinition = "jsonb")
     @NotNull
     private Map<String, LinkDefinition> links = new HashMap<>();
+
+    @Column(columnDefinition = "jsonb")
+    @NotNull
+    private Map<String, Map<String, String>> translations = new HashMap<>();
 }

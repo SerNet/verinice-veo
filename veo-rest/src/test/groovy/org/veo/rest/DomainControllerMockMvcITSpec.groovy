@@ -154,6 +154,12 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
                     'SCP_ResponsibleBody'
                 ] as Set
             }
+            with(it.translations) {
+                it.size() == 2
+                with (it.en) {
+                    it.scope_management == 'Head of the responsible body'
+                }
+            }
         }
 
     }

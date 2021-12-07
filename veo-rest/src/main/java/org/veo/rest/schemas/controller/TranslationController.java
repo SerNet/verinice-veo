@@ -18,6 +18,7 @@
 package org.veo.rest.schemas.controller;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.veo.adapter.presenter.api.dto.TranslationsDto;
+import org.veo.core.Translations;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
+import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.schemas.resource.TranslationsResource;
+import org.veo.rest.security.ApplicationUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,13 +46,23 @@ public class TranslationController implements TranslationsResource {
 
     private final EntitySchemaService schemaService;
 
+    private final ClientRepository clientRepository;
+
     @Override
-    public CompletableFuture<ResponseEntity<String>> getSchema(Authentication auth,
+    public CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(Authentication auth,
             @RequestParam(value = "languages") Set<String> languages) {
+        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+        Client client = getClient(user.getClientId());
         return CompletableFuture.supplyAsync(() -> {
-            String t10n = schemaService.findTranslations(languages);
+            Translations t10n = schemaService.findTranslations(client, languages);
             return ResponseEntity.ok()
-                                 .body(t10n);
+                                 .body((TranslationsDto) t10n);
         });
+    }
+
+    protected Client getClient(String clientId) {
+        Key<UUID> id = Key.uuidFrom(clientId);
+        return clientRepository.findByIdFetchTranslations(id)
+                               .orElseThrow();
     }
 }

@@ -183,6 +183,7 @@ public final class DtoToEntityTransformer {
         target.setSubTypes(source.getSubTypes());
         target.setCustomAspects(source.getCustomAspects());
         target.setLinks(source.getLinks());
+        target.setTranslations(source.getTranslations());
         return target;
     }
 

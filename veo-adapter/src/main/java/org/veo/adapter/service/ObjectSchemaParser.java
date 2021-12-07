@@ -60,6 +60,7 @@ public class ObjectSchemaParser {
         typeDefinition.setSubTypes(extractSubTypeDefinitions(properties));
         typeDefinition.setCustomAspects(extractCustomAspectDefinitions(properties));
         typeDefinition.setLinks(extractLinkDefinitions(properties));
+        typeDefinition.setTranslations(extractTranslations(properties));
         return typeDefinition;
     }
 
@@ -158,6 +159,12 @@ public class ObjectSchemaParser {
             links.put(linkName, linkDefinition);
         }
         return links;
+    }
+
+    private Map<String, Map<String, String>> extractTranslations(JsonNode properties)
+            throws JsonProcessingException {
+        JsonNode translationsNode = properties.get("translations");
+        return OBJECTMAPPER.treeToValue(translationsNode, Map.class);
     }
 
 }

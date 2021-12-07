@@ -30,6 +30,10 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "get the translation for all languages"() {
+        given:
+        createTestClient().tap {
+            createDsgvoDomain(it)
+        }
         when: "a request for a T10N file is made"
 
         def translations = parseJson(get('/translations?languages=all'))

@@ -187,8 +187,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             Authentication auth, @PathVariable String id, @PathVariable EntityType type,
             @RequestBody JsonNode schemaNode) {
         Client client = getAuthenticatedClient(auth);
-        // FIXME VEO-494: also update the translations once they are in the
-        // database
         try {
             ElementTypeDefinition typeDefinition = objectSchemaParser.parseTypeDefinitionFromObjectSchema(type,
                                                                                                           schemaNode);
