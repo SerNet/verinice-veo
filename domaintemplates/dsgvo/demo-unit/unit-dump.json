@@ -2186,7 +2186,6 @@
             "domains": [],
             "attributes": {
               "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
-              "process_dataType_otherDeletionPeriod": "10 Jahre",
               "process_dataType_descriptionDeletionProcedure": "Die Daten werden gel\u00f6scht, sobald sie zur Erf\u00fcllung von Versorgungsanspr\u00fcchen der jeweiligen Mitarbeiter nicht mehr erforderlich sind."
             },
             "target": {
@@ -2200,7 +2199,6 @@
             "domains": [],
             "attributes": {
               "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
-              "process_dataType_otherDeletionPeriod": "10 Jahre",
               "process_dataType_descriptionDeletionProcedure": "Die Daten werden gel\u00f6scht, sobald sie zur Erf\u00fcllung von Versorgungsanspr\u00fcchen der jeweiligen Mitarbeiter nicht mehr erforderlich sind."
             },
             "target": {
@@ -2469,7 +2467,6 @@
             "attributes": {
               "process_dataType_comment": "keine",
               "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
-              "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_6m",
               "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure",
               "process_dataType_descriptionDeletionProcedure": "keine L\u00f6schvorgaben"
             },
@@ -2485,8 +2482,6 @@
             "attributes": {
               "process_dataType_comment": "Per E-Mail oder Online Web",
               "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
-              "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_6m",
-              "process_dataType_otherDataOrigin": "Keine",
               "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure",
               "process_dataType_descriptionDeletionProcedure": "Keine L\u00f6schvorgaben"
             },

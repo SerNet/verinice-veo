@@ -64,6 +64,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -356,6 +357,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         ref.dtoCache = elementDtos;
 
         Map<AbstractElementDto, Map<String, List<CustomLinkDto>>> linkCache = new HashMap<>();
+        Map<AbstractScopeDto, Set<IdRef<Element>>> memberCache = new HashMap<>();
 
         Predicate<IdentifiableDto> isScope = AbstractScopeDto.class::isInstance;
 
@@ -365,7 +367,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                    .filter(Predicate.not(isScope))
                    .map(AbstractElementDto.class::cast)
                    .map(e -> {
-                       linkCache.put(e, e.getLinks());
+                       linkCache.put(e, Map.copyOf(e.getLinks()));
                        e.getLinks()
                         .clear();
                        return e;
@@ -379,8 +381,14 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                    .filter(isScope)
                    .map(AbstractScopeDto.class::cast)
                    .map(e -> {
-                       linkCache.put(e, e.getLinks());
+                       linkCache.put(e, Map.copyOf(e.getLinks()));
                        e.getLinks()
+                        .clear();
+                       return e;
+                   })
+                   .map(e -> {
+                       memberCache.put(e, Set.copyOf(e.getMembers()));
+                       e.getMembers()
                         .clear();
                        return e;
                    })
@@ -390,6 +398,16 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         linkCache.entrySet()
                  .forEach(e -> e.getKey()
                                 .setLinks(e.getValue()));
+        memberCache.entrySet()
+                   .forEach(e -> (e.getKey()).setMembers(e.getValue()));
+
+        elementDtos.values()
+                   .stream()
+                   .map(AbstractElementDto.class::cast)
+                   .map(e -> entityTransformer.transformDto2Element(e, ref))
+                   .forEach(c -> {
+                       ref.cache.put(c.getIdAsString(), c);
+                   });
 
         Map<String, Element> elementCache = ref.cache.entrySet()
                                                      .stream()
@@ -400,7 +418,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
         ref.cache.entrySet()
                  .stream()
-                 .filter(e -> (e.getValue() instanceof Element))
+                 .filter(e -> (e.getValue() instanceof Element
+                         && elementDtos.containsKey(e.getKey())))
                  .map(e -> (Element) e.getValue())
                  .forEach(es -> {
                      es.getLinks()
@@ -425,6 +444,19 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                                                   .map(Entry::getValue)
                                                                   .collect(Collectors.toSet());
                          ce.setParts(resolvedParts);
+                     }
+                     if (es instanceof Scope) {
+                         Scope se = (Scope) es;
+                         Set<String> memberIds = se.getMembers()
+                                                   .stream()
+                                                   .map(Identifiable::getIdAsString)
+                                                   .collect(Collectors.toSet());
+                         Set<Element> resolvedMembers = elementCache.entrySet()
+                                                                    .stream()
+                                                                    .filter(e -> memberIds.contains(e.getKey()))
+                                                                    .map(Entry::getValue)
+                                                                    .collect(Collectors.toSet());
+                         se.setMembers(resolvedMembers);
                      }
                  });
 

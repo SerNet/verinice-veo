@@ -65,7 +65,35 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             it.name == 'Demo'
         }
         unitRepository.findByClient(client).size() == 1
+        when: 'loading the processes'
+        def processes = txTemplate.execute{
+            def result = processDataRepository.findByUnits([unit.idAsString] as Set)
+            //initialize lazy associations
+            result*.links*.target*.name
+            result
+        }
+        then: 'the processes are returned'
+        processes.size() == 6
+        and: 'the processes have the required data'
+        with(processes.find{it.name == 'Durchführung Befragungen'}) {
+            it.designator.startsWith('DMO-')
+            it.links.size() == 12
+            with(it.links.findAll{it.type == 'process_controller'}) {
+                it.size() == 2
+                it*.target*.name.toSorted() == ['FED AG', 'MeD GmbH']
+            }
+        }
 
+        when: 'loading the scopes'
+        def scopes = scopeDataRepository.findByUnits([unit.idAsString] as Set)
+        then: 'the scopes are returned'
+        scopes.size() == 5
+        and: 'the scopes have the required data'
+        with(scopes.find{it.name == 'Data GmbH'}) {
+            it.designator.startsWith('DMO-')
+            it.members.size() == 6
+            it.members.find{it.name == 'Durchführung Befragungen'}
+        }
         when: 'loading the demo unit elements and converting them to JSON'
         def demoElementsForUnitAsDtos = executeInTransaction{
             def demoElementsForUnit = [
