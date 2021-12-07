@@ -36,7 +36,7 @@ public class ElementTypeDefinitionAssembler {
 
     public Map<String, ElementTypeDefinitionDto> loadDefinitions(File typesDir) {
         return Arrays.stream(typesDir.listFiles())
-                     .filter(f -> f.isDirectory())
+                     .filter(File::isDirectory)
                      .collect(Collectors.toMap(File::getName, this::loadDefinition));
     }
 

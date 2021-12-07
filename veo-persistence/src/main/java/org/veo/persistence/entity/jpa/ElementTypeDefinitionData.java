@@ -72,9 +72,9 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
     @Column(columnDefinition = "jsonb")
     @NotNull
-    private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();;
+    private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
 
     @Column(columnDefinition = "jsonb")
     @NotNull
-    private Map<String, LinkDefinition> links = new HashMap<>();;
+    private Map<String, LinkDefinition> links = new HashMap<>();
 }
