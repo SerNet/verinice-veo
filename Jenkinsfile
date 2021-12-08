@@ -228,12 +228,12 @@ pipeline {
                                     --network ${n}\
                                     -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
                                     -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver\
-                                    -e VEO_RESTTEST_BASEURL=http://veo-${n}:8070/veo") {
+                                    -e VEO_RESTTEST_BASEURL=http://veo-${n}:8070") {
                                                         echo 'Waiting for container startup'
                                                         timeout(1) {
                                                             waitUntil {
                                                                 script {
-                                                                    def r = sh returnStatus:true, script: "wget --no-proxy -q http://veo-${n}:8070/veo -O /dev/null"
+                                                                    def r = sh returnStatus:true, script: "wget --no-proxy -q http://veo-${n}:8070 -O /dev/null"
                                                                     return (r == 0);
                                                                 }
                                                             }
@@ -288,7 +288,7 @@ pipeline {
                                     timeout(1) {
                                         waitUntil {
                                             script {
-                                                def r = sh returnStatus:true, script: 'wget -q http://localhost:8070/veo -O /dev/null'
+                                                def r = sh returnStatus:true, script: 'wget -q http://localhost:8070 -O /dev/null'
                                                 return (r == 0);
                                             }
                                         }

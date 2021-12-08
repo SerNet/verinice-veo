@@ -2916,7 +2916,7 @@
       },
       {
         "key": "redirect_uri",
-        "value": "http://localhost:8070/veo",
+        "value": "http://localhost:8070",
         "type": "string"
       },
       {
@@ -2954,7 +2954,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8070/veo"
+      "value": "http://localhost:8070"
     },
     {
       "key": "unitId",
