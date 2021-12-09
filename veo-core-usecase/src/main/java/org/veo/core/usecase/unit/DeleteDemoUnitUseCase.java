@@ -65,10 +65,15 @@ public class DeleteDemoUnitUseCase
                                                            .equals(DEMO_UNIT_NAME))
                                        .collect(Collectors.toList());
 
-        if (demoUnits.size() != 1)
+        if (demoUnits.size() > 1)
             throw new ModelConsistencyException(
                     "Client %s should contain 1 demo unit, but %d were found",
                     client.getIdAsString(), demoUnits.size());
+        if (demoUnits.size() == 0) {
+            log.warn("Client {} contained no demo unit - nothing to delete.",
+                     client.getIdAsString());
+            return EmptyOutput.INSTANCE;
+        }
 
         log.info("Deleting demo unit {}", demoUnits.get(0)
                                                    .getIdAsString());

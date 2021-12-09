@@ -31,7 +31,7 @@ import org.veo.persistence.access.UnitRepositoryImpl
 @WithUserDetails("user@domain.example")
 class ResetDemoUnitJobITSpec extends VeoSpringSpec {
 
-    public static final String PROCESS_NAME = "Old Modified Process"
+    public static final String MODIFIED_PROCESS_NAME = "Old Modified Process"
     public static final String ASSET_NAME = "Shiny New Asset"
 
     @Autowired
@@ -61,7 +61,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
             def process = processDataRepository
                     .findByUnits([unit.getIdAsString()] as Set)
                     .first()
-            process.setName(PROCESS_NAME)
+            process.setName(MODIFIED_PROCESS_NAME)
         }
 
         then: 'the changes are persisted'
@@ -71,7 +71,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 1
         assetDataRepository.count() == unmodifiedDemoUnitAssetCount + 1
         with (processDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
-            PROCESS_NAME in it
+            MODIFIED_PROCESS_NAME in it
         }
         with(assetDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
             ASSET_NAME in it
@@ -89,10 +89,94 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
             it.name == 'Demo'
         }
         with(processDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
-            !(PROCESS_NAME in it)
+            !(MODIFIED_PROCESS_NAME in it)
         }
         with(assetDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
             !(ASSET_NAME in it)
+        }
+    }
+
+    def "Reset demo unit for client with no demo unit"() {
+        given: "a new client"
+        def client = createClient()
+
+        expect: "the client has no demo unit"
+        unitRepository.findByClient(client).size() == 0
+
+        when: "The demo unit is reset"
+        job.resetAllDemoUnits()
+
+        then: "A new demo unit was created"
+        unitRepository.findByClient(client).size() == 1
+    }
+
+    def "Reset demo unit for client with multiple demo units"() {
+        given: "two clients, one has two demo units"
+        def client1 = createClient()
+        def client2 = createClient()
+
+        txTemplate.execute {
+            // create the first demo unit for client1:
+            createDemoUnitUseCase.execute(new InputData(client1.id))
+        }
+
+        def client1ModifiedDemoUnit = txTemplate.execute {
+            // create the second demo unit for client1, with modifications:
+            def client1ModifiedDemoUnit = createDemoUnitUseCase.execute(new InputData(client1.id)).unit
+            def process = processDataRepository
+                    .findByUnits([
+                        client1ModifiedDemoUnit.getIdAsString()
+                    ] as Set)
+                    .first()
+            process.setName(MODIFIED_PROCESS_NAME)
+            client1ModifiedDemoUnit
+        }
+
+        def client2ModifiedDemoUnit = txTemplate.execute {
+            // create one unit for client2, with modifications:
+            def client2ModifiedDemoUnit = createDemoUnitUseCase.execute(new InputData(client2.id)).unit
+            def process = processDataRepository
+                    .findByUnits([
+                        client2ModifiedDemoUnit.getIdAsString()
+                    ] as Set)
+                    .first()
+            process.setName(MODIFIED_PROCESS_NAME)
+            client2ModifiedDemoUnit
+        }
+
+        expect:
+        unitRepository.findByClient(client1).size() == 2
+        unitRepository.findByClient(client2).size() == 1
+
+        with (processDataRepository.findByUnits([
+            client1ModifiedDemoUnit.getIdAsString()
+        ] as Set)*.name) {
+            MODIFIED_PROCESS_NAME in it
+        }
+        with (processDataRepository.findByUnits([
+            client2ModifiedDemoUnit.getIdAsString()
+        ] as Set)*.name) {
+            MODIFIED_PROCESS_NAME in it
+        }
+
+        when: "the demo units are reset"
+        job.resetAllDemoUnits()
+
+        then: "the first client was skipped"
+        unitRepository.findByClient(client1).size() == 2
+        with (processDataRepository.findByUnits([
+            client1ModifiedDemoUnit.getIdAsString()
+        ] as Set)*.name) {
+            MODIFIED_PROCESS_NAME in it
+        }
+
+        and: "the second client's demo unit was reset"
+        unitRepository.findByClient(client2).size() == 1
+        unitRepository.findById(client2ModifiedDemoUnit.getId()).isEmpty()
+        with (processDataRepository.findByUnits([
+            client2ModifiedDemoUnit.getIdAsString()
+        ] as Set)*.name) {
+            !(MODIFIED_PROCESS_NAME in it)
         }
     }
 

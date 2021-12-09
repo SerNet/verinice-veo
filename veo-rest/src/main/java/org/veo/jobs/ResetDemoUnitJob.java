@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteDemoUnitUseCase;
@@ -52,8 +53,12 @@ public class ResetDemoUnitJob {
     }
 
     private void resetDemoUnit(Client client) {
-        log.info("Resetting demo unit for client {}", client.getIdAsString());
-        deleteUseCase.execute(new DeleteDemoUnitUseCase.InputData(client.getId()));
-        createUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
+        try {
+            log.info("Resetting demo unit for client {}", client.getIdAsString());
+            deleteUseCase.execute(new DeleteDemoUnitUseCase.InputData(client.getId()));
+            createUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
+        } catch (ModelConsistencyException e) {
+            log.error("Skipping client {}", client.getIdAsString(), e);
+        }
     }
 }
