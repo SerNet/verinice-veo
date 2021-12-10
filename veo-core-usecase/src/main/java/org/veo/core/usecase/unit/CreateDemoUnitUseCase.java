@@ -19,6 +19,7 @@ package org.veo.core.usecase.unit;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,7 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
@@ -86,9 +88,18 @@ public class CreateDemoUnitUseCase implements
         demoUnit.setClient(savedClient);
         unitRepository.save(demoUnit);
         Collection<Element> demoUnitElements = domainTemplateService.getElementsForDemoUnit(savedClient);
-        @SuppressWarnings("unchecked")
-        Map<Class<Element>, List<Element>> elementsGroupedByType = demoUnitElements.stream()
-                                                                                   .collect(Collectors.groupingBy(e1 -> (Class<Element>) e1.getModelInterface()));
+        Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(demoUnitElements);
+        Map<Element, Set<CustomLink>> links = new HashMap<>();
+        // save links after the elements
+        demoUnitElements.stream()
+                        .filter(e -> !e.getLinks()
+                                       .isEmpty())
+                        .forEach(e -> {
+                            links.put(e, Set.copyOf(e.getLinks()));
+                            e.getLinks()
+                             .clear();
+                        });
+
         AtomicInteger counter = new AtomicInteger(0);
         elementsGroupedByType.entrySet()
                              .stream()
@@ -98,12 +109,36 @@ public class CreateDemoUnitUseCase implements
                              .forEach(e -> prepareAndSaveElements(e.getKey(), e.getValue(),
                                                                   demoUnit, counter));
         log.info("Demo unit with {} elements created", demoUnitElements.size());
+        links.entrySet()
+             .stream()
+             .forEach(e -> {
+                 e.getValue()
+                  .stream()
+                  .forEach(l -> {
+                      e.getKey()
+                       .addToLinks(l);
+                  });
+             });
+        groupByType(links.keySet()).entrySet()
+                                   .stream()
+                                   .forEach(e -> saveElements(e.getKey(), e.getValue()));
+
         return demoUnit;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<Class<Element>, List<Element>> groupByType(Collection<Element> elements) {
+        return elements.stream()
+                       .collect(Collectors.groupingBy(e1 -> (Class<Element>) e1.getModelInterface()));
     }
 
     private <T extends Element> void prepareAndSaveElements(Class<T> entityType,
             List<T> elementsWithType, Unit demoUnit, AtomicInteger counter) {
         elementsWithType.forEach(element -> prepareElement(element, demoUnit, counter));
+        saveElements(entityType, elementsWithType);
+    }
+
+    private <T extends Element> void saveElements(Class<T> entityType, List<T> elementsWithType) {
         ElementRepository<T> elementRepository = repositoryProvider.getElementRepositoryFor(entityType);
         log.debug("Saving {} entities with type {}", elementsWithType.size(), entityType);
         elementRepository.saveAll(Set.copyOf(elementsWithType));

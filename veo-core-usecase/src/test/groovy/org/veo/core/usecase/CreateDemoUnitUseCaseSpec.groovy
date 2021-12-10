@@ -42,16 +42,18 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         Asset asset1 = Mock {
             getModelInterface() >> Asset
             getParts() >> []
+            getLinks() >> []
         }
         Asset asset2 = Mock() {
             getModelInterface() >> Asset
             getParts() >> []
+            getLinks() >> []
         }
         Process process = Mock {
             getModelInterface() >> Process
             getParts() >> []
+            getLinks() >> []
         }
-
 
         and: "a parent unit in an existing client"
         def input = new InputData(this.existingClient.getId())
