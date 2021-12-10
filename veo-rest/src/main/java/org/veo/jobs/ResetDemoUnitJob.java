@@ -26,24 +26,28 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteDemoUnitUseCase;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Runs a scheduled task that resets a "demo unit" with example content in the
+ * database at the specified time interval for each client. If no demo unit
+ * exists, it will be created. If more than one "demo unit" exists, this client
+ * will be skipped.
+ *
+ * The point in time needs to be specified with the corresponding settings. The
+ * default is to reset the example content at 03:00 am (UTC) every day.
+ */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ResetDemoUnitJob {
 
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-    private DeleteDemoUnitUseCase deleteUseCase;
+    private final DeleteDemoUnitUseCase deleteUseCase;
 
-    private CreateDemoUnitUseCase createUseCase;
-
-    public ResetDemoUnitJob(ClientRepository clientRepository, DeleteDemoUnitUseCase deleteUseCase,
-            CreateDemoUnitUseCase createUseCase) {
-        this.clientRepository = clientRepository;
-        this.deleteUseCase = deleteUseCase;
-        this.createUseCase = createUseCase;
-    }
+    private final CreateDemoUnitUseCase createUseCase;
 
     @Scheduled(cron = "${veo.scheduler.resetAllDemoUnits.cron}", zone = "UTC")
     public void resetAllDemoUnits() {
@@ -52,13 +56,15 @@ public class ResetDemoUnitJob {
                         .forEach(this::resetDemoUnit);
     }
 
-    private void resetDemoUnit(Client client) {
-        try {
-            log.info("Resetting demo unit for client {}", client.getIdAsString());
-            deleteUseCase.execute(new DeleteDemoUnitUseCase.InputData(client.getId()));
-            createUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
-        } catch (ModelConsistencyException e) {
-            log.error("Skipping client {}", client.getIdAsString(), e);
-        }
+    private void resetDemoUnit(final Client client) {
+        AsSystemUser.runInClient(client, () -> {
+            try {
+                log.info("Resetting demo unit for client {}", client.getIdAsString());
+                deleteUseCase.execute(new DeleteDemoUnitUseCase.InputData(client.getId()));
+                createUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
+            } catch (ModelConsistencyException e) {
+                log.error("Skipping client {}", client.getIdAsString(), e);
+            }
+        });
     }
 }
