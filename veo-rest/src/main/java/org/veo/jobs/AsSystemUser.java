@@ -19,7 +19,6 @@ package org.veo.jobs;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,29 +39,18 @@ class AsSystemUser {
     private static final String SYSTEMUSER_NAME = "system";
     private static final String VEO_USER_SCOPE = "veo-user";
 
-    private static ApplicationUser user;
-    private static Authentication token;
-
-    @FunctionalInterface
-    interface Task {
-        void exec();
-    }
-
-    static void runInClient(Client client, final Task function) {
+    static void runInClient(Client client, final Runnable function) {
         final Authentication originalAuthentication = SecurityContextHolder.getContext()
                                                                            .getAuthentication();
-        user = Objects.requireNonNullElse(user,
-                                          ApplicationUser.authenticatedUser(SYSTEMUSER_NAME,
-                                                                            client.getIdAsString(),
-                                                                            VEO_USER_SCOPE,
-                                                                            Collections.emptyList()));
-        token = Objects.requireNonNullElse(token, new AnonymousAuthenticationToken(SYSTEMUSER_NAME,
-                user, List.of(new SimpleGrantedAuthority(VEO_USER))));
+        var user = ApplicationUser.authenticatedUser(SYSTEMUSER_NAME, client.getIdAsString(),
+                                                     VEO_USER_SCOPE, Collections.emptyList());
+        var token = new AnonymousAuthenticationToken(SYSTEMUSER_NAME, user,
+                List.of(new SimpleGrantedAuthority(VEO_USER)));
 
         try {
             SecurityContextHolder.getContext()
                                  .setAuthentication(token);
-            function.exec();
+            function.run();
         } finally {
             SecurityContextHolder.getContext()
                                  .setAuthentication(originalAuthentication);

@@ -17,14 +17,10 @@
  ******************************************************************************/
 package org.veo.jobs
 
-
 import static org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.context.SecurityContextHolder
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
@@ -33,7 +29,8 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.rest.security.ApplicationUser
+
+import spock.lang.AutoCleanup
 
 /**
  * Tests the job that resets the demo unit in regular intervals.
@@ -60,10 +57,18 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
 
     Authentication originalAuthentication
 
+    @AutoCleanup('revokeUser')
+    UserSwitcher userSwitcher
+
+    @Override
+    def setup() {
+        userSwitcher = new UserSwitcher()
+    }
+
     def "Reset demo unit to defaults"() {
         given: "an existing demo unit"
         def clientId = UUID.randomUUID().toString()
-        switchToUser("testuser", clientId)
+        userSwitcher.switchToUser("testuser", clientId)
 
         def client = createClient(clientId)
         def unit = createDemoUnit(client)
@@ -78,7 +83,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
                     .first()
             process.setName(MODIFIED_PROCESS_NAME)
         }
-        revokeUser()
+        userSwitcher.revokeUser()
 
         then: 'the changes are persisted'
         with(unit) {
@@ -115,9 +120,9 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
     def "Reset demo unit for client with no demo unit"() {
         given: "a new client"
         def clientId = UUID.randomUUID().toString()
-        switchToUser("testuser", clientId)
+        userSwitcher.switchToUser("testuser", clientId)
         def client = createClient(clientId)
-        revokeUser()
+        userSwitcher.revokeUser()
 
         expect: "the client has no demo unit"
         unitRepository.findByClient(client).size() == 0
@@ -132,7 +137,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
     def "Reset demo unit for client with multiple demo units"() {
         given: "two clients, one has two demo units"
         def clientId1 = UUID.randomUUID().toString()
-        switchToUser("testuser", clientId1)
+        userSwitcher.switchToUser("testuser1", clientId1)
         def client1 = createClient(clientId1)
 
         txTemplate.execute {
@@ -151,10 +156,10 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
             process.setName(MODIFIED_PROCESS_NAME)
             client1ModifiedDemoUnit
         }
-        revokeUser()
+        userSwitcher.revokeUser()
 
         def clientId2 = UUID.randomUUID().toString()
-        switchToUser("testuser", clientId2)
+        userSwitcher.switchToUser("testuser2", clientId2)
         def client2 = createClient(clientId2)
 
         def client2ModifiedDemoUnit = txTemplate.execute {
@@ -168,7 +173,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
             process.setName(MODIFIED_PROCESS_NAME)
             client2ModifiedDemoUnit
         }
-        revokeUser()
+        userSwitcher.revokeUser()
 
         expect:
         unitRepository.findByClient(client1).size() == 2
@@ -222,20 +227,5 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
             createDemoUnitUseCase.execute(new InputData(client.id)).unit
         }
         unit
-    }
-
-    private revokeUser() {
-        SecurityContextHolder.getContext().setAuthentication(originalAuthentication)
-    }
-
-    private switchToUser(String username, String clientId) {
-        this.originalAuthentication = SecurityContextHolder.getContext()
-                .getAuthentication()
-        var user = ApplicationUser.authenticatedUser(username,
-                clientId,
-                "veo-user", Collections.emptyList())
-        var token = new AnonymousAuthenticationToken(username, user,
-                List.of(new SimpleGrantedAuthority("SCOPE_veo-user")))
-        SecurityContextHolder.getContext().setAuthentication(token)
     }
 }
