@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim
+FROM gcr.io/distroless/java11-debian11:nonroot
 
 ARG VEO_VERSION
 
@@ -11,12 +11,11 @@ LABEL org.opencontainers.image.licenses=AGPL-3.0
 LABEL org.opencontainers.image.source=https://github.com/verinice/verinice-veo
 LABEL org.opencontainers.image.version=${VEO_VERSION}
 
-RUN adduser --home /app --disabled-password --gecos '' veo
-USER veo
-WORKDIR /app
+USER nonroot
 
 # If by accident we have more than one veo-rest-*.jar docker will complain, which is what we want.
-COPY veo-rest/build/libs/veo-rest-${VEO_VERSION}.jar veo-rest.jar
+COPY --chown=nonroot:nonroot veo-rest/build/libs/veo-rest-${VEO_VERSION}.jar /app/veo-rest.jar
 
+WORKDIR /app
 EXPOSE 8070
-CMD ["java", "-jar", "veo-rest.jar"]
+CMD ["veo-rest.jar"]
