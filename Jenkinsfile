@@ -116,55 +116,6 @@ pipeline {
                 }
             }
         }
-        stage('HTTP REST Test') {
-            environment {
-                def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
-                KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
-                KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
-                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
-                VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.RESTTESTMESSAGE.${tag}."
-                VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_RESTTEST_QUEUE_${tag}"
-                VEO_TEST_MESSAGE_CONSUME_ROUTING_KEY = "VEO.RESTTESTMESSAGE.${tag}.#"
-                VEO_RESTTEST_OIDCURL = "https://keycloak.staging.verinice.com"
-                VEO_RESTTEST_REALM = "verinice-veo"
-                VEO_RESTTEST_CLIENTID = "veo-development-client"
-                VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
-                VEO_RESTTEST_PROXYPORT = 3128
-            }
-            agent any
-            steps {
-                timeout(time: 20, unit: 'MINUTES'){
-                    script {
-                        withDockerNetwork{ n ->
-                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                                docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
-                                    sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
-                                                   export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                                   export VEO_RESTTEST_USERS_DEFAULT_NAME=$KEYCLOAK_DEFAULT_CREDS_USR && \
-                                                   export VEO_RESTTEST_USERS_DEFAULT_PASS=$KEYCLOAK_DEFAULT_CREDS_PSW && \
-                                                   export VEO_RESTTEST_USERS_ADMIN_NAME=$KEYCLOAK_ADMIN_CREDS_USR && \
-                                                   export VEO_RESTTEST_USERS_ADMIN_PASS=$KEYCLOAK_ADMIN_CREDS_PSW && \
-                                                   ./gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:restTest'''
-                                    junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
-                                    publishHTML([
-                                        allowMissing: false,
-                                        alwaysLinkToLastBuild: false,
-                                        keepAll: true,
-                                        reportDir: 'veo-rest/build/reports/tests/restTest/',
-                                        reportFiles: 'index.html',
-                                        reportName: 'Test report: veo-rest-integration-test'
-                                    ])
-                                    perfReport failBuildIfNoResultFile: false,
-                                    modePerformancePerTestCase: true,
-                                    showTrendGraphs: true,
-                                    sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         stage('Artifacts') {
             agent {
                 docker {
@@ -235,6 +186,87 @@ pipeline {
             }
         }
 
+        stage('HTTP REST Test') {
+            environment {
+                def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
+                KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
+                KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
+                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
+                VEO_TEST_MESSAGE_DISPATCH_ROUTING_KEY_PREFIX =  "VEO.RESTTESTMESSAGE.${tag}."
+                VEO_TEST_MESSAGE_CONSUME_QUEUE = "VEO.ENTITY_RESTTEST_QUEUE_${tag}"
+                VEO_TEST_MESSAGE_CONSUME_ROUTING_KEY = "VEO.RESTTESTMESSAGE.${tag}.#"
+                VEO_RESTTEST_OIDCURL = "https://keycloak.staging.verinice.com"
+                VEO_RESTTEST_REALM = "verinice-veo"
+                VEO_RESTTEST_CLIENTID = "veo-development-client"
+                VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
+                VEO_RESTTEST_PROXYPORT = 3128
+            }
+            agent any
+            steps {
+                timeout(time: 20, unit: 'MINUTES'){
+                    script {
+                        withDockerNetwork{ n ->
+                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
+                                --network ${n}\
+                                --name veo-${n}\
+                                -v ${WORKSPACE}/veo-adapter/build/domain_templates/domaintemplates:/domaintemplates/main/\
+                                -v ${WORKSPACE}/veo-rest/src/test/resources/testdomaintemplates/test-domain.json:/domaintemplates/test/test-domain.json\
+                                -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
+                                -e SPRING_DATASOURCE_USERNAME=test\
+                                -e SPRING_DATASOURCE_PASSWORD=test\
+                                -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver\
+                                -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${env.VEO_AUTH_URL}\
+                                -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${env.VEO_AUTH_URL}/protocol/openid-connect/certs\
+                                -e 'VEO_CORS_ORIGINS=https://*.verinice.example, https://frontend.somewhereelse.example'\
+                                -e 'VEO_DOMAIN_FILE_SELECTOR=file:/domaintemplates/*/*.json'\
+                                -e VEO_DEFAULT_DOMAINTEMPLATE_IDS=f8ed22b1-b277-56ec-a2ce-0dbd94e24824,2b00d864-77ee-5378-aba6-e41f618c7bad\
+                                -e VEO_ETAG_SALT=zuL4Q8JKdy\
+                                -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'") { veo ->
+                                            docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages}\
+                                    --network ${n}\
+                                    -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
+                                    -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver\
+                                    -e VEO_RESTTEST_BASEURL=http://veo-${n}:8070/veo") {
+                                                        echo 'Waiting for container startup'
+                                                        timeout(1) {
+                                                            waitUntil {
+                                                                script {
+                                                                    def r = sh returnStatus:true, script: "wget --no-proxy -q http://veo-${n}:8070/veo -O /dev/null"
+                                                                    return (r == 0);
+                                                                }
+                                                            }
+                                                        }
+                                                        sh """export SPRING_RABBITMQ_USERNAME=\$RABBITMQ_CREDS_USR && \
+                                                   export SPRING_RABBITMQ_PASSWORD=\$RABBITMQ_CREDS_PSW && \
+                                                   export VEO_RESTTEST_USERS_DEFAULT_NAME=\$KEYCLOAK_DEFAULT_CREDS_USR && \
+                                                   export VEO_RESTTEST_USERS_DEFAULT_PASS=\$KEYCLOAK_DEFAULT_CREDS_PSW && \
+                                                   export VEO_RESTTEST_USERS_ADMIN_NAME=\$KEYCLOAK_ADMIN_CREDS_USR && \
+                                                   export VEO_RESTTEST_USERS_ADMIN_PASS=\$KEYCLOAK_ADMIN_CREDS_PSW && \
+                                                   ./gradlew -Dhttp.nonProxyHosts=\"localhost|veo-${n}\" -PciBuildNumber=\$BUILD_NUMBER -PciJobName=\$JOB_NAME veo-rest:restTest"""
+                                                        junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
+                                                        publishHTML([
+                                                            allowMissing: false,
+                                                            alwaysLinkToLastBuild: false,
+                                                            keepAll: true,
+                                                            reportDir: 'veo-rest/build/reports/tests/restTest/',
+                                                            reportFiles: 'index.html',
+                                                            reportName: 'Test report: veo-rest-integration-test'
+                                                        ])
+                                                        perfReport failBuildIfNoResultFile: false,
+                                                        modePerformancePerTestCase: true,
+                                                        showTrendGraphs: true,
+                                                        sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
+                                                    }
+                                            sh "docker logs ${veo.id} > rest-test-container-logs.log"
+                                            archive 'rest-test-container-logs.log'
+                                        }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         stage('Postman Tests') {
             environment {
                 KEYCLOAK_CREDS = credentials('veo_authentication_credentials')
