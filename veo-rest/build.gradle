@@ -130,8 +130,10 @@ tasks.register('restTest', Test) {
     systemProperties System.properties.subMap([
         "http.proxyHost",
         "http.proxyPort",
+        "http.nonProxyHosts",
         "https.proxyHost",
-        "https.proxyPort"
+        "https.proxyPort",
+        "http.nonProxyHosts"
     ])
 }
 
