@@ -113,8 +113,8 @@ class VeoRestTest extends spock.lang.Specification {
         }
     }
 
-    Response get(String relativeUri, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
-        def resp = exchange(relativeUri, HttpMethod.GET, new HttpHeaders(), null, userType)
+    Response get(String uri, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+        def resp = exchange(uri, HttpMethod.GET, new HttpHeaders(), null, userType)
         assert resp.statusCodeValue == assertStatusCode
         log.debug("retrieved data: {}", resp.body)
         new Response(
@@ -122,27 +122,27 @@ class VeoRestTest extends spock.lang.Specification {
                 body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    Response post(String relativeUri, Object requestBody, int assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
+    Response post(String uri, Object requestBody, int assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
 
-        def resp = exchange(relativeUri, HttpMethod.POST, headers, requestBody, userType)
+        def resp = exchange(uri, HttpMethod.POST, headers, requestBody, userType)
         assert resp.statusCodeValue == assertStatusCode
         new Response(headers: resp.headers,
         body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    void put(String relativeUri, Object requestBody, String etagHeader, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    void put(String uri, Object requestBody, String etagHeader, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setIfMatch(getETag(etagHeader))
         headers.setContentType(MediaType.APPLICATION_JSON)
 
-        def resp = exchange(relativeUri, HttpMethod.PUT, headers, requestBody, userType)
+        def resp = exchange(uri, HttpMethod.PUT, headers, requestBody, userType)
         assert resp.statusCodeValue == assertStatusCode
     }
 
-    void delete(String relativeUri, int assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
-        def resp = exchange(relativeUri, HttpMethod.DELETE, new HttpHeaders(), null, userType)
+    void delete(String uri, int assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
+        def resp = exchange(uri, HttpMethod.DELETE, new HttpHeaders(), null, userType)
         assert resp.statusCodeValue == assertStatusCode
     }
 
@@ -169,11 +169,12 @@ class VeoRestTest extends spock.lang.Specification {
         get("/controls/${id}").body
     }
 
-    ResponseEntity<String> exchange(String relativeUri, HttpMethod httpMethod, HttpHeaders headers, Object requestBody = null, UserType userType = UserType.DEFAULT) {
+    ResponseEntity<String> exchange(String uri, HttpMethod httpMethod, HttpHeaders headers, Object requestBody = null, UserType userType = UserType.DEFAULT) {
         headers.put("Authorization", [
             "Bearer " + getToken(userType)
         ])
-        return restTemplate.exchange(baseUrl + relativeUri, httpMethod, new HttpEntity(requestBody?.with { toJson(it) }, headers), String.class)
+        def absoluteUri = uri.startsWith('http') ? uri : baseUrl + uri
+        return restTemplate.exchange(absoluteUri, httpMethod, new HttpEntity(requestBody?.with { toJson(it) }, headers), String.class)
     }
 
     private String getToken(UserType userType) {
