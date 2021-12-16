@@ -127,6 +127,10 @@ tasks.register('restTest', Test) {
         includeTestsMatching "org.veo.rest.test.*"
     }
 
+    inputs.property("veoBaseUrl") {
+        System.getenv("VEO_RESTTEST_BASEURL")
+    }.optional(true)
+
     systemProperties System.properties.subMap([
         "http.proxyHost",
         "http.proxyPort",
