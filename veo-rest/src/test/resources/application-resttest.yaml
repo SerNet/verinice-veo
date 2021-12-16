@@ -19,10 +19,6 @@ veo:
     proxyHost: cache.company.private
     proxyPort: 3128
 
-domain:
-  file:
-    selector: 'classpath:testdomaintemplates/*.json'
-
 spring:
   datasource:
     url: 'jdbc:postgresql://127.0.0.1:5432/veoresttest'
