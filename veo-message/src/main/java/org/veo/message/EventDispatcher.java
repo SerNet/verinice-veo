@@ -18,9 +18,6 @@
 package org.veo.message;
 
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -39,8 +36,9 @@ public class EventDispatcher {
 
     private final String exchange;
 
-    public static final ConfirmCallback NOP_CALLBACK = (ack) -> {
-        /* NOP */};
+    public static final ConfirmCallback NOP_CALLBACK = (event, ack) -> {
+        /* NOP */
+    };
 
     @Autowired
     EventDispatcher(RabbitTemplate rabbitTemplate,
@@ -54,25 +52,21 @@ public class EventDispatcher {
                   event.getTimestamp(), event.getRoutingKey());
         var correlationData = new CorrelationData(event.getId()
                                                        .toString());
+        correlationData.getFuture()
+                       .addCallback(confirm -> {
+                           var returnedMessage = correlationData.getReturned();
+                           if (returnedMessage != null) {
+                               log.warn("Message for event {} returned with code {}: {}",
+                                        event.getId(), returnedMessage.getReplyCode(),
+                                        returnedMessage.getMessage());
+                               callback.confirm(event, false);
+                           } else {
+                               callback.confirm(event, confirm != null && confirm.isAck());
+                           }
+                       }, fail -> log.error("Failed to confirm event: {}",
+                                            fail.getLocalizedMessage()));
+
         rabbitTemplate.convertAndSend(exchange, event.getRoutingKey(), event, correlationData);
-        try {
-            var confirm = correlationData.getFuture()
-                                         .get(1000, TimeUnit.MILLISECONDS);
-            var returnedMessage = correlationData.getReturned();
-            if (returnedMessage != null) {
-                log.warn("Message for event {} returned with code {}: {}", event.getId(),
-                         returnedMessage.getReplyCode(), returnedMessage.getMessage());
-                callback.confirm(false);
-            } else {
-                callback.confirm(confirm.isAck());
-            }
-        } catch (InterruptedException e) {
-            log.error("Thread was interrupted while waiting for message confirmation", e);
-        } catch (ExecutionException e) {
-            log.error("Message confirmation was aborted.", e);
-        } catch (TimeoutException e) {
-            log.warn("Timed out waiting for confirmation of message with id {}.", event.getId());
-        }
     }
 
     @Async

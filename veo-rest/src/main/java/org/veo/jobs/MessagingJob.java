@@ -17,10 +17,13 @@
  ******************************************************************************/
 package org.veo.jobs;
 
+import static org.veo.message.EventMessage.messagesFrom;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -30,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.event.StoredEvent;
 import org.veo.message.EventDispatcher;
-import org.veo.message.EventMessage;
 import org.veo.persistence.access.StoredEventRepository;
 import org.veo.rest.VeoRestConfiguration;
 
@@ -47,7 +49,7 @@ public class MessagingJob {
     /**
      * Keep transaction open and wait until all events are acknowledged - but no
      * longer than the configured wait time. Unacknowledged events will be sent
-     * again during the next publication after teir established lock time.
+     * again during the next publication after their established lock time.
      */
     @Value("${veo.messages.publishing.confirmationWaitMs:2000}")
     public int confirmationWaitMs;
@@ -90,14 +92,19 @@ public class MessagingJob {
 
             log.debug("Dispatching messages for {} stored events.", pendingEvents.size());
             var latch = new CountDownLatch(pendingEvents.size());
-            pendingEvents.forEach(e -> {
-                eventDispatcher.sendAsync(EventMessage.from(e), (ack) -> {
-                    if (ack && e.markAsProcessed()) {
-                        storedEventRepository.save(e);
+            var pending = pendingEvents.stream()
+                                       .collect(Collectors.toMap(StoredEvent::getId,
+                                                                 event -> event));
+
+            eventDispatcher.sendAsync(messagesFrom(pendingEvents), (e, ack) -> {
+                if (ack) {
+                    var storedEvent = pending.get(e.getId());
+                    if (storedEvent != null && storedEvent.markAsProcessed()) {
                         latch.countDown();
                     } else
-                        log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
-                });
+                        log.warn("Stored event {} was already processed", e.getId());
+                } else
+                    log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
             });
 
             // keep this transaction open until all messages are confirmed - but no longer
@@ -116,6 +123,7 @@ public class MessagingJob {
             } catch (InterruptedException e) {
                 log.warn("Interrupted while waiting for confirmation from published events.", e);
             }
+            storedEventRepository.saveAll(pendingEvents);
         }
     }
 

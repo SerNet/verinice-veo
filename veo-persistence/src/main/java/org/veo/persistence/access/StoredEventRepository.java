@@ -38,4 +38,6 @@ public interface StoredEventRepository {
      *            point in time.
      */
     List<StoredEvent> findPendingEvents(Instant maxLockTime);
+
+    List<StoredEvent> saveAll(List<StoredEvent> pendingEvents);
 }

@@ -63,7 +63,7 @@ classes = [TestEventSubscriber.class,
 @DirtiesContext(classMode = AFTER_CLASS)
 class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
 
-    public static final int NUM_EVENTS = 10
+    public static final int NUM_EVENTS = 100
 
     @Autowired
     EventDispatcher eventDispatcher
@@ -80,7 +80,8 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
     @Autowired
     MessagingJob messagingJob
 
-    static final Instant FOREVER_AND_EVER = Instant.now().plus(365000, ChronoUnit.DAYS)
+    static final Instant FOREVER_AND_EVER = Instant.now().plus(365000,
+    ChronoUnit.DAYS)
 
 
     @Value('${veo.test.message.dispatch.routing_key_prefix:veo.testmessage.}')
@@ -98,6 +99,7 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
         def purgeCount = rabbitAdmin.purgeQueue(testQueue)
         if (purgeCount>0)
             log.info("Test setup: Purged {} remaining messages in test queue.", purgeCount)
+        storedEventRepository.deleteAll()
     }
 
     def "Message queue roundtrip"() {
@@ -114,7 +116,7 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
             event.setId(id++)
             sentEvents.add EventMessage.from(event)
         }
-        eventDispatcher.sendAsync(sentEvents, { boolean ack ->
+        eventDispatcher.sendAsync(sentEvents, { EventMessage e, boolean ack ->
             if (ack) {
                 confirmationLatch.countDown()
             }
@@ -135,7 +137,7 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
         when: "an event for a routing key that nobody listens to is published"
         def confirmationLatch = new CountDownLatch(1)
         def event = new EventMessage("funky key that no one listens to", "content", 1, Instant.now())
-        eventDispatcher.sendAsync(event, { boolean ack ->
+        eventDispatcher.sendAsync(event, { EventMessage e, boolean ack ->
             if (ack) {
                 confirmationLatch.countDown()
             }
@@ -164,12 +166,13 @@ class EventDispatcherRemoteMqITSpec extends VeoSpringSpec {
         messagingJob.sendMessages()
 
         then:
-        storedEventRepository.findPendingEvents(FOREVER_AND_EVER).isEmpty()
+        storedEventRepository.findPendingEvents(FOREVER_AND_EVER).size() == 0
     }
 
     def cleanup() {
         def purgeCount = rabbitAdmin.purgeQueue(testQueue)
         if (purgeCount>0)
             log.info("Test cleanup: purged {} remaining messages in test queue.", purgeCount)
+        storedEventRepository.deleteAll()
     }
 }

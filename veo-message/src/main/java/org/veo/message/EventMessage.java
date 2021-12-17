@@ -18,6 +18,9 @@
 package org.veo.message;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.event.StoredEvent;
 
@@ -61,4 +64,11 @@ public class EventMessage {
         return new EventMessage(event.getRoutingKey(), event.getContent(), event.getId(),
                 event.getTimestamp() != null ? event.getTimestamp() : Instant.now());
     }
+
+    public static Set<EventMessage> messagesFrom(Collection<StoredEvent> events) {
+        return events.stream()
+                     .map(EventMessage::from)
+                     .collect(Collectors.toSet());
+    }
+
 }

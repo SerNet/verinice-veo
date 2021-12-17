@@ -40,9 +40,11 @@ public interface ConfirmCallback {
      * happen in case of a timeout, rejection, network failure, server malfunction
      * or other events not addressed by publisher-confirms.
      *
+     * @param event
+     *            the original message that was sent
      * @param ack
      *            {@code true} if the message was published, {@code false} otherwise
      */
-    void confirm(boolean ack);
+    void confirm(EventMessage event, boolean ack);
 
 }
