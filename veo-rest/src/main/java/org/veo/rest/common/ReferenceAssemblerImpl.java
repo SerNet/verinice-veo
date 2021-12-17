@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -396,7 +397,13 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
     @Override
     public String parseId(String uriString) {
-        Matcher matcher = UUID_PATTERN.matcher(uriString);
+        String pathComponent = UriComponentsBuilder.fromUriString(uriString)
+                                                   .build()
+                                                   .getPath();
+        if (pathComponent == null) {
+            return null;
+        }
+        Matcher matcher = UUID_PATTERN.matcher(pathComponent);
         if (!matcher.find()) {
             return null;
         }

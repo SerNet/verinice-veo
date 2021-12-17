@@ -65,6 +65,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://localhost:9000/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'                                           | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
         'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | '28df429d-da5e-431a-a2d8-488c0741fb9f'
         'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | '47799d6d-7887-48d5-9cd2-1af23e0b467a'
+        'http://veo-4c053c73-5242-4c79-9222-09609911b1f5:8070/veo/catalogs/ec2f0c9b-4a2b-429d-95af-83f107f07946/items/7688ddc3-6914-4899-a96a-067cc74cded1' | '7688ddc3-6914-4899-a96a-067cc74cded1'
     }
 
     def "parsed type for #url is #type"() {
