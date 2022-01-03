@@ -25,7 +25,7 @@ dependencies {
     implementation 'com.github.victools:jsonschema-module-jackson'
     implementation 'com.github.victools:jsonschema-module-javax-validation'
     implementation 'com.github.victools:jsonschema-module-swagger-2'
-    implementation 'io.swagger.core.v3:swagger-annotations:2.1.11'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.1.12'
 
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core'
