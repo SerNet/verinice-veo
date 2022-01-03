@@ -50,7 +50,8 @@
         "^com.github.spotbugs$",
         "org.testcontainers:",
         "^io.freefair.lombok",
-        "^gradle$"
+        "^gradle$",
+        "^org.keycloak:keycloak-authz-client$"
       ],
       "postUpgradeTasks": {
         
