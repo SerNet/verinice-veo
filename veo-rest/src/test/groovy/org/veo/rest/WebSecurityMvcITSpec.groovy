@@ -46,5 +46,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         def unitId = parseJson(post("/units/", [name: "my little unit"])).resourceId
         expect: "unit dump to be forbidden"
         mvc.perform(MockMvcRequestBuilders.get("/admin/unit-dump/$unitId")).andReturn().response.status == 403
+        and: "domain creation to be forbidden"
+        mvc.perform(MockMvcRequestBuilders.get("/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824")).andReturn().response.status == 403
     }
 }

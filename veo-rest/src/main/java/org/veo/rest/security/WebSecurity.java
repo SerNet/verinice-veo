@@ -94,7 +94,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
                 .hasRole("veo-user")
 
-                .antMatchers("/admin/**").hasRole("veo-admin")
+                .antMatchers("/admin/**", "/domaintemplates/**").hasRole("veo-admin")
 
                 .anyRequest().authenticated() // CAUTION:
                                                                              // this

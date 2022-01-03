@@ -182,6 +182,28 @@ class SwaggerSpec extends VeoSpringSpec {
     }
 
 
+    def "endpoint documentation is correct for CreateDomainUseCase"() {
+        when: "retrieving the information about the endpoint"
+        def endPointInfo = parsedApiDocs.paths["/domaintemplates/{id}/createdomains"]
+        then: "the information is found"
+        endPointInfo != null
+        and: 'it handles post requests'
+        endPointInfo.post != null
+        and: 'it has a meaningful description'
+        endPointInfo.post.summary == 'Creates domains from a domain template'
+        and: 'it contains information about the query parameters'
+        with(endPointInfo.post.parameters[1]) {
+            name == 'clientids'
+            it.in == 'query'
+            required == false
+            with(schema) {
+                type == 'array'
+                items == ['type': 'string']
+            }
+        }
+    }
+
+
     @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString

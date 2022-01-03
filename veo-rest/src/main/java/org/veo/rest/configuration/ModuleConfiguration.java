@@ -91,6 +91,7 @@ import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
+import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
@@ -663,5 +664,11 @@ public class ModuleConfiguration {
     public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
             DomainRepository domainRepository) {
         return new UpdateElementTypeDefinitionUseCase(domainRepository);
+    }
+
+    @Bean
+    public CreateDomainUseCase getCreateDomainUseCase(AccountProvider accountProvider,
+            ClientRepository clientRepository, DomainTemplateService domainTemplateService) {
+        return new CreateDomainUseCase(accountProvider, clientRepository, domainTemplateService);
     }
 }
