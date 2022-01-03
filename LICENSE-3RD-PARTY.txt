@@ -2381,7 +2381,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-64. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.1.11
+64. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.1.12
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-core
 
@@ -19266,5 +19266,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Mon Dec 27 06:03:13 UTC 2021.
+This report was generated at Mon Jan 03 07:23:09 UTC 2022.
 
