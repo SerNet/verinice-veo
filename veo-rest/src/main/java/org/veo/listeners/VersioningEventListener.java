@@ -17,28 +17,17 @@
  ******************************************************************************/
 package org.veo.listeners;
 
-import java.time.Instant;
-
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
-import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Versioned;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.event.StoredEvent;
-import org.veo.core.events.StoredEventService;
-import org.veo.persistence.entity.jpa.VersioningEvent;
-import org.veo.persistence.entity.jpa.VersioningEvent.Type;
+import org.veo.core.entity.event.VersioningEvent;
+import org.veo.core.entity.event.VersioningEvent.Type;
+import org.veo.core.usecase.MessageCreator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,82 +40,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class VersioningEventListener {
-
-    private static final String ROUTING_KEY = "versioning_event";
-
-    private final ObjectMapper objectMapper;
-    private final StoredEventService storedEventService;
-    private final ReferenceAssembler referenceAssembler;
-    private final EntityToDtoTransformer entityToDtoTransformer;
+    private final MessageCreator messageCreator;
 
     @EventListener
     @Transactional(propagation = Propagation.MANDATORY)
-    void handleVersioningEvent(VersioningEvent event) {
-        Versioned entity = event.getEntity();
-        if (!(entity instanceof ClientOwned)) {
-            log.debug("Ignoring event for entity {}", entity);
-            return;
+    void handle(VersioningEvent event) {
+        var entity = event.getEntity();
+
+        if (entity instanceof Domain && event.getType() == Type.PERSIST) {
+            var domain = (Domain) entity;
+            log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
+            messageCreator.createDomainCreationMessage(domain);
         }
-        Type eventType = event.getType();
-        var client = ((ClientOwned) entity).getOwningClient();
-        if (client.isEmpty()) {
-            log.debug("Ignoring {} event for entity {} which does not belong to a client",
-                      eventType, entity);
-            return;
+
+        if (entity instanceof ClientOwned) {
+            ((ClientOwned) entity).getOwningClient()
+                                  .ifPresent(client -> {
+                                      log.debug("Creating entity revision message for {} event for entity {} modified by user {}",
+                                                event.getType(), entity, event.getAuthor());
+                                      messageCreator.createEntityRevisionMessage(event,
+                                                                                 ((ClientOwned) entity).getOwningClient()
+                                                                                                       .get());
+                                  });
         }
-        log.debug("Storing {} event for entity {} modified by user {}", event.getType(), entity,
-                  event.getAuthor());
-        storedEventService.storeEvent(ROUTING_KEY, createJson(entity, eventType, event.getAuthor(),
-                                                              client.get()));
     }
 
-    private JsonNode createJson(Versioned entity, VersioningEvent.Type type, String author,
-            Client client) {
-        var tree = objectMapper.createObjectNode();
-        tree.put("uri", getUri(entity));
-        tree.put("type", convertType(type));
-        tree.put("changeNumber", getChangeNumber(entity, type));
-        tree.put("time", Instant.now()
-                                .toString());
-        tree.put("author", author);
-        tree.put("clientId", client.getId()
-                                   .uuidValue());
-        tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
-        return tree;
-    }
-
-    private long getChangeNumber(Versioned entity, VersioningEvent.Type type) {
-        // We use the JPA version number as a base for our continuous change number.
-        // When updating an entity, JPA increments the version number after this event
-        // creation, so we must add 1 to the version number. We must also add 1 in case
-        // of a deletion, because JPA won't assign a new number for a deleted entity.
-        var changeNumber = entity.getVersion();
-        if (type != VersioningEvent.Type.PERSIST) {
-            changeNumber++;
-        }
-        return changeNumber;
-    }
-
-    private String getUri(Versioned entity) {
-        if (entity instanceof Identifiable) {
-            return referenceAssembler.targetReferenceOf((Identifiable) entity);
-        }
-        if (entity instanceof AbstractRisk) {
-            return referenceAssembler.targetReferenceOf((AbstractRisk<?, ?>) entity);
-        }
-        throw new NotImplementedException(
-                "Can't build URI for object of type " + entity.getClass());
-    }
-
-    private String convertType(VersioningEvent.Type type) {
-        switch (type) {
-        case PERSIST:
-            return "CREATION";
-        case UPDATE:
-            return "MODIFICATION";
-        case REMOVE:
-            return "HARD_DELETION";
-        }
-        throw new NotImplementedException("Event type " + type + " not supported.");
-    }
 }

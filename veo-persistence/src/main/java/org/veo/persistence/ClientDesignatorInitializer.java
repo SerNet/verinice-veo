@@ -21,8 +21,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.event.VersioningEvent;
 import org.veo.persistence.access.DesignatorSequenceRepositoryImpl;
-import org.veo.persistence.entity.jpa.VersioningEvent;
 
 import lombok.AllArgsConstructor;
 

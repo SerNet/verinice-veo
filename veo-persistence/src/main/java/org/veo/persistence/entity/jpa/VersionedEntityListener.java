@@ -27,6 +27,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
+import org.veo.core.entity.event.VersioningEvent;
+import org.veo.core.entity.event.VersioningEvent.Type;
 import org.veo.persistence.CurrentUserProvider;
 
 import lombok.AllArgsConstructor;
@@ -51,25 +53,25 @@ public class VersionedEntityListener {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override
                 public void beforeCommit(boolean readOnly) {
-                    publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.PERSIST,
+                    publisher.publishEvent(new VersioningEvent(entity, Type.PERSIST,
                             currentUserProvider.getUsername()));
                 }
             });
         } else {
-            publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.PERSIST,
+            publisher.publishEvent(new VersioningEvent(entity, Type.PERSIST,
                     currentUserProvider.getUsername()));
         }
     }
 
     @PreUpdate
     public void preUpdate(Versioned entity) {
-        publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.UPDATE,
+        publisher.publishEvent(new VersioningEvent(entity, Type.UPDATE,
                 currentUserProvider.getUsername()));
     }
 
     @PreRemove
     public void preRemove(Versioned entity) {
-        publisher.publishEvent(new VersioningEvent(entity, VersioningEvent.Type.REMOVE,
+        publisher.publishEvent(new VersioningEvent(entity, Type.REMOVE,
                 currentUserProvider.getUsername()));
     }
 }

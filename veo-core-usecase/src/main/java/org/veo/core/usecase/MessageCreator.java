@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,32 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.core.usecase;
 
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Versioned;
-
-import lombok.Getter;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.event.VersioningEvent;
 
 /**
- * This event should be triggered by the persistence layer when a
- * {@link Identifiable} is being persisted, updated or removed.
+ * Creates outgoing messages and persists them so they can be sent to the
+ * message queue by a background task.
  */
-public class VersioningEvent {
-    @Getter
-    private final Versioned entity;
-    @Getter
-    private final Type type;
-    @Getter
-    private final String author;
+public interface MessageCreator {
+    void createEntityRevisionMessage(VersioningEvent event, Client client);
 
-    public VersioningEvent(Versioned entity, Type type, String author) {
-        this.entity = entity;
-        this.type = type;
-        this.author = author;
-    }
-
-    public enum Type {
-        PERSIST, UPDATE, REMOVE
-    }
+    void createDomainCreationMessage(Domain domain);
 }

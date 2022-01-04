@@ -52,6 +52,7 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.events.MessageCreatorImpl;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
@@ -65,6 +66,7 @@ import org.veo.core.service.CatalogItemService;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.DesignatorService;
+import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
@@ -670,5 +672,13 @@ public class ModuleConfiguration {
     public CreateDomainUseCase getCreateDomainUseCase(AccountProvider accountProvider,
             ClientRepository clientRepository, DomainTemplateService domainTemplateService) {
         return new CreateDomainUseCase(accountProvider, clientRepository, domainTemplateService);
+    }
+
+    @Bean
+    public MessageCreator messageCreator(StoredEventRepository storedEventRepository,
+            ObjectMapper objectMapper, ReferenceAssembler referenceAssembler,
+            EntityToDtoTransformer entityToDtoTransformer) {
+        return new MessageCreatorImpl(storedEventRepository, objectMapper, referenceAssembler,
+                entityToDtoTransformer);
     }
 }
