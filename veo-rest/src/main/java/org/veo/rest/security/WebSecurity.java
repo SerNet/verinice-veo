@@ -90,6 +90,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                         "/swagger.json", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
                         "/swagger-ui/**")
                 .permitAll()
+                .antMatchers(HttpMethod.POST, "/domains/*/createdomaintemplate/*").hasRole("veo-content-creator")
                 .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
                         "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
                 .hasRole("veo-user")

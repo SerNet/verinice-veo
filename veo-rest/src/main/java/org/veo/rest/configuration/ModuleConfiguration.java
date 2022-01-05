@@ -99,6 +99,7 @@ import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
+import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
@@ -468,6 +469,14 @@ public class ModuleConfiguration {
     @Bean
     public GetAssetRisksUseCase getAssetRisksUseCase(RepositoryProvider repositoryProvider) {
         return new GetAssetRisksUseCase(repositoryProvider);
+    }
+
+    @Bean
+    public CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase(
+            DomainTemplateService domainTemplateService, DomainRepository domainRepository,
+            DomainTemplateRepository domainTemplateRepository) {
+        return new CreateDomainTemplateFromDomainUseCase(domainTemplateService, domainRepository,
+                domainTemplateRepository);
     }
 
     @Bean

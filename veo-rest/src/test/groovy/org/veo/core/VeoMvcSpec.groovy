@@ -55,6 +55,14 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     protected MockMvc mvc
 
 
+    ResultActions postUnauthorized(String url, Map content) {
+        ResultActions asyncActions = mvc
+                .perform(
+                MockMvcRequestBuilders.post(url)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+        return asyncActions.andExpect(status().is4xxClientError())
+    }
 
     ResultActions post(String url, Map content, boolean expectSuccessfulRequest = true) {
         doRequest(MockMvcRequestBuilders.post(url)
@@ -150,7 +158,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         }
         // The async request may fail to start if the request is invalid (e.g. has invalid HTTP header or params).
         catch (AssertionError ignored) {
-            throw actions.andReturn().resolvedException
+            if(actions.andReturn().resolvedException != null) {
+                throw actions.andReturn().resolvedException
+            }
         }
     }
 

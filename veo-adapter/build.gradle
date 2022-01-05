@@ -18,6 +18,7 @@ apply plugin: 'java-library'
 dependencies {
 
     api project(":veo-core-usecase")
+    api 'com.fasterxml.uuid:java-uuid-generator'
 
     implementation 'javax.validation:validation-api'
     implementation 'com.networknt:json-schema-validator'

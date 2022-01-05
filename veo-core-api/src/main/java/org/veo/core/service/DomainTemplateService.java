@@ -68,4 +68,5 @@ public interface DomainTemplateService {
 
     ExportDto exportDomain(Domain domain);
 
+    DomainTemplate createDomainTemplateFromDomain(Domain domain);
 }

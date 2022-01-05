@@ -39,6 +39,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.impl.NameBasedGenerator;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -66,6 +68,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -76,6 +79,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DomainTemplateServiceImpl implements DomainTemplateService {
 
+    private static final String SERNET_VERNDOR_URL = "https://v.de/veo/domain-templates/";
     private final DomainTemplateRepository domainTemplateRepository;
     private final DtoToEntityTransformer entityTransformer;
     private final EntityToDtoTransformer dtoTransformer;
@@ -245,6 +249,37 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             log.error("Error loading file", e);
         }
         throw new NotFoundException("Domain template %s file %s not found.", id, templateFile);
+    }
+
+    @Override
+    public DomainTemplate createDomainTemplateFromDomain(Domain domain) {
+        TransformDomainTemplateDto domainTemplateDto = dtoTransformer.transformDomainTemplate2Dto(domain);
+
+        String domainTemplateId = createDomainTemplateId(domain);
+        Key<UUID> domainTemplateKey = Key.uuidFrom(domainTemplateId);
+        if (domainTemplateRepository.exists(domainTemplateKey)) {
+            throw new ModelConsistencyException("The UUID %s is already used.", domainTemplateId);
+        }
+        domainTemplateDto.setId(domainTemplateId);
+        DomainTemplate newDomainTemplate = factory.createDomainTemplate(domainTemplateDto.getName(),
+                                                                        domainTemplateDto.getAuthority(),
+                                                                        domainTemplateDto.getTemplateVersion(),
+                                                                        domainTemplateDto.getRevision(),
+                                                                        domainTemplateKey);
+
+        processDomainTemplate(domainTemplateDto, newDomainTemplate);
+        preparations.updateVersion(newDomainTemplate);
+        log.info("Create and save domain template {} from domain {}", newDomainTemplate, domain);
+        return domainTemplateRepository.save(newDomainTemplate);
+    }
+
+    private String createDomainTemplateId(Domain domain) {
+        String url = SERNET_VERNDOR_URL + domain.getName() + "/" + domain.getTemplateVersion() + "."
+                + domain.getRevision();
+        UUID namebaseUUID = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL)
+                                      .generate(url);
+        log.info("generated domain template id url:{} UUID:{}", url, namebaseUUID);
+        return namebaseUUID.toString();
     }
 
     /**

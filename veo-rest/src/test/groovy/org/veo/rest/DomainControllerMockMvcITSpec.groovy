@@ -27,8 +27,10 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.access.DomainTemplateRepositoryImpl
 
 import groovy.json.JsonSlurper
 
@@ -42,6 +44,8 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
+    @Autowired
+    private DomainTemplateRepositoryImpl domainTemplateRepository
 
     @Autowired
     TransactionTemplate txTemplate
@@ -49,6 +53,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
     private Unit unit
     private Domain testDomain
     private Domain completeDomain
+    private Domain secondDomain
     private Catalog catalog
     private Domain domainSecondClient
 
@@ -57,6 +62,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             def client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
+                revision = "0"
                 newCatalog(it) {
                     name = 'a'
                 }
@@ -90,6 +96,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
             testDomain = client.domains.find{it.name == "Domain 1"}
             completeDomain = client.domains.find{it.name == "Domain-complete"}
+            secondDomain = client.domains.find{it.name == "Domain 2"}
             catalog = testDomain.catalogs.first()
 
             def secondClient = clientRepository.save(newClient() {
@@ -209,5 +216,72 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
+    @WithUserDetails("content-creator")
+    def "create a DomainTemplate"() {
+        given: "a saved domain"
+        when: "a request is made to the server"
+        def count1 = txTemplate.execute {
+            domainTemplateDataRepository.count()
+        }
+
+        def results = post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-1",[:])
+        def result = parseJson(results)
+        then: "a result is returned"
+        result != null
+
+        when: "loading the domaintemplates from the database"
+        def count2 = txTemplate.execute {
+            domainTemplateDataRepository.count()
+        }
+        def dt = txTemplate.execute {
+            domainTemplateRepository.getAll().find{ it.name == "Domain 1" }
+        }
+        then: "one domaintemplate more"
+        count2 == count1 +1;
+        dt.revision == "update-1"
+
+        when: "create the next template"
+        results = post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-2",[:])
+        count2 = txTemplate.execute {
+            domainTemplateDataRepository.count()
+        }
+        then: "one domaintemplate more"
+        count2 == count1 +2;
+    }
+
+    @WithUserDetails("content-creator")
+    def "create a DomainTemplate without revison number"() {
+        given: "a saved domain"
+        when: "a request is made to the server"
+        def count1 = txTemplate.execute {
+            domainTemplateDataRepository.count()
+        }
+
+        def results = post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:])
+        def result = parseJson(results)
+        then: "a result is returned"
+        result != null
+
+        when: "loading the domaintemplates from the database"
+        def count2 = txTemplate.execute {
+            domainTemplateDataRepository.count()
+        }
+        then: "one domaintemplate more"
+        count2 == count1 +1;
+
+        when: "create the next template"
+        results = post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:],false)
+        then: "the data is rejected"
+        ModelConsistencyException ex = thrown()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "create a DomainTemplate forbidden for user"() {
+        given: "a saved domain"
+        when: "a request is made to the server"
+        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/latest", [:])
+        then: "it is forbidden"
+        status.andReturn().response.status == 403
+    }
 
 }

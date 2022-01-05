@@ -26,6 +26,7 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.service.DomainTemplateService
 import org.veo.persistence.access.ClientRepositoryImpl
 
@@ -218,6 +219,94 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
             it[5].element.name == 'Test process-1'
         }
+    }
+
+    def "create a domainTemplate from domain"() {
+        given: "a client"
+        Client client = repository.save(newClient {
+            name = "Demo Client"
+        })
+
+        def domainFromTemplate = null
+        txTemplate.execute {
+            domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001")
+            client.addToDomains(domainFromTemplate)
+            client = repository.save(client)
+        }
+        domainFromTemplate = client.domains.first()
+        domainFromTemplate.templateVersion = "1.0"
+        domainFromTemplate.revision = "1";
+
+        def domainTemplateFromDomain = txTemplate.execute {
+            domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
+        }
+        txTemplate.execute {
+            domainFromTemplate = domainTemplateService.createDomain(client, domainTemplateFromDomain.idAsString)
+            client.addToDomains(domainFromTemplate)
+            client = repository.save(client)
+        }
+        domainFromTemplate = client.domains.find { it.domainTemplate.id == domainTemplateFromDomain.id }
+
+        expect: 'the domain matches'
+        domainFromTemplate.domainTemplate.id == domainTemplateFromDomain.id
+        domainFromTemplate.templateVersion == "1.0"
+        domainFromTemplate.revision == "1"
+        with (domainFromTemplate.catalogs) {
+            size() == 1
+            first().name == 'DSGVO-Controls'
+            first().catalogItems.size() == 6
+        }
+        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
+            it[0].element.name == 'Control-1'
+            it[0].element.abbreviation == 'c-1'
+            it[0].element.description.startsWith('Lore')
+            it[0].tailoringReferences.size()==1
+            it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
+            it[0].tailoringReferences.first().catalogItem == it[5]
+
+            it[1].element.name == 'Control-2'
+            it[1].element.abbreviation == 'c-2'
+            it[1].tailoringReferences.size() == 0
+
+            it[2].element.name == 'Control-3'
+            it[2].element.abbreviation == 'c-3'
+            it[2].tailoringReferences.size()==1
+            it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
+            it[2].tailoringReferences.first().catalogItem == it[0]
+
+            it[3].element.name == 'Control-cc-1'
+
+            it[4].element.name == 'Control-cc-2'
+
+            it[5].element.name == 'Test process-1'
+        }
+    }
+
+    def "create a domainTemplate from domain twice"() {
+        given: "a client"
+        Client client = repository.save(newClient {
+            name = "Demo Client"
+        })
+
+        def domainFromTemplate = null
+        txTemplate.execute {
+            domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001")
+            client.addToDomains(domainFromTemplate)
+            client = repository.save(client)
+        }
+        domainFromTemplate = client.domains.first()
+        domainFromTemplate.templateVersion = "1.0"
+        domainFromTemplate.revision = "2";
+
+        def domainTemplateFromDomain = txTemplate.execute {
+            domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
+        }
+        when:"created with same name/version/revision"
+        def second = txTemplate.execute {
+            domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
+        }
+        then: "an exception is thrown"
+        ModelConsistencyException ex = thrown()
     }
 
     def "create a domain whose catalog contains a composite"() {

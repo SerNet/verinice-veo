@@ -58,7 +58,16 @@ public class WebMvcSecurityConfiguration {
         adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user"),
                                          new SimpleGrantedAuthority("ROLE_veo-admin")));
 
-        return new CustomUserDetailsManager(Arrays.asList(basicUser, adminUser));
+        ApplicationUser contentCreatorUser = ApplicationUser.authenticatedUser("content-creator",
+                                                                               TESTCLIENT_UUID,
+                                                                               "veo-content-creator",
+                                                                               List.of("veo-user",
+                                                                                       "veo-content-creator"));
+        contentCreatorUser.setAuthorities(List.of(new SimpleGrantedAuthority(
+                "ROLE_veo-user"), new SimpleGrantedAuthority("ROLE_veo-content-creator")));
+
+        return new CustomUserDetailsManager(
+                Arrays.asList(basicUser, adminUser, contentCreatorUser));
     }
 
     /**

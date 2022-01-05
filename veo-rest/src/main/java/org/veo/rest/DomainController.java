@@ -29,6 +29,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,13 +48,16 @@ import org.springframework.web.context.request.WebRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -62,6 +67,7 @@ import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
+import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
@@ -95,18 +101,21 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     private final GetDomainsUseCase getDomainsUseCase;
     private final ExportDomainUseCase exportDomainUseCase;
     private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
+    private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
 
     public DomainController(UseCaseInteractor useCaseInteractor,
             ObjectSchemaParser objectSchemaParser, GetDomainUseCase getDomainUseCase,
             GetDomainsUseCase getDomainsUseCase,
             UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase,
-            ExportDomainUseCase exportDomainUseCase) {
+            ExportDomainUseCase exportDomainUseCase,
+            CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.objectSchemaParser = objectSchemaParser;
         this.getDomainUseCase = getDomainUseCase;
         this.getDomainsUseCase = getDomainsUseCase;
         this.exportDomainUseCase = exportDomainUseCase;
         this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
+        this.createDomainTemplateFromDomainUseCase = createDomainTemplateFromDomainUseCase;
     }
 
     @GetMapping
@@ -183,6 +192,27 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         return domainFuture.thenApply(domainDto -> ResponseEntity.ok()
                                                                  .cacheControl(defaultCacheControl)
                                                                  .body(domainDto));
+    }
+
+    @PostMapping(value = "/{id}/createdomaintemplate/{revision}")
+    @Operation(summary = "Creates a domaintemplate from a domain")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "DomainTemplate created") })
+    public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
+            Authentication auth,
+            @Pattern(regexp = Patterns.UUID,
+                     message = "ID must be a valid UUID string following RFC 4122.") @PathVariable String id,
+            @Size(max = 255) @PathVariable String revision) {
+        Client client = getAuthenticatedClient(auth);
+        CompletableFuture<IdRef<DomainTemplate>> completableFuture = useCaseInteractor.execute(createDomainTemplateFromDomainUseCase,
+                                                                                               new CreateDomainTemplateFromDomainUseCase.InputData(
+                                                                                                       Key.uuidFrom(id),
+                                                                                                       revision,
+                                                                                                       client),
+                                                                                               out -> IdRef.from(out.getNewDomainTemplate(),
+                                                                                                                 referenceAssembler));
+        return completableFuture.thenApply(result -> ResponseEntity.status(201)
+                                                                   .body(result));
     }
 
     @Override
