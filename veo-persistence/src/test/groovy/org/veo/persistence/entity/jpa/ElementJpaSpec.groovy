@@ -92,13 +92,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
         def result = assetRepository.findByUnits([owner0.dbId] as Set)
 
         then: "the asset composite and its part are returned"
-        with(result.sort {
-            it.name
-        }) {
-            size() == 2
-            result[0].name == "part"
-            result[1].name == "whole"
-        }
+        result*.name.toSorted() == ["part", "whole"]
     }
 
     def 'finds entity composites by owners'() {
