@@ -192,7 +192,7 @@ class VeoRestTest extends spock.lang.Specification {
             it.proxy = proxy
             build()
         }.withCloseable {
-            Configuration configuration = new Configuration("$oidcUrl/auth", realm, clientId, ['secret': ''], it)
+            Configuration configuration = new Configuration(oidcUrl, realm, clientId, ['secret': ''], it)
             AuthzClient authzClient = AuthzClient.create(configuration)
             def accessTokenResponse = authzClient.obtainAccessToken(user, pass)
             accessTokenResponse.token
