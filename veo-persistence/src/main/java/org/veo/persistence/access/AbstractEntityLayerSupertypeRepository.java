@@ -72,12 +72,13 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
                                 .collect(Collectors.toSet());
         var links = linkDataRepository.findLinksByTargetIds(entityIDs);
 
+        // using deleteAll() to utilize batching and optimistic locking:
+        linkDataRepository.deleteAll(links);
+
         // remove the unit's elements from scope members:
         var scopes = scopeDataRepository.findDistinctByMembersIn(elements);
         scopes.forEach(scope -> scope.removeMembers(new HashSet<>(elements)));
 
-        // using deleteAll() to utilize batching and optimistic locking:
-        linkDataRepository.deleteAll(links);
         dataRepository.deleteAll(elements);
     }
 
