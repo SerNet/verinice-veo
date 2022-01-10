@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2021  Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.entity.event;
 
-import java.util.Set;
-
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.Unit;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 
-public interface ElementRepository<T extends Element> extends IdentifiableVersionedRepository<T> {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    public void deleteByUnit(Unit owner);
-
-    public ElementQuery<T> query(Client client);
-
-    Set<T> findByDomain(Domain domain);
+/**
+ * This event should be triggered by the persistence layer when an
+ * {@link ElementTypeDefinition} is updated.
+ */
+@Getter
+@RequiredArgsConstructor
+public class ElementTypeDefinitionUpdateEvent {
+    private final ElementTypeDefinition elementTypeDefinition;
+    private final Domain domain;
 }

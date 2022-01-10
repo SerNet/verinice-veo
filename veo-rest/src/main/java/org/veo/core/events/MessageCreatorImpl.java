@@ -30,6 +30,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.VersioningEvent;
@@ -51,6 +52,7 @@ public class MessageCreatorImpl implements MessageCreator {
 
     // TODO VEO-1084 rename routing keys
     public static final String ROUTING_KEY_DOMAIN_CREATION = "domain_creation_event";
+    public static final String ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE = "element_type_definition_update";
     public static final String ROUTING_KEY_ENTITY_REVISION = "versioning_event";
 
     @Value("${veo.message.dispatch.routing-key-prefix}")
@@ -78,6 +80,15 @@ public class MessageCreatorImpl implements MessageCreator {
         }
 
         storeMessage(ROUTING_KEY_DOMAIN_CREATION, json);
+    }
+
+    @Override
+    public void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType) {
+        var json = objectMapper.createObjectNode();
+        json.put("domainId", domain.getId()
+                                   .uuidValue());
+        json.put("elementType", entityType.getSingularTerm());
+        storeMessage(ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE, json);
     }
 
     private void storeMessage(String routingKey, JsonNode content) {

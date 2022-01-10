@@ -66,6 +66,7 @@ import org.veo.core.service.CatalogItemService;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.DesignatorService;
+import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
@@ -151,6 +152,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
+import org.veo.service.ElementMigrationService;
 import org.veo.service.EtagService;
 
 /**
@@ -680,5 +682,16 @@ public class ModuleConfiguration {
             EntityToDtoTransformer entityToDtoTransformer) {
         return new MessageCreatorImpl(storedEventRepository, objectMapper, referenceAssembler,
                 entityToDtoTransformer);
+    }
+
+    @Bean
+    public IncomingMessageHandler incomingMessageHandler(RepositoryProvider repositoryProvider,
+            ElementMigrationService elementMigrationService) {
+        return new IncomingMessageHandler(repositoryProvider, elementMigrationService);
+    }
+
+    @Bean
+    public ElementMigrationService elementMigrationService() {
+        return new ElementMigrationService();
     }
 }

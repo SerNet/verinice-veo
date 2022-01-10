@@ -73,4 +73,8 @@ public interface ElementDataRepository<T extends ElementData> extends JpaReposit
     @Transactional(readOnly = true)
     Set<T> findByUnits(Set<String> unitIds);
 
+    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.links "
+            + "left join fetch e.customAspects " + "left join fetch e.subTypeAspects "
+            + "join e.domains d " + "where d.id = ?1")
+    Set<T> findByDomain(String domainId);
 }

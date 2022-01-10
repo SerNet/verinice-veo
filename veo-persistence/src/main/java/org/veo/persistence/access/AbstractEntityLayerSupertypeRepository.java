@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
@@ -62,6 +63,15 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
     @Override
     public ElementQuery<T> query(Client client) {
         return new ElementQueryImpl<>(dataRepository, client);
+    }
+
+    @Override
+    public Set<T> findByDomain(Domain domain) {
+        return dataRepository.findByDomain(domain.getId()
+                                                 .uuidValue())
+                             .stream()
+                             .map(el -> (T) el)
+                             .collect(Collectors.toSet());
     }
 
     @Transactional

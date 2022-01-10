@@ -19,6 +19,8 @@ veo:
     dispatch:
       exchange: 'veo.entity_exchange'
       routing-key-prefix: 'veo.message.'
+    consume:
+      queue: 'veo'
   threads:
     corePoolSize: 2
     maxPoolSize: 4

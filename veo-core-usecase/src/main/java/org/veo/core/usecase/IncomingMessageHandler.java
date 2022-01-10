@@ -17,19 +17,33 @@
  ******************************************************************************/
 package org.veo.core.usecase;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.event.VersioningEvent;
+import org.veo.core.repository.RepositoryProvider;
+import org.veo.service.ElementMigrationService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Creates outgoing messages and persists them so they can be sent to the
- * message queue by a background task.
+ * Handles parsed incoming messages.
  */
-public interface MessageCreator {
-    void createEntityRevisionMessage(VersioningEvent event, Client client);
+@RequiredArgsConstructor
+@Slf4j
+public class IncomingMessageHandler {
+    private final RepositoryProvider repositoryProvider;
+    private final ElementMigrationService elementMigrationService;
 
-    void createDomainCreationMessage(Domain domain);
+    public void handleElementTypeDefinitionUpdate(Domain domain, EntityType elementType) {
+        var definition = domain.getElementTypeDefinition(elementType.getSingularTerm())
+                               .orElseThrow();
 
-    void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType);
+        repositoryProvider.getElementRepositoryFor((Class<? extends Element>) elementType.getType())
+                          .findByDomain(domain)
+                          .forEach(element -> {
+                              elementMigrationService.migrate(element, definition, domain);
+                          });
+    }
+
 }

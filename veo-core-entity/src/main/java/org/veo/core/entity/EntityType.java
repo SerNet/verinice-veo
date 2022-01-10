@@ -90,4 +90,11 @@ public enum EntityType {
                      .findFirst()
                      .orElseThrow();
     }
+
+    public static EntityType getBySingularTerm(String singularTerm) {
+        return Stream.of(values())
+                     .filter(et -> et.singularTerm.equals(singularTerm))
+                     .findFirst()
+                     .orElseThrow();
+    }
 }

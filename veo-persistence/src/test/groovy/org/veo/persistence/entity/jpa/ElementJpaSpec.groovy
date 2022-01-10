@@ -23,8 +23,11 @@ import javax.persistence.PersistenceException
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import org.veo.core.entity.Client
+import org.veo.core.entity.Key
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class ElementJpaSpec extends AbstractJpaSpec {
@@ -38,15 +41,19 @@ class ElementJpaSpec extends AbstractJpaSpec {
     @Autowired
     ClientDataRepository clientRepository
 
+    @Autowired
+    DomainDataRepository domainRepository
+
     @PersistenceContext
     private EntityManager entityManager
 
+    Client client
     UnitData owner0
     UnitData owner1
     UnitData owner2
 
     def setup() {
-        def client = clientRepository.save(newClient())
+        client = clientRepository.save(newClient())
         owner0 = unitRepository.save(newUnit(client))
         owner1 = unitRepository.save(newUnit(client))
         owner2 = unitRepository.save(newUnit(client))
@@ -118,6 +125,34 @@ class ElementJpaSpec extends AbstractJpaSpec {
             it[0].name == "composite 0"
             it[1].name == "composite 1"
         }
+    }
+
+    def 'finds entities by domain'() {
+        given:
+        def domain1 = domainRepository.save(newDomain(client))
+        def domain2 = domainRepository.save(newDomain(client))
+        client = clientRepository.save(client)
+
+        assetRepository.saveAll([
+            newAsset(owner1) {
+                name = "one"
+                domains = [domain1]
+            },
+            newAsset(owner1) {
+                name = "two"
+                domains = [domain1, domain2]
+            },
+            newAsset(owner1) {
+                name = "three"
+                domains = [domain2]
+            }
+        ])
+
+        when:
+        def domain1Assets = assetRepository.findByDomain(domain1.id.uuidValue())
+
+        then:
+        domain1Assets*.name.sort() == ["one", "two"]
     }
 
     def 'increment version id'() {

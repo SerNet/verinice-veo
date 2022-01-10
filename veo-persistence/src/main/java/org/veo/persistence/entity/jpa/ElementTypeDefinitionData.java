@@ -22,6 +22,7 @@ import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -48,6 +49,7 @@ import lombok.ToString;
 @Data()
 @TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EntityListeners({ ElementTypeDefintionEntityListener.class })
 public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
     @Id
