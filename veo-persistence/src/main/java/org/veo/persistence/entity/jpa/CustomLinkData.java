@@ -80,4 +80,10 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
     public void setSource(Element aSource) {
         this.source = aSource;
     }
+
+    @Override
+    public void remove() {
+        this.getSource()
+            .removeFromLinks(this);
+    }
 }

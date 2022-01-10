@@ -35,4 +35,5 @@ public interface CustomLink extends CustomAspect {
 
     void setSource(Element aSource);
 
+    void remove();
 }

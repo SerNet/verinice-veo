@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
@@ -73,9 +74,10 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
         var links = linkDataRepository.findLinksByTargetIds(entityIDs);
 
         // using deleteAll() to utilize batching and optimistic locking:
-        linkDataRepository.deleteAll(links);
         elements.forEach(e -> e.getLinks()
                                .clear());
+        links.forEach(CustomLink::remove);
+        linkDataRepository.deleteAll(links);
 
         // remove the unit's elements from scope members:
         var scopes = scopeDataRepository.findDistinctByMembersIn(elements);
