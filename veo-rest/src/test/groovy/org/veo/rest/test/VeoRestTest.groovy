@@ -161,6 +161,10 @@ class VeoRestTest extends spock.lang.Specification {
         get("/domains").body
     }
 
+    def exportDomain(id) {
+        get("/domains/${id}/export").body
+    }
+
     def getCatalog(id) {
         get("/catalogs/${id}").body
     }

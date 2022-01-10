@@ -61,6 +61,7 @@ import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.AbstractRisk;
@@ -243,6 +244,18 @@ public final class EntityToDtoTransformer {
 
     public TransformDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainTemplate source) {
         var target = new TransformDomainTemplateDto();
+        mapDomainTemplate(source, target);
+        return target;
+    }
+
+    public TransformDomainDto transformDomain2ExportDto(@Valid Domain source) {
+        var target = new TransformDomainDto();
+        mapDomainTemplate(source, target);
+        target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
+        return target;
+    }
+
+    private void mapDomainTemplate(DomainTemplate source, TransformDomainTemplateDto target) {
         target.setId(source.getId()
                            .uuidValue());
         target.setVersion(source.getVersion());
@@ -260,7 +273,6 @@ public final class EntityToDtoTransformer {
                                                                                                              this::mapElementTypeDefinition));
 
         target.setElementTypeDefinitions(elementTypeDefinitionsByType);
-        return target;
     }
 
     private ElementTypeDefinitionDto mapElementTypeDefinition(

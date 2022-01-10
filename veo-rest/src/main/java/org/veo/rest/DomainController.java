@@ -50,6 +50,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.service.ObjectSchemaParser;
+import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
@@ -57,6 +58,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
@@ -91,16 +93,19 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     private final ObjectSchemaParser objectSchemaParser;
     private final GetDomainUseCase getDomainUseCase;
     private final GetDomainsUseCase getDomainsUseCase;
+    private final ExportDomainUseCase exportDomainUseCase;
     private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
 
     public DomainController(UseCaseInteractor useCaseInteractor,
             ObjectSchemaParser objectSchemaParser, GetDomainUseCase getDomainUseCase,
             GetDomainsUseCase getDomainsUseCase,
-            UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase) {
+            UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase,
+            ExportDomainUseCase exportDomainUseCase) {
         this.useCaseInteractor = useCaseInteractor;
         this.objectSchemaParser = objectSchemaParser;
         this.getDomainUseCase = getDomainUseCase;
         this.getDomainsUseCase = getDomainsUseCase;
+        this.exportDomainUseCase = exportDomainUseCase;
         this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
     }
 
@@ -153,6 +158,28 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                                                                                           Key.uuidFrom(id),
                                                                                           client),
                                                                                   output -> entityToDtoTransformer.transformDomain2Dto(output.getDomain()));
+        return domainFuture.thenApply(domainDto -> ResponseEntity.ok()
+                                                                 .cacheControl(defaultCacheControl)
+                                                                 .body(domainDto));
+    }
+
+    @GetMapping(value = "/{id}/export")
+    @Operation(summary = "Export a domain")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                         description = "Domain exported",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = FullDomainDto.class))),
+            @ApiResponse(responseCode = "404", description = "Domain not found") })
+    public @Valid CompletableFuture<ResponseEntity<ExportDto>> exportDomain(
+            @Parameter(required = false, hidden = true) Authentication auth,
+            @PathVariable String id, WebRequest request) {
+        Client client = getAuthenticatedClient(auth);
+        CompletableFuture<ExportDto> domainFuture = useCaseInteractor.execute(exportDomainUseCase,
+                                                                              new UseCase.IdAndClient(
+                                                                                      Key.uuidFrom(id),
+                                                                                      client),
+                                                                              output -> output.getExportDomain());
         return domainFuture.thenApply(domainDto -> ResponseEntity.ok()
                                                                  .cacheControl(defaultCacheControl)
                                                                  .body(domainDto));

@@ -48,6 +48,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     private Unit unit
     private Domain testDomain
+    private Domain completeDomain
     private Catalog catalog
     private Domain domainSecondClient
 
@@ -63,10 +64,32 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             newDomain(client) {
                 name = "Domain 2"
             }
+            newDomain(client) { d->
+                name = "Domain-complete"
+                newCatalog(d) {c->
+                    name = 'a'
+                    newCatalogItem(c,{
+                        newControl(it) {
+                            name = 'c1'
+                        }
+                    })
+                    newCatalogItem(c,{
+                        newControl(it) {
+                            name = 'c2'
+                        }
+                    })
+                    newCatalogItem(c,{
+                        newControl(it) {
+                            name = 'c3'
+                        }
+                    })
+                }
+            }
 
             client = clientRepository.save(client)
 
             testDomain = client.domains.find{it.name == "Domain 1"}
+            completeDomain = client.domains.find{it.name == "Domain-complete"}
             catalog = testDomain.catalogs.first()
 
             def secondClient = clientRepository.save(newClient() {
@@ -115,7 +138,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(get("/domains?"))
 
         then: "the domains are returned"
-        result.size == 2
+        result.size == 3
         result*.name.sort().first() == 'Domain 1'
     }
 
@@ -163,4 +186,28 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
     }
+
+    @WithUserDetails("user@domain.example")
+    def "export a Domain"() {
+        given: "a saved domain"
+
+        when: "a request is made to the server"
+        def results = get("/domains/${completeDomain.id.uuidValue()}/export")
+        def result = parseJson(results)
+
+        then: "the domain is exported"
+        result.name == completeDomain.name
+        result.catalogs.size() == 1
+        result.elementTypeDefinitions != null
+        when:
+        def firstCatalog = result.catalogs.first()
+        then:
+        with(firstCatalog) {
+            name == 'a'
+            catalogItems.size() == 3
+            domainTemplate !=null
+        }
+    }
+
+
 }

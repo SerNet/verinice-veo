@@ -54,6 +54,7 @@ import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
+import org.veo.core.ExportDto;
 import org.veo.core.VeoInputStreamResource;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
@@ -547,5 +548,11 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     private <T extends AbstractElementDto> T removeOwner(T element) {
         element.setOwner(null);
         return element;
+    }
+
+    @Override
+    public ExportDto exportDomain(Domain domain) {
+        return dtoTransformer.transformDomain2ExportDto(domain);
+
     }
 }

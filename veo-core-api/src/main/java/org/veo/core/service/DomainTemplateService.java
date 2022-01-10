@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -64,5 +65,7 @@ public interface DomainTemplateService {
      * client.
      */
     Collection<Element> getElementsForDemoUnit(Client client);
+
+    ExportDto exportDomain(Domain domain);
 
 }

@@ -203,6 +203,25 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for ExportDomainUseCase"() {
+        when: "retrieving the information about the endpoint"
+        def endPointInfo = parsedApiDocs.paths["/domains/{id}/export"]
+        then: "the information is found"
+        endPointInfo != null
+        and: 'it handles get requests'
+        endPointInfo.get != null
+        and: 'it has a meaningful description'
+        endPointInfo.get.summary == 'Export a domain'
+        and: 'it contains information about the query parameters'
+        with(endPointInfo.get.parameters[0]) {
+            name == 'id'
+            it.in == 'path'
+            required == true
+            with(schema) {
+                ['type': 'string']
+            }
+        }
+    }
 
     @Memoized
     String getApiDocsString() {
