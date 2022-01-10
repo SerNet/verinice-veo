@@ -74,6 +74,8 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
         // using deleteAll() to utilize batching and optimistic locking:
         linkDataRepository.deleteAll(links);
+        elements.forEach(e -> e.getLinks()
+                               .clear());
 
         // remove the unit's elements from scope members:
         var scopes = scopeDataRepository.findDistinctByMembersIn(elements);
