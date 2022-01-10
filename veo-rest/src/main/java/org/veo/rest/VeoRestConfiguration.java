@@ -32,6 +32,7 @@ import lombok.Getter;
 @Configuration
 @ComponentScan("org.veo")
 public class VeoRestConfiguration {
+    public static final String PROFILE_BACKGROUND_TASKS = "background-tasks";
 
     @Value("${veo.etag.salt}")
     private String eTagSalt;

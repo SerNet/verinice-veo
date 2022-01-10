@@ -18,6 +18,7 @@
 package org.veo.message
 
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS
+import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -38,6 +39,7 @@ import org.veo.core.entity.event.StoredEvent
 import org.veo.jobs.MessagingJob
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
+import org.veo.rest.RestApplication
 
 import groovy.util.logging.Slf4j
 import spock.lang.AutoCleanup
@@ -55,8 +57,7 @@ classes = [TestEventSubscriber.class,
     RabbitMQSenderConfiguration.class,
 ]
 )
-@ActiveProfiles(["test", "background-tasks"])
-
+@ActiveProfiles(["test", PROFILE_BACKGROUND_TASKS])
 @DirtiesContext(classMode = AFTER_CLASS)
 @Slf4j
 class EventDispatcherITSpec extends VeoSpringSpec {

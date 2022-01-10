@@ -18,6 +18,7 @@
 package org.veo.jobs;
 
 import static org.veo.message.EventMessage.messagesFrom;
+import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
 import java.time.Instant;
 import java.util.List;
@@ -43,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-@Profile("background-tasks")
+@Profile(PROFILE_BACKGROUND_TASKS)
 public class MessagingJob {
 
     /**
