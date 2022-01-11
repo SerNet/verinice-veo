@@ -63,7 +63,7 @@ public class DomainTemplateController {
     @PostMapping(value = "/{id}/createdomains")
     @Operation(summary = "Creates domains from a domain template")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Domain(s) created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainFromTemplate(
             Authentication auth, @PathVariable String id,
             @RequestParam(value = "clientids", required = false) List<String> clientIds) {
         return useCaseInteractor.execute(createDomainUseCase,
