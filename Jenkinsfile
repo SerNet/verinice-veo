@@ -81,7 +81,7 @@ pipeline {
                 timeout(time: 20, unit: 'MINUTES'){
                     script {
                         withDockerNetwork{ n ->
-                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                            docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
                                 docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
                                     sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                           export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
@@ -207,7 +207,7 @@ pipeline {
                 timeout(time: 20, unit: 'MINUTES'){
                     script {
                         withDockerNetwork{ n ->
-                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                            docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
                                 docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
                                 --network ${n}\
                                 --name veo-${n}\
@@ -280,7 +280,7 @@ pipeline {
                     script {
                         def veo = docker.build("veo", "-f postman/Dockerfile .")
                         withDockerNetwork{ n ->
-                            docker.image('postgres:11.7-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_PASSWORD=postgres") { db ->
+                            docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_PASSWORD=postgres") { db ->
                                 sh 'until pg_isready; do sleep 1; done'
                                 veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
                                     sh "java -Dlogging.file.name=${WORKSPACE}/veo-rest.log -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dveo.etag.salt=pleasemrpostman -Dspring.rabbitmq.username=\$RABBITMQ_CREDS_USR -Dspring.rabbitmq.password=\$RABBITMQ_CREDS_PSW -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
