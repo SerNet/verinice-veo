@@ -39,7 +39,6 @@ import org.veo.core.entity.event.StoredEvent
 import org.veo.jobs.MessagingJob
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
-import org.veo.rest.RestApplication
 
 import groovy.util.logging.Slf4j
 import spock.lang.AutoCleanup

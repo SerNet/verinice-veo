@@ -19,7 +19,6 @@ package org.veo.core.entity
 
 import org.veo.core.entity.util.CustomLinkComparators
 
-import groovy.transform.CompileStatic
 import spock.lang.Specification
 
 class CustomLinkComparatorsSpec extends Specification {

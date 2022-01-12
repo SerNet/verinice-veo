@@ -15,20 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.catalog;
+package org.veo.core.usecase.catalog
 
 import org.veo.core.entity.Catalog
-import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
-import org.veo.core.entity.exception.ModelConsistencyException
-import org.veo.core.entity.exception.NotFoundException
-import org.veo.core.repository.CatalogRepository
-import org.veo.core.repository.ClientRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.catalog.GetCatalogsUseCase
 import org.veo.core.usecase.catalog.GetCatalogsUseCase.InputData
-import org.veo.core.usecase.domain.GetDomainUseCaseSpec
 
 class GetCatalogsUseCaseSpec extends UseCaseSpec {
 

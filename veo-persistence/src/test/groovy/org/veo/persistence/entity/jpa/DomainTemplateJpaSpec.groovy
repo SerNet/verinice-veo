@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.transform.EntityFactory

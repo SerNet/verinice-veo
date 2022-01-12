@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import org.veo.core.entity.Catalog
-
 import groovy.util.logging.Slf4j
 
 @Slf4j

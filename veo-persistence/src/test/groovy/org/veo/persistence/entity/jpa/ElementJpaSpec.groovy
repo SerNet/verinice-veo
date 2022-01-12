@@ -24,7 +24,6 @@ import javax.persistence.PersistenceException
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository

@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import java.time.Instant
-
 import groovy.util.logging.Slf4j
 
 @Slf4j

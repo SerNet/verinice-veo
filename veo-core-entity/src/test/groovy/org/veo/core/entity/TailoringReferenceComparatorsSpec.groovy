@@ -19,7 +19,6 @@ package org.veo.core.entity
 
 import org.veo.core.entity.util.TailoringReferenceComparators
 
-import groovy.transform.CompileStatic
 import spock.lang.Specification
 
 class TailoringReferenceComparatorsSpec extends Specification{

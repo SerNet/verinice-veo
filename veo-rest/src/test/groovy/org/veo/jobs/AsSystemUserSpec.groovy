@@ -17,17 +17,15 @@
  ******************************************************************************/
 package org.veo.jobs
 
-import org.h2.engine.User
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.AccountProvider
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.rest.security.ApplicationUser
-import org.veo.test.VeoSpec
 
 import spock.lang.AutoCleanup
 
