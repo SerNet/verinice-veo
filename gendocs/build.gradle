@@ -1,0 +1,26 @@
+apply plugin: 'groovy'
+
+dependencies {
+    implementation 'commons-cli:commons-cli'
+    implementation 'org.freemarker:freemarker'
+    implementation 'org.codehaus.groovy:groovy'
+    implementation 'org.codehaus.groovy:groovy-json'
+    testImplementation 'org.testcontainers:spock'
+}
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy "exclude"
+    manifest {
+        attributes 'Main-Class': 'de.sernet.gendocs.App'
+    }
+}
+
+sourceSets {
+    main {
+        java { srcDirs = [] }
+        groovy { srcDirs += ['src/main/java'] }
+    }
+}
