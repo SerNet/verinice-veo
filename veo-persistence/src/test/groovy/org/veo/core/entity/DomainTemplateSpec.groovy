@@ -35,6 +35,9 @@ class DomainTemplateSpec extends VeoSpec {
             it.authority = auth
             it.templateVersion = templateVersion
             it.revision = rev
+            it.riskDefinitions = ["id":
+                createRiskDefinition("id1")
+            ] as Map
         }
 
         then: "domain is correct initatlized"
@@ -42,5 +45,6 @@ class DomainTemplateSpec extends VeoSpec {
         domainTemplate.getAuthority().equals(auth)
         domainTemplate.getTemplateVersion().equals(templateVersion)
         domainTemplate.getRevision().equals(rev)
+        domainTemplate.getRiskDefinitions() != null
     }
 }

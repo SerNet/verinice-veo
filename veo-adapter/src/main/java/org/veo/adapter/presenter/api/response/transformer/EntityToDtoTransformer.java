@@ -247,6 +247,7 @@ public final class EntityToDtoTransformer {
         mapVersionedSelfReferencingProperties(source, target);
         mapNameableProperties(source, target);
         target.setCatalogs(convertReferenceSet(source.getCatalogs()));
+        target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
         return target;
     }
 
@@ -281,6 +282,7 @@ public final class EntityToDtoTransformer {
                                                                                                              this::mapElementTypeDefinition));
 
         target.setElementTypeDefinitions(elementTypeDefinitionsByType);
+        target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
     }
 
     private ElementTypeDefinitionDto mapElementTypeDefinition(

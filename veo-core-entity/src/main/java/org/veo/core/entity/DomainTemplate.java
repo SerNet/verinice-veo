@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 /**
  * DomainTemplate The domaintemplare are managed by the system itself. The uuid
@@ -88,4 +90,8 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                                                         .equals(type))
                                           .findFirst();
     }
+
+    Map<String, RiskDefinition> getRiskDefinitions();
+
+    void setRiskDefinitions(Map<String, RiskDefinition> definitions);
 }

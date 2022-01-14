@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -31,16 +33,22 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.TypeDef;
+
+import com.vladmihalcea.hibernate.type.json.JsonType;
+
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "domaintemplate")
+@TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true)
@@ -102,6 +110,9 @@ public class DomainTemplateData extends IdentifiableVersionedData
                targetEntity = ElementTypeDefinitionData.class,
                mappedBy = "owner")
     private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
+
+    @Column(columnDefinition = "jsonb")
+    private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
     public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {
         elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));

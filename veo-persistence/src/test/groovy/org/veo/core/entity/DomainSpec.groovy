@@ -47,6 +47,9 @@ class DomainSpec extends VeoSpec {
         when : "Domain is created and added to the client"
         Domain domain = newDomain(client) {
             it.name = name
+            it.riskDefinitions = ["id":
+                createRiskDefinition("id1")
+            ] as Map
         }
 
         and: "the domain template is linked"
@@ -62,5 +65,6 @@ class DomainSpec extends VeoSpec {
         domain.domainTemplate == domainTemplate
         client.getDomains().size() == 1
         client.getDomains().first() == domain
+        client.getDomains().first().riskDefinitions != null
     }
 }

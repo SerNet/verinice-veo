@@ -49,6 +49,14 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.definitions.ElementTypeDefinition
+import org.veo.core.entity.riskdefinition.CategoryDefinition
+import org.veo.core.entity.riskdefinition.CategoryLevel
+import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
+import org.veo.core.entity.riskdefinition.ProbabilityDefinition
+import org.veo.core.entity.riskdefinition.ProbabilityLevel
+import org.veo.core.entity.riskdefinition.RiskDefinition
+import org.veo.core.entity.riskdefinition.RiskMethod
+import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.CatalogData
@@ -255,6 +263,83 @@ abstract class VeoSpec extends Specification {
         return factory.createElementTypeDefinition(type, domain).tap{
             VeoSpec.execute(it, init)
         }
+    }
+
+    static RiskDefinition createRiskDefinition(String id) {
+        RiskDefinition rd = new RiskDefinition();
+        rd.id = id
+        rd.riskValues = [
+            new RiskValue(0,"gering","1","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.","#004643","symbolic_risk_1"),
+            new RiskValue(1,"mittel","2","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.","#234643","symbolic_risk_2"),
+            new RiskValue(2,"hoch","3","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.","#234643","symbolic_risk_3"),
+            new RiskValue(3,"sehr hoch","4","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.","#234643","symbolic_risk_4")
+        ] as List
+
+        def riskMatrix = [
+            [
+                rd.riskValues[0],
+                rd.riskValues[0],
+                rd.riskValues[0],
+                rd.riskValues[0],
+            ] as List,
+            [
+                rd.riskValues[0],
+                rd.riskValues[0],
+                rd.riskValues[1],
+                rd.riskValues[2],
+            ] as List,
+            [
+                rd.riskValues[1],
+                rd.riskValues[1],
+                rd.riskValues[2],
+                rd.riskValues[3],
+            ] as List,
+            [
+                rd.riskValues[1],
+                rd.riskValues[2],
+                rd.riskValues[3],
+                rd.riskValues[3],
+            ] as List
+        ] as List
+
+        rd.categories = [
+            new CategoryDefinition("C","Vertraulichkeit","c","",riskMatrix,
+            createDefaultCategoryLevels()
+            ),
+            new CategoryDefinition("I","Integrität","i","",riskMatrix,
+            createDefaultCategoryLevels()
+            ),
+            new CategoryDefinition("A","Verfügbarkeit","a","",riskMatrix,
+            createDefaultCategoryLevels()
+            ),
+            new CategoryDefinition("R","Belastbarkeit","r","",riskMatrix,
+            createDefaultCategoryLevels()
+            )
+        ] as List
+
+        rd.probability = new ProbabilityDefinition("prop-1","pro-name-1","",[
+            new ProbabilityLevel("selten","1","Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten.","#004643"),
+            new ProbabilityLevel("mittel","2","Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein.","#004643"),
+            new ProbabilityLevel("häufig","3","Ereignis tritt einmal im Jahr bis einmal pro Monat ein.","#004643"),
+            new ProbabilityLevel("sehr häufig","4","Ereignis tritt mehrmals im Monat ein.","#004643")
+        ] as List)
+
+        rd.implementationStateDefinition = new ImplementationStateDefinition("prop-1","pro-name-1","",[
+            new CategoryLevel("name","abbreviation","description","#004643"),
+            new CategoryLevel("name","abbreviation","description","#004643")
+        ] as List)
+        rd.riskMethod = new RiskMethod("highwatermark","description")
+
+        return rd;
+    }
+
+    private static List<CategoryLevel> createDefaultCategoryLevels() {
+        return [
+            new CategoryLevel("vernachlässigbar","1","Die Schadensauswirkungen sind gering und können vernachlässigt werden.","#004643"),
+            new CategoryLevel("begrenzt","2","Die Schadensauswirkungen sind begrenzt und überschaubar.","#004643"),
+            new CategoryLevel("beträchtlich","3","Die Schadensauswirkungen können beträchtlich sein.","#004643"),
+            new CategoryLevel("existenzbedrohend","4","Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.","#004643")
+        ] as List
     }
 
     private static def execute(Object target, Closure init) {

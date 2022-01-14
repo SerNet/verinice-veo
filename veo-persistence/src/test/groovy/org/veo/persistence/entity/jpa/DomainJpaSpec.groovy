@@ -72,6 +72,9 @@ class DomainJpaSpec extends AbstractJpaSpec {
             authority = 'ISO'
             templateVersion = '1.0'
             revision = 'latest'
+            riskDefinitions = ["id":
+                createRiskDefinition("id1")
+            ]as Map
         }
 
 
@@ -88,6 +91,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
         d.revision == domain0.revision
+        d.riskDefinitions == domain0.riskDefinitions
     }
 
     def 'domain with catalog is inserted'() {

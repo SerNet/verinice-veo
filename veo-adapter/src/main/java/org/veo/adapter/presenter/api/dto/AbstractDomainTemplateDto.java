@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -25,6 +27,7 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -71,8 +74,11 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
     @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
     private String revision;
 
-    @Schema(description = "A list of catalogs beloging to the DomainTemplate.")
+    @Schema(description = "A list of catalogs belonging to the DomainTemplate.")
     private Set<AbstractCatalogDto> catalogs;
+
+    @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
+    private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
     @Override
     public Class<? extends Identifiable> getModelInterface() {

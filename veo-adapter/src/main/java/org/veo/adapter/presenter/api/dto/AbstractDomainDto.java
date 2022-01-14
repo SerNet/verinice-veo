@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -30,6 +32,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -83,6 +86,9 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
 
     @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))
     private Set<IdRef<Catalog>> catalogs = new HashSet<>();
+
+    @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
+    private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
     private IdRef<DomainTemplate> domainTemplate;
 

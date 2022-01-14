@@ -50,7 +50,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate is inserted'() {
         given: "the domain template"
 
-        domain0 = newDomainTemplate()
+        domain0 = newDomainTemplate() {
+            riskDefinitions = ["id1":
+                createRiskDefinition("id1"),
+                "id2":createRiskDefinition("id2")
+            ] as Map
+        }
 
         when: "saving"
 
@@ -67,6 +72,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
         d.revision == domain0.revision
+        d.riskDefinitions == domain0.riskDefinitions
     }
 
     def 'domainTemplate with catalog is inserted'() {

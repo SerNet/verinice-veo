@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2022  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.riskdefinition;
 
-public class Constraints {
-    public final static int DEFAULT_STRING_MAX_LENGTH = 255;
-    public final static int DEFAULT_CONSTANT_MAX_LENGTH = 120;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.veo.core.entity.Constraints;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class RiskMethod {
+    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+    @NotNull
+    private String impactMethod;
+    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+    private String description;
 }

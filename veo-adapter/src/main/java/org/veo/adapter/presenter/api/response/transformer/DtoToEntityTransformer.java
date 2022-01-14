@@ -323,10 +323,9 @@ public final class DtoToEntityTransformer {
             target.setCatalogs(source.getCatalogs()
                                      .stream()
                                      .map(c -> transformDto2Catalog(c, idRefResolver))
-                                     .collect(Collectors.toSet())
-
-            );
+                                     .collect(Collectors.toSet()));
         }
+        target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
     }
 
     private <T extends Element> void mapCompositeEntity(CompositeEntityDto<T> source,

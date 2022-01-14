@@ -15,9 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.persistence.migrations
 
-public class Constraints {
-    public final static int DEFAULT_STRING_MAX_LENGTH = 255;
-    public final static int DEFAULT_CONSTANT_MAX_LENGTH = 120;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
+
+import groovy.sql.Sql
+
+class V17__alter_domain_template_add_riskdefinition extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+
+    alter table domaintemplate
+       add column risk_definitions jsonb;
+
+    alter table domain
+       add column risk_definitions jsonb;
+
+""")
+    }
 }

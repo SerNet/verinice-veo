@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2022  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,9 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.core.entity.riskdefinition;
 
-public class Constraints {
-    public final static int DEFAULT_STRING_MAX_LENGTH = 255;
-    public final static int DEFAULT_CONSTANT_MAX_LENGTH = 120;
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@NoArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(onlyExplicitlyIncluded = true)
+public class ProbabilityDefinition extends DimensionDefinition {
+
+    public ProbabilityDefinition(String name, String abbreviation, String description,
+            List<ProbabilityLevel> levels) {
+        super(DIMENSION_PROBABILITY, name, abbreviation, description);
+        this.levels = levels;
+        initLevel(levels);
+    }
+
+    private List<ProbabilityLevel> levels = new ArrayList<>();
 }

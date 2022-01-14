@@ -59,6 +59,8 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
+            def rd = createRiskDefinition("id1")
+
             def client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
@@ -90,6 +92,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
                         }
                     })
                 }
+                riskDefinitions = ["id":rd] as Map
             }
 
             client = clientRepository.save(client)
@@ -206,6 +209,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == completeDomain.name
         result.catalogs.size() == 1
         result.elementTypeDefinitions != null
+        result.riskDefinitions !=null
         when:
         def firstCatalog = result.catalogs.first()
         then:
