@@ -6,7 +6,7 @@ veo:
       routing-key-prefix: 'veo.resttestmessage.'
   resttest:
     baseUrl: '' # i.e. "https://veo.develop.verinice.com". Leave empty for local tests.
-    oidcUrl: 'https://keycloak.staging.verinice.com'
+    oidcUrl: 'https://keycloak.staging.verinice.com/auth'
     realm: 'realm'
     clientId: 'clientid'
     users:
