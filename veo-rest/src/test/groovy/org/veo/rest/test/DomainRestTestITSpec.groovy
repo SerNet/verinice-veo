@@ -48,4 +48,45 @@ class DomainRestTestITSpec extends VeoRestTest {
             domainTemplate.displayName == "td test-domain"
         }
     }
+
+    def "export the dsgvo domain"() {
+        log.info("Create a unit and export dsgvo domain")
+
+        given:
+        postResponse = postNewUnit(UNIT_NAME)
+        unitId = postResponse.resourceId
+
+        when: "the catalog is retrieved"
+        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
+        def domainDto = exportDomain(dsgvoId)
+        log.info("==> exported domain: {}", domainDto)
+
+        def catalog = domainDto.catalogs[0]
+        def vvt = catalog.catalogItems.find { it.element.abbreviation == "VVT" }
+        def tomi = catalog.catalogItems.find { it.element.abbreviation == "TOM-I" }
+        log.info("==> catalogItems tomi: {}", tomi)
+        log.info("==> catalogItems VVT: {}", vvt)
+
+        then: "the domain is exported"
+        with(catalog) {
+            catalogItems.size() == 9
+            name == "DS-GVO-Controls"
+        }
+        with (vvt) {
+            namespace == "TOM.VVT"
+            tailoringReferences.size() == 8
+            with (element) {
+                description == "VVT-Prozess"
+                domains[dsgvoId].subType == "PRO_DataProcessing"
+                domains[dsgvoId].status == "NEW"
+            }
+        }
+        with (tomi.element) {
+            customAspects.size() == 1
+            customAspects.control_dataProtection.attributes.size() == 1
+            customAspects.control_dataProtection.attributes.control_dataProtection_objectives == "control_dataProtection_objectives_integrity"
+            domains[dsgvoId].subType == "CTL_TOM"
+            domains[dsgvoId].status == "NEW"
+        }
+    }
 }
