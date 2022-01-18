@@ -894,9 +894,9 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-14. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 3.2.0
+14. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 4.0.1
 
-Project URL: http://wiki.fasterxml.com/JugHome
+Project URL: https://github.com/cowtowncoder/java-uuid-generator
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -19235,5 +19235,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Tue Jan 11 10:26:04 CET 2022.
+This report was generated at Tue Jan 18 14:03:02 UTC 2022.
 

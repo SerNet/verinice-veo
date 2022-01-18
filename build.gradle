@@ -148,7 +148,7 @@ subprojects {
             dependency "org.testcontainers:postgresql:1.16.2"
             dependency "org.keycloak:keycloak-authz-client:16.1.0"
             dependency "com.github.JanLoebel:json-schema-validation-starter:2.3.0"
-            dependency 'com.fasterxml.uuid:java-uuid-generator:3.2.0'
+            dependency 'com.fasterxml.uuid:java-uuid-generator:4.0.1'
         }
     }
 
