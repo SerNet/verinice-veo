@@ -181,48 +181,56 @@ public final class EntityToDtoTransformer {
     public FullPersonDto transformPerson2Dto(@Valid Person source) {
         FullPersonDto target = new FullPersonDto();
         mapCompositeEntity(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         return target;
     }
 
     public FullAssetDto transformAsset2Dto(@Valid Asset source) {
         FullAssetDto target = new FullAssetDto();
         mapCompositeEntity(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         return target;
     }
 
     public FullProcessDto transformProcess2Dto(@Valid Process source) {
         FullProcessDto target = new FullProcessDto();
         mapCompositeEntity(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         return target;
     }
 
     public FullDocumentDto transformDocument2Dto(@Valid Document source) {
         FullDocumentDto target = new FullDocumentDto();
         mapCompositeEntity(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         return target;
     }
 
     public FullControlDto transformControl2Dto(@Valid Control source) {
         FullControlDto target = new FullControlDto();
         mapCompositeEntity(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         return target;
     }
 
     public FullIncidentDto transformIncident2Dto(@Valid Incident source) {
         FullIncidentDto target = new FullIncidentDto();
         mapCompositeEntity(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         return target;
     }
 
     public FullScenarioDto transformScenario2Dto(@Valid Scenario source) {
         FullScenarioDto target = new FullScenarioDto();
         mapCompositeEntity(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         return target;
     }
 
     public FullScopeDto transformScope2Dto(@Valid Scope source) {
         FullScopeDto target = new FullScopeDto();
         mapElement(source, target);
+        domainAssociationTransformer.mapDomainsToDto(source, target);
         target.setMembers(convertReferenceSet(source.getMembers()));
         return target;
     }
@@ -311,8 +319,9 @@ public final class EntityToDtoTransformer {
             target.setElement(transform2Dto(element));
             DomainTemplate domainTemplate = source.getCatalog()
                                                   .getDomainTemplate();
-            domainAssociationTransformer.mapDomainsToDto(element, target.getElement(),
-                                                         domainTemplate);
+
+            target.getElement()
+                  .associateWithTargetDomain(domainTemplate.getIdAsString());
         }
         target.setTailoringReferences(source.getTailoringReferences()
                                             .stream()
@@ -433,7 +442,6 @@ public final class EntityToDtoTransformer {
         target.setLinks(mapLinks(source.getLinks()));
         target.setCustomAspects(mapCustomAspects(source.getCustomAspects()));
         target.setType(source.getModelType());
-        domainAssociationTransformer.mapDomainsToDto(source, target);
 
         if (source.getOwner() != null) {
             target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));

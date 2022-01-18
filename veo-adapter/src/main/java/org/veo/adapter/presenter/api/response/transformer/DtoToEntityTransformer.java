@@ -99,48 +99,56 @@ public final class DtoToEntityTransformer {
     public Person transformDto2Person(AbstractPersonDto source, IdRefResolver idRefResolver) {
         var target = factory.createPerson(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Asset transformDto2Asset(AbstractAssetDto source, IdRefResolver idRefResolver) {
         var target = factory.createAsset(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Process transformDto2Process(AbstractProcessDto source, IdRefResolver idRefResolver) {
         var target = factory.createProcess(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Document transformDto2Document(AbstractDocumentDto source, IdRefResolver idRefResolver) {
         var target = factory.createDocument(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Control transformDto2Control(AbstractControlDto source, IdRefResolver idRefResolver) {
         var target = factory.createControl(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Incident transformDto2Incident(AbstractIncidentDto source, IdRefResolver idRefResolver) {
         var target = factory.createIncident(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Scenario transformDto2Scenario(AbstractScenarioDto source, IdRefResolver idRefResolver) {
         var target = factory.createScenario(source.getName(), null);
         mapCompositeEntity(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Scope transformDto2Scope(AbstractScopeDto source, IdRefResolver idRefResolver) {
         var target = factory.createScope(source.getName(), null);
         mapElement(source, target, idRefResolver);
+        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         Set<IdRef<Element>> memberReferences = source.getMembers();
         Map<Class<Element>, Set<IdRef<Element>>> memberReferencesByType = memberReferences.stream()
                                                                                           .collect(Collectors.groupingBy(IdRef::getType,
@@ -331,7 +339,6 @@ public final class DtoToEntityTransformer {
             TEntity target, IdRefResolver idRefResolver) {
         mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
-        domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         target.setLinks(mapLinks(target, source, idRefResolver));
         target.setCustomAspects(mapCustomAspects(source, factory));
         if (source.getOwner() != null) {

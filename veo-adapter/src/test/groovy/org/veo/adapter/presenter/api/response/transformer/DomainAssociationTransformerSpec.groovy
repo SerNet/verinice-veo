@@ -17,21 +17,20 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+
 import org.veo.adapter.IdRefResolver
-import org.veo.adapter.presenter.api.dto.AbstractElementDto
+import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Element
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.entity.aspects.SubTypeAspect
 
 import spock.lang.Specification
 
 class DomainAssociationTransformerSpec extends Specification {
 
-    AbstractElementDto dto = Mock()
-    Element entity = Mock()
     Domain domain0 = Mock(Domain) { it.id >> Key.newUuid() }
     Domain domain1 = Mock(Domain) { it.id >> Key.newUuid() }
     IdRefResolver idRefResolver = Mock() {
@@ -41,7 +40,9 @@ class DomainAssociationTransformerSpec extends Specification {
     DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer()
 
     def "maps domains from DTO to entity"() {
-        given: "an entity with two domains and a DTO with different sub types for those domains"
+        given: "a process with two domains and a DTO with different sub types for those domains"
+        AbstractProcessDto dto = Mock()
+        Process entity = Mock()
         entity.modelInterface >> Process
         dto.domains >> [
             (domain0.id.uuidValue()): Mock(DomainAssociationDto) {
@@ -66,9 +67,23 @@ class DomainAssociationTransformerSpec extends Specification {
     }
 
     def "maps sub types from entity to DTO"() {
-        given: "an entity with different sub types in two domains"
+        given: "a process with different sub types in two domains"
+        AbstractProcessDto dto = Mock()
+        Process entity = Mock()
         Map<String, DomainAssociationDto> capturedDomainMap
         entity.domains >> [domain0, domain1]
+        entity.subTypeAspects >> [
+            Mock(SubTypeAspect) {
+                domain >> domain0
+                subType >> "foo"
+                status >> "NEW_FOO"
+            },
+            Mock(SubTypeAspect) {
+                domain >> domain1
+                subType >> "bar"
+                status >> "NEW_BAR"
+            }
+        ]
         entity.getSubType(domain0) >> Optional.of("foo")
         entity.getStatus(domain0) >> Optional.of("NEW_FOO")
         entity.getSubType(domain1) >> Optional.of("bar")

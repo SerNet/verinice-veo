@@ -65,8 +65,7 @@ public class CatalogItemServiceImpl implements CatalogItemService {
      */
     private void prepareDto(AbstractElementDto dto) {
         dto.setOwner(null);
-        dto.getDomains()
-           .clear();
+        dto.clearDomains();
         dto.getLinks()
            .clear();
     }

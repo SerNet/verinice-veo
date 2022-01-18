@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,10 +68,6 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
     @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
     private String description;
 
-    @Valid
-    @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, DomainAssociationDto> domains = new HashMap<>();
-
     @NotNull(message = "An owner must be present.")
     @Schema(required = true, implementation = IdRefOwner.class)
     private IdRef<ElementOwner> owner;
@@ -89,4 +84,8 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
 
     @Schema(description = "Entity type identifier", accessMode = Schema.AccessMode.READ_ONLY)
     private String type;
+
+    public abstract void associateWithTargetDomain(String id);
+
+    public abstract void clearDomains();
 }

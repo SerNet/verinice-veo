@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.validation.Valid;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
@@ -73,4 +76,21 @@ public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident> {
     public Class<? extends Identifiable> getModelInterface() {
         return Incident.class;
     }
+
+    @Override
+    public void associateWithTargetDomain(String id) {
+        setDomains(Map.of(id, getDomains().values()
+                                          .stream()
+                                          .findFirst()
+                                          .orElse(new DomainAssociationDto())));
+    }
+
+    @Override
+    public void clearDomains() {
+        domains.clear();
+    }
+
+    @Valid
+    @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
+    private Map<String, DomainAssociationDto> domains = new HashMap<>();
 }

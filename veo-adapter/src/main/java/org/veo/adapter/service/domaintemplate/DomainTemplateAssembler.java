@@ -32,7 +32,6 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -140,18 +139,10 @@ class DomainTemplateAssembler {
             elementDto.setOwner(SyntheticIdRef.from(itemDto.getId(), ElementOwner.class,
                                                     CatalogItem.class));
             elementDto.setType(SyntheticIdRef.toSingularTerm(elementDto.getModelInterface()));
-            associateWithTargetDomain(elementDto);
+            elementDto.associateWithTargetDomain(id);
             cache.put(e.getKey(), itemDto);
         }
         return cache;
-    }
-
-    private void associateWithTargetDomain(AbstractElementDto dto) {
-        dto.setDomains(Map.of(id, dto.getDomains()
-                                     .values()
-                                     .stream()
-                                     .findFirst()
-                                     .orElse(new DomainAssociationDto())));
     }
 
     /**
@@ -233,7 +224,7 @@ class DomainTemplateAssembler {
 
     private void processDemoUnitElement(AbstractElementDto element,
             Set<IdRef<Domain>> domainsToApply) {
-        associateWithTargetDomain(element);
+        element.associateWithTargetDomain(id);
         element.setType(SyntheticIdRef.toSingularTerm(element.getModelInterface()));
         element.getCustomAspects()
                .values()

@@ -17,99 +17,167 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.IdRefResolver;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
+import org.veo.adapter.presenter.api.dto.AbstractControlDto;
+import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
+import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
+import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
+import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
+import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
+import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.aspects.SubTypeAspect;
-import org.veo.core.entity.exception.ModelConsistencyException;
+import org.veo.core.entity.Incident;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 
 /**
  * Maps {@link Domain} associations of {@link Element}s between entities and
  * DTOs. See {@link DomainAssociationDto}.
  */
 public class DomainAssociationTransformer {
-    public void mapDomainsToEntity(AbstractElementDto source, Element target,
+
+    public void mapDomainsToEntity(AbstractAssetDto source, Asset target,
             IdRefResolver idRefResolver) {
-        source.getDomains()
-              .forEach((domainId, associationDto) -> {
-                  Object resolvedObject = idRefResolver.resolve(SyntheticIdRef.from(domainId,
-                                                                                    Domain.class));
-                  if (hasInterface(resolvedObject, Domain.class)) {
-                      var domain = (Domain) resolvedObject;
-                      target.addToDomains(domain);
-                      domain.validateSubType(target.getModelInterface(),
-                                             associationDto.getSubType());
-                      target.setSubType(domain, associationDto.getSubType(),
-                                        associationDto.getStatus());
-                  } else if (hasInterface(resolvedObject, DomainTemplate.class)) {
-                      target.setSubType((DomainTemplate) resolvedObject,
-                                        associationDto.getSubType(), associationDto.getStatus());
-                  } else {
-                      throw new ModelConsistencyException(
-                              "Resolved object is not of any reconized type %s",
-                              resolvedObject.toString());
-                  }
-              });
+        mapToEntity(source.getDomains(), target, idRefResolver);
     }
 
-    public void mapDomainsToDto(Element source, AbstractElementDto target) {
-        target.setDomains(source.getDomains()
-                                .stream()
-                                .collect(Collectors.toMap(domain -> domain.getId()
-                                                                          .uuidValue(),
-                                                          domain -> {
-                                                              var association = new DomainAssociationDto();
-                                                              association.setSubType(source.getSubType(domain)
-                                                                                           .orElse(null));
-                                                              association.setStatus(source.getStatus(domain)
-                                                                                          .orElse(null));
-                                                              return association;
-                                                          })));
+    public void mapDomainsToEntity(AbstractControlDto source, Control target,
+            IdRefResolver idRefResolver) {
+        mapToEntity(source.getDomains(), target, idRefResolver);
     }
 
-    /**
-     * Test if this actual is a domain object.(even if it's a Test Mock)
-     */
-    private boolean hasInterface(Object resolve, Class<? extends Identifiable> targetInterface) {
-        Class<?>[] interfaces = resolve.getClass()
-                                       .getInterfaces();
-        return Arrays.stream(interfaces)
-                     .filter(c -> {
-                         return c.getCanonicalName()
-                                 .equals(targetInterface.getCanonicalName());
-                     })
-                     .findAny()
-                     .isPresent();
+    public void mapDomainsToEntity(AbstractDocumentDto source, Document target,
+            IdRefResolver idRefResolver) {
+        mapToEntity(source.getDomains(), target, idRefResolver);
     }
 
-    /**
-     * Maps the aspects to a domaintemplate. We have some preconditions, the domains
-     * must be empty as the element belongs to a domain template and therefore only
-     * one aspect can be present.
-     */
-    public void mapDomainsToDto(Element source, AbstractElementDto target,
-            DomainTemplate domainTemplate) {
-        if (source.getDomains()
-                  .isEmpty()
-                && source.getSubTypeAspects()
-                         .size() == 1) {
-            SubTypeAspect subTypeAspect = source.getSubTypeAspects()
-                                                .iterator()
-                                                .next();
-            DomainAssociationDto association = new DomainAssociationDto();
-            association.setStatus(subTypeAspect.getStatus());
-            association.setSubType(subTypeAspect.getSubType());
+    public void mapDomainsToEntity(AbstractIncidentDto source, Incident target,
+            IdRefResolver idRefResolver) {
+        mapToEntity(source.getDomains(), target, idRefResolver);
+    }
 
-            target.setDomains(Map.of(domainTemplate.getIdAsString(), association));
-        }
+    public void mapDomainsToEntity(AbstractPersonDto source, Person target,
+            IdRefResolver idRefResolver) {
+        mapToEntity(source.getDomains(), target, idRefResolver);
+    }
+
+    public void mapDomainsToEntity(AbstractProcessDto source, Process target,
+            IdRefResolver idRefResolver) {
+        mapToEntity(source.getDomains(), target, idRefResolver);
+    }
+
+    public void mapDomainsToEntity(AbstractScenarioDto source, Scenario target,
+            IdRefResolver idRefResolver) {
+        mapToEntity(source.getDomains(), target, idRefResolver);
+    }
+
+    public void mapDomainsToEntity(AbstractScopeDto source, Scope target,
+            IdRefResolver idRefResolver) {
+        mapToEntity(source.getDomains(), target, idRefResolver);
+    }
+
+    public void mapDomainsToDto(Asset source, AbstractAssetDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    public void mapDomainsToDto(Control source, AbstractControlDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    public void mapDomainsToDto(Document source, AbstractDocumentDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    public void mapDomainsToDto(Incident source, AbstractIncidentDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    public void mapDomainsToDto(Person source, AbstractPersonDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    public void mapDomainsToDto(Process source, AbstractProcessDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    public void mapDomainsToDto(Scenario source, AbstractScenarioDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    public void mapDomainsToDto(Scope source, AbstractScopeDto target) {
+        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+    }
+
+    private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
+            Element source, Supplier<T> supplier) {
+        return extractDomainAssociations(source, domain -> supplier.get());
+    }
+
+    private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
+            Element source, Function<DomainTemplate, T> supplier) {
+        // Catalog item elements in a domain template may have aspects for domains that
+        // the element is not assigned to. Seems invalid, but that's the situation we
+        // have to deal with here.
+        var domains = new HashSet<DomainTemplate>();
+        domains.addAll(source.getDomains());
+        domains.addAll(source.getSubTypeAspects()
+                             .stream()
+                             .map(a -> a.getDomain())
+                             .collect(Collectors.toSet()));
+
+        return domains.stream()
+                      .collect(Collectors.toMap(domain -> domain.getId()
+                                                                .uuidValue(),
+                                                domain -> {
+                                                    var association = supplier.apply(domain);
+                                                    association.setSubType(source.getSubType(domain)
+                                                                                 .orElse(null));
+                                                    association.setStatus(source.getStatus(domain)
+                                                                                .orElse(null));
+                                                    return association;
+                                                }));
+    }
+
+    private <TAssociationDto extends DomainAssociationDto> void mapToEntity(
+            Map<String, TAssociationDto> domains, Element target, IdRefResolver idRefResolver) {
+        mapToEntity(domains, target, idRefResolver, (domain, associationDto) -> {
+        });
+    }
+
+    private <TAssociationDto extends DomainAssociationDto> void mapToEntity(
+            Map<String, TAssociationDto> domains, Element target, IdRefResolver idRefResolver,
+            BiConsumer<DomainTemplate, TAssociationDto> customMapper) {
+        domains.entrySet()
+               .forEach(entry -> {
+                   var associationDto = entry.getValue();
+                   DomainTemplate domainTemplate = idRefResolver.resolve(SyntheticIdRef.from(entry.getKey(),
+                                                                                             Domain.class));
+                   if (domainTemplate instanceof Domain) {
+                       var domain = (Domain) domainTemplate;
+                       target.addToDomains(domain);
+                       domain.validateSubType(target.getModelInterface(),
+                                              associationDto.getSubType());
+                   }
+                   target.setSubType(domainTemplate, associationDto.getSubType(),
+                                     associationDto.getStatus());
+                   customMapper.accept(domainTemplate, associationDto);
+               });
     }
 }
