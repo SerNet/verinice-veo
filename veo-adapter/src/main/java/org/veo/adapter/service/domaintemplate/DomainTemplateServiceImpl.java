@@ -260,7 +260,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         if (domainTemplateRepository.exists(domainTemplateKey)) {
             throw new ModelConsistencyException("The UUID %s is already used.", domainTemplateId);
         }
-        domainTemplateDto.setId(domainTemplateId);
         DomainTemplate newDomainTemplate = factory.createDomainTemplate(domainTemplateDto.getName(),
                                                                         domainTemplateDto.getAuthority(),
                                                                         domainTemplateDto.getTemplateVersion(),
@@ -291,7 +290,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         newDomain.setAbbreviation(domainTemplateDto.getAbbreviation());
         PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
 
-        newDomain.setId(Key.uuidFrom(domainTemplateDto.getId()));
         ref.cache.put(domainTemplateDto.getId(), newDomain);
 
         domainTemplateDto.getCatalogs()

@@ -153,7 +153,10 @@
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": {
-              
+              "00000000-0000-0000-0000-000000000001": {
+                "subType": "CTL_TOM",
+                "status": "NEW"
+              }
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e002",
             "links": {

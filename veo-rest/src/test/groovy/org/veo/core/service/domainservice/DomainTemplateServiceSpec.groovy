@@ -277,6 +277,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[3].element.name == 'Control-cc-1'
 
             it[4].element.name == 'Control-cc-2'
+            it[4].element.getSubType(domainFromTemplate).get() == "CTL_TOM"
 
             it[5].element.name == 'Test process-1'
         }
