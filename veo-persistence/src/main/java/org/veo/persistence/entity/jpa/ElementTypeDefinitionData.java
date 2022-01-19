@@ -42,13 +42,11 @@ import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "element_type_definition")
 @Data()
 @TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners({ ElementTypeDefintionEntityListener.class })
 public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
@@ -58,14 +56,12 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String dbId;
 
-    @EqualsAndHashCode.Include
     @NotNull
     private String elementType;
 
     @ManyToOne(targetEntity = DomainTemplateData.class, optional = false, fetch = FetchType.LAZY)
     @NotNull
     @Valid
-    @EqualsAndHashCode.Include
     private DomainTemplate owner;
 
     @Column(columnDefinition = "jsonb")
@@ -83,4 +79,29 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
     @Column(columnDefinition = "jsonb")
     @NotNull
     private Map<String, Map<String, String>> translations = new HashMap<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
+        if (this == o)
+            return true;
+
+        if (!(o instanceof ElementTypeDefinitionData))
+            return false;
+
+        ElementTypeDefinitionData other = (ElementTypeDefinitionData) o;
+        // Transient (unmanaged) entities have an ID of 'null'. Only managed
+        // (persisted and detached) entities have an identity. JPA requires that
+        // an entity's identity remains the same over all state changes.
+        // Therefore a transient entity must never equal another entity.
+        String dbId = getDbId();
+        return dbId != null && dbId.equals(other.getDbId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

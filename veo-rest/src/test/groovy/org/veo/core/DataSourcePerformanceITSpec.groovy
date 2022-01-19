@@ -97,8 +97,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 8
-        queryCounts.update == 1
+        queryCounts.insert == 6
+        queryCounts.update == 0
         queryCounts.select == 3
     }
 

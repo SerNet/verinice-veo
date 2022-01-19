@@ -99,11 +99,13 @@ public class DomainTemplateData extends IdentifiableVersionedData
 
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
-               targetEntity = ElementTypeDefinitionData.class)
+               targetEntity = ElementTypeDefinitionData.class,
+               mappedBy = "owner")
     private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
 
     public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {
         elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));
-        this.elementTypeDefinitions = elementTypeDefinitions;
+        this.elementTypeDefinitions.clear();
+        this.elementTypeDefinitions.addAll(elementTypeDefinitions);
     }
 }
