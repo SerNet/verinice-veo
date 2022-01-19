@@ -174,7 +174,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         retrievedAsset.customAspects.aspectOne.attributes.attrOne != null
 
         and: "the obsolete content has been removed from the asset"
-        retrievedAsset.customAspects.aspectOne.attributes.attsTwo == null
+        retrievedAsset.customAspects.aspectOne.attributes.attrTwo == null
         retrievedAsset.customAspects.aspectTwo == null
     }
 
