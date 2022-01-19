@@ -57,7 +57,17 @@ public class UpdateElementTypeDefinitionUseCase
             throw new NotFoundException("Domain is inactive.");
         }
 
-        domain.setElementTypeDefinition(input.entityType, input.elementTypeDefinition);
+        ElementTypeDefinition existingDefinition = domain.getElementTypeDefinition(input.entityType.getSingularTerm())
+                                                         .orElseThrow(() -> new NotFoundException(
+                                                                 "Domain has no definition for entity type "
+                                                                         + input.entityType.getSingularTerm()));
+        ElementTypeDefinition updatedDefinition = input.elementTypeDefinition;
+
+        existingDefinition.setCustomAspects(updatedDefinition.getCustomAspects());
+        existingDefinition.setLinks(updatedDefinition.getLinks());
+        existingDefinition.setSubTypes(updatedDefinition.getSubTypes());
+        existingDefinition.setTranslations(updatedDefinition.getTranslations());
+
         return EmptyOutput.INSTANCE;
     }
 

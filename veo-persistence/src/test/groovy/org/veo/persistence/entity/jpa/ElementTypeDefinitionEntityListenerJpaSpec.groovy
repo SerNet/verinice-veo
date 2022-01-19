@@ -82,12 +82,11 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "replacing the asset definition"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.setElementTypeDefinition(EntityType.ASSET, newElementTypeDefinition(domain, "asset") {
+            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).get().tap {
                 it.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                     it.statuses = ["BRAND_NEW"]
                 }
             }
-            )
         }
 
         then: "an entity type definition update event was published"
@@ -96,11 +95,11 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "replacing the asset definition again"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.setElementTypeDefinition(EntityType.ASSET, newElementTypeDefinition(domain, "asset") {
+            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).get().tap {
                 it.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                     it.statuses = ["BRAND_NEW", "USED"]
                 }
-            })
+            }
         }
 
         then: "another entity type definition update event was published"
