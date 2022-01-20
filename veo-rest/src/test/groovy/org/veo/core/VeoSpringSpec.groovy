@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.transaction.Transactional
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,6 +29,8 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Unit
+import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -111,54 +111,26 @@ abstract class VeoSpringSpec extends VeoSpec {
     @Autowired
     TransactionTemplate txTemplate
 
+    @Autowired
+    DeleteUnitUseCase deleteUnitUseCase
+
+    def deleteUnitRecursively(Unit unit) {
+        unit.units.each {
+            deleteUnitRecursively(it)
+        }
+        deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.id,
+                unit.client))
+    }
+
     def setup() {
         txTemplate.execute {
-            def catalogs = catalogDataRepository.findAll()
-            def domains = domainDataRepository.findAll()
-
-            def entityDataRepositories = [
-                scopeDataRepository,
-                processDataRepository,
-                assetDataRepository,
-                controlDataRepository,
-                documentDataRepository,
-                incidentDataRepository,
-                scenarioDataRepository,
-                personDataRepository
-            ]
-            entityDataRepositories.each { dr->
-                def elements = dr.findAll()
-                elements.each {
-                    if(it.getOwner()!=null) {
-                        it.links.clear()
-                        it.domains.clear()
-                        it.appliedCatalogItems.clear()
-                    }
+            clientDataRepository.findAll().each{ client->
+                unitDataRepository.findByClientId(client.idAsString).findAll { it.parent == null }.each{
+                    deleteUnitRecursively(it)
                 }
+                clientDataRepository.delete(client)
             }
-            catalogs.each {
-                if(it.domainTemplate instanceof Domain) {
-                    it.catalogItems.clear()
-                }
-            }
-            domains.each {
-                it.getElementTypeDefinitions().clear()
-            }
-            entityDataRepositories.each { dr->
-                def elements = dr.findAll()
-                elements.each {
-                    if(it.getOwner()!=null) {
-                        dr.delete(it)
-                    }
-                }
-            }
-            ( [
-                unitDataRepository,
-                domainDataRepository,
-                clientDataRepository,
-                eventStoreDataRepository
-            ]
-            )*.deleteAll()
+            eventStoreDataRepository.deleteAll()
         }
     }
 
