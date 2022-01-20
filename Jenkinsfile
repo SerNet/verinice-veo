@@ -317,7 +317,7 @@ pipeline {
             }
         }
         stage('Trigger Deployment') {
-            agent any
+            agent none
             when {
                 anyOf { branch 'master'; branch 'develop' }
             }
