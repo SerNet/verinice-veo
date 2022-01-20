@@ -512,7 +512,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             def units = new HashSet<Unit>()
             for (i in 0..<count) {
                 def unit = newUnit(client).tap {
-                    name = "unit" + count
+                    name = "unit" + i
                 }
                 units.add(unitRepository.save(unit))
             }
@@ -530,7 +530,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         executeInTransaction {
             for (i in 0..<count) {
                 def unit = newUnit(client).tap {
-                    name = "unit" + count
+                    name = "unit" + i
                     parent = unit
                 }
                 unitRepository.save(unit)
