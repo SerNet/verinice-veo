@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.Comparator;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
@@ -66,10 +68,13 @@ public class DeleteUnitUseCase
     }
 
     void removeObjectsInUnit(Unit unit) {
-
-        EntityType.ELEMENT_TYPE_CLASSES.forEach(clazz -> repositoryProvider.getElementRepositoryFor(clazz)
+        // delete risk-affected elements first to prevent FK constraint
+        // violations
+        EntityType.ELEMENT_TYPE_CLASSES.stream()
+                                       .sorted(Comparator.comparing(RiskAffected.class::isAssignableFrom)
+                                                         .reversed())
+                                       .forEach(clazz -> repositoryProvider.getElementRepositoryFor(clazz)
                                                                            .deleteByUnit(unit));
-
     }
 
     @Valid
