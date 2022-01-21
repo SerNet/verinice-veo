@@ -346,7 +346,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 16
         queryCounts.insert == 11
         queryCounts.update == 0
-        queryCounts.select == 19
+        queryCounts.select == 17
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
@@ -616,9 +616,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
     }
 
-    static QueryCount trackQueryCounts(Closure cl) {
+    QueryCount trackQueryCounts(Closure cl) {
         QueryCountHolder.clear()
-        cl.call()
+        executeInTransaction {
+            cl.call()
+        }
         QueryCountHolder.grandTotal
     }
 }
