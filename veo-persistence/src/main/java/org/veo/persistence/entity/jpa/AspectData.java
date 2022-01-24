@@ -17,12 +17,12 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -34,8 +34,8 @@ import org.veo.core.entity.aspects.Aspect;
 import lombok.Data;
 import lombok.ToString;
 
+@MappedSuperclass
 @ToString(onlyExplicitlyIncluded = true)
-@Entity(name = "aspect")
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AspectData implements Aspect {
